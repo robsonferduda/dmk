@@ -5,18 +5,20 @@
         <title>{{ "DMK" }}</title>
         <meta name="description" content="">
         <meta name="author" content="">
+        <meta name="token" content="{{ csrf_token() }}">
             
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         
         <!-- #CSS Links -->
         <!-- Basic Styles -->
-        <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
 
         <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
-        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css?v={{ date('His') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-skins.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="css/custom.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
 
         <!-- We recommend you use "your_style.css" to override SmartAdmin
              specific styles this will also ensure you retrain your customization with each SmartAdmin update.
@@ -55,7 +57,7 @@
             <div id="logo-group">
 
                 <!-- PLACE YOUR LOGO HERE -->
-                <span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span>
+                <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>
                 <!-- END LOGO PLACEHOLDER -->
 
                 <!-- Note: The activity badge color changes when clicked and resets the number to 0
@@ -176,7 +178,7 @@
                 <span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
                     
                     <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-                        <img src="img/users/user.png" alt="Usuário" /> 
+                        <img src="{{ asset('img/users/user.png') }}" alt="Usuário" /> 
                         <span>
                             {{ Auth::user()->name }} 
                         </span>
@@ -194,10 +196,10 @@
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'cliente') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('cliente/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
                                 <a href="dashboard-social.html" title="Dashboard"><span class="menu-item-parent">Agenda</span></a>
@@ -259,6 +261,14 @@
                             </li>
                         </ul>   
                     </li>
+                    <li>
+                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
+                        <ul>
+                            <li>
+                                <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
+                            </li>
+                        </ul>   
+                    </li>
                 </ul>
             </nav>
 
@@ -269,17 +279,7 @@
         </aside>
 
         <div id="main" role="main">
-
-            <div id="ribbon">
-                <ol class="breadcrumb">
-                    <li>Início</li>
-                    <li>Meus Processos</li>
-                </ol>
-            </div>
-            <div id="content">
-                @yield('content')
-            </div>
-
+            @yield('content')
         </div>
        
         <div class="page-footer">
@@ -311,6 +311,27 @@
             </div>
         </div>
 
+        <div class="modal fade modal_top_alto" id="modal_exclusao" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h4>Essa operação irá excluir o registro definitivamente.</h4>
+                        <h4>Deseja continuar?</h4>
+                        <input type="hidden" name="id" id="id_exclusao">
+                        <div class="msg_retorno"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script>
             if (!window.jQuery) {
@@ -325,19 +346,74 @@
             }
         </script>
 
+        <script src="{{ asset('js/geral.js') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>
 
         <!-- IMPORTANT: APP CONFIG -->
-        <script src="js/app.config.js"></script>
+        <script src="{{ asset('js/app.config.js') }}"></script>
 
         <!-- BOOTSTRAP JS -->
-        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <!--[if IE 8]>
             <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
         <![endif]-->
 
         <!-- MAIN APP JS FILE -->
-        <script src="js/app.min.js"></script>
+        <script src="{{ asset('js/app.min.js') }}"></script>
+
+        <script src="{{ asset('js/plugin/datatables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/datatables/dataTables.colVis.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/datatables/dataTables.tableTools.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/datatables/dataTables.bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
+
+        <script>
+        
+        // DO NOT REMOVE : GLOBAL FUNCTIONS!
+        
+        $(document).ready(function() {
+            
+            pageSetUp();
+
+        /* BASIC ;*/
+                var responsiveHelper_dt_basic = undefined;
+                var responsiveHelper_datatable_fixed_column = undefined;
+                var responsiveHelper_datatable_col_reorder = undefined;
+                var responsiveHelper_datatable_tabletools = undefined;
+                
+                var breakpointDefinition = {
+                    tablet : 1024,
+                    phone : 480
+                };
+    
+                $('#dt_basic').dataTable({
+                    "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+                        "t"+
+                        "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                    "autoWidth" : true,
+                    "oLanguage": {
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
+                    },
+                    "preDrawCallback" : function() {
+                        // Initialize the responsive datatables helper once.
+                        if (!responsiveHelper_dt_basic) {
+                            responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                        }
+                    },
+                    "rowCallback" : function(nRow) {
+                        responsiveHelper_dt_basic.createExpandIcon(nRow);
+                    },
+                    "drawCallback" : function(oSettings) {
+                        responsiveHelper_dt_basic.respond();
+                    }
+                });
+    
+            /* END BASIC */
+
+            })
+
+        </script>
+
     </body>
 </html>

@@ -19,3 +19,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('configuracao/menu/{id}','HomeController@menu');
 Route::get('configuracao/minify','HomeController@minify');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+Route::get('clientes','ClienteController@listar');
+Route::get('cliente/novo','ClienteController@novo');
+
+Route::get('configuracoes/areas','AreaController@index');
+
+Route::get('entidade/teste','EntidadeController@index');
+
+Route::resource('areas','AreaController');
+
+
+

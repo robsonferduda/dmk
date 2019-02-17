@@ -1,2 +1,6 @@
 .center{text-align: center;}
 .modal_top_alto{margin-top: 150px;}
+.box-pessoa-fisica{display: none;}
+.box-pessoa-juridica{display: block;}
+.marginTop10{margin-top: 10px;}
+.msg_retorno{text-align: center; margin-bottom: 10px;}
