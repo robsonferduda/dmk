@@ -40,6 +40,7 @@ class AreaController extends Controller
         	Flash::success('Dados inseridos com sucesso');
         else
 			Flash::error('Erro ao inserir dados');
+        
         return redirect('configuracoes/areas');
 
     }
@@ -50,9 +51,10 @@ class AreaController extends Controller
         $area->fill($request->all());
 
         if($area->saveOrFail())
-        	Flash::success('Dados inseridos com sucesso');
+        	Flash::success('Dados atualizados com sucesso');
         else
-			Flash::error('Erro ao inserir dados');
+			Flash::error('Erro ao atualizar dados');
+
         return redirect('configuracoes/areas');
     }
 
