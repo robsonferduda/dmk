@@ -273,6 +273,9 @@
                             <li>
                                 <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviços</span></a>
                             </li>
+                            <li>
+                                <a href="{{ url('configuracoes/varas') }}" title="Varas"><span class="menu-item-parent">Varas</span></a>
+                            </li>
                         </ul>   
                     </li>
                 </ul>

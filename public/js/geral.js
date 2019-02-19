@@ -122,4 +122,26 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
+	$(".editar_vara").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../varas/"+id;
+
+		$('#frm-edit-vara #cd_vara_var').val(id);
+		$('#frm-edit-vara #nm_vara_var').val(nome);
+
+		$('#frm-edit-vara').attr('action', action);						
+
+	    $('#editVara').modal('show');
+	});
+
+	$(".btn-save-vara").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-vara").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
 });
