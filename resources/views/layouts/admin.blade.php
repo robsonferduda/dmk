@@ -261,11 +261,17 @@
                             </li>
                         </ul>   
                     </li>
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'configuracao') ? 'open' : '' }}">
+                        <a href="#" title="Dashboard" class="item_pai" id="configuracao" ><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'configuracao') ? 'display: block;' : 'display: none;' }}">
                             <li>
                                 <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesa</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviço</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -322,6 +328,7 @@
                         <h4>Essa operação irá excluir o registro definitivamente.</h4>
                         <h4>Deseja continuar?</h4>
                         <input type="hidden" name="id" id="id_exclusao">
+                        <input type="hidden" name="url" id="url">
                         <div class="msg_retorno"></div>
                     </div>
                     <div class="modal-footer">

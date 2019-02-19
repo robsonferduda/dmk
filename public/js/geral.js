@@ -20,8 +20,10 @@ $(document).ready(function() {
 
 	$(".excluir_registro").click(function(){
 
-		var id = $(this).closest('tr').find('td[data-id]').data('id');
+		var id  = $(this).closest('tr').find('td[data-id]').data('id');
+		var url = $(this).data('url');
 
+		$("#modal_exclusao #url").val(url);
 		$("#modal_exclusao #id_exclusao").val(id);
 		$("#modal_exclusao").modal('show');
 	});
@@ -42,10 +44,12 @@ $(document).ready(function() {
 	$("#btn_confirma_exclusao").click(function(){
 
 		var id = $("#id_exclusao").val();
+		var url= $("#url").val();
         var token = $(this).data("token");
+
         $.ajax(
         {
-            url: "../areas/"+id,
+            url: url+id,
             type: 'DELETE',
             dataType: "JSON",
             data: {
@@ -68,6 +72,54 @@ $(document).ready(function() {
 		   	}
         });
 
+	});
+
+	$(".editar_tipo_servico").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../tipos-de-servico/"+id;
+
+		$('#frm-edit-tipo-servico #cd_tipo_servico_tse').val(id);
+		$('#frm-edit-tipo-servico #nm_tipo_servico_tse').val(nome);
+
+		$('#frm-edit-tipo-servico').attr('action', action);						
+
+	    $('#editTipoServico').modal('show');
+	});
+
+	$(".btn-save-tipo-servico").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-tipo-servico").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".editar_tipo_despesa").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var reembolso = $(this).closest('tr').find('td[data-reembolso]').data('reembolso');
+		var action    = "../tipos-de-despesa/"+id;
+
+		$('#frm-edit-tipo-despesa #cd_tipo_despesa_tds').val(id);
+		$('#frm-edit-tipo-despesa #nm_tipo_despesa_tds').val(nome);
+
+		if(reembolso == 'S') 
+			$('#frm-edit-tipo-despesa #fl_reembolso_tds').prop( "checked", true );
+		
+		$('#frm-edit-tipo-despesa').attr('action', action);						
+
+	    $('#editTipoDespesa').modal('show');
+	});
+
+	$(".btn-save-tipo-despesa").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-tipo-despesa").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
 });

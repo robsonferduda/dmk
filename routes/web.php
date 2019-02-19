@@ -24,10 +24,15 @@ Route::get('clientes','ClienteController@listar');
 Route::get('cliente/novo','ClienteController@novo');
 
 Route::get('configuracoes/areas','AreaController@index');
+Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
+Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
+
 
 Route::get('entidade/teste','EntidadeController@index');
 
 Route::resource('areas','AreaController');
+Route::resource('tipos-de-servico','TipoServicoController');
+Route::resource('tipos-de-despesa','TipoDespesaController');
 
 
 
