@@ -33,15 +33,17 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 45%;">Tipo de Despesa</th>
-                                    <th style="width: 20%;">É Reembolsável?</th>
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 30%;">Tipo de Despesa</th>
+                                    <th style="width: 20%;">Categoria</th>
+                                    <th style="width: 25%;">É Reembolsável?</th>
+                                    <th style="width: 25%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($tipos as $tipo)
                                     <tr>                                    
                                         <td data-id="{{ $tipo->cd_tipo_despesa_tds }}" data-nome="{{ $tipo->nm_tipo_despesa_tds }}">{{ $tipo->nm_tipo_despesa_tds }}</td>
+                                        <td data-categoria="{{ $tipo->categoriaDespesa->cd_categoria_despesa_cad }}">{{ $tipo->categoriaDespesa->nm_categoria_despesa_cad }}</td>
                                         <td data-reembolso="{{ $tipo->fl_reembolso_tds }}">{{ ($tipo->fl_reembolso_tds) == 'S' ? 'Sim': 'Não' }}</td>
                                         <td>
                                             <button class="btn btn-primary btn-xs editar_tipo_despesa" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
@@ -58,7 +60,7 @@
     </div>
 </div>
 
-<div class="modal fade modal_top_alto" id="addTipoDespesa" data-backdrop="static" tabindex="-1" role="dialog">
+<div class="modal fade modal_top_alto" id="addTipoDespesa" data-backdrop="static" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -81,7 +83,18 @@
                             </div>
                         </section>
                         <section>
-                            
+                            <div>
+                                <label class="label">Categoria</label>                                
+                                <select  required id="categoriaDespesa" name="cd_categoria_despesa_cad" class="select2">
+                                    <option value="">Selecione</option>
+                                    @foreach($categorias as $cat)
+                                        <option value="{{$cat->cd_categoria_despesa_cad}}">{{$cat->nm_categoria_despesa_cad}}</option>
+                                    @endforeach                                    
+                                </select>                               
+                            </div>                        
+                        </section>
+                        <section>
+                             <br />
                              <div class="onoffswitch-container">
                                 <span class="onoffswitch-title">É Reembolsável?</span> 
                                 <span class="onoffswitch">
@@ -105,7 +118,8 @@
     </div>
 </div>
 
-<div class="modal fade modal_top_alto" id="editTipoDespesa" data-backdrop="static" tabindex="-1" role="dialog">
+
+<div class="modal fade modal_top_alto" id="editTipoDespesa" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -127,6 +141,17 @@
                                     <input type="text" name="nm_tipo_despesa_tds" id="nm_tipo_despesa_tds" required>
                                 </label>
                             </div>
+                        </section>
+                        <section>
+                            <div>
+                                <label class="label">Categoria</label>                                
+                                <select  required id="categoriaDespesa" name="cd_categoria_despesa_cad" class="select2">
+                                    <option value="">Selecione</option>
+                                    @foreach($categorias as $cat)
+                                        <option value="{{$cat->cd_categoria_despesa_cad}}">{{$cat->nm_categoria_despesa_cad}}</option>
+                                    @endforeach                                    
+                                </select>                               
+                            </div>                        
                         </section>
                         <section>                          
                              <div class="onoffswitch-container">

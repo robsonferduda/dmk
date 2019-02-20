@@ -15,9 +15,15 @@ class TipoDespesa extends Model
     protected $fillable = [
     						'nm_tipo_despesa_tds',
     						'cd_conta_con',
-    						'fl_reembolso_tds'
+    						'fl_reembolso_tds',
+                            'cd_categoria_despesa_cad'
     						
     					  ];
 
     public $timestamps = true;
+
+    public function categoriaDespesa()
+    {
+        return $this->hasOne('App\CategoriaDespesa','cd_categoria_despesa_cad', 'cd_categoria_despesa_cad');
+    }
 }

@@ -101,6 +101,7 @@ $(document).ready(function() {
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');
 		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
 		var reembolso = $(this).closest('tr').find('td[data-reembolso]').data('reembolso');
+		var categoria = $(this).closest('tr').find('td[data-categoria]').data('categoria');
 		var action    = "../tipos-de-despesa/"+id;
 
 		$('#frm-edit-tipo-despesa #cd_tipo_despesa_tds').val(id);
@@ -109,6 +110,9 @@ $(document).ready(function() {
 		if(reembolso == 'S') 
 			$('#frm-edit-tipo-despesa #fl_reembolso_tds').prop( "checked", true );
 		
+		//alert(categoria);
+		$('#frm-edit-tipo-despesa #categoriaDespesa').val(categoria).trigger('change');;
+
 		$('#frm-edit-tipo-despesa').attr('action', action);						
 
 	    $('#editTipoDespesa').modal('show');

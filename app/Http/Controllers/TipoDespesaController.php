@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Area;
 use App\TipoDespesa;
+use App\CategoriaDespesa;
 use App\Http\Requests\TipoDespesaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -24,15 +25,16 @@ class TipoDespesaController extends Controller
     public function index()
     {
 
-        $tipos = TipoDespesa::where('cd_conta_con', $this->cdContaCon)->get();
-        
-        return view('configuracoes/tipos-de-despesa',['tipos' => $tipos]);
+        $tipos = TipoDespesa::with('categoriaDespesa')->where('cd_conta_con', $this->cdContaCon)->get();
+        $categorias = CategoriaDespesa::where('cd_conta_con', $this->cdContaCon)->get();
+
+        return view('configuracoes/tipos-de-despesa',['tipos' => $tipos,'categorias' => $categorias]);
     }
 
     public function show($id)
     {
         
-        $area = AreaDireito::findOrFail($id);     
+        $tipo = TipoDespesa::findOrFail($id);     
         return response()->json($area);  
     }
 

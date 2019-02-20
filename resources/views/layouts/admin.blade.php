@@ -358,7 +358,7 @@
 
         <script src="{{ asset('js/geral.js') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>
-
+        @yield('script')
         <!-- IMPORTANT: APP CONFIG -->
         <script src="{{ asset('js/app.config.js') }}"></script>
 
@@ -377,7 +377,7 @@
         <script src="{{ asset('js/plugin/datatables/dataTables.tableTools.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/dataTables.bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
-
+        <script src="{{ asset('js/plugin/select2/select2.min.js') }}"></script>
         <script>
         
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
