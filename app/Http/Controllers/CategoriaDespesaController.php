@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Vara;
-use App\Http\Requests\VaraRequest;
+use App\CategoriaDespesa;
+use App\Http\Requests\CategoriaDespesaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 
-class VaraController extends Controller
+class CategoriaDespesaController extends Controller
 {
 
     private $cdContaCon;
@@ -22,20 +22,19 @@ class VaraController extends Controller
 
     public function index()
     {
-
-        $varas = Vara::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_vara_var')->get();   
-        return view('configuracoes/varas',['varas' => $varas]);
+        $categorias = CategoriaDespesa::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_categoria_despesa_cad')->get();   
+        return view('configuracoes/categorias-de-despesas',['categorias' => $categorias]);
     }
 
     public function show($id)
     {
-        $vara = Vara::findOrFail($id);     
+        $vara = CategoriaDespesa::findOrFail($id);     
         return response()->json($vara);  
     }
 
-    public function store(VaraRequest $request)
+    public function store(CategoriaDespesaRequest $request)
     {
-        $vara = new Vara();
+        $vara = new CategoriaDespesa();
  
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
@@ -46,13 +45,13 @@ class VaraController extends Controller
         else
 			Flash::error('Erro ao inserir dados');
         
-        return redirect('configuracoes/varas');
+        return redirect('configuracoes/categorias-de-despesas');
 
     }
 
     public function update(Request $request,$id)
     {
-        $vara = Vara::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $vara = CategoriaDespesa::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
@@ -63,12 +62,12 @@ class VaraController extends Controller
         else
 			Flash::error('Erro ao atualizar dados');
 
-        return redirect('configuracoes/varas');
+        return redirect('configuracoes/categorias-de-despesas');
     }
 
     public function destroy($id)
     {
-        $vara = Vara::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $vara = CategoriaDespesa::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
         
         if($vara->delete())
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);

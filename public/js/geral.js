@@ -148,4 +148,27 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
+	$(".editar_categoria_despesa").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../categorias-de-despesas/"+id;
+
+		$('#frm-edit-categoria-despesa #cd_categoria_despesa_cad').val(id);
+		$('#frm-edit-categoria-despesa #nm_categoria_despesa_cad').val(nome);
+
+		$('#frm-edit-categoria-despesa').attr('action', action);						
+
+	    $('#editCategoriaDespesa').modal('show');
+	});
+
+	$(".btn-save-categoria-despesa").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-categoria-despesa").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+
 });

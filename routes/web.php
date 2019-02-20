@@ -30,6 +30,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
+	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
 
 	Route::get('entidade/teste','EntidadeController@index');
 
@@ -37,11 +38,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('tipos-de-servico','TipoServicoController');
 	Route::resource('tipos-de-despesa','TipoDespesaController');
 	Route::resource('varas','VaraController');
+	Route::resource('categorias-de-despesas','CategoriaDespesaController');
 
 	Route::get('entidade/teste','EntidadeController@index');
 
-	Route::resource('areas','AreaController');
-	Route::resource('tipos-de-servico','TipoServicoController');
-	Route::resource('tipos-de-despesa','TipoDespesaController');
 
 });

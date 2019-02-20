@@ -24,7 +24,7 @@ class TipoServicoController extends Controller
     public function index()
     {
 
-        $tipos = TipoServico::where('cd_conta_con', $this->cdContaCon)->get();
+        $tipos = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
         
         return view('configuracoes/tipos-de-servico',['tipos' => $tipos]);
     }

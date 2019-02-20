@@ -268,7 +268,16 @@
                                 <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesas</span></a>
+                                <a href="#" title="Depesas"><span class="menu-item-parent">Despesas</span></a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesas</span></a>
+                                    </li>
+                                     <li>
+                                        <a href="{{ url('configuracoes/categorias-de-despesas') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
+                                    </li>
+                                </ul>
+                               
                             </li>
                             <li>
                                 <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviços</span></a>

@@ -25,7 +25,7 @@ class TipoDespesaController extends Controller
     public function index()
     {
 
-        $tipos = TipoDespesa::with('categoriaDespesa')->where('cd_conta_con', $this->cdContaCon)->get();
+        $tipos = TipoDespesa::with('categoriaDespesa')->where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_despesa_tds')->get();
         $categorias = CategoriaDespesa::where('cd_conta_con', $this->cdContaCon)->get();
 
         return view('configuracoes/tipos-de-despesa',['tipos' => $tipos,'categorias' => $categorias]);
