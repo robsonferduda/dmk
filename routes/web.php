@@ -27,6 +27,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
+	Route::get('configuracoes/varas','VaraController@index');
+
+	Route::get('entidade/teste','EntidadeController@index');
+
+	Route::resource('areas','AreaController');
+	Route::resource('tipos-de-servico','TipoServicoController');
+	Route::resource('tipos-de-despesa','TipoDespesaController');
+	Route::resource('varas','VaraController');
 
 	Route::get('entidade/teste','EntidadeController@index');
 
