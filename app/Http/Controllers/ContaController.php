@@ -15,7 +15,7 @@ class ContaController extends Controller
 
     public function index()
     {
-        return view('conta/novo');
+        return view('home');
     }
 
 }
