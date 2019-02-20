@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -10,12 +11,15 @@ class HomeController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     public function index()
     {
-        return view('home');
+        if(Auth::guest())
+            return view('conta/novo');
+        else
+            return view('home');
     }
 
     public function menu(Request $request, $id)

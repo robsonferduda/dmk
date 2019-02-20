@@ -49,7 +49,7 @@
 
 	</head>
 	
-	<body class="animated fadeInDown" style="background: #161c2c url(../public/img/login.jpg) no-repeat center top; background-size: cover; height: 100%;">
+	<body class="animated fadeInDown" style="background: #161c2c url(../public/img/lawyer.jpg) no-repeat center top; background-size: cover; height: 100%;">
 		<div style="position: relative; top: 25%;">
 			<div id="content" class="container">
 				<div class="row">

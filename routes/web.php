@@ -11,29 +11,37 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index');
+
+Route::get('home', 'ContaController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('configuracao/menu/{id}','HomeController@menu');
-Route::get('configuracao/minify','HomeController@minify');
-Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Route::group(['middleware' => ['web']], function () {
+    
+	Route::get('configuracao/menu/{id}','HomeController@menu');
+	Route::get('configuracao/minify','HomeController@minify');
+	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
-Route::get('clientes','ClienteController@listar');
-Route::get('cliente/novo','ClienteController@novo');
+	Route::get('clientes','ClienteController@listar');
+	Route::get('cliente/novo','ClienteController@novo');
 
-Route::get('configuracoes/areas','AreaController@index');
-Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
-Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
-Route::get('configuracoes/varas','VaraController@index');
+	Route::get('configuracoes/areas','AreaController@index');
+	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
+	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
+	Route::get('configuracoes/varas','VaraController@index');
 
-Route::get('entidade/teste','EntidadeController@index');
+	Route::get('entidade/teste','EntidadeController@index');
 
-Route::resource('areas','AreaController');
-Route::resource('tipos-de-servico','TipoServicoController');
-Route::resource('tipos-de-despesa','TipoDespesaController');
-Route::resource('varas','VaraController');
+	Route::resource('areas','AreaController');
+	Route::resource('tipos-de-servico','TipoServicoController');
+	Route::resource('tipos-de-despesa','TipoDespesaController');
+	Route::resource('varas','VaraController');
 
+	Route::get('entidade/teste','EntidadeController@index');
 
+	Route::resource('areas','AreaController');
+	Route::resource('tipos-de-servico','TipoServicoController');
+	Route::resource('tipos-de-despesa','TipoDespesaController');
 
+});
