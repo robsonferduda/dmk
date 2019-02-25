@@ -117,6 +117,11 @@
             infoTextFiltered: '<span class="label label-warning">Filtrados</span> {0} de {1}',
             infoTextEmpty: 'Não há registros',
             filterPlaceHolder: 'Filtrar Cidades',
+            moveSelectedLabel: 'Mover Cidades Selecionadas',
+            moveAllLabel: 'Mover Todas Cidades',
+            removeSelectedLabel: 'Remover Cidades Selecionadas',
+            removeAllLabel: 'Remover Todas Cidades',
+
             //preserveSelectionOnMove: 'moved',
             moveOnSelect: false,
             //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'

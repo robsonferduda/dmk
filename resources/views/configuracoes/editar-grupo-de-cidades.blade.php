@@ -121,6 +121,10 @@
             infoTextEmpty: 'Não há registros',
             filterPlaceHolder: 'Filtrar Cidades',
             preserveSelectionOnMove: 'moved',
+            moveSelectedLabel: 'Mover Cidades Selecionadas',
+            moveAllLabel: 'Mover Todas Cidades',
+            removeSelectedLabel: 'Remover Cidades Selecionadas',
+            removeAllLabel: 'Remover Todas Cidades',
             moveOnSelect: false,
             //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'
         });
