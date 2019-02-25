@@ -32,17 +32,15 @@
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr>
-                                    <th style="width: 10%;">Código</th>
-                                    <th style="width: 75%;">Área</th>
+                                <tr>                                 
+                                    <th style="width: 85%;">Área</th>
                                     <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach(App\AreaDireito::all() as $area)
+                                @foreach($areas as $area)
                                     <tr>
-                                        <td data-id="{{ $area->cd_area_direito_ado }}">{{ $area->cd_area_direito_ado }}</td>
-                                        <td data-descricao="{{ $area->dc_area_direito_ado }}">{{ $area->dc_area_direito_ado }}</td>
+                                        <td data-id="{{ $area->cd_area_direito_ado }}" data-descricao="{{ $area->dc_area_direito_ado }}">{{ $area->dc_area_direito_ado }}</td>
                                         <td>
                                             <button class="btn btn-primary btn-xs editar_area" style="width: 48%;" href=""><i class="fa fa-trash"></i> Editar</button>
                                             <button data-url="../areas/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>

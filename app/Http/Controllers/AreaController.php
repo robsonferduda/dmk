@@ -16,11 +16,15 @@ class AreaController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->cdContaCon = 1;
     }
 
     public function index()
     {
-        return view('configuracoes/areas');
+
+        $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
+        return view('configuracoes/areas',['areas' => $areas]);
+        
     }
 
     public function show($id)
@@ -34,6 +38,9 @@ class AreaController extends Controller
     {
 
         $area = new AreaDireito();
+
+        $request->merge(['cd_conta_con' => $this->cdContaCon]);
+        
         $area->fill($request->all());
 
         if($area->saveOrFail())
@@ -48,6 +55,9 @@ class AreaController extends Controller
     public function update(Request $request,$id)
     {
         $area = AreaDireito::findOrFail($id);
+
+        $request->merge(['cd_conta_con' => $this->cdContaCon]);
+
         $area->fill($request->all());
 
         if($area->saveOrFail())
@@ -60,7 +70,7 @@ class AreaController extends Controller
 
     public function destroy($id)
     {
-        $area = AreaDireito::findOrFail($id);
+        $area = AreaDireito::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
         
         if($area->delete())
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
