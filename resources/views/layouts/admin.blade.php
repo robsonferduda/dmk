@@ -227,7 +227,7 @@
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('usuarios') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                         </ul>   
                     </li>

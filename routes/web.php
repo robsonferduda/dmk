@@ -32,6 +32,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/varas','VaraController@index');
 	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
+	Route::get('usuarios','UsuarioController@index');
 	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
 	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
 	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
