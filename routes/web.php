@@ -31,6 +31,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
 	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
+	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
+	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
+	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
+	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
+
 
 	Route::get('entidade/teste','EntidadeController@index');
 
@@ -39,6 +44,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('tipos-de-despesa','TipoDespesaController');
 	Route::resource('varas','VaraController');
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
+	Route::resource('grupos-de-cidades','GrupoCidadeController');
 
 	Route::get('entidade/teste','EntidadeController@index');
 

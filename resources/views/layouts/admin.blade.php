@@ -271,13 +271,17 @@
                                 <a href="#" title="Depesas"><span class="menu-item-parent">Despesas</span></a>
                                 <ul>
                                     <li>
-                                        <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesas</span></a>
-                                    </li>
-                                     <li>
                                         <a href="{{ url('configuracoes/categorias-de-despesas') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesas</span></a>
+                                    </li>
+                                    
                                 </ul>
                                
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/grupos-de-cidades') }}" title="Tipos de Serviço"><span class="menu-item-parent">Grupos de Cidades</span></a>
                             </li>
                             <li>
                                 <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviços</span></a>
@@ -367,7 +371,7 @@
 
         <script src="{{ asset('js/geral.js') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>
-        @yield('script')
+        
         <!-- IMPORTANT: APP CONFIG -->
         <script src="{{ asset('js/app.config.js') }}"></script>
 
@@ -387,6 +391,8 @@
         <script src="{{ asset('js/plugin/datatables/dataTables.bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
         <script src="{{ asset('js/plugin/select2/select2.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
+        @yield('script')
         <script>
         
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
