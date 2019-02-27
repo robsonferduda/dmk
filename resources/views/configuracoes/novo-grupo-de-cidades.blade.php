@@ -3,7 +3,7 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Configurações</a></li>
+        <li><a href="#">Configurações</a></li>
         <li>Novo Grupo de Cidades</li>
     </ol>
 </div>

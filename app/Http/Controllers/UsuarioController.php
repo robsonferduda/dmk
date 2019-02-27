@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Nivel;
+use App\Entidade;
+use App\Identificacao;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Laracasts\Flash\Flash;
 
 class UsuarioController extends Controller
@@ -23,8 +27,17 @@ class UsuarioController extends Controller
     public function index()
     {
 
-        $usuarios = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();   
+        $usuarios = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
+        
         return view('usuario/usuarios',['usuarios' => $usuarios]);
+    }
+
+    public function novo(){
+
+        $niveis   = Nivel::orderBy('dc_nivel_niv')->get();
+
+        return view('usuario/novo',['niveis' => $niveis]);
+
     }
 
     public function show($id)
@@ -33,8 +46,52 @@ class UsuarioController extends Controller
         return response()->json($vara);  
     }
 
-    public function store(UsuarioRequest $request)
+    public function store(Request $request)
     {
+
+        DB::beginTransaction();
+        
+        $entidade = Entidade::create([
+            'cd_conta_con'         => $this->cdContaCon,
+            'cd_tipo_entidade_tpe' => \TipoEntidade::USUARIO
+        ]);
+
+        $request->merge(['cd_conta_con' => $this->cdContaCon]);
+
+        if($entidade){
+
+            $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
+            $usuario = new user();
+
+            $usuario->fill($request->all());
+           
+            if($usuario->saveOrFail()){
+
+                if(!empty($request->oab)){
+                    
+                    $identificacao = Identificacao::create([
+                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->cdContaCon, 
+                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
+                        'nu_identificacao_ide'      => $request->oab
+                    ]);
+
+                    dd($identificacao);
+
+                }
+
+
+            }else{
+                dd($usuario);
+            }
+
+        }
+
+        dd($entidade);
+
+        DB::rollBack();
+        
+
         $vara = new Usuario();
  
         $request->merge(['cd_conta_con' => $this->cdContaCon]);

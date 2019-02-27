@@ -3,15 +3,15 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Configurações</a></li>
-        <li>Novo Grupo de Cidades</li>
+        <li><a href="#">Configurações</a></li>
+        <li>Editar Grupo de Cidades</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-8 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Configurações <span>> Novo Grupo de Cidades</span>
+                <i class="fa-fw fa fa-group"></i> Configurações <span>> Editar Grupo de Cidades</span>
             </h1>
         </div>
     </div>
@@ -40,7 +40,7 @@
                 -->
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>Cadastro de Grupo de Cidades </h2>             
+                    <h2>Edição de Grupo de Cidades </h2>             
                 </header>
 
                 <!-- widget div-->
