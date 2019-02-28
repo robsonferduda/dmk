@@ -63,12 +63,12 @@
                                 <div class="row">
                     
                                     <section class="col col-6">
-                                        <label class="label">Nome</label>
+                                        <label class="label">Nome<sup class="text-danger">*</sup></label>
                                         <label class="input">
-                                            <input type="text" name="name" placeholder="Nome">
+                                            <input required type="text" name="name" placeholder="Nome">
                                         </label>
                                     </section>
-                                     <section class="col col-3">
+                                    <section class="col col-3">
                                         <label class="label">Perfil</label>
                                         <label class="select"> 
                                             <select name="cd_nivel_niv">
@@ -117,9 +117,9 @@
                             <fieldset>
                                 <div class="row">
                                    <section class="col col-6">
-                                        <label class="label">Email</label>
+                                        <label class="label">Email<sup class="text-danger">* Utilizado na autenticação</sup></label>
                                         <label class="input">
-                                            <input type="text" name="email" placeholder="E-mail">
+                                            <input required type="text" name="email" placeholder="E-mail">
                                         </label>
                                     </section>
                                     <section class="col col-3">
@@ -151,9 +151,9 @@
 
                                 <div class="row">
                                     <section class="col col-3">
-                                        <label class="label"></label>
+                                        <label class="label">Senha<sup class="text-danger">*</sup></label>
                                         <label class="input">
-                                            <input type="password" name="password" placeholder="Senha">
+                                            <input required type="password" name="password" placeholder="Senha">
                                         </label>
                                     </section>                                    
                                 </div> 
@@ -188,10 +188,115 @@
                                 </div> 
                             </fieldset>
 
+                            <header>
+                                <i class="fa fa-building"></i> Endereço 
+                            </header>
+
+                            <fieldset>
+
+                                <div class="row">
+                    
+                                    <section class="col col-3">
+                                       
+                                        <label class="label" >Estado</label>          
+                                        <select  id="estado" name="cd_estado_est" class="select2">
+                                            <option selected value="">Selecione</option>
+                                            @foreach($estados as $estado)
+                                                <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                            @endforeach
+
+                                        </select> 
+                                    </section>
+                                    <section class="col col-3">
+                                       <label class="label" >Cidade</label>          
+                                        <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
+                                           <option selected value="">Selecione o Estado</option>
+                                        </select> 
+                                    </section>  
+                                    <section class="col col-4">
+                                        <label class="label">Bairro</label>
+                                        <label class="input">
+                                            <input type="text" name="nm_bairro_ede" placeholder="Bairro">
+                                        </label>
+                                    </section>      
+                                     <section class="col col-2">
+                                        <label class="label">CEP</label>
+                                        <label class="input">
+                                            <input type="text" name="nu_cep_ede" placeholder="CEP">
+                                        </label>
+                                    </section>                                  
+                                </div> 
+                                
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="label">Logradouro</label>
+                                        <label class="input">
+                                            <input type="text" name="dc_logradouro_ede" placeholder="Logradouro">
+                                        </label>
+                                    </section>
+                                    <section class="col col-2">
+                                        <label class="label">Nº</label>
+                                        <label class="input">
+                                            <input type="text" name="nu_numero_ede" placeholder="Nº">
+                                        </label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">Complemento</label>
+                                        <label class="input">
+                                            <input type="text" name="dc_complemento_ede" placeholder="Complemento">
+                                        </label>
+                                    </section>
+                                </div>
+                            </fieldset>
+
+                            <header>
+                                <i class="fa fa-bank"></i> Dados Bancários 
+                            </header>
+
+                            <fieldset>
+
+                                <div class="row">
+                                    
+                                    <section class="col col-4">
+                                       
+                                        <label class="label" >Banco</label>          
+                                        <select  id="estado" name="cd_estado_est" class="select2">
+                                            <option selected value="">Selecione</option>
+                                            @foreach($bancos as $banco)
+                                                <option value="{{$banco->cd_banco_ban}}">{{ $banco->cd_banco_ban}} - {{ $banco->nm_banco_ban}}</option>
+                                            @endforeach
+
+                                        </select> 
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">Agência</label>
+                                        <label class="input">
+                                            <input type="text" name="oab" placeholder="Agência">
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">Tipo de Conta</label>
+                                        <label class="select"> 
+                                            <select name="cd_nivel_niv">
+                                                <option value="" >Selecione</option>
+                                                @foreach($niveis as $nivel)
+                                                    <option value="{{ $nivel->cd_nivel_niv }}" >{{ $nivel->dc_nivel_niv }}</option>
+                                                @endforeach
+                                              
+                                            </select> <i></i> </label>
+                                    </section>
+                                    <section class="col col-2">
+                                        <label class="label">Conta</label>
+                                        <label class="input">
+                                            <input type="text" name="rg" placeholder="Conta">
+                                        </label>
+                                    </section>
+                                </div> 
+                            </fieldset>
                             
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Validate Form
+                                    Cadastrar
                                 </button>
                             </footer>
                         {!! Form::close() !!}                      
@@ -207,4 +312,51 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+    $(document).ready(function() {
+       
+        $("#estado").change(function(){
+
+            estado = $(this).val();
+
+            $.ajax(
+            {
+                url: '../cidades-por-estado/'+estado,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $('#cidade').empty();
+                    $('#cidade').append('<option selected value="">Carregando...</option>');
+                    $('#cidade').prop( "disabled", true );
+
+                },
+                success: function(response)
+                {
+                    $('#cidade').empty();
+                    $('#cidade').append('<option selected value="">Selecione</option>');
+                    $.each(response,function(index,element){
+
+                        $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');
+                        
+                    });       
+                    $('#cidade').trigger('change');     
+                    $('#cidade').prop( "disabled", false );        
+                },
+                error: function(response)
+                {
+                    //console.log(response);
+                }
+            });
+
+        });
+
+        $('#limparCidades').click(function(){
+            duallistbox.empty();
+            duallistbox.bootstrapDualListbox('refresh');
+        })
+
+    });
+</script>
 @endsection

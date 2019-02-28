@@ -224,7 +224,7 @@
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
                         <ul>
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('usuarios/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
                                 <a href="{{ url('usuarios') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>

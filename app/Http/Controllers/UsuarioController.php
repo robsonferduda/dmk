@@ -8,6 +8,11 @@ use App\Entidade;
 use App\Identificacao;
 use App\EstadoCivil;
 use App\TipoFone;
+use App\Fone;
+use App\Estado;
+use App\Cidade;
+use App\Endereco;
+use App\Banco;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -39,8 +44,10 @@ class UsuarioController extends Controller
         $niveis      = Nivel::orderBy('dc_nivel_niv')->get();
         $estadoCivis = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
         $tiposFone   = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
+        $estados     = Estado::orderBy('nm_estado_est')->get();
+        $bancos      = Banco::orderBy('cd_banco_ban')->get();
 
-        return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone]);
+        return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos]);
 
     }
 
@@ -129,6 +136,36 @@ class UsuarioController extends Controller
 
                 }
 
+                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
+                    
+                    $fone = Fone::create([
+                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->cdContaCon, 
+                        'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
+                        'nu_fone_fon'               => $request->nu_fone_fon
+                    ]);
+
+                    if(!$fone){
+                        DB::rollBack();
+                        Flash::error('Erro ao inserir dados');
+                        return redirect('usuarios');
+                    }   
+
+                }
+
+                if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
+                    
+                    $endereco = new Endereco();
+
+                    $endereco->fill($request->all());
+
+                    if(!$endereco->saveOrFail()){
+                        DB::rollBack();
+                        Flash::error('Erro ao inserir dados');
+                        return redirect('usuarios');
+                    }   
+
+                }
 
             }else{
                 
