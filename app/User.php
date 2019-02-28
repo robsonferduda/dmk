@@ -18,7 +18,8 @@ class User extends Authenticatable
         'cd_nivel_niv',
         'cd_entidade_ete',
         'data_nascimento',
-        'data_admissao'
+        'data_admissao',
+        'cd_estado_civil_esc'
     ];
 
     

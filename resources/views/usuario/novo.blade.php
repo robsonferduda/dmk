@@ -68,17 +68,8 @@
                                             <input type="text" name="name" placeholder="Nome">
                                         </label>
                                     </section>
-                                    <section class="col col-6">
-                                        <label class="label">Email</label>
-                                        <label class="input">
-                                            <input type="text" name="email" placeholder="E-mail">
-                                        </label>
-                                    </section>
-                                </div> 
-
-                                <div class="row ">
-                                   <section class="col col-3">
-                                        <label class="label">Nível</label>
+                                     <section class="col col-3">
+                                        <label class="label">Perfil</label>
                                         <label class="select"> 
                                             <select name="cd_nivel_niv">
                                                 <option value="" >Selecione</option>
@@ -94,15 +85,78 @@
                                             <input type="text" name="data_nascimento"  placeholder="Data de Nascimento">
                                         </label>
                                     </section>
+                                    
+                                </div> 
+
+                                <div class="row ">                                  
                                     <section class="col col-3">
                                         <label class="label">Data de Admissão</label>
                                         <label class="input">
                                             <input type="text" name="data_admissao" placeholder="Data de Admissão">
                                         </label>
                                     </section>
+                                    <section class="col col-3">
+                                        <label class="label">Estado Civil</label>
+                                        <label class="select"> 
+                                            <select name="cd_estado_civil_esc">
+                                                <option value="" >Selecione</option>
+                                                @foreach($estadoCivis as $estadoCivil)
+                                                    <option value="{{ $estadoCivil->cd_estado_civil_esc }}" >{{ $estadoCivil->nm_estado_civil_esc }}</option>
+                                                @endforeach
+                                              
+                                            </select> <i></i> </label>
+                                    </section>
                                                                         
                                 </div>                                   
                                 
+                            </fieldset>
+
+                            <header>
+                                <i class="fa fa-phone"></i> Contatos
+                            </header>
+                            <fieldset>
+                                <div class="row">
+                                   <section class="col col-6">
+                                        <label class="label">Email</label>
+                                        <label class="input">
+                                            <input type="text" name="email" placeholder="E-mail">
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">Tipo do Telefone</label>
+                                        <label class="select"> 
+                                            <select name="cd_tipo_fone_tfo">
+                                                <option value="" >Selecione</option>
+                                                @foreach($tiposFone as $tipoFone)
+                                                    <option value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                @endforeach
+                                              
+                                            </select> <i></i> </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">Telefone</label>
+                                        <label class="input">
+                                            <input type="text" name="nu_fone_fon" placeholder="XXXXXX">
+                                        </label>
+                                    </section>
+                                </div>
+                             
+                            </fieldset>
+
+                            <header>
+                                <i class="fa fa-key"></i> Autenticação 
+                            </header>
+
+                            <fieldset>
+
+                                <div class="row">
+                                    <section class="col col-3">
+                                        <label class="label"></label>
+                                        <label class="input">
+                                            <input type="password" name="password" placeholder="Senha">
+                                        </label>
+                                    </section>                                    
+                                </div> 
                             </fieldset>
 
                             <header>
@@ -125,44 +179,16 @@
                                             <input type="text" name="cpf" placeholder="CPF">
                                         </label>
                                     </section>
+                                    <section class="col col-3">
+                                        <label class="label">RG</label>
+                                        <label class="input">
+                                            <input type="text" name="rg" placeholder="RG">
+                                        </label>
+                                    </section>
                                 </div> 
                             </fieldset>
 
-                            <header>
-                                <i class="fa fa-phone"></i> Contatos
-                            </header>
-                            <fieldset>
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <input type="text" name="firstname" placeholder="First name">
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <input type="text" name="lastname" placeholder="Last name">
-                                        </label>
-                                    </section>
-                                </div>
-                                
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="select">
-                                            <select name="gender">
-                                                <option value="0" selected="" disabled="">Gender</option>
-                                                <option value="1">Male</option>
-                                                <option value="2">Female</option>
-                                                <option value="3">Prefer not to answer</option>
-                                            </select> <i></i> </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="input"> <i class="icon-append fa fa-calendar"></i>
-                                            <input type="text" name="request" placeholder="Request activation on" class="datepicker hasDatepicker" data-dateformat="dd/mm/yy" id="dp1549825195233">
-                                        </label>
-                                    </section>
-                                </div>  
-
-                            </fieldset>
+                            
                             <footer>
                                 <button type="submit" class="btn btn-primary">
                                     Validate Form

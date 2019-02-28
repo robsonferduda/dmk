@@ -6,6 +6,8 @@ use App\User;
 use App\Nivel;
 use App\Entidade;
 use App\Identificacao;
+use App\EstadoCivil;
+use App\TipoFone;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -34,9 +36,11 @@ class UsuarioController extends Controller
 
     public function novo(){
 
-        $niveis   = Nivel::orderBy('dc_nivel_niv')->get();
+        $niveis      = Nivel::orderBy('dc_nivel_niv')->get();
+        $estadoCivis = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
+        $tiposFone   = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
 
-        return view('usuario/novo',['niveis' => $niveis]);
+        return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone]);
 
     }
 
@@ -50,7 +54,7 @@ class UsuarioController extends Controller
     {
 
         DB::beginTransaction();
-        
+
         $entidade = Entidade::create([
             'cd_conta_con'         => $this->cdContaCon,
             'cd_tipo_entidade_tpe' => \TipoEntidade::USUARIO
@@ -60,7 +64,12 @@ class UsuarioController extends Controller
 
         if($entidade){
 
+            $request->merge(['password' => \Hash::make($request->password)]);
+
+            $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
+            $request->merge(['data_admissao'   => date('Y-m-d',strtotime(str_replace('/','-',$request->data_admissao)))]);
             $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
+
             $usuario = new user();
 
             $usuario->fill($request->all());
@@ -76,34 +85,69 @@ class UsuarioController extends Controller
                         'nu_identificacao_ide'      => $request->oab
                     ]);
 
-                    dd($identificacao);
+                    if(!$identificacao){
+                        DB::rollBack();
+                        Flash::error('Erro ao inserir dados');
+                        return redirect('usuarios');
+                    }                    
+
+                }
+
+                $request->merge(['cpf' => str_replace(array('.','-'),'',$request->cpf)]);
+
+                if(!empty($request->cpf)){
+                    
+                    $identificacao = Identificacao::create([
+                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->cdContaCon, 
+                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::CPF,
+                        'nu_identificacao_ide'      => $request->cpf
+                    ]);
+
+                    if(!$identificacao){
+                        DB::rollBack();
+                        Flash::error('Erro ao inserir dados');
+                        return redirect('usuarios');
+                    }   
+
+                }
+
+                if(!empty($request->rg)){
+                    
+                    $identificacao = Identificacao::create([
+                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->cdContaCon, 
+                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
+                        'nu_identificacao_ide'      => $request->rg
+                    ]);
+
+                    if(!$identificacao){
+                        DB::rollBack();
+                        Flash::error('Erro ao inserir dados');
+                        return redirect('usuarios');
+                    }   
 
                 }
 
 
             }else{
-                dd($usuario);
+                
+                DB::rollBack();
+                Flash::error('Erro ao inserir dados');
+                return redirect('usuarios');
+                  
             }
 
+        }else{
+
+            DB::rollBack();
+            Flash::error('Erro ao inserir dados');
+            return redirect('usuarios');
         }
 
-        dd($entidade);
-
-        DB::rollBack();
-        
-
-        $vara = new Usuario();
- 
-        $request->merge(['cd_conta_con' => $this->cdContaCon]);
-
-        $vara->fill($request->all());
-
-        if($vara->saveOrFail())
-        	Flash::success('Dados inseridos com sucesso');
-        else
-			Flash::error('Erro ao inserir dados');
-        
-        return redirect('configuracoes/usuarios');
+        DB::commit();
+        Flash::success('Dados inseridos com sucesso');
+        return redirect('usuarios');
 
     }
 
