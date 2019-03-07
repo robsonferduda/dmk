@@ -11,7 +11,10 @@ class Entidade extends Model
 	
     protected $table = 'entidade_ete';
     protected $primaryKey = 'cd_entidade_ete';
-
+	protected $fillable = [
+	    					'cd_conta_con',
+                            'cd_tipo_entidade_tpe'
+    					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 }

@@ -211,6 +211,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'TipoEntidade' => App\Enums\TipoEntidade::class,
+        'TipoIdentificacao' => App\Enums\TipoIdentificacao::class
 
     ],
 
