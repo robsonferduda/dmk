@@ -138,11 +138,11 @@
 			// Validation
 			$(function() {
 				// Validation
-				$("#smart-form-register").validate({
+				$("#frm-add-conta").validate({
 
 					// Rules for form validation
 					rules : {
-						username : {
+						nm_razao_social_con : {
 							required : true
 						},
 						email : {
@@ -167,7 +167,7 @@
 
 					// Messages for form validation
 					messages : {
-						username : {
+						nm_razao_social_con : {
 							required : 'Digite seu nome'
 						},
 						email : {

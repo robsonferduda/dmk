@@ -10,7 +10,9 @@ class Conta extends Model
 	use SoftDeletes;
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
-
+    protected $fillable = [
+    						'nm_razao_social_con'
+    					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 }

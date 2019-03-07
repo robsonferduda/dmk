@@ -180,7 +180,7 @@
                     <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
                         <img src="{{ asset('img/users/user.png') }}" alt="Usuário" /> 
                         <span>
-                            {{ Auth::user()->name }} 
+                            {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
                         </span>
                         <i class="fa fa-angle-down"></i>
                     </a> 

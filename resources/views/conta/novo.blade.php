@@ -3,21 +3,34 @@
 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
 						<div class="well no-padding">
 
-							<form action="php/demo-register.php" id="smart-form-register" class="smart-form client-form">
+
+
+							{!! Form::open(['id' => 'frm-add-conta', 'url' => 'contas', 'class' => 'smart-form client-form']) !!}
 								<header>
 									<strong>Cadastre-se</strong>
 								</header>
 
 								<fieldset>
+
+									<section>
+										<div class="text-danger">
+											@if ($errors->any())
+												@foreach($errors->all() as $error)
+													{!! $error !!}
+												@endforeach
+											@endif
+										</div>
+									</section>
+
 									<section>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<input type="text" name="username" placeholder="Nome">
+											<input type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
 											<b class="tooltip tooltip-bottom-right">Nome Completo</b> </label>
 									</section>
 
 									<section>
 										<label class="input"> <i class="icon-append fa fa-envelope"></i>
-											<input type="email" name="email" placeholder="Email">
+											<input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
 											<b class="tooltip tooltip-bottom-right">Informe seu email</b> </label>
 									</section>
 
@@ -46,7 +59,7 @@
 										<i class="fa fa-check"></i> Registrar
 									</button>
 								</footer>
-							</form>
+							{!! Form::close() !!} 
 
 						</div>
 						

@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'ContaController@index');
+Route::resource('contas','ContaController');
 
 Auth::routes();
 
