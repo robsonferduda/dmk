@@ -1,5 +1,14 @@
 $(document).ready(function() {
-			
+
+
+	/** ======================== Masks ========================   **/
+
+	$('.data_nascimento').mask('00/00/0000');
+	$('.data_admissao').mask('00/00/0000');
+
+
+	/** =======================================================   **/
+
 	$(".tipo-pessoa").click(function(){
 	    if($('input:radio[name=tipo-pessoa]:checked').val() == 1){
 	        $(".box-pessoa-fisica").css('display','block');

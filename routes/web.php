@@ -35,10 +35,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/novo','UsuarioController@novo');
+	Route::get('usuarios/editar/{cdUsuario}','UsuarioController@editar');
 	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
 	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
 	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
-
 
 	Route::get('entidade/teste','EntidadeController@index');
 
@@ -49,8 +49,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('usuarios','UsuarioController');
-
-	Route::get('entidade/teste','EntidadeController@index');
 
 
 });

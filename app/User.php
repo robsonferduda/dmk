@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,SoftDeletes;
 
+    protected $dates = ['deleted_at'];
     protected $fillable = [
         'id',
         'name',
@@ -27,5 +29,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-        
+    public function entidade()
+    {
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
+    }
+     
 }
