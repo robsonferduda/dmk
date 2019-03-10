@@ -19,7 +19,7 @@
                 <h1>
                     <span class="semi-bold">Bem-vindo <strong>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}!</strong> </span>
                 </h1>       
-                @if(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->cd_tipo_pessoa_tpp != null)
+                @if(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->cd_tipo_pessoa_tpp == null)
                     <div class="alert alert-warning fade in">
                         <button class="close" data-dismiss="alert">×</button>
                             <i class="fa-fw fa fa-warning"></i><strong> Atenção!</strong> Seu cadastro está incompleto, <a href="{{ url('conta/atualizar/'.\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con) }}">clique aqui</a> para atualizar seus dados!
