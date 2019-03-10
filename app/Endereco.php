@@ -25,4 +25,9 @@ class Endereco extends Model
     					  ];
 
     public $timestamps = true;
+
+    public function cidade()
+    {
+        return $this->hasOne('App\Cidade','cd_cidade_cde', 'cd_cidade_cde');
+    }
 }

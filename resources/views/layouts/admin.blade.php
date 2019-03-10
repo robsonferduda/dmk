@@ -368,6 +368,7 @@
                 document.write('<script src="js/libs/jquery-ui.min.js"><\/script>');
             }
         </script>
+        <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
 
         <script src="{{ asset('js/geral.js') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>

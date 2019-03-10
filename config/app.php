@@ -212,7 +212,8 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'TipoEntidade' => App\Enums\TipoEntidade::class,
-        'TipoIdentificacao' => App\Enums\TipoIdentificacao::class
+        'TipoIdentificacao' => App\Enums\TipoIdentificacao::class,
+        'TipoFone' => App\Enums\TipoFone::class
 
     ],
 
