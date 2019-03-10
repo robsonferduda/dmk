@@ -26,6 +26,20 @@ class ContaController extends Controller
         return view('home');
     }
 
+    public function detalhes($id)
+    {
+        //Verifica se o usuário logado é o mesmo que requisitou os dados
+        if(Auth::user()->cd_conta_con != $id){ 
+            return redirect('erro-permissao');
+        }
+
+        $conta = Conta::where('cd_conta_con',$id)->first();
+        $usuarios = User::where('cd_conta_con',$id)->get();
+
+        return view('conta/detalhes',['conta' => $conta, 'usuarios' => $usuarios]);
+
+    }
+
     public function store(ContaRequest $request)
     {
 

@@ -190,7 +190,7 @@
             <nav>
                 <ul>
                     <li class="">
-                        <a href="index.html" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
+                        <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
                     </li>
                     <li class="menu {{ (Session::get('menu_pai') == 'cliente') ? 'open' : '' }}">
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>

@@ -15,4 +15,9 @@ class Conta extends Model
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
+
+    public function tipoPessoa()
+    {
+        return $this->hasOne('App\TipoPessoa','cd_tipo_pessoa_tpp', 'cd_tipo_pessoa_tpp');
+    }
 }
