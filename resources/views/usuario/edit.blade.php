@@ -56,7 +56,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
                         
-                        {!! Form::open(['id' => 'frm-add-usuario', 'url' => 'usuarios', 'class' => 'smart-form','method' => 'PUT']) !!}
+                        {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['usuarios',$usuario->id], 'class' => 'smart-form','method' => 'PUT']) !!}
                             <header>
                                 Dados Básicos
                             </header>
@@ -146,7 +146,7 @@
                              
                             </fieldset>
 
-                            <header>
+                           <!--  <header>
                                 <i class="fa fa-key"></i> Autenticação 
                             </header>
 
@@ -160,7 +160,7 @@
                                         </label>
                                     </section>                                    
                                 </div> 
-                            </fieldset>
+                            </fieldset> -->
 
                             <header>
                                 <i class="fa fa-file-o"></i> Documentos 
@@ -179,7 +179,7 @@
                                     <section class="col col-3">
                                         <label class="label">CPF</label>
                                         <label class="input">
-                                            <input type="text" name="cpf" placeholder="CPF" value="{{old('cpf') ? old('cpf') : $usuario->entidade->cpf->nu_identificacao_ide}}">
+                                            <input type="text" name="cpf" class="cpf" placeholder="CPF" value="{{old('cpf') ? old('cpf') : $usuario->entidade->cpf->nu_identificacao_ide}}">
                                         </label>
                                     </section>
                                     <section class="col col-3">
@@ -300,7 +300,7 @@
                             
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    Cadastrar
+                                    Atualizar
                                 </button>
                             </footer>
                         {!! Form::close() !!}                      
