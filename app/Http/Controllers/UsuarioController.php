@@ -266,6 +266,7 @@ class UsuarioController extends Controller
         $usuario  = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
+        $request->merge(['cd_entidade_ete' => $usuario->cd_entidade_ete]);
 
         if($usuario->cd_entidade_ete){
 
