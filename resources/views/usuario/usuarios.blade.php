@@ -33,8 +33,9 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 45%;">Usuário</th>
-                                    <th style="width: 40%;">E-mail</th>
+                                    <th style="width: 40%;">Usuário</th>
+                                    <th style="width: 30%;">E-mail</th>
+                                    <th style="width: 15%;">Perfil</th>
                                    
                                     <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
@@ -44,6 +45,7 @@
                                     <tr>                                    
                                         <td data-id="{{ $usuario->id }}" data-nome="{{ $usuario->name }}">{{ $usuario->name }}</td>
                                         <td data-email="{{ $usuario->email }}">{{ $usuario->email }}</td>
+                                        <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td>
                                         <td>
                                             <a class="btn btn-primary btn-xs editar_vara" style="width: 48%;" href="{{ url('usuarios/editar/'.$usuario->id) }}"><i class="fa fa-edit"></i> Editar</a>
                                             <button data-url="usuarios/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
