@@ -72,9 +72,9 @@
                                         </label>
                                     </section>
                                     <section class="col col-3">
-                                        <label class="label">Perfil</label>
+                                        <label class="label">Perfil<sup class="text-danger">*</sup></label>
                                         <label class="select"> 
-                                            <select name="cd_nivel_niv">
+                                            <select required name="cd_nivel_niv">
                                                 <option value="" >Selecione</option>
                                                 @foreach($niveis as $nivel)
                                                     <option {!! (old('cd_nivel_niv') ==  $nivel->cd_nivel_niv ? 'selected' : '' ) !!} value="{{ $nivel->cd_nivel_niv }}" >{{ $nivel->dc_nivel_niv }}</option>
