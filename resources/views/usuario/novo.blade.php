@@ -57,6 +57,8 @@
                     <div class="widget-body no-padding">
                         
                         {!! Form::open(['id' => 'frm-add-usuario', 'url' => 'usuarios', 'class' => 'smart-form']) !!}
+                             <div class="row">
+                            <div  class="col col-6">
                             <header>
                                 Dados Básicos
                             </header>
@@ -113,7 +115,8 @@
                                 </div>                                   
                                 
                             </fieldset>
-
+                        </div>
+                        <div  class="col col-6">
                             <header>
                                 <i class="fa fa-phone"></i> Contatos
                             </header>
@@ -145,6 +148,8 @@
                                 </div>
                              
                             </fieldset>
+                        </div>
+                    </div>
 
                             <header>
                                 <i class="fa fa-key"></i> Autenticação 
