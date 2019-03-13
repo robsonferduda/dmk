@@ -16,10 +16,14 @@
     <div class="row">
         <div class="col-md-12">
             <div class="well">
-                <h1>
+                <h4>
                     <span class="semi-bold">Bem-vindo <strong>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}!</strong> </span>
-                </h1> 
-                <a href="{{ url("conta/detalhes/".\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con) }}">Minha Conta</a>      
+                </h4> 
+                @if(Auth::user()->tipoPerfil()->first()->dc_nivel_niv == 'ADMIN')
+                    <a href="{{ url("conta/detalhes/".\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con) }}">Minha Conta</a>  |
+                @endif
+                <a href="{{ url("usuarios/".Auth::user()->id) }}">Meu Perfil</a>
+                    
                 @if(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->cd_tipo_pessoa_tpp == null)
                     <div class="alert alert-warning fade in">
                         <button class="close" data-dismiss="alert">×</button>

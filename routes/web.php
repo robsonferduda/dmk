@@ -41,6 +41,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
 
 	Route::get('conta/detalhes/{id}','ContaController@detalhes');
+	Route::get('conta/atualizar/{id}','ContaController@editar');
+	Route::post('conta/update','ContaController@update');
+	Route::post('conta/telefone/adicionar','ContaController@adicionarTelefone');
 
 	Route::get('entidade/teste','EntidadeController@index');
 

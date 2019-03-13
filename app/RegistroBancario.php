@@ -25,4 +25,14 @@ class RegistroBancario extends Model
     					  ];
 
     public $timestamps = true;
+
+    public function banco()
+    {
+        return $this->hasOne('App\Banco','cd_banco_ban', 'cd_banco_ban');
+    }
+
+    public function tipoConta()
+    {
+        return $this->hasOne('App\TipoConta','cd_tipo_conta_tcb', 'cd_tipo_conta_tcb');
+    }
 }

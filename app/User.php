@@ -38,5 +38,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Nivel','cd_nivel_niv', 'cd_nivel_niv');
     }
+
+    public function estadoCivil()
+    {
+        return $this->hasOne('App\EstadoCivil','cd_estado_civil_esc', 'cd_estado_civil_esc');
+    }
      
 }

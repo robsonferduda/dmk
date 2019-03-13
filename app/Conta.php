@@ -20,4 +20,14 @@ class Conta extends Model
     {
         return $this->hasOne('App\TipoPessoa','cd_tipo_pessoa_tpp', 'cd_tipo_pessoa_tpp');
     }
+
+    public function entidade()
+    {
+        return $this->hasOne('App\Entidade','cd_conta_con', 'cd_conta_con');
+    }
+
+    public function fone()
+    {
+        return $this->hasOne('App\Fone','cd_conta_con', 'cd_conta_con');
+    }
 }

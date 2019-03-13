@@ -104,8 +104,8 @@ class UsuarioController extends Controller
 
     public function show($id)
     {
-        $vara = Usuario::findOrFail($id);     
-        return response()->json($vara);  
+        $usuario = User::findOrFail($id); 
+        return view('usuario/perfil', ['usuario' => $usuario]);  
     }
 
     public function store(UsuarioRequest $request)

@@ -22,4 +22,9 @@ class Fone extends Model
     					  ];
 
     public $timestamps = true;
+
+    public function tipo()
+    {
+        return $this->hasOne('App\TipoFone','cd_tipo_fone_tfo', 'cd_tipo_fone_tfo');
+    }
 }

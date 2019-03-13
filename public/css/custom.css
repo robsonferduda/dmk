@@ -6,11 +6,9 @@
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 .select2-container .select2-choice, .select2-selection{padding: 0 8px;}
 .error{color:#bb2020;}
-
 .profile 
 {
     min-height: 355px;
-    display: inline-block;
     }
 figcaption.ratings
 {
