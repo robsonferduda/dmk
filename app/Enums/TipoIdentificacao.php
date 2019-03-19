@@ -12,5 +12,6 @@ final class TipoIdentificacao extends Enum
     const PASSAPORTE = 4;
     const INSCRICAO_ESTADUAL = 5;
     const INSCRICAO_MUNICIPAL = 6;
+    const CNPJ = 7;
 }
 

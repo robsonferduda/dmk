@@ -2,7 +2,10 @@
 .modal_top_alto{margin-top: 150px;}
 .box-pessoa-fisica{display: none;}
 .box-pessoa-juridica{display: block;}
+.boxBtnTopo > a{margin-top: 10px; margin-left: 5px;}
+.boxBtnTopo > button{margin-top: 10px; margin-left: 5px;}
 .marginTop10{margin-top: 10px;}
+.marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 .select2-container .select2-choice, .select2-selection{padding: 0 8px;}
 .error{color:#bb2020;}

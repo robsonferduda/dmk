@@ -42,8 +42,10 @@ class EntidadeController extends Controller
         $cliente->cd_entidade_ete = 3;
         $cliente->cd_tipo_pessoa_tpp = 1;
         $cliente->nu_cliente_cli = 1;
-        $cliente->nm_fantasia_cli = "Deborah DMK";
-        $cliente->nm_razao_social_cli = "DMK";
+        $cliente->nm_fantasia_cli = "";
+        $cliente->nm_razao_social_cli = "Cliente ".rand(10, 50);
+        $cliente->fl_ativo_cli = "S";
+        $cliente->save();
 
 
         $area = new AreaDireito();
