@@ -203,8 +203,8 @@
                             </fieldset>
                         </div>                       
                     </div>
-
-                         
+                    <div class="row">
+                        <div  class="col col-6">                         
 
                             <header>
                                 <i class="fa fa-building"></i> Endereço 
@@ -214,7 +214,7 @@
 
                                 <div class="row">
                     
-                                    <section class="col col-3">
+                                    <section class="col col-6">
                                        
                                         <label class="label" >Estado</label>          
                                         <select  id="estado" name="cd_estado_est" class="select2">
@@ -225,20 +225,22 @@
 
                                         </select> 
                                     </section>
-                                    <section class="col col-3">
+                                    <section class="col col-6">
                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                        <label class="label" >Cidade</label>          
                                         <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
                                            <option selected value="">Selecione o Estado</option>
                                         </select> 
                                     </section>  
-                                    <section class="col col-4">
+                                </div>
+                                <div class="row">
+                                    <section class="col col-6">
                                         <label class="label">Bairro</label>
                                         <label class="input">
                                             <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede')}}">
                                         </label>
                                     </section>      
-                                     <section class="col col-2">
+                                     <section class="col col-6">
                                         <label class="label">CEP</label>
                                         <label class="input">
                                             <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
@@ -247,19 +249,21 @@
                                 </div> 
                                 
                                 <div class="row">
-                                    <section class="col col-6">
+                                    <section class="col col-sm-12">
                                         <label class="label">Logradouro</label>
                                         <label class="input">
                                             <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede')}}">
                                         </label>
                                     </section>
-                                    <section class="col col-2">
+                                </div>
+                                <div class="row">
+                                    <section class="col col-3">
                                         <label class="label">Nº</label>
                                         <label class="input">
                                             <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede')}}">
                                         </label>
                                     </section>
-                                    <section class="col col-4">
+                                    <section class="col col-9">
                                         <label class="label">Complemento</label>
                                         <label class="input">
                                             <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede')}}">
@@ -267,7 +271,8 @@
                                     </section>
                                 </div>
                             </fieldset>
-
+                        </div>
+                        <div  class="col col-6">     
                             <header>
                                 <i class="fa fa-bank"></i> Dados Bancários 
                             </header>
@@ -276,7 +281,7 @@
 
                                 <div class="row">
                                     
-                                    <section class="col col-4">
+                                    <section class="col col-8">
                                        
                                         <label class="label" >Banco</label>          
                                         <select  name="cd_banco_ban" class="select2">
@@ -287,13 +292,15 @@
 
                                         </select> 
                                     </section>
-                                    <section class="col col-2">
+                                    <section class="col col-4">
                                         <label class="label">Agência</label>
                                         <label class="input">
                                             <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba')}}">
                                         </label>
                                     </section>
-                                    <section class="col col-3">
+                                </div>
+                                <div class="row">
+                                    <section class="col col-8">
                                         <label class="label">Tipo de Conta</label>
                                         <label class="select"> 
                                             <select name="cd_tipo_conta_tcb">
@@ -304,7 +311,7 @@
                                               
                                             </select> <i></i> </label>
                                     </section>
-                                    <section class="col col-3">
+                                    <section class="col col-4">
                                         <label class="label">Conta</label>
                                         <label class="input">
                                             <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}">
@@ -312,7 +319,8 @@
                                     </section>
                                 </div> 
                             </fieldset>
-                            
+                        </div>
+                    </div>        
                             <footer>
                                 <button type="submit" class="btn btn-primary">
                                     Cadastrar
