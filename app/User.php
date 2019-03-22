@@ -21,7 +21,9 @@ class User extends Authenticatable
         'cd_entidade_ete',
         'data_nascimento',
         'data_admissao',
-        'cd_estado_civil_esc'
+        'cd_estado_civil_esc',
+        'cd_departamento_dep',
+        'cd_cargo_car'
     ];
 
     

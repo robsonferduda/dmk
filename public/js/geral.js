@@ -158,6 +158,53 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
+	$(".editar_cargo").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../cargos/"+id;
+
+		$('#frm-edit-cargo #cd_cargo_car').val(id);
+		$('#frm-edit-cargo #nm_cargo_car').val(nome);
+
+		$('#frm-edit-cargo').attr('action', action);						
+
+	    $('#editCargo').modal('show');
+
+	});
+
+	$(".btn-save-cargo").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-cargo").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".editar_departamento").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../departamentos/"+id;
+
+		$('#frm-edit-departamento #cd_departamento_dep').val(id);
+		$('#frm-edit-departamento #nm_departamento_dep').val(nome);
+
+		$('#frm-edit-departamento').attr('action', action);						
+
+	    $('#editDepartamento').modal('show');
+
+	});
+
+	$(".btn-save-departamento").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-departamento").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+
 	$(".editar_categoria_despesa").click(function(){
 
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');

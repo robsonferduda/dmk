@@ -113,7 +113,31 @@
                                                 </select> <i></i> </label>
                                         </section>
                                                                             
-                                    </div>                                   
+                                    </div>     
+                                    <div class="row">
+                                        <section class="col col-6">
+                                            <label class="label">Departamento</label>
+                                            <label class="select"> 
+                                                <select name="cd_departamento_dep">
+                                                    <option value="" >Selecione</option>
+                                                    @foreach($departamentos as $departamento)
+                                                        <option {!! (old('cd_departamento_dep') == $departamento->cd_departamento_dep ? 'selected' : '' ) !!} value="{{ $departamento->cd_departamento_dep }}" >{{ $departamento->nm_departamento_dep }}</option>
+                                                    @endforeach
+                                                  
+                                                </select> <i></i> </label>
+                                        </section>
+                                        <section class="col col-6">
+                                            <label class="label">Cargo</label>
+                                            <label class="select"> 
+                                                <select name="cd_cargo_car">
+                                                    <option value="" >Selecione</option>
+                                                    @foreach($cargos as $cargo)
+                                                        <option {!! (old('cd_cargo_car') == $cargo->cd_cargo_car ? 'selected' : '' ) !!} value="{{ $cargo->cd_cargo_car }}" >{{ $cargo->nm_cargo_car }}</option>
+                                                    @endforeach
+                                                  
+                                                </select> <i></i> </label>
+                                        </section>
+                                    </div>                              
                                     
                                 </fieldset>
                         </div>

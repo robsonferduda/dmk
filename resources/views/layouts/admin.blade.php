@@ -268,6 +268,12 @@
                                 <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
                             </li>
                             <li>
+                                <a href="{{ url('configuracoes/cargos') }}" title="Dashboard"><span class="menu-item-parent">Cargos</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/departamentos') }}" title="Dashboard"><span class="menu-item-parent">Departamentos</span></a>
+                            </li>
+                            <li>
                                 <a href="#" title="Depesas"><span class="menu-item-parent">Despesas</span></a>
                                 <ul>
                                     <li>

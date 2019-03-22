@@ -15,6 +15,8 @@ use App\Endereco;
 use App\Banco;
 use App\TipoConta;
 use App\RegistroBancario;
+use App\Departamento;
+use App\Cargo;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -41,27 +43,44 @@ class UsuarioController extends Controller
         return view('usuario/usuarios',['usuarios' => $usuarios]);
     }
 
+    public function buscar(Request $request)
+    {
+        $nome   = $request->get('nome');
+        $perfil = $request->get('perfil');
+
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon);
+        if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
+        if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
+        $usuarios = $usuarios->orderBy('name')->get();
+
+         return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
+    }
+
     public function novo(){
 
-        $niveis      = Nivel::orderBy('dc_nivel_niv')->get();
-        $estadoCivis = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
-        $tiposFone   = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
-        $estados     = Estado::orderBy('nm_estado_est')->get();
-        $bancos      = Banco::orderBy('cd_banco_ban')->get();
-        $tiposConta  = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
+        $niveis        = Nivel::orderBy('dc_nivel_niv')->get();
+        $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
+        $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
+        $estados       = Estado::orderBy('nm_estado_est')->get();
+        $bancos        = Banco::orderBy('cd_banco_ban')->get();
+        $tiposConta    = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
+        $departamentos = Departamento::orderBy('nm_departamento_dep')->get();
+        $cargos         = Cargo::orderBy('nm_cargo_car')->get();
 
-        return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta]);
+        return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, 'departamentos' => $departamentos, 'cargos' => $cargos]);
 
     }
 
     public function editar($id){
 
-        $niveis      = Nivel::orderBy('dc_nivel_niv')->get();
-        $estadoCivis = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
-        $tiposFone   = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
-        $estados     = Estado::orderBy('nm_estado_est')->get();
-        $bancos      = Banco::orderBy('cd_banco_ban')->get();
-        $tiposConta  = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
+        $niveis        = Nivel::orderBy('dc_nivel_niv')->get();
+        $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
+        $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
+        $estados       = Estado::orderBy('nm_estado_est')->get();
+        $bancos        = Banco::orderBy('cd_banco_ban')->get();
+        $tiposConta    = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
+        $departamentos = Departamento::orderBy('nm_departamento_dep')->get();
+        $cargos        = Cargo::orderBy('nm_cargo_car')->get();
 
         $usuario = User::with('entidade')->where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
 
@@ -98,7 +117,7 @@ class UsuarioController extends Controller
         if(!empty($usuario->data_admissao))
             $usuario->data_admissao = date('d/m/Y', strtotime($usuario->data_admissao));
 
-        return view('usuario/edit',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, "usuario" => $usuario]);
+        return view('usuario/edit',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, "usuario" => $usuario,'departamentos' => $departamentos, 'cargos' => $cargos]);
 
     }
 

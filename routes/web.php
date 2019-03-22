@@ -35,9 +35,12 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
+	Route::get('configuracoes/cargos','CargoController@index');
+	Route::get('configuracoes/departamentos','DepartamentoController@index');
 	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
 	Route::get('usuarios','UsuarioController@index');
+	Route::get('usuarios/buscar','UsuarioController@buscar');
 	Route::get('usuarios/novo','UsuarioController@novo');
 	Route::get('usuarios/editar/{cdUsuario}','UsuarioController@editar');
 	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
@@ -57,6 +60,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('tipos-de-servico','TipoServicoController');
 	Route::resource('tipos-de-despesa','TipoDespesaController');
 	Route::resource('varas','VaraController');
+	Route::resource('cargos','CargoController');
+	Route::resource('departamentos','DepartamentoController');
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('usuarios','UsuarioController');
