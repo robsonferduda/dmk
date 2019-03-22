@@ -192,6 +192,12 @@
                                         <label class="input">
                                             <input required type="password" name="password" placeholder="Senha">
                                         </label>
+                                    </section>  
+                                    <section class="col col-6">
+                                        <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
+                                        <label class="input">
+                                            <input required type="password" name="password_confirmation" placeholder="Confirmar Senha">
+                                        </label>
                                     </section>                                    
                                 </div> 
                             </fieldset>
