@@ -68,13 +68,13 @@
                                     <div class="row">
                         
                                         <section class="col col-8">
-                                            <label class="label">Nome<sup class="text-danger">*</sup></label>
+                                            <label class="label">Nome<span class="text-danger">*</span></label>
                                             <label class="input">
                                                 <input required type="text" name="name" placeholder="Nome" value="{{ old('name') }}">
                                             </label>
                                         </section>
                                         <section class="col col-4">
-                                            <label class="label">Perfil<sup class="text-danger">*</sup></label>
+                                            <label class="label">Perfil<span class="text-danger">*</span></label>
                                             <label class="select"> 
                                                 <select required name="cd_nivel_niv">
                                                     <option value="" >Selecione</option>
@@ -148,7 +148,7 @@
                             <fieldset>
                                 <div class="row">
                                    <section class="col col-sm-12">
-                                        <label class="label">Email<sup class="text-danger">* Utilizado na autenticação</sup></label>
+                                        <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
                                         <label class="input">
                                             <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email')}}">
                                         </label>
@@ -188,7 +188,7 @@
 
                                 <div class="row">
                                     <section class="col col-6">
-                                        <label class="label">Senha<sup class="text-danger">*</sup></label>
+                                        <label class="label">Senha<span class="text-danger">*</span></label>
                                         <label class="input">
                                             <input required type="password" name="password" placeholder="Senha">
                                         </label>
