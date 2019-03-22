@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div  class="col col-6">
                                     <header>
-                                        Dados Básicos
+                                        <i class="fa fa-user"></i> Dados Básicos
                                     </header>
 
                                     <fieldset>
