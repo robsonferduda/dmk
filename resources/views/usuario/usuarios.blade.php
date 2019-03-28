@@ -23,6 +23,25 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="well">
+                <form action="{{ url('usuarios/buscar') }}" class="form-inline" method="GET" role="search">
+                    {{ csrf_field() }}
+                    <div class="input-group">
+                        <span class="input-group-addon">Nome</span>
+                        <input size="30" type="text" name="nome" class="form-control" id="Nome" placeholder="Nome" >
+                    </div>                    
+                    <div class="form-group">
+                        <select name="perfil" class="form-control">
+                            <option value="">Perfil</option>
+                            @foreach(\App\Nivel::all() as $nivel)
+                                <option value="{{ $nivel->cd_nivel_niv }}">{{ $nivel->dc_nivel_niv }}</option>
+                            @endforeach
+                        </select>
+                    </div>                
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                    <a href="{{ url('usuarios') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                </form>
+            </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -60,5 +79,4 @@
         </article>
     </div>
 </div>
-s
 @endsection

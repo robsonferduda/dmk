@@ -35,7 +35,7 @@ class UsuarioRequest extends FormRequest
         ];
 
         if($this->request->get('_method') != 'PUT'){
-            $data['password'] = 'required'; 
+            $data['password'] = 'required|confirmed'; 
         }
 
         if(!empty($this->request->get('nu_fone_fon'))){
@@ -59,6 +59,7 @@ class UsuarioRequest extends FormRequest
             'name.required'     => 'O campo Nome é obrigatório',
             'email.required'    => 'O campo E-mail é obrigatório',
             'password.required' => 'O campo Senha é obrigatório',
+            'password.confirmed' => 'As senhas não conferem!',
             'data_nascimento.date_format' => 'Campo Data de Nascimento com formato inválido',
             'data_admissao.date_format' => 'Campo Data de Admissão com formato inválido',
             'cd_tipo_fone_tfo.required' => 'Campo Tipo do Telefone é obrigatório quanto o telefone está preenchido',

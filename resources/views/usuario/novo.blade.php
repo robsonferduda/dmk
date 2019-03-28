@@ -60,7 +60,7 @@
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
-                                    Dados Básicos
+                                    <i class="fa fa-user"></i> Dados Básicos
                                 </header>
 
                                 <fieldset>
@@ -68,13 +68,13 @@
                                     <div class="row">
                         
                                         <section class="col col-8">
-                                            <label class="label">Nome<sup class="text-danger">*</sup></label>
+                                            <label class="label">Nome<span class="text-danger">*</span></label>
                                             <label class="input">
                                                 <input required type="text" name="name" placeholder="Nome" value="{{ old('name') }}">
                                             </label>
                                         </section>
                                         <section class="col col-4">
-                                            <label class="label">Perfil<sup class="text-danger">*</sup></label>
+                                            <label class="label">Perfil<span class="text-danger">*</span></label>
                                             <label class="select"> 
                                                 <select required name="cd_nivel_niv">
                                                     <option value="" >Selecione</option>
@@ -113,7 +113,31 @@
                                                 </select> <i></i> </label>
                                         </section>
                                                                             
-                                    </div>                                   
+                                    </div>     
+                                    <div class="row">
+                                        <section class="col col-6">
+                                            <label class="label">Departamento</label>
+                                            <label class="select"> 
+                                                <select name="cd_departamento_dep">
+                                                    <option value="" >Selecione</option>
+                                                    @foreach($departamentos as $departamento)
+                                                        <option {!! (old('cd_departamento_dep') == $departamento->cd_departamento_dep ? 'selected' : '' ) !!} value="{{ $departamento->cd_departamento_dep }}" >{{ $departamento->nm_departamento_dep }}</option>
+                                                    @endforeach
+                                                  
+                                                </select> <i></i> </label>
+                                        </section>
+                                        <section class="col col-6">
+                                            <label class="label">Cargo</label>
+                                            <label class="select"> 
+                                                <select name="cd_cargo_car">
+                                                    <option value="" >Selecione</option>
+                                                    @foreach($cargos as $cargo)
+                                                        <option {!! (old('cd_cargo_car') == $cargo->cd_cargo_car ? 'selected' : '' ) !!} value="{{ $cargo->cd_cargo_car }}" >{{ $cargo->nm_cargo_car }}</option>
+                                                    @endforeach
+                                                  
+                                                </select> <i></i> </label>
+                                        </section>
+                                    </div>                              
                                     
                                 </fieldset>
                         </div>
@@ -124,7 +148,7 @@
                             <fieldset>
                                 <div class="row">
                                    <section class="col col-sm-12">
-                                        <label class="label">Email<sup class="text-danger">* Utilizado na autenticação</sup></label>
+                                        <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
                                         <label class="input">
                                             <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email')}}">
                                         </label>
@@ -164,9 +188,15 @@
 
                                 <div class="row">
                                     <section class="col col-6">
-                                        <label class="label">Senha<sup class="text-danger">*</sup></label>
+                                        <label class="label">Senha<span class="text-danger">*</span></label>
                                         <label class="input">
                                             <input required type="password" name="password" placeholder="Senha">
+                                        </label>
+                                    </section>  
+                                    <section class="col col-6">
+                                        <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
+                                        <label class="input">
+                                            <input required type="password" name="password_confirmation" placeholder="Confirmar Senha">
                                         </label>
                                     </section>                                    
                                 </div> 

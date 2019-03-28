@@ -1,0 +1,131 @@
+@extends('layouts.admin')
+@section('content')
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li><a href="{{ url('home') }}">Início</a></li>
+        <li>Configurações</li>
+        <li>Cargos</li>
+    </ol>
+</div>
+<div id="content">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <h1 class="page-title txt-color-blueDark">
+                <i class="fa-fw fa fa-cog"></i>Configurações <span> > Cargos</span>
+            </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <a data-toggle="modal" href="#addcargo" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @include('layouts/messages')
+        </div>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Cargos</h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>                         
+                                <tr>                                    
+                                    <th style="width: 85%;">Cargo</th>
+                                   
+                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cargos as $cargo)
+                                    <tr>                                    
+                                        <td data-id="{{ $cargo->cd_cargo_car }}" data-nome="{{ $cargo->nm_cargo_car }}">{{ $cargo->nm_cargo_car }}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs editar_cargo" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
+                                            <button data-url="../cargos/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="addcargo" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> Novo Cargo
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-cargo', 'url' => 'cargos', 'class' => 'smart-form']) !!}
+                     <fieldset>
+                        <section>
+                            <div>
+                                <label class="label">Nome</label>
+                                <label class="input"> <i class="icon-append fa fa-font"></i>
+                                    <input type="text" name="nm_cargo_car" id="nm_cargo_car" required>
+                                </label>
+                            </div>
+                        </section>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-save-cargo"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="editCargo" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-edit"></i> Editar Cargo
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-edit-cargo', 'method' => 'PUT', 'url' => 'cargos', 'class' => 'smart-form']) !!}
+                    <input type="hidden" name="cd_cargo_car" id="cd_cargo_car">
+                    <fieldset>
+                        <section>
+                            <div>
+                                <label class="label">Nome</label>
+                                <label class="input"> <i class="icon-append fa fa-font"></i>
+                                    <input type="text" name="nm_cargo_car" id="nm_cargo_car" required>
+                                </label>
+                            </div>
+                        </section>
+                         
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa 
+                        fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-edit-cargo"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
