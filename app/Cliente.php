@@ -39,4 +39,16 @@ class Cliente extends Model
     {
         return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete')->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ);
     }
+
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($cliente)
+        {
+            $cliente->entidade()->delete();
+            $cliente->identificacao()->delete();
+        });
+
+    }
 }

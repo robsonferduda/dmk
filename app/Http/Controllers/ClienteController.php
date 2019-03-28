@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 
 class ClienteController extends Controller
 {
@@ -16,7 +17,8 @@ class ClienteController extends Controller
 
     public function index()
     {
-        return view('home');
+        $clientes = Cliente::take(10)->orderBy('created_at','ASC')->get();
+        return view('cliente/clientes',['clientes' => $clientes]);
     }
 
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
@@ -55,4 +57,15 @@ class ClienteController extends Controller
         return view('cliente/clientes',['clientes' => $clientes]);
     }
 
+    public function destroy($id)
+    {
+
+        $cliente = Cliente::where('cd_cliente_cli',$id)->first();
+
+        if($cliente->delete())
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        
+    }
 }

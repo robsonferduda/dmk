@@ -68,8 +68,9 @@
                         @if(isset($clientes))
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr>                                    
-                                    <th style="width: 40%;">Cliente</th>
+                                <tr>    
+                                    <th style="width: 5%;">Código</th>                                
+                                    <th style="width: 35%;">Cliente</th>
                                     <th style="width: 10%;" class="center">Tipo de Pessoa</th>
                                     <th style="width: 10%;" class="center">CPF/CNPJ</th>
                                     <th style="width: 10%;" class="center">Situação</th>                                   
@@ -79,6 +80,7 @@
                             <tbody>
                                 @foreach($clientes as $cliente)
                                     <tr>
+                                        <td data-id="{{ $cliente->cd_cliente_cli }}">{{ $cliente->nu_cliente_cli }}</td>
                                         <td>{{ $cliente->nm_razao_social_cli }}</td>
                                         <td class="center">{{ $cliente->tipoPessoa->nm_tipo_pessoa_tpp }}</td>
                                         <td class="center">
@@ -89,7 +91,7 @@
                                         <td class="center">
                                             <a class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-folder"></i> Detalhes</a>
                                             <a class="btn btn-primary btn-xs" style="width: 30%;" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <button data-url="{{ url('cliente/excluir/'.$cliente->cd_cliente_cli) }}" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <button data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach                                

@@ -39,7 +39,7 @@ class EntidadeController extends Controller
         //Cria o cliente, associando a conta criada como dona do registro
         $cliente = new Cliente();
         $cliente->cd_conta_con = 1;
-        $cliente->cd_entidade_ete = 3;
+        $cliente->cd_entidade_ete = 75;
         $cliente->cd_tipo_pessoa_tpp = 1;
         $cliente->nu_cliente_cli = 1;
         $cliente->nm_fantasia_cli = "";
