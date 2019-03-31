@@ -45,5 +45,16 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\EstadoCivil','cd_estado_civil_esc', 'cd_estado_civil_esc');
     }
+
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($usuario)
+        {
+            $usuario->entidade()->delete();
+        });
+
+    }
      
 }

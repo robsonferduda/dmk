@@ -48,5 +48,20 @@ class Entidade extends Model
         return $this->hasOne('App\RegistroBancario','cd_entidade_ete', 'cd_entidade_ete');
     }
 
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($entidade)
+        {
+            $entidade->cpf()->delete();
+            $entidade->oab()->delete();
+            $entidade->rg()->delete();
+            $entidade->fone()->delete();
+            $entidade->endereco()->delete();
+            $entidade->banco()->delete();
+        });
+
+    }
 
 }
