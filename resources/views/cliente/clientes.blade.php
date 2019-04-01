@@ -82,7 +82,7 @@
                                     <tr>
                                         <td data-id="{{ $cliente->cd_cliente_cli }}">{{ $cliente->nu_cliente_cli }}</td>
                                         <td>{{ $cliente->nm_razao_social_cli }}</td>
-                                        <td class="center">{{ $cliente->tipoPessoa->nm_tipo_pessoa_tpp }}</td>
+                                        <td class="center">{{ ($cliente->tipoPessoa) ? $cliente->tipoPessoa->nm_tipo_pessoa_tpp : 'Não informado' }}</td>
                                         <td class="center">
                                             {{ ($cliente->cnpj) ? $cliente->cnpj->nu_identificacao_ide : '' }}
                                             {{ ($cliente->cpf) ? $cliente->cpf->nu_identificacao_ide : '' }}

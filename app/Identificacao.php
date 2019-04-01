@@ -12,7 +12,7 @@ class Identificacao extends Model
 
     protected $table = 'identificacao_ide';
     protected $primaryKey = 'cd_identificacao_ide';
-    protected $dates = ['deleted_at'];
+    
     protected $fillable = [
     						'cd_entidade_ete',
     						'cd_conta_con',
@@ -21,4 +21,7 @@ class Identificacao extends Model
     					  ];
 
     public $timestamps = true;
+    protected $dates = ['deleted_at'];
+
+
 }

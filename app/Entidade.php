@@ -18,6 +18,11 @@ class Entidade extends Model
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
+    public function identificacao()
+    {
+        return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
     public function cpf()
     {
         return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete')->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF);
@@ -54,9 +59,7 @@ class Entidade extends Model
 
         static::deleting(function($entidade)
         {
-            $entidade->cpf()->delete();
-            $entidade->oab()->delete();
-            $entidade->rg()->delete();
+            $entidade->identificacao()->delete();
             $entidade->fone()->delete();
             $entidade->endereco()->delete();
             $entidade->banco()->delete();

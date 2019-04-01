@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\Entidade;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClienteRequest;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
 
@@ -55,6 +58,28 @@ class ClienteController extends Controller
                             })->get();
 
         return view('cliente/clientes',['clientes' => $clientes]);
+    }
+
+    public function store(ClienteRequest $request)
+    {
+
+        $request->merge(['cd_conta_con' => \Session::get('SESSION_CD_CONTA')]);
+
+        $entidade = Entidade::create([
+            'cd_conta_con'         => \Session::get('SESSION_CD_CONTA'),
+            'cd_tipo_entidade_tpe' => \TipoEntidade::CLIENTE
+        ]);
+
+        $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
+
+        $cliente = new Cliente();
+        $cliente->fill($request->all());
+
+        $cliente->saveOrFail();
+
+        Flash::success('Dados inseridos com sucesso');
+        return redirect('clientes');
+
     }
 
     public function destroy($id)

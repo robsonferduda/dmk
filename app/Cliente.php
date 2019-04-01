@@ -12,6 +12,13 @@ class Cliente extends Model
     protected $table = 'cliente_cli';
     protected $primaryKey = 'cd_cliente_cli';
 
+     protected $fillable = [
+        'nm_razao_social_cli',
+        'cd_conta_con',
+        'cd_entidade_ete',
+        'cd_tipo_pessoa_tpp'
+    ];
+
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
@@ -46,8 +53,11 @@ class Cliente extends Model
 
         static::deleting(function($cliente)
         {
+            foreach($cliente->entidade()->first()->identificacao()->get() as $identificacao){
+                $identificacao->delete();
+            }            
+
             $cliente->entidade()->delete();
-            $cliente->identificacao()->delete();
         });
 
     }

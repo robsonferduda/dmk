@@ -17,23 +17,13 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-              <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+            <div class="col-md-12">
+            @include('layouts/messages')
+        </div>
+        <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
             
             <!-- Widget ID (each widget will need unique ID)-->
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
-                <!-- widget options:
-                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                    
-                    data-widget-colorbutton="false" 
-                    data-widget-editbutton="false"
-                    data-widget-togglebutton="false"
-                    data-widget-deletebutton="false"
-                    data-widget-fullscreenbutton="false"
-                    data-widget-custombutton="false"
-                    data-widget-collapsed="true" 
-                    data-widget-sortable="false"
-                    
-                -->
                 <header role="heading" class="ui-sortable-handle"><div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Collapse"><i class="fa fa-minus "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-fullscreen-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Fullscreen"><i class="fa fa-expand "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-delete-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Delete"><i class="fa fa-times"></i></a></div><div class="widget-toolbar" role="menu"><a data-toggle="dropdown" class="dropdown-toggle color-box selector" href="javascript:void(0);"></a><ul class="dropdown-menu arrow-box-up-right color-select pull-right"><li><span class="bg-color-green" data-widget-setstyle="jarviswidget-color-green" rel="tooltip" data-placement="left" data-original-title="Green Grass"></span></li><li><span class="bg-color-greenDark" data-widget-setstyle="jarviswidget-color-greenDark" rel="tooltip" data-placement="top" data-original-title="Dark Green"></span></li><li><span class="bg-color-greenLight" data-widget-setstyle="jarviswidget-color-greenLight" rel="tooltip" data-placement="top" data-original-title="Light Green"></span></li><li><span class="bg-color-purple" data-widget-setstyle="jarviswidget-color-purple" rel="tooltip" data-placement="top" data-original-title="Purple"></span></li><li><span class="bg-color-magenta" data-widget-setstyle="jarviswidget-color-magenta" rel="tooltip" data-placement="top" data-original-title="Magenta"></span></li><li><span class="bg-color-pink" data-widget-setstyle="jarviswidget-color-pink" rel="tooltip" data-placement="right" data-original-title="Pink"></span></li><li><span class="bg-color-pinkDark" data-widget-setstyle="jarviswidget-color-pinkDark" rel="tooltip" data-placement="left" data-original-title="Fade Pink"></span></li><li><span class="bg-color-blueLight" data-widget-setstyle="jarviswidget-color-blueLight" rel="tooltip" data-placement="top" data-original-title="Light Blue"></span></li><li><span class="bg-color-teal" data-widget-setstyle="jarviswidget-color-teal" rel="tooltip" data-placement="top" data-original-title="Teal"></span></li><li><span class="bg-color-blue" data-widget-setstyle="jarviswidget-color-blue" rel="tooltip" data-placement="top" data-original-title="Ocean Blue"></span></li><li><span class="bg-color-blueDark" data-widget-setstyle="jarviswidget-color-blueDark" rel="tooltip" data-placement="top" data-original-title="Night Sky"></span></li><li><span class="bg-color-darken" data-widget-setstyle="jarviswidget-color-darken" rel="tooltip" data-placement="right" data-original-title="Night"></span></li><li><span class="bg-color-yellow" data-widget-setstyle="jarviswidget-color-yellow" rel="tooltip" data-placement="left" data-original-title="Day Light"></span></li><li><span class="bg-color-orange" data-widget-setstyle="jarviswidget-color-orange" rel="tooltip" data-placement="bottom" data-original-title="Orange"></span></li><li><span class="bg-color-orangeDark" data-widget-setstyle="jarviswidget-color-orangeDark" rel="tooltip" data-placement="bottom" data-original-title="Dark Orange"></span></li><li><span class="bg-color-red" data-widget-setstyle="jarviswidget-color-red" rel="tooltip" data-placement="bottom" data-original-title="Red Rose"></span></li><li><span class="bg-color-redLight" data-widget-setstyle="jarviswidget-color-redLight" rel="tooltip" data-placement="bottom" data-original-title="Light Red"></span></li><li><span class="bg-color-white" data-widget-setstyle="jarviswidget-color-white" rel="tooltip" data-placement="right" data-original-title="Purity"></span></li><li><a href="javascript:void(0);" class="jarviswidget-remove-colors" data-widget-setstyle="" rel="tooltip" data-placement="bottom" data-original-title="Reset widget color to default">Remove</a></li></ul></div>
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
                     <h2>Cadastro de Cliente </h2>             
@@ -42,18 +32,8 @@
 
                 <!-- widget div-->
                 <div role="content">
-                    
-                    <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">
-                        <!-- This area used as dropdown edit box -->
-                        
-                    </div>
-                    <!-- end widget edit box -->
-                    
-                    <!-- widget content -->
                     <div class="widget-body no-padding">
-                        
-                        <form id="smart-form-register" class="smart-form" novalidate="novalidate">
+                        {!! Form::open(['id' => 'frm-add-cliente', 'url' => 'clientes', 'class' => 'smart-form']) !!}
                             <header>
                                 Dados Básicos
                             </header>
@@ -62,10 +42,10 @@
                                 <section>
                                     <div class="inline-group">
                                         <label class="radio">
-                                            <input type="radio" class="tipo-pessoa" name="tipo-pessoa" value="2" checked="checked">
+                                            <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" checked="checked">
                                             <i></i>Pessoa Jurídica</label>
                                         <label class="radio">
-                                            <input type="radio" class="tipo-pessoa" name="tipo-pessoa" value="1">
+                                            <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1">
                                             <i></i>Pessoa Física</label>
                                     </div>
                                 </section>
@@ -100,7 +80,7 @@
                                     <section class="col col-2">
                                         <label class="label">CPF</label>
                                         <label class="input">
-                                            <input type="text" name="firstname" placeholder="CNPJ">
+                                            <input type="text" name="cnpj" placeholder="CNPJ">
                                         </label>
                                     </section>
                                     <section class="col col-9">
@@ -115,7 +95,7 @@
                                     <section class="col col-4">
                                         <label class="label">Razão Social</label>
                                         <label class="input">
-                                            <input type="text" name="firstname" placeholder="Razão Social">
+                                            <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
                                         </label>
                                     </section>
                                     <section class="col col-4">
@@ -155,46 +135,59 @@
 
                                 <div class="row">
                                     <section class="col col-2">
-                                        <label class="input"> <i class="icon-append fa fa-map-marker"></i>
-                                        <input type="text" name="username" placeholder="CEP">
-                                        <b class="tooltip tooltip-bottom-right">Needed to enter the website</b> </label>
-                                    </section>
-                                    <section class="col col-8">
+                                        <label class="label">CEP</label>
                                         <label class="input">
-                                            <input type="text" name="lastname" placeholder="Rua">
+                                            <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
+                                        </label>
+                                    </section> 
+                                    <section class="col col-sm-8">
+                                        <label class="label">Logradouro</label>
+                                        <label class="input">
+                                            <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede')}}">
                                         </label>
                                     </section>
                                     <section class="col col-2">
+                                        <label class="label">Nº</label>
                                         <label class="input">
-                                            <input type="text" name="lastname" placeholder="Número">
+                                            <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede')}}">
                                         </label>
                                     </section>
-                                </div>  
+                                </div>
 
-                                <section>
-                                    <label class="input"> <i class="icon-append fa fa-user"></i>
-                                        <input type="text" name="username" placeholder="Username">
-                                        <b class="tooltip tooltip-bottom-right">Needed to enter the website</b> </label>
-                                </section>                      
-                                
-                                
-                                <section>
-                                    <label class="input"> <i class="icon-append fa fa-envelope-o"></i>
-                                        <input type="email" name="email" placeholder="Email address">
-                                        <b class="tooltip tooltip-bottom-right">Needed to verify your account</b> </label>
-                                </section>
+                                 <div class="row">
+                                    <section class="col col-6">
+                                        <label class="label">Bairro</label>
+                                        <label class="input">
+                                            <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede')}}">
+                                        </label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="label">Complemento</label>
+                                        <label class="input">
+                                            <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede')}}">
+                                        </label>
+                                    </section>                                                                    
+                                </div> 
 
-                                <section>
-                                    <label class="input"> <i class="icon-append fa fa-lock"></i>
-                                        <input type="password" name="password" placeholder="Password" id="password">
-                                        <b class="tooltip tooltip-bottom-right">Don't forget your password</b> </label>
-                                </section>
+                                <div class="row">                    
+                                    <section class="col col-6">                                       
+                                        <label class="label" >Estado</label>          
+                                        <select  id="estado" name="cd_estado_est" class="select2">
+                                            <option selected value="">Selecione</option>
+                                            @foreach(App\Estado::all() as $estado) 
+                                                <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                            @endforeach
 
-                                <section>
-                                    <label class="input"> <i class="icon-append fa fa-lock"></i>
-                                        <input type="password" name="passwordConfirm" placeholder="Confirm password">
-                                        <b class="tooltip tooltip-bottom-right">Don't forget your password</b> </label>
-                                </section>
+                                        </select> 
+                                    </section>
+                                    <section class="col col-6">
+                                       <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                       <label class="label" >Cidade</label>          
+                                        <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
+                                           <option selected value="">Selecione o Estado</option>
+                                        </select> 
+                                    </section>  
+                                </div>
                             </fieldset>
 
                             <header>
@@ -233,18 +226,12 @@
 
                             </fieldset>
                             <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    Validate Form
-                                </button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Cadastrar</button>
+                                <a href="{{ url('clientes') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </footer>
-                        </form>                     
-                        
+                        {!! Form::close() !!}                   
                     </div>
-                    <!-- end widget content -->
-                    
                 </div>
-                <!-- end widget div -->
-                
             </div>
             </article>
         </div>

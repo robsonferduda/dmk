@@ -45,14 +45,19 @@ class EntidadeController extends Controller
         $cliente->nm_fantasia_cli = "";
         $cliente->nm_razao_social_cli = "Cliente ".rand(10, 50);
         $cliente->fl_ativo_cli = "S";
-        $cliente->save();
+        //$cliente->save();
 
 
         $area = new AreaDireito();
         $area->dc_area_direito_ado = "Criminal";
         
 
-        dd(Cliente::all());
+        //dd(Cliente::all());
+
+        $cliente = Cliente::where('cd_cliente_cli',36)->first();
+
+
+        $cliente->delete();
     }
 
 }
