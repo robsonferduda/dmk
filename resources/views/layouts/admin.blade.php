@@ -235,7 +235,7 @@
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul>
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
                                 <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>

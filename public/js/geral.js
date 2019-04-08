@@ -117,8 +117,12 @@ $(document).ready(function() {
 		$('#frm-edit-tipo-despesa #cd_tipo_despesa_tds').val(id);
 		$('#frm-edit-tipo-despesa #nm_tipo_despesa_tds').val(nome);
 
-		if(reembolso == 'S') 
+		if(reembolso == 'S'){
 			$('#frm-edit-tipo-despesa #fl_reembolso_tds').prop( "checked", true );
+		}else{
+			$('#frm-edit-tipo-despesa #fl_reembolso_tds').prop( "checked", false );
+		}
+
 		
 		//alert(categoria);
 		$('#frm-edit-tipo-despesa #categoriaDespesa').val(categoria).trigger('change');;
