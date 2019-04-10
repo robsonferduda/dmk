@@ -70,7 +70,7 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input class="form-control ui-autocomplete-input" required type="text" name="cliente" placeholder="Cliente..." value="{{ old('cliente') }}">
+                                                <input class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                         
@@ -109,4 +109,22 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var path = "{{ url('autocompleteCliente') }}";
+        $( "#client" ).autocomplete({
+          source: path,
+          minLength: 3,
+          select: function(event, ui) {
+            alert(ui);
+          }
+        });
+    });
+   
+    
+</script>
+
 @endsection

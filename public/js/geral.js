@@ -98,6 +98,27 @@ $(document).ready(function() {
 	    $('#editTipoServico').modal('show');
 	});
 
+	$(".btn-save-tipo-processo").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-tipo-processo").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".editar_tipo_processo").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../tipos-de-processo/"+id;
+
+		$('#frm-edit-tipo-processo #cd_tipo_processo_tpo').val(id);
+		$('#frm-edit-tipo-processo #nm_tipo_processo_tpo').val(nome);
+		$('#frm-edit-tipo-processo').attr('action', action);						
+
+	    $('#editTipoProcesso').modal('show');
+	});
+
 	$(".btn-save-tipo-servico").click(function(){
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});

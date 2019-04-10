@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::resource('clientes','ClienteController');
 
+	Route::get('autocompleteCliente', 'ClienteController@search');
 	Route::get('processos/novo','ProcessoController@novo');
 
 	Route::get('configuracoes/areas','AreaController@index');
@@ -39,6 +40,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/departamentos','DepartamentoController@index');
 	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
+	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
+
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');
 	Route::get('usuarios/novo','UsuarioController@novo');
@@ -58,6 +61,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::resource('areas','AreaController');
 	Route::resource('tipos-de-servico','TipoServicoController');
+	Route::resource('tipos-de-processo','TipoProcessoController');
 	Route::resource('tipos-de-despesa','TipoDespesaController');
 	Route::resource('varas','VaraController');
 	Route::resource('cargos','CargoController');

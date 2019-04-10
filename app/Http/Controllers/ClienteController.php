@@ -93,4 +93,20 @@ class ClienteController extends Controller
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('term');
+      
+        $resultados = Cliente::select("nm_razao_social_cli")->where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+            $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $ret->nm_razao_social_cli ];
+        }
+ 
+        return response()->json($results);
+            
+    } 
 }
