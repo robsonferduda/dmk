@@ -50,8 +50,16 @@ class User extends Authenticatable
 
         parent::boot();
 
+        
         static::deleting(function($usuario)
         {
+            foreach($usuario->entidade()->first()->identificacao()->get() as $identificacao){
+                $identificacao->delete();
+            }            
+
+            $usuario->entidade()->first()->banco()->delete();
+            $usuario->entidade()->first()->endereco()->delete();
+            $usuario->entidade()->first()->fone()->delete();
             $usuario->entidade()->delete();
         });
 

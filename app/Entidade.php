@@ -81,5 +81,4 @@ class Entidade extends Model
         });
 
     }
-
 }

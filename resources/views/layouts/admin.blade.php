@@ -235,7 +235,7 @@
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul>
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
                                 <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
@@ -290,7 +290,10 @@
                                 <a href="{{ url('configuracoes/grupos-de-cidades') }}" title="Tipos de Serviço"><span class="menu-item-parent">Grupos de Cidades</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviços</span></a>
+                                <a href="{{ url('configuracoes/tipos-de-processo') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Processo</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/tipos-de-servico') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Serviço</span></a>
                             </li>
                             <li>
                                 <a href="{{ url('configuracoes/varas') }}" title="Varas"><span class="menu-item-parent">Varas</span></a>

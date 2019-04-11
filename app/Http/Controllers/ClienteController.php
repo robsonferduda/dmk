@@ -204,5 +204,23 @@ class ClienteController extends Controller
         
     }
 
+<<<<<<< HEAD
 
+=======
+    public function search(Request $request)
+    {
+        $search = $request->get('term');
+      
+        $resultados = Cliente::select("nm_razao_social_cli")->where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+            $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $ret->nm_razao_social_cli ];
+        }
+ 
+        return response()->json($results);
+            
+    } 
+>>>>>>> f5ac71a792ee178caf7c73df7ca7e154df329a52
 }

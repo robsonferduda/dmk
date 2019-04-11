@@ -87,4 +87,10 @@ span.tags
     left: 50%;
     margin-left: -10px;
     z-index: 10;
-    }
+}
+
+.ui-menu .ui-menu-item a{
+    background:red !important;
+    height:10px !important;
+    font-size:8px !important;
+}
