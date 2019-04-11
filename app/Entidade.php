@@ -28,6 +28,11 @@ class Entidade extends Model
         return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete')->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF);
     }
 
+    public function cnpj()
+    {
+        return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete')->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ);
+    }
+
     public function oab()
     {
         return $this->hasOne('App\Identificacao','cd_entidade_ete', 'cd_entidade_ete')->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::OAB);
@@ -48,9 +53,19 @@ class Entidade extends Model
         return $this->hasOne('App\Endereco','cd_entidade_ete', 'cd_entidade_ete');
     }
 
+    public function enderecoEletronico()
+    {
+        return $this->hasOne('App\EnderecoEletronico','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
     public function banco()
     {
         return $this->hasOne('App\RegistroBancario','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
+    public function reembolso()
+    {
+        return $this->hasOne('App\ReembolsoTipoDespesa','cd_entidade_ete', 'cd_entidade_ete');
     }
 
     public static function boot(){

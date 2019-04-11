@@ -4,17 +4,33 @@ $(document).ready(function() {
 	/** ======================== Masks ========================   **/
 
 	$('.data_nascimento').mask('00/00/0000');
+	$('.data_fundacao').mask('00/00/0000');
 	$('.data_admissao').mask('00/00/0000');
+	$('.cep').mask('00000-000');
 	$('.cpf').mask('000.000.000-00');
+	$('.cnpj').mask("00.000.000/000-00");
+	$('.telefone').mask("(00) 0000-00009");
 
 
 	/** =======================================================   **/
 
+	if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
+	    $(".label-tipo-pessoa").html('Nome <span class="text-danger">(Obrigatório)</span>');
+	    $(".box-pessoa-fisica").css('display','block');
+	    $(".box-pessoa-juridica").css('display','none');
+	}else{
+	    $(".label-tipo-pessoa").html('Nome Fantasia <span class="text-danger">(Obrigatório)</span>');
+	    $(".box-pessoa-fisica").css('display','none');
+	    $(".box-pessoa-juridica").css('display','block');
+	}
+
 	$(".tipo-pessoa").click(function(){
-	    if($('input:radio[name=tipo-pessoa]:checked').val() == 1){
+	    if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
+	    	$(".label-tipo-pessoa").html('Nome <span class="text-danger">(Obrigatório)</span>');
 	        $(".box-pessoa-fisica").css('display','block');
 	        $(".box-pessoa-juridica").css('display','none');
 	    }else{
+	    	$(".label-tipo-pessoa").html('Nome Fantasia <span class="text-danger">(Obrigatório)</span>');
 	    	$(".box-pessoa-fisica").css('display','none');
 	        $(".box-pessoa-juridica").css('display','block');
 	    }
@@ -227,5 +243,53 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
+	var telefones = new Array();
+
+	$("#btnSalvarTelefone").click(function(){
+
+		var flag = true;
+		var tipo = $("#cd_tipo_fone_tfo option:selected").val();
+		var ds_tipo = $("#cd_tipo_fone_tfo option:selected").text();
+		var numero = $("#nu_fone_fon").val();
+
+		if(tipo == 0){ flag = false; $("#erroFone").html("Campo tipo obrigatório"); }
+		if(numero == ''){ flag = false; $("#erroFone").html("Número de telefone obrigatório"); }
+
+		if(flag){
+
+			var fone = {tipo: tipo, numero: numero, descricao: ds_tipo};
+
+			telefones.push(fone);
+
+			$("#tabelaFone > tbody > tr").remove();		
+			$.each(telefones, function(index, value){
+				$('#tabelaFone > tbody').append('<tr><td>'+value.descricao+'</td><td>'+value.numero+'</td><td><a class="excluirFone" data-id="'+index+'">Excluir</a></td></tr>');
+			});
+
+			$('.excluirFone').on('click', function(){
+
+				var id = $(this).data("id");
+				telefones.splice(id,1);
+
+				$("#tabelaFone > tbody > tr").remove();		
+				$.each(telefones, function(index, value){
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'">Excluir</a></td></tr>');
+				});
+
+				$("#telefones").val(JSON.stringify(telefones));
+
+			});
+
+			$('#modalFone').modal('hide');
+			$("#telefones").val(JSON.stringify(telefones));
+		}
+
+	});
+
+	$('#modalFone').on('show.bs.modal', function (e) {
+		$("#nu_fone_fon").val("");
+		$("#erroFone").html("");
+		$("#nu_fone_fon").focus();
+	});
 	
 });

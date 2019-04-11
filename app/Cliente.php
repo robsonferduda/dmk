@@ -13,10 +13,12 @@ class Cliente extends Model
     protected $primaryKey = 'cd_cliente_cli';
 
      protected $fillable = [
-        'nm_razao_social_cli',
         'cd_conta_con',
         'cd_entidade_ete',
-        'cd_tipo_pessoa_tpp'
+        'cd_tipo_pessoa_tpp',
+        'nm_razao_social_cli',
+        'nm_fantasia_cli',
+        'fl_nota_fiscal_cli'
     ];
 
     public $timestamps = true;

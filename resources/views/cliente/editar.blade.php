@@ -4,18 +4,19 @@
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
         <li><a href="{{ url('clientes') }}">Clientes</a></li>
-        <li>Novo</li>
+        <li>Editar</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Clientes <span>> Novo</span>
+                <i class="fa-fw fa fa-group"></i> Clientes <span>> Editar</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-primary pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
+            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
+            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>      
         </div>
     </div>
     <div class="row">
@@ -23,7 +24,7 @@
             <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="col-sm-12 col-md-12 col-lg-12">
+        <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
             <div class="jarviswidget jarviswidget-sortable">
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -32,9 +33,9 @@
 
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm-add-cliente', 'url' => 'clientes', 'class' => 'smart-form']) !!}
-                        <input type="hidden" name="telefones" id="telefones">
-                        <input type="hidden" name="emails" id="emails">
+                        {!! Form::open(['id' => 'frm-add-cliente', 'url' => ['clientes', $cliente->cd_cliente_cli], 'class' => 'smart-form','method' => 'PUT']) !!}
+                        <input type="hidden" name="telefones[]" id="telefones">
+                        <input type="hidden" name="emails[]" id="emails">
                         <div class="row">
                             <section class="col col-6">
                                 <header>
@@ -45,18 +46,18 @@
                                     <section>
                                         <div class="inline-group">
                                             <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" checked="checked">
+                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" {{ ($cliente->cd_tipo_pessoa_tpp == 2) ? 'checked="checked"' : '' }}>
                                                 <i></i>Pessoa Jurídica</label>
                                             <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1">
+                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1" {{ ($cliente->cd_tipo_pessoa_tpp == 1) ? 'checked="checked"' : '' }}>
                                                 <i></i>Pessoa Física</label>
                                         </div>
                                     </section>
                                     <div class="row">
-                                        <section class="col col-3 box-pessoa-juridica">
+                                         <section class="col col-3 box-pessoa-juridica">
                                             <label class="label">CNPJ</label>
                                             <label class="input">
-                                                <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/000-00">
+                                                <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/000-00" value="{{ ($cliente->entidade->cnpj) ? $cliente->entidade->cnpj->nu_identificacao_ide : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-3 box-pessoa-juridica">
@@ -69,7 +70,7 @@
                                         <section class="col col-3 box-pessoa-fisica">
                                             <label class="label">CPF</label>
                                             <label class="input">
-                                                <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000">
+                                                <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ ($cliente->entidade->cpf) ? $cliente->entidade->cpf->nu_identificacao_ide : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-3 box-pessoa-fisica">
@@ -78,10 +79,10 @@
                                                 <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____">
                                             </label>
                                         </section>
-                                       <section class="col col-6">
-                                            <label class="label label-tipo-pessoa">Nome Fantasia</label>
+                                        <section class="col col-6">
+                                            <label class="label label-tipo-pessoa">Nome Fantasia <span class="text-danger">(Obrigatório)</span></label>
                                             <label class="input">
-                                                <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : "" }}" placeholder="Nome Fantasia">
+                                                <input type="text" name="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : $cliente->nm_fantasia_cli }}" placeholder="Nome Fantasia">
                                             </label>
                                         </section>
                                     </div>                        
@@ -90,7 +91,7 @@
                                         <section class="col col-6">
                                             <label class="label">Razão Social</label>
                                             <label class="input">
-                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
+                                                <input type="text" name="nm_razao_social_cli" value="{{ old('nm_razao_social_cli') ? old('nm_razao_social_cli') : $cliente->nm_razao_social_cli }}" placeholder="Razão Social">
                                             </label>
                                         </section>
                                         <section class="col col-3">
@@ -111,7 +112,7 @@
                                         <div class="onoffswitch-container">
                                             <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 
                                             <span class="onoffswitch">
-                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli">
+                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" id="fl_nota_fiscal_cli" value="S" {{ ($cliente->fl_nota_fiscal_cli == "S") ? 'checked="checked"' : "" }}>
                                                 <label class="onoffswitch-label" for="fl_nota_fiscal_cli"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
@@ -134,7 +135,7 @@
                                         <section class="col col-2">
                                             <label class="label">CEP</label>
                                             <label class="input">
-                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{old('nu_cep_ede')}}">
+                                                <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
                                             </label>
                                         </section> 
                                         <section class="col col-sm-8">
@@ -170,7 +171,7 @@
                                         <section class="col col-6">                                       
                                             <label class="label" >Estado</label>          
                                             <select  id="estado" name="cd_estado_est" class="select2">
-                                                <option selected value="">Selecione um estado</option>
+                                                <option selected value="">Selecione</option>
                                                 @foreach(App\Estado::all() as $estado) 
                                                     <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
@@ -181,7 +182,7 @@
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                               <option selected value="">Selecione uma Cidade</option>
+                                               <option selected value="">Selecione o Estado</option>
                                             </select> 
                                         </section>  
                                     </div>
@@ -193,43 +194,69 @@
                                 <section class="col col-6">
                                     <header>
                                             <i class="fa fa-phone"></i> Telefones
-                                            <a style="padding: 1px 8px;" class="novoModal" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus-circle"></i> Novo
+                                            <a style="padding: 1px 8px;" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus-circle"></i> Novo
                                             </a>
                                     </header>
                                     <fieldset>
-                                        <table id="tabelaFone" class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:25%" class="center">Tipo</th>
-                                                    <th style="width:50%">Telefone</th>
-                                                    <th style="width:25%" class="center">Opções</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                
-                                            </tbody>
-                                        </table>                            
+                                            @if(false)
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:25%">Tipo</th>
+                                                            <th style="width:50%">Telefone</th>
+                                                            <th style="width:25%">Opções</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($conta->fone()->get() as $fone)
+                                                            <tr>
+                                                                <td>{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                                <td>{{ $fone->nu_fone_fon }}</td>
+                                                                <td>
+                                                                    <a><i class="fa fa-edit"></i> Editar</a>
+                                                                    <a><i class="fa fa-trash"></i> Excluir</a>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <span>Nenhum telefone cadastrado</span>
+                                            @endif                                 
                                     </fieldset>
                                 </section>
                                 <section class="col col-6">
                                     <header>
                                             <i class="fa fa-envelope"></i> Emails
-                                            <a style="padding: 1px 8px;" class="novoModal" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus-circle"></i> Novo
+                                            <a style="padding: 1px 8px;" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus-circle"></i> Novo
                                             </a>
                                     </header>
                                     <fieldset>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:25%">Tipo</th>
-                                                    <th style="width:50%">Telefone</th>
-                                                    <th style="width:25%">Opções</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                        
-                                            </tbody>
-                                        </table>                            
+                                            @if(false)
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:25%">Tipo</th>
+                                                            <th style="width:50%">Telefone</th>
+                                                            <th style="width:25%">Opções</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($conta->fone()->get() as $fone)
+                                                            <tr>
+                                                                <td>{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                                <td>{{ $fone->nu_fone_fon }}</td>
+                                                                <td>
+                                                                    <a><i class="fa fa-edit"></i> Editar</a>
+                                                                    <a><i class="fa fa-trash"></i> Excluir</a>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <span>Nenhum email cadastrado</span>
+                                            @endif                                 
                                     </fieldset>
                                 </section>
                             </div>
@@ -244,10 +271,11 @@
                                     <label class="label">Selecione as despesas relacionadas ao cliente</label>
                                     <div class="row">
                                         <div class="col col-12">
-                                            @foreach(\App\TipoDespesa::where('fl_reembolso_tds','S')->get() as $despesa)
+                                            @foreach(\App\TipoDespesa::all() as $despesa)
                                                 <label class="checkbox">
                                                     <input type="checkbox" name="despesas[]" value="{{ $despesa->cd_tipo_despesa_tds }}">
                                                     <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
+                                                    {{ ($despesa->fl_reembolso_tds == 'S') ? '(Reembolsável)' : '(Não Reembolsável)' }}
                                                 </label>
                                             @endforeach
                                         </div> 
@@ -256,7 +284,7 @@
                             </fieldset>
 
                             <footer>
-                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Cadastrar</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
                                 <a href="{{ url('clientes') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </footer>
                         {!! Form::close() !!}                   
@@ -267,157 +295,4 @@
         </div>
     </div>
 </div>
-<div class="modal fade modal_top_alto" id="modalFone" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Adicionar Telefone</h4>
-            </div>            
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 center">
-                        <form class="form-inline" role="form">
-                            <span class="text-info">Digite somente números</span>
-                            <div style="margin-top: 8px;">
-                                <input type="hidden" name="cd_conta_con" value="">
-                                <div class="form-group">
-                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
-                                </div>
-                                <div class="form-group">
-                                    <select class="form-control" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
-                                        <option value="0">Tipo</option>
-                                        @foreach(\App\TipoFone::all() as $tipoFone)
-                                            <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                        @endforeach   
-                                    </select>
-                                </div> 
-                                <div id="erroFone">
-
-                                </div>                           
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
-                <button type="submit" id="btnSalvarTelefone" class="btn btn-success"><i class="fa-fw fa fa-save"></i> Salvar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade modal_top_alto" id="modalEmail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Adicionar Telefone</h4>
-            </div>
-            {!! Form::open(['id' => 'frm-update-conta', 'url' => 'conta/telefone/adicionar', 'class' => 'form form-inline']) !!}
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 center">
-                        <div>
-                            <input type="hidden" name="cd_conta_con" value="">
-                            <div class="form-group">
-                                <input type="text" class="form-control telefone" name="nu_fone_fon" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="cd_tipo_fone_tfo">
-                                    <option value="0">Tipo</option>
-                                    @foreach(\App\TipoFone::all() as $tipoFone)
-                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                    @endforeach   
-                                </select>
-                            </div>                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
-                <button type="submit" class="btn btn-success"><i class="fa-fw fa fa-save"></i> Salvar</button>
-            </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
-</div>
-@endsection
-@section('script')
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        var buscaCidade = function(){
-
-            estado = $("#estado").val();
-
-            if(estado != ''){
-
-                $.ajax(
-                    {
-                        url: '../cidades-por-estado/'+estado,
-                        type: 'GET',
-                        dataType: "JSON",
-                        beforeSend: function(){
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Carregando...</option>');
-                            $('#cidade').prop( "disabled", true );
-
-                        },
-                        success: function(response)
-                        {                    
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
-                            $.each(response,function(index,element){
-
-                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
-                                }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
-                                }
-                                
-                            });       
-                            $('#cidade').trigger('change');     
-                            $('#cidade').prop( "disabled", false );        
-                        },
-                        error: function(response)
-                        {
-                            //console.log(response);
-                        }
-                    });
-            }
-        }
-
-        buscaCidade();
-
-        $("#estado").change(function(){
-            
-            buscaCidade(); 
-
-        });
-
-    });
-
-    $(function() {
-
-            $("#frm-add-cliente").validate({
-                rules : {
-                    nm_fantasia_cli : {
-                        required : true
-                    }
-                },
-
-                messages : {
-                    nm_fantasia_cli : {
-                        required : 'Campo de preenchimento obrigatório'
-                    }
-                },
-                errorPlacement : function(error, element) {
-                    error.insertAfter(element.parent());
-                }
-            });
-        });
-</script>
 @endsection

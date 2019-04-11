@@ -248,7 +248,7 @@
                                        
                                         <label class="label" >Estado</label>          
                                         <select  id="estado" name="cd_estado_est" class="select2">
-                                            <option selected value="">Selecione</option>
+                                            <option selected value="">Selecione um estado</option>
                                             @foreach($estados as $estado) 
                                                 <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                             @endforeach
@@ -259,7 +259,7 @@
                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                        <label class="label" >Cidade</label>          
                                         <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                           <option selected value="">Selecione o Estado</option>
+                                           <option selected value="">Selecione uma Cidade</option>
                                         </select> 
                                     </section>  
                                 </div>

@@ -4,11 +4,15 @@
 .box-pessoa-juridica{display: block;}
 .boxBtnTopo > a{margin-top: 10px; margin-left: 5px;}
 .boxBtnTopo > button{margin-top: 10px; margin-left: 5px;}
+.boxBtnTopo .btnMargin {margin-right: 15px;}
 .marginTop10{margin-top: 10px;}
 .marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
+#erroFone{color: #af4c4c; margin-top: 5px;}
 .select2-container .select2-choice, .select2-selection{padding: 0 8px;}
 .error{color:#bb2020;}
+.excluirFone{ display: pointer; }
+.novoModal{ display: pointer; }
 .profile 
 {
     min-height: 355px;

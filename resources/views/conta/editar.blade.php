@@ -73,7 +73,9 @@
                                 </fieldset>
 
                                 <header>
-                                    <i class="fa fa-phone"></i> Telefones <button type="button" class="btn btn-primary btn-sm" style="padding: 1px 8px;" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus"></i> Adicionar</button>
+                                    <i class="fa fa-phone"></i> Telefones
+                                    <a style="padding: 1px 8px;" data-toggle="modal" data-target="#modalFone"><i class="fa fa-plus-circle"></i> Novo
+                                    </a>
                                 </header>
                                 <fieldset>
                                     @if( count($conta->fone()->get()) > 0)

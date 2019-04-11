@@ -391,7 +391,7 @@
 
         <!-- MAIN APP JS FILE -->
         <script src="{{ asset('js/app.min.js') }}"></script>
-
+        <script src="{{ asset('js/plugin/jquery-validate/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/dataTables.colVis.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/dataTables.tableTools.min.js') }}"></script>
@@ -463,7 +463,6 @@
                 });
     
             /* END BASIC */
-
             })
 
         </script>

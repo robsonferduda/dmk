@@ -13,7 +13,7 @@
 
 	<div class="alert alert-warning fade in">
 		<i class="fa-fw fa fa-warning"></i>
-		<strong><font><font>Atenção!</font></font></strong><font><font> {{ $error }}
+		<strong><font><font>Atenção!</font></font></strong><font><font> {!! $error !!}
 		</font></font>
 	</div>
 

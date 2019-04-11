@@ -70,10 +70,11 @@
                             <thead>                         
                                 <tr>    
                                     <th style="width: 5%;">Código</th>                                
-                                    <th style="width: 35%;">Cliente</th>
-                                    <th style="width: 10%;" class="center">Tipo de Pessoa</th>
-                                    <th style="width: 10%;" class="center">CPF/CNPJ</th>
-                                    <th style="width: 10%;" class="center">Situação</th>                                   
+                                    <th style="width: 20%;">Nome Fantasia</th>
+                                    <th style="width: 15%;">Razão Social</th>
+                                    <th style="width: 8%;" class="center">Tipo de Pessoa</th>
+                                    <th style="width: 6%;" class="center">Nota Fiscal</th>
+                                    <th style="width: 6%;" class="center">Situação</th>                                   
                                     <th style="width: 25%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
@@ -81,17 +82,16 @@
                                 @foreach($clientes as $cliente)
                                     <tr>
                                         <td data-id="{{ $cliente->cd_cliente_cli }}">{{ $cliente->nu_cliente_cli }}</td>
+                                        <td>{{ $cliente->nm_fantasia_cli }}</td>
                                         <td>{{ $cliente->nm_razao_social_cli }}</td>
                                         <td class="center">{{ ($cliente->tipoPessoa) ? $cliente->tipoPessoa->nm_tipo_pessoa_tpp : 'Não informado' }}</td>
+                                        <td class="center">{!! ($cliente->fl_nota_fiscal_cli == "S") ? '<span class="label label-success">SIM</span>' : '<span class="label label-danger">NÃO</span>' !!}</td>
+                                        <td class="center">{!! ($cliente->fl_ativo_cli == "S") ? '<span class="label label-success">ATIVO</span>' : '<span class="label label-danger">INATIVO</span>' !!}</td>
                                         <td class="center">
-                                            {{ ($cliente->cnpj) ? $cliente->cnpj->nu_identificacao_ide : '' }}
-                                            {{ ($cliente->cpf) ? $cliente->cpf->nu_identificacao_ide : '' }}
-                                        </td>
-                                        <td class="center">{!! ($cliente->fl_ativo_cli == "S") ? '<span class="label label-success">ATIVO</span>' : '<span class="label label-danger">ANATIVO</span>' !!}</td>
-                                        <td class="center">
-                                            <a class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-folder"></i> Detalhes</a>
-                                            <a class="btn btn-primary btn-xs" style="width: 30%;" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <button data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <a class="btn btn-default btn-xs" style="width: 23%;" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-folder"></i> Detalhes</a>
+                                            <a class="btn btn-warning btn-xs" style="width: 23%;" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a>
+                                            <a class="btn btn-primary btn-xs" style="width: 23%;" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i> Editar</a>
+                                            <button data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" style="width: 23%;" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach                                

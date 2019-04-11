@@ -27,6 +27,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/buscar','ClienteController@buscar');
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
+	Route::get('cliente/editar/{id}','ClienteController@editar');
+	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
 	Route::resource('clientes','ClienteController');
 
 	Route::get('configuracoes/areas','AreaController@index');
