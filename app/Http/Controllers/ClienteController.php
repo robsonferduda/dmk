@@ -204,9 +204,6 @@ class ClienteController extends Controller
         
     }
 
-<<<<<<< HEAD
-
-=======
     public function search(Request $request)
     {
         $search = $request->get('term');
@@ -222,5 +219,5 @@ class ClienteController extends Controller
         return response()->json($results);
             
     } 
->>>>>>> f5ac71a792ee178caf7c73df7ca7e154df329a52
+
 }
