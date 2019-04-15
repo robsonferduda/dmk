@@ -13,6 +13,11 @@
 .error{color:#bb2020;}
 .excluirFone{ display: pointer; }
 .novoModal{ display: pointer; }
+.tabelah {
+    width: 100%;
+    overflow-x: scroll;
+}
+.taxa-honorario{ min-width: 70px; }
 .profile 
 {
     min-height: 355px;

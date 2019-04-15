@@ -342,6 +342,20 @@
             </div>
         </div>
 
+
+        <div class="modal fade in modal_top_alto" id="processamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+                     </div>
+                    <div class="modal-body center">
+                        <h2><i class="fa fa-spinner fa-spin"></i> Agurade, processando requisição...</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade modal_top_alto" id="modal_exclusao" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

@@ -25,10 +25,12 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 	Route::get('cliente/buscar','ClienteController@buscar');
+	Route::get('cliente/buscar-honorarios','ClienteController@buscarHonorarios');
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
+	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
 	Route::resource('clientes','ClienteController');
 
 	Route::get('autocompleteCliente', 'ClienteController@search');
@@ -60,6 +62,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('entidade/teste','EntidadeController@index');
 
 	Route::get('erro-permissao',function(){ return view('errors/permissao'); });
+
+	Route::get('grupo/cidade/{id}','GrupoCidadeController@cidades');
 
 	Route::resource('areas','AreaController');
 	Route::resource('tipos-de-servico','TipoServicoController');
