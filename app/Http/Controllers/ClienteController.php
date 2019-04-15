@@ -208,12 +208,19 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::select("nm_razao_social_cli")->where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'LIKE', '%'. $search. '%')->get();
 
         $results = array();
         foreach ($resultados as $ret)
         {
-            $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $ret->nm_razao_social_cli ];
+
+            if(!empty($ret->nm_fantasia_cli)){
+                $nome =  $ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
+            }else{
+                $nome = $ret->nm_razao_social_cli;
+            }
+            
+           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome ];
         }
  
         return response()->json($results);

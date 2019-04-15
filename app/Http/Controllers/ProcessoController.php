@@ -3,20 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\Nivel;
 use App\Entidade;
-use App\Identificacao;
-use App\EstadoCivil;
-use App\TipoFone;
-use App\Fone;
+use App\Vara;
 use App\Estado;
 use App\Cidade;
 use App\Endereco;
-use App\Banco;
-use App\TipoConta;
-use App\RegistroBancario;
-use App\Departamento;
-use App\Cargo;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -58,16 +49,10 @@ class ProcessoController extends Controller
 
     public function novo(){
 
-        $niveis        = Nivel::orderBy('dc_nivel_niv')->get();
-        $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
-        $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
-        $estados       = Estado::orderBy('nm_estado_est')->get();
-        $bancos        = Banco::orderBy('cd_banco_ban')->get();
-        $tiposConta    = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
-        $departamentos = Departamento::orderBy('nm_departamento_dep')->get();
-        $cargos        = Cargo::orderBy('nm_cargo_car')->get();
-
-        return view('processo/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, 'departamentos' => $departamentos, 'cargos' => $cargos]);
+        $estados = Estado::orderBy('nm_estado_est')->get();
+        $varas   = Vara::orderBy('nm_vara_var')->get();  
+       
+        return view('processo/novo',['estados' => $estados,'varas' => $varas]);
 
     }
 
