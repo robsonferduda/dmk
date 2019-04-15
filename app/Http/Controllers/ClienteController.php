@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Fone;
+use App\Cidade;
 use App\Cliente;
 use App\Endereco;
 use App\Entidade;
 use App\Identificacao;
+use App\TipoServico;
+use App\GrupoCidade;
+use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
+use App\GrupoCidadeRelacionamento;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClienteRequest;
@@ -34,10 +39,62 @@ class ClienteController extends Controller
         return view('cliente/detalhes',['cliente' => $cliente]);
     }
 
-    public function honorarios()
+    public function honorarios($id)
     {
-        $clientes = Cliente::take(10)->orderBy('created_at','ASC')->get();
-        return view('cliente/clientes',['clientes' => $clientes]);
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
+        $grupos = GrupoCidade::all();
+        $servicos = TipoServico::all();
+
+        return view('cliente/honorarios',['cliente' => $cliente, 'grupos' => $grupos, 'servicos' => $servicos]);
+    }
+
+    public function buscarHonorarios(Request $request)
+    {
+        $id = $request->cd_cliente;
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
+        $grupo = $request->grupo_cidade;
+        $cidade = $request->cidade_honorario;
+        $servico = $request->servico;
+        $organizar = $request->organizar;
+        $valores = null;
+        $lista_cidades = null;
+
+        if($grupo == 0){
+            Flash::warning('Obrigatório selecionar um grupo');
+        }
+
+        //Listas que devem ser full        
+        $grupos = GrupoCidade::all();
+        $servicos = TipoServico::all();
+
+        //Carrega lista de servicõs da tabela
+        if($servico == 0){
+            $lista_servicos = TipoServico::all();
+        }else{
+            $lista_servicos = TipoServico::where('cd_tipo_servico_tse',$servico)->get();
+        }
+
+        if($cidade > 0)
+            $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->where('cd_cidade_cde',$cidade)->get();
+        else
+            $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
+
+        foreach($grupo as $g){
+            $lista_cidades[] = $g->cidade()->first();
+        }
+
+        //Carrega os valores de honorarios para determinado grupo
+        $honorarios = TaxaHonorario::where('cd_conta_con',$cliente->cd_conta_con)
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+            }
+        }        
+        
+        //Envia dados e renderiza tela
+        return view('cliente/honorarios',['cliente' => $cliente, 'grupos' => $grupos, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => $lista_cidades, 'valores' => $valores]);
     }
 
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
@@ -220,4 +277,39 @@ class ClienteController extends Controller
             
     } 
 
+    public function salvarHonorarios(Request $request){
+
+        $conta = \Session::get('SESSION_CD_CONTA');
+        $entidade = $request->entidade;
+
+        if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
+
+            $valores = json_decode($request->valores);
+                
+            for($i = 0; $i < count($valores); $i++) {
+
+                $valor = TaxaHonorario::where('cd_conta_con',$conta)
+                                      ->where('cd_entidade_ete',$entidade)
+                                      ->where('cd_cidade_cde',$valores[$i]->cidade)
+                                      ->where('cd_tipo_servico_tse',$valores[$i]->servico)->first();
+
+                if(!empty($valor)){
+
+                    $valor->nu_taxa_the = str_replace(",", ".", $valores[$i]->valor);
+                    $valor->saveOrFail();
+
+                }else{
+
+                    $taxa = TaxaHonorario::create([
+                        'cd_entidade_ete'           => $entidade,
+                        'cd_conta_con'              => $conta, 
+                        'cd_tipo_servico_tse'       => $valores[$i]->servico,
+                        'cd_cidade_cde'             => $valores[$i]->cidade,
+                        'nu_taxa_the'               => str_replace(",", ".", $valores[$i]->valor),
+                        'dc_observacao_the'         => "--"
+                    ]);
+                }
+            }
+        }
+    }
 }

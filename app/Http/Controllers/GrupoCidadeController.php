@@ -171,4 +171,11 @@ class GrupoCidadeController extends Controller
         DB::commit();
         return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
     }
+
+    public function cidades($id){
+
+        $cidades = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$id)->get();
+        echo json_encode($cidades);
+
+    }
 }

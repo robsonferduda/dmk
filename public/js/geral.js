@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+	var pathname = window.location.origin+"/dmk/public/";
 
 	/** ======================== Masks ========================   **/
 
@@ -10,6 +11,7 @@ $(document).ready(function() {
 	$('.cpf').mask('000.000.000-00');
 	$('.cnpj').mask("00.000.000/000-00");
 	$('.telefone').mask("(00) 0000-00009");
+	$(".taxa-honorario").mask('#.##0,00', {reverse: true});
 
 
 	/** =======================================================   **/
@@ -316,5 +318,85 @@ $(document).ready(function() {
 		$("#erroFone").html("");
 		$("#nu_fone_fon").focus();
 	});
-	
+
+	$("#btnSalvarHonorarios").click(function (){
+
+		var valores = new Array();
+		var entidade = $("#cd_entidade").val();
+		
+		$('.taxa-honorario').each(function(i, obj) {
+    		
+    		var valor = $(this).val();
+    		var servico = $(this).data("servico");
+			var cidade = $(this).data("cidade");;
+
+    		if(valor){
+    			
+				var dados = {servico: servico, cidade: cidade, valor: valor};
+				valores.push(dados);
+
+    		}
+    		
+		});
+		
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/cliente/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "valores": JSON.stringify(valores),
+                "entidade": entidade
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	location.reload();
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+        
+	});	
+
+	$("#grupo_cidade").change(function(){
+
+		var grupo = $("#grupo_cidade option:selected").val();
+
+		$.ajax(
+            {
+                url: pathname+"/grupo/cidade/"+grupo,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $('#cidade_honorario').empty();
+                    $('#cidade_honorario').append('<option selected value="">Carregando...</option>');
+                    $('#cidade_honorario').prop( "disabled", true );
+                },
+            success: function(response)
+            {                    
+                $('#cidade_honorario').empty();
+                $('#cidade_honorario').append('<option selected value="">Selecione</option>');
+                $('#cidade_honorario').append('<option selected value="0">Todas</option>');
+                
+                $.each(response,function(index,value){
+                    $('#cidade_honorario').append('<option value="'+value.cd_cidade_cde+'">'+value.cidade.nm_cidade_cde+'</option>');                   
+                });  
+
+                $('#cidade_honorario').trigger('change');     
+                $('#cidade_honorario').prop( "disabled", false );        
+            },
+            error: function(response)
+            {
+            }
+        });
+	});
+
 });
