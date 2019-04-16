@@ -31,7 +31,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
 	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
+	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
 	Route::resource('clientes','ClienteController');
+
 
 	Route::get('autocompleteCliente', 'ClienteController@search');
 	Route::get('processos/novo','ProcessoController@novo');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Fone;
 use App\Cidade;
 use App\Cliente;
+use App\Contato;
 use App\Endereco;
 use App\Entidade;
 use App\Identificacao;
@@ -318,5 +319,17 @@ class ClienteController extends Controller
                 }
             }
         }
+    }
+
+    public function buscaAdvogados($cliente){
+        $conta = \Session::get('SESSION_CD_CONTA');
+        $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
+
+        $contatos = Contato::where('cd_conta_con',$conta)
+                           ->where('cd_tipo_contato_tct', \TipoEntidade::ADVOGADO)
+                           ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+                           ->get();
+
+        dd($contatos);
     }
 }
