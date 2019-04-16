@@ -32,55 +32,83 @@
                         <h2>Honorários por Tipo de Serviço</h2>             
                     </header>
                     <div class="col-sm-12">
-
+                        <span>Selecione um grupo de cidades ou uma cidade específica e clique em "Adicionar" para visualizar e alterar dados.</span>
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-12">  
-                                            <form action="{{ url('cliente/buscar-honorarios') }}" class="form-inline" method="GET" role="search">
+                                            <form action="{{ url('cliente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Grupos de Cidades</span>
-                                                     <select name="grupo_cidade" id="grupo_cidade" class="form-control">
-                                                        <option value="0">Selecione um grupo</option>
-                                                        @foreach($grupos as $grupo)
-                                                            <option value="{{ $grupo->cd_grupo_cidade_grc }}">{{ $grupo->nm_grupo_cidade_grc }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
 
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Cidade</span>
-                                                     <select name="cidade_honorario" id="cidade_honorario" class="form-control">
-                                                        <option value="">Selecione uma cidade</option>
-                                                        <option value="0">Todas</option>
-                                                    </select>
-                                                </div>
+                                                <fieldset>
+                                                    <div class="row"> 
 
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Tipos de Serviço</span>
-                                                     <select name="servico" class="form-control">
-                                                        <option value="">Selecione um servico</option>
-                                                        <option value="0">Todos</option>
-                                                        @foreach($servicos as $servico)
-                                                            <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                        <section class="col col-md-3">
+                                                            <label class="label label-black" >Grupos de Cidade</label> 
+                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control">
+                                                                <option value="0">Selecione um grupo</option>
+                                                                @foreach($grupos as $grupo)
+                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}">{{ $grupo->nm_grupo_cidade_grc }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </section>
 
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Organizar Por</span>
-                                                     <select name="organizar" class="form-control">
-                                                        <option value="0">Selecione uma opção</option>
-                                                        <option value="1">Tipos de Serviço</option>
-                                                        <option value="2">Cidades</option>
-                                                    </select>
-                                                </div>
+                                                        <section class="col col-md-4">                                       
+                                                            <label class="label label-black" >Estado</label>          
+                                                            <select  id="estado" name="cd_estado_est" class="select2">
+                                                                <option selected value="">Selecione um estado</option>
+                                                                @foreach(App\Estado::all() as $estado) 
+                                                                    <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                                @endforeach
+
+                                                            </select> 
+                                                        </section>
+
+                                                        <section class="col col-md-5">
+                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                                           <label class="label label-black" >Cidade</label>          
+                                                            <select id="cidade" name="cd_cidade_cde" class="select2">
+                                                               <option selected value="">Selecione uma Cidade</option>
+                                                            </select> 
+                                                        </section> 
+
+                                                    </div>
+
+                                                    <div class="row"> 
+
+                                                        <section class="col col-md-3">
+                                                           <label class="label label-black" >Tipos de Serviço</label>          
+                                                            <select name="servico" class="form-control">
+                                                                <option value="">Selecione um servico</option>
+                                                                <option value="0">Todos</option>
+                                                                @foreach($servicos as $servico)
+                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </section> 
+
+                                                        <section class="col col-md-2">
+                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                                           <label class="label label-black" >Organizar por:</label>          
+                                                            <select  id="cidade" name="organizar" class="form-control">
+                                                               <option value="0">Selecione uma opção</option>
+                                                               <option value="1">Tipos de Serviço</option>
+                                                               <option value="2">Cidades</option>
+                                                            </select> 
+                                                        </section> 
+
+                                                        <section class="col col-md-2">
+                                                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                        </section>
+
+                                                    </div>                                                    
+
+                                                </fieldset><br/>
+                                                                                            
                                                 
-                                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                             </form>
                                         </div>
                                     </div>
@@ -99,6 +127,8 @@
                                             </div>
                                             <div class="col-md-6"> 
                                                 <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+
+                                                <a href="{{ url('cliente/limpar-selecao/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
                                             </div> 
                                             
                                                 @if($organizar == 1)
@@ -127,9 +157,9 @@
                                                                                                 <span class="caret"></span>
                                                                                             </button>
                                                                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                <li><a href="javascript:void(0);">Aplicar valor em toda linha</a></li>
-                                                                                                <li><a href="javascript:void(0);">Aplicar valor em toda coluna</a></li>
-                                                                                                <li><a href="javascript:void(0);">Aplicar em toda tabela</a></li>
+                                                                                                 <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
+                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
+                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </div>
@@ -167,9 +197,9 @@
                                                                                                 <span class="caret"></span>
                                                                                             </button>
                                                                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                <li><a href="javascript:void(0);">Aplicar valor em toda linha</a></li>
-                                                                                                <li><a href="javascript:void(0);">Aplicar valor em toda coluna</a></li>
-                                                                                                <li><a href="javascript:void(0);">Aplicar em toda tabela</a></li>
+                                                                                                <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
+                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
+                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </div>
@@ -194,4 +224,64 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var pathname = window.location.origin+"/dmk/public/";
+
+        var buscaCidade = function(){
+
+            estado = $("#estado").val();
+
+            if(estado != ''){
+
+                $.ajax(
+                    {
+                        url: pathname+'/cidades-por-estado/'+estado,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Carregando...</option>');
+                            $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                    
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){
+
+                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
+                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                }else{
+                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                }
+                                
+                            });       
+                            $('#cidade').trigger('change');     
+                            $('#cidade').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                    });
+            }
+        }
+
+        buscaCidade();
+
+        $("#estado").change(function(){
+            
+            buscaCidade(); 
+
+        });
+
+    });
+
+    
+</script>
 @endsection

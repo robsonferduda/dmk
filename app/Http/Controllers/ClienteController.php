@@ -53,19 +53,19 @@ class ClienteController extends Controller
         $id = $request->cd_cliente;
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
         $grupo = $request->grupo_cidade;
-        $cidade = $request->cidade_honorario;
+        $cidade = $request->cd_cidade_cde;
         $servico = $request->servico;
         $organizar = $request->organizar;
         $valores = null;
-        $lista_cidades = null;
-
-        if($grupo == 0){
-            Flash::warning('Obrigatório selecionar um grupo');
-        }
+        $lista_cidades = array();
 
         //Listas que devem ser full        
         $grupos = GrupoCidade::all();
         $servicos = TipoServico::all();
+
+        if(empty(session('lista_cidades'))){
+            \Session::put('lista_cidades', array());
+        }
 
         //Carrega lista de servicõs da tabela
         if($servico == 0){
@@ -74,13 +74,18 @@ class ClienteController extends Controller
             $lista_servicos = TipoServico::where('cd_tipo_servico_tse',$servico)->get();
         }
 
-        if($cidade > 0)
-            $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->where('cd_cidade_cde',$cidade)->get();
-        else
+        if($grupo > 0 and $cidade == 0) {
             $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
 
-        foreach($grupo as $g){
-            $lista_cidades[] = $g->cidade()->first();
+            foreach($grupo as $g){
+
+                if(!in_array($g->cidade()->first(), session('lista_cidades')))
+                    $lista_cidades[] = $g->cidade()->first();
+            }
+        }
+        
+        if($cidade > 0){
+            $lista_cidades[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
         }
 
         //Carrega os valores de honorarios para determinado grupo
@@ -91,10 +96,26 @@ class ClienteController extends Controller
             foreach ($honorarios as $honorario) {
                 $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
             }
-        }        
+        }   
+
+        if($lista_cidades){
+
+            $temp = session('lista_cidades');
+            foreach ($lista_cidades as $cidade) {
+                $temp[] = $cidade;
+            }
+            \Session::put('lista_cidades',$temp);
+
+            Flash::success('Dados inseridos com sucesso na visualização');
+        }
         
         //Envia dados e renderiza tela
-        return view('cliente/honorarios',['cliente' => $cliente, 'grupos' => $grupos, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => $lista_cidades, 'valores' => $valores]);
+        return view('cliente/honorarios',['cliente' => $cliente, 'grupos' => $grupos, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
+    }
+
+    public function limparSelecao($id){
+        \Session::forget('lista_cidades');
+        return redirect('cliente/honorarios/'.$id);
     }
 
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
