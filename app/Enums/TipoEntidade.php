@@ -10,4 +10,5 @@ final class TipoEntidade extends Enum
     const CORRESPONDENTE = 6;
     const CONTA = 7;
     const CLIENTE = 8;
+    const CONTATO = 9;
 }

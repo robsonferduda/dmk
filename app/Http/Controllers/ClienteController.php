@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Fone;
 use App\Cidade;
 use App\Cliente;
+use App\Contato;
 use App\Endereco;
 use App\Entidade;
 use App\Identificacao;
@@ -286,12 +287,19 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::select("nm_razao_social_cli")->where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'LIKE', '%'. $search. '%')->get();
 
         $results = array();
         foreach ($resultados as $ret)
         {
-            $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $ret->nm_razao_social_cli ];
+
+            if(!empty($ret->nm_fantasia_cli)){
+                $nome =  $ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
+            }else{
+                $nome = $ret->nm_razao_social_cli;
+            }
+            
+           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome ];
         }
  
         return response()->json($results);
@@ -332,5 +340,17 @@ class ClienteController extends Controller
                 }
             }
         }
+    }
+
+    public function buscaAdvogados($cliente){
+        $conta = \Session::get('SESSION_CD_CONTA');
+        $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
+
+        $contatos = Contato::where('cd_conta_con',$conta)
+                           ->where('cd_tipo_contato_tct', \TipoEntidade::ADVOGADO)
+                           ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+                           ->get();
+
+        dd($contatos);
     }
 }
