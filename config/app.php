@@ -213,8 +213,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'TipoEntidade' => App\Enums\TipoEntidade::class,
         'TipoIdentificacao' => App\Enums\TipoIdentificacao::class,
-        'TipoFone' => App\Enums\TipoFone::class
-        'TipoContato' => App\Enums\TipoFone::class
+        'TipoFone' => App\Enums\TipoFone::class,
+        'TipoContato' => App\Enums\TipoContato::class
 
     ],
 
