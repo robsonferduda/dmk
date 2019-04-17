@@ -229,7 +229,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var pathname = window.location.origin+"/dmk/public/";
+        var _location = document.location.toString();
+        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+        var applicationName = _location.substring(0, applicationNameIndex) + '/';
+        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
+        var webFolderFullPath = _location.substring(0, webFolderIndex); 
 
         var buscaCidade = function(){
 
@@ -239,7 +243,7 @@
 
                 $.ajax(
                     {
-                        url: pathname+'/cidades-por-estado/'+estado,
+                        url: webFolderFullPath+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
