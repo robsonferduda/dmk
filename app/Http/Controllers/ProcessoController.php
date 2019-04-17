@@ -7,8 +7,8 @@ use App\Entidade;
 use App\Vara;
 use App\Estado;
 use App\Cidade;
-use App\Endereco;
 use App\TipoProcesso;
+use App\Processo;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -30,9 +30,9 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
-
-        return view('usuario/usuarios',['usuarios' => $usuarios]);
+        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->get();
+        
+        return view('processo/processos',['processos' => $processos]);
     }
 
     public function buscar(Request $request)
@@ -121,146 +121,37 @@ class ProcessoController extends Controller
 
         $entidade = Entidade::create([
             'cd_conta_con'         => $this->cdContaCon,
-            'cd_tipo_entidade_tpe' => \TipoEntidade::USUARIO
+            'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
         ]);
 
+        $request->merge(['dt_audiencia_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_audiencia_pro)))]);
+        $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
         if($entidade){
 
-            $request->merge(['password' => \Hash::make($request->password)]);
-
-            $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
-            $request->merge(['data_admissao'   => date('Y-m-d',strtotime(str_replace('/','-',$request->data_admissao)))]);
             $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
 
-            $usuario = new user();
+            $processo = new Processo();
+            $processo->fill($request->all());
 
-            $usuario->fill($request->all());
-           
-            if($usuario->saveOrFail()){
-
-                if(!empty($request->oab)){
-                    
-                    $identificacao = Identificacao::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
-                        'nu_identificacao_ide'      => $request->oab
-                    ]);
-
-                    if(!$identificacao){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }                    
-
-                }
-
-                $request->merge(['cpf' => str_replace(array('.','-'),'',$request->cpf)]);
-
-                if(!empty($request->cpf)){
-                    
-                    $identificacao = Identificacao::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::CPF,
-                        'nu_identificacao_ide'      => $request->cpf
-                    ]);
-
-                    if(!$identificacao){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
-                }
-
-                if(!empty($request->rg)){
-                    
-                    $identificacao = Identificacao::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
-                        'nu_identificacao_ide'      => $request->rg
-                    ]);
-
-                    if(!$identificacao){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
-                }
-
-                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
-                    
-                    $fone = Fone::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
-                        'nu_fone_fon'               => $request->nu_fone_fon
-                    ]);
-
-                    if(!$fone){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
-                }
-
-                if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
-                    
-                    $endereco = new Endereco();
-
-                    $endereco->fill($request->all());
-
-                    if(!$endereco->saveOrFail()){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
-                }
-
-                if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
-
-                    $registro = new RegistroBancario();
-
-                    $request->merge(['nm_titular_dba'  => $request->name]);
-                    $request->merge(['nu_cpf_cnpj_dba' => $request->cpf]);
-
-                    $registro->fill($request->all());
-                    //dd($request->all());
-
-                    if(!$registro->saveOrFail()){
-                        
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
-                }
-
-            }else{
-                
-                DB::rollBack();
-                Flash::error('Erro ao inserir dados');
-                return redirect('usuarios');
-                  
-            }
-
+            if(!$processo->saveOrFail()){
+          
+               DB::rollBack();
+               Flash::error('Erro ao atualizar dados');
+               return redirect('processos');
+            }    
+         
         }else{
 
             DB::rollBack();
             Flash::error('Erro ao inserir dados');
-            return redirect('usuarios');
+            return redirect('processos');
         }
 
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
-        return redirect('usuarios');
+        return redirect('processos');
 
     }
 

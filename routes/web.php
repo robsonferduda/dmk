@@ -35,7 +35,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
 	Route::resource('clientes','ClienteController');
 
-
 	Route::get('autocompleteCliente', 'ClienteController@search');
 	Route::get('processos/novo','ProcessoController@novo');
 
@@ -77,6 +76,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('departamentos','DepartamentoController');
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
-	Route::resource('usuarios','UsuarioController');
+	Route::resource('processos','ProcessoController');
 
 });

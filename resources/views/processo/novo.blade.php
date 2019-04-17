@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Usuários <span>> Novo</span>
+                <i class="fa-fw fa fa-group"></i> Processos <span>> Novo</span>
             </h1>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 -->
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>Cadastro de Usuário </h2>             
+                    <h2>Cadastro de Processo </h2>             
                     
                 <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
 
@@ -56,7 +56,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
                         
-                        {!! Form::open(['id' => 'frm-add-usuario', 'url' => 'usuarios', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-processo', 'url' => 'processos', 'class' => 'smart-form']) !!}
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
@@ -68,10 +68,10 @@
                                     <div class="row">
                         
                                         <section class="col col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli" >
+                                            <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli')}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input required class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
+                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli')}}" class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -90,13 +90,13 @@
                                          <section class="col col-6">
                                             <label class="label">Nº Processo<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input class="form-control" value="{{old('nu_processo_pro')}}" type="text" name="nu_processo_pro" >
+                                                <input class="form-control" value="{{old('nu_processo_pro')}}" type="text" name="nu_processo_pro" required>
                                             </label>
                                         </section> 
-                                         <section class="col col-6" name="cd_tipo_processo_tpo" >                                       
+                                         <section class="col col-6" >                                       
                                             <label class="label" >Tipos de Processo</label>          
                                             <label class="select">
-                                                <select  id="" name="" >
+                                                <select  name="cd_tipo_processo_tpo" >
                                                     <option selected value="">Selecione o Tipo de Processo</option>     
                                                      @foreach($tiposProcesso as $tipo) 
                                                         <option {!! (old('cd_tipo_processo_tpo') == $tipo->cd_tipo_processo_tpo ? 'selected' : '' ) !!} value="{{$tipo->cd_tipo_processo_tpo}}">{{ $tipo->nm_tipo_processo_tpo}}</option>
@@ -220,7 +220,7 @@
                                     <section class="col col-sm-12">
                                     <label class="label">Observações</label>
                                     <label class="input">
-                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{old('dc_observacao_pro')}}" ></textarea>
+                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{old('dc_observacao_pro')}}" >{{old('dc_observacao_pro')}}</textarea>
                                     </label>
                                     </section> 
                                 </div>
@@ -268,8 +268,21 @@
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
 
-                $.ajax({
-                    url: '../advogados-por-cliente/'+ui.item.id,
+            buscaAdvogado();
+            
+          },
+          open: function(event, ui){
+            
+          }
+        });
+   
+        
+        var buscaAdvogado = function(){
+
+            var cliente = $("input[name='cd_cliente_cli']").val();
+
+            $.ajax({
+                    url: '../advogados-por-cliente/'+cliente,
                     type: 'GET',
                     dataType: "JSON",
                     beforeSend: function(){
@@ -297,17 +310,12 @@
                         error: function(response)
                         {
                             //console.log(response);
-                        }
-                });
+                    }
+            });
 
+        }
 
-          },
-          open: function(event, ui){
-            
-          }
-        });
-   
-          var buscaCidade = function(){
+        var buscaCidade = function(){
 
             estado = $("#estado").val();
 
@@ -346,6 +354,11 @@
                         }
                 });
             }
+        }
+
+        if($("input[name='cd_cliente_cli']").val() != '' && $("input[name='cd_cliente_cli']").val() != null){
+
+            buscaAdvogado();
         }
 
         buscaCidade();
