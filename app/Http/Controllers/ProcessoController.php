@@ -8,6 +8,7 @@ use App\Vara;
 use App\Estado;
 use App\Cidade;
 use App\Endereco;
+use App\TipoProcesso;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -49,10 +50,11 @@ class ProcessoController extends Controller
 
     public function novo(){
 
-        $estados = Estado::orderBy('nm_estado_est')->get();
-        $varas   = Vara::orderBy('nm_vara_var')->get();  
+        $estados       = Estado::orderBy('nm_estado_est')->get();
+        $varas         = Vara::orderBy('nm_vara_var')->get();  
+        $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
        
-        return view('processo/novo',['estados' => $estados,'varas' => $varas]);
+        return view('processo/novo',['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso]);
 
     }
 

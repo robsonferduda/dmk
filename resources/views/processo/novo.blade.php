@@ -68,10 +68,10 @@
                                     <div class="row">
                         
                                         <section class="col col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli">
+                                            <input type="hidden" name="cd_cliente_cli" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
+                                                <input required class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -79,8 +79,9 @@
                                         <section class="col col-sm-12">                                       
                                             <label class="label" >Advogado Solicitante</label> 
                                             <label class="select">
+                                                <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
                                                 <select  id="cd_contato_cot" name="cd_contato_cot" >
-                                                    <option selected value=""></option>            
+                                                    <option selected value="">Selecione um Advogado Solicitante</option>            
                                                 </select><i></i>  
                                             </label>         
                                         </section>
@@ -89,20 +90,26 @@
                                          <section class="col col-6">
                                             <label class="label">Nº Processo<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="" type="text" id="client" >
+                                                <input class="form-control" value="{{old('nu_processo_pro')}}" type="text" name="nu_processo_pro" >
                                             </label>
                                         </section> 
-                                         <section class="col col-6">                                       
-                                            <label class="label" >Tipo de Processo</label>          
-                                            <select  id="" name="" class="select2">
-                                                <option selected value=""></option>            
-                                            </select> 
+                                         <section class="col col-6" name="cd_tipo_processo_tpo" >                                       
+                                            <label class="label" >Tipos de Processo</label>          
+                                            <label class="select">
+                                                <select  id="" name="" >
+                                                    <option selected value="">Selecione o Tipo de Processo</option>     
+                                                     @foreach($tiposProcesso as $tipo) 
+                                                        <option {!! (old('cd_tipo_processo_tpo') == $tipo->cd_tipo_processo_tpo ? 'selected' : '' ) !!} value="{{$tipo->cd_tipo_processo_tpo}}">{{ $tipo->nm_tipo_processo_tpo}}</option>
+                                                     @endforeach       
+                                                </select><i></i>   
+                                            </label>
                                         </section>
-                                    </div>                                                     <div class="row">
+                                    </div>                                                     
+                                    <div class="row">
                                         <section class="col col-sm-12">
                                             <label class="label">Autor</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="" type="text" id="client" >
+                                                <input class="form-control" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
                                             </label>
                                         </section> 
                                     </div>    
@@ -131,7 +138,7 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="Correspondente..." type="text" id="client">
+                                                <input class="form-control" placeholder="Correspondente..." type="text">
                                             </label>
                                         </section>
                                         
@@ -148,19 +155,19 @@
                                     <section class="col col-4">
                                         <label class="label">Data da Audiência</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" id="client" >
+                                           <input class="dt_audiencia_pro" placeholder="___ /___ /___" type="text" name="dt_audiencia_pro" value="{{old('dt_audiencia_pro')}}">
                                         </label>
                                     </section> 
                                     <section class="col col-4">
                                         <label class="label">Hora da Audiência</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" id="client" >
+                                           <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{old('hr_audiencia_pro')}}" >
                                         </label>
                                     </section> 
                                      <section class="col col-4">
                                         <label class="label">Data Prazo Fatal</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" id="client" >
+                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}">
                                         </label>
                                     </section> 
                                 </div>    
@@ -168,7 +175,7 @@
                                      <section class="col col-sm-12">
                                         <label class="label">Réu</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" id="client" >
+                                           <input class="form-control" placeholder="" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
                                         </label>
                                     </section> 
                                 </div>
@@ -192,7 +199,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Preposto</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" id="client" >
+                                               <input class="form-control" placeholder="" type="text" name="nm_preposto_pro" value="{{old('nm_preposto_pro')}}">
                                             </label>
                                         </section> 
                                     </div>
@@ -200,7 +207,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Advogado</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" id="client" >
+                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{old('nm_advogado_pro')}}" >
                                             </label>
                                         </section> 
                                     </div>
@@ -213,7 +220,7 @@
                                     <section class="col col-sm-12">
                                     <label class="label">Observações</label>
                                     <label class="input">
-                                        <textarea class="form-control" rows="4"></textarea>
+                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{old('dc_observacao_pro')}}" ></textarea>
                                     </label>
                                     </section> 
                                 </div>
@@ -247,6 +254,13 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var path = "{{ url('autocompleteCliente') }}";
+        
+        $( "#client" ).focusout(function(){
+           if($("input[name='cd_cliente_cli']").val() == ''){
+                $("#client").val('');
+           }
+        });
+
         $( "#client" ).autocomplete({
           source: path,
           minLength: 3,
@@ -266,16 +280,15 @@
                     },
                     success: function(response)
                     {                   
-
-                        console.log(response); 
-                        // $('#cidade').empty();
-                        // $('#cidade').append('<option selected value="">Selecione</option>');
+                        
+                        $('#cd_contato_cot').empty();
+                        $('#cd_contato_cot').append('<option selected value="">Selecione um Advogado Solicitante</option>');
                         $.each(response,function(index,element){
 
-                            if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                            if($("#contatoAux").val() != element.cd_contato_cot){
+                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');                            
                             }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');      
                             }
                                 
                             });       
@@ -288,6 +301,9 @@
                 });
 
 
+          },
+          open: function(event, ui){
+            
           }
         });
    
