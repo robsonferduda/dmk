@@ -24,6 +24,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracao/minify','HomeController@minify');
 	Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
+	Route::get('cliente/limpar-selecao/{id}','ClienteController@limparSelecao');
 	Route::get('cliente/buscar','ClienteController@buscar');
 	Route::get('cliente/buscar-honorarios','ClienteController@buscarHonorarios');
 	Route::get('cliente/novo','ClienteController@novo');

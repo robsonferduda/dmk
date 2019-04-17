@@ -378,27 +378,82 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
-                    $('#cidade_honorario').empty();
-                    $('#cidade_honorario').append('<option selected value="">Carregando...</option>');
-                    $('#cidade_honorario').prop( "disabled", true );
+                    $('#cidade').empty();
+                    $('#cidade').append('<option selected value="">Carregando...</option>');
+                    $('#cidade').prop( "disabled", true );
                 },
             success: function(response)
             {                    
-                $('#cidade_honorario').empty();
-                $('#cidade_honorario').append('<option selected value="">Selecione</option>');
-                $('#cidade_honorario').append('<option selected value="0">Todas</option>');
+                $('#cidade').empty();
+                $('#cidade').append('<option selected value="">Selecione</option>');
+                $('#cidade').append('<option selected value="0">Todas</option>');
                 
                 $.each(response,function(index,value){
-                    $('#cidade_honorario').append('<option value="'+value.cd_cidade_cde+'">'+value.cidade.nm_cidade_cde+'</option>');                   
+                    $('#cidade').append('<option value="'+value.cd_cidade_cde+'">'+value.cidade.nm_cidade_cde+'</option>');                   
                 });  
 
-                $('#cidade_honorario').trigger('change');     
-                $('#cidade_honorario').prop( "disabled", false );        
+                $('#cidade').trigger('change');     
+                $('#cidade').prop( "disabled", false );        
             },
             error: function(response)
             {
             }
         });
+	});
+
+	$(".taxa-honorario").change(function(){
+
+		var valor = $(this).val();
+		var item = $(this).closest("tr")    
+                          .find(".toda-cidade")     
+                          .attr("data-valor",valor);
+	});
+
+	$(".toda-cidade").click(function(){
+
+		var obj_cidade = $(this).data("cidade");
+		var obj_servico = $(this).data("servico");
+		var obj_valor = $(this).data("valor");
+
+		$(".taxa-honorario").each(function(){
+
+			var servico = $(this).data("servico");
+
+			if(obj_servico === servico){
+				$(this).val(obj_valor);
+			}
+			
+		});
+
+	});
+
+	$(".todo-servico").click(function(){
+
+		var obj_cidade = $(this).data("cidade");
+		var obj_servico = $(this).data("servico");
+		var obj_valor = $(this).data("valor");
+
+		$(".taxa-honorario").each(function(){
+
+			var cidade = $(this).data("cidade");
+			console.log(cidade);
+
+			if(obj_cidade === cidade){
+				$(this).val(obj_valor);
+			}
+			
+		});
+
+	});
+
+	$(".toda-tabela").click(function(){
+
+		var obj_valor = $(this).data("valor");
+
+		$(".taxa-honorario").each(function(){
+			$(this).val(obj_valor);			
+		});
+
 	});
 
 });
