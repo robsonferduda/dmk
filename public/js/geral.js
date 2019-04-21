@@ -3,7 +3,9 @@ $(document).ready(function() {
 	var pathname = window.location.origin+"/dmk/public/";
 
 	/** ======================== Masks ========================   **/
-
+	$('.hr_audiencia_pro').mask('00:00');
+	$('.dt_prazo_fatal_pro').mask('00/00/0000');
+	$('.dt_audiencia_pro').mask('00/00/0000');
 	$('.data_nascimento').mask('00/00/0000');
 	$('.data_fundacao').mask('00/00/0000');
 	$('.data_admissao').mask('00/00/0000');

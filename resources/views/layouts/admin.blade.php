@@ -238,7 +238,7 @@
                                 <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('processos') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
                                 <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Acompanhar</span></a>

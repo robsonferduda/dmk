@@ -394,16 +394,16 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::where('nm_razao_social_cli', 'LIKE', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'LIKE', '%'. $search. '%')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->get();
 
         $results = array();
         foreach ($resultados as $ret)
         {
 
             if(!empty($ret->nm_fantasia_cli)){
-                $nome =  $ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
+                $nome =  $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
             }else{
-                $nome = $ret->nm_razao_social_cli;
+                $nome = $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }
             
            $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome ];
@@ -454,10 +454,10 @@ class ClienteController extends Controller
         $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
 
         $contatos = Contato::where('cd_conta_con',$conta)
-                           ->where('cd_tipo_contato_tct', \TipoEntidade::ADVOGADO)
+                           ->where('cd_tipo_contato_tct', \TipoContato::ADVOGADO)
                            ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
                            ->get();
 
-        dd($contatos);
+        echo json_encode($contatos);
     }
 }

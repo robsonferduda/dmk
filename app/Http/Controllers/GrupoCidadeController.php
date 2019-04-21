@@ -118,7 +118,7 @@ class GrupoCidadeController extends Controller
     {
 
         DB::beginTransaction();
-
+        
         $request->cidades = array_unique($request->cidades);
         
         $gruposCidades = GrupoCidade::where('cd_conta_con',$this->cdContaCon)->where('cd_grupo_cidade_grc',$id)->first();
@@ -128,8 +128,15 @@ class GrupoCidadeController extends Controller
         $ret = $gruposCidades->cidades()->sync($data);
           
         if($ret){
-        	Flash::success('Dados atualizados com sucesso');
-            DB::commit(); 
+
+            $gruposCidades->fill(['nm_grupo_cidade_grc' => $request->nm_grupo_cidade_grc]);
+            
+            if($gruposCidades->saveOrFail()){
+                
+                Flash::success('Dados atualizados com sucesso');
+                DB::commit(); 
+            }
+        	
         }else{
 			Flash::error('Erro ao atualizar dados');
             DB::rollBack();

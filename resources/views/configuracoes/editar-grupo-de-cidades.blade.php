@@ -92,7 +92,7 @@
                             </fieldset>
                             <footer class="form-actions">
                                 <button type="submit" class="btn btn-primary">
-                                    Cadastrar
+                                    Atualizar
                                 </button>
                             </footer>
                         {!! Form::close() !!}                       
@@ -120,7 +120,7 @@
             infoTextFiltered: '<span class="label label-warning">Filtrados</span> {0} de {1}',
             infoTextEmpty: 'Não há registros',
             filterPlaceHolder: 'Filtrar Cidades',
-            preserveSelectionOnMove: 'moved',
+            preserveSelectionOnMove: false,
             moveSelectedLabel: 'Mover Cidades Selecionadas',
             moveAllLabel: 'Mover Todas Cidades',
             removeSelectedLabel: 'Remover Cidades Selecionadas',
