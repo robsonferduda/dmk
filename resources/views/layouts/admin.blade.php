@@ -393,7 +393,7 @@
         </script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
 
-        <script src="{{ asset('js/geral.js') }}"></script>
+        <script src="{{ asset('js/geral.js') }}?v={{ date('YmdHis') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>
         
         <!-- IMPORTANT: APP CONFIG -->

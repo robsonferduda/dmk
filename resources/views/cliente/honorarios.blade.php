@@ -121,7 +121,7 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-12">   
-                                        @if(isset($cidades))
+                                        @if(count($cidades) > 0)
                                             <div class="col-md-6"> 
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
@@ -212,6 +212,8 @@
                                                         </table>
                                                     </div>
                                                 @endif
+                                            @else
+                                                <h6>Nenhum honorário cadastrado</h6>
                                             @endif
                                         </div>
                                     </div>

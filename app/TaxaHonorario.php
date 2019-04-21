@@ -30,7 +30,7 @@ class TaxaHonorario extends Model
 
     public function tipoServico()
     {
-        return $this->hasOne('App\Estado','cd_tipo_servico_tse', 'cd_tipo_servico_tse');
+        return $this->hasOne('App\TipoServico','cd_tipo_servico_tse', 'cd_tipo_servico_tse');
     }
 
     public function cidade()

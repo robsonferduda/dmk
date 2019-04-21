@@ -323,6 +323,7 @@ $(document).ready(function() {
 
 		var valores = new Array();
 		var entidade = $("#cd_entidade").val();
+		var cliente = $("#cd_cliente").val();
 		
 		$('.taxa-honorario').each(function(i, obj) {
     		
@@ -355,7 +356,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	location.reload();
+            	window.location.href = pathname+"/cliente/honorarios/"+cliente;
             },
 		   	error: function(response)
 		   	{
@@ -399,19 +400,14 @@ $(document).ready(function() {
         });
 	});
 
-	$(".taxa-honorario").change(function(){
-
-		var valor = $(this).val();
-		var item = $(this).closest("tr")    
-                          .find(".toda-cidade")     
-                          .attr("data-valor",valor);
-	});
-
 	$(".toda-cidade").click(function(){
 
 		var obj_cidade = $(this).data("cidade");
 		var obj_servico = $(this).data("servico");
-		var obj_valor = $(this).data("valor");
+		var obj_valor = $(this).closest("td")    
+                          .find(".taxa-honorario")
+                          .val()
+                          .replace(".", ",");
 
 		$(".taxa-honorario").each(function(){
 
@@ -429,13 +425,15 @@ $(document).ready(function() {
 
 		var obj_cidade = $(this).data("cidade");
 		var obj_servico = $(this).data("servico");
-		var obj_valor = $(this).data("valor");
+		var obj_valor = $(this).closest("td")    
+                          .find(".taxa-honorario")
+                          .val()
+                          .replace(".", ",");
 
 		$(".taxa-honorario").each(function(){
 
 			var cidade = $(this).data("cidade");
-			console.log(cidade);
-
+			
 			if(obj_cidade === cidade){
 				$(this).val(obj_valor);
 			}
@@ -446,7 +444,10 @@ $(document).ready(function() {
 
 	$(".toda-tabela").click(function(){
 
-		var obj_valor = $(this).data("valor");
+		var obj_valor = $(this).closest("td")    
+                          .find(".taxa-honorario")
+                          .val()
+                          .replace(".", ",");
 
 		$(".taxa-honorario").each(function(){
 			$(this).val(obj_valor);			
