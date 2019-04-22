@@ -122,7 +122,7 @@
                                                     <strong>Bairro: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nm_bairro_ede : '' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Cidade/Estado: </strong> {{ ($cliente->entidade->endereco->cidade()->first()) ? $cliente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
+                                                    <strong>Cidade/Estado: </strong> {{ ($cliente->entidade->endereco and $cliente->entidade->endereco->cidade()->first()) ? $cliente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
                                                 </li>
                                             </ul>
                                         </p> 
