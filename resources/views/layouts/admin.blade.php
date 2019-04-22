@@ -209,14 +209,14 @@
                             </li>
                         </ul>   
                     </li>
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'correspondente') ? 'open' : '' }}">
+                        <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('correspondentes/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('correspondentes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                         </ul>   
                     </li>

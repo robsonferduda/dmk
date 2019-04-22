@@ -1,0 +1,163 @@
+@extends('layouts.admin')
+@section('content')
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li><a href="{{ url('home') }}">Início</a></li>
+        <li>Correspondentes</li>
+        <li>Listar</li>
+    </ol>
+</div>
+<div id="content">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <h1 class="page-title txt-color-blueDark">
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span> > Listar</span>
+            </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @include('layouts/messages')
+        </div>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="well">
+                <form action="{{ url('correspondente/buscar') }}" class="form-inline" method="GET" role="search">
+                    {{ csrf_field() }}
+                    <fieldset>
+                        <div class="row"> 
+                            <section class="col col-md-12"> 
+                                <span>FILTROS PARA BUSCA (Selecione um ou mais critérios)</span><hr/>
+                            </section>
+                            <section class="col col-md-3">                                       
+                                <label class="label label-black" >Estado</label>          
+                                <select  id="estado" name="cd_estado_est" class="select2">
+                                    <option selected value="">Selecione um estado</option>
+                                    @foreach(App\Estado::all() as $estado) 
+                                        <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                    @endforeach
+                                </select>
+                            </section>
+                            <section class="col col-md-3">
+                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                <label class="label label-black" >Cidade</label>          
+                                <select id="cidade" name="cd_cidade_cde" class="select2">
+                                    <option selected value="">Selecione uma Cidade</option>
+                                </select> 
+                            </section> 
+                            <section class="col col-md-3">
+                                <label class="label label-black" >Nome</label><br>
+                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
+                            </section>
+                            <section class="col col-md-2">
+                                <label class="label label-black">CPF/CNPJ</label>
+                                <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
+                            </section>
+                            <section class="col col-md-1">
+                                <label class="label" >Buscar</label>
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                            </section>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Correspondentes</h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        @if(isset($correspondetes))
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>                         
+                                <tr>    
+                                    <th style="width: 15%;">CPF/CNPJ</th>                                
+                                    <th style="width: 45%;">Nome</th>
+                                    <th style="width: 15%;" class="center">Email</th>                                  
+                                    <th style="width: 25%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($correspondetes as $correspondente)
+                                    <tr>
+                                        <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf : "Não informado" }}</td>
+                                        <td>{{ $correspondente->correspondente->nm_fantasia_con }}</td>
+                                        <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
+                                        <td>
+                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i></a>
+                                            <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i></a>
+                                            <button title="Excluir" data-url="correspondente/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach                                                           
+                            </tbody>
+                        </table>
+                        @else
+                            <h5 class="center marginTop20"><i class="fa fa-info-circle"></i> Selecione os termos da sua busca e clique em <strong>Buscar</strong></h5>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+@endsection
+@section('script')
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var buscaCidade = function(){
+
+            estado = $("#estado").val();
+
+            if(estado != ''){
+
+                $.ajax(
+                    {
+                        url: '../public/cidades-por-estado/'+estado,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Carregando...</option>');
+                            $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                    
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){
+
+                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
+                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                }else{
+                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                }
+                                
+                            });       
+                            $('#cidade').trigger('change');     
+                            $('#cidade').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                    });
+            }
+        }
+
+        buscaCidade();
+
+        $("#estado").change(function(){
+            
+            buscaCidade(); 
+
+        });
+
+    });
+</script>
+@endsection
