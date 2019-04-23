@@ -66,4 +66,36 @@ class CorrespondenteController extends Controller
 
     }
 
+    public function buscarTodos(Request $request){
+
+        $nome = $request->get('nome');
+        $identificacao = $request->get('identificacao');
+
+        $correspondentes = Correspondente::join('entidade_ete', function($join) use ($identificacao){
+                                    
+                                    $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
+                                    $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
+                                    if(!empty($nome)) $join->where('nm_fantasia_con','like','%'.$nome.'%');
+                                    
+                                    if(!empty($identificacao)){
+                                        $join->join('identificacao_ide', function($join) use ($identificacao){
+                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
+                                            $join->where('nu_identificacao_ide','=',$identificacao);
+                                        });
+                                    }                            
+                            })
+                            ->orderBy('conta_con.nm_fantasia_con','DESC')
+                            ->get();
+
+        if(count($correspondentes) == 0)
+            \Session::put('busca_vazia', true);
+
+        return view('correspondente/novo',['correspondetes' => $correspondentes]);
+
+    }
+
+    public function novo(){
+        return view('correspondente/novo');
+    }
+
 }
