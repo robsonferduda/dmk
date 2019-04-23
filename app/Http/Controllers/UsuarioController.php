@@ -32,7 +32,7 @@ class UsuarioController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->cdContaCon = 1;
+        $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
     }
 
     public function index()
@@ -41,6 +41,13 @@ class UsuarioController extends Controller
         $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
         return view('usuario/usuarios',['usuarios' => $usuarios]);
+    }
+
+    public function detalhes($id)
+    {
+        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
+
+        return view('usuario/detalhes',['usuario' => $usuario]);
     }
 
     public function buscar(Request $request)

@@ -46,6 +46,16 @@ class User extends Authenticatable
         return $this->hasOne('App\EstadoCivil','cd_estado_civil_esc', 'cd_estado_civil_esc');
     }
 
+    public function departamento()
+    {
+        return $this->hasOne('App\Departamento','cd_departamento_dep', 'cd_departamento_dep');
+    }
+
+    public function cargo()
+    {
+        return $this->hasOne('App\Cargo','cd_cargo_car', 'cd_cargo_car');
+    }
+
     public static function boot(){
 
         parent::boot();

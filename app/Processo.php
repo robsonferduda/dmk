@@ -4,11 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class Processo extends Model
+class Processo extends Model implements AuditableContract
 {
 
 	use SoftDeletes;
+    use Auditable;
 
     protected $table = 'processo_pro';
     protected $primaryKey = 'cd_processo_pro';
@@ -38,5 +41,25 @@ class Processo extends Model
     public function cliente()
     {
         return $this->hasOne('App\Cliente','cd_cliente_cli', 'cd_cliente_cli');
+    }
+
+    public function cidade()
+    {
+        return $this->hasOne('App\Cidade','cd_cidade_cde', 'cd_cidade_cde');
+    }
+
+    public function advogadoSolicitante()
+    {
+        return $this->hasOne('App\Contato','cd_contato_cot', 'cd_contato_cot')->where('cd_tipo_contato_tct', \TipoContato::ADVOGADO);
+    }
+
+    public function tipoProcesso()
+    {
+        return $this->hasOne('App\TipoProcesso','cd_tipo_processo_tpo', 'cd_tipo_processo_tpo');
+    }
+
+    public function vara()
+    {
+        return $this->hasOne('App\Vara','cd_vara_var', 'cd_vara_var');
     }
 }

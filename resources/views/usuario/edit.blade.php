@@ -9,10 +9,14 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Usuários <span>> Novo</span>
             </h1>
+        </div>
+         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('usuarios') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Usuários</a>
+            <a data-toggle="modal" href="{{ url('usuarios/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>                
         </div>
     </div>
     <div class="row">

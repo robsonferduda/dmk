@@ -37,6 +37,8 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('autocompleteCliente', 'ClienteController@search');
 	Route::get('processos/novo','ProcessoController@novo');
+	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
+	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
 
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
@@ -51,6 +53,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');
 	Route::get('usuarios/novo','UsuarioController@novo');
+	Route::get('usuarios/detalhes/{id}','UsuarioController@detalhes');
 	Route::get('usuarios/editar/{cdUsuario}','UsuarioController@editar');
 	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
 	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
@@ -77,5 +80,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('processos','ProcessoController');
+	Route::resource('usuarios','UsuarioController');
 
 });

@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-cog"></i>Usuarios <span> > Lista</span>
+                <i class="fa-fw fa fa-cog"></i>Usuários <span> > Lista</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -52,11 +52,11 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 40%;">Usuário</th>
-                                    <th style="width: 30%;">E-mail</th>
+                                    <th style="width: 35%;">Usuário</th>
+                                    <th style="width: 25%;">E-mail</th>
                                     <th style="width: 15%;">Perfil</th>
                                    
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 20%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,8 +66,9 @@
                                         <td data-email="{{ $usuario->email }}">{{ $usuario->email }}</td>
                                         <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td>
                                         <td>
-                                            <a class="btn btn-primary btn-xs editar_vara" style="width: 48%;" href="{{ url('usuarios/editar/'.$usuario->id) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <button data-url="usuarios/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <a class="btn btn-default btn-xs"  href="{{ url('usuarios/detalhes/'.$usuario->id) }}"><i class="fa fa-folder"></i> Detalhes</a>
+                                            <a class="btn btn-primary btn-xs editar_vara" href="{{ url('usuarios/editar/'.$usuario->id) }}"><i class="fa fa-edit"></i> Editar</a>
+                                            <button data-url="usuarios/" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach
