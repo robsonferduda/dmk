@@ -50,6 +50,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
 	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
 
+	Route::resource('correspondentes', 'CorrespondenteController');
+	Route::get('correspondente/buscar','CorrespondenteController@buscar');
+	Route::get('correspondente/novo','CorrespondenteController@novo');
+	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');
 	Route::get('usuarios/novo','UsuarioController@novo');
