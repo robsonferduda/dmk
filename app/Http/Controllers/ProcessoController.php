@@ -9,6 +9,7 @@ use App\Estado;
 use App\Cidade;
 use App\TipoProcesso;
 use App\Processo;
+use App\TipoDespesa;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -33,6 +34,27 @@ class ProcessoController extends Controller
         $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->get();
 
         return view('processo/processos',['processos' => $processos]);
+    }
+
+    public function financas($id){
+
+        $processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $despesasReembolsaveis = $processo->cliente->reembolsoTipoDespesa->pluck('cd_tipo_despesa_tds')->toArray();
+
+        dd($despesasReembolsaveis);
+
+        // if(in_array(16, $despesasReembolsaveis)){
+        //     dd('passou16');
+        // }
+        // if(in_array(14, $despesasReembolsaveis)){
+        //     dd('passou14');
+        // }
+
+
+        $despesas = TipoDespesa::where('cd_conta_con',$this->cdContaCon)->get();
+
+        return view('processo/financas',['despesas' => $despesas]);
+
     }
 
 

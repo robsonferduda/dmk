@@ -69,7 +69,7 @@
                                         <td>
                                             <a class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-folder"></i> Detalhes</a>
                                             <a class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <a class="btn btn-warning btn-xs" href="{{ url('processos/honorarios/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i> Honorários</a>
+                                            <a class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i> Finanças</a>
                                             <button data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>

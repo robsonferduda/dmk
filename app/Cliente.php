@@ -34,6 +34,11 @@ class Cliente extends Model
         return $this->hasOne('App\TipoPessoa','cd_tipo_pessoa_tpp', 'cd_tipo_pessoa_tpp');
     }
 
+    public function reembolsoTipoDespesa()
+    {
+        return $this->hasMany('App\ReembolsoTipoDespesa','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
     public static function boot(){
 
         parent::boot();

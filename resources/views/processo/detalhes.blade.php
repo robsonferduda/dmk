@@ -44,7 +44,7 @@
                                             <ul class="list-unstyled">
                                            
                                                 <li>
-                                                    <strong>Cliente: </strong> {{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }} 
+                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
                                                 </li>
                                                 <li>
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}

@@ -65,7 +65,7 @@ class UsuarioController extends Controller
 
     public function novo(){
 
-        $niveis        = Nivel::orderBy('dc_nivel_niv')->get();
+        $niveis        = Nivel::where('fl_nivel_conta_niv','S')->orderBy('dc_nivel_niv')->get();
         $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
         $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
         $estados       = Estado::orderBy('nm_estado_est')->get();
@@ -80,7 +80,7 @@ class UsuarioController extends Controller
 
     public function editar($id){
 
-        $niveis        = Nivel::orderBy('dc_nivel_niv')->get();
+        $niveis        = Nivel::where('fl_nivel_conta_niv','S')->orderBy('dc_nivel_niv')->get();
         $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
         $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
         $estados       = Estado::orderBy('nm_estado_est')->get();
