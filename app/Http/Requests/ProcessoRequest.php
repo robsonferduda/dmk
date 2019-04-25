@@ -29,8 +29,9 @@ class ProcessoRequest extends FormRequest
     {
 
         $data = [
-            'cd_cliente_cli'  => 'required',
-            'nu_processo_pro' => 'required'
+            'cd_cliente_cli'       => 'required',
+            'nu_processo_pro'      => 'required',
+            'cd_tipo_processo_tpo' => 'required'
         ];
 
         return $data;
@@ -39,8 +40,9 @@ class ProcessoRequest extends FormRequest
     public function messages()
     {
         return [
-            'cd_cliente_cli.required'     => 'O campo Cliente é obrigatório. Selecione um cliente existente.',
-            'nu_processo_pro.required'    => 'O campo Nº processo é obrigatório'
+            'cd_cliente_cli.required'       => 'O campo Cliente é obrigatório. Selecione um cliente existente.',
+            'nu_processo_pro.required'      => 'O campo Nº processo é obrigatório',
+            'cd_tipo_processo_tpo.required' => 'O campo Tipo de Processo é obrigatório' 
         ];
     }
 }

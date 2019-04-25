@@ -52,21 +52,25 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 40%;">Nº Processo</th>
+                                    <th style="width: 20%;">Nº Processo</th>
+                                    <th style="width: 10%;">Data do Cadastro</th>
                                     <th style="width: 30%;">Cliente</th>
                                    
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 20%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($processos as $processo)
                                     <tr>                                    
                                         <td>{{ $processo->nu_processo_pro }}</td>
+                                        <td>{{ date('d/m/Y H:i', strtotime($processo->created_at)) }}</td>
                                         <td>{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</td>
                                       
                                         <td>
-                                            <a class="btn btn-primary btn-xs editar_vara" style="width: 48%;" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <button data-url="processos/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <a class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-folder"></i> Detalhes</a>
+                                            <a class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i> Editar</a>
+                                            <a class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i> Finanças</a>
+                                            <button data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach

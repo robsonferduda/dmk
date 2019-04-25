@@ -9,10 +9,14 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Processos <span>> Novo</span>
             </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Processos</a>
+            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>    
         </div>
     </div>
     <div class="row">
@@ -56,7 +60,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
                         
-                        {!! Form::open(['id' => 'frm-add-processo', 'url' => 'processos', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-processo', 'url' => ['processos',$processo->cd_processo_pro], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
@@ -68,10 +72,10 @@
                                     <div class="row">
                         
                                         <section class="col col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli')}}" >
+                                            <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli') ? old('cd_cliente_cli') : $processo->cd_cliente_cli}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli')}}" class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
+                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli') ? old('nm_cliente_cli') : $nome }}" class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -79,7 +83,7 @@
                                         <section class="col col-sm-12">                                       
                                             <label class="label" >Advogado Solicitante</label> 
                                             <label class="select">
-                                                <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
+                                                <input type="hidden" id="contatoAux"  value="{{ old('cd_contato_cot') ? old('cd_contato_cot') : $processo->cd_contato_cot }}">
                                                 <select  id="cd_contato_cot" name="cd_contato_cot" >
                                                     <option selected value="">Selecione um Advogado Solicitante</option>            
                                                 </select><i></i>  
@@ -90,7 +94,7 @@
                                          <section class="col col-6">
                                             <label class="label">Nº Processo<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input class="form-control" value="{{old('nu_processo_pro')}}" type="text" name="nu_processo_pro" required>
+                                                <input class="form-control" value="{{old('nu_processo_pro') ? old('nu_processo_pro') : $processo->nu_processo_pro }}" type="text" name="nu_processo_pro" required>
                                             </label>
                                         </section> 
                                          <section class="col col-6" >                                       
@@ -99,7 +103,7 @@
                                                 <select  name="cd_tipo_processo_tpo" required>
                                                     <option selected value="">Selecione o Tipo de Processo</option>     
                                                      @foreach($tiposProcesso as $tipo) 
-                                                        <option {!! (old('cd_tipo_processo_tpo') == $tipo->cd_tipo_processo_tpo ? 'selected' : '' ) !!} value="{{$tipo->cd_tipo_processo_tpo}}">{{ $tipo->nm_tipo_processo_tpo}}</option>
+                                                        <option {!! (old('cd_tipo_processo_tpo',$processo->cd_tipo_processo_tpo) == $tipo->cd_tipo_processo_tpo ? 'selected' : '' ) !!} value="{{$tipo->cd_tipo_processo_tpo}}">{{ $tipo->nm_tipo_processo_tpo}}</option>
                                                      @endforeach       
                                                 </select><i></i>   
                                             </label>
@@ -109,7 +113,7 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Autor</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
+                                                <input class="form-control" placeholder="" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
                                             </label>
                                         </section> 
                                     </div>    
@@ -120,14 +124,15 @@
                                             <label class="label" >Estado</label>          
                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                 <option selected value="">Selecione um estado</option>
+                                                
                                                 @foreach($estados as $estado) 
-                                                    <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                    <option {!! (old('cd_estado_est',!empty($processo->cidade->cd_estado_est) ? $processo->cidade->cd_estado_est : '') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
 
                                             </select> 
                                         </section>
                                         <section class="col col-6">
-                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : $processo->cd_cidade_cde }}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
                                                <option selected value="">Selecione uma Cidade</option>
@@ -155,19 +160,19 @@
                                     <section class="col col-4">
                                         <label class="label">Data da Audiência</label>
                                         <label class="input">
-                                           <input class="dt_audiencia_pro" placeholder="___ /___ /___" type="text" name="dt_audiencia_pro" value="{{old('dt_audiencia_pro')}}">
+                                           <input class="dt_audiencia_pro" placeholder="___ /___ /___" type="text" name="dt_audiencia_pro" value="{{ old('dt_audiencia_pro') ? old('dt_audiencia_pro') : $processo->dt_audiencia_pro }}">
                                         </label>
                                     </section> 
                                     <section class="col col-4">
                                         <label class="label">Hora da Audiência</label>
                                         <label class="input">
-                                           <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{old('hr_audiencia_pro')}}" >
+                                           <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : $processo->hr_audiencia_pro}}" >
                                         </label>
                                     </section> 
                                      <section class="col col-4">
                                         <label class="label">Data Prazo Fatal</label>
                                         <label class="input">
-                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}">
+                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{ old('dt_prazo_fatal_pro') ? old('dt_prazo_fatal_pro') : $processo->dt_prazo_fatal_pro }}">
                                         </label>
                                     </section> 
                                 </div>    
@@ -175,7 +180,7 @@
                                      <section class="col col-sm-12">
                                         <label class="label">Réu</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
+                                           <input class="form-control" placeholder="" type="text" name="nm_reu_pro" value="{{ old('nm_reu_pro') ? old('nm_reu_pro') : $processo->nm_reu_pro}}" >
                                         </label>
                                     </section> 
                                 </div>
@@ -185,7 +190,7 @@
                                         <select  name="cd_vara_var" class="select2">
                                             <option selected value="">Selecione uma vara</option>
                                             @foreach($varas as $vara) 
-                                                <option {!! (old('cd_vara_var') == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
+                                                <option {!! (old('cd_vara_var',$processo->cd_vara_var) == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
                                             @endforeach
 
                                         </select> 
@@ -199,7 +204,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Preposto</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_preposto_pro" value="{{old('nm_preposto_pro')}}">
+                                               <input class="form-control" placeholder="" type="text" name="nm_preposto_pro" value="{{ old('nm_preposto_pro') ? old('nm_preposto_pro') : $processo->nm_preposto_pro }}">
                                             </label>
                                         </section> 
                                     </div>
@@ -207,7 +212,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Advogado</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{old('nm_advogado_pro')}}" >
+                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{ old('nm_advogado_pro') ? old('nm_advogado_pro') : $processo->nm_advogado_pro }}" >
                                             </label>
                                         </section> 
                                     </div>
@@ -220,7 +225,7 @@
                                     <section class="col col-sm-12">
                                     <label class="label">Observações</label>
                                     <label class="input">
-                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{old('dc_observacao_pro')}}" >{{old('dc_observacao_pro')}}</textarea>
+                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{ old('dc_observacao_pro') ? old('dc_observacao_pro') : $processo->dc_observacao_pro }}" >{{ old('dc_observacao_pro') ? old('dc_observacao_pro') :  $processo->dc_observacao_pro }}</textarea>
                                     </label>
                                     </section> 
                                 </div>
@@ -232,7 +237,7 @@
                           
                         <footer>
                             <button type="submit" class="btn btn-primary">
-                                Cadastrar
+                                Atualizar
                             </button>
                         </footer>
                         {!! Form::close() !!}                      
@@ -282,7 +287,7 @@
             var cliente = $("input[name='cd_cliente_cli']").val();
 
             $.ajax({
-                    url: '../advogados-por-cliente/'+cliente,
+                    url: '../../advogados-por-cliente/'+cliente,
                     type: 'GET',
                     dataType: "JSON",
                     beforeSend: function(){
@@ -323,7 +328,7 @@
 
                 $.ajax(
                     {
-                        url: '../cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
