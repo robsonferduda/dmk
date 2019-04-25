@@ -18,7 +18,7 @@
 					</section>
 					<section>
 						<label class="input"> <i class="icon-append fa fa-user"></i>
-						<input type="text" name="nm_fantasia_con" placeholder="Nome" value="{{ old('nm_fantasia_con') }}">
+						<input type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
 						<b class="tooltip tooltip-bottom-right">Nome Completo</b> </label>
 					</section>
 					<section>
