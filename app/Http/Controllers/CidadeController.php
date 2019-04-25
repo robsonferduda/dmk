@@ -26,7 +26,7 @@ class CidadeController extends Controller
 
         $cidades = Cidade::select('cd_cidade_cde','nm_cidade_cde','cd_estado_est')->whereIn('cd_estado_est', $estados)->orderBy('nm_cidade_cde')->with(['estado' => function($query) {
                 $query->select('cd_estado_est', 'sg_estado_est');
-        }])->get(); 
+        }])->orderBy('nm_cidade_cde')->get(); 
         echo json_encode($cidades);
     }
 

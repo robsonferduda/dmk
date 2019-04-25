@@ -58,6 +58,23 @@ $(document).ready(function() {
 		$("#modal_exclusao").modal('show');
 	});
 
+	$(".adicionar_registro").click(function(){
+
+		var id  = $(this).data('id');
+		var url = $(this).data('url');
+
+		$("#modal_confirma_correspondente #url").val(url);
+		$("#modal_confirma_correspondente #id_correspondente").val(id);
+		$("#modal_confirma_correspondente").modal('show');
+	});
+
+	$(".modal_dados_correspondente").click(function(){
+
+		var id  = $(this).closest('tr').find('td[data-id]').data('id');
+
+		$("#modalDadosCorrespondente").modal('show');
+	});
+
 	$(".editar_area").click(function(){
 
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');

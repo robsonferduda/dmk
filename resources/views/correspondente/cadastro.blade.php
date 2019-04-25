@@ -1,20 +1,20 @@
 @extends('layouts.register')
 @section('content')
-	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin: 0 auto; float: none;">
-		<div class="well no-padding">			
-			{!! Form::open(['id' => 'frm-add-conta', 'url' => 'contas', 'class' => 'smart-form client-form']) !!}
-				<header>
-					<strong>Cadastre-se</strong>
-				</header>
-				<fieldset>
-					<section>
-						<div class="text-danger">
-							@if ($errors->any())
-								@foreach($errors->all() as $error)
-									{!! $error !!}
-								@endforeach
-							@endif
-						</div>
+<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin: 0 auto; float: none;">
+	<div class="well no-padding">
+		{!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro', 'class' => 'smart-form client-form']) !!}
+			<header>
+				<strong>Cadastro de Correspondentes</strong>
+			</header>
+			<fieldset>
+				<section>
+					<div class="text-danger">
+						@if ($errors->any())
+							@foreach($errors->all() as $error)
+								{!! $error !!}
+							@endforeach
+						@endif
+					</div>
 					</section>
 					<section>
 						<label class="input"> <i class="icon-append fa fa-user"></i>
@@ -40,8 +40,8 @@
 				<fieldset>
 					<section>
 						<label class="checkbox">
-							<input type="checkbox" name="terms" id="terms"><i></i>Eu aceito os <a href="#" data-toggle="modal" data-target="#myModal"> Termos e Condições</a>
-						</label>
+						<input type="checkbox" name="terms" id="terms">
+						<i></i>Eu aceito os <a href="#" data-toggle="modal" data-target="#myModal"> Termos e Condições</a></label>
 					</section>
 				</fieldset>
 				<footer>
@@ -49,7 +49,7 @@
 						<i class="fa fa-check"></i> Cadastrar
 					</button>
 				</footer>
-			{!! Form::close() !!} 
-		</div>		
-	</div>
+		{!! Form::close() !!} 
+	</div>	
+</div>
 @endsection

@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-list"></i> Listar Correspondentes</a>
         </div>
     </div>
     <div class="row">
@@ -29,13 +29,17 @@
                     <fieldset>
                         <div class="row"> 
                             <section class="col col-md-12"> 
-                                <span>BUSCAR NO DIRETÓRIO CENTRAL DE CORRESPONDENTES (Selecione um ou mais critérios)</span><hr/>
+                                <span>BUSCAR NO DIRETÓRIO CENTRAL DE CORRESPONDENTES</span><span class="text-primary"> Selecione um ou mais critérios<span><hr/>
                             </section>
-                            <section class="col col-md-3">
+                            <section class="col col-md-4">
                                 <label class="label label-black" >Nome</label><br>
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
-                            <section class="col col-md-2">
+                             <section class="col col-md-3">
+                                <label class="label label-black" >Email</label><br>
+                                <input type="text" style="width: 100%;" name="email" class="form-control" id="email" placeholder="Email">
+                            </section>
+                            <section class="col col-md-3">
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
                             </section>
@@ -69,12 +73,12 @@
                                     @foreach($correspondetes as $correspondente)
                                         <tr>
                                             <td>{{ ($correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf : "Não informado" }}</td>
-                                            <td>{{ $correspondente->nm_fantasia_con }}</td>
-                                            <td></td>
-                                            <td>
-                                                <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i></a>
-                                                <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i></a>
-                                                <button title="Excluir" data-url="correspondente/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i></button>
+                                            <td>{{ $correspondente->nm_razao_social_con }}</td>
+                                            <td>{{ $correspondente->entidade->usuario->email }}</td>
+                                            <td class="center">
+                                                <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_correspondente_cor }}"><i class="fa fa-folder"></i> Dados</button>
+
+                                                <button title="Dados do Correspondente" class="btn btn-primary btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i> Adicionar</button>                                               
                                             </td>
                                         </tr>
                                     @endforeach                                                           
@@ -89,10 +93,9 @@
                     
                             <div class="row"> 
                                 <section class="col col-md-12"> 
-                                    <span><i class="fa fa-info-circle"></i> Nenhum registro encontrado para sua busca. Utilize uma das opções abaixo para adicionar o Correspondente.</span><hr/>
+                                    <span><i class="fa fa-info-circle"></i> Nenhum registro encontrado para sua busca, revise seus termos e tente novamente. Caso o correspondente não possua cadastro, utilize a opção abaixo para enviar o convite.</span><hr/>
                                 </section>
                                 <section class="col col-md-12 center"> 
-                                    <button class="btn btn-success" data-toggle="modal" data-target="#modalCadastroCorrespondente"><i class="fa fa-plus"></i> Cadastrar Correspondente</button>
                                     <button class="btn btn-default" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite para Cadastro</button>
                                 </section>
                             </div>
@@ -175,6 +178,59 @@
                         {!! Form::close() !!}
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="modal_confirma_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> <strong> Adicionar Correspondente</strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 center">
+                        {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/adicionar', 'class' => 'form-inline']) !!}
+                            <p style="font-size: 14px;">
+                                Essa operação irá adicionar o corresponde da coleção na sua lista de correspondentes.
+                                Após adicionar o correspondente você pode adicionar os valores referentes aos serviços prestados, por comarca.
+                            </p>
+                            <h6>Confirma a inclusão na sua lista de Correspondentes?</h6>
+                            <input type="hidden" name="id" id="id_correspondente">
+                            <input type="hidden" name="url" id="url">
+                            <div class="msg_retorno"></div>
+
+                            <div class="center marginTop20">
+                                <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</button>
+                            </div>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="modalDadosCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-legal"></i> Dados do Correspondente</h4>
+            </div>            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 center">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Fechar</button>
             </div>
         </div>
     </div>
