@@ -31,7 +31,8 @@ class ProcessoRequest extends FormRequest
         $data = [
             'cd_cliente_cli'       => 'required',
             'nu_processo_pro'      => 'required',
-            'cd_tipo_processo_tpo' => 'required'
+            'cd_tipo_processo_tpo' => 'required',
+            'cd_cidade_cde'        => 'required'
         ];
 
         return $data;
@@ -42,7 +43,8 @@ class ProcessoRequest extends FormRequest
         return [
             'cd_cliente_cli.required'       => 'O campo Cliente é obrigatório. Selecione um cliente existente.',
             'nu_processo_pro.required'      => 'O campo Nº processo é obrigatório',
-            'cd_tipo_processo_tpo.required' => 'O campo Tipo de Processo é obrigatório' 
+            'cd_tipo_processo_tpo.required' => 'O campo Tipo de Processo é obrigatório',
+            'cd_cidade_cde.required'        => 'O campo Cidade é obrigatório'
         ];
     }
 }

@@ -133,8 +133,8 @@
                                         </section>
                                         <section class="col col-6">
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : $processo->cd_cidade_cde }}">
-                                           <label class="label" >Cidade</label>          
-                                            <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
+                                           <label class="label" >Cidade<span class="text-danger">*</span></label>          
+                                            <select  id="cidade" disabled name="cd_cidade_cde" class="select2" required>
                                                <option selected value="">Selecione uma Cidade</option>
                                             </select> 
                                         </section>  

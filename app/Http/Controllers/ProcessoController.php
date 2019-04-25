@@ -10,6 +10,7 @@ use App\Cidade;
 use App\TipoProcesso;
 use App\Processo;
 use App\TipoDespesa;
+use App\TipoServico;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -39,21 +40,12 @@ class ProcessoController extends Controller
     public function financas($id){
 
         $processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
-        $despesasReembolsaveis = $processo->cliente->reembolsoTipoDespesa->pluck('cd_tipo_despesa_tds')->toArray();
-
-        dd($despesasReembolsaveis);
-
-        // if(in_array(16, $despesasReembolsaveis)){
-        //     dd('passou16');
-        // }
-        // if(in_array(14, $despesasReembolsaveis)){
-        //     dd('passou14');
-        // }
-
+        $despesasReembolsaveisClientes = $processo->cliente->reembolsoTipoDespesa->pluck('cd_tipo_despesa_tds')->toArray();
 
         $despesas = TipoDespesa::where('cd_conta_con',$this->cdContaCon)->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
 
-        return view('processo/financas',['despesas' => $despesas]);
+        return view('processo/financas',['despesas' => $despesas, 'despesasReembolsaveisClientes' => $despesasReembolsaveisClientes,'tiposDeServico' => $tiposDeServico]);
 
     }
 
