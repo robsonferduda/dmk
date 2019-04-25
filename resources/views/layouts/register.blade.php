@@ -46,12 +46,7 @@
 
 		<div id="main" role="main">
 			<div id="content" class="container">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 hidden-xs hidden-sm" style="margin-top: 60px;">
-						<div>
-							<img src="{{ asset('img/lawyer_logo.jpg') }}" alt="" class="pull-right display-image" style="width:100%">
-						</div>
-					</div>
+				<div class="row" style="margin: 0 auto;">					
 					@yield('content')
 				</div>
 			</div>

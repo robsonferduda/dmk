@@ -213,10 +213,13 @@
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('correspondente/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('correspondente/painel') }}" title="Dashboard"><span class="menu-item-parent">Painel</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('correspondentes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('correspondente/novo') }}" title="Correspondente Novo"><span class="menu-item-parent">Novo</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('correspondentes') }}" title="Correspondentes"><span class="menu-item-parent">Listar</span></a>
                             </li>
                         </ul>   
                     </li>
