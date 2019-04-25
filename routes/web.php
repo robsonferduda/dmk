@@ -14,7 +14,9 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'ContaController@index');
+Route::get('correspondente', function(){ return view('correspondente/cadastro'); });
 Route::resource('contas','ContaController');
+Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
 
 Auth::routes();
 
@@ -49,9 +51,12 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
 
 	Route::resource('correspondentes', 'CorrespondenteController');
+	Route::get('correspondente/painel','CorrespondenteController@painel');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
-	Route::get('correspondente/novo','CorrespondenteController@novo');
+	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
+	Route::post('correspondente/convidar','CorrespondenteController@convidar');
 
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');
