@@ -55,6 +55,8 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::resource('correspondentes', 'CorrespondenteController');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
+	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
+	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');

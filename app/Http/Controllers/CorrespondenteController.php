@@ -8,6 +8,7 @@ use Mail;
 use Hash;
 use App\Enums\Nivel;
 use App\User;
+use App\Endereco;
 use App\Entidade;
 use App\Correspondente;
 use App\ContaCorrespondente;
@@ -40,6 +41,22 @@ class CorrespondenteController extends Controller
     public function painel()
     {
         return view('correspondente/painel');
+    }
+
+    public function detalhes($id)
+    {
+        $correspondente = Correspondente::where('cd_conta_con',$id)->first();        
+        return view('correspondente/detalhes',['correspondente' => $correspondente]);
+    }
+
+    public function dados($id)
+    {
+        $correspondente = Correspondente::where('cd_conta_con',$id)->first();
+        $endereco = ($correspondente->entidade()) ? Endereco::where('cd_entidade_ete',$correspondente->entidade()->first()->cd_entidade_ete)->first() : null;
+
+        $dados = array('dados' => $correspondente->toArray(), 'endereco' => $endereco);
+
+        echo json_encode($dados);
     }
 
     public function buscar(Request $request){

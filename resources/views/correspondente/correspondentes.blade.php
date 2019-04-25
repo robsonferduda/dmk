@@ -84,12 +84,12 @@
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
                                         <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf : "Não informado" }}</td>
-                                        <td>{{ $correspondente->correspondente->nm_fantasia_con }}</td>
+                                        <td>{{ $correspondente->correspondente->nm_razao_social_con }}</td>
                                         <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
                                         <td>
-                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i></a>
-                                            <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i></a>
-                                            <button title="Excluir" data-url="correspondente/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i></button>
+                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i> Dados</a>
+                                            <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a>
+                                            <button title="Excluir" data-url="correspondente/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach                                                           

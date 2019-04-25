@@ -76,7 +76,7 @@
                                             <td>{{ $correspondente->nm_razao_social_con }}</td>
                                             <td>{{ $correspondente->entidade->usuario->email }}</td>
                                             <td class="center">
-                                                <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_correspondente_cor }}"><i class="fa fa-folder"></i> Dados</button>
+                                                <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-folder"></i> Dados</button>
 
                                                 <button title="Dados do Correspondente" class="btn btn-primary btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i> Adicionar</button>                                               
                                             </td>
@@ -224,8 +224,12 @@
             </div>            
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12 center">
-                        
+                    <div class="col-md-12">
+                        <label id="nm_correspondente"><strong>Nome: </strong><span></span></label><br/>
+                        <label id="tipo_correpondente"><strong>Tipo: </strong><span></span></label><br/>
+                        <label id="identificacao_correpondente"><strong>CPF/CNPJ: </strong><span></span></label><br/>
+                        <label id="email_correpondente"><strong>Email: </strong><span></span></label><br/>
+                        <label id="fone_correpondente"><strong>Telefone: </strong><span></span></label><hr>
                     </div>
                 </div>
             </div>
@@ -235,4 +239,36 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('.modal_dados_correspondente').click(function () {
+            
+            var id = $(this).data("id");
+
+            $.ajax({
+                
+                url: '../correspondente/dados/'+id,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $("#label > span").empty();                           
+                },
+                success: function(response){      
+
+                    $("#nm_correspondente span").append(response.dados.nm_razao_social_con);
+
+                    $('#modalDadosCorrespondente').modal('show');                                   
+                },
+                error: function(response)
+                {
+                    alert("Erro ao processar requisição");
+                }
+            });
+        });        
+
+    });
+</script>
 @endsection
