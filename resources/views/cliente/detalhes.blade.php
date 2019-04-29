@@ -104,7 +104,7 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-map-marker fa-fw"></i> <strong>Endereço</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if($correspondente->entidade->endereco()->first() and !is_null($correspondente->entidade->endereco()->first()->dc_logradouro_ede))
+                                        @if($cliente->entidade->endereco()->first() and !is_null($cliente->entidade->endereco()->first()->dc_logradouro_ede))
                                             <p>
                                                 <ul class="list-unstyled">
                                                     <li>

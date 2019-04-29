@@ -125,7 +125,7 @@ class GrupoCidadeController extends Controller
 
         $data = array_fill_keys($request->cidades, array('cd_conta_con' => $this->cdContaCon));
 
-        $ret = $gruposCidades->cidades()->sync($data);
+        $ret = $gruposCidades->cidades()->wherePivot('cd_conta_con', $this->cdContaCon)->sync($data);
           
         if($ret){
 
@@ -152,7 +152,7 @@ class GrupoCidadeController extends Controller
 
         $gruposCidades = GrupoCidade::where('cd_conta_con',$this->cdContaCon)->where('cd_grupo_cidade_grc',$id)->first();
 
-        $ret = $gruposCidades->cidades()->sync([]);
+        $ret = $gruposCidades->cidades()->wherePivot('cd_conta_con', $this->cdContaCon)->sync([]);
         
         if(!$ret){
 

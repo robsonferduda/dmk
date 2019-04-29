@@ -14,6 +14,7 @@ $(document).ready(function() {
 	$('.cnpj').mask("00.000.000/000-00");
 	$('.telefone').mask("(00) 0000-00009");
 	$(".taxa-honorario").mask('#.##0,00', {reverse: true});
+	$(".taxa-despesa").mask('#.##0,00', {reverse: true});
 
 
 	/** =======================================================   **/
@@ -330,6 +331,57 @@ $(document).ready(function() {
 		$("#erroFone").html("");
 		$("#nu_fone_fon").focus();
 	});
+
+	$("#btnSalvarDespesasProcesso").click(function (){
+
+		var valores = new Array();
+		var processo = $("#cd_processo_pro").val();
+		
+		$('.taxa-despesa').each(function(i, obj) {
+    		
+    		var valor = $(this).val();
+    		var despesa = $(this).data("despesa");
+			var entidade = $(this).data("entidade");
+			var reembolso = 'N';
+
+			if($('#'+$(this).data("identificador")).prop("checked") == true)
+				reembolso = 'S';
+
+    		if(valor.trim() != ''){
+
+				var dados = {despesa: despesa, entidade: entidade, valor: valor, reembolso: reembolso};
+				valores.push(dados);
+
+    		}
+    		
+		});
+
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/processo/despesas/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "valores": JSON.stringify(valores),
+                "processo": processo
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = pathname+"/processos/financas/"+processo
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+        
+	});	
 
 	$("#btnSalvarHonorarios").click(function (){
 

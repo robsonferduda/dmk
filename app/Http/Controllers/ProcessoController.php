@@ -37,15 +37,98 @@ class ProcessoController extends Controller
         return view('processo/processos',['processos' => $processos]);
     }
 
+    public function salvarDespesas(Request $request){
+
+        $processo_id = $request->processo;
+
+       
+        DB::beginTransaction();
+
+        $valores_aux = json_decode($request->valores);
+
+        $valores_cliente = array();
+        $valores_correspondente = array();
+
+        foreach ($valores_aux as $valor) {
+
+            if($valor->entidade == 'cliente'){
+                $tipoEntidade = \TipoEntidade::CLIENTE;
+
+                $valores_cliente[$valor->despesa] = array('cd_tipo_entidade_tpe' => $tipoEntidade,'vl_processo_despesa_pde' => str_replace(",", ".", $valor->valor), 'cd_conta_con' => $this->cdContaCon, 'cd_processo_pro' => $processo_id,'fl_despesa_reembolsavel_pde' => $valor->reembolso);
+            }else{
+
+                $tipoEntidade = \TipoEntidade::CORRESPONDENTE;
+
+                $valores_correspondente[$valor->despesa] = array('cd_tipo_entidade_tpe' => $tipoEntidade,'vl_processo_despesa_pde' => str_replace(",", ".", $valor->valor), 'cd_conta_con' => $this->cdContaCon, 'cd_processo_pro' => $processo_id,'fl_despesa_reembolsavel_pde' => $valor->reembolso);
+
+            }
+        }
+                   
+        $processo = Processo::where('cd_processo_pro',$processo_id)->where('cd_conta_con',$this->cdContaCon)->first();
+           
+        $ret1 = $processo->tiposDespesa()->wherePivot('cd_tipo_entidade_tpe', \TipoEntidade::CLIENTE)->wherePivot('cd_conta_con', $this->cdContaCon)->sync($valores_cliente);
+        $ret2 = $processo->tiposDespesa()->wherePivot('cd_tipo_entidade_tpe', \TipoEntidade::CORRESPONDENTE)->wherePivot('cd_conta_con', $this->cdContaCon)->sync($valores_correspondente);
+
+        if($ret1 && $ret2){
+
+            Flash::success('Dados atualizados com sucesso');
+            DB::commit(); 
+
+        }else{
+
+            Flash::error('Erro ao atualizar dados');
+            DB::rollBack();
+        }
+      
+        return redirect('processos/financas/'.$processo_id);       
+
+    }
+
     public function financas($id){
 
         $processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
-        $despesasReembolsaveisClientes = $processo->cliente->reembolsoTipoDespesa->pluck('cd_tipo_despesa_tds')->toArray();
+     
+        $despesas = DB::table('processo_pro')
+                    ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
+                    ->join('tipo_despesa_tds','processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con')
+                    ->leftjoin('reembolso_tipo_despesa_rtd', function($join){
+                               $join->on('cliente_cli.cd_entidade_ete', '=', 'reembolso_tipo_despesa_rtd.cd_entidade_ete');
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_tipo_despesa_rtd.cd_tipo_despesa_tds');                            
+                     })
+                    ->leftjoin('processo_despesa_pde', function($join){
+                               $join->on('processo_pro.cd_processo_pro', '=', 'processo_despesa_pde.cd_processo_pro');
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'processo_despesa_pde.cd_tipo_despesa_tds');                            
+                     })
+                    ->where('processo_pro.cd_processo_pro',$id)
+                    ->where('processo_pro.cd_conta_con',$this->cdContaCon)
+                    ->whereNull('tipo_despesa_tds.deleted_at')
+                    ->orderBy('tipo_despesa_tds.nm_tipo_despesa_tds')
+                    ->select('tipo_despesa_tds.cd_tipo_despesa_tds',
+                             'tipo_despesa_tds.nm_tipo_despesa_tds',
+                             DB::raw("coalesce(reembolso_tipo_despesa_rtd.fl_reembolso_tipo_despesa_rtd,'N') as fl_reembolsavel_cliente"),
+                             DB::raw("coalesce(processo_despesa_pde.fl_despesa_reembolsavel_pde,'N') as fl_reembolsavel_processo"),
+                             'processo_despesa_pde.cd_tipo_entidade_tpe',
+                             'processo_despesa_pde.vl_processo_despesa_pde'
+                            )
+                    ->get();
 
-        $despesas = TipoDespesa::where('cd_conta_con',$this->cdContaCon)->get();
-        $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
+        //$tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
 
-        return view('processo/financas',['despesas' => $despesas, 'despesasReembolsaveisClientes' => $despesasReembolsaveisClientes,'tiposDeServico' => $tiposDeServico]);
+        $tiposDeServico = DB::table('processo_pro')
+                          ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
+                          ->join('tipo_servico_tse','processo_pro.cd_conta_con','=','tipo_servico_tse.cd_conta_con')
+                          ->leftjoin('taxa_honorario_entidade_the', function($join){
+                               $join->on('cliente_cli.cd_entidade_ete', '=', 'taxa_honorario_entidade_the.cd_entidade_ete');
+                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_entidade_the.cd_tipo_servico_tse');
+                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_entidade_the.cd_cidade_cde');
+                          })
+                          ->where('processo_pro.cd_processo_pro',$id)
+                          ->where('processo_pro.cd_conta_con',$this->cdContaCon)
+                          ->whereNull('tipo_servico_tse.deleted_at')
+                          ->orderBy('tipo_servico_tse.nm_tipo_servico_tse')
+                          ->select('tipo_servico_tse.cd_tipo_servico_tse','tipo_servico_tse.nm_tipo_servico_tse','taxa_honorario_entidade_the.nu_taxa_the')->get();
+       
+        return view('processo/financas',['despesas' => $despesas,'tiposDeServico' => $tiposDeServico,'id' => $id]);
 
     }
 
