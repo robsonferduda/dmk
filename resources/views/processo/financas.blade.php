@@ -58,23 +58,23 @@
                                                         @foreach($despesas as $despesa)
                                                             <tr>
                                                                 <td>{{ $despesa->nm_tipo_despesa_tds }}</td>
-                                                                <td {{ (!empty($despesa->vl_processo_despesa_pde) && $despesa->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE) ? "class=info" : '' }} >
+                                                                <td {{ (!empty($despesa->vl_despesa_cliente)) ? "class=info" : '' }} >
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-despesa" data-entidade="cliente" data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCL{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_processo_despesa_pde }}" value="{{ $despesa->vl_processo_despesa_pde }}">
+                                                                            <input type="text" class="form-control taxa-despesa" data-entidade="cliente" data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCL{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_despesa_cliente }}" value="{{ $despesa->vl_despesa_cliente }}">
                                                                         </div>                                                                               
                                                                     </div>     
                                                                      <div class="onoffswitch-container col-md-7">     
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" {{ (!empty($despesa->vl_processo_despesa_pde) && $despesa->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE) ?  ($despesa->fl_reembolsavel_processo == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}">
+                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}">
                                                                             <label class="onoffswitch-label" for="DCL{{$despesa->cd_tipo_despesa_tds}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                 <span class="onoffswitch-switch"></span>  
                                                                             </label>                             
                                                                         </span> 
-                                                                        @if(!empty($despesa->vl_processo_despesa_pde) && ($despesa->fl_reembolsavel_cliente != $despesa->fl_reembolsavel_processo) && $despesa->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE)
+                                                                        @if(!empty($despesa->vl_despesa_cliente) && ($despesa->fl_reembolsavel_cliente != $despesa->fl_reembolsavel_processo))
                                                                             <i style="color: red" class='fa fa-warning'></i>
                                                                         @endif
                                                                     </div>                                                                        
@@ -144,18 +144,18 @@
                                                         @foreach($tiposDeServico as $tipoDeServico)
                                                             <tr>
                                                                 <td>{{ $tipoDeServico->nm_tipo_servico_tse }}</td>
-                                                                <td style="border-right: none;" {{ (!empty($tipoDeServico->nu_taxa_the)) ? "class=info" : '' }}>
+                                                                <td style="border-right: none;"{{ ($qtdServicoCliente > 0) ? (!empty($tipoDeServico->vl_taxa_honorario_pth_cliente)) ?  "class=info" : '' : !empty($tipoDeServico->nu_taxa_the) ?  "class=info" : '' }} >
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-honorario" data-cidade="" data-servico="" value="{{ $tipoDeServico->nu_taxa_the }}">
+                                                                            <input type="text" class="form-control taxa-honorario" data-cidade="" data-servico="" value="{{ ($qtdServicoCliente > 0) ? $tipoDeServico->vl_taxa_honorario_pth_cliente  : $tipoDeServico->nu_taxa_the }}">
                                                                         </div>                                                                               
                                                                     </div>     
                                                                 </td>
-                                                                <td  {{ (!empty($tipoDeServico->nu_taxa_the)) ? "class=info" : '' }} style="border-left: none;text-align: right;">
+                                                                <td  {{ ($qtdServicoCliente > 0) ? (!empty($tipoDeServico->vl_taxa_honorario_pth_cliente)) ?  "class=info" : '' : !empty($tipoDeServico->nu_taxa_the) ?  "class=info" : '' }}  style="border-left: none;text-align: right;">
                                                                      <div class="onoffswitch-container col-md-7">
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" {{ (empty($tipoDeServico->nu_taxa_the)) ? ' ' : 'checked' }} class="onoffswitch-checkbox" name="SCL{{$tipoDeServico->cd_tipo_servico_tse}}" value="S" id="SCL{{$tipoDeServico->cd_tipo_servico_tse}}">
+                                                                            <input type="checkbox"  {{  ($qtdServicoCliente > 0) ?  (!empty($tipoDeServico->nu_taxa_the)) ?  ($tipoDeServico->nu_taxa_the == $tipoDeServico->vl_taxa_honorario_pth_cliente) ? "checked"  : '' : '' : (empty($tipoDeServico->nu_taxa_the)) ? '' : "checked" }} class="onoffswitch-checkbox" name="SCL{{$tipoDeServico->cd_tipo_servico_tse}}" value="S" id="SCL{{$tipoDeServico->cd_tipo_servico_tse}}">
                                                                             <label class="onoffswitch-label" for="SCL{{$tipoDeServico->cd_tipo_servico_tse}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                     <span class="onoffswitch-switch"></span>
