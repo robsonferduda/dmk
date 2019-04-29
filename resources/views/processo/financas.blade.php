@@ -62,7 +62,7 @@
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-despesa" data-entidade="cliente" data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCL{{$despesa->cd_tipo_despesa_tds}}" value="{{ $despesa->vl_processo_despesa_pde }}">
+                                                                            <input type="text" class="form-control taxa-despesa" data-entidade="cliente" data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCL{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_processo_despesa_pde }}" value="{{ $despesa->vl_processo_despesa_pde }}">
                                                                         </div>                                                                               
                                                                     </div>     
                                                                      <div class="onoffswitch-container col-md-7">     
