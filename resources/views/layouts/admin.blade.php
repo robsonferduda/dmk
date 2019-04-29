@@ -444,6 +444,7 @@
                         "t"+
                         "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
                     "autoWidth" : true,
+                    "ordering": false,
                     "oLanguage": {
                         "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
                         "sEmptyTable": "Nenhum registro encontrado",

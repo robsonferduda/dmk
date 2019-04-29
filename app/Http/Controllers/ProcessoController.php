@@ -9,6 +9,7 @@ use App\Estado;
 use App\Cidade;
 use App\TipoProcesso;
 use App\Processo;
+use App\ProcessoDespesa;
 use App\TipoDespesa;
 use App\TipoServico;
 use App\Http\Requests\ProcessoRequest;
@@ -40,46 +41,67 @@ class ProcessoController extends Controller
     public function salvarDespesas(Request $request){
 
         $processo_id = $request->processo;
-
        
         DB::beginTransaction();
 
-        $valores_aux = json_decode($request->valores);
+        $dados = json_decode($request->valores);
 
-        $valores_cliente = array();
-        $valores_correspondente = array();
+        foreach ($dados as $dado) {
 
-        foreach ($valores_aux as $valor) {
 
-            if($valor->entidade == 'cliente'){
-                $tipoEntidade = \TipoEntidade::CLIENTE;
+            if(empty($dado->valor)){
+                $dado->valor = NULL;
+            }else{
+                $dado->valor = str_replace(",", ".", $dado->valor);
+            }
 
-                $valores_cliente[$valor->despesa] = array('cd_tipo_entidade_tpe' => $tipoEntidade,'vl_processo_despesa_pde' => str_replace(",", ".", $valor->valor), 'cd_conta_con' => $this->cdContaCon, 'cd_processo_pro' => $processo_id,'fl_despesa_reembolsavel_pde' => $valor->reembolso);
+
+            //dd($dado);
+
+            if($dado->entidade == 'cliente'){
+                $tipoEntidade = \TipoEntidade::CLIENTE;             
+            }else{
+                $tipoEntidade = \TipoEntidade::CORRESPONDENTE;
+            }
+           
+            $valor = ProcessoDespesa::where('cd_conta_con',$this->cdContaCon)
+                                      ->where('cd_processo_pro',$processo_id)
+                                      ->where('cd_tipo_despesa_tds',$dado->despesa)
+                                      ->where('cd_tipo_entidade_tpe',$tipoEntidade)->first(); 
+
+            if(!empty($valor)){
+
+                $valor->vl_processo_despesa_pde = $dado->valor;
+                $valor->fl_despesa_reembolsavel_pde = $dado->reembolso;
+                if(!$valor->saveOrFail()){
+                    Flash::error('Erro ao atualizar dados');
+                    DB::rollBack();
+                    return redirect('processos/financas/'.$processo_id);    
+                }
+
             }else{
 
-                $tipoEntidade = \TipoEntidade::CORRESPONDENTE;
+                $valor = ProcessoDespesa::create([
+                    'cd_conta_con' => $this->cdContaCon,
+                    'cd_processo_pro' => $processo_id,
+                    'cd_tipo_despesa_tds' => $dado->despesa,
+                    'cd_tipo_entidade_tpe' => $tipoEntidade,
+                    'fl_despesa_reembolsavel_pde' => $dado->reembolso,
+                    'vl_processo_despesa_pde' => $dado->valor
+                ]);
 
-                $valores_correspondente[$valor->despesa] = array('cd_tipo_entidade_tpe' => $tipoEntidade,'vl_processo_despesa_pde' => str_replace(",", ".", $valor->valor), 'cd_conta_con' => $this->cdContaCon, 'cd_processo_pro' => $processo_id,'fl_despesa_reembolsavel_pde' => $valor->reembolso);
-
-            }
+                if(!$valor){
+                    Flash::error('Erro ao atualizar dados');
+                    DB::rollBack();
+                    return redirect('processos/financas/'.$processo_id);    
+                }
+            }            
         }
                    
-        $processo = Processo::where('cd_processo_pro',$processo_id)->where('cd_conta_con',$this->cdContaCon)->first();
-           
-        $ret1 = $processo->tiposDespesa()->wherePivot('cd_tipo_entidade_tpe', \TipoEntidade::CLIENTE)->wherePivot('cd_conta_con', $this->cdContaCon)->sync($valores_cliente);
-        $ret2 = $processo->tiposDespesa()->wherePivot('cd_tipo_entidade_tpe', \TipoEntidade::CORRESPONDENTE)->wherePivot('cd_conta_con', $this->cdContaCon)->sync($valores_correspondente);
-
-        if($ret1 && $ret2){
-
-            Flash::success('Dados atualizados com sucesso');
-            DB::commit(); 
-
-        }else{
-
-            Flash::error('Erro ao atualizar dados');
-            DB::rollBack();
-        }
-      
+    
+        Flash::success('Dados atualizados com sucesso');
+        DB::commit(); 
+ 
         return redirect('processos/financas/'.$processo_id);       
 
     }

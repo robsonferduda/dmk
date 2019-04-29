@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/dmk/public/";
+	var pathname = window.location.origin+"/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -342,12 +342,13 @@ $(document).ready(function() {
     		var valor = $(this).val();
     		var despesa = $(this).data("despesa");
 			var entidade = $(this).data("entidade");
+			var oldvalue = $(this).data("oldvalue");
 			var reembolso = 'N';
 
 			if($('#'+$(this).data("identificador")).prop("checked") == true)
 				reembolso = 'S';
 
-    		if(valor.trim() != ''){
+    		if(oldvalue != '' || valor.trim() != ''){
 
 				var dados = {despesa: despesa, entidade: entidade, valor: valor, reembolso: reembolso};
 				valores.push(dados);
