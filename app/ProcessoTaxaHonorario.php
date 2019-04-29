@@ -1,0 +1,28 @@
+<?php
+
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+
+class ProcessoTaxaHonorario extends Model implements AuditableContract
+{
+
+	use SoftDeletes;
+    use Auditable;
+
+    protected $table = 'processo_taxa_honorario_pth';
+    protected $primaryKey = 'cd_processo_taxa_honorario_pth';
+    protected $dates = ['deleted_at'];
+    protected $fillable = [
+    						'vl_taxa_honorario_pth',
+    					    'cd_processo_pro',
+                            'cd_conta_con',
+                            'cd_tipo_servico_tse',
+                            'cd_tipo_entidade_tpe'                          
+    					  ];
+
+    public $timestamps = true;
+
+}
