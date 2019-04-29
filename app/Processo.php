@@ -1,7 +1,6 @@
 <?php
 
 namespace App;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
@@ -61,5 +60,10 @@ class Processo extends Model implements AuditableContract
     public function vara()
     {
         return $this->hasOne('App\Vara','cd_vara_var', 'cd_vara_var');
+    }
+
+    public function tiposDespesa()
+    {
+        return $this->belongsToMany('App\TipoDespesa','processo_despesa_pde','cd_processo_pro','cd_tipo_despesa_tds')->withTimestamps();
     }
 }

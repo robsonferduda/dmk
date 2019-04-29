@@ -47,6 +47,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
 	Route::get('processos/financas/{id}','ProcessoController@financas');
+	Route::post('processo/despesas/salvar','ProcessoController@salvarDespesas');
 
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
