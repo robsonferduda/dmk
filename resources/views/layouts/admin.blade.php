@@ -189,7 +189,7 @@
                             </span>
                         </a> 
                     @else
-                        <a href="{{ url("correspondente/perfil/".Auth::user()->id) }}">
+                        <a href="{{ url("usuarios/".Auth::user()->id) }}">
                             @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                                 <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
                             @else

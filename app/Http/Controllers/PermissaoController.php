@@ -30,13 +30,13 @@ class PermissaoController extends Controller
 
         //dd($roleAdmin);
 
-        $roleAdmin = Role::find(4);
+        $roleAdmin = Role::find(1);
         //$roleAdmin->description ="Responsável pela conta e por todas as tarefas do sistema";
         //$roleAdmin->save();
 
         //dd($roleAdmin);
 
-        $user = User::find(70);
+        $user = User::find(41);
 
         // by object
         $user->assignRole($roleAdmin);
