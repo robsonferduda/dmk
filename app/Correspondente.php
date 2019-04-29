@@ -35,5 +35,8 @@ class Correspondente extends Model
         return $this->hasOne('App\TipoPessoa','cd_tipo_pessoa_tpp', 'cd_tipo_pessoa_tpp');
     }
 
-
+    public function contaCorrespondente()
+    {
+        return $this->hasOne('App\ContaCorrespondente','cd_correspondente_cor', 'cd_conta_con');
+    }
 }

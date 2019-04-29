@@ -3,7 +3,7 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Clientes</a></li>
+        <li><a href="{{ url('correspondentes') }}">Correspondentes</a></li>
         <li>Honorários por Tipo de Serviço</li>
     </ol>
 </div>
@@ -11,13 +11,12 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Clientes <span>> Honorários por Tipo de Serviço </span>
+                <i class="fa-fw fa fa-legal"></i> Clientes <span>> Honorários por Tipo de Serviço </span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
-            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-            <a data-toggle="modal" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
+            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
         </div>
     </div>
     <div class="row">
@@ -32,16 +31,16 @@
                         <h2>Honorários por Tipo de Serviço</h2>             
                     </header>
                     <div class="col-sm-12">
-                        <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
+                        <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_con }}</h5>
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <span>Selecione um grupo de cidades ou uma cidade específica e clique em "Adicionar" para visualizar e alterar dados.</span><hr/>
                                     <div class="row">
                                         <div class="col-md-12">  
-                                            <form action="{{ url('cliente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
+                                            <form action="{{ url('correspondente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
-                                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
+                                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_conta_con }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
 
                                                 <fieldset>
@@ -246,7 +245,7 @@
 
                 $.ajax(
                     {
-                        url: webFolderFullPath+'/public/cidades-por-estado/'+estado,
+                        url: webFolderFullPath+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){

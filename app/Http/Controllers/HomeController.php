@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -11,15 +12,29 @@ class HomeController extends Controller
     
     public function __construct()
     {
-        //$this->middleware('auth');
+        
     }
 
     public function index()
     {
-        if(Auth::guest())
+        if(!Auth::guest()){
+
+            $role = (User::find(Auth::user()->id)->role()->first()) ? User::find(Auth::user()->id)->role()->first()->slug : null; 
+
+            switch ($role) {
+                case 'correspondente':
+                    return redirect('correspondente/dashboard/'.Auth::user()->cd_entidade_ete);
+                    break;
+                
+                default:
+                    return view('home');
+                    break;
+            }
+            
+        }else{
             return view('conta/novo');
-        else
-            return view('home');
+        }
+            
     }
 
     public function menu(Request $request, $id)

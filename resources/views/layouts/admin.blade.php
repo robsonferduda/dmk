@@ -20,6 +20,9 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
 
+        
+        <link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
+
         <!-- We recommend you use "your_style.css" to override SmartAdmin
              specific styles this will also ensure you retrain your customization with each SmartAdmin update.
         <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
@@ -172,26 +175,51 @@
         </header>
     
         <aside id="left-panel">
-
-            <!-- User info -->
             <div class="login-info">
-                <span> <!-- User image size is adjusted inside CSS, it should stay as is --> 
-                    
-                    <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-                        <img src="{{ asset('img/users/user.png') }}" alt="Usuário" /> 
-                        <span>
-                            {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
-                        </span>
-                        <i class="fa fa-angle-down"></i>
-                    </a> 
-                    
+                <span> 
+                    @role('correspondente') 
+                        <a href="{{ url("correspondente/perfil/".Auth::user()->cd_entidade_ete) }}">
+                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                            @else
+                                <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                            @endif
+                            <span>
+                                {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                            </span>
+                        </a> 
+                    @else
+                        <a href="{{ url("correspondente/perfil/".Auth::user()->id) }}">
+                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                            @else
+                                <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                            @endif
+                            <span>
+                                {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                            </span>
+                        </a> 
+                    @endrole                    
                 </span>
             </div>
             <nav>
                 <ul>
-                    <li class="">
-                        <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
-                    </li>
+                    @role('administrator|colaborador|correspondente')    
+                        <li class="">
+                            <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
+                        </li>              
+                    @endrole
+                    @role('correspondente')    
+                        <li class="">
+                            <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
+                        </li>              
+                    @endrole
+                    @role('correspondente')    
+                        <li class="">
+                            <a href="{{ url('correspondente/processos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
+                        </li>              
+                    @endrole
+                    @role('administrator') 
                     <li class="menu {{ (Session::get('menu_pai') == 'cliente') ? 'open' : '' }}">
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'cliente') ? 'display: block;' : 'display: none;' }}">
@@ -209,6 +237,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li class="menu {{ (Session::get('menu_pai') == 'correspondente') ? 'open' : '' }}">
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
@@ -223,6 +253,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li>
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
                         <ul>
@@ -234,6 +266,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li>
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul>
@@ -248,6 +282,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li>
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
                         <ul>
@@ -256,6 +292,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li>
                         <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
                         <ul>
@@ -264,6 +302,8 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
+                    @role('administrator') 
                     <li class="menu {{ (Session::get('menu_pai') == 'configuracao') ? 'open' : '' }}">
                         <a href="#" title="Dashboard" class="item_pai" id="configuracao" ><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'configuracao') ? 'display: block;' : 'display: none;' }}">
@@ -303,6 +343,7 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
                 </ul>
             </nav>
 
@@ -322,14 +363,6 @@
                     <span class="txt-color-white">Nome do Sistema <span class="hidden-xs"> - Slogan</span> © 2019</span>
                 </div>
             </div>
-        </div>
-    
-        <div id="shortcut">
-            <ul>
-                <li>
-                    <a href="index.html" class="jarvismetro-tile big-cubes bg-color-blue"> <span class="iconbox"> <i class="fa fa-envelope fa-4x"></i> <span>Mail <span class="label pull-right bg-color-darken">14</span></span> </span> </a>
-                </li>
-            </ul>
         </div>
 
         <div class="modal fade in modal_top_alto" id="redefinir_tela" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -353,7 +386,37 @@
                         <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
                      </div>
                     <div class="modal-body center">
-                        <h2><i class="fa fa-spinner fa-spin"></i> Agurade, processando requisição...</h2>
+                        <h2><i class="fa fa-spinner fa-spin"></i> Aguarde, processando requisição...</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade in" id="upload-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 800px;">
+                <div class="modal-content">
+                    <div class="row" style="margin:0; padding: 5px;">
+
+                                <div class="col-md-12">
+                                    <h2>Atualizar Foto de Perfil</h2>
+                                    <strong>Selecione uma imagem:</strong>
+                                    <br/>
+                                    <input type="file" id="upload">
+                                                                       
+                                </div>
+
+                                <div class="col-md-6 text-center">
+                                    <div id="upload-demo" style="width:350px"></div>
+                                </div>
+
+                                <div class="col-md-6 text-center" style="">
+                                    <div id="upload-demo-i" style="background:#e1e1e1;width:300px;padding:30px;height:300px;margin-top:30px"></div>
+                                </div>
+
+                                <div class="col-md-12 center" style="padding-bottom: 15px;">
+                                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-remove"></i> Fechar</a>
+                                    <button class="btn btn-success upload-result"><i class="fa fa-upload"></i> Enviar Imagem</button>
+                                </div>
                     </div>
                 </div>
             </div>
@@ -376,6 +439,37 @@
                     <div class="modal-footer">
                         <a type="button" id="btn_confirma_exclusao" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
                         <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade modal_top_alto" id="modal_cancela_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-times"></i> <strong> Remover Correspondente</strong></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 center">
+                                {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/remover', 'class' => 'form-inline']) !!}
+                                    <p style="font-size: 14px;">
+                                        Essa operação irá remover o corresponde da sua lista de correspondentes.
+                                    </p>
+                                    <h6>Confirma a remoção na sua lista de Correspondentes?</h6>
+                                    <input type="hidden" name="id" id="id_correspondente">
+                                    <input type="hidden" name="url" id="url">
+                                    <div class="msg_retorno"></div>
+
+                                    <div class="center marginTop20">
+                                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</button>
+                                    </div>
+                                {!! Form::close() !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -419,10 +513,63 @@
         <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
         <script src="{{ asset('js/plugin/select2/select2.min.js') }}"></script>
         <script src="{{ asset('js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
+        <script src="http://demo.itsolutionstuff.com/plugin/croppie.js"></script>
         @yield('script')
         <script>
         
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
+
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
+        }
+    });
+
+
+    $uploadCrop = $('#upload-demo').croppie({
+        enableExif: true,
+        viewport: {
+            width: 200,
+            height: 200,
+            type: 'circle'
+        },
+        boundary: {
+            width: 300,
+            height: 300
+        }
+    });
+
+
+    $('#upload').on('change', function () { 
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function(){
+                console.log('jQuery bind complete');
+            });
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+
+
+    $('.upload-result').on('click', function (ev) {
+        $uploadCrop.croppie('result', {
+            type: 'canvas',
+            size: 'viewport'
+        }).then(function (resp) {
+            $.ajax({
+                url: "/dmk/public/image-crop",
+                type: "POST",
+                data: {"image":resp},
+                success: function (data) {
+                    html = '<img src="' + resp + '" />';
+                    $("#upload-demo-i").html(html);
+                }
+            });
+        });
+        location.reload();
+    });
         
         $(document).ready(function() {
             

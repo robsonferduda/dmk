@@ -89,7 +89,7 @@
                                         <td>
                                             <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i> Dados</a>
                                             <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a>
-                                            <button title="Excluir" data-url="correspondente/" class="btn btn-danger btn-xs excluir_registro" style="width: 30%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-times"></i> Remover</button> 
                                         </td>
                                     </tr>
                                 @endforeach                                                           

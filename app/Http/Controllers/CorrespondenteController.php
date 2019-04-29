@@ -7,11 +7,19 @@ use Auth;
 use Mail;
 use Hash;
 use App\Enums\Nivel;
+use App\Enums\Roles;
+use App\Enums\TipoEnderecoEletronico;
 use App\User;
+use App\Conta;
 use App\Endereco;
 use App\Entidade;
+use App\GrupoCidade;
 use App\Correspondente;
+use App\TipoServico;
+use App\TaxaHonorario;
 use App\ContaCorrespondente;
+use App\EnderecoEletronico;
+use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\ConviteRequest;
 use App\Http\Requests\CorrespondenteRequest;
@@ -57,6 +65,194 @@ class CorrespondenteController extends Controller
         $dados = array('dados' => $correspondente->toArray(), 'endereco' => $endereco);
 
         echo json_encode($dados);
+    }
+
+    public function honorarios($id)
+    {
+
+        $conta = \Session::get('SESSION_CD_CONTA'); //Id de quem está logado no sistema e será dono dos honorários do correspondente
+        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
+        
+        //Dados para combos
+        $grupos = GrupoCidade::all();
+        $servicos = TipoServico::where('cd_conta_con',$conta)->get();
+
+        //Inicialização de variáveis
+        $lista_servicos = array();
+        $cidades = array();
+        $valores = array();
+        $organizar = 0;        
+
+        //Limpa dados da sessão
+        \Session::forget('lista_cidades');
+
+        //Carrega os valores de honorarios para determinado grupo
+        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+            }
+        } 
+
+        //Carrega as cidades
+        $honorarios = TaxaHonorario::where('cd_conta_con',$correspondente->cd_conta_con)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
+                                    ->select('cd_cidade_cde')
+                                    ->groupBy('cd_cidade_cde')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $cidades[] = $honorario->cidade;
+            }
+        } 
+
+        //Carrega os serviços
+        $honorarios = TaxaHonorario::where('cd_conta_con',$correspondente->cd_conta_con)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
+                                    ->select('cd_tipo_servico_tse')
+                                    ->groupBy('cd_tipo_servico_tse')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $lista_servicos[] = $honorario->tipoServico;
+            }
+        } 
+
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'grupos' => $grupos, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'organizar' => $organizar, 'lista_servicos' => $lista_servicos]);
+
+    }
+
+     public function buscarHonorarios(Request $request)
+    {
+        $conta = \Session::get('SESSION_CD_CONTA');
+        $id = $request->cd_cliente;
+        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
+        $grupo = $request->grupo_cidade;
+        $cidade = $request->cd_cidade_cde;
+        $servico = $request->servico;
+        $organizar = $request->organizar;
+        $valores = null;
+
+        $lista_cidades = array();
+        $lista_cidades_selecao = array();
+        $lista_cidades_grupo = array();
+        $lista_cidades_honorarios = array();
+        $lista_merge = array();
+
+        $lista_servicos = array();
+        
+
+        //Carrega dados do combo        
+        $grupos = GrupoCidade::all();
+        $servicos = TipoServico::all();
+
+        if(empty(session('lista_cidades'))){
+            \Session::put('lista_cidades', array());
+        }
+
+        if(empty(session('lista_servicos'))){
+            \Session::put('lista_servicos', array());
+        }
+
+        //Carrega serviços já cadastradas
+        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
+                                    ->select('cd_tipo_servico_tse')
+                                    ->groupBy('cd_tipo_servico_tse')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $lista_servicos[] = $honorario->tipoServico;
+            }
+        }
+
+        //Carrega lista de serviços da tabela
+        if($servico == 0){
+            $lista_servicos = TipoServico::all();
+        }else{
+            $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
+        }
+
+        $lista_temp = array();
+        foreach ($lista_servicos as $servico) {
+            if(!in_array($servico, $lista_temp))
+                $lista_temp[] = $servico;
+        }
+        $lista_servicos = $lista_temp;
+
+        //Carrega cidades do grupo
+        if($grupo > 0 and $cidade == 0) {
+
+            $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
+            foreach($grupo as $g){
+                $lista_cidades_grupo[] = $g->cidade()->first();
+            }
+        }
+
+        //Carrega cidade selecionada        
+        if($cidade > 0){
+            $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
+        }
+
+        //Carrega cidades já cadastradas
+        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
+                                    ->select('cd_cidade_cde')
+                                    ->groupBy('cd_cidade_cde')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $lista_cidades_honorarios[] = $honorario->cidade;
+            }
+        }
+
+        //Junta os arrays e eleimina duplicidades
+        $lista_sessao = session('lista_cidades');
+        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_grupo, $lista_cidades_honorarios, $lista_sessao);
+
+        foreach ($lista_merge as $cidade) {
+            if(!in_array($cidade, $lista_cidades))
+                $lista_cidades[] = $cidade;
+
+        }
+
+        //Após o mesge, limpa a sessão para atualizar mais tarde
+        \Session::forget('lista_cidades');
+
+        //Ordena a lista de cidades
+        usort($lista_cidades,
+            function($a, $b) {
+                if( $a->nm_cidade_cde == $b->nm_cidade_cde ) return 0;
+                return (($a->nm_cidade_cde < $b->nm_cidade_cde) ? -1 : 1);
+            }
+        );
+ 
+        \Session::put('lista_cidades',$lista_cidades);
+
+        //Carrega os valores de honorarios para determinado grupo
+        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+            }
+            Flash::success('Dados inseridos com sucesso na visualização');
+        }  
+        
+        //Envia dados e renderiza tela
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'grupos' => $grupos, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
+    }
+
+    public function limparSelecao($id){
+        \Session::forget('lista_cidades');
+        return redirect('correspondente/honorarios/'.$id);
     }
 
     public function buscar(Request $request){
@@ -150,6 +346,12 @@ class CorrespondenteController extends Controller
         $to_email = $request->email;
         
         $data = array('nome'=>Auth::user()->name);
+
+        $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
+        if(!empty($unique)){
+            Flash::warning('Email já cadastrado no sistema. Utilize a busca para encontrar o registro.');
+            return redirect('correspondente/novo');
+        }
             
         Mail::send('correspondente/email_convite', $data, function($message) use ($to_name, $to_email) {
             $message->to($to_email, $to_name)
@@ -198,6 +400,19 @@ class CorrespondenteController extends Controller
                     $user->password = Hash::make($senha);
                     $user->save();
 
+                    if($user->id){
+
+                        $role = Role::find(Roles::CORRESPONDENTE);
+                        $user->assignRole($role);
+
+                        $enderecoEletronico = new EnderecoEletronico();
+                        $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
+                        $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
+                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                        $enderecoEletronico->save();
+                    }
+
                     Auth::login($user);
                 }
             }
@@ -207,7 +422,7 @@ class CorrespondenteController extends Controller
 
     public function adicionar(Request $request){
 
-        $correspondente = ContaCorrespondente::where('cd_correspondente_cor',$request->id)->first();
+        $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$request->id)->first();
 
         if(is_null($correspondente)){
 
@@ -228,6 +443,79 @@ class CorrespondenteController extends Controller
         }
 
         return redirect('correspondentes');
+    }
+
+    public function remover(Request $request){
+
+        $correspondente = ContaCorrespondente::where('cd_conta_correspondente_ccr',$request->id)->first();
+
+        if($correspondente->delete())
+            Flash::success('Correspondente removido com sucesso');
+        else{
+            Flash::error('Erro ao remover correspondente');
+        }    
+        return redirect('correspondentes');    
+    }
+
+    //Métodos para a ROLE CORRESPONDENTE
+
+    public function editar(Request $request){
+
+        $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
+
+        $request->merge(['cd_conta_con' => $correspondente->cd_conta_con]);
+        $request->merge(['cd_entidade_ete' => $correspondente->entidade->cd_entidade_ete]);
+        
+        //if(!empty($request->cd_cidade_cde) and !empty($request->dc_logradouro_ede)){
+        if(!empty($request->dc_logradouro_ede)){
+            $endereco = new Endereco();
+            $endereco->fill($request->all());
+
+            $endereco->saveOrFail();
+        }
+
+        return redirect('correspondente/ficha/'.$correspondente->cd_conta_con);
+    }
+
+    public function clientes(){
+
+        return view('correspondente/clientes');
+
+    }
+
+    public function ficha($id){
+
+        $correspondente = Correspondente::with('entidade')->where('cd_conta_con', $id)->first();
+        $flag = (is_null($correspondente->entidade->endereco) or is_null($correspondente->atuacao)) ? true : false;
+
+        return view('correspondente/ficha',['correspondente' => $correspondente, 'flag' => $flag]);
+
+    }
+
+    public function processos(){
+
+        return view('correspondente/processos');
+
+    }
+
+    public function perfil($id){
+
+        $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
+        return view('correspondente/perfil',['correspondente' => $correspondente]);
+
+    }
+
+     public function dashboard($id){
+
+        $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
+
+        if(is_null($correspondente->entidade->endereco) or is_null($correspondente->atuacao)){
+
+            return redirect('correspondente/ficha/'.$correspondente->cd_conta_con); 
+        }
+        
+        return view('correspondente/dashboard',['usuario' => $entidade->usuario()->first()]);
+
     }
 
 }

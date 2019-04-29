@@ -24,7 +24,7 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-              <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
             
             <!-- Widget ID (each widget will need unique ID)-->
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">

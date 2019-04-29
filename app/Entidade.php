@@ -73,6 +73,11 @@ class Entidade extends Model
         return $this->hasOne('App\User','cd_entidade_ete', 'cd_entidade_ete');
     }
 
+     public function atuacao()
+    {
+        return $this->hasOne('App\CidadeAtuacao','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
     public static function boot(){
 
         parent::boot();

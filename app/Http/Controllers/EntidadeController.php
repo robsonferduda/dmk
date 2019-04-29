@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\AreaDireito;
 use App\User;
 use App\Conta;

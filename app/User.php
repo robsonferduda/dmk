@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kodeine\Acl\Traits\HasRole;
 
 class User extends Authenticatable
 {
-    use Notifiable,SoftDeletes;
+    use Notifiable,SoftDeletes,HasRole;
 
     protected $dates = ['deleted_at'];
     protected $fillable = [
@@ -54,6 +55,11 @@ class User extends Authenticatable
     public function cargo()
     {
         return $this->hasOne('App\Cargo','cd_cargo_car', 'cd_cargo_car');
+    }
+
+    public function role()
+    {
+        return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Role','role_user','user_id', 'role_id');
     }
 
     public static function boot(){
