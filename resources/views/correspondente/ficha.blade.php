@@ -171,7 +171,7 @@
                                                 <select  id="estado" name="cd_estado_est" class="select2">
                                                     <option selected value="">Selecione</option>
                                                     @foreach(\App\Estado::all() as $estado) 
-                                                        <option {{ ($correspondente->entidade->endereco->cidade) ? (old('cd_estado_est', $correspondente->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                        <option {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade) ? (old('cd_estado_est', $correspondente->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                     @endforeach
 
                                                 </select> 
