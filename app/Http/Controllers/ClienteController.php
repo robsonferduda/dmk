@@ -47,7 +47,7 @@ class ClienteController extends Controller
         
         //Dados para combos
         $grupos = GrupoCidade::all();
-        $servicos = TipoServico::all();
+        $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         //Inicialização de variáveis
         $lista_servicos = array();

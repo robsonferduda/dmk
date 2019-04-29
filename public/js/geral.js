@@ -68,6 +68,16 @@ $(document).ready(function() {
 		$("#modal_confirma_correspondente").modal('show');
 	});
 
+	$(".remover_registro").click(function(){
+
+		var id  = $(this).data('id');
+		var url = $(this).data('url');
+
+		$("#modal_cancela_correspondente #url").val(url);
+		$("#modal_cancela_correspondente #id_correspondente").val(id);
+		$("#modal_cancela_correspondente").modal('show');
+	});
+
 	$(".editar_area").click(function(){
 
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');

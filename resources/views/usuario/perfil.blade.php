@@ -19,7 +19,11 @@
             <div class="col-md-12">
                 <div class="col-md-3 text-center">
                     <div>
-                        <img src="{{ asset('img/users/user.png') }}" alt="" style="margin: 0 auto;" class="img-circle img-responsive">
+                        @if(file_exists('img/users/ent'.$usuario->cd_entidade_ete.'.png')) 
+                            <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.$usuario->cd_entidade_ete.'.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                        @else
+                            <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                        @endif
                     </div>
                     <h4 class="center" style="margin-top: 15px;"><strong>{{ $usuario->name }}</strong></h4>
                 </div>

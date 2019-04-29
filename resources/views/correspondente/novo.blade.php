@@ -16,6 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-list"></i> Listar Correspondentes</a>
+            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite para Cadastro</button>            
         </div>
     </div>
     <div class="row">
@@ -77,8 +78,12 @@
                                             <td>{{ $correspondente->entidade->usuario->email }}</td>
                                             <td class="center">
                                                 <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-folder"></i> Dados</button>
+                                                @if($correspondente->contaCorrespondente()->where('cd_conta_con',1)->first())
+                                                    <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr}}"><i class="fa fa-times"></i> Remover</button>   
+                                                @else
+                                                    <button title="Dados do Correspondente" class="btn btn-primary btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i> Adicionar</button>   
 
-                                                <button title="Dados do Correspondente" class="btn btn-primary btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i> Adicionar</button>                                               
+                                                @endif                                            
                                             </td>
                                         </tr>
                                     @endforeach                                                           

@@ -13,7 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 
-Route::get('home', 'ContaController@index');
+Route::get('home', 'HomeController@index');
 Route::get('correspondente', function(){ return view('correspondente/cadastro'); });
 Route::resource('contas','ContaController');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
@@ -21,6 +21,11 @@ Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
+
+	Route::get('permissao/teste','PermissaoController@index');
+
+	Route::get('image-crop', 'ImageController@imageCrop');
+	Route::post('image-crop', 'ImageController@imageCropPost');
     
 	Route::get('configuracao/menu/{id}','HomeController@menu');
 	Route::get('configuracao/minify','HomeController@minify');
@@ -60,8 +65,20 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
+	Route::get('correspondente/buscar-honorarios','CorrespondenteController@buscarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
+	Route::post('correspondente/remover','CorrespondenteController@remover');
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
+
+	//Rotas para a ROLE correspondente
+	Route::get('correspondente/clientes','CorrespondenteController@clientes');
+	Route::get('correspondente/dados','CorrespondenteController@dados');
+	Route::get('correspondente/processos','CorrespondenteController@processos');
+	Route::get('correspondente/dashboard/{id}','CorrespondenteController@dashboard');
+	Route::get('correspondente/perfil/{id}','CorrespondenteController@perfil');
+	Route::get('correspondente/ficha/{id}','CorrespondenteController@ficha');
+	Route::put('correspondente/editar','CorrespondenteController@editar');
 
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');
