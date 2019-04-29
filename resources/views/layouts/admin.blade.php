@@ -9,168 +9,35 @@
             
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         
-        <!-- #CSS Links -->
-        <!-- Basic Styles -->
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
-
-        <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}?v={{ date('YmdHis') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
-
-        
         <link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
 
-        <!-- We recommend you use "your_style.css" to override SmartAdmin
-             specific styles this will also ensure you retrain your customization with each SmartAdmin update.
-        <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
-
-        <!-- #FAVICONS -->
         <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
-
-        <!-- #GOOGLE FONT -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
-
-        <!-- #APP SCREEN / ICONS -->
-        <!-- Specifying a Webpage Icon for Web Clip 
-             Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
-        <link rel="apple-touch-icon" href="img/splash/sptouch-icon-iphone.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="img/splash/touch-icon-ipad.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="img/splash/touch-icon-iphone-retina.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="img/splash/touch-icon-ipad-retina.png">
-        
-        <!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        
-        <!-- Startup image for web apps -->
-        <link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
-        <link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-        <link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-
     </head>
 
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">
-
-        <!-- #HEADER -->
         <header id="header">
             <div id="logo-group">
-
-                <!-- PLACE YOUR LOGO HERE -->
                 <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>
-                <!-- END LOGO PLACEHOLDER -->
-
-                <!-- Note: The activity badge color changes when clicked and resets the number to 0
-                     Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
-                <span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> 21 </b> </span>
-
-                <!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
-                <div class="ajax-dropdown">
-
-                    <!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
-                    <div class="btn-group btn-group-justified" data-toggle="buttons">
-                        <label class="btn btn-default">
-                            <input type="radio" name="activity" id="ajax/notify/mail.html">
-                            Msgs (14) </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="activity" id="ajax/notify/notifications.html">
-                            notify (3) </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="activity" id="ajax/notify/tasks.html">
-                            Tasks (4) </label>
-                    </div>
-
-                    <!-- notification content -->
-                    <div class="ajax-notifications custom-scroll">
-
-                        <div class="alert alert-transparent">
-                            <h4>Click a button to show messages here</h4>
-                            This blank page message helps protect your privacy, or you can show the first message here automatically.
-                        </div>
-
-                        <i class="fa fa-lock fa-4x fa-border"></i>
-
-                    </div>
-                    <!-- end notification content -->
-
-                    <!-- footer: refresh area -->
-                    <span> Last updated on: 12/12/2013 9:43AM
-                        <button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..." class="btn btn-xs btn-default pull-right">
-                            <i class="fa fa-refresh"></i>
-                        </button> </span>
-                    <!-- end footer -->
-
-                </div>
-                <!-- END AJAX-DROPDOWN -->
-            </div>
-
-            <div class="project-context hidden-xs">
-                <span class="label">Notificações</span>
-                <span class="project-selector dropdown-toggle"><i class="fa fa-warning"></i> Você possui novas notificações</span>
             </div>
            
             <div class="pull-right">
                 <div id="hide-menu" class="btn-header pull-right">
                     <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
                 </div>
-                
-                <ul id="mobile-profile-img" class="header-dropdown-list hidden-xs padding-5">
-                    <li class="">
-                        <a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown"> 
-                            <img src="img/avatars/sunny.png" alt="Usuário"/>  
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0"><i class="fa fa-cog"></i> Setting</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#ajax/profile.html" class="padding-10 padding-top-0 padding-bottom-0"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>S</u>hortcut</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i> Full <u>S</u>creen</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="login.html" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>L</u>ogout</strong></a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <!-- logout button -->
                 <div id="logout" class="btn-header transparent pull-right">
                     <span> <a href="{{ route('logout') }}" title="Sair" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
                 </div>
-                <!-- end logout button -->
-
                 <div id="fullscreen" class="btn-header transparent pull-right">
                     <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
                 </div>
-
-                <!-- search mobile button (this is hidden till mobile view port) -->
-                <div id="search-mobile" class="btn-header transparent pull-right">
-                    <span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
-                </div>
-                <!-- end search mobile button -->
-                
-                <!-- #SEARCH -->
-                <!-- input: search field -->
-                <form action="#ajax/search.html" class="header-search pull-right">
-                    <input id="search-fld" type="text" name="param" placeholder="Busca Rápida de Processo">
-                    <button type="submit">
-                        <i class="fa fa-search"></i>
-                    </button>
-                    <a href="javascript:void(0);" id="cancel-search-js" title="Cancel Search"><i class="fa fa-times"></i></a>
-                </form>
             </div>
         </header>
     
@@ -344,6 +211,9 @@
                         </ul>   
                     </li>
                     @endrole
+                    <li class="">
+                        <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>
+                    </li> 
                 </ul>
             </nav>
 
