@@ -83,7 +83,7 @@
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-honorario" data-cidade="" data-servico="" value="">
+                                                                            <input type="text" class="form-control taxa-despesa" data-entidade="correspondente"  data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCO{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_despesa_correspondente }}" value="{{ $despesa->vl_despesa_correspondente }}">
                                                                         </div>
                                                                     </div>
                                                                      <div class="onoffswitch-container col-md-7">
@@ -127,7 +127,7 @@
                                                 <h5>Lista de Honorários</h5> 
                                             </div>
                                             <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
 
                                                 <a href="{{ url('cliente/limpar-selecao/') }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
                                             </div>                                                                                             
@@ -148,14 +148,14 @@
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-honorario" data-cidade="" data-servico="" value="{{ ($qtdServicoCliente > 0) ? $tipoDeServico->vl_taxa_honorario_pth_cliente  : $tipoDeServico->nu_taxa_the }}">
+                                                                            <input type="text" class="form-control taxa-honorario" data-entidade="cliente" data-servico="{{ $tipoDeServico->cd_tipo_servico_tse }}" data-oldvalue="{{ ($qtdServicoCliente > 0) ? $tipoDeServico->vl_taxa_honorario_pth_cliente  : $tipoDeServico->nu_taxa_the }}" value="{{ ($qtdServicoCliente > 0) ? $tipoDeServico->vl_taxa_honorario_pth_cliente  : $tipoDeServico->nu_taxa_the }}">
                                                                         </div>                                                                               
                                                                     </div>     
                                                                 </td>
                                                                 <td  {{ ($qtdServicoCliente > 0) ? (!empty($tipoDeServico->vl_taxa_honorario_pth_cliente)) ?  "class=info" : '' : !empty($tipoDeServico->nu_taxa_the) ?  "class=info" : '' }}  style="border-left: none;text-align: right;">
                                                                      <div class="onoffswitch-container col-md-7">
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox"  {{  ($qtdServicoCliente > 0) ?  (!empty($tipoDeServico->nu_taxa_the)) ?  ($tipoDeServico->nu_taxa_the == $tipoDeServico->vl_taxa_honorario_pth_cliente) ? "checked"  : '' : '' : (empty($tipoDeServico->nu_taxa_the)) ? '' : "checked" }} class="onoffswitch-checkbox" name="SCL{{$tipoDeServico->cd_tipo_servico_tse}}" value="S" id="SCL{{$tipoDeServico->cd_tipo_servico_tse}}">
+                                                                            <input type="checkbox"  {{  (($qtdServicoCliente > 0) ?  ((!empty($tipoDeServico->nu_taxa_the)) ?  (($tipoDeServico->nu_taxa_the == $tipoDeServico->vl_taxa_honorario_pth_cliente) ? "checked"  : '') : '') : ((empty($tipoDeServico->nu_taxa_the)) ? '' : "checked" ))}} class="onoffswitch-checkbox" name="SCL{{$tipoDeServico->cd_tipo_servico_tse}}" value="S" id="SCL{{$tipoDeServico->cd_tipo_servico_tse}}">
                                                                             <label class="onoffswitch-label" for="SCL{{$tipoDeServico->cd_tipo_servico_tse}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                     <span class="onoffswitch-switch"></span>
@@ -167,7 +167,7 @@
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input type="text" class="form-control taxa-honorario" data-cidade="" data-servico="" value="">
+                                                                            <input type="text" class="form-control taaxa-honorario" data-cidade="" data-servico="" value="">
                                                                         </div>
                                                                     </div>
                                                                 </td>

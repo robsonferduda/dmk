@@ -39,6 +39,69 @@ class ProcessoController extends Controller
         return view('processo/processos',['processos' => $processos]);
     }
 
+    public function salvarHonorarios(Request $request){
+
+        $processo_id = $request->processo;
+       
+        DB::beginTransaction();
+
+        $dados = json_decode($request->valores);
+
+        foreach ($dados as $dado) {
+
+            if(empty($dado->valor)){
+                $dado->valor = NULL;
+            }else{
+                $dado->valor = str_replace(",", ".", $dado->valor);
+            }
+
+            if($dado->entidade == 'cliente'){
+                $tipoEntidade = \TipoEntidade::CLIENTE;             
+            }else{
+                $tipoEntidade = \TipoEntidade::CORRESPONDENTE;
+            }
+
+            $valor = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
+                                      ->where('cd_processo_pro',$processo_id)
+                                      ->where('cd_tipo_servico_tse',$dado->servico)
+                                      ->where('cd_tipo_entidade_tpe',$tipoEntidade)->first(); 
+
+            if(!empty($valor)){
+
+                $valor->vl_taxa_honorario_pth = $dado->valor;
+                if(!$valor->saveOrFail()){
+                    Flash::error('Erro ao atualizar dados');
+                    DB::rollBack();
+                    return redirect('processos/financas/'.$processo_id);    
+                }
+
+            }else{
+
+                $valor = ProcessoTaxaHonorario::create([
+                    'cd_conta_con' => $this->cdContaCon,
+                    'cd_processo_pro' => $processo_id,
+                    'cd_tipo_servico_tse' => $dado->servico,
+                    'cd_tipo_entidade_tpe' => $tipoEntidade,
+                    'vl_taxa_honorario_pth' => $dado->valor
+                ]);
+
+                if(!$valor){
+                    Flash::error('Erro ao atualizar dados');
+                    DB::rollBack();
+                    return redirect('processos/financas/'.$processo_id);    
+                }
+            }       
+
+        }
+
+        Flash::success('Dados atualizados com sucesso');
+        DB::commit(); 
+ 
+        return redirect('processos/financas/'.$processo_id);      
+
+
+    }
+
     public function salvarDespesas(Request $request){
 
         $processo_id = $request->processo;
@@ -179,7 +242,7 @@ class ProcessoController extends Controller
                                    'processo_taxa_honorario_pth_cor.vl_taxa_honorario_pth as vl_taxa_honorario_pth_correspondente'
                                )
                           ->get();
- 
+        
         return view('processo/financas',['despesas' => $despesas,
                                          'tiposDeServico' => $tiposDeServico,
                                          'id' => $id,

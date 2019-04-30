@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/public/";
+	var pathname = window.location.origin+"/dmk/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -340,6 +340,54 @@ $(document).ready(function() {
 		$("#nu_fone_fon").val("");
 		$("#erroFone").html("");
 		$("#nu_fone_fon").focus();
+	});
+
+	$("#btnSalvarHonorariosProcesso").click(function (){
+
+		var valores = new Array();
+		var processo = $("#cd_processo_pro").val();		
+
+		$('.taxa-honorario').each(function(i,obj){
+
+			var valor = $(this).val();
+    		var servico = $(this).data("servico");
+			var entidade = $(this).data("entidade");
+			var oldvalue = $(this).data("oldvalue");
+
+			if(oldvalue != '' || valor.trim() != ''){
+
+				var dados = {servico: servico, entidade: entidade, valor: valor};
+				valores.push(dados);
+
+    		}
+		});
+
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/processo/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "valores": JSON.stringify(valores),
+                "processo": processo
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = pathname+"/processos/financas/"+processo
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+
+
 	});
 
 	$("#btnSalvarDespesasProcesso").click(function (){
