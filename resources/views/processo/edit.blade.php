@@ -75,7 +75,7 @@
                                             <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli') ? old('cd_cliente_cli') : $processo->cd_cliente_cli}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli') ? old('nm_cliente_cli') : $nome }}" class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
+                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli') ? old('nm_cliente_cli') : $nome }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -143,7 +143,7 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="Correspondente..." type="text">
+                                                <input class="form-control" placeholder="Digite 3 caracteres para busca" type="text">
                                             </label>
                                         </section>
                                         
