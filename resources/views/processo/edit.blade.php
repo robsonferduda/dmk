@@ -158,9 +158,9 @@
                             <fieldset>
                                 <div class="row">
                                     <section class="col col-4">
-                                        <label class="label">Data da Audiência</label>
+                                        <label class="label">Data da Solicitação</label>
                                         <label class="input">
-                                           <input class="dt_audiencia_pro" placeholder="___ /___ /___" type="text" name="dt_audiencia_pro" value="{{ old('dt_audiencia_pro') ? old('dt_audiencia_pro') : $processo->dt_audiencia_pro }}">
+                                           <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : $processo->dt_solicitacao_pro }}">
                                         </label>
                                     </section> 
                                     <section class="col col-4">

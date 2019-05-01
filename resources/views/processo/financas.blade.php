@@ -114,6 +114,74 @@
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">
                         <span class="widget-icon"> <i class="fa fa-money"></i> </span>
+                        <h2>Honorário</h2>             
+                    </header>
+                    <div class="col-sm-12">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-12">   
+                                        
+                                            <div class="col-md-6"> 
+                                                <h5>Honorário por tipo de serviço</h5> 
+                                            </div>
+                                            <div class="col-md-6"> 
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+
+                                                <a href="{{ url('cliente/limpar-selecao/') }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                            </div>                                                                                             
+                                            <div class="tabelah">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <th style="width: 50%">Tipos de Serviços</th>
+                                                        <th style="text-align: center; ">Valor Cliente</th>
+                                                        <th style="text-align: center; ">Valor Correspondente</th>
+                                                    </thead>
+                                                    <tbody>  
+                                                        <tr>  
+                                                            <td>                                           
+                                                                <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
+                                                                    <option data-cliente="" data-correspondente="" selected value="">Selecione...</option>  
+                                                                    @foreach($tiposDeServico as $tipoDeServico)
+                                                                        <option data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-md-4 col-md-offset-2">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">$</span>
+                                                                    <input style="width: 100px;" id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" name="valor_cliente">
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-md-4 col-md-offset-2">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">$</span>
+                                                                    <input style="width: 100px;" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario" name="valor_correspondente">
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            {{--<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="jarviswidget jarviswidget-sortable">
+                    <header role="heading" class="ui-sortable-handle">
+                        <span class="widget-icon"> <i class="fa fa-money"></i> </span>
                         <h2>Honorários</h2>             
                     </header>
                     <div class="col-sm-12">
@@ -195,7 +263,8 @@
                         </div>
                     </div>
                 </div>
-            </article>
+            </article>--}}
+
         </div>
     </div>
 </div>

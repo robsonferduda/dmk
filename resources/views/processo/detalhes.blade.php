@@ -88,7 +88,7 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Data da Audiência: </strong> {{ !empty($processo->dt_audiencia_pro) ? date('d/m/Y', strtotime($processo->dt_audiencia_pro)) : ' ' }}
+                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
                                                 </li>
                                                 <li>
                                                     <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}

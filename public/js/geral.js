@@ -5,7 +5,7 @@ $(document).ready(function() {
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
-	$('.dt_audiencia_pro').mask('00/00/0000');
+	$('.dt_solicitacao_pro').mask('00/00/0000');
 	$('.data_nascimento').mask('00/00/0000');
 	$('.data_fundacao').mask('00/00/0000');
 	$('.data_admissao').mask('00/00/0000');
@@ -342,7 +342,12 @@ $(document).ready(function() {
 		$("#nu_fone_fon").focus();
 	});
 
-	$("#btnSalvarHonorariosProcesso").click(function (){
+	$('#tipoServico').change(function(){
+		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+	});
+
+
+	/*$("#btnSalvarHonorariosProcesso").click(function (){
 
 		var valores = new Array();
 		var processo = $("#cd_processo_pro").val();		
@@ -389,7 +394,7 @@ $(document).ready(function() {
 
 
 	});
-
+*/
 	$("#btnSalvarDespesasProcesso").click(function (){
 
 		var valores = new Array();

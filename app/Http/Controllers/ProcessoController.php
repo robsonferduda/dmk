@@ -34,7 +34,7 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->get();
+        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         return view('processo/processos',['processos' => $processos]);
     }
@@ -205,15 +205,32 @@ class ProcessoController extends Controller
                             )
                     ->get();
 
-        $qtdProcessoTiposServicoCliente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
+        $tiposDeServico = DB::table('processo_pro')
+                          ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
+                          ->join('tipo_servico_tse','processo_pro.cd_conta_con','=','tipo_servico_tse.cd_conta_con')
+                          ->leftjoin('taxa_honorario_entidade_the', function($join){
+                               $join->on('cliente_cli.cd_entidade_ete', '=', 'taxa_honorario_entidade_the.cd_entidade_ete');
+                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_entidade_the.cd_tipo_servico_tse');
+                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_entidade_the.cd_cidade_cde');
+                          })                   
+                          ->where('processo_pro.cd_processo_pro',$id)
+                          ->where('processo_pro.cd_conta_con',$this->cdContaCon)
+                          ->whereNull('tipo_servico_tse.deleted_at')
+                          ->orderBy('tipo_servico_tse.nm_tipo_servico_tse')
+                          ->select('tipo_servico_tse.cd_tipo_servico_tse',
+                                   'tipo_servico_tse.nm_tipo_servico_tse',
+                                   'taxa_honorario_entidade_the.nu_taxa_the as nu_taxa_the_cliente'                                 
+                               )
+                          ->get();
+
+        /*$qtdProcessoTiposServicoCliente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
                                                                 ->where('cd_processo_pro',$id)
                                                                 ->where('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->count();
         
         $qtdProcessoTiposServicoCorrespondente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
                                                                 ->where('cd_processo_pro',$id)
-                                                                ->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE)->count();                                                                                                
-
-        $tiposDeServico = DB::table('processo_pro')
+                                                                ->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE)->count();  */                                                                                             
+        /*$tiposDeServico = DB::table('processo_pro')
                           ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
                           ->join('tipo_servico_tse','processo_pro.cd_conta_con','=','tipo_servico_tse.cd_conta_con')
                           ->leftjoin('taxa_honorario_entidade_the', function($join){
@@ -241,13 +258,18 @@ class ProcessoController extends Controller
                                    'processo_taxa_honorario_pth_cli.vl_taxa_honorario_pth as vl_taxa_honorario_pth_cliente',
                                    'processo_taxa_honorario_pth_cor.vl_taxa_honorario_pth as vl_taxa_honorario_pth_correspondente'
                                )
-                          ->get();
+                          ->get();*/
         
-        return view('processo/financas',['despesas' => $despesas,
+        /*return view('processo/financas',['despesas' => $despesas,
                                          'tiposDeServico' => $tiposDeServico,
                                          'id' => $id,
                                          'qtdServicoCliente' => $qtdProcessoTiposServicoCliente,
                                          'qtdServicoCorrespondente' => $qtdProcessoTiposServicoCorrespondente
+                                        ]);*/
+
+        return view('processo/financas',['despesas' => $despesas,
+                                         'tiposDeServico' => $tiposDeServico,
+                                         'id' => $id
                                         ]);
 
     }
@@ -262,15 +284,16 @@ class ProcessoController extends Controller
 
     public function buscar(Request $request)
     {
-        $nome   = $request->get('nome');
-        $perfil = $request->get('perfil');
+     
+        $numero   = $request->get('nu_processo_pro');
+        $tipo = $request->get('cd_tipo_processo_tpo');
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon);
-        if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
-        if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
-        $usuarios = $usuarios->orderBy('name')->get();
+        $processos = Processo::where('cd_conta_con', $this->cdContaCon);
+        if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
+        if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+          $processos = $processos->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-         return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
+        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo]);
     }
 
     public function novo(){
@@ -297,8 +320,8 @@ class ProcessoController extends Controller
                 $nome = $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli;
         }
 
-        if(!empty($processo->dt_audiencia_pro))
-            $processo->dt_audiencia_pro = date('d/m/Y', strtotime($processo->dt_audiencia_pro));
+        if(!empty($processo->dt_solicitacao_pro))
+            $processo->dt_solicitacao_pro = date('d/m/Y', strtotime($processo->dt_solicitacao_pro));
         
         if(!empty($processo->dt_prazo_fatal_pro))
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
@@ -324,7 +347,7 @@ class ProcessoController extends Controller
             'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
         ]);
 
-        $request->merge(['dt_audiencia_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_audiencia_pro)))]);
+        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
         $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
@@ -360,7 +383,7 @@ class ProcessoController extends Controller
         
         DB::beginTransaction();
 
-        $request->merge(['dt_audiencia_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_audiencia_pro)))]);
+        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
         $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
     
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
