@@ -15,17 +15,17 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
-            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-            <a data-toggle="modal" href="{{ url('cliente/editar/') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <input type="hidden" id="cd_processo_pro" value="{{ $id }}">
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+            <a data-toggle="modal" href="{{ url('processos/editar/'.$id) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a data-toggle="modal" href="{{ url('processos/detalhes/'.$id) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>             
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
-                @include('layouts/messages')
-            </div>
+            @include('layouts/messages')
+        </div>
+        <div class="col-md-12">            
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">
@@ -34,6 +34,10 @@
                     </header>
                     <div class="col-sm-12">
                         <div class="well">
+                            <div class="alert alert-info" role="alert">
+                            <i class="fa-fw fa fa-info"></i>
+                                <strong>Informação!</strong> O ícone <i style="color: red" class='fa fa-warning'></i> indica que o comportamento da opção <i>reembolsável</i> está diferente do padrão cadastrado em Cliente e/ou Correspondente.
+                            </div>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
@@ -45,7 +49,7 @@
                                             <div class="col-md-6"> 
                                                 <button class="btn btn-success pull-right header-btn" id="btnSalvarDespesasProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
 
-                                                <a href="{{ url('cliente/limpar-selecao/') }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                                <button class="btn btn-warning pull-right header-btn" id="limparValoresDespesa" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Valores</button>
                                             </div>                                                                                             
                                             <div class="tabelah">
                                                 <table class="table table-bordered">
@@ -118,6 +122,10 @@
                     </header>
                     <div class="col-sm-12">
                         <div class="well">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa-fw fa fa-info"></i>
+                                <strong>Informação!</strong> Os campos de valores serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                            </div>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
@@ -128,8 +136,7 @@
                                             </div>
                                             <div class="col-md-6"> 
                                                 <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
-
-                                                <a href="{{ url('cliente/limpar-selecao/') }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                               
                                             </div>                                                                                             
                                             <div class="tabelah">
                                                 <table class="table table-bordered">
@@ -144,7 +151,7 @@
                                                                 <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
                                                                     <option data-cliente="" data-correspondente="" selected value="">Selecione...</option>  
                                                                     @foreach($tiposDeServico as $tipoDeServico)
-                                                                        <option data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
+                                                                        <option {{ (!empty($honorariosProcesso) && $honorariosProcesso->cd_tipo_servico_tse ==  $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '' }} data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
                                                                     @endforeach
                                                                 </select>
                                                             </td>
@@ -152,7 +159,7 @@
                                                                 <div class="col-md-4 col-md-offset-2">
                                                                 <div class="input-group">
                                                                     <span class="input-group-addon">$</span>
-                                                                    <input style="width: 100px;" id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" name="valor_cliente">
+                                                                    <input style="width: 100px;" id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="{{ ( !empty($honorariosProcesso->vl_taxa_honorario_cliente_pth)) ? $honorariosProcesso->vl_taxa_honorario_cliente_pth : '' }}">
                                                                 </div>
                                                                 </div>
                                                             </td>
@@ -160,7 +167,7 @@
                                                                 <div class="col-md-4 col-md-offset-2">
                                                                 <div class="input-group">
                                                                     <span class="input-group-addon">$</span>
-                                                                    <input style="width: 100px;" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario" name="valor_correspondente">
+                                                                    <input style="width: 100px;" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ ( !empty($honorariosProcesso->vl_taxa_honorario_correspondente_pth)) ? $honorariosProcesso->vl_taxa_honorario_correspondente_pth : '' }}">
                                                                 </div>
                                                                 </div>
                                                             </td>

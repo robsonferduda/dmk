@@ -39,7 +39,7 @@ class ProcessoController extends Controller
         return view('processo/processos',['processos' => $processos]);
     }
 
-    public function salvarHonorarios(Request $request){
+/*    public function salvarHonorarios(Request $request){
 
         $processo_id = $request->processo;
        
@@ -93,6 +93,79 @@ class ProcessoController extends Controller
             }       
 
         }
+
+        Flash::success('Dados atualizados com sucesso');
+        DB::commit(); 
+ 
+        return redirect('processos/financas/'.$processo_id);      
+
+
+    }*/
+
+
+    public function clonar($id){
+
+        $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $novoProcesso = $processo->replicate();
+        $novoProcesso->save();
+
+        Flash::success('Processo clonado com sucesso');
+        DB::commit(); 
+
+        return redirect('processos/editar/'.$novoProcesso->cd_processo_pro);  
+    }
+
+    public function salvarHonorarios(Request $request){
+
+        $processo_id = $request->processo;
+       
+        DB::beginTransaction();
+
+        $dados = json_decode($request->dados);
+
+        if(empty($dados->valor_cliente)){
+            $dados->valor_cliente = NULL;
+        }else{
+            $dados->valor_cliente = str_replace(",", ".", $dados->valor_cliente);
+        }
+
+        if(empty($dados->valor_correspondente)){
+            $dados->valor_correspondente = NULL;
+        }else{
+            $dados->valor_correspondente = str_replace(",", ".", $dados->valor_correspondente);
+        }
+
+        $valor = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
+                                  ->where('cd_processo_pro',$processo_id)
+                                  ->where('cd_tipo_servico_tse',$dados->servico)->first();
+                                
+        if(!empty($valor)){
+
+            $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
+            $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
+           
+            if(!$valor->saveOrFail()){
+                Flash::error('Erro ao atualizar dados');
+                DB::rollBack();
+                return redirect('processos/financas/'.$processo_id);    
+            }
+
+        }else{
+
+            $valor = ProcessoTaxaHonorario::create([
+                'cd_conta_con' => $this->cdContaCon,
+                'cd_processo_pro' => $processo_id,
+                'cd_tipo_servico_tse' => $dados->servico,
+                'vl_taxa_honorario_cliente_pth' => $dados->valor_cliente,
+                'vl_taxa_honorario_pth_correspondente' => $dados->valor_correspondente
+            ]);
+
+            if(!$valor){
+                Flash::error('Erro ao atualizar dados');
+                DB::rollBack();
+                return redirect('processos/financas/'.$processo_id);    
+            }
+        }       
 
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
@@ -219,10 +292,14 @@ class ProcessoController extends Controller
                           ->orderBy('tipo_servico_tse.nm_tipo_servico_tse')
                           ->select('tipo_servico_tse.cd_tipo_servico_tse',
                                    'tipo_servico_tse.nm_tipo_servico_tse',
-                                   'taxa_honorario_entidade_the.nu_taxa_the as nu_taxa_the_cliente'                                 
+                                   'taxa_honorario_entidade_the.nu_taxa_the as nu_taxa_the_cliente'
+                                  
                                )
                           ->get();
-
+        $honorariosProcesso = ProcessoTaxaHonorario::where('cd_conta_con', $this->cdContaCon)
+                                                   ->where('cd_processo_pro',$id)
+                                                   ->orderBy('updated_at','DESC')->first();
+                                                
         /*$qtdProcessoTiposServicoCliente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
                                                                 ->where('cd_processo_pro',$id)
                                                                 ->where('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->count();
@@ -269,7 +346,8 @@ class ProcessoController extends Controller
 
         return view('processo/financas',['despesas' => $despesas,
                                          'tiposDeServico' => $tiposDeServico,
-                                         'id' => $id
+                                         'id' => $id,
+                                         'honorariosProcesso' => $honorariosProcesso
                                         ]);
 
     }
@@ -405,9 +483,9 @@ class ProcessoController extends Controller
 
     public function destroy($id)
     {
-        $usuario = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $processo = Processo::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
-        if($usuario->delete())
+        if($processo->delete())
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);

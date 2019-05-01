@@ -15,8 +15,10 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Processos</a>
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>    
+            <a title="Finanças" class="btn btn-warning pull-right header-btn" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money fa-lg"></i>Finanças</a>
+            <a data-toggle="modal" href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Detalhes</a>     
         </div>
     </div>
     <div class="row">

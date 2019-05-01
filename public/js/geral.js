@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/public/";
+	var pathname = window.location.origin+"/dmk/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -347,6 +347,42 @@ $(document).ready(function() {
 	});
 
 
+	$("#btnSalvarHonorariosProcesso").click(function (){
+
+		var processo = $("#cd_processo_pro").val();		
+		var servico  = $("#tipoServico").val();
+		var valor_cliente  = $("#taxa-honorario-cliente").val();
+		var valor_correspondente  = $("#taxa-honorario-correspondente").val();
+
+		var dados = {servico: servico, valor_cliente: valor_cliente, valor_correspondente: valor_correspondente};
+
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/processo/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "dados": JSON.stringify(dados),
+                "processo": processo
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = pathname+"/processos/financas/"+processo
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+
+	});
+
 	/*$("#btnSalvarHonorariosProcesso").click(function (){
 
 		var valores = new Array();
@@ -395,6 +431,15 @@ $(document).ready(function() {
 
 	});
 */
+	$("#limparValoresDespesa").click(function(){
+
+		$('.taxa-despesa').each(function(i, obj) {
+
+			 $(this).val('');
+		});
+
+	})
+
 	$("#btnSalvarDespesasProcesso").click(function (){
 
 		var valores = new Array();
@@ -582,5 +627,33 @@ $(document).ready(function() {
 		});
 
 	});
+
+	$('.dialog_clone').click(function() {
+		$('#dialog_clone_text').dialog('open');
+		return false;
+	});
+	
+	$('#dialog_clone_text').dialog({
+		autoOpen : false,
+		width : 600,
+		resizable : false,
+		modal : true,
+		title : 'Deseja clonar esse processo?',
+		buttons : [{
+			html : "<i class='fa fa-clone fa-la'></i>&nbsp; Continuar",
+			"class" : "btn sa-btn-danger",
+			click : function() {
+				window.location=$('.dialog_clone').attr('href');
+			}
+		}, {
+			html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		}]
+	});
+
+	
 
 });
