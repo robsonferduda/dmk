@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/dmk/public/";
+	var pathname = window.location.origin+"/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -13,8 +13,8 @@ $(document).ready(function() {
 	$('.cpf').mask('000.000.000-00');
 	$('.cnpj').mask("00.000.000/000-00");
 	$('.telefone').mask("(00) 0000-00009");
-	$(".taxa-honorario").mask('#.##0,00', {reverse: true});
-	$(".taxa-despesa").mask('#.##0,00', {reverse: true});
+	$(".taxa-honorario").mask('#####000,00', {reverse: true});
+	$(".taxa-despesa").mask('#####000,00', {reverse: true});
 
 
 	/** =======================================================   **/
