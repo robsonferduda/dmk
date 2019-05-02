@@ -79,7 +79,16 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/dashboard/{id}','CorrespondenteController@dashboard');
 	Route::get('correspondente/perfil/{id}','CorrespondenteController@perfil');
 	Route::get('correspondente/ficha/{id}','CorrespondenteController@ficha');
+	Route::get('correspondente/atuacao/{id}','CorrespondenteController@listarAtuacao');
+	Route::get('correspondente/atuacao/excluir/{id}','CorrespondenteController@excluirAtuacao');
+	Route::post('correspondente/atuacao/adicionar','CorrespondenteController@adicionarAtuacao');
 	Route::put('correspondente/editar','CorrespondenteController@editar');
+
+	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');
+	Route::get('email/excluir/{id}','EnderecoEletronicoController@excluir');
+
+	Route::get('fones/entidade/{id}','FoneController@fones');
+	Route::get('fones/excluir/{id}','FoneController@excluir');
 
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');

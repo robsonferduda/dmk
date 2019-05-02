@@ -9,16 +9,20 @@ use Hash;
 use App\Enums\Nivel;
 use App\Enums\Roles;
 use App\Enums\TipoEnderecoEletronico;
+use App\Fone;
 use App\User;
 use App\Conta;
 use App\Endereco;
 use App\Entidade;
 use App\GrupoCidade;
+use App\CidadeAtuacao;
 use App\Correspondente;
 use App\TipoServico;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\EnderecoEletronico;
+use App\Identificacao;
+use App\RegistroBancario;
 use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\ConviteRequest;
@@ -309,6 +313,7 @@ class CorrespondenteController extends Controller
                                     
                                     $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
                                     $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
+
                                     if(!empty($nome)) $join->where('nm_razao_social_con','like','%'.$nome.'%');
                                     
                                     if(!empty($identificacao)){
@@ -413,6 +418,7 @@ class CorrespondenteController extends Controller
                         $enderecoEletronico->save();
                     }
 
+                    Session::put('SESSION_CD_CONTA', $conta->cd_conta_con);
                     Auth::login($user);
                 }
             }
@@ -459,22 +465,166 @@ class CorrespondenteController extends Controller
 
     //Métodos para a ROLE CORRESPONDENTE
 
+    public function adicionarAtuacao(Request $request){
+
+        $atuacao = new CidadeAtuacao();
+        $atuacao->cd_entidade_ete = $request->entidade;
+        $atuacao->cd_cidade_cde = $request->cidade;
+
+        if($atuacao->save())
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500); 
+
+    }
+
+    public function excluirAtuacao($id){
+
+        $atuacao = CidadeAtuacao::where('cd_cidade_atuacao_cat',$id)->first();
+
+        if($atuacao->delete())
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);   
+        
+    }
+
+    public function listarAtuacao($entidade){
+
+        return response()->json(CidadeAtuacao::with('cidade')->where('cd_entidade_ete',$entidade)->get()); 
+
+    }
+
     public function editar(Request $request){
 
         $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
 
         $request->merge(['cd_conta_con' => $correspondente->cd_conta_con]);
         $request->merge(['cd_entidade_ete' => $correspondente->entidade->cd_entidade_ete]);
-        
-        //if(!empty($request->cd_cidade_cde) and !empty($request->dc_logradouro_ede)){
-        if(!empty($request->dc_logradouro_ede)){
-            $endereco = new Endereco();
-            $endereco->fill($request->all());
 
-            $endereco->saveOrFail();
-        }
+        $correspondente->fill($request->all());
 
-        return redirect('correspondente/ficha/'.$correspondente->cd_conta_con);
+        if($correspondente->saveOrFail()){
+
+            //Inserção de telefones
+            if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
+
+                $fones = json_decode($request->telefones);
+                for($i = 0; $i < count($fones); $i++) {
+
+                    $fone = Fone::create([
+                        'cd_entidade_ete'           => $correspondente->entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                        'nu_fone_fon'               => $fones[$i]->numero
+                    ]);
+
+                }
+            }
+
+            //Inserção de emails
+            if(!empty($request->emails) && count(json_decode($request->emails)) > 0){
+
+                $emails = json_decode($request->emails);
+                for($i = 0; $i < count($emails); $i++) {
+
+                    $email = EnderecoEletronico::create([
+                        'cd_entidade_ete'                 => $correspondente->entidade->cd_entidade_ete,
+                        'cd_conta_con'                    => $this->conta, 
+                        'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
+                        'dc_endereco_eletronico_ede'      => $emails[$i]->email
+                    ]);
+
+                }
+            }
+
+            //Identificação para tipo de pessoa
+            $identificacao = (Identificacao::where('cd_conta_con',$correspondente->entidade->cd_conta_con)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_conta_con',$correspondente->entidade->cd_conta_con)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_conta_con',$correspondente->entidade->cd_conta_con)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ)->first();
+
+            $nu_cpf_cnpj = ($request->cd_tipo_pessoa_tpp == 1) ? $request->cpf : $request->cnpj;
+            
+            if($identificacao){
+
+                $identificacao->cd_tipo_identificacao_tpi = ($request->cd_tipo_pessoa_tpp == 1) ? \TipoIdentificacao::CPF : \TipoIdentificacao::CNPJ;
+                $identificacao->nu_identificacao_ide = (!empty($nu_cpf_cnpj)) ? $nu_cpf_cnpj : '';
+                $identificacao->saveOrFail();
+
+            }else{
+
+                $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $correspondente->entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $correspondente->cd_conta_con, 
+                    'cd_tipo_identificacao_tpi' => ($request->cd_tipo_pessoa_tpp == 1) ? \TipoIdentificacao::CPF : \TipoIdentificacao::CNPJ,
+                    'nu_identificacao_ide'      => (!empty($nu_cpf_cnpj)) ? $nu_cpf_cnpj : ''
+                ]);
+            }
+
+            //Identificação para OAB
+            if(!empty($request->oab)){
+
+                $identificacao = Identificacao::where('cd_conta_con',$correspondente->entidade->cd_conta_con)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::OAB)->first();
+
+                if($identificacao){
+                    
+                    $request->merge(['nu_identificacao_ide' => $request->oab]);
+                    $identificacao->fill($request->all());
+                    $identificacao->saveOrFail();
+                             
+                }else{
+
+                    $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $correspondente->entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $this->conta, 
+                    'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
+                    'nu_identificacao_ide'      => $request->oab
+                    ]);  
+
+                }              
+            }
+
+            //Atualização de endereço - Exige que pelo menos o logradouro esteja preenchido
+            if(!empty($request->dc_logradouro_ede)){
+
+                $endereco = Endereco::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->first();
+
+                if($endereco){
+                        
+                        $endereco->fill($request->all());
+                        $endereco->saveOrFail();
+
+                }else{
+
+                        $endereco = new Endereco();
+                        $endereco->fill($request->all());
+                        $endereco->saveOrFail();
+                }
+                    
+            }
+
+            //Atualização dos dados bancários
+            if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
+
+                $request->merge(['nm_titular_dba'  => $request->nm_razao_social_con]);
+                $request->merge(['nu_cpf_cnpj_dba' => $nu_cpf_cnpj]);
+
+                $registro = RegistroBancario::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->first();
+
+                if($registro){
+                        
+                        $registro->fill($request->all());
+                        $registro->saveOrFail();
+
+                }else{
+
+                        $registro = new RegistroBancario();
+                        $registro->fill($request->all());
+                        $registro->saveOrFail();
+                }
+            }
+
+        }       
+
+        return redirect('correspondente/perfil/'.$correspondente->entidade->cd_entidade_ete);
     }
 
     public function clientes(){
@@ -486,7 +636,7 @@ class CorrespondenteController extends Controller
     public function ficha($id){
 
         $correspondente = Correspondente::with('entidade')->where('cd_conta_con', $id)->first();
-        $flag = (is_null($correspondente->entidade->endereco) or is_null($correspondente->atuacao)) ? true : false;
+        $flag = (count($correspondente->entidade->atuacao()->get()) == 0 or count($correspondente->entidade->fone()->get()) == 0) ? true : false;
 
         return view('correspondente/ficha',['correspondente' => $correspondente, 'flag' => $flag]);
 
@@ -509,12 +659,12 @@ class CorrespondenteController extends Controller
 
         $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
 
-        if(is_null($correspondente->entidade->endereco) or is_null($correspondente->atuacao)){
+        if(count($correspondente->entidade->atuacao()->get()) == 0 or count($correspondente->entidade->fone()->get()) == 0){
 
-            return redirect('correspondente/ficha/'.$correspondente->cd_conta_con); 
+            return redirect('correspondente/ficha/'.$correspondente->cd_conta_con)->with(['flag' => true]); 
         }
         
-        return view('correspondente/dashboard',['usuario' => $entidade->usuario()->first()]);
+        return view('correspondente/dashboard',['correspondente' => $correspondente]);
 
     }
 

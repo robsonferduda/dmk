@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
 	var pathname = window.location.origin+"/public/";
+	var pathnameX = window.location.origin+"/dmk/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -294,6 +295,7 @@ $(document).ready(function() {
 	});
 
 	var telefones = new Array();
+	var emails = new Array();
 
 	$("#btnSalvarTelefone").click(function(){
 
@@ -301,6 +303,7 @@ $(document).ready(function() {
 		var tipo = $("#cd_tipo_fone_tfo option:selected").val();
 		var ds_tipo = $("#cd_tipo_fone_tfo option:selected").text();
 		var numero = $("#nu_fone_fon").val();
+		var entidade = $("#entidade").val();
 
 		if(tipo == 0){ flag = false; $("#erroFone").html("Campo tipo obrigatório"); }
 		if(numero == ''){ flag = false; $("#erroFone").html("Número de telefone obrigatório"); }
@@ -311,30 +314,232 @@ $(document).ready(function() {
 
 			telefones.push(fone);
 
-			$("#tabelaFone > tbody > tr").remove();		
+			$("#tabelaFone > tbody > tr").remove();	
+			loadTelefones(entidade);
+
 			$.each(telefones, function(index, value){
-				$('#tabelaFone > tbody').append('<tr><td>'+value.descricao+'</td><td>'+value.numero+'</td><td><a class="excluirFone" data-id="'+index+'">Excluir</a></td></tr>');
-			});
+				$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+			});			
 
 			$('.excluirFone').on('click', function(){
 
 				var id = $(this).data("id");
-				telefones.splice(id,1);
+				var entidade = $("#entidade").val()
 
-				$("#tabelaFone > tbody > tr").remove();		
+				telefones.splice(id,1); //Remove o registro do vetor que está na memória
+
+				$("#tabelaFone > tbody > tr").remove();	
+				loadTelefones(entidade);
+
 				$.each(telefones, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'">Excluir</a></td></tr>');
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});
 
 				$("#telefones").val(JSON.stringify(telefones));
 
 			});
 
+			$("#nu_fone_fon").val("");
+			$("#cd_tipo_fone_tfo").prop('selectedIndex',0);
+			$("#nu_fone_fon").focus();			
+
 			$('#modalFone').modal('hide');
 			$("#telefones").val(JSON.stringify(telefones));
 		}
 
 	});
+
+	$("#btnSalvarEmail").click(function(){
+
+		var flag = true;
+		var tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").val();
+		var ds_tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").text();
+		var email = $("#dc_endereco_eletronico_ede").val();
+		var entidade = $("#entidade").val();
+
+		if(tipo == 0){ flag = false; $("#erroEmail").html("Campo tipo obrigatório"); }
+		if(email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
+
+		if(flag){
+
+			var email = {tipo: tipo, email: email, descricao: ds_tipo};
+
+			emails.push(email);
+
+			$("#tabelaEmail > tbody > tr").remove();	
+			loadEmails(entidade);
+
+			$.each(emails, function(index, value){
+				$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirEmail" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+			});			
+
+			$('.excluirEmail').on('click', function(){
+
+				var id = $(this).data("id");
+				var entidade = $("#entidade").val()
+
+				emails.splice(id,1); //Remove o registro do vetor que está na memória
+
+				$("#tabelaEmail > tbody > tr").remove();	
+				loadEmails(entidade);
+
+				$.each(emails, function(index, value){
+					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirEmail" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});
+
+				$("#emails").val(JSON.stringify(emails));
+
+			});
+
+			$("#dc_endereco_eletronico_ede").val("");
+			$("#cd_tipo_endereco_eletronico_tee").prop('selectedIndex',0);
+			$("#dc_endereco_eletronico_ede").focus();			
+
+			$("#emails").val(JSON.stringify(emails));
+		}
+
+	});
+
+	function loadEmails(entidade){
+
+		$.ajax(
+            {
+                url: pathnameX+"email/entidade/"+entidade,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+				$.each(response, function(index, value){
+					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_endereco_eletronico_tee+'</td><td>'+value.dc_endereco_eletronico_ede+'</td><td class="center"><a class="excluirEmailBase" data-codigo="'+value.cd_endereco_eletronico_ele+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});   
+
+				$('.excluirEmailBase').on('click', function(){
+
+					var id = $(this).data("codigo");
+					var entidade = $("#entidade").val();
+					
+					$.ajax(
+			            {
+			                url: pathnameX+"email/excluir/"+id,
+			                type: 'GET',
+			                dataType: "JSON",
+			            success: function(response)
+			            {                    	
+			            	$("#tabelaEmail > tbody > tr").remove();	
+							loadEmails(entidade);
+							$.each(emails, function(index, value){
+								$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+							});
+			            },
+			            error: function(response)
+			            {
+			            }
+			        });
+
+				});   
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}
+
+	function loadTelefones(entidade){
+
+		$.ajax(
+            {
+                url: pathnameX+"fones/entidade/"+entidade,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+				$.each(response, function(index, value){
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_fone_tfo+'</td><td>'+value.nu_fone_fon+'</td><td class="center"><a class="excluirFoneBase" data-codigo="'+value.cd_fone_fon+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});   
+
+				$('.excluirFoneBase').on('click', function(){
+
+					var id = $(this).data("codigo");
+					var entidade = $("#entidade").val();
+					
+					$.ajax(
+			            {
+			                url: pathnameX+"fones/excluir/"+id,
+			                type: 'GET',
+			                dataType: "JSON",
+			            success: function(response)
+			            {                    	
+			            	$("#tabelaFone > tbody > tr").remove();	
+							loadTelefones(entidade);
+							$.each(telefones, function(index, value){
+								$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+							});
+			            },
+			            error: function(response)
+			            {
+			            }
+			        });
+
+				});   
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}
+
+
+	$('.excluirEmailBase').on('click', function(){
+
+		var id = $(this).data("codigo");
+		var entidade = $("#entidade").val();
+		
+		$.ajax(
+            {
+                url: pathnameX+"email/excluir/"+id,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+            	$("#tabelaEmail > tbody > tr").remove();	
+				loadEmails(entidade);
+				$.each(emails, function(index, value){
+					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}); 
+
+	$('.excluirFoneBase').on('click', function(){
+
+		var id = $(this).data("codigo");
+		var entidade = $("#entidade").val();
+		
+		$.ajax(
+            {
+                url: pathnameX+"fones/excluir/"+id,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+            	$("#tabelaFone > tbody > tr").remove();	
+				loadTelefones(entidade);
+				$.each(telefones, function(index, value){
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	});   
 
 	$('#modalFone').on('show.bs.modal', function (e) {
 		$("#nu_fone_fon").val("");

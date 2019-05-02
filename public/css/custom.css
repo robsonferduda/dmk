@@ -9,6 +9,7 @@
 .marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 #erroFone{color: #af4c4c; margin-top: 5px;}
+#erroEmail{color: #af4c4c; margin-top: 5px;}
 .select2-container .select2-choice, .select2-selection{padding: 0 8px;}
 .error{color:#bb2020;}
 .excluirFone{ display: pointer; }
@@ -19,6 +20,7 @@
     overflow-x: scroll;
 }
 .taxa-honorario{ min-width: 70px; }
+.btn-atuacao{ margin-right: 3px; margin-top: 3px;  }
 .profile 
 {
     min-height: 355px;
