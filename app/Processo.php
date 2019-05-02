@@ -25,7 +25,7 @@ class Processo extends Model implements AuditableContract
     						'cd_tipo_processo_tpo',
     						'cd_vara_var',
     						'dc_observacao_pro',
-    						'dt_audiencia_pro',
+    						'dt_solicitacao_pro',
     						'dt_prazo_fatal_pro',
     						'hr_audiencia_pro',
     						'nm_advogado_pro',

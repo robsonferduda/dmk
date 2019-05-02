@@ -24,22 +24,22 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <form action="{{ url('Processos/buscar') }}" class="form-inline" method="GET" role="search">
+                <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="input-group">
-                        <span class="input-group-addon">Nome</span>
-                        <input size="30" type="text" name="nome" class="form-control" id="Nome" placeholder="Nome" >
+                        <span class="input-group-addon">Nº Processo</span>
+                        <input size="25" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                     </div>                    
                     <div class="form-group">
-                        <select name="perfil" class="form-control">
-                            <option value="">Perfil</option>
-                            @foreach(\App\Nivel::all() as $nivel)
-                                <option value="{{ $nivel->cd_nivel_niv }}">{{ $nivel->dc_nivel_niv }}</option>
+                        <select name="cd_tipo_processo_tpo" class="form-control">
+                            <option value="">Tipos de Processo</option>
+                            @foreach(\App\TipoProcesso::all() as $tipo)
+                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
                             @endforeach
                         </select>
                     </div>                
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <a href="{{ url('Processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                    <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -52,25 +52,32 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 20%;">Nº Processo</th>
-                                    <th style="width: 10%;">Data do Cadastro</th>
-                                    <th style="width: 30%;">Cliente</th>
+                                    <th style="width: 12%;">Nº Processo</th>
+                                    <th style="width: 10%;">Data Prazo Fatal</th>
+                                    <th style="width: 10%;">Hora da Audiência</th>
+                                    <th style="width: 10%;">Data Solicitação</th>
+                                    <th style="width: 10%;">Tipo de Processo</th>
+                                    <th style="width: 21%;">Cliente</th>
                                    
-                                    <th style="width: 20%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($processos as $processo)
                                     <tr>                                    
-                                        <td>{{ $processo->nu_processo_pro }}</td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($processo->created_at)) }}</td>
+                                        <td data-id="{{ $processo->cd_processo_pro }}" >{{ $processo->nu_processo_pro }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }}</td>
+                                        <td>{{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) }}</td>
+                                        <td>{{ (!empty($processo->tipoProcesso->nm_tipo_processo_tpo)) ? $processo->tipoProcesso->nm_tipo_processo_tpo : '' }}</td>
                                         <td>{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</td>
                                       
                                         <td>
-                                            <a class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-folder"></i> Detalhes</a>
-                                            <a class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <a class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i> Finanças</a>
-                                            <button data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-folder"></i></a>
+                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i></a>
+                                            <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i></a>
+                                            <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.$processo->cd_processo_pro) }}"><i class="fa fa-clone"></i></a>
+                                            <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>                                            
                                         </td>
                                     </tr>
                                 @endforeach
@@ -81,5 +88,10 @@
             </div>
         </article>
     </div>
+</div>
+<div id="dialog_clone_text" class="ui-dialog-content ui-widget-content" style="width: auto; min-height: 0px; max-height: none; height: auto;">
+     <p>
+        Ao clicar em "Continuar" uma cópia do processo será realizada.
+    </p>
 </div>
 @endsection

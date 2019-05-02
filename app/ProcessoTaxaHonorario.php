@@ -16,11 +16,12 @@ class ProcessoTaxaHonorario extends Model implements AuditableContract
     protected $primaryKey = 'cd_processo_taxa_honorario_pth';
     protected $dates = ['deleted_at'];
     protected $fillable = [
-    						'vl_taxa_honorario_pth',
+    						'vl_taxa_honorario_cliente_pth',
+                            'vl_taxa_honorario_correspondente_pth',
     					    'cd_processo_pro',
                             'cd_conta_con',
                             'cd_tipo_servico_tse',
-                            'cd_tipo_entidade_tpe'                          
+                                               
     					  ];
 
     public $timestamps = true;

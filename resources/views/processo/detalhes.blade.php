@@ -15,9 +15,10 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Processos</a>
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a title="Finanças" class="btn btn-warning pull-right header-btn" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money fa-lg"></i>Finanças</a>
            
         </div>
     </div>
@@ -88,7 +89,7 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Data da Audiência: </strong> {{ !empty($processo->dt_audiencia_pro) ? date('d/m/Y', strtotime($processo->dt_audiencia_pro)) : ' ' }}
+                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
                                                 </li>
                                                 <li>
                                                     <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}

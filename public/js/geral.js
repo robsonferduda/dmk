@@ -1,12 +1,16 @@
 $(document).ready(function() {
 
+<<<<<<< HEAD
 	var pathname = window.location.origin+"/public/";
 	var pathnameX = window.location.origin+"/dmk/public/";
+=======
+	var pathname = window.location.origin+"/dmk/public/";
+>>>>>>> d2e5f00dcbb99e44b5e333be3e31ac8fcb5bc2a6
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
-	$('.dt_audiencia_pro').mask('00/00/0000');
+	$('.dt_solicitacao_pro').mask('00/00/0000');
 	$('.data_nascimento').mask('00/00/0000');
 	$('.data_fundacao').mask('00/00/0000');
 	$('.data_admissao').mask('00/00/0000');
@@ -14,8 +18,8 @@ $(document).ready(function() {
 	$('.cpf').mask('000.000.000-00');
 	$('.cnpj').mask("00.000.000/000-00");
 	$('.telefone').mask("(00) 0000-00009");
-	$(".taxa-honorario").mask('#.##0,00', {reverse: true});
-	$(".taxa-despesa").mask('#.##0,00', {reverse: true});
+	$(".taxa-honorario").mask('#####000,00', {reverse: true});
+	$(".taxa-despesa").mask('#####000,00', {reverse: true});
 
 
 	/** =======================================================   **/
@@ -547,6 +551,104 @@ $(document).ready(function() {
 		$("#nu_fone_fon").focus();
 	});
 
+	$('#tipoServico').change(function(){
+		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+	});
+
+
+	$("#btnSalvarHonorariosProcesso").click(function (){
+
+		var processo = $("#cd_processo_pro").val();		
+		var servico  = $("#tipoServico").val();
+		var valor_cliente  = $("#taxa-honorario-cliente").val();
+		var valor_correspondente  = $("#taxa-honorario-correspondente").val();
+
+		var dados = {servico: servico, valor_cliente: valor_cliente, valor_correspondente: valor_correspondente};
+
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/processo/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "dados": JSON.stringify(dados),
+                "processo": processo
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = pathname+"/processos/financas/"+processo
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+
+	});
+
+	/*$("#btnSalvarHonorariosProcesso").click(function (){
+
+		var valores = new Array();
+		var processo = $("#cd_processo_pro").val();		
+
+		$('.taxa-honorario').each(function(i,obj){
+
+			var valor = $(this).val();
+    		var servico = $(this).data("servico");
+			var entidade = $(this).data("entidade");
+			var oldvalue = $(this).data("oldvalue");
+
+			if(oldvalue != '' || valor.trim() != ''){
+
+				var dados = {servico: servico, entidade: entidade, valor: valor};
+				valores.push(dados);
+
+    		}
+		});
+
+		$.ajax(
+        {
+        	type: "POST",
+            url: pathname+"/processo/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "valores": JSON.stringify(valores),
+                "processo": processo
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = pathname+"/processos/financas/"+processo
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+
+
+	});
+*/
+	$("#limparValoresDespesa").click(function(){
+
+		$('.taxa-despesa').each(function(i, obj) {
+
+			 $(this).val('');
+		});
+
+	})
+
 	$("#btnSalvarDespesasProcesso").click(function (){
 
 		var valores = new Array();
@@ -734,5 +836,33 @@ $(document).ready(function() {
 		});
 
 	});
+
+	$('.dialog_clone').click(function() {
+		$('#dialog_clone_text').dialog('open');
+		return false;
+	});
+	
+	$('#dialog_clone_text').dialog({
+		autoOpen : false,
+		width : 600,
+		resizable : false,
+		modal : true,
+		title : 'Deseja clonar esse processo?',
+		buttons : [{
+			html : "<i class='fa fa-clone fa-la'></i>&nbsp; Continuar",
+			"class" : "btn sa-btn-danger",
+			click : function() {
+				window.location=$('.dialog_clone').attr('href');
+			}
+		}, {
+			html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		}]
+	});
+
+	
 
 });
