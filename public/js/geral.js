@@ -1,11 +1,7 @@
 $(document).ready(function() {
 
-<<<<<<< HEAD
 	var pathname = window.location.origin+"/public/";
 	var pathnameX = window.location.origin+"/dmk/public/";
-=======
-	var pathname = window.location.origin+"/dmk/public/";
->>>>>>> d2e5f00dcbb99e44b5e333be3e31ac8fcb5bc2a6
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
