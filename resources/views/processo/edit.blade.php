@@ -141,11 +141,12 @@
                                             </select> 
                                         </section>  
                                     </div>         
-                                     <div class="row">                        
+                                     <div class="row">
+                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >      
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="Digite 3 caracteres para busca" type="text">
+                                                <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
                                             </label>
                                         </section>
                                         
@@ -261,7 +262,27 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var path = "{{ url('autocompleteCliente') }}";
-        
+        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+
+        $( "#correspondente_auto_complete" ).autocomplete({
+          source: pathCorrespondente,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_correspondente_cor']").val(ui.item.id);
+
+          },
+          open: function(event, ui){
+            
+          }
+        });
+
+        $( "#correspondente_auto_complete" ).focusout(function(){
+           if($("input[name='cd_correspondente_cor']").val() == ''){
+                $("#correspondente_auto_complete").val('');
+           }
+        });
+
         $( "#client" ).focusout(function(){
            if($("input[name='cd_cliente_cli']").val() == ''){
                 $("#client").val('');

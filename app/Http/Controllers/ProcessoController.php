@@ -245,14 +245,20 @@ class ProcessoController extends Controller
 
     public function financas($id){
 
-        $processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        //$processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
      
         $despesas = DB::table('processo_pro')
                     ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
+                    ->leftjoin('conta_con','processo_pro.cd_correspondente_cor', '=', 'conta_con.cd_conta_con')
+                    ->leftjoin('entidade_ete','conta_con.cd_conta_con', '=', 'entidade_ete.cd_conta_con')
                     ->join('tipo_despesa_tds','processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con')
-                    ->leftjoin('reembolso_tipo_despesa_rtd', function($join){
-                               $join->on('cliente_cli.cd_entidade_ete', '=', 'reembolso_tipo_despesa_rtd.cd_entidade_ete');
-                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_tipo_despesa_rtd.cd_tipo_despesa_tds');                            
+                    ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_correspondente', function($join){
+                               $join->on('entidade_ete.cd_entidade_ete', '=', 'reembolso_correspondente.cd_entidade_ete');
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_correspondente.cd_tipo_despesa_tds');                            
+                     })                   
+                    ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_cliente', function($join){
+                               $join->on('cliente_cli.cd_entidade_ete', '=', 'reembolso_cliente.cd_entidade_ete');
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_cliente.cd_tipo_despesa_tds');                            
                      })
                     ->leftjoin('processo_despesa_pde as processo_despesa_pde_cliente', function($join){
                                $join->on('processo_pro.cd_processo_pro', '=', 'processo_despesa_pde_cliente.cd_processo_pro');
@@ -270,9 +276,10 @@ class ProcessoController extends Controller
                     ->orderBy('tipo_despesa_tds.nm_tipo_despesa_tds')
                     ->select('tipo_despesa_tds.cd_tipo_despesa_tds',
                              'tipo_despesa_tds.nm_tipo_despesa_tds',
-                             DB::raw("coalesce(reembolso_tipo_despesa_rtd.fl_reembolso_tipo_despesa_rtd,'N') as fl_reembolsavel_cliente"),
-                             DB::raw("coalesce(processo_despesa_pde_cliente.fl_despesa_reembolsavel_pde,'N') as fl_reembolsavel_processo"),
-                             DB::raw("coalesce(processo_despesa_pde_cliente.fl_despesa_reembolsavel_pde,'N') as fl_reembolsavel_correspondente"),
+                             DB::raw("coalesce(reembolso_cliente.fl_reembolso_tipo_despesa_rtd,'N') as fl_reembolsavel_cliente"),
+                             DB::raw("coalesce(reembolso_correspondente.fl_reembolso_tipo_despesa_rtd,'N') as fl_reembolsavel_correspondente"),
+                             DB::raw("coalesce(processo_despesa_pde_cliente.fl_despesa_reembolsavel_pde,'N') as fl_reembolsavel_processo_cliente"),
+                             DB::raw("coalesce(processo_despesa_pde_correspondente.fl_despesa_reembolsavel_pde,'N') as fl_reembolsavel_processo_correspondente"),
                              'processo_despesa_pde_cliente.vl_processo_despesa_pde as vl_despesa_cliente',
                              'processo_despesa_pde_correspondente.vl_processo_despesa_pde as vl_despesa_correspondente'
                             )
@@ -390,12 +397,18 @@ class ProcessoController extends Controller
         $varas         = Vara::orderBy('nm_vara_var')->get();  
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
 
-        $processo = Processo::with('cliente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
 
         if(!empty($processo->cliente->nm_fantasia_cli)){
                 $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';
         }else{
                 $nome = $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli;
+        }
+
+        if(!empty($processo->correspondente->nm_fantasia_con)){
+                $nomeCorrespondente =  $processo->correspondente->nm_razao_social_con.' ('.$processo->cliente->nm_fantasia_con.')';
+        }else{
+                $nomeCorrespondente = $processo->correspondente->nm_razao_social_con;
         }
 
         if(!empty($processo->dt_solicitacao_pro))
@@ -405,7 +418,7 @@ class ProcessoController extends Controller
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
 
-        return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome]);
+        return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente]);
 
     }
 

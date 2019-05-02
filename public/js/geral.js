@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/dmk/public/";
+	var pathname = window.location.origin+"/public/";
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -464,6 +464,8 @@ $(document).ready(function() {
     		}
     		
 		});
+
+		console.log(valores);
 
 		$.ajax(
         {

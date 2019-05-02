@@ -66,4 +66,9 @@ class Processo extends Model implements AuditableContract
     {
         return $this->belongsToMany('App\TipoDespesa','processo_despesa_pde','cd_processo_pro','cd_tipo_despesa_tds')->withTimestamps();
     }
+
+    public function correspondente()
+    {
+        return $this->hasOne('App\Conta','cd_conta_con', 'cd_correspondente_cor');
+    }
 }
