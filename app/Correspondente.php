@@ -11,6 +11,7 @@ class Correspondente extends Model
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
     protected $fillable = [
+                            'cd_tipo_pessoa_tpp',
                             'nm_fantasia_con',
                             'nm_razao_social_con'
                           ];

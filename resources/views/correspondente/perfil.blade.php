@@ -37,24 +37,23 @@
                 </div>
                 <div class="col-md-9">
                     <div class="col-md-6">
-                        <h2>{{ $correspondente->nm_razao_social_con }} <a href="{{ url('correspondente/ficha/'.$correspondente->cd_conta_con) }}"><span class="fa fa-edit"></span></a></h2>
-                        <p>
+                        <h2 style="margin-bottom: 5px;">{{ $correspondente->nm_razao_social_con }} <a href="{{ url('correspondente/ficha/'.$correspondente->cd_conta_con) }}"><span class="fa fa-edit"></span></a></h2>
                             <ul class="list-unstyled">
-                                <li>
-                                    <span class="label label-primary">{!! ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : '' !!}</span>
+                                <li style="margin-bottom: 8px;">
+                                    {!! ($correspondente->tipoPessoa()->first()) ? '<span class="label label-primary">Pessoa '.$correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp.'</span>' : '' !!}
                                 </li>
                                 <li>
                                     <p class="text-muted">
                                         <i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:$usuario->email">{{ $correspondente->entidade->usuario->email }}</a>
                                     </p>
                                 </li>                                
-                                @if($correspondente->entidade->cpf()->first()))
+                                @if($correspondente->entidade->cpf()->first())
                                     <li>
                                         <p class="text-muted">
                                             <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>CPF </strong>: {{ ($correspondente->entidade->cpf()->first()) ? $correspondente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }} </span>
                                         <p>
                                     </li>
-                                @elseif($correspondente->entidade->cnpj()->first()))
+                                @elseif($correspondente->entidade->cnpj()->first())
                                     <li>
                                         <p class="text-muted">
                                             <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>CNPJ </strong>: {{ ($correspondente->entidade->cnpj()->first()) ? $correspondente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }} </span>
@@ -73,37 +72,18 @@
                                     </p>
                                 </li>
                             </ul>
-                        </p>
-                    </div>
-                    <div class="col-md-6">
+
                         <h4 style="margin-top: 25px;">
-                            <i class="fa fa-map-marker"></i> Endereço 
+                            <i class="fa fa-phone"></i> Telefones
                         </h4>
                         <p>
-                            @if($correspondente->entidade->endereco)
-                            <ul class="list-unstyled">
-                                <li>
-                                    <strong>CEP: </strong> {{ $usuario->entidade->endereco->nu_cep_ede }}
-                                </li>
-                                <li>
-                                    <strong>Logradouro: </strong> {{ $usuario->entidade->endereco->dc_logradouro_ede }}
-                                </li>
-                                <li>
-                                    <strong>Número: </strong> {{ $usuario->entidade->endereco->nu_numero_ede }}
-                                </li>
-                                <li>
-                                    <strong>Complemento: </strong> {{ $usuario->entidade->endereco->dc_complemento_ede }}
-                                </li>
-                                <li>
-                                    <strong>Bairro: </strong> {{ $usuario->entidade->endereco->nm_bairro_ede }}
-                                </li>
-                                <li>
-                                    <strong>Cidade/Estado: </strong> {{ $usuario->entidade->endereco->cidade->nm_cidade_cde }}/{{ $usuario->entidade->endereco->cidade->estado->nm_estado_est }}
-                                </li>
-                            </ul>
+                            @if(count($correspondente->entidade->fone()->get()) > 0)
+                                @foreach($correspondente->entidade->fone()->get() as $fone)
+                                    <div><span><i class="fa fa-phone-square"></i> {{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</span><br/></div>
+                                @endforeach   
                             @else
-                                <span>Não informado</span>
-                            @endif
+                                <span>Nenhum telefone infomado</span>
+                            @endif 
                         </p>
 
                         <h4 style="margin-top: 25px;">
@@ -121,6 +101,50 @@
                             @else
                                 <span>Nenhum email infomado</span>
                             @endif 
+                        </p>
+
+                        <h4 style="margin-top: 25px;">
+                            <i class="fa fa-map-marker"></i> Cidades de Atuação
+                        </h4>
+                        <div style="margin-top: 10px; margin-bottom: 10px;">
+                            @if(count($correspondente->entidade->atuacao()->get()) > 0)
+                                @foreach($correspondente->entidade->atuacao()->get() as $atuacao) 
+                                    <button type="button" class="btn btn-default" style="padding: 3px 8px; margin-top: 5px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }}</button>
+                                @endforeach
+                            @else
+                                <span class="text-danger"> Informe pelo menos uma cidade de atuação</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 style="margin-top: 25px;">
+                            <i class="fa fa-map-marker"></i> Endereço 
+                        </h4>
+                        <p>
+                            @if($correspondente->entidade->endereco)
+                            <ul class="list-unstyled">
+                                <li>
+                                    <strong>CEP: </strong> {{ $correspondente->entidade->endereco->nu_cep_ede }}
+                                </li>
+                                <li>
+                                    <strong>Logradouro: </strong> {{ $correspondente->entidade->endereco->dc_logradouro_ede }}
+                                </li>
+                                <li>
+                                    <strong>Número: </strong> {{ $correspondente->entidade->endereco->nu_numero_ede }}
+                                </li>
+                                <li>
+                                    <strong>Complemento: </strong> {{ $correspondente->entidade->endereco->dc_complemento_ede }}
+                                </li>
+                                <li>
+                                    <strong>Bairro: </strong> {{ $correspondente->entidade->endereco->nm_bairro_ede }}
+                                </li>
+                                <li>
+                                    <strong>Cidade/Estado: </strong> {{ ($correspondente->entidade->endereco->cidade) ? $correspondente->entidade->endereco->cidade->nm_cidade_cde.'/'.$correspondente->entidade->endereco->cidade->estado->nm_estado_est : 'Não informado' }}
+                                </li>
+                            </ul>
+                            @else
+                                <span>Não informado</span>
+                            @endif
                         </p>
 
                         <h4 style="margin-top: 25px;">
@@ -147,9 +171,9 @@
                             @endif
                         </p>
                     </div>
-                    <br>
                 </div>             
-            </div>            
+            </div>   
+            <div style="clear: both;"></div>    
          </div>                 
         </div>
     </div>

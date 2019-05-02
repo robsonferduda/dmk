@@ -83,7 +83,7 @@
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
-                                        <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf : "Não informado" }}</td>
+                                        <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf->nu_identificacao_ide : "Não informado" }}</td>
                                         <td>{{ $correspondente->correspondente->nm_razao_social_con }}</td>
                                         <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
                                         <td>

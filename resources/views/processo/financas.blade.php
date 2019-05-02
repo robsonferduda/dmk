@@ -84,7 +84,7 @@
                                                                         @endif
                                                                     </div>                                                                        
                                                                 </td>
-                                                                <td>
+                                                                <td {{ (!empty($despesa->vl_despesa_correspondente)) ? "class=info" : '' }} > 
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
