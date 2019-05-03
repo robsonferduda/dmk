@@ -550,8 +550,8 @@ $(document).ready(function() {
 
 	$('#tipoServico').change(function(){
 		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+		$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
 	});
-
 
 	$("#btnSalvarHonorariosProcesso").click(function (){
 

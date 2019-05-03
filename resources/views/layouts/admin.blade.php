@@ -145,7 +145,7 @@
                                 <a href="{{ url('processos') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-marketing.html" title="Dashboard"><span class="menu-item-parent">Acompanhar</span></a>
+                                <a href="{{ url('processos/acompanhar') }}" title="Dashboard"><span class="menu-item-parent">Acompanhar</span></a>
                             </li>
                         </ul>   
                     </li>

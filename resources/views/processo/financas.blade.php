@@ -128,7 +128,7 @@
                         <div class="well">
                             <div class="alert alert-info" role="alert">
                                 <i class="fa-fw fa fa-info"></i>
-                                <strong>Informação!</strong> Os campos de valores serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
@@ -155,7 +155,7 @@
                                                                 <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
                                                                     <option data-cliente="" data-correspondente="" selected value="">Selecione...</option>  
                                                                     @foreach($tiposDeServico as $tipoDeServico)
-                                                                        <option {{ (!empty($honorariosProcesso) && $honorariosProcesso->cd_tipo_servico_tse ==  $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '' }} data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
+                                                                        <option {{ (!empty($honorariosProcesso) && $honorariosProcesso->cd_tipo_servico_tse ==  $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '' }} data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="{{ $tipoDeServico->nu_taxa_the_correspondente }}" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
                                                                     @endforeach
                                                                 </select>
                                                             </td>

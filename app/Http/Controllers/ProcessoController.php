@@ -39,6 +39,14 @@ class ProcessoController extends Controller
         return view('processo/processos',['processos' => $processos]);
     }
 
+     public function acompanhar()
+    {
+
+        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+
+        return view('processo/acompanhamento',['processos' => $processos]);
+    }
+
 /*    public function salvarHonorarios(Request $request){
 
         $processo_id = $request->processo;
@@ -157,7 +165,7 @@ class ProcessoController extends Controller
                 'cd_processo_pro' => $processo_id,
                 'cd_tipo_servico_tse' => $dados->servico,
                 'vl_taxa_honorario_cliente_pth' => $dados->valor_cliente,
-                'vl_taxa_honorario_pth_correspondente' => $dados->valor_correspondente
+                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente
             ]);
 
             if(!$valor){
@@ -288,21 +296,30 @@ class ProcessoController extends Controller
         $tiposDeServico = DB::table('processo_pro')
                           ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
                           ->join('tipo_servico_tse','processo_pro.cd_conta_con','=','tipo_servico_tse.cd_conta_con')
-                          ->leftjoin('taxa_honorario_entidade_the', function($join){
-                               $join->on('cliente_cli.cd_entidade_ete', '=', 'taxa_honorario_entidade_the.cd_entidade_ete');
-                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_entidade_the.cd_tipo_servico_tse');
-                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_entidade_the.cd_cidade_cde');
-                          })                   
+                          ->leftjoin('taxa_honorario_entidade_the as taxa_honorario_cliente', function($join){
+                               $join->on('cliente_cli.cd_entidade_ete', '=', 'taxa_honorario_cliente.cd_entidade_ete');
+                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_cliente.cd_tipo_servico_tse');
+                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_cliente.cd_cidade_cde');
+                          })   
+                          ->leftjoin('conta_con','processo_pro.cd_correspondente_cor', '=', 'conta_con.cd_conta_con')   
+                          ->leftjoin('entidade_ete','conta_con.cd_conta_con', '=', 'entidade_ete.cd_conta_con')       
+                          ->leftjoin('taxa_honorario_entidade_the as taxa_honorario_correspondente', function($join){
+                               $join->on('entidade_ete.cd_entidade_ete', '=', 'taxa_honorario_correspondente.cd_entidade_ete');
+                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_correspondente.cd_tipo_servico_tse');
+                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_correspondente.cd_cidade_cde');
+                          })           
                           ->where('processo_pro.cd_processo_pro',$id)
                           ->where('processo_pro.cd_conta_con',$this->cdContaCon)
                           ->whereNull('tipo_servico_tse.deleted_at')
                           ->orderBy('tipo_servico_tse.nm_tipo_servico_tse')
                           ->select('tipo_servico_tse.cd_tipo_servico_tse',
                                    'tipo_servico_tse.nm_tipo_servico_tse',
-                                   'taxa_honorario_entidade_the.nu_taxa_the as nu_taxa_the_cliente'
+                                   'taxa_honorario_cliente.nu_taxa_the as nu_taxa_the_cliente',
+                                   'taxa_honorario_correspondente.nu_taxa_the as nu_taxa_the_correspondente'
                                   
                                )
                           ->get();
+        #dd($tiposDeServico);
         $honorariosProcesso = ProcessoTaxaHonorario::where('cd_conta_con', $this->cdContaCon)
                                                    ->where('cd_processo_pro',$id)
                                                    ->orderBy('updated_at','DESC')->first();

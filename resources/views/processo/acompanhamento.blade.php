@@ -57,16 +57,26 @@
                                     <th style="width: 10%;">Hora da Audiência</th>
                                     <th style="width: 10%;">Data Solicitação</th>
                                     <th style="width: 10%;">Tipo de Processo</th>
-                                    <th style="width: 18%;">Cliente</th>
-                                    <th style="width: 18%;">Correspondente</th>
+                                    <th style="width: 21%;">Cliente</th>
+                                    <th style="width: 21%;">Correspondente</th>
                                    
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 5%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($processos as $processo)
-                                    <tr>                                    
-                                         <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" >{{ $processo->nu_processo_pro }}</a></td>
+                                    @php $cor = ''; 
+                                        if(date('d/m/Y', strtotime(\Carbon\Carbon::now()))  == date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)))  
+                                            $cor = "#f0ad4e";   
+                                        if(date('d/m/Y', strtotime(\Carbon\Carbon::now()))  < date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)))  
+                                            $cor = "#5cb85c";  
+                                        if(date('d/m/Y', strtotime(\Carbon\Carbon::now()))  > date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)))  
+                                            $cor = "#d9534f";  
+
+                                    @endphp
+
+                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">                                    
+                                        <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" >{{ $processo->nu_processo_pro }}</a></td>
                                         <td>{{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }}</td>
                                         <td>{{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}</td>
                                         <td>{{ date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) }}</td>
@@ -79,11 +89,7 @@
                                         </td>
                                       
                                         <td>
-                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-file-text-o"></i></a>
-                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i></a>
-                                            <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i></a>
-                                            <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.$processo->cd_processo_pro) }}"><i class="fa fa-clone"></i></a>
-                                            <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>                                            
+                                                                   
                                         </td>
                                     </tr>
                                 @endforeach
