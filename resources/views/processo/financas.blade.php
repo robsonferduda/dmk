@@ -18,7 +18,8 @@
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('processos/editar/'.$id) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="{{ url('processos/detalhes/'.$id) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>             
+            <a data-toggle="modal" href="{{ url('processos/detalhes/'.$id) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>          
+            <input type="hidden" id="cd_processo_pro" value="{{ $id }}">   
         </div>
     </div>
     <div class="row">
@@ -72,18 +73,18 @@
                                                                      <div class="onoffswitch-container col-md-7">     
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}">
+                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo_cliente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}">
                                                                             <label class="onoffswitch-label" for="DCL{{$despesa->cd_tipo_despesa_tds}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                 <span class="onoffswitch-switch"></span>  
                                                                             </label>                             
                                                                         </span> 
-                                                                        @if(!empty($despesa->vl_despesa_cliente) && ($despesa->fl_reembolsavel_cliente != $despesa->fl_reembolsavel_processo))
+                                                                        @if(!empty($despesa->vl_despesa_cliente) && ($despesa->fl_reembolsavel_cliente != $despesa->fl_reembolsavel_processo_cliente))
                                                                             <i style="color: red" class='fa fa-warning'></i>
                                                                         @endif
                                                                     </div>                                                                        
                                                                 </td>
-                                                                <td>
+                                                                <td {{ (!empty($despesa->vl_despesa_correspondente)) ? "class=info" : '' }} > 
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
@@ -93,12 +94,15 @@
                                                                      <div class="onoffswitch-container col-md-7">
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" class="onoffswitch-checkbox" name="DCO{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCO{{$despesa->cd_tipo_despesa_tds}}">
+                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_correspondente)) ?  ($despesa->fl_reembolsavel_processo_correspondente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_correspondente == 'S') ? 'checked' : '' }}  class="onoffswitch-checkbox" name="DCO{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCO{{$despesa->cd_tipo_despesa_tds}}">
                                                                             <label class="onoffswitch-label" for="DCO{{$despesa->cd_tipo_despesa_tds}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                 <span class="onoffswitch-switch"></span>
                                                                             </label> 
                                                                         </span> 
+                                                                        @if(!empty($despesa->vl_despesa_correspondente) && ($despesa->fl_reembolsavel_correspondente != $despesa->fl_reembolsavel_processo_correspondente))
+                                                                            <i style="color: red" class='fa fa-warning'></i>
+                                                                        @endif
                                                                     </div>         
                                                                 </td>
                                                             </tr>
@@ -124,7 +128,7 @@
                         <div class="well">
                             <div class="alert alert-info" role="alert">
                                 <i class="fa-fw fa fa-info"></i>
-                                <strong>Informação!</strong> Os campos de valores serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
@@ -151,7 +155,7 @@
                                                                 <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
                                                                     <option data-cliente="" data-correspondente="" selected value="">Selecione...</option>  
                                                                     @foreach($tiposDeServico as $tipoDeServico)
-                                                                        <option {{ (!empty($honorariosProcesso) && $honorariosProcesso->cd_tipo_servico_tse ==  $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '' }} data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
+                                                                        <option {{ (!empty($honorariosProcesso) && $honorariosProcesso->cd_tipo_servico_tse ==  $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '' }} data-cliente="{{ $tipoDeServico->nu_taxa_the_cliente }}" data-correspondente="{{ $tipoDeServico->nu_taxa_the_correspondente }}" value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
                                                                     @endforeach
                                                                 </select>
                                                             </td>

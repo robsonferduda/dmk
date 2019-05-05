@@ -3,6 +3,7 @@ $(document).ready(function() {
 	var pathname = window.location.origin+"/public/";
 	var pathnameX = window.location.origin+"/dmk/public/";
 
+
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
@@ -549,8 +550,8 @@ $(document).ready(function() {
 
 	$('#tipoServico').change(function(){
 		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+		$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
 	});
-
 
 	$("#btnSalvarHonorariosProcesso").click(function (){
 
@@ -669,6 +670,8 @@ $(document).ready(function() {
     		}
     		
 		});
+
+		console.log(valores);
 
 		$.ajax(
         {
