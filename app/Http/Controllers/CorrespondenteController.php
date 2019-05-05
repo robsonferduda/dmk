@@ -14,13 +14,16 @@ use App\User;
 use App\Conta;
 use App\Endereco;
 use App\Entidade;
+use App\Cidade;
 use App\GrupoCidade;
 use App\CidadeAtuacao;
 use App\Correspondente;
+use App\TipoDespesa;
 use App\TipoServico;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\EnderecoEletronico;
+use App\ReembolsoTipoDespesa;
 use App\Identificacao;
 use App\RegistroBancario;
 use Kodeine\Acl\Models\Eloquent\Role;
@@ -71,27 +74,110 @@ class CorrespondenteController extends Controller
         echo json_encode($dados);
     }
 
-    public function honorarios($id)
+    public function despesas($id)
+    {
+        $selecionadas = array();
+        $disponiveis = array();
+        $correspondente = Correspondente::where('cd_conta_con',$id)->first();
+
+        $despesas = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
+        $todas = TipoDespesa::where('fl_reembolso_tds','S')->get();
+
+        foreach ($despesas as $d) {
+            $selecionadas[] = $d->TipoDespesa()->first();
+        }
+
+        foreach ($todas as $t) {
+            $disponiveis[] = $t;
+        }
+
+        $despesas_disponiveis = array_udiff($disponiveis, $selecionadas,
+                                  function ($obj_a, $obj_b) {
+                                    return $obj_a->cd_tipo_despesa_tds - $obj_b->cd_tipo_despesa_tds;
+                                  }
+                                );
+
+        return view('correspondente/despesas',['correspondente' => $correspondente, 'despesas' => $despesas, 'despesas_disponiveis' => $despesas_disponiveis ]);
+
+    }
+
+    public function adicionarDespesas(Request $request)
     {
 
-        $conta = \Session::get('SESSION_CD_CONTA'); //Id de quem está logado no sistema e será dono dos honorários do correspondente
-        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
-        
-        //Dados para combos
-        $grupos = GrupoCidade::all();
-        $servicos = TipoServico::where('cd_conta_con',$conta)->get();
+        $selecionadas = array();
+        $removidas = $request->remover;
+        $despesas = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->get();
+
+        //Verifica se alguma das opções marcadas foi removida. Se sim, remove do banco.
+        foreach ($despesas as $d) {
+            $selecionadas[] = $d->TipoDespesa()->first()->cd_tipo_despesa_tds;
+        }
+
+        if($removidas == null){ //Remover tudo
+
+            for ($i=0; $i < count($selecionadas); $i++){ 
+                
+                $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_despesa_tds',$selecionadas[$i])->first();
+                $despesa->delete();
+            }
+
+        }else{
+
+            $diferenca = array_diff($selecionadas, $removidas);
+
+            if(count($diferenca) > 0){
+
+                $valores = array_values($diferenca);
+                for ($i=0; $i < count($valores); $i++) { 
+                    
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_despesa_tds',$valores[$i])->first();
+                    $despesa->delete();
+
+                }
+
+            }
+
+        }
+
+        //Adiciona as novas despesas que foram marcadas
+        if(!empty($request->despesas)){
+
+            $despesas = $request->despesas;
+            for($i = 0; $i < count($despesas); $i++) {
+
+                $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_despesa_tds',$despesas[$i])->first();
+
+                if(!$despesa){
+
+                    $reembolso = ReembolsoTipoDespesa::create([
+                        'cd_entidade_ete'           => $request->entidade,
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_tipo_despesa_tds'       => $despesas[$i]
+                    ]);
+                }
+            }
+        }
+        return redirect('correspondente/despesas/'.$request->conta);
+    }
+
+    public function honorarios($id)
+    {
 
         //Inicialização de variáveis
         $lista_servicos = array();
         $cidades = array();
         $valores = array();
-        $organizar = 0;        
+        $organizar = 1;  
+        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
+        
+        //Dados utilizados pelo combo
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
 
         //Limpa dados da sessão
         \Session::forget('lista_cidades');
 
         //Carrega os valores de honorarios para determinado grupo
-        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
 
         if(count($honorarios) > 0){
@@ -101,7 +187,7 @@ class CorrespondenteController extends Controller
         } 
 
         //Carrega as cidades
-        $honorarios = TaxaHonorario::where('cd_conta_con',$correspondente->cd_conta_con)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
                                     ->select('cd_cidade_cde')
                                     ->groupBy('cd_cidade_cde')
@@ -114,7 +200,7 @@ class CorrespondenteController extends Controller
         } 
 
         //Carrega os serviços
-        $honorarios = TaxaHonorario::where('cd_conta_con',$correspondente->cd_conta_con)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
                                     ->select('cd_tipo_servico_tse')
                                     ->groupBy('cd_tipo_servico_tse')
@@ -126,16 +212,15 @@ class CorrespondenteController extends Controller
             }
         } 
 
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'grupos' => $grupos, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'organizar' => $organizar, 'lista_servicos' => $lista_servicos]);
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'organizar' => $organizar, 'lista_servicos' => $lista_servicos]);
 
     }
 
-     public function buscarHonorarios(Request $request)
+    public function buscarHonorarios(Request $request)
     {
-        $conta = \Session::get('SESSION_CD_CONTA');
-        $id = $request->cd_cliente;
-        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
-        $grupo = $request->grupo_cidade;
+        $cd_correspondente = $request->cd_correspondente;
+        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$cd_correspondente)->first();
+        
         $cidade = $request->cd_cidade_cde;
         $servico = $request->servico;
         $organizar = $request->organizar;
@@ -143,16 +228,13 @@ class CorrespondenteController extends Controller
 
         $lista_cidades = array();
         $lista_cidades_selecao = array();
-        $lista_cidades_grupo = array();
         $lista_cidades_honorarios = array();
         $lista_merge = array();
 
-        $lista_servicos = array();
-        
+        $lista_servicos = array();        
 
         //Carrega dados do combo        
-        $grupos = GrupoCidade::all();
-        $servicos = TipoServico::all();
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
 
         if(empty(session('lista_cidades'))){
             \Session::put('lista_cidades', array());
@@ -163,7 +245,7 @@ class CorrespondenteController extends Controller
         }
 
         //Carrega serviços já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
                                     ->select('cd_tipo_servico_tse')
                                     ->groupBy('cd_tipo_servico_tse')
@@ -177,7 +259,7 @@ class CorrespondenteController extends Controller
 
         //Carrega lista de serviços da tabela
         if($servico == 0){
-            $lista_servicos = TipoServico::all();
+            $lista_servicos = $servicos;
         }else{
             $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
         }
@@ -189,22 +271,13 @@ class CorrespondenteController extends Controller
         }
         $lista_servicos = $lista_temp;
 
-        //Carrega cidades do grupo
-        if($grupo > 0 and $cidade == 0) {
-
-            $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
-            foreach($grupo as $g){
-                $lista_cidades_grupo[] = $g->cidade()->first();
-            }
-        }
-
         //Carrega cidade selecionada        
         if($cidade > 0){
             $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
         }
 
         //Carrega cidades já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
                                     ->select('cd_cidade_cde')
                                     ->groupBy('cd_cidade_cde')
@@ -218,7 +291,7 @@ class CorrespondenteController extends Controller
 
         //Junta os arrays e eleimina duplicidades
         $lista_sessao = session('lista_cidades');
-        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_grupo, $lista_cidades_honorarios, $lista_sessao);
+        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_honorarios, $lista_sessao);
 
         foreach ($lista_merge as $cidade) {
             if(!in_array($cidade, $lista_cidades))
@@ -226,7 +299,7 @@ class CorrespondenteController extends Controller
 
         }
 
-        //Após o mesge, limpa a sessão para atualizar mais tarde
+        //Após o merge, limpa a sessão para atualizar mais tarde
         \Session::forget('lista_cidades');
 
         //Ordena a lista de cidades
@@ -240,7 +313,7 @@ class CorrespondenteController extends Controller
         \Session::put('lista_cidades',$lista_cidades);
 
         //Carrega os valores de honorarios para determinado grupo
-        $honorarios = TaxaHonorario::where('cd_conta_con',$conta)
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
 
         if(count($honorarios) > 0){
@@ -251,12 +324,47 @@ class CorrespondenteController extends Controller
         }  
         
         //Envia dados e renderiza tela
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'grupos' => $grupos, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
     }
 
     public function limparSelecao($id){
         \Session::forget('lista_cidades');
         return redirect('correspondente/honorarios/'.$id);
+    }
+
+    public function salvarHonorarios(Request $request){
+
+        $entidade = $request->entidade;
+
+        if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
+
+            $valores = json_decode($request->valores);
+                
+            for($i = 0; $i < count($valores); $i++) {
+
+                $valor = TaxaHonorario::where('cd_conta_con',$this->conta)
+                                      ->where('cd_entidade_ete',$entidade)
+                                      ->where('cd_cidade_cde',$valores[$i]->cidade)
+                                      ->where('cd_tipo_servico_tse',$valores[$i]->servico)->first();
+
+                if(!empty($valor)){
+
+                    $valor->nu_taxa_the = str_replace(",", ".", $valores[$i]->valor);
+                    $valor->saveOrFail();
+
+                }else{
+
+                    $taxa = TaxaHonorario::create([
+                        'cd_entidade_ete'           => $entidade,
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_tipo_servico_tse'       => $valores[$i]->servico,
+                        'cd_cidade_cde'             => $valores[$i]->cidade,
+                        'nu_taxa_the'               => str_replace(",", ".", $valores[$i]->valor),
+                        'dc_observacao_the'         => "--"
+                    ]);
+                }
+            }
+        }
     }
 
     public function buscar(Request $request){

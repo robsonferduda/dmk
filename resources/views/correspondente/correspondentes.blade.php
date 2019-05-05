@@ -87,8 +87,12 @@
                                         <td>{{ $correspondente->correspondente->nm_razao_social_con }}</td>
                                         <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
                                         <td>
-                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" style="width: 30%;" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i> Dados</a>
-                                            <a title="Honorários" class="btn btn-warning btn-xs" style="width: 30%;" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a>
+                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-folder"></i> Dados</a>
+
+                                            <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a>
+
+                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Despesas</a>
+
                                             <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-times"></i> Remover</button> 
                                         </td>
                                     </tr>

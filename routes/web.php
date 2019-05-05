@@ -66,6 +66,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
 
 	Route::resource('correspondentes', 'CorrespondenteController');
+	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
 	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
@@ -73,10 +74,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
+	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
 	Route::get('correspondente/buscar-honorarios','CorrespondenteController@buscarHonorarios');
+	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
+	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
 	Route::post('correspondente/remover','CorrespondenteController@remover');
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
+	Route::post('correspondente/despesas','CorrespondenteController@adicionarDespesas');
 
 	//Rotas para a ROLE correspondente
 	Route::get('correspondente/clientes','CorrespondenteController@clientes');
