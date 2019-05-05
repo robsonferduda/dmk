@@ -50,11 +50,11 @@
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}
                                                 </li>
-                                                @if($correspondente->entidade->cpf()->first()))
+                                                @if($correspondente->entidade->cpf()->first())
                                                     <li>
                                                         <strong>CPF: </strong> {{ ($correspondente->entidade->cpf()->first()) ? $correspondente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
-                                                @elseif($correspondente->entidade->cnpj()->first()))
+                                                @elseif($correspondente->entidade->cnpj()->first())
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ ($correspondente->entidade->cnpj()->first()) ? $correspondente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
@@ -68,7 +68,7 @@
                         <div class="col-md-4">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-money fa-fw"></i> <strong>Despesas Por Tipo de Serviço</strong></legend>
+                                    <legend><i class="fa fa-money fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         @if(count($correspondente->entidade->reembolso()->get()) > 0)
                                             @foreach($correspondente->entidade->reembolso()->get() as $despesa)

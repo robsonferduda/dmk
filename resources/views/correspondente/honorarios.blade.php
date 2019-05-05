@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-legal"></i> Clientes <span>> Honorários por Tipo de Serviço </span>
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Honorários por Tipo de Serviço </span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -32,34 +32,26 @@
                     </header>
                     <div class="col-sm-12">
                         <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_con }}</h5>
+                        <span class="text-primary"><i class="fa fa-info-circle"></i> Selecione a cidade e os serviços para adicionar um valor dos honorários</span>
                         <div class="well">
                             <div class="row">
+
                                 <div class="col-sm-12">
-                                    <span>Selecione um grupo de cidades ou uma cidade específica e clique em "Adicionar" para visualizar e alterar dados.</span><hr/>
+                                    
                                     <div class="row">
                                         <div class="col-md-12">  
                                             <form action="{{ url('correspondente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
-                                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_conta_con }}">
+                                                <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_conta_con }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
 
                                                 <fieldset>
                                                     <div class="row"> 
 
-                                                        <section class="col col-md-3">
-                                                            <label class="label label-black" >Grupos de Cidade</label> 
-                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control">
-                                                                <option value="0">Selecione um grupo</option>
-                                                                @foreach($grupos as $grupo)
-                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}">{{ $grupo->nm_grupo_cidade_grc }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </section>
-
-                                                        <section class="col col-md-4">                                       
+                                                        <section class="col col-md-2">                                       
                                                             <label class="label label-black" >Estado</label>          
                                                             <select  id="estado" name="cd_estado_est" class="select2">
-                                                                <option selected value="">Selecione um estado</option>
+                                                                <option selected value="">Estado</option>
                                                                 @foreach(App\Estado::all() as $estado) 
                                                                     <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                                 @endforeach
@@ -67,22 +59,17 @@
                                                             </select> 
                                                         </section>
 
-                                                        <section class="col col-md-5">
-                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                                           <label class="label label-black" >Cidade</label>          
+                                                        <section class="col col-md-4">
+                                                           <label class="label label-black" >Cidades (informadas pelo correspondente)</label>          
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
-                                                               <option selected value="">Selecione uma Cidade</option>
+                                                               <option selected value="">Selecione uma cidade</option>
                                                             </select> 
                                                         </section> 
-
-                                                    </div>
-
-                                                    <div class="row"> 
 
                                                         <section class="col col-md-3">
                                                            <label class="label label-black" >Tipos de Serviço</label>          
                                                             <select name="servico" class="form-control">
-                                                                <option value="">Selecione um servico</option>
+                                                                <option value="">Selecione um serviço</option>
                                                                 <option value="0">Todos</option>
                                                                 @foreach($servicos as $servico)
                                                                     <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
@@ -91,23 +78,20 @@
                                                         </section> 
 
                                                         <section class="col col-md-2">
-                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                                           <label class="label label-black" >Organizar por:</label>          
+                                                            <label class="label label-black">Ordem</label>          
                                                             <select  id="cidade" name="organizar" class="form-control">
-                                                               <option value="0">Selecione uma opção</option>
-                                                               <option value="1">Tipos de Serviço</option>
+                                                               <option value="0">Selecione</option>
+                                                               <option value="1">Serviços</option>
                                                                <option value="2">Cidades</option>
                                                             </select> 
                                                         </section> 
 
-                                                        <section class="col col-md-2">
-                                                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Adicionar</button>
-                                                        </section>
-
-                                                    </div>                                                    
-
-                                                </fieldset><br/>
-                                                                                            
+                                                        <section class="col col-md-1">
+                                                            <label class="label">Adicionar</label>          
+                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> </button>
+                                                        </section> 
+                                                    </div>
+                                                </fieldset>                                                                                           
                                                 
                                             </form>
                                         </div>
@@ -126,9 +110,9 @@
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
                                             <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
 
-                                                <a href="{{ url('cliente/limpar-selecao/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                                <a href="{{ url('correspondente/limpar-selecao/'.$cliente->cd_conta_con) }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
                                             </div> 
                                             
                                                 @if($organizar == 1)
@@ -240,12 +224,13 @@
         var buscaCidade = function(){
 
             estado = $("#estado").val();
+            entidade = $('#cd_entidade').val();
 
             if(estado != ''){
 
                 $.ajax(
                     {
-                        url: webFolderFullPath+'/cidades-por-estado/'+estado,
+                        url: 'http://localhost/dmk/public/correspondente/'+entidade+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
@@ -260,11 +245,7 @@
                             $('#cidade').append('<option selected value="">Selecione</option>');
                             $.each(response,function(index,element){
 
-                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
-                                }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
-                                }
+                                $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
                                 
                             });       
                             $('#cidade').trigger('change');     

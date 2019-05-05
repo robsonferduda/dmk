@@ -745,6 +745,54 @@ $(document).ready(function() {
         
 	});	
 
+	$("#btnSalvarHonorariosCorrespondente").click(function (){
+
+		var valores = new Array();
+		var entidade = $("#cd_entidade").val();
+		var correspondente = $("#cd_correspondente").val();
+		
+		$('.taxa-honorario').each(function(i, obj) {
+    		
+    		var valor = $(this).val();
+    		var servico = $(this).data("servico");
+			var cidade = $(this).data("cidade");;
+
+    		if(valor){
+    			
+				var dados = {servico: servico, cidade: cidade, valor: valor};
+				valores.push(dados);
+
+    		}
+    		
+		});
+		
+		$.ajax(
+        {
+        	type: "POST",
+            url: "http://localhost/dmk/public/correspondente/honorarios/salvar",
+            data: {
+                "_token": $('meta[name="token"]').attr('content'),
+                "valores": JSON.stringify(valores),
+                "entidade": entidade
+            },
+            beforeSend: function()
+            {
+            	$("#processamento").modal('show');
+            },
+            success: function(response)
+            {
+            	console.log("Sucesso");
+            	window.location.href = "http://localhost/dmk/public/correspondente/honorarios/"+correspondente;
+            },
+		   	error: function(response)
+		   	{
+		   		console.log("Erro");
+		   		location.reload();
+		   	}
+        });
+        
+	});	
+
 	$("#grupo_cidade").change(function(){
 
 		var grupo = $("#grupo_cidade option:selected").val();
