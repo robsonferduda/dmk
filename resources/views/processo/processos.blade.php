@@ -50,28 +50,46 @@
                 <div>
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead>                         
+                            <thead style="font-size: 7px">                         
                                 <tr>                                    
-                                    <th style="width: 12%;">Nº Processo</th>
-                                    <th style="width: 10%;">Data Prazo Fatal</th>
-                                    <th style="width: 10%;">Hora da Audiência</th>
-                                    <th style="width: 10%;">Data Solicitação</th>
-                                    <th style="width: 10%;">Tipo de Processo</th>
-                                    <th style="width: 18%;">Cliente</th>
-                                    <th style="width: 18%;">Correspondente</th>
+                                    <th style="width: 14%;">Nº Processo</th>
+                                    <th style="width: 12%;">Cidade</th>
+                                    <th style="width:19%">Datas</th>                                   
+                                    <th style="width: 10%;">Tipo de Serviço</th>
+                                    <th style="width: 15%;">Cliente</th>
+                                    <th style="width: 15%;">Correspondente</th>
                                    
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($processos as $processo)
-                                    <tr>                                    
+                                    @php $cor = ''; 
+                                        if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
+                                            $cor = "#f2cf59";   
+                                        if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
+                                            $cor = "#8ec9bb";
+                                        if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro)){  
+                                            $cor = "#fb8e7e";                                         
+                                        }
+
+                                    @endphp
+
+
+                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">                                    
                                          <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" >{{ $processo->nu_processo_pro }}</a></td>
-                                        <td>{{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }}</td>
-                                        <td>{{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) }}</td>
-                                        <td>{{ (!empty($processo->tipoProcesso->nm_tipo_processo_tpo)) ? $processo->tipoProcesso->nm_tipo_processo_tpo : '' }}</td>
-                                        <td><a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a></td>
+                                        <td>
+                                            {{ (!empty($processo->cidade)) ? $processo->cidade->estado->sg_estado_est.' - '.$processo->cidade->nm_cidade_cde : '' }}
+                                        </td>
+                                        <td>
+                                            Prazo Fatal: {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }} <br />
+                                            Solicitação: {{ date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) }}
+                                        </td>                                
+                                       
+                                         <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
+                                        <td>
+                                            <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>                                            
+                                        </td>
                                         <td>
                                             @if($processo->correspondente)
                                                 <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
@@ -79,11 +97,19 @@
                                         </td>
                                       
                                         <td>
-                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-file-text-o"></i></a>
-                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i></a>
-                                            <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i></a>
-                                            <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.$processo->cd_processo_pro) }}"><i class="fa fa-clone"></i></a>
-                                            <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>                                            
+                                            <div>
+                                                <div style="display: block;padding: 1px 1px 1px 1px">
+                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-file-text-o"></i></a>
+                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i></a>
+                                                    <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i></a>
+                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.$processo->cd_processo_pro) }}"><i class="fa fa-info"></i></a>
+                                                </div>
+                                                <div style="display: block;padding: 1px 1px 1px 1px">
+                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-search"></i></a>
+                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.$processo->cd_processo_pro) }}"><i class="fa fa-clone"></i></a>
+                                                    <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                                </div>    
+                                            </div>                                        
                                         </td>
                                     </tr>
                                 @endforeach

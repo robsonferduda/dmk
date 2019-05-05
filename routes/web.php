@@ -53,6 +53,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/acompanhar','ProcessoController@acompanhar');
+	Route::get('processos/relatorio/{id}','ProcessoController@relatorio');
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
