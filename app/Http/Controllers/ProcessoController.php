@@ -34,7 +34,7 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         return view('processo/processos',['processos' => $processos]);
     }
@@ -45,6 +45,63 @@ class ProcessoController extends Controller
         $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         return view('processo/acompanhamento',['processos' => $processos]);
+    }
+
+    public function relatorio($id){
+
+        $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+    
+        $despesasCliente = 0;
+        $despesasReembolsaveisCliente = 0;
+        $despesasCorrespondente = 0;
+        $despesasReembolsaveisCorrespondente = 0;
+        $honorarioCliente = 0;
+        $honorarioCorrespondente = 0;
+        foreach ($processo->tiposDespesa as $despesa) {
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
+                $despesasCliente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE){
+                $despesasCorrespondente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
+                $despesasReembolsaveisCliente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE){
+                $despesasReembolsaveisCorrespondente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+        }
+
+        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
+            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;            
+        
+        if(!empty($processo->honorario->vl_taxa_honorario_correspondente_pth))
+            $honorarioCorrespondente = $processo->honorario->vl_taxa_honorario_correspondente_pth;
+
+
+        $entrada = $honorarioCliente + $honorarioCorrespondente;
+        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente;
+        $receita = $entrada - $saida;
+
+        //dd($despesasCliente);
+        return view('processo/relatorio',['processo' => $processo,
+                                          'despesasCliente' => $despesasCliente,
+                                          'despesasCorrespondente' => $despesasCorrespondente,
+                                          'despesasReembolsaveisCliente' => $despesasReembolsaveisCliente,
+                                          'despesasReembolsaveisCorrespondente' => $despesasReembolsaveisCorrespondente,
+                                          'honorarioCliente' => $honorarioCliente,
+                                          'honorarioCorrespondente' => $honorarioCorrespondente,
+                                          'entrada' => $entrada,
+                                          'saida' => $saida,
+                                          'receita' => $receita]);
     }
 
 /*    public function salvarHonorarios(Request $request){
@@ -112,7 +169,7 @@ class ProcessoController extends Controller
 
 
     public function clonar($id){
-
+        
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
@@ -144,13 +201,13 @@ class ProcessoController extends Controller
         }
 
         $valor = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
-                                  ->where('cd_processo_pro',$processo_id)
-                                  ->where('cd_tipo_servico_tse',$dados->servico)->first();
+                                  ->where('cd_processo_pro',$processo_id)->first();
                                 
         if(!empty($valor)){
 
             $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
             $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
+            $valor->cd_tipo_servico_tse = $dados->servico;
            
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
@@ -262,11 +319,13 @@ class ProcessoController extends Controller
                     ->join('tipo_despesa_tds','processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con')
                     ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_correspondente', function($join){
                                $join->on('entidade_ete.cd_entidade_ete', '=', 'reembolso_correspondente.cd_entidade_ete');
-                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_correspondente.cd_tipo_despesa_tds');                            
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_correspondente.cd_tipo_despesa_tds');
+                               $join->whereNull('reembolso_correspondente.deleted_at');                            
                      })                   
                     ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_cliente', function($join){
                                $join->on('cliente_cli.cd_entidade_ete', '=', 'reembolso_cliente.cd_entidade_ete');
-                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_cliente.cd_tipo_despesa_tds');                            
+                               $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_cliente.cd_tipo_despesa_tds');
+                               $join->whereNull('reembolso_cliente.deleted_at');                          
                      })
                     ->leftjoin('processo_despesa_pde as processo_despesa_pde_cliente', function($join){
                                $join->on('processo_pro.cd_processo_pro', '=', 'processo_despesa_pde_cliente.cd_processo_pro');
@@ -422,10 +481,13 @@ class ProcessoController extends Controller
                 $nome = $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli;
         }
 
-        if(!empty($processo->correspondente->nm_fantasia_con)){
-                $nomeCorrespondente =  $processo->correspondente->nm_razao_social_con.' ('.$processo->cliente->nm_fantasia_con.')';
-        }else{
-                $nomeCorrespondente = $processo->correspondente->nm_razao_social_con;
+        $nomeCorrespondente = '';
+        if(!empty($processo->correspondente)){ 
+            if(!empty($processo->correspondente->nm_fantasia_con)){
+                    $nomeCorrespondente =  $processo->correspondente->nm_razao_social_con.' ('.$processo->cliente->nm_fantasia_con.')';
+            }else{
+                    $nomeCorrespondente = $processo->correspondente->nm_razao_social_con;
+            }
         }
 
         if(!empty($processo->dt_solicitacao_pro))
@@ -505,7 +567,7 @@ class ProcessoController extends Controller
         }    
          
         DB::commit();
-        Flash::success('Dados inseridos com sucesso');
+        Flash::success('Dados atualizados com sucesso');
         return redirect('processos');
 
 

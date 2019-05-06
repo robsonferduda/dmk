@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Processos <span>> Detalhes </span> <span>> {{ $processo->nu_processo_pro }}</span>
+                <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Detalhes </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -39,7 +39,7 @@
                         <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-group fa-fw"></i> <strong>Dados Básicos</strong></legend>
+                                    <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
                                             <ul class="list-unstyled">
@@ -67,7 +67,10 @@
                                                     <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Correspondente: </strong> {{ $processo->cd_correspondente_cor }}
+                                                    <strong>Correspondente: </strong> 
+                                                    @if(!empty($processo->correspondente))
+                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                    @endif
                                                 </li>                                                
                                                 <li>
                                                     <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
