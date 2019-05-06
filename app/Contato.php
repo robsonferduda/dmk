@@ -20,5 +20,15 @@ class Contato extends Model
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
+
+    public function tipoContato()
+    {
+        return $this->hasOne('App\TipoContato','cd_tipo_contato_tct', 'cd_tipo_contato_tct');
+    }
+
+    public function entidade()
+    {
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
+    }
   
 }

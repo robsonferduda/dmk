@@ -252,7 +252,7 @@
                         <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
                      </div>
                     <div class="modal-body center">
-                        <h2><i class="fa fa-spinner fa-spin"></i> Aguarde, processando requisição...</h2>
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, processando requisição...</h2>
                     </div>
                 </div>
             </div>
