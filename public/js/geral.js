@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/dmk/public/";
+	var pathname = window.location.origin+"/public/";
 	var pathnameX = window.location.origin+"/dmk/public/";
 
 
@@ -885,7 +885,7 @@ $(document).ready(function() {
 	});
 
 	$('.dialog_clone').click(function() {
-		$('#dialog_clone_text').dialog('open');
+		$('#dialog_clone_text').data('url',$(this).attr('href')).dialog('open');
 		return false;
 	});
 	
@@ -899,7 +899,7 @@ $(document).ready(function() {
 			html : "<i class='fa fa-clone fa-la'></i>&nbsp; Continuar",
 			"class" : "btn sa-btn-danger",
 			click : function() {
-				window.location=$('.dialog_clone').attr('href');
+				window.location= $(this).data('url');
 			}
 		}, {
 			html : "<i class='fa fa-times'></i>&nbsp; Cancelar",

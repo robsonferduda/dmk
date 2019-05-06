@@ -15,11 +15,11 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}?v={{ date('YmdHis') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
-        <link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
+        
 
         <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+        
     </head>
 
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">

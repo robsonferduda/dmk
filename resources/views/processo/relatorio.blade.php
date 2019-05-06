@@ -3,8 +3,8 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Clientes</a></li>
-        <li>Novo</li>
+        <li><a href="{{ url('clientes') }}">Processos</a></li>
+        <li>Relatórios</li>
     </ol>
 </div>
 <div id="content">
@@ -54,7 +54,11 @@
                                                     <strong>Réu: </strong> {{ $processo->nm_reu_pro }}
                                                 </li>
                                                 <li>
-                                                    <strong>Correspondente: </strong>  <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                    <strong>Correspondente: </strong>  
+                                                    @if(!empty($processo->correspondente))
+                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">
+                                                        {{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                    @endif
                                                 </li> 
                                                 <li>
                                                     <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : ' ' }}
@@ -64,21 +68,27 @@
                                                 </li>   
                                                 <legend><i class="fa">Cliente:</i> </legend>
                                                 <li>
-                                                    <strong>Honorários: </strong> {{ $processo->nm_preposto_pro }}
+                                                    <strong>Honorários: </strong> <span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$honorarioCliente) }}</span>
                                                 </li>
                                                 <li>
-                                                    <strong>Despesas: </strong> {{ $processo->nm_advogado_pro }}
+                                                    <strong>Despesas: </strong><span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasCliente) }}</span>
+                                                </li>
+                                                <li>
+                                                    <strong>Despesas Reembolsáveis: </strong><span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$despesasReembolsaveisCliente) }}</span>
                                                 </li>
                                                 <li>
                                                     <strong>Nota Fiscal: </strong> {{ $processo->nm_preposto_pro }}
                                                 </li>
                                                 <legend><i class="fa">Correpondente:</i> </legend>    
                                                 <li>
-                                                    <strong>Honorários: </strong> {{ $processo->nm_advogado_pro }}
+                                                    <strong>Honorários: </strong> <span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$honorarioCorrespondente) }}</span>
                                                 </li>
                                                 <li>
-                                                    <strong>Despesas: </strong> {{ $processo->nm_advogado_pro }}
-                                                </li>                                                                                
+                                                    <strong>Despesas: </strong> <span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasCorrespondente) }}</span>
+                                                </li>        
+                                                <li>
+                                                    <strong>Despesas Reembolsáveis: </strong><span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasReembolsaveisCorrespondente) }}</span>
+                                                </li>                                                                        
                                             </ul>
                                         </p> 
                                     </div>
@@ -95,13 +105,17 @@
                                                 
                                                 <legend><i class="fa">Totais:</i> </legend>
                                                 <li>
-                                                    <strong>Entrada: </strong> {{ $processo->nm_preposto_pro }}
+                                                    <strong>Entrada: </strong> </strong><span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$entrada) }}</span>
                                                 </li>
                                                 <li>
-                                                    <strong>Saída: </strong> {{ $processo->nm_advogado_pro }}
+                                                    <strong>Saída: </strong> <span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$saida) }}</span>
                                                 </li>
                                                 <li>
-                                                    <strong>Receita: </strong> {{ $processo->nm_advogado_pro }}
+                                                    @if($receita >= 0)
+                                                        <strong>Receita: </strong> <span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$receita) }}</span>
+                                                    @else
+                                                        <strong>Receita: </strong> <span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$receita) }}</span>
+                                                    @endif
                                                 </li>
                                               
                                             </ul>

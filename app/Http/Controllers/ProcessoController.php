@@ -52,16 +52,56 @@ class ProcessoController extends Controller
         $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
     
         $despesasCliente = 0;
+        $despesasReembolsaveisCliente = 0;
         $despesasCorrespondente = 0;
+        $despesasReembolsaveisCorrespondente = 0;
+        $honorarioCliente = 0;
+        $honorarioCorrespondente = 0;
         foreach ($processo->tiposDespesa as $despesa) {
 
-            print_r($despesa);
-            if(!empty($despesa->pivot_vl_processo_despesa_pde) && $despesa->pivot_fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot_cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE)
-                $despesasCliente += $despesa->pivot_vl_processo_despesa_pde;
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
+                $despesasCliente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE){
+                $despesasCorrespondente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
+                $despesasReembolsaveisCliente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
+
+            if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE){
+                $despesasReembolsaveisCorrespondente += $despesa->pivot->vl_processo_despesa_pde;
+                continue;
+            }
         }
 
-        dd($despesasCliente);
-        return view('processo/relatorio',['processo' => $processo]);
+        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
+            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;            
+        
+        if(!empty($processo->honorario->vl_taxa_honorario_correspondente_pth))
+            $honorarioCorrespondente = $processo->honorario->vl_taxa_honorario_correspondente_pth;
+
+
+        $entrada = $honorarioCliente + $honorarioCorrespondente;
+        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente;
+        $receita = $entrada - $saida;
+
+        //dd($despesasCliente);
+        return view('processo/relatorio',['processo' => $processo,
+                                          'despesasCliente' => $despesasCliente,
+                                          'despesasCorrespondente' => $despesasCorrespondente,
+                                          'despesasReembolsaveisCliente' => $despesasReembolsaveisCliente,
+                                          'despesasReembolsaveisCorrespondente' => $despesasReembolsaveisCorrespondente,
+                                          'honorarioCliente' => $honorarioCliente,
+                                          'honorarioCorrespondente' => $honorarioCorrespondente,
+                                          'entrada' => $entrada,
+                                          'saida' => $saida,
+                                          'receita' => $receita]);
     }
 
 /*    public function salvarHonorarios(Request $request){
@@ -129,7 +169,7 @@ class ProcessoController extends Controller
 
 
     public function clonar($id){
-
+        
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
@@ -527,7 +567,7 @@ class ProcessoController extends Controller
         }    
          
         DB::commit();
-        Flash::success('Dados inseridos com sucesso');
+        Flash::success('Dados atualizados com sucesso');
         return redirect('processos');
 
 
