@@ -18,7 +18,7 @@
             <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
             <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
+            <a data-toggle="modal" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Financeiro</a> 
         </div>
     </div>
     <div class="row">
@@ -43,15 +43,15 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Nome Fantasia: </strong> {{ $cliente->nm_fantasia_cli }}
+                                                    <strong>Razão Social: </strong> {{ $cliente->nm_razao_social_cli }}
                                                 </li>
                                                 <li>
-                                                    <strong>Razão Social: </strong> {{ $cliente->nm_razao_social_cli }}
+                                                    <strong>Nome Fantasia: </strong> {{ $cliente->nm_fantasia_cli }}
                                                 </li>
                                                 <li>
                                                     <strong>Tipo: </strong> {{ $cliente->tipoPessoa()->first()->nm_tipo_pessoa_tpp }}
                                                 </li>
-                                                @if($cliente->entidade->cpf()->first()))
+                                                @if($cliente->entidade->cpf()->first())
                                                     <li>
                                                         <strong>CPF: </strong> {{ ($cliente->entidade->cpf()->first()) ? $cliente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
@@ -105,25 +105,26 @@
                                     <legend><i class="fa fa-map-marker fa-fw"></i> <strong>Endereço</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         @if($cliente->entidade->endereco()->first() and !is_null($cliente->entidade->endereco()->first()->dc_logradouro_ede))
+                                        @php $endereco = $cliente->entidade->endereco()->first() @endphp
                                             <p>
                                                 <ul class="list-unstyled">
                                                     <li>
-                                                        <strong>CEP: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nu_cep_ede : 'Não informado' }}
+                                                        <strong>CEP: </strong> {{ ($endereco) ? $endereco->nu_cep_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Logradouro: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->dc_logradouro_ede : '' }}
+                                                        <strong>Logradouro: </strong> {{ ($endereco) ? $endereco->dc_logradouro_ede : '' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Número: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nu_numero_ede : '' }}
+                                                        <strong>Número: </strong> {{ ($endereco) ? $endereco->nu_numero_ede : '' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Complemento: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->dc_complemento_ede : ''}}
+                                                        <strong>Complemento: </strong> {{ ($endereco) ? $endereco->dc_complemento_ede : ''}}
                                                     </li>
                                                     <li>
-                                                        <strong>Bairro: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nm_bairro_ede : '' }}
+                                                        <strong>Bairro: </strong> {{ ($endereco) ? $endereco->nm_bairro_ede : '' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Cidade/Estado: </strong> {{ ($cliente->entidade->endereco and $cliente->entidade->endereco->cidade()->first()) ? $cliente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
+                                                        <strong>Cidade/Estado: </strong> {{ ($endereco and $endereco->cidade()->first()) ? $endereco->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
                                                     </li>
                                                 </ul>
                                             </p> 
