@@ -15,10 +15,11 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
             <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
             <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
+            
         </div>
     </div>
     <div class="row">

@@ -48,7 +48,7 @@ class ProcessoController extends Controller
             }));
         }))->with(array('cliente' => function($query){
             $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro')->get();
 
         return view('processo/processos',['processos' => $processos]);
     }
@@ -62,6 +62,8 @@ class ProcessoController extends Controller
     }
 
     public function relatorio($id){
+
+        $id = \Crypt::decrypt($id);
 
         $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
     
@@ -183,6 +185,8 @@ class ProcessoController extends Controller
 
 
     public function clonar($id){
+
+        $id = \Crypt::decrypt($id);
         
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
         $novoProcesso = $processo->replicate();
@@ -191,12 +195,14 @@ class ProcessoController extends Controller
         Flash::success('Processo clonado com sucesso');
         DB::commit(); 
 
-        return redirect('processos/editar/'.$novoProcesso->cd_processo_pro);  
+        return redirect('processos/editar/'.\Crypt::encrypt($novoProcesso->cd_processo_pro));  
     }
 
     public function salvarHonorarios(Request $request){
 
         $processo_id = $request->processo;
+
+        $processo_id = \Crypt::decrypt($processo_id);
        
         DB::beginTransaction();
 
@@ -226,7 +232,7 @@ class ProcessoController extends Controller
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.$processo_id);    
+                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
             }
 
         }else{
@@ -242,14 +248,14 @@ class ProcessoController extends Controller
             if(!$valor){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.$processo_id);    
+                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
             }
         }       
 
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.$processo_id);      
+        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));      
 
 
     }
@@ -258,6 +264,8 @@ class ProcessoController extends Controller
 
         $processo_id = $request->processo;
        
+        $processo_id = \Crypt::decrypt($processo_id);
+
         DB::beginTransaction();
 
         $dados = json_decode($request->valores);
@@ -292,7 +300,7 @@ class ProcessoController extends Controller
                 if(!$valor->saveOrFail()){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
+                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
                 }
 
             }else{
@@ -309,7 +317,7 @@ class ProcessoController extends Controller
                 if(!$valor){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
+                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
                 }
             }            
         }
@@ -318,11 +326,13 @@ class ProcessoController extends Controller
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.$processo_id);       
+        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));       
 
     }
 
     public function financas($id){
+
+        $id = \Crypt::decrypt($id); 
 
         //$processo = Processo::where('cd_conta_con',$this->cdContaCon)->where('cd_processo_pro',$id)->first();
      
@@ -452,6 +462,8 @@ class ProcessoController extends Controller
 
     public function detalhes($id){
 
+        $id = \Crypt::decrypt($id); 
+
         $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
     
         return view('processo/detalhes',['processo' => $processo]);
@@ -482,6 +494,8 @@ class ProcessoController extends Controller
     }
 
     public function editar($id){
+
+        $id = \Crypt::decrypt($id); 
 
         $estados       = Estado::orderBy('nm_estado_est')->get();
         $varas         = Vara::orderBy('nm_vara_var')->get();  

@@ -18,7 +18,7 @@ class TipoProcessoController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->cdContaCon = 1;
+        $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
     }
 
     public function index()

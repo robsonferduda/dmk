@@ -99,14 +99,14 @@
                                         <td>
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}"><i class="fa fa-file-text-o"></i></a>
-                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}"><i class="fa fa-edit"></i></a>
-                                                    <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money"></i></a>
-                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.$processo->cd_processo_pro) }}"><i class="fa fa-info"></i></a>
+                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                                    <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
+                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info"></i></a>
                                                 </div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-search"></i></a>
-                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.$processo->cd_processo_pro) }}"><i class="fa fa-clone"></i></a>
+                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
+                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
                                                     <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                                 </div>    
                                             </div>                                        
