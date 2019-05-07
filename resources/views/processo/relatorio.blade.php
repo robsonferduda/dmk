@@ -9,17 +9,17 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-info"></i> Processos <span>> Relatório </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a title="Finanças" class="btn btn-warning pull-right header-btn btnMargin" href="{{ url('processos/financas/'.$processo->cd_processo_pro) }}"><i class="fa fa-money fa-lg"></i>Finanças</a>
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
+            <a title="Finanças" class="btn btn-warning pull-right header-btn btnMargin" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Finanças</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-            <a data-toggle="modal" href="{{ url('processos/editar/'.$processo->cd_processo_pro) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>       
-            <a data-toggle="modal" href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>       
+            <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>       
+            <a data-toggle="modal" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>       
            
         </div>
     </div>

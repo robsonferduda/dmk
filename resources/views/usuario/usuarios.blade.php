@@ -66,9 +66,9 @@
                                         <td data-email="{{ $usuario->email }}">{{ $usuario->email }}</td>
                                         <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td>
                                         <td>
-                                            <a class="btn btn-default btn-xs"  href="{{ url('usuarios/detalhes/'.$usuario->id) }}"><i class="fa fa-folder"></i> Detalhes</a>
-                                            <a class="btn btn-primary btn-xs editar_vara" href="{{ url('usuarios/editar/'.$usuario->id) }}"><i class="fa fa-edit"></i> Editar</a>
-                                            <button data-url="usuarios/" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <a class="btn btn-default btn-xs" title="Detalhes" href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-file-text-o"></i></a>
+                                            <a class="btn btn-primary btn-xs editar_vara" title="Editar" href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-edit"></i></a>
+                                            <button data-url="usuarios/"  title="Excluir" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
