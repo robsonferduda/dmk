@@ -26,6 +26,7 @@ class ClienteController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
     public function index()
@@ -252,7 +253,7 @@ class ClienteController extends Controller
 
                                 $join->on('cliente_cli.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
                                 $join->where('entidade_ete.cd_tipo_entidade_tpe','=',8);
-                                if(!empty($nome)) $join->where('nm_fantasia_cli','like','%'.$nome.'%');
+                                if(!empty($nome)) $join->where('nm_razao_social_cli','ilike',"%$nome%");
                                 if(!empty($tipo)) $join->where('cliente_cli.cd_tipo_pessoa_tpp','=',$tipo);
                                 if(!empty($situacao)) $join->where('fl_ativo_cli','=',$situacao);
 
@@ -260,6 +261,7 @@ class ClienteController extends Controller
                                 $join->on('cliente_cli.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
                                 if(!empty($identificacao)) $join->where('nu_identificacao_ide','=',$identificacao);
                             })
+                            ->where('cliente_cli.cd_conta_con',$this->conta)
                             ->orderBy('cliente_cli.created_at','DESC')
                             ->get();
 
@@ -271,8 +273,14 @@ class ClienteController extends Controller
 
         $cd_conta_con = \Session::get('SESSION_CD_CONTA');
 
+        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
+
+        $taxa_imposto_cli = str_replace(",", ".", $request->taxa_imposto_cli);
+
         $request->merge(['nu_cep_ede' => str_replace("-", "", $request->nu_cep_ede)]);
         $request->merge(['cd_conta_con' => $cd_conta_con]);
+        $request->merge(['dt_inicial_cli' => $dt_inicial]);
+        $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
 
         $entidade = Entidade::create([
             'cd_conta_con'         => \Session::get('SESSION_CD_CONTA'),
@@ -295,9 +303,13 @@ class ClienteController extends Controller
                 'nu_identificacao_ide'      => (!empty($nu_identificacao_ide)) ? $nu_identificacao_ide : ''
             ]);
 
-            $endereco = new Endereco();
-            $endereco->fill($request->all());
-            $endereco->saveOrFail();
+            if(!empty($request->dc_logradouro_ede)){
+
+                $endereco = new Endereco();
+                $endereco->fill($request->all());
+                $endereco->saveOrFail();
+
+            }
 
             if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 

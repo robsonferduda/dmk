@@ -15,6 +15,7 @@
 .excluirFone{ display: pointer; }
 .novoModal{ display: pointer; }
 .label-black{color: #000; }
+.box-desconto{display: none;}
 .tabelah {
     width: 100%;
     overflow-x: scroll;
