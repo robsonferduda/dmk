@@ -9,6 +9,7 @@ use App\Entidade;
 use App\Endereco;
 use App\EnderecoEletronico;
 use Illuminate\Http\Request;
+use App\Http\Requests\ContatoRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
@@ -61,7 +62,7 @@ class ContatoController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(ContatoRequest $request)
     {
 
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);

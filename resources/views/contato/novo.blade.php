@@ -32,7 +32,7 @@
 
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm-add-cliente', 'url' => 'contatos', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-contato', 'url' => 'contatos', 'class' => 'smart-form']) !!}
                         <input type="hidden" name="telefones" id="telefones">
                         <input type="hidden" name="emails" id="emails">
                         <div class="row">
@@ -45,18 +45,18 @@
 
                                     <div class="row">
                                         <section class="col col-4">
-                                            <label class="label" >Tipo de Contato</label>          
+                                            <label class="label" >Tipo de Contato <span class="text-danger">Campo obrigatório</span></label>          
                                             <select  id="cd_tipo_contato_tct" name="cd_tipo_contato_tct" class="select2">
-                                                <option selected value="">Selecione um tipo</option>
+                                                <option selected value="0">Selecione um tipo</option>
                                                 @foreach(App\TipoContato::all() as $tipo) 
                                                     <option {!! (old('cd_tipo_contato_tct') == $tipo->cd_tipo_contato_tct ? 'selected' : '' ) !!} value="{{$tipo->cd_tipo_contato_tct}}">{{ $tipo->nm_tipo_contato_tct}}</option>
                                                 @endforeach
                                             </select> 
                                         </section>
                                         <section class="col col-8">
-                                            <label class="label">Nome</label>
+                                            <label class="label">Nome<span class="text-danger"> Campo obrigatório</span></label>
                                             <label class="input">
-                                                <input type="text" name="nm_contato_cot" placeholder="Nome">
+                                                <input type="text" name="nm_contato_cot" id="nm_contato_cot" placeholder="Nome">
                                             </label>
                                         </section>
                                     </div>
@@ -275,6 +275,32 @@
 
         });
 
+    });
+
+    $(function() {
+
+        $("#frm-add-contato").validate({
+            rules : {
+                nm_contato_cot : {
+                    required : true
+                },
+                cd_tipo_contato_tct : {
+                    required : true
+                }
+            },
+
+            messages : {
+                nm_contato_cot : {
+                    required : 'Preencha o campo para continuar'
+                },
+                cd_tipo_contato_tct : {
+                    required : 'Preencha o campo para continuar'
+                },
+            },
+            errorPlacement : function(error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
     });
 
 </script>
