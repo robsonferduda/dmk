@@ -1,0 +1,84 @@
+@extends('layouts.admin')
+@section('content')
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li><a href="{{ url('home') }}">Início</a></li>
+        <li>Agenda</li>
+        <li>Todos os Contatos</li>
+    </ol>
+</div>
+<div id="content">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <h1 class="page-title txt-color-blueDark">
+                <i class="fa-fw fa fa-book"></i> Agenda <span> > Todos os Contatos</span>
+            </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('contato/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @include('layouts/messages')
+        </div>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="well center">
+                @foreach(range('A', 'Z') as $letra) 
+                    @if(!empty(session('inicial')) and session('inicial') == $letra)
+                        <a class="btn btn-primary btn-xs btn_sigla" href="{{ url('contato/buscar/'.$letra) }}">{{ $letra }}</a>
+                    @else
+                        <a class="btn btn-default btn-xs btn_sigla" href="{{ url('contato/buscar/'.$letra) }}">{{ $letra }}</a>
+                    @endif
+                @endforeach
+            </div>
+            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-book"></i> </span>
+                    <h2>Contatos</h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        @if(isset($dados))
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>                         
+                                <tr>    
+                                    <th>Nome</th>
+                                    <th>Comarca</th> 
+                                    <th>Tipo de Contato</th>                                
+                                    <th>Telefone</th>
+                                    <th class="center">Email</th>                               
+                                    <th class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $ctrl = 0; @endphp
+                                @foreach($dados as $d)
+                                    @if($ctrl != $d->cd_contato_cot)
+                                        <tr>
+                                            <td data-id="{{ $d->cd_contato_cot }}"><a href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}">{{ $d->nm_contato_cot }}</a></td>
+                                            <td>{{ ($d->nm_cidade_cde) ? $d->nm_cidade_cde : 'Não informado' }}</td>
+                                            <td>{{ $d->nm_tipo_contato_tct }}</td>
+                                            <td>{{ ($d->nu_fone_fon) ? $d->nu_fone_fon : 'Não informado' }}</td>
+                                            <td>{{ ($d->dc_endereco_eletronico_ede) ? $d->dc_endereco_eletronico_ede : 'Não informado' }}</td>
+                                            <td class="center">
+                                                <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}"><i class="fa fa-file-text-o"></i> </a>
+                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('contato/editar/'.$d->cd_contato_cot) }}"><i class="fa fa-edit"></i> </a>
+                                                <button title="Excluir" data-url="contatos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> </button>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @php $ctrl = $d->cd_contato_cot; @endphp
+                                @endforeach                                
+                            </tbody>
+                        </table>
+                        @else
+                            <h5 class="center marginTop20"><i class="fa fa-info-circle"></i> Clique sobre a inicial do nome para mostrar as opções</h5>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+@endsection

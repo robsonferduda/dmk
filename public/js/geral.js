@@ -121,7 +121,7 @@ $(document).ready(function() {
             },
 		   	error: function(response)
 		   	{
-		   		console.log(response);
+		   		$(".msg_retorno").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
 		   	}
         });
 
@@ -552,6 +552,8 @@ $(document).ready(function() {
 		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
 		$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
 	});
+
+	$('.btn_sigla').click(function(){ $("#processamento").modal('show'); });
 
 	$("#btnSalvarHonorariosProcesso").click(function (){
 

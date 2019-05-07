@@ -6,8 +6,10 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
-            
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
         
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
@@ -15,11 +17,8 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}?v={{ date('YmdHis') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
-        <link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/croppie.css">
-
-        <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">        
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
     </head>
 
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">
@@ -97,10 +96,7 @@
                                 <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
-                                <a href="dashboard-social.html" title="Dashboard"><span class="menu-item-parent">Agenda</span></a>
-                            </li>
-                            <li>
-                                <a href="dashboard-social.html" title="Dashboard"><span class="menu-item-parent">Relatórios</span></a>
+                                <a href="{{ url('contatos') }}" title="Agenda"><span class="menu-item-parent">Agenda</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -256,7 +252,7 @@
                         <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
                      </div>
                     <div class="modal-body center">
-                        <h2><i class="fa fa-spinner fa-spin"></i> Aguarde, processando requisição...</h2>
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, processando requisição...</h2>
                     </div>
                 </div>
             </div>
@@ -345,35 +341,18 @@
             </div>
         </div>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script>
-            if (!window.jQuery) {
-                document.write('<script src="js/libs/jquery-3.2.1.min.js"><\/script>');
-            }
-        </script>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-        <script>
-            if (!window.jQuery.ui) {
-                document.write('<script src="js/libs/jquery-ui.min.js"><\/script>');
-            }
-        </script>
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-
         <script src="{{ asset('js/geral.js') }}?v={{ date('YmdHis') }}"></script>
         <script src="{{ asset('js/menu.js') }}"></script>
-        
-        <!-- IMPORTANT: APP CONFIG -->
         <script src="{{ asset('js/app.config.js') }}"></script>
-
-        <!-- BOOTSTRAP JS -->
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <!--[if IE 8]>
             <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
         <![endif]-->
-
-        <!-- MAIN APP JS FILE -->
+        
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-validate/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/jquery.dataTables.min.js') }}"></script>
@@ -383,63 +362,63 @@
         <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
         <script src="{{ asset('js/plugin/select2/select2.min.js') }}"></script>
         <script src="{{ asset('js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
-        <script src="http://demo.itsolutionstuff.com/plugin/croppie.js"></script>
+        <script src="{{ asset('js/plugin/croppie.js') }}"></script>
         @yield('script')
         <script>
         
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 
         $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
-        }
-    });
-
-
-    $uploadCrop = $('#upload-demo').croppie({
-        enableExif: true,
-        viewport: {
-            width: 200,
-            height: 200,
-            type: 'circle'
-        },
-        boundary: {
-            width: 300,
-            height: 300
-        }
-    });
-
-
-    $('#upload').on('change', function () { 
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $uploadCrop.croppie('bind', {
-                url: e.target.result
-            }).then(function(){
-                console.log('jQuery bind complete');
-            });
-        }
-        reader.readAsDataURL(this.files[0]);
-    });
-
-
-    $('.upload-result').on('click', function (ev) {
-        $uploadCrop.croppie('result', {
-            type: 'canvas',
-            size: 'viewport'
-        }).then(function (resp) {
-            $.ajax({
-                url: "/dmk/public/image-crop",
-                type: "POST",
-                data: {"image":resp},
-                success: function (data) {
-                    html = '<img src="' + resp + '" />';
-                    $("#upload-demo-i").html(html);
-                }
-            });
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
+            }
         });
-        location.reload();
-    });
+
+
+        $uploadCrop = $('#upload-demo').croppie({
+            enableExif: true,
+            viewport: {
+                width: 200,
+                height: 200,
+                type: 'circle'
+            },
+            boundary: {
+                width: 300,
+                height: 300
+            }
+        });
+
+
+        $('#upload').on('change', function () { 
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $uploadCrop.croppie('bind', {
+                    url: e.target.result
+                }).then(function(){
+                    console.log('jQuery bind complete');
+                });
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+
+        $('.upload-result').on('click', function (ev) {
+            $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                $.ajax({
+                    url: "/dmk/public/image-crop",
+                    type: "POST",
+                    data: {"image":resp},
+                    success: function (data) {
+                        html = '<img src="' + resp + '" />';
+                        $("#upload-demo-i").html(html);
+                    }
+                });
+            });
+            location.reload();
+        });
         
         $(document).ready(function() {
             

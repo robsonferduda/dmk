@@ -65,6 +65,13 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/grupos-de-cidades','GrupoCidadeController@index');
 	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
 
+	Route::resource('contatos','ContatoController');
+	Route::get('contatos','ContatoController@index');
+	Route::get('contato/novo','ContatoController@novo');
+	Route::get('contato/buscar/{inicial}','ContatoController@buscar');
+	Route::get('contato/detalhes/{id}','ContatoController@detalhes');
+	Route::post('contato/salvar','ContatoController@salvar');
+
 	Route::resource('correspondentes', 'CorrespondenteController');
 	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
