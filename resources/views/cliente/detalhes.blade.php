@@ -56,14 +56,14 @@
                                                         <strong>CPF: </strong> {{ ($cliente->entidade->cpf()->first()) ? $cliente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Data de Nascimento: </strong> {{ $cliente->data_nascimento_cli }}
+                                                        <strong>Data de Nascimento: </strong> {{ date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}
                                                     </li>
                                                 @else
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ ($cliente->entidade->cnpj()->first()) ? $cliente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Data de Fundação: </strong> {{ $cliente->data_fundacao_cli}}
+                                                        <strong>Data de Fundação: </strong> {{ date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}
                                                     </li>    
                                                 @endif                                            
                                                 <li>
@@ -75,6 +75,11 @@
                                                 <li>
                                                     <strong>Pagamento com Nota Fiscal: </strong> {!! ($cliente->fl_nota_fiscal_cli == "S") ? '<span class="label label-success">SIM</span>' : '<span class="label label-danger">NÃO</span>' !!}
                                                 </li>
+                                                @if($cliente->fl_nota_fiscal_cli == "S")
+                                                    <li>
+                                                        <strong>Percentual de Desconto: </strong> {{ $cliente->taxa_imposto_cli }}
+                                                    </li>
+                                                @endif
                                             </ul>
                                         </p> 
                                     </div>
@@ -84,7 +89,7 @@
                         <div class="col-md-4">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-money fa-fw"></i> <strong>Despesas Por Tipo de Serviço</strong></legend>
+                                    <legend><i class="fa fa-money fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         @if(count($cliente->entidade->reembolso()->get()) > 0)
                                             @foreach($cliente->entidade->reembolso()->get() as $despesa)

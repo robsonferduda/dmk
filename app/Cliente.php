@@ -18,7 +18,9 @@ class Cliente extends Model
         'cd_tipo_pessoa_tpp',
         'nm_razao_social_cli',
         'nm_fantasia_cli',
-        'fl_nota_fiscal_cli'
+        'fl_nota_fiscal_cli',
+        'taxa_imposto_cli',
+        'dt_inicial_cli'
     ];
 
     public $timestamps = true;

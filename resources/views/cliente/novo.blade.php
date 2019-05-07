@@ -78,19 +78,19 @@
                                                 <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____">
                                             </label>
                                         </section>
-                                       <section class="col col-6">
+                                        <section class="col col-6">
+                                            <label class="label">Razão Social <span class="text-danger">(Obrigatório)</span></label>
+                                            <label class="input">
+                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
+                                            </label>
+                                        </section>                                        
+                                    </div>                        
+                                    
+                                    <div class="row box-pessoa-juridica">
+                                        <section class="col col-6">
                                             <label class="label label-tipo-pessoa">Nome Fantasia</label>
                                             <label class="input">
                                                 <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : "" }}" placeholder="Nome Fantasia">
-                                            </label>
-                                        </section>
-                                    </div>                        
-                                    
-                                    <div class="row">
-                                        <section class="col col-6">
-                                            <label class="label">Razão Social</label>
-                                            <label class="input">
-                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
                                             </label>
                                         </section>
                                         <section class="col col-3">
@@ -108,7 +108,7 @@
                                     </div>  
 
                                     <section>
-                                        <div class="onoffswitch-container">
+                                        <div class="onoffswitch-container" style="margin-left: 0px;">
                                             <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli">
@@ -117,9 +117,17 @@
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
                                             </span> 
-                                        </div>
+                                        </div>                                        
                                     </section>
 
+                                    <div class="row">
+                                        <section class="col col-3 box-desconto">
+                                            <label class="label">Percentual de Desconto</label>
+                                            <label class="input" style="width: 50%">
+                                                <input type="text" id="taxa_imposto_cli" name="taxa_imposto_cli">
+                                            </label>    
+                                        </section>
+                                    </div>
                                 </fieldset>
                             </section>
 
@@ -131,7 +139,7 @@
 
                                 <fieldset>
                                     <section>
-                                        <label class="label">Selecione as despesas relacionadas ao cliente</label>
+                                        <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Selecione as despesas reembolsáveis do cliente</label>
                                         <div class="row">
                                             <div class="col col-12">
                                                 @foreach(\App\TipoDespesa::where('fl_reembolso_tds','S')->get() as $despesa)
@@ -395,6 +403,18 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        $("#fl_nota_fiscal_cli").click(function(){
+
+            flag = $('#fl_nota_fiscal_cli').is(':checked');
+            if(flag){
+                $('.box-desconto').css('display','block');
+                $('#taxa_imposto_cli').focus();
+            }
+            else{
+                $('.box-desconto').css('display','none');
+            }
+        });
+
         var buscaCidade = function(){
 
             estado = $("#estado").val();
@@ -450,13 +470,13 @@
 
             $("#frm-add-cliente").validate({
                 rules : {
-                    nm_fantasia_cli : {
+                    nm_razao_social_cli : {
                         required : true
                     }
                 },
 
                 messages : {
-                    nm_fantasia_cli : {
+                    nm_razao_social_cli : {
                         required : 'Campo de preenchimento obrigatório'
                     }
                 },

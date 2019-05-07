@@ -22,24 +22,28 @@ $(document).ready(function() {
 	/** =======================================================   **/
 
 	if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
-	    $(".label-tipo-pessoa").html('Nome <span class="text-danger">(Obrigatório)</span>');
+	    $(".label-tipo-pessoa").html('Nome');
+	    $("#cpf").focus();
 	    $(".box-pessoa-fisica").css('display','block');
 	    $(".box-pessoa-juridica").css('display','none');
 	}else{
-	    $(".label-tipo-pessoa").html('Nome Fantasia <span class="text-danger">(Obrigatório)</span>');
+	    $(".label-tipo-pessoa").html('Nome Fantasia');
 	    $(".box-pessoa-fisica").css('display','none');
 	    $(".box-pessoa-juridica").css('display','block');
+	    $("#cnpj").focus();
 	}
 
 	$(".tipo-pessoa").click(function(){
 	    if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
-	    	$(".label-tipo-pessoa").html('Nome <span class="text-danger">(Obrigatório)</span>');
+	    	$(".label-tipo-pessoa").html('Nome');
 	        $(".box-pessoa-fisica").css('display','block');
 	        $(".box-pessoa-juridica").css('display','none');
+	        $("#cpf").focus();
 	    }else{
-	    	$(".label-tipo-pessoa").html('Nome Fantasia <span class="text-danger">(Obrigatório)</span>');
+	    	$(".label-tipo-pessoa").html('Nome Fantasia');
 	    	$(".box-pessoa-fisica").css('display','none');
 	        $(".box-pessoa-juridica").css('display','block');
+	        $("#cnpj").focus();
 	    }
 	});
 

@@ -25,14 +25,14 @@ class ClienteRequest extends FormRequest
     public function rules()
     {
         return [
-            'nm_fantasia_cli' => 'required'
+            'nm_razao_social_cli' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'nm_fantasia_cli.required' => 'Campo <strong>Nome/Nome Fantasia</strong> é obrigatório'
+            'nm_razao_social_cli.required' => 'Campo <strong>Razão Social</strong> é obrigatório'
         ];
     }
 }

@@ -273,8 +273,14 @@ class ClienteController extends Controller
 
         $cd_conta_con = \Session::get('SESSION_CD_CONTA');
 
+        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
+
+        $taxa_imposto_cli = str_replace(",", ".", $request->taxa_imposto_cli);
+
         $request->merge(['nu_cep_ede' => str_replace("-", "", $request->nu_cep_ede)]);
         $request->merge(['cd_conta_con' => $cd_conta_con]);
+        $request->merge(['dt_inicial_cli' => $dt_inicial]);
+        $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
 
         $entidade = Entidade::create([
             'cd_conta_con'         => \Session::get('SESSION_CD_CONTA'),
