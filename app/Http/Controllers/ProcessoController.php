@@ -34,7 +34,21 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+        $processos = Processo::with(array('correspondente' => function($query){
+            $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+        }))->with(array('cidade' => function($query){
+            $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
+            $query->with(array('estado' => function($query){
+                $query->select('sg_estado_est','cd_estado_est');
+            }));
+        }))->with(array('honorario' => function($query){
+            $query->select('cd_processo_pro','cd_tipo_servico_tse');
+            $query->with(array('tipoServico' => function($query){
+                $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
+            }));
+        }))->with(array('cliente' => function($query){
+            $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         return view('processo/processos',['processos' => $processos]);
     }
