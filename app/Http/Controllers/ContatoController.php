@@ -56,6 +56,12 @@ class ContatoController extends Controller
        	return redirect('contatos');
     }
 
+    public function detalhes($id)
+    {
+        $contato = Contato::where('cd_contato_cot',$id)->first();
+        return view('contato/detalhes',['contato' => $contato]);
+    }
+
     public function novo(){
 
     	return view('contato/novo');
