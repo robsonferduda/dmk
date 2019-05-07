@@ -62,6 +62,12 @@ class ContatoController extends Controller
         return view('contato/detalhes',['contato' => $contato]);
     }
 
+    public function editar($id)
+    {
+        $contato = Contato::where('cd_contato_cot',$id)->first();
+        return view('contato/editar',['contato' => $contato]);
+    }
+
     public function novo(){
 
     	return view('contato/novo');
@@ -152,6 +158,24 @@ class ContatoController extends Controller
             }     
         });
         Flash::success('Contato inserido com sucesso');
+        return redirect('contatos');
+    }
+
+    public function update(ContatoRequest $request,$id)
+    {
+
+        $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
+        $request->merge(['cd_conta_con' => $this->conta]);
+
+        DB::transaction(function() use ($request,$id){
+
+            $contato = Contato::where('cd_contato_cot',$id)->first();
+            $contato->fill($request->all());
+            $contato->saveOrFail();
+
+        });
+
+        Flash::success('Contato atualizado com sucesso');
         return redirect('contatos');
     }
 

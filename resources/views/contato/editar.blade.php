@@ -3,7 +3,7 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Clientes</a></li>
+        <li><a href="{{ url('contatos') }}">Agenda de Contatos</a></li>
         <li>Novo</li>
     </ol>
 </div>
@@ -11,11 +11,11 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Clientes <span>> Novo</span>
+                <i class="fa-fw fa fa-book"></i> Agenda de Contatos <span>> Novo</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-primary pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
+            <a data-toggle="modal" href="{{ url('contatos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-book fa-lg"></i> Listar Contatos</a>
         </div>
     </div>
     <div class="row">
@@ -26,135 +26,41 @@
         <article class="col-sm-12 col-md-12 col-lg-12">
             <div class="jarviswidget jarviswidget-sortable">
                 <header role="heading" class="ui-sortable-handle">
-                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>Cadastro de Cliente </h2>             
+                    <span class="widget-icon"> <i class="fa fa-book"></i> </span>
+                    <h2>Contatos </h2>             
                 <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
 
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm-add-cliente', 'url' => 'clientes', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-contato', 'url' => ['contatos',$contato->cd_contato_cot], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         <input type="hidden" name="telefones" id="telefones">
                         <input type="hidden" name="emails" id="emails">
                         <div class="row">
-                            <section class="col col-8">
+                            <div style="padding: 5px 20px;">
                                 <header>
-                                    Dados Básicos
+                                    Dados do Contato 
                                 </header>
 
                                 <fieldset>
-                                    <section>
-                                        <div class="inline-group">
-                                            <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" checked="checked">
-                                                <i></i>Pessoa Jurídica</label>
-                                            <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1">
-                                                <i></i>Pessoa Física</label>
-                                        </div>
-                                    </section>
+
                                     <div class="row">
-                                        <section class="col col-3 box-pessoa-juridica">
-                                            <label class="label">CNPJ</label>
-                                            <label class="input">
-                                                <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/000-00">
-                                            </label>
-                                        </section>
-                                        <section class="col col-3 box-pessoa-juridica">
-                                            <label class="label">Data de Fundação</label>
-                                            <label class="input">
-                                                <input type="text" name="data_fundacao_cli" class="data_fundacao" placeholder="__/__/____">
-                                            </label>
-                                        </section>
-
-                                        <section class="col col-3 box-pessoa-fisica">
-                                            <label class="label">CPF</label>
-                                            <label class="input">
-                                                <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000">
-                                            </label>
-                                        </section>
-                                        <section class="col col-3 box-pessoa-fisica">
-                                            <label class="label">Data de Nascimento</label>
-                                            <label class="input">
-                                                <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____">
-                                            </label>
-                                        </section>
-                                       <section class="col col-6">
-                                            <label class="label label-tipo-pessoa">Nome Fantasia</label>
-                                            <label class="input">
-                                                <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : "" }}" placeholder="Nome Fantasia">
-                                            </label>
-                                        </section>
-                                    </div>                        
-                                    
-                                    <div class="row">
-                                        <section class="col col-6">
-                                            <label class="label">Razão Social</label>
-                                            <label class="input">
-                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
-                                            </label>
-                                        </section>
-                                        <section class="col col-3">
-                                            <label class="label">Inscrição Municipal</label>
-                                            <label class="input">
-                                                <input type="text" name="inscricao_municipal_cli" placeholder="Inscrição Municipal">
-                                            </label>
-                                        </section>
-                                        <section class="col col-3">
-                                            <label class="label">Inscrição Estadual</label>
-                                            <label class="input">
-                                                <input type="text" name="inscricao_estadual_cli" placeholder="Inscrição Estadual">
-                                            </label>
-                                        </section>
-                                    </div>  
-
-                                    <section>
-                                        <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli">
-                                                <label class="onoffswitch-label" for="fl_nota_fiscal_cli"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                        </div>
-                                    </section>
-
-                                </fieldset>
-                            </section>
-
-                            <section class="col col-4">
-                                <header>
-                                    <i class="fa fa-dollar"></i> Despesas Reembolsáveis
-                                    <a href="{{ url('configuracoes/tipos-de-despesa') }}" style="padding: 1px 8px;" ><i class="fa fa-plus-circle"></i> Novo </a>
-                                </header>
-
-                                <fieldset>
-                                    <section>
-                                        <label class="label">Selecione as despesas relacionadas ao cliente</label>
-                                        <div class="row">
-                                            <div class="col col-12">
-                                                @foreach(\App\TipoDespesa::where('fl_reembolso_tds','S')->get() as $despesa)
-                                                    <label class="checkbox">
-                                                        <input type="checkbox" name="despesas[]" value="{{ $despesa->cd_tipo_despesa_tds }}">
-                                                        <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
-                                                    </label>
+                                        <section class="col col-4">
+                                            <label class="label" >Tipo de Contato <span class="text-danger">Campo obrigatório</span></label>          
+                                            <select  id="cd_tipo_contato_tct" name="cd_tipo_contato_tct" class="select2">
+                                                <option selected>Selecione um tipo</option>
+                                                @foreach(App\TipoContato::all() as $tipo) 
+                                                    <option {!! ($contato->cd_tipo_contato_tct == $tipo->cd_tipo_contato_tct) ? 'selected' : ''  !!} value="{{$tipo->cd_tipo_contato_tct}}">{{ $tipo->nm_tipo_contato_tct}}</option>
                                                 @endforeach
-                                            </div> 
-                                        </div>
-                                    </section>
-                                </fieldset>
-                            </section>
-                        </div>
-                            <div class="row" style="padding: 5px 20px;">
-        
-                                <header>
-                                    <i class="fa fa-map-marker"></i> Endereço 
-                                </header>
-
-                                <fieldset>
-
-                                    <div class="row">
+                                            </select> 
+                                        </section>
+                                        <section class="col col-8">
+                                            <label class="label">Nome<span class="text-danger"> Campo obrigatório</span></label>
+                                            <label class="input">
+                                                <input type="text" name="nm_contato_cot" id="nm_contato_cot" value="{{ $contato->nm_contato_cot }}" placeholder="Nome">
+                                            </label>
+                                        </section>
+                                    </div>
+                                    <div class="row">                                        
                                         <section class="col col-2">
                                             <label class="label">CEP</label>
                                             <label class="input">
@@ -210,7 +116,7 @@
                                         </section>  
                                     </div>
                                 </fieldset>
-                            
+                            </div>
                         </div>
 
                             <div class="row" style="margin-bottom: 20px;">
@@ -313,83 +219,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade modal_top_alto" id="modalFone" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Adicionar Telefone</h4>
-            </div>            
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 center">
-                        <form class="form-inline" role="form">
-                            <span class="text-info">Digite somente números</span>
-                            <div style="margin-top: 8px;">
-                                <input type="hidden" name="cd_conta_con" value="">
-                                <div class="form-group">
-                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
-                                </div>
-                                <div class="form-group">
-                                    <select class="form-control" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
-                                        <option value="0">Tipo</option>
-                                        @foreach(\App\TipoFone::all() as $tipoFone)
-                                            <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                        @endforeach   
-                                    </select>
-                                </div> 
-                                <div id="erroFone">
 
-                                </div>                           
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
-                <button type="submit" id="btnSalvarTelefone" class="btn btn-success"><i class="fa-fw fa fa-save"></i> Salvar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade modal_top_alto" id="modalEmail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Adicionar Telefone</h4>
-            </div>
-            {!! Form::open(['id' => 'frm-update-conta', 'url' => 'conta/telefone/adicionar', 'class' => 'form form-inline']) !!}
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 center">
-                        <div>
-                            <input type="hidden" name="cd_conta_con" value="">
-                            <div class="form-group">
-                                <input type="text" class="form-control telefone" name="nu_fone_fon" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="cd_tipo_fone_tfo">
-                                    <option value="0">Tipo</option>
-                                    @foreach(\App\TipoFone::all() as $tipoFone)
-                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                    @endforeach   
-                                </select>
-                            </div>                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
-                <button type="submit" class="btn btn-success"><i class="fa-fw fa fa-save"></i> Salvar</button>
-            </div>
-            {!! Form::close() !!}
-        </div>
-    </div>
-</div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -448,22 +279,29 @@
 
     $(function() {
 
-            $("#frm-add-cliente").validate({
-                rules : {
-                    nm_fantasia_cli : {
-                        required : true
-                    }
+        $("#frm-add-contato").validate({
+            rules : {
+                nm_contato_cot : {
+                    required : true
                 },
-
-                messages : {
-                    nm_fantasia_cli : {
-                        required : 'Campo de preenchimento obrigatório'
-                    }
-                },
-                errorPlacement : function(error, element) {
-                    error.insertAfter(element.parent());
+                cd_tipo_contato_tct : {
+                    required : true
                 }
-            });
+            },
+
+            messages : {
+                nm_contato_cot : {
+                    required : 'Preencha o campo para continuar'
+                },
+                cd_tipo_contato_tct : {
+                    required : 'Preencha o campo para continuar'
+                },
+            },
+            errorPlacement : function(error, element) {
+                error.insertAfter(element.parent());
+            }
         });
+    });
+
 </script>
 @endsection

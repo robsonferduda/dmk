@@ -17,7 +17,7 @@ class ContatoRequest extends FormRequest
     {
         return [
             'nm_contato_cot' => 'required',
-            'cd_tipo_contato_tct' => 'required'
+            'cd_tipo_contato_tct' => 'not_in:0'
         ];
     }
 
@@ -25,7 +25,7 @@ class ContatoRequest extends FormRequest
     {
         return [
             'nm_contato_cot.required' => 'Campo nome obrigatório',
-            'cd_tipo_contato_tct.required' => 'Campo tipo do contato obrigatório'
+            'cd_tipo_contato_tct.not_in' => 'Campo tipo do contato obrigatório'
         ];
     }
 }

@@ -295,9 +295,13 @@ class ClienteController extends Controller
                 'nu_identificacao_ide'      => (!empty($nu_identificacao_ide)) ? $nu_identificacao_ide : ''
             ]);
 
-            $endereco = new Endereco();
-            $endereco->fill($request->all());
-            $endereco->saveOrFail();
+            if(!empty($request->dc_logradouro_ede)){
+
+                $endereco = new Endereco();
+                $endereco->fill($request->all());
+                $endereco->saveOrFail();
+
+            }
 
             if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
