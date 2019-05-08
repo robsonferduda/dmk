@@ -361,7 +361,7 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
 
-        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
+        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento_cli))) : date('Y-m-d',strtotime(str_replace('/','-',$request->data_fundacao_cli)));
         $taxa_imposto_cli = ($request->taxa_imposto_cli) ? str_replace(",", ".", $request->taxa_imposto_cli) : null;
         $cep = ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null;
 
@@ -369,10 +369,30 @@ class ClienteController extends Controller
         $request->merge(['cd_conta_con' => $this->conta]);
         $request->merge(['dt_inicial_cli' => $dt_inicial]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
+        $request->merge(['cd_entidade_ete' => $cliente->entidade->cd_entidade_ete]);
 
         $cliente->fill($request->all());
         
         if($cliente->saveOrFail()){
+
+            //Atualização de endereço - Exige que pelo menos o logradouro esteja preenchido
+            if(!empty($request->dc_logradouro_ede)){
+
+                $endereco = Endereco::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->first();
+
+                if($endereco){
+                        
+                        $endereco->fill($request->all());
+                        $endereco->saveOrFail();
+
+                }else{
+
+                        $endereco = new Endereco();
+                        $endereco->fill($request->all());
+                        $endereco->saveOrFail();
+                }
+                    
+            }
 
             //Inserção de telefones
             if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
