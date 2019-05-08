@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/public/";
+	var pathname = window.location.origin+"/";
 	var pathnameX = window.location.origin+"/dmk/public/";
 
 
