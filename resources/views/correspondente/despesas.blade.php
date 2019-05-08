@@ -35,7 +35,7 @@
                         <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">    
                         <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_conta_con }}">                       
                             <header>
-                                <i class="fa fa-dollar"></i> Despesas por Tipo de Serviço 
+                                <i class="fa fa-dollar"></i> Despesas Reembolsáveis
                                 <a href="{{ url('configuracoes/tipos-de-despesa') }}" style="padding: 1px 8px;" ><i class="fa fa-plus-circle"></i> Novo </a>
                             </header>
 
@@ -44,22 +44,18 @@
                                     <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Selecione as despesas reembolsáveis relacionadas ao correspondente</label>
                                     <div class="col-md-12">
                                         <div class="col-md-6">
-                                            <label style="margin-bottom: 5px;">Despesas disponíveis</label>
-                                            @foreach($despesas_disponiveis as $despesa)
-                                                <label class="checkbox">
-                                                    <input type="checkbox" name="despesas[]" value="{{ $despesa->cd_tipo_despesa_tds }}">
-                                                    <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label style="margin-bottom: 5px;">Despesas selecionadas</label>
                                             @foreach($despesas as $despesa)
                                                 <label class="checkbox">
                                                     <input type="checkbox" name="remover[]" checked="checked" value="{{ $despesa->cd_tipo_despesa_tds }}">
                                                     <i></i>{{ $despesa->tipoDespesa()->first()->nm_tipo_despesa_tds }} 
                                                 </label>
                                             @endforeach
+                                            @foreach($despesas_disponiveis as $despesa)
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="despesas[]" value="{{ $despesa->cd_tipo_despesa_tds }}">
+                                                    <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
+                                                </label>
+                                            @endforeach                                           
                                         </div> 
                                     </div>
                                 </section>
