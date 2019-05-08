@@ -45,6 +45,9 @@ class UsuarioController extends Controller
 
     public function detalhes($id)
     {
+
+        $id = \Crypt::decrypt($id);
+
         $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
 
         return view('usuario/detalhes',['usuario' => $usuario]);
@@ -79,6 +82,8 @@ class UsuarioController extends Controller
     }
 
     public function editar($id){
+
+        $id = \Crypt::decrypt($id);
 
         $niveis        = Nivel::where('fl_nivel_conta_niv','S')->orderBy('dc_nivel_niv')->get();
         $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
