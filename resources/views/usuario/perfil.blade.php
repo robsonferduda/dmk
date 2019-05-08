@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="col-md-6">
-                        <h2>{{ $usuario->name }} <a href="{{ url('usuarios/editar/'.$usuario->id) }}"><span class="fa fa-edit"></span></a></h2>
+                        <h2>{{ $usuario->name }} <a href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><span class="fa fa-edit"></span></a></h2>
                         <p><strong>Perfil: </strong> {{ $usuario->tipoPerfil()->first()->dc_nivel_niv }} </p>
                         <p><strong>Estado Civil: </strong> {{ $usuario->estadoCivil()->first()->nm_estado_civil_esc }} </p>
                         <p>

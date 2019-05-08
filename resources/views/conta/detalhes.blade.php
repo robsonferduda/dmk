@@ -20,25 +20,6 @@
                 <div class="col-xs-12 col-sm-3 text-center">
                     <figure>
                         <img src="{{ asset('img/users/user.png') }}" alt="" class="img-circle img-responsive">
-                        <figcaption class="ratings">
-                            <p>Avaliação
-                            <a href="#">
-                                <span class="fa fa-star"></span>
-                            </a>
-                            <a href="#">
-                                <span class="fa fa-star"></span>
-                            </a>
-                            <a href="#">
-                                <span class="fa fa-star"></span>
-                            </a>
-                            <a href="#">
-                                <span class="fa fa-star"></span>
-                            </a>
-                            <a href="#">
-                                 <span class="fa fa-star-o"></span>
-                            </a> 
-                            </p>
-                        </figcaption>
                     </figure>
                 </div>
                 <div class="col-xs-12 col-sm-9">
@@ -61,40 +42,6 @@
                     </p>
                 </div>             
             </div>            
-            <div class="col-xs-12 divider text-center">
-                <div class="col-xs-12 col-sm-3 emphasis">
-                    <h2><strong> {{ count($usuarios) }} </strong></h2>                    
-                    <p><small>Usuários</small></p>
-                    <a href="{{ url('usuarios/novo') }}" class="btn btn-primary btn-block"><span class="fa fa-user"></span> Novo Usuário </a>
-                </div>
-                <div class="col-xs-12 col-sm-3 emphasis">
-                    <h2><strong> 0 </strong></h2>                    
-                    <p><small>Processos</small></p>
-                    <button class="btn btn-success btn-block"><span class="fa fa-archive"></span> Novo Processo </button>
-                </div>
-                <div class="col-xs-12 col-sm-3 emphasis">
-                    <h2><strong>0</strong></h2>                    
-                    <p><small>Colaboradores</small></p>
-                    <button class="btn btn-warning btn-block"><span class="fa fa-legal"></span> Novo Correspondente </button>
-                </div>
-                <div class="col-xs-12 col-sm-3 emphasis">
-                    <h2><strong><span class="fa fa-gear"></strong></h2>                    
-                    <p><small>Configurações da Conta</small></p>
-                    <div class="btn-group dropup btn-block">
-                      <button type="button" class="btn btn-primary" style="width: 90%;"><span class="fa fa-user"></span> Opções </button>
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <ul class="dropdown-menu text-left" role="menu">
-                        <li><a href="#"><span class="fa fa-credit-card pull-right"></span> Dados de Pagamento</a></li>
-                        <li><a href="#"><span class="fa fa-list pull-right"></span> Histórico de Pagamentos</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#"><span class="fa fa-times pull-right"></span>Cancelar Assinatura</a></li>
-                      </ul>
-                    </div>
-                </div>
-            </div>
          </div>                 
         </div>
     </div>
