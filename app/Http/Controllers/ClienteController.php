@@ -8,6 +8,7 @@ use App\Cliente;
 use App\Contato;
 use App\Endereco;
 use App\Entidade;
+use App\EnderecoEletronico;
 use App\Identificacao;
 use App\TipoServico;
 use App\GrupoCidade;
@@ -272,12 +273,11 @@ class ClienteController extends Controller
     {
 
         $cd_conta_con = \Session::get('SESSION_CD_CONTA');
-
         $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
+        $taxa_imposto_cli = ($request->taxa_imposto_cli) ? str_replace(",", ".", $request->taxa_imposto_cli) : null;
+        $cep = ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null;
 
-        $taxa_imposto_cli = str_replace(",", ".", $request->taxa_imposto_cli);
-
-        $request->merge(['nu_cep_ede' => str_replace("-", "", $request->nu_cep_ede)]);
+        $request->merge(['nu_cep_ede' => $cep]);
         $request->merge(['cd_conta_con' => $cd_conta_con]);
         $request->merge(['dt_inicial_cli' => $dt_inicial]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
@@ -360,9 +360,51 @@ class ClienteController extends Controller
     public function update(ClienteRequest $request, $id)
     {
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
+
+        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
+        $taxa_imposto_cli = ($request->taxa_imposto_cli) ? str_replace(",", ".", $request->taxa_imposto_cli) : null;
+        $cep = ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null;
+
+        $request->merge(['nu_cep_ede' => $cep]);
+        $request->merge(['cd_conta_con' => $this->conta]);
+        $request->merge(['dt_inicial_cli' => $dt_inicial]);
+        $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
+
         $cliente->fill($request->all());
         
         if($cliente->saveOrFail()){
+
+            //Inserção de telefones
+            if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
+
+                $fones = json_decode($request->telefones);
+                for($i = 0; $i < count($fones); $i++) {
+
+                    $fone = Fone::create([
+                        'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                        'nu_fone_fon'               => $fones[$i]->numero
+                    ]);
+
+                }
+            }
+
+            //Inserção de emails
+            if(!empty($request->emails) && count(json_decode($request->emails)) > 0){
+
+                $emails = json_decode($request->emails);
+                for($i = 0; $i < count($emails); $i++) {
+
+                    $email = EnderecoEletronico::create([
+                        'cd_entidade_ete'                 => $cliente->entidade->cd_entidade_ete,
+                        'cd_conta_con'                    => $this->conta, 
+                        'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
+                        'dc_endereco_eletronico_ede'      => $emails[$i]->email
+                    ]);
+
+                }
+            }
 
             $identificacao = (Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ)->first();
 

@@ -54,6 +54,7 @@ class LoginController extends Controller
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
             Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
             return redirect()->intended('home');
         }
 

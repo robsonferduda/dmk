@@ -42,7 +42,31 @@
     
         <aside id="left-panel">
             <div class="login-info">
-                
+                <span> 
+                    @role('correspondente') 
+                        <a href="{{ url("correspondente/perfil/".Auth::user()->cd_entidade_ete) }}">
+                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                            @else
+                                <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                            @endif
+                            <span>
+                                {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                            </span>
+                        </a> 
+                    @else
+                        <a href="{{ url("usuarios/".Auth::user()->id) }}">
+                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                            @else
+                                <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                            @endif
+                            <span>
+                                {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                            </span>
+                        </a> 
+                    @endrole                    
+                </span>
             </div>
             <nav>
                 <ul>
