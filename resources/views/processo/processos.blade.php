@@ -77,7 +77,7 @@
 
 
                                     <tr style="background-color: {{ $cor }}; font-weight: bold;">                                    
-                                         <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.$processo->cd_processo_pro) }}" >{{ $processo->nu_processo_pro }}</a></td>
+                                         <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a></td>
                                         <td>
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->estado->sg_estado_est.' - '.$processo->cidade->nm_cidade_cde : '' }}
                                         </td>
