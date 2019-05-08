@@ -118,9 +118,9 @@
                     </li>
                     @endrole
                     @role('administrator') 
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'usuarios') ? 'open' : '' }}">
+                        <a href="#" title="Usuários" class="item_pai" id="usuarios"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'usuarios') ? 'display: block;' : 'display: none;' }}">
                             <li>
                                 <a href="{{ url('usuarios/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
@@ -131,9 +131,9 @@
                     </li>
                     @endrole
                     @role('administrator') 
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
+                        <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                             <li>
                                 <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                             </li>
@@ -147,9 +147,9 @@
                     </li>
                     @endrole
                     @role('administrator') 
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'financeiro') ? 'open' : '' }}">
+                        <a href="#" title="Financeiro" class="item_pai" id="financeiro"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
                             <li>
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
@@ -157,9 +157,9 @@
                     </li>
                     @endrole
                     @role('administrator') 
-                    <li>
-                        <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
-                        <ul>
+                    <li class="menu {{ (Session::get('menu_pai') == 'despesas') ? 'open' : '' }}">
+                        <a href="#" title="Despesas"  class="item_pai" id="despesas"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'despesas') ? 'display: block;' : 'display: none;' }}">
                             <li>
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>

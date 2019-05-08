@@ -11,7 +11,7 @@ $(document).ready(function() {
         $(".item_pai").click(function(){
 
             var titulo = $(this).attr("id");
-            $.get(webFolderFullPath+"/public/configuracao/menu/"+titulo, function(data) {
+            $.get(webFolderFullPath+"/configuracao/menu/"+titulo, function(data) {
                 console.log(data);
             });
 
