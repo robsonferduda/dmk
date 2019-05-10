@@ -9,6 +9,7 @@
         "barryvdh/laravel-debugbar": "^3.2",
         "bensampo/laravel-enum": "^1.16",
         "doctrine/dbal": "^2.9",
+        "farhanwazir/laravelgooglemaps": "dev-master",
         "fideloper/proxy": "^4.0",
         "kodeine/laravel-acl": "~1.0@dev",
         "laracasts/flash": "^3.0",

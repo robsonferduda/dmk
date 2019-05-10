@@ -485,7 +485,13 @@ class ProcessoController extends Controller
 
     public function novo(){
 
-        $estados       = Estado::orderBy('nm_estado_est')->get();
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        }else{
+            $estados =  \Cache::get('estados');
+        }
+        
         $varas         = Vara::orderBy('nm_vara_var')->get();  
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
        
@@ -496,8 +502,14 @@ class ProcessoController extends Controller
     public function editar($id){
 
         $id = \Crypt::decrypt($id); 
+        
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        }else{
+            $estados =  \Cache::get('estados');
+        }
 
-        $estados       = Estado::orderBy('nm_estado_est')->get();
         $varas         = Vara::orderBy('nm_vara_var')->get();  
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
 

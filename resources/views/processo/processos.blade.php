@@ -51,10 +51,10 @@
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead style="font-size: 7px">                         
-                                <tr>                                    
+                                <tr>                   
+                                    <th style="width:19%">Prazo Fatal</th>                    
                                     <th style="width: 14%;">Nº Processo</th>
-                                    <th style="width: 12%;">Cidade</th>
-                                    <th style="width:19%">Datas</th>                                   
+                                    <th style="width: 12%;">Cidade</th>                                                  
                                     <th style="width: 10%;">Tipo de Serviço</th>
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
@@ -76,15 +76,17 @@
                                     @endphp
 
 
-                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">                                    
-                                         <td data-id="{{ $processo->cd_processo_pro }}" ><a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a></td>
+                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">        
                                         <td>
-                                            {{ (!empty($processo->cidade)) ? $processo->cidade->estado->sg_estado_est.' - '.$processo->cidade->nm_cidade_cde : '' }}
+                                            {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
+                                        </td>                                       
+                                        <td data-id="{{ $processo->cd_processo_pro }}" >
+                                            <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
                                         <td>
-                                            Prazo Fatal: {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }} <br />
-                                            Solicitação: {{ date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) }}
-                                        </td>                                
+                                            {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
+                                        </td>
+                                                                   
                                        
                                          <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
                                         <td>
