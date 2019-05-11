@@ -22,8 +22,6 @@ Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
 
-	Route::get('googlemap', 'MapController@map');
-
 	Route::get('permissao/teste','PermissaoController@index');
 
 	Route::get('image-crop', 'ImageController@imageCrop');
