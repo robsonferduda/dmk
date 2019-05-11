@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <select name="cd_tipo_processo_tpo" class="form-control">
                             <option value="">Tipos de Processo</option>
-                            @foreach(\App\TipoProcesso::all() as $tipo)
+                            @foreach($tiposProcesso as $tipo)
                                 <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
                             @endforeach
                         </select>
