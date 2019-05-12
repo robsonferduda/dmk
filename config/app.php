@@ -148,6 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Kodeine\Acl\AclServiceProvider::class,
+       
 
         /*
          * Package Service Providers...
@@ -217,7 +218,7 @@ return [
         'TipoEntidade' => App\Enums\TipoEntidade::class,
         'TipoIdentificacao' => App\Enums\TipoIdentificacao::class,
         'TipoFone' => App\Enums\TipoFone::class,
-        'TipoContato' => App\Enums\TipoContato::class
+        'TipoContato' => App\Enums\TipoContato::class,
 
     ],
 

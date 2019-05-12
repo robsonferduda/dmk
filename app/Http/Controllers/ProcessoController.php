@@ -34,23 +34,36 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $processos = Processo::with(array('correspondente' => function($query){
-            $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
-        }))->with(array('cidade' => function($query){
-            $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
-            $query->with(array('estado' => function($query){
-                $query->select('sg_estado_est','cd_estado_est');
-            }));
-        }))->with(array('honorario' => function($query){
-            $query->select('cd_processo_pro','cd_tipo_servico_tse');
-            $query->with(array('tipoServico' => function($query){
-                $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
-            }));
-        }))->with(array('cliente' => function($query){
-            $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro')->get();
+        if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso');
 
-        return view('processo/processos',['processos' => $processos]);
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+       
+        $processos = Processo::with(array('correspondente' => function($query){
+              $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+        }))->with(array('cidade' => function($query){
+              $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
+              $query->with(array('estado' => function($query){
+                  $query->select('sg_estado_est','cd_estado_est');
+        }));
+        }))->with(array('honorario' => function($query){
+              $query->select('cd_processo_pro','cd_tipo_servico_tse');
+              $query->with(array('tipoServico' => function($query){
+                  $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
+        }));
+        }))->with(array('cliente' => function($query){
+              $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro')->get();          
+
+        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso]);
     }
 
      public function acompanhar()
@@ -485,7 +498,13 @@ class ProcessoController extends Controller
 
     public function novo(){
 
-        $estados       = Estado::orderBy('nm_estado_est')->get();
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        }else{
+            $estados =  \Cache::get('estados');
+        }
+        
         $varas         = Vara::orderBy('nm_vara_var')->get();  
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
        
@@ -496,8 +515,14 @@ class ProcessoController extends Controller
     public function editar($id){
 
         $id = \Crypt::decrypt($id); 
+        
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        }else{
+            $estados =  \Cache::get('estados');
+        }
 
-        $estados       = Estado::orderBy('nm_estado_est')->get();
         $varas         = Vara::orderBy('nm_vara_var')->get();  
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
 

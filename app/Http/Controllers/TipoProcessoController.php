@@ -36,6 +36,9 @@ class TipoProcessoController extends Controller
 
     public function store(TipoProcessoRequest $request)
     {
+
+        \Cache::tags($this->cdContaCon,'listaTiposProcesso')->flush();
+
         $tipo = new TipoProcesso();
   
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
@@ -53,6 +56,9 @@ class TipoProcessoController extends Controller
 
     public function update(Request $request,$id)
     {
+
+        \Cache::tags($this->cdContaCon,'listaTiposProcesso')->flush();
+
         $tipo = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
         if(isset($request->fl_honorario_tse)){
@@ -81,6 +87,9 @@ class TipoProcessoController extends Controller
 
     public function destroy($id)
     {
+
+        \Cache::tags($this->cdContaCon,'listaTiposProcesso')->flush();
+
         $tipo = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
         
         if($tipo->delete())
