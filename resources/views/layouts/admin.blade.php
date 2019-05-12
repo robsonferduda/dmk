@@ -75,6 +75,11 @@
                             <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
                         </li>              
                     @endrole
+                    @role('administrator|colaborador')    
+                        <li class="">
+                            <a href="{{ url('contatos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent">Agenda</span></a>
+                        </li>              
+                    @endrole
                     @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
@@ -94,9 +99,6 @@
                             </li>
                             <li>
                                 <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('contatos') }}" title="Agenda"><span class="menu-item-parent">Agenda</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -402,25 +404,6 @@
                 });
             }
             reader.readAsDataURL(this.files[0]);
-        });
-
-
-        $('.upload-result').on('click', function (ev) {
-            $uploadCrop.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (resp) {
-                $.ajax({
-                    url: "/dmk/public/image-crop",
-                    type: "POST",
-                    data: {"image":resp},
-                    success: function (data) {
-                        html = '<img src="' + resp + '" />';
-                        $("#upload-demo-i").html(html);
-                    }
-                });
-            });
-            location.reload();
         });
         
         $(document).ready(function() {
