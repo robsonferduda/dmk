@@ -50,19 +50,20 @@
                 <div>
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead style="font-size: 7px">                         
-                                <tr>                   
-                                    <th style="width:14%">Prazo Fatal</th>                    
-                                    <th style="width: 19%;">Nº Processo</th>
+                            <thead>                         
+                                <tr style="font-size: 11px">                   
+                                    <th style="width:11%">Prazo Fatal</th>                    
+                                    <th style="width: 13%;">Nº Processo</th>
                                     <th style="width: 12%;">Cidade</th>                                                  
-                                    <th style="width: 10%;">Tipo de Serviço</th>
+                                    <th style="width: 11%;">Tipo de Serviço</th>
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
+                                    <th style="width: 11%;">Parte Adversa</th>
                                    
-                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 14%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="font-size: 11px">
                                 @foreach($processos as $processo)
                                     @php $cor = ''; 
 
@@ -107,6 +108,7 @@
                                                 <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
                                             @endif
                                         </td>
+                                        <td>{{ $processo->nm_autor_pro }}</td>
                                       
                                         <td>
                                             <div>
