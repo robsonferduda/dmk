@@ -585,7 +585,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas-honorarios/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -632,7 +632,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas-honorarios/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -696,7 +696,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas-honorarios/"+processo
             },
 		   	error: function(response)
 		   	{

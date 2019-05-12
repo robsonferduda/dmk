@@ -3,20 +3,20 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="#">Usuários</a></li>
-        <li>Novo</li>
+        <li><a href="#">Processos</a></li>
+        <li>Editar</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-file-text-o la-lg"></i> Processos <span>> Novo</span>
+                <i class="fa-fw fa fa-file-text-o la-lg"></i> Processos <span>> Editar</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
             <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info fa-lg"></i>Relatório</a>
-             <a title="Finanças" class="btn btn-warning pull-right header-btn" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Finanças</a>
+             <a title="Despesas e Honorários" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas-honorarios/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas e Honorários</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>               
             <a data-toggle="modal" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Detalhes</a>     
@@ -236,7 +236,64 @@
                             </fieldset>
                         </div>
 
+                {{---        <div class="col col-sm-12">
+                            <header>
+                                <i class="fa fa-money"></i> Honorários
+                            </header>
+                            <br />
+                            <fieldset style="padding-top: 0px">
+                                <div class="row"> 
+                                    <section class="col col-sm-12">
+                                        
+                                                <div class="alert alert-info" role="alert">
+                                                    <i class="fa-fw fa fa-info"></i>
+                                                    <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                                </div>
+                                                <div class="tabelah">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <th style="width: 50%">Tipos de Serviços</th>
+                                                            <th style="">Valor Cliente</th>
+                                                            <th style="">Valor Correspondente</th>
+                                                        </thead>
+                                                        <tbody>  
+                                                            <tr>  
+                                                                <td>                                       
+                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
+                                                                        <option selected value="">Selecione um tipo de serviço
+                                                                        </option>  
+                                                                        @foreach($tiposDeServico as $tipoDeServico)
+                                                                        <option value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon">$</span>
+                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="">
+                                                                        </div>
+                                                                        </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ ( !empty($honorariosProcesso->vl_taxa_honorario_correspondente_pth)) ? $honorariosProcesso->vl_taxa_honorario_correspondente_pth : '' }}">
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+                                                           
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                     </section> 
+                                </div>
+                            </fieldset>
+                        </div>--}}
                     </div>
+                     
                      
                           
                         <footer>

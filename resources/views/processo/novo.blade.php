@@ -9,10 +9,13 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o la-lg"></i> Processos <span>> Novo</span>
             </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+         <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
         </div>
     </div>
     <div class="row">
@@ -71,7 +74,7 @@
                                             <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli')}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli')}}" class="form-control ui-autocomplete-input" placeholder="Cliente..." type="text" id="client" autocomplete="off">
+                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli')}}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -134,11 +137,12 @@
                                             </select> 
                                         </section>  
                                     </div>         
-                                     <div class="row">                        
+                                     <div class="row">    
+                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor')}}">           
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="Correspondente..." type="text">
+                                                <input class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}">
                                             </label>
                                         </section>
                                         
@@ -226,8 +230,65 @@
                                 </div>
                             </fieldset>
                         </div>
+                {{--       <div class="col col-sm-12">
+                            <header>
+                                <i class="fa fa-money"></i> Honorários
+                            </header>
+                            <br />
+                            <fieldset style="padding-top: 0px">
+                                <div class="row"> 
+                                    <section class="col col-sm-12">
+                                        
+                                                <div class="alert alert-info" role="alert">
+                                                    <i class="fa-fw fa fa-info"></i>
+                                                    <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                                </div>
+                                                <div class="tabelah">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <th style="width: 50%">Tipos de Serviços</th>
+                                                            <th style="">Valor Cliente</th>
+                                                            <th style="">Valor Correspondente</th>
+                                                        </thead>
+                                                        <tbody>  
+                                                            <tr>  
+                                                                <td>                                       
+                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" disabled>
+                                                                        <option selected value="">Selecione um tipo de serviço
+                                                                        </option>      
+                                                                        @foreach($tiposDeServico as $tipoDeServico)
+                                                                            <option data-cliente="" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
+                                                                            </option>  
+                                                                        @endforeach                 
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon">$</span>
+                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="" disabled>
+                                                                        </div>
+                                                                        </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="" disabled>
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+                                                           
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                     </section> 
+                                </div>
+                            </fieldset>
+                        </div>--}}
 
-                    </div>
+                    </div> 
                      
                           
                         <footer>
@@ -254,7 +315,28 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var path = "{{ url('autocompleteCliente') }}";
-        
+        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+
+        $( "#correspondente_auto_complete" ).autocomplete({
+          source: pathCorrespondente,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_correspondente_cor']").val(ui.item.id);
+
+          },
+          open: function(event, ui){
+            
+          }
+        });
+
+        $( "#correspondente_auto_complete" ).focusout(function(){
+           if($("input[name='cd_correspondente_cor']").val() == ''){
+                $("#correspondente_auto_complete").val('');
+           }
+        });
+
+
         $( "#client" ).focusout(function(){
            if($("input[name='cd_cliente_cli']").val() == ''){
                 $("#client").val('');
@@ -269,7 +351,7 @@
             $("input[name='cd_cliente_cli']").val(ui.item.id);
 
             buscaAdvogado();
-            
+        
           },
           open: function(event, ui){
             

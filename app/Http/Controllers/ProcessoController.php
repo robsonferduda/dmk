@@ -166,7 +166,7 @@ class ProcessoController extends Controller
                 if(!$valor->saveOrFail()){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
+                    return redirect('processos/despesas-honorarios/'.$processo_id);    
                 }
 
             }else{
@@ -182,7 +182,7 @@ class ProcessoController extends Controller
                 if(!$valor){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
+                    return redirect('processos/despesas-honorarios/'.$processo_id);    
                 }
             }       
 
@@ -191,7 +191,7 @@ class ProcessoController extends Controller
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.$processo_id);      
+        return redirect('processos/despesas-honorarios/'.$processo_id);      
 
 
     }*/
@@ -245,7 +245,7 @@ class ProcessoController extends Controller
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));    
             }
 
         }else{
@@ -261,14 +261,14 @@ class ProcessoController extends Controller
             if(!$valor){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));    
             }
         }       
 
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));      
+        return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));      
 
 
     }
@@ -313,7 +313,7 @@ class ProcessoController extends Controller
                 if(!$valor->saveOrFail()){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                    return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));    
                 }
 
             }else{
@@ -330,7 +330,7 @@ class ProcessoController extends Controller
                 if(!$valor){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                    return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));    
                 }
             }            
         }
@@ -339,7 +339,7 @@ class ProcessoController extends Controller
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));       
+        return redirect('processos/despesas-honorarios/'.\Crypt::encrypt($processo_id));       
 
     }
 
@@ -353,7 +353,10 @@ class ProcessoController extends Controller
                     ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
                     ->leftjoin('conta_con','processo_pro.cd_correspondente_cor', '=', 'conta_con.cd_conta_con')
                     ->leftjoin('entidade_ete','conta_con.cd_conta_con', '=', 'entidade_ete.cd_conta_con')
-                    ->join('tipo_despesa_tds','processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con')
+                    ->join('tipo_despesa_tds', function($join){
+                        $join->on('processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con');
+                        $join->where('fl_reembolso_tds','S');
+                    })
                     ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_correspondente', function($join){
                                $join->on('entidade_ete.cd_entidade_ete', '=', 'reembolso_correspondente.cd_entidade_ete');
                                $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_correspondente.cd_tipo_despesa_tds');
@@ -570,8 +573,11 @@ class ProcessoController extends Controller
             'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
         ]);
 
-        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
-        $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        if(!empty($request->dt_solicitacao_pro))
+            $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
+        if(!empty($request->dt_prazo_fatal_pro))
+            $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
         if($entidade){
@@ -606,8 +612,11 @@ class ProcessoController extends Controller
         
         DB::beginTransaction();
 
-        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
-        $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        if(!empty($request->dt_solicitacao_pro))
+            $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
+        
+        if(!empty($request->dt_prazo_fatal_pro))
+            $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
     
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
         $processo->fill($request->all());

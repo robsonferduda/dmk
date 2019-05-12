@@ -11,7 +11,8 @@ class Conta extends Model
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
     protected $fillable = [
-    						'nm_razao_social_con'
+    						'nm_razao_social_con',
+                            'fl_despesa_nao_reembolsavel_con'
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];

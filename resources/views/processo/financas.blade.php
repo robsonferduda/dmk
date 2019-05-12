@@ -9,12 +9,12 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Processos <span>> Finanças </span>
+                <i class="fa-fw fa fa-group"></i> Processos <span>> Despesas e Honorários </span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
             <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-info fa-lg"></i>Relatório</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
