@@ -75,9 +75,9 @@
                             <thead>                         
                                 <tr>    
                                     <th style="width: 15%;">CPF/CNPJ</th>                                
-                                    <th style="width: 45%;">Nome</th>
-                                    <th style="width: 15%;" class="center">Email</th>                                  
-                                    <th style="width: 25%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 50%;">Nome</th>
+                                    <th style="width: 20%;" class="center">Email</th>                                  
+                                    <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,14 +86,14 @@
                                         <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf->nu_identificacao_ide : "Não informado" }}</td>
                                         <td>{{ $correspondente->correspondente->nm_razao_social_con }}</td>
                                         <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
-                                        <td>
-                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
+                                        <td class="center">
+                                            <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
 
                                             <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
                                             <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
-                                            <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-times"></i> </button> 
+                                            <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
                                         </td>
                                     </tr>
                                 @endforeach                                                           

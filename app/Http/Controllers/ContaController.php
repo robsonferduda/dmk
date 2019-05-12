@@ -12,9 +12,11 @@ use App\Estado;
 use App\Entidade;
 use App\TipoFone;
 use App\Enums\Nivel;
+use App\Enums\Roles;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContaRequest;
+use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Support\Facades\Session;
 
 class ContaController extends Controller
@@ -90,6 +92,9 @@ class ContaController extends Controller
                     $user->email = $email;
                     $user->password = Hash::make($senha);
                     $user->save();
+
+                    $role = Role::find(Roles::ADMINISTRADOR);
+                    $user->assignRole($role);
 
                     Auth::login($user);
                 }

@@ -1,7 +1,11 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/";
-	var pathnameX = window.location.origin+"/dmk/public/";
+	var _location = document.location.toString();
+    var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+    var applicationName = _location.substring(0, applicationNameIndex) + '/';
+    var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
+    var pathname = _location.substring(0, webFolderIndex);
+    var pathnameX = _location.substring(0, webFolderIndex);
 
 
 	/** ======================== Masks ========================   **/
@@ -21,6 +25,24 @@ $(document).ready(function() {
 	
 
 	/** =======================================================   **/
+
+	$('.upload-result').on('click', function (ev) {
+            $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                $.ajax({
+                    url: pathname+"/image-crop",
+                    type: "POST",
+                    data: {"image":resp},
+                    success: function (data) {
+                        html = '<img src="' + resp + '" />';
+                        $("#upload-demo-i").html(html);
+                    }
+                });
+            });
+            location.reload();
+        });
 
 	if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
 	    $(".label-tipo-pessoa").html('Nome');
