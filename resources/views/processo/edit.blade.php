@@ -365,13 +365,16 @@
    
         $('#tipoServico').change(function(){
 
+            $("#taxa-honorario-cliente").val('');  
+            $("#taxa-honorario-correspondente").val('');   
+            
             var cliente = $("input[name='cd_cliente_cli']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
             var tipoServico = $(this).val();
             if(cliente != '' && cidade != '' && tipoServico != ''){
                 $.ajax({
                         
-                        url: '../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
+                        url: '../../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
                         type: 'GET',
                         dataType: 'JSON',
                         beforeSend: function(){
@@ -399,7 +402,7 @@
                 
                 $.ajax({
                         
-                        url: '../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
+                        url: '../../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
                         type: 'GET',
                         dataType: 'JSON',
                         beforeSend: function(){
