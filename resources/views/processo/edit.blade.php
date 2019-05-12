@@ -16,7 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
             <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info fa-lg"></i>Relatório</a>
-             <a title="Despesas e Honorários" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas-honorarios/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas e Honorários</a>
+             <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>               
             <a data-toggle="modal" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Detalhes</a>     
@@ -235,8 +235,7 @@
                                 </div>
                             </fieldset>
                         </div>
-
-                {{---        <div class="col col-sm-12">
+                        <div class="col col-sm-12">
                             <header>
                                 <i class="fa fa-money"></i> Honorários
                             </header>
@@ -261,17 +260,19 @@
                                                                 <td>                                       
                                                                     <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
                                                                         <option selected value="">Selecione um tipo de serviço
-                                                                        </option>  
+                                                                        </option>      
+
                                                                         @foreach($tiposDeServico as $tipoDeServico)
-                                                                        <option value="{{$tipoDeServico->cd_tipo_servico_tse}}">{{$tipoDeServico->nm_tipo_servico_tse}}</option>  
-                                                                        @endforeach
+                                                                            <option {{ (old('cd_tipo_servico_tse') ? old('cd_tipo_servico_tse') :  (!empty($processoTaxaHonorario->cd_tipo_servico_tse) && $processoTaxaHonorario->cd_tipo_servico_tse == $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '') }} value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
+                                                                            </option>  
+                                                                        @endforeach                 
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="">
+                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="{{ old('taxa_honorario_cliente',(!empty($processoTaxaHonorario->vl_taxa_honorario_cliente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_cliente_pth : '')}}" >
                                                                         </div>
                                                                         </div>
                                                                 </td>
@@ -279,7 +280,7 @@
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                     <div class="input-group">
                                                                         <span class="input-group-addon">$</span>
-                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ ( !empty($honorariosProcesso->vl_taxa_honorario_correspondente_pth)) ? $honorariosProcesso->vl_taxa_honorario_correspondente_pth : '' }}">
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ old('taxa_honorario_correspondente',(!empty($processoTaxaHonorario->vl_taxa_honorario_correspondente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth : '')}}" >
                                                                     </div>
                                                                     </div>
                                                                 </td>
@@ -291,7 +292,7 @@
                                      </section> 
                                 </div>
                             </fieldset>
-                        </div>--}}
+                        </div>
                     </div>
                      
                      
@@ -362,7 +363,68 @@
           }
         });
    
-        
+        $('#tipoServico').change(function(){
+
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            var tipoServico = $(this).val();
+            if(cliente != '' && cidade != '' && tipoServico != ''){
+                $.ajax({
+                        
+                        url: '../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        beforeSend: function(){
+                            // $('#cidade').empty();
+                            // $('#cidade').append('<option selected value="">Carregando...</option>');
+                            // $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                 
+                            if(response){
+                                var response = JSON.parse(response);  
+                                $("#taxa-honorario-cliente").val(response.nu_taxa_the);       
+                            }
+                        },
+                        error: function(response)
+                        {
+                                //console.log(response);
+                        }
+                });
+            }
+
+            var correspondente = $("input[name='cd_correspondente_cor']").val();
+            if(correspondente != '' && cidade != '' && tipoServico != ''){
+                
+                $.ajax({
+                        
+                        url: '../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        beforeSend: function(){
+                            // $('#cidade').empty();
+                            // $('#cidade').append('<option selected value="">Carregando...</option>');
+                            // $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                 
+                            if(response){
+                                var response = JSON.parse(response);  
+                                $("#taxa-honorario-correspondente").val(response.nu_taxa_the);       
+                            }
+                        },
+                        error: function(response)
+                        {
+                                //console.log(response);
+                        }
+                });         
+            }
+
+
+        });
+
         var buscaAdvogado = function(){
 
             var cliente = $("input[name='cd_cliente_cli']").val();

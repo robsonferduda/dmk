@@ -40,6 +40,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
 	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
+	Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCliente');
+	Route::get('busca-valor-correspondente/{correspondente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCorrespondente');
 	Route::resource('clientes','ClienteController');
 
 	Route::get('autocompleteCliente','ClienteController@search');
@@ -47,7 +49,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/novo','ProcessoController@novo');
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
-	Route::get('processos/despesas-honorarios/{id}','ProcessoController@financas');
+	Route::get('processos/despesas/{id}','ProcessoController@financas');
 	Route::post('processo/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::get('processos/buscar','ProcessoController@buscar');

@@ -230,7 +230,7 @@
                                 </div>
                             </fieldset>
                         </div>
-                {{--       <div class="col col-sm-12">
+                        <div class="col col-sm-12">
                             <header>
                                 <i class="fa fa-money"></i> Honorários
                             </header>
@@ -253,11 +253,11 @@
                                                         <tbody>  
                                                             <tr>  
                                                                 <td>                                       
-                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" disabled>
+                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
                                                                         <option selected value="">Selecione um tipo de serviço
                                                                         </option>      
                                                                         @foreach($tiposDeServico as $tipoDeServico)
-                                                                            <option data-cliente="" data-correspondente="" value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
+                                                                            <option  value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
                                                                             </option>  
                                                                         @endforeach                 
                                                                     </select>
@@ -266,7 +266,7 @@
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="" disabled>
+                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="" >
                                                                         </div>
                                                                         </div>
                                                                 </td>
@@ -274,7 +274,7 @@
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                     <div class="input-group">
                                                                         <span class="input-group-addon">$</span>
-                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="" disabled>
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="" >
                                                                     </div>
                                                                     </div>
                                                                 </td>
@@ -286,7 +286,7 @@
                                      </section> 
                                 </div>
                             </fieldset>
-                        </div>--}}
+                        </div>
 
                     </div> 
                      
@@ -358,6 +358,67 @@
           }
         });
    
+        $('#tipoServico').change(function(){
+
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            var tipoServico = $(this).val();
+            if(cliente != '' && cidade != '' && tipoServico != ''){
+                $.ajax({
+                        
+                        url: '../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        beforeSend: function(){
+                            // $('#cidade').empty();
+                            // $('#cidade').append('<option selected value="">Carregando...</option>');
+                            // $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                 
+                            if(response){
+                                var response = JSON.parse(response);  
+                                $("#taxa-honorario-cliente").val(response.nu_taxa_the);       
+                            }
+                        },
+                        error: function(response)
+                        {
+                                //console.log(response);
+                        }
+                });
+            }
+
+            var correspondente = $("input[name='cd_correspondente_cor']").val();
+            if(correspondente != '' && cidade != '' && tipoServico != ''){
+                
+                $.ajax({
+                        
+                        url: '../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        beforeSend: function(){
+                            // $('#cidade').empty();
+                            // $('#cidade').append('<option selected value="">Carregando...</option>');
+                            // $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                 
+                            if(response){
+                                var response = JSON.parse(response);  
+                                $("#taxa-honorario-correspondente").val(response.nu_taxa_the);       
+                            }
+                        },
+                        error: function(response)
+                        {
+                                //console.log(response);
+                        }
+                });         
+            }
+
+
+        });
         
         var buscaAdvogado = function(){
 
