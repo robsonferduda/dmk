@@ -299,9 +299,9 @@
                         $.each(response,function(index,element){
 
                             if($("#contatoAux").val() != element.cd_contato_cot){
-                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');                            
+                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+' ( '+element.tipo_contato.nm_tipo_contato_tct+' )'+'</option>');                            
                             }else{
-                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');      
+                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+' ( '+element.tipo_contato.nm_tipo_contato_tct+' )'+'</option>');      
                             }
                                 
                             });       

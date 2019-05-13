@@ -59,6 +59,7 @@ Route::group(['middleware' => ['web']], function () {
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
+	Route::get('configuracoes/tipos-de-contato','TipoContatoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
 	Route::get('configuracoes/cargos','CargoController@index');
@@ -132,6 +133,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('grupo/cidade/{id}','GrupoCidadeController@cidades');
 
 	Route::resource('areas','AreaController');
+	Route::resource('tipos-de-contato','TipoContatoController');
 	Route::resource('tipos-de-servico','TipoServicoController');
 	Route::resource('tipos-de-processo','TipoProcessoController');
 	Route::resource('tipos-de-despesa','TipoDespesaController');

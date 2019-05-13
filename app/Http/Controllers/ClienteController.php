@@ -528,12 +528,12 @@ class ClienteController extends Controller
     public function buscaAdvogados($cliente){
         $conta = \Session::get('SESSION_CD_CONTA');
         $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
+        $contatos = Contato::with(['tipoContato' => function($query){
+            $query->select('nm_tipo_contato_tct','cd_tipo_contato_tct');
+        }])->where('cd_conta_con',$conta)
+          ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+          ->select('cd_contato_cot', 'nm_contato_cot','cd_tipo_contato_tct')->get()->toJson();
 
-        $contatos = Contato::where('cd_conta_con',$conta)
-                           ->where('cd_tipo_contato_tct', \TipoContato::ADVOGADO)
-                           ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
-                           ->get();
-
-        echo json_encode($contatos);
+        echo $contatos;
     }
 }

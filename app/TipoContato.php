@@ -14,7 +14,8 @@ class TipoContato extends Model
     protected $primaryKey = 'cd_tipo_contato_tct';
     protected $dates = ['deleted_at'];
     protected $fillable = [
-    						'nm_tipo_contato_tct'
+    						'nm_tipo_contato_tct',
+    						'cd_conta_con'
     					  ];
 
     public $timestamps = true;
