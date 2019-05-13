@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <select name="cd_tipo_processo_tpo" class="form-control">
                             <option value="">Tipos de Processo</option>
-                            @foreach(\App\TipoProcesso::all() as $tipo)
+                            @foreach($tiposProcesso as $tipo)
                                 <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
                             @endforeach
                         </select>
@@ -50,35 +50,46 @@
                 <div>
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead style="font-size: 7px">                         
-                                <tr>                   
-                                    <th style="width:19%">Prazo Fatal</th>                    
-                                    <th style="width: 14%;">Nº Processo</th>
+                            <thead>                         
+                                <tr style="font-size: 11px">                   
+                                    <th style="width:11%">Prazo Fatal</th>                    
+                                    <th style="width: 13%;">Nº Processo</th>
                                     <th style="width: 12%;">Cidade</th>                                                  
-                                    <th style="width: 10%;">Tipo de Serviço</th>
+                                    <th style="width: 11%;">Tipo de Serviço</th>
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
+                                    <th style="width: 11%;">Parte Adversa</th>
                                    
-                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 14%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="font-size: 11px">
                                 @foreach($processos as $processo)
                                     @php $cor = ''; 
-                                        if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
-                                            $cor = "#f2cf59";   
-                                        if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
-                                            $cor = "#8ec9bb";
-                                        if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro)){  
-                                            $cor = "#fb8e7e";                                         
-                                        }
 
+                                        if(!empty($processo->dt_prazo_fatal_pro)){
+
+                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
+                                                $cor = "#f2cf59";   
+
+                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
+                                                $cor = "#8ec9bb";
+
+                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
+                                                $cor = "#fb8e7e";                                         
+                                            
+                                        }else{
+                                            $cor = "#ffffff"; 
+                                        }
+                                        
                                     @endphp
 
 
                                     <tr style="background-color: {{ $cor }}; font-weight: bold;">        
                                         <td>
-                                            {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
+                                            @if(!empty($processo->dt_prazo_fatal_pro))
+                                                {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
+                                            @endif
                                         </td>                                       
                                         <td data-id="{{ $processo->cd_processo_pro }}" >
                                             <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
@@ -97,17 +108,18 @@
                                                 <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
                                             @endif
                                         </td>
+                                        <td>{{ $processo->nm_autor_pro }}</td>
                                       
                                         <td>
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
                                                     <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                                     <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
-                                                    <a title="Finanças" class="btn btn-warning btn-xs" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
+                                                    <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
                                                     <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info"></i></a>
                                                 </div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/financas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
+                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
                                                     <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
                                                     <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                                 </div>    

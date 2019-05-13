@@ -1,7 +1,11 @@
 $(document).ready(function() {
 
-	var pathname = window.location.origin+"/";
-	var pathnameX = window.location.origin+"/dmk/public/";
+	var _location = document.location.toString();
+    var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+    var applicationName = _location.substring(0, applicationNameIndex) + '/';
+    var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
+    var pathname = _location.substring(0, webFolderIndex);
+    var pathnameX = _location.substring(0, webFolderIndex);
 
 
 	/** ======================== Masks ========================   **/
@@ -21,6 +25,24 @@ $(document).ready(function() {
 	
 
 	/** =======================================================   **/
+
+	$('.upload-result').on('click', function (ev) {
+            $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                $.ajax({
+                    url: pathname+"/image-crop",
+                    type: "POST",
+                    data: {"image":resp},
+                    success: function (data) {
+                        html = '<img src="' + resp + '" />';
+                        $("#upload-demo-i").html(html);
+                    }
+                });
+            });
+            location.reload();
+        });
 
 	if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
 	    $(".label-tipo-pessoa").html('Nome');
@@ -575,10 +597,10 @@ $(document).ready(function() {
 		$("#nu_fone_fon").focus();
 	});
 
-	$('#tipoServico').change(function(){
-		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
-		$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
-	});
+	// $('#tipoServico').change(function(){
+	// 	$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+	// 	$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
+	// });
 
 	$('.btn_sigla').click(function(){ $("#processamento").modal('show'); });
 
@@ -607,7 +629,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -654,7 +676,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -718,7 +740,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{

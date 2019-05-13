@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="col-md-3 text-center">
                     <div>
-                        @if(file_exists('img/users/ent'.$usuario->cd_entidade_ete.'.png')) 
+                        @if(file_exists('public/img/users/ent'.$usuario->cd_entidade_ete.'.png')) 
                             <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.$usuario->cd_entidade_ete.'.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>
                         @else
                             <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>

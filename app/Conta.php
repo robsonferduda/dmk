@@ -11,7 +11,8 @@ class Conta extends Model
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
     protected $fillable = [
-    						'nm_razao_social_con'
+    						'nm_razao_social_con',
+                            'fl_despesa_nao_reembolsavel_con'
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
@@ -29,5 +30,10 @@ class Conta extends Model
     public function fone()
     {
         return $this->hasOne('App\Fone','cd_conta_con', 'cd_conta_con');
+    }
+
+    public function processo()
+    {
+        return $this->hasMany('App\Processo','cd_conta_con','cd_conta_con');
     }
 }

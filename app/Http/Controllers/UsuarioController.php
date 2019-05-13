@@ -135,8 +135,9 @@ class UsuarioController extends Controller
 
     public function show($id)
     {
-        $usuario = User::findOrFail($id); 
-        return view('usuario/perfil', ['usuario' => $usuario]);  
+        
+        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
+        return view('usuario/detalhes', ['usuario' => $usuario]);  
     }
 
     public function store(UsuarioRequest $request)

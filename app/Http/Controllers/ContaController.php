@@ -12,9 +12,11 @@ use App\Estado;
 use App\Entidade;
 use App\TipoFone;
 use App\Enums\Nivel;
+use App\Enums\Roles;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContaRequest;
+use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Support\Facades\Session;
 
 class ContaController extends Controller
@@ -37,7 +39,7 @@ class ContaController extends Controller
             return redirect('erro-permissao');
         }
 
-        $conta     = Conta::where('cd_conta_con',$id)->first();
+        $conta     = Conta::with('entidade','tipoPessoa')->where('cd_conta_con',$id)->first();
         $usuarios  = User::where('cd_conta_con',$id)->get();
 
         return view('conta/detalhes',['conta' => $conta, 'usuarios' => $usuarios]);
@@ -46,6 +48,8 @@ class ContaController extends Controller
 
     public function editar($id)
     {
+        $id = \Crypt::decrypt($id);
+        
         //Verifica se o usuário logado é o mesmo que requisitou os dados
         if(Auth::user()->cd_conta_con != $id){ 
             return redirect('erro-permissao');
@@ -90,6 +94,9 @@ class ContaController extends Controller
                     $user->email = $email;
                     $user->password = Hash::make($senha);
                     $user->save();
+
+                    $role = Role::find(Roles::ADMINISTRADOR);
+                    $user->assignRole($role);
 
                     Auth::login($user);
                 }

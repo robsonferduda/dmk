@@ -148,7 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Kodeine\Acl\AclServiceProvider::class,
-        FarhanWazir\GoogleMaps\GMapsServiceProvider::class,
+       
 
         /*
          * Package Service Providers...

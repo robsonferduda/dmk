@@ -44,7 +44,7 @@
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                 <label class="label label-black" >Cidade</label>          
                                 <select id="cidade" name="cd_cidade_cde" class="select2">
-                                    <option selected value="">Selecione uma Cidade</option>
+                                    <option selected value="">Selecione uma cidade</option>
                                 </select> 
                             </section> 
                             <section class="col col-md-3">
@@ -74,26 +74,28 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>    
-                                    <th style="width: 15%;">CPF/CNPJ</th>                                
-                                    <th style="width: 45%;">Nome</th>
-                                    <th style="width: 15%;" class="center">Email</th>                                  
-                                    <th style="width: 25%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 15%;">CPF/CNPJ</th>    
+                                    <th style="width: 20%;">Comarca de Origem</th>                            
+                                    <th style="width: 30%;">Nome</th>
+                                    <th style="width: 20%;" class="center">Email</th>                                  
+                                    <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
-                                        <td>{{ ($correspondente->correspondente->entidade->cpf) ? $correspondente->correspondente->entidade->cpf->nu_identificacao_ide : "Não informado" }}</td>
-                                        <td>{{ $correspondente->correspondente->nm_razao_social_con }}</td>
-                                        <td>{{ ($correspondente->correspondente->usuario) ? $correspondente->correspondente->usuario->email: 'Não informado' }}</td>
-                                        <td>
-                                            <a title="Dados do Correspondente" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
+                                        <td>{{ ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : "Não informado" }}</td>
+                                        <td>{{ $correspondente->nm_razao_social_con }}</td>
+                                        <td>{{ $correspondente->nm_razao_social_con }}</td>
+                                        <td>{{ ($correspondente->entidade->usuario) ? $correspondente->entidade->usuario->email: 'Não informado' }}</td>
+                                        <td class="center">
+                                            <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
 
-                                            <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
+                                            <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
-                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
+                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
-                                            <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-times"></i> </button> 
+                                            <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->contaCorrespondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
                                         </td>
                                     </tr>
                                 @endforeach                                                           
@@ -113,6 +115,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        var _location = document.location.toString();
+        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+        var applicationName = _location.substring(0, applicationNameIndex) + '/';
+        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
+        var pathname = _location.substring(0, webFolderIndex);
+
         var buscaCidade = function(){
 
             estado = $("#estado").val();
@@ -121,7 +129,7 @@
 
                 $.ajax(
                     {
-                        url: '../public/cidades-por-estado/'+estado,
+                        url: pathname+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
@@ -133,7 +141,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

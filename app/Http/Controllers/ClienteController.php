@@ -32,9 +32,7 @@ class ClienteController extends Controller
 
     public function index()
     {
-        $clientes = Cliente::with('tipoPessoa')->take(10)->orderBy('created_at','DESC')->get();
-
-        //dd($clientes);
+        $clientes = Cliente::with('tipoPessoa')->where('cd_conta_con', $this->conta)->take(10)->orderBy('created_at','DESC')->get();
         return view('cliente/clientes',['clientes' => $clientes]);
     }
 

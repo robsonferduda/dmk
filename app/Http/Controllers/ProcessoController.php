@@ -7,12 +7,15 @@ use App\Entidade;
 use App\Vara;
 use App\Estado;
 use App\Cidade;
+use App\Cliente;
+use App\Correspondente;
 use App\TipoProcesso;
 use App\Processo;
 use App\ProcessoDespesa;
 use App\TipoDespesa;
 use App\TipoServico;
 use App\ProcessoTaxaHonorario;
+use App\TaxaHonorario;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -34,23 +37,36 @@ class ProcessoController extends Controller
     public function index()
     {
 
-        $processos = Processo::with(array('correspondente' => function($query){
-            $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
-        }))->with(array('cidade' => function($query){
-            $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
-            $query->with(array('estado' => function($query){
-                $query->select('sg_estado_est','cd_estado_est');
-            }));
-        }))->with(array('honorario' => function($query){
-            $query->select('cd_processo_pro','cd_tipo_servico_tse');
-            $query->with(array('tipoServico' => function($query){
-                $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
-            }));
-        }))->with(array('cliente' => function($query){
-            $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro')->get();
+        if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso');
 
-        return view('processo/processos',['processos' => $processos]);
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+       
+        $processos = Processo::with(array('correspondente' => function($query){
+              $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+        }))->with(array('cidade' => function($query){
+              $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
+              $query->with(array('estado' => function($query){
+                  $query->select('sg_estado_est','cd_estado_est');
+        }));
+        }))->with(array('honorario' => function($query){
+              $query->select('cd_processo_pro','cd_tipo_servico_tse');
+              $query->with(array('tipoServico' => function($query){
+                  $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
+        }));
+        }))->with(array('cliente' => function($query){
+              $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro')->get();          
+
+        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso]);
     }
 
      public function acompanhar()
@@ -120,70 +136,6 @@ class ProcessoController extends Controller
                                           'receita' => $receita]);
     }
 
-/*    public function salvarHonorarios(Request $request){
-
-        $processo_id = $request->processo;
-       
-        DB::beginTransaction();
-
-        $dados = json_decode($request->valores);
-
-        foreach ($dados as $dado) {
-
-            if(empty($dado->valor)){
-                $dado->valor = NULL;
-            }else{
-                $dado->valor = str_replace(",", ".", $dado->valor);
-            }
-
-            if($dado->entidade == 'cliente'){
-                $tipoEntidade = \TipoEntidade::CLIENTE;             
-            }else{
-                $tipoEntidade = \TipoEntidade::CORRESPONDENTE;
-            }
-
-            $valor = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
-                                      ->where('cd_processo_pro',$processo_id)
-                                      ->where('cd_tipo_servico_tse',$dado->servico)
-                                      ->where('cd_tipo_entidade_tpe',$tipoEntidade)->first(); 
-
-            if(!empty($valor)){
-
-                $valor->vl_taxa_honorario_pth = $dado->valor;
-                if(!$valor->saveOrFail()){
-                    Flash::error('Erro ao atualizar dados');
-                    DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
-                }
-
-            }else{
-
-                $valor = ProcessoTaxaHonorario::create([
-                    'cd_conta_con' => $this->cdContaCon,
-                    'cd_processo_pro' => $processo_id,
-                    'cd_tipo_servico_tse' => $dado->servico,
-                    'cd_tipo_entidade_tpe' => $tipoEntidade,
-                    'vl_taxa_honorario_pth' => $dado->valor
-                ]);
-
-                if(!$valor){
-                    Flash::error('Erro ao atualizar dados');
-                    DB::rollBack();
-                    return redirect('processos/financas/'.$processo_id);    
-                }
-            }       
-
-        }
-
-        Flash::success('Dados atualizados com sucesso');
-        DB::commit(); 
- 
-        return redirect('processos/financas/'.$processo_id);      
-
-
-    }*/
-
-
     public function clonar($id){
 
         $id = \Crypt::decrypt($id);
@@ -198,15 +150,9 @@ class ProcessoController extends Controller
         return redirect('processos/editar/'.\Crypt::encrypt($novoProcesso->cd_processo_pro));  
     }
 
-    public function salvarHonorarios(Request $request){
+    private function salvarHonorarios($id,$dados){
 
-        $processo_id = $request->processo;
-
-        $processo_id = \Crypt::decrypt($processo_id);
-       
-        DB::beginTransaction();
-
-        $dados = json_decode($request->dados);
+        $processo_id = $id;
 
         if(empty($dados->valor_cliente)){
             $dados->valor_cliente = NULL;
@@ -222,7 +168,7 @@ class ProcessoController extends Controller
 
         $valor = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
                                   ->where('cd_processo_pro',$processo_id)->first();
-                                
+
         if(!empty($valor)){
 
             $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
@@ -232,7 +178,7 @@ class ProcessoController extends Controller
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                return redirect('processos');    
             }
 
         }else{
@@ -248,14 +194,11 @@ class ProcessoController extends Controller
             if(!$valor){
                 Flash::error('Erro ao atualizar dados');
                 DB::rollBack();
-                return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                return redirect('processos');    
             }
         }       
-
-        Flash::success('Dados atualizados com sucesso');
-        DB::commit(); 
- 
-        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));      
+        
+        return true;
 
 
     }
@@ -300,7 +243,7 @@ class ProcessoController extends Controller
                 if(!$valor->saveOrFail()){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                    return redirect('processos/despesas/'.\Crypt::encrypt($processo_id));    
                 }
 
             }else{
@@ -317,7 +260,7 @@ class ProcessoController extends Controller
                 if(!$valor){
                     Flash::error('Erro ao atualizar dados');
                     DB::rollBack();
-                    return redirect('processos/financas/'.\Crypt::encrypt($processo_id));    
+                    return redirect('processos/despesas/'.\Crypt::encrypt($processo_id));    
                 }
             }            
         }
@@ -326,7 +269,46 @@ class ProcessoController extends Controller
         Flash::success('Dados atualizados com sucesso');
         DB::commit(); 
  
-        return redirect('processos/financas/'.\Crypt::encrypt($processo_id));       
+        return redirect('processos/despesas/'.\Crypt::encrypt($processo_id));       
+
+    }
+
+    public function buscaValorCorrespondente($correspondente,$cidade,$tipoServico){
+
+        $valor = '';
+        $entidade = Entidade::select('cd_entidade_ete')->where('cd_conta_con',$correspondente)->first();
+       
+        if(!empty($cidade) && !empty($entidade)){
+            $valor = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
+                                  ->where('cd_tipo_servico_tse',$tipoServico)
+                                  ->where('cd_cidade_cde', $cidade)
+                                  ->where('cd_entidade_ete',$entidade->cd_entidade_ete)
+                                  ->select('nu_taxa_the')->first();
+            if(empty($valor))
+                $valor = '';
+
+        }
+
+        echo json_encode(str_replace('.',',',$valor));
+    }
+
+    public function buscaValorCliente($cliente,$cidade,$tipoServico){
+
+        $valor = '';
+        $entidade = Cliente::select('cd_entidade_ete')->where('cd_cliente_cli',$cliente)->first();
+       
+        if(!empty($cidade) && !empty($entidade)){
+            $valor = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
+                                  ->where('cd_tipo_servico_tse',$tipoServico)
+                                  ->where('cd_cidade_cde', $cidade)
+                                  ->where('cd_entidade_ete',$entidade->cd_entidade_ete)
+                                  ->select('nu_taxa_the')->first();
+            if(empty($valor))
+                $valor = '';
+
+        }
+
+        echo json_encode(str_replace('.',',',$valor));
 
     }
 
@@ -340,7 +322,10 @@ class ProcessoController extends Controller
                     ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
                     ->leftjoin('conta_con','processo_pro.cd_correspondente_cor', '=', 'conta_con.cd_conta_con')
                     ->leftjoin('entidade_ete','conta_con.cd_conta_con', '=', 'entidade_ete.cd_conta_con')
-                    ->join('tipo_despesa_tds','processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con')
+                    ->join('tipo_despesa_tds', function($join){
+                        $join->on('processo_pro.cd_conta_con','=','tipo_despesa_tds.cd_conta_con');
+                        $join->where('fl_reembolso_tds','S');
+                    })
                     ->leftjoin('reembolso_tipo_despesa_rtd as reembolso_correspondente', function($join){
                                $join->on('entidade_ete.cd_entidade_ete', '=', 'reembolso_correspondente.cd_entidade_ete');
                                $join->on('tipo_despesa_tds.cd_tipo_despesa_tds', '=', 'reembolso_correspondente.cd_tipo_despesa_tds');
@@ -492,10 +477,11 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
         
-        $varas         = Vara::orderBy('nm_vara_var')->get();  
-        $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
+        $varas          = Vara::orderBy('nm_vara_var')->get();  
+        $tiposProcesso  = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
+        $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
        
-        return view('processo/novo',['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso]);
+        return view('processo/novo',['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico]);
 
     }
 
@@ -536,8 +522,10 @@ class ProcessoController extends Controller
         if(!empty($processo->dt_prazo_fatal_pro))
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
+        $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth')->first();
 
-        return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente]);
+        return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
 
     }
 
@@ -557,8 +545,11 @@ class ProcessoController extends Controller
             'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
         ]);
 
-        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
-        $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        if(!empty($request->dt_solicitacao_pro))
+            $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
+        if(!empty($request->dt_prazo_fatal_pro))
+            $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
         if($entidade){
@@ -582,6 +573,12 @@ class ProcessoController extends Controller
             return redirect('processos');
         }
 
+        $dados = new \stdClass();
+        $dados->valor_cliente = $request->taxa_honorario_cliente;
+        $dados->valor_correspondente = $request->taxa_honorario_correspondente;
+        $dados->servico = $request->cd_tipo_servico_tse;
+        $this->salvarHonorarios($processo->cd_processo_pro,$dados);
+
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
         return redirect('processos');
@@ -593,8 +590,11 @@ class ProcessoController extends Controller
         
         DB::beginTransaction();
 
-        $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
-        $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
+        if(!empty($request->dt_solicitacao_pro))
+            $request->merge(['dt_solicitacao_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_solicitacao_pro)))]);
+        
+        if(!empty($request->dt_prazo_fatal_pro))
+            $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
     
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
         $processo->fill($request->all());
@@ -605,6 +605,12 @@ class ProcessoController extends Controller
             Flash::error('Erro ao atualizar dados');
             return redirect('processos');
         }    
+
+        $dados = new \stdClass();
+        $dados->valor_cliente = $request->taxa_honorario_cliente;
+        $dados->valor_correspondente = $request->taxa_honorario_correspondente;
+        $dados->servico = $request->cd_tipo_servico_tse;
+        $this->salvarHonorarios($processo->cd_processo_pro,$dados);
          
         DB::commit();
         Flash::success('Dados atualizados com sucesso');
