@@ -190,6 +190,9 @@
                                     <li>
                                         <a href="{{ url('configuracoes/tipos-de-despesa') }}" title="Tipos de Despesa"><span class="menu-item-parent">Tipos de Despesas</span></a>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('configuracoes/despesas-valores') }}" title="Tipos de Despesa"><span class="menu-item-parent">Valores</span></a>
+                                    </li>
                                     
                                 </ul>
                                

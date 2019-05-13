@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Area;
 use App\TipoDespesa;
 use App\CategoriaDespesa;
+use App\Conta;
 use App\Http\Requests\TipoDespesaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -29,6 +30,34 @@ class TipoDespesaController extends Controller
         $categorias = CategoriaDespesa::where('cd_conta_con', $this->cdContaCon)->get();
 
         return view('configuracoes/tipos-de-despesa',['tipos' => $tipos,'categorias' => $categorias]);
+    }
+
+    public function indexValorReembolsavel(){
+
+        $conta =  Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
+
+        return view('configuracoes/despesas-valores',['conta' => $conta]);
+    }
+
+    public function valorReembolsavelSalvar(Request $request){
+
+        $conta =  Conta::find($this->cdContaCon);
+
+        if(isset($request->fl_despesa_nao_reembolsavel_con)){
+            $request->merge(['fl_despesa_nao_reembolsavel_con' => 'S']);
+        }else{
+            $request->merge(['fl_despesa_nao_reembolsavel_con' => 'N']);
+        }
+
+        $conta->fill($request->all());
+
+        if($conta->saveOrFail())
+            Flash::success('Dados atualizados com sucesso');
+        else
+            Flash::error('Erro ao atualizar dados');
+
+        return view('configuracoes/despesas-valores',['conta' => $conta]);
+
     }
 
     public function show($id)

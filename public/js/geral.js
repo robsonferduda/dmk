@@ -575,10 +575,10 @@ $(document).ready(function() {
 		$("#nu_fone_fon").focus();
 	});
 
-	$('#tipoServico').change(function(){
-		$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
-		$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
-	});
+	// $('#tipoServico').change(function(){
+	// 	$('#taxa-honorario-cliente').val($(this).children("option:selected").data('cliente').toString().replace('.',','));
+	// 	$('#taxa-honorario-correspondente').val($(this).children("option:selected").data('correspondente').toString().replace('.',','));
+	// });
 
 	$('.btn_sigla').click(function(){ $("#processamento").modal('show'); });
 
@@ -607,7 +607,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -654,7 +654,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -718,7 +718,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/financas/"+processo
+            	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
