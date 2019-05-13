@@ -39,7 +39,7 @@ class ContaController extends Controller
             return redirect('erro-permissao');
         }
 
-        $conta     = Conta::where('cd_conta_con',$id)->first();
+        $conta     = Conta::with('entidade','tipoPessoa')->where('cd_conta_con',$id)->first();
         $usuarios  = User::where('cd_conta_con',$id)->get();
 
         return view('conta/detalhes',['conta' => $conta, 'usuarios' => $usuarios]);
@@ -48,6 +48,8 @@ class ContaController extends Controller
 
     public function editar($id)
     {
+        $id = \Crypt::decrypt($id);
+        
         //Verifica se o usuário logado é o mesmo que requisitou os dados
         if(Auth::user()->cd_conta_con != $id){ 
             return redirect('erro-permissao');

@@ -30,4 +30,9 @@ class Conta extends Model
     {
         return $this->hasOne('App\Fone','cd_conta_con', 'cd_conta_con');
     }
+
+    public function processo()
+    {
+        return $this->hasMany('App\Processo','cd_conta_con','cd_conta_con');
+    }
 }
