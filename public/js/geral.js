@@ -727,7 +727,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: pathname+"/processo/despesas/salvar",
+            url: pathname+"/despesas/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -740,7 +740,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/despesas/"+processo
+            	window.location.href = pathname+"/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -961,6 +961,21 @@ $(document).ready(function() {
 		}]
 	});
 
-	
+	$("input[data-vreembolso='N']").click( function(){
+		
+		if( $(this).is(':checked') ){
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", false );
+		}else{
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", true );
+			$("input[data-identificador='"+$(this).attr('name')+"']").val('');
+		}
+	})
+
+	$("input[data-vreembolso='N']").each(function(){
+		if(!$(this).is(':checked') ){
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", true );
+			$("input[data-identificador='"+$(this).attr('name')+"']").val('');
+		}
+	});
 
 });

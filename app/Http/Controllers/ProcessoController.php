@@ -8,6 +8,7 @@ use App\Vara;
 use App\Estado;
 use App\Cidade;
 use App\Cliente;
+use App\Conta;
 use App\Correspondente;
 use App\TipoProcesso;
 use App\Processo;
@@ -213,8 +214,12 @@ class ProcessoController extends Controller
 
         $dados = json_decode($request->valores);
 
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
+
         foreach ($dados as $dado) {
 
+            if($conta->fl_despesa_nao_reembolsavel_con == 'N' && $dado->reembolso == 'N')
+                continue;
 
             if(empty($dado->valor)){
                 $dado->valor = NULL;
@@ -435,11 +440,13 @@ class ProcessoController extends Controller
                                          'qtdServicoCliente' => $qtdProcessoTiposServicoCliente,
                                          'qtdServicoCorrespondente' => $qtdProcessoTiposServicoCorrespondente
                                         ]);*/
-
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
+                               
         return view('processo/financas',['despesas' => $despesas,
                                          'tiposDeServico' => $tiposDeServico,
                                          'id' => $id,
-                                         'honorariosProcesso' => $honorariosProcesso
+                                         'honorariosProcesso' => $honorariosProcesso,
+                                         'conta' => $conta
                                         ]);
 
     }

@@ -64,7 +64,7 @@
                                                         @foreach($despesas as $despesa)
                                                             <tr>
                                                                 <td>{{ $despesa->nm_tipo_despesa_tds }}</td>
-                                                                <td {{ (!empty($despesa->vl_despesa_cliente)) ? "class=info" : '' }} >
+                                                                <td>
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
@@ -74,7 +74,7 @@
                                                                      <div class="onoffswitch-container col-md-7">     
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo_cliente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}">
+                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo_cliente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}" data-vreembolso='{{$conta->fl_despesa_nao_reembolsavel_con}}' >
                                                                             <label class="onoffswitch-label" for="DCL{{$despesa->cd_tipo_despesa_tds}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                 <span class="onoffswitch-switch"></span>  
@@ -85,7 +85,7 @@
                                                                         @endif
                                                                     </div>                                                                        
                                                                 </td>
-                                                                <td {{ (!empty($despesa->vl_despesa_correspondente)) ? "class=info" : '' }} > 
+                                                                <td> 
                                                                     <div class="col-md-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
@@ -95,7 +95,7 @@
                                                                      <div class="onoffswitch-container col-md-7">
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
-                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_correspondente)) ?  ($despesa->fl_reembolsavel_processo_correspondente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_correspondente == 'S') ? 'checked' : '' }}  class="onoffswitch-checkbox" name="DCO{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCO{{$despesa->cd_tipo_despesa_tds}}">
+                                                                            <input type="checkbox" {{ (!empty($despesa->vl_despesa_correspondente)) ?  ($despesa->fl_reembolsavel_processo_correspondente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_correspondente == 'S') ? 'checked' : '' }}  class="onoffswitch-checkbox" name="DCO{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCO{{$despesa->cd_tipo_despesa_tds}}" data-vreembolso='{{$conta->fl_despesa_nao_reembolsavel_con}}' >
                                                                             <label class="onoffswitch-label" for="DCO{{$despesa->cd_tipo_despesa_tds}}"> 
                                                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                                                 <span class="onoffswitch-switch"></span>

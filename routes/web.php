@@ -50,7 +50,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
 	Route::get('processos/despesas/{id}','ProcessoController@financas');
-	Route::post('processo/despesas/salvar','ProcessoController@salvarDespesas');
+	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');

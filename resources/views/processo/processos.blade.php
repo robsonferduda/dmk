@@ -51,7 +51,7 @@
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr style="font-size: 11px">                   
+                                <tr style="font-size: 12px">                   
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th style="width: 13%;">Nº Processo</th>
                                     <th style="width: 12%;">Cidade</th>                                                  
@@ -63,7 +63,7 @@
                                     <th style="width: 14%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
-                            <tbody style="font-size: 11px">
+                            <tbody style="font-size: 12px">
                                 @foreach($processos as $processo)
                                     @php $cor = ''; 
 
