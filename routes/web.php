@@ -147,4 +147,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('processos','ProcessoController');
 	Route::resource('usuarios','UsuarioController');
 
+	Route::post('varas/importar','VaraController@importar');
+
 });

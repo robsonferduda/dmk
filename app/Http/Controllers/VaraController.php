@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
+use Excel;
+use App\Imports\VaraImport;
 
 class VaraController extends Controller
 {
@@ -23,7 +25,13 @@ class VaraController extends Controller
     public function index()
     {
 
-        $varas = Vara::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_vara_var')->get();   
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+        
         return view('configuracoes/varas',['varas' => $varas]);
     }
 
@@ -50,7 +58,7 @@ class VaraController extends Controller
 
     }
 
-    public function update(Request $request,$id)
+    public function update(VaraRequest $request,$id)
     {
         $vara = Vara::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
@@ -74,5 +82,28 @@ class VaraController extends Controller
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+    }
+
+    public function importar(Request $request){
+        
+        $file = $request->file('file');
+
+        $extensions = array("xls","xlsx","XLSX","XLS");
+
+        if($file){
+            
+            $path = $file->getRealPath();
+
+            if(in_array($file ->getClientOriginalExtension(),$extensions)){
+                $data =  Excel::import(new VaraImport,$file);
+                dd($data->errors());
+            }else{
+                Flash::error('Erro ao atualizar dados');
+            }
+        }else{
+            Flash::error('Erro ao atualizar dados');
+        }
+
+        return redirect('configuracoes/varas');
     }
 }

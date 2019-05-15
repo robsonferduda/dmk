@@ -484,7 +484,13 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
         
-        $varas          = Vara::orderBy('nm_vara_var')->get();  
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
         $tiposProcesso  = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
         $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
        
@@ -503,7 +509,13 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
 
-        $varas         = Vara::orderBy('nm_vara_var')->get();  
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
 
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();

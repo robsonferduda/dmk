@@ -14,8 +14,9 @@
                 <i class="fa-fw fa fa-cog"></i>Configurações <span> > Varas</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="#addVara" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="#uploadFile" class="btn btn-success pull-right header-btn"><i class="fa fa-file-excel-o fa-lg"></i> Importar Arquivo de Varas</a>
         </div>
     </div>
     <div class="row">
@@ -76,6 +77,41 @@
                                 <label class="label">Nome</label>
                                 <label class="input"> <i class="icon-append fa fa-font"></i>
                                     <input type="text" name="nm_vara_var" id="nm_vara_var" required>
+                                </label>
+                            </div>
+                        </section>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-save-vara"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="uploadFile" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> Importa Arquivo
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-carregar-vara', 'url' => 'varas/importar', 'class' => 'smart-form' , 'enctype' => 'multipart/form-data']) !!}
+                     <fieldset>
+                        <section>
+                            <div>
+                                <label class="label">Importar arquivo de varas</label>
+                                <label class="input">
+                                   <input type="file" name="file">
                                 </label>
                             </div>
                         </section>
