@@ -17,6 +17,7 @@
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="#addVara" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
             <a data-toggle="modal" href="#uploadFile" class="btn btn-success pull-right header-btn"><i class="fa fa-file-excel-o fa-lg"></i> Importar Arquivo de Varas</a>
+            <a download='teste' data-toggle="modal" href="{{ asset(Storage::url('layout_varas_importarcao.xlsx')) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-excel-o fa-lg"></i> Layout de Importação</a>
         </div>
     </div>
     <div class="row">
