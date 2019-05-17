@@ -502,7 +502,7 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
         
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
 
         $varas = \DB::table(\DB::raw("($sub) as sub "))
         ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
@@ -527,7 +527,7 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
 
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
 
         $varas = \DB::table(\DB::raw("($sub) as sub "))
         ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
@@ -619,7 +619,7 @@ class ProcessoController extends Controller
 
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
-        return redirect('processos');
+        return redirect('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro));
 
     }
 
@@ -651,10 +651,12 @@ class ProcessoController extends Controller
         $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
     
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
+
+
         
         DB::commit();
         Flash::success('Dados atualizados com sucesso');
-        return redirect('processos');
+        return redirect('processos/detalhes/'.\Crypt::encrypt($id));
 
 
     }

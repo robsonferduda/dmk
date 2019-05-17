@@ -25,7 +25,7 @@ class VaraController extends Controller
     public function index()
     {
 
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->toSql();
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
 
         $varas = \DB::table(\DB::raw("($sub) as sub "))
         ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
@@ -76,7 +76,7 @@ class VaraController extends Controller
 
     public function destroy($id)
     {
-        $vara = Vara::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $vara = Vara::where('cd_conta_con',$this->cdContaCon)->where('cd_vara_var',$id)->first();
         
         if($vara->delete())
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
