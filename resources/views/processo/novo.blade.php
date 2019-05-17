@@ -249,6 +249,7 @@
                                                             <th style="width: 50%">Tipos de Serviços</th>
                                                             <th style="">Valor Cliente</th>
                                                             <th style="">Valor Correspondente</th>
+                                                            <th style="">Nota Fiscal Cliente</th>
                                                         </thead>
                                                         <tbody>  
                                                             <tr>  
@@ -266,7 +267,7 @@
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
-                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="" >
+                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="{{old('taxa_honorario_cliente')}}" >
                                                                         </div>
                                                                         </div>
                                                                 </td>
@@ -274,7 +275,16 @@
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                     <div class="input-group">
                                                                         <span class="input-group-addon">$</span>
-                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="" >
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{old('taxa_honorario_correspondente')}}" >
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                            <input disabled name="nota_fiscal_cliente" style="width: 100px;padding-left: 12px" id="nota_fiscal_cliente" type="text" class="form-control taxa-honorario"  value="{{old('nota_fiscal_cliente')}}" title="Aguardando seleção do Cliente" >
                                                                     </div>
                                                                     </div>
                                                                 </td>
@@ -349,6 +359,8 @@
           select: function(event, ui) {
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
+            $("input[name='nota_fiscal_cliente']").val(ui.item.nota);
+            $("input[name='nota_fiscal_cliente']").prop('disabled', false);
 
             buscaAdvogado();
         

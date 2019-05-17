@@ -149,4 +149,9 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::post('varas/importar','VaraController@importar');
 
+	Route::get('layouts/varas-importar', function(){
+
+		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
+	});
+
 });

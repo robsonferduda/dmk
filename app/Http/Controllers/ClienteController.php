@@ -468,7 +468,7 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->select('cd_cliente_cli','nm_razao_social_cli','nm_fantasia_cli','taxa_imposto_cli','nu_cliente_cli')->get();
 
         $results = array();
         foreach ($resultados as $ret)
@@ -480,7 +480,7 @@ class ClienteController extends Controller
                 $nome = $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }
             
-           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome ];
+           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome, 'nota' => $ret->taxa_imposto_cli ];
         }
  
         return response()->json($results);

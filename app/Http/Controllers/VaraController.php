@@ -95,8 +95,12 @@ class VaraController extends Controller
             $path = $file->getRealPath();
 
             if(in_array($file ->getClientOriginalExtension(),$extensions)){
-                $data =  Excel::import(new VaraImport,$file);
-                dd($data->errors());
+                
+                try {
+                    $data =  Excel::import(new VaraImport,$file);
+                } catch (\ErrorException $e) {
+                    Flash::error('Erro ao atualizar dados. Msg: '.$e->getMessage());
+                }
             }else{
                 Flash::error('Erro ao atualizar dados');
             }

@@ -155,6 +155,12 @@ class ProcessoController extends Controller
 
         $processo_id = $id;
 
+        if(empty($dados->nota_fiscal_cliente)){
+            $dados->nota_fiscal_cliente = NULL;
+        }else{
+            $dados->nota_fiscal_cliente = str_replace(",", ".", $dados->nota_fiscal_cliente);
+        }
+
         if(empty($dados->valor_cliente)){
             $dados->valor_cliente = NULL;
         }else{
@@ -175,6 +181,7 @@ class ProcessoController extends Controller
             $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
             $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
             $valor->cd_tipo_servico_tse = $dados->servico;
+            $valor->vl_taxa_cliente_pth = $dados->nota_fiscal_cliente;
            
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
@@ -189,7 +196,8 @@ class ProcessoController extends Controller
                 'cd_processo_pro' => $processo_id,
                 'cd_tipo_servico_tse' => $dados->servico,
                 'vl_taxa_honorario_cliente_pth' => $dados->valor_cliente,
-                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente
+                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente,
+                'vl_taxa_cliente_pth' => $dados->nota_fiscal_cliente
             ]);
 
             if(!$valor){
@@ -542,7 +550,7 @@ class ProcessoController extends Controller
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
         $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
-        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth')->first();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth','vl_taxa_cliente_pth')->first();
 
         return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
 
@@ -596,6 +604,7 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
         DB::commit();
@@ -629,8 +638,10 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
+    
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
-         
+        
         DB::commit();
         Flash::success('Dados atualizados com sucesso');
         return redirect('processos');
