@@ -334,6 +334,28 @@ $(document).ready(function() {
 
 	});
 
+	$(".editar_tipo_contato").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var action    = "../tipos-de-contato/"+id;
+
+		$('#frm-edit-tipo-contato #cd_tipo_contato_tct').val(id);
+		$('#frm-edit-tipo-contato #nm_tipo_contato_tct').val(nome);
+
+		$('#frm-edit-tipo-contato').attr('action', action);						
+
+	    $('#editTipoContato').modal('show');
+	});
+
+	$(".btn-save-tipo-contato").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
+	$(".btn-edit-tipo-contato").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
 	$(".editar_tipo_servico").click(function(){
 
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');
@@ -885,7 +907,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: pathname+"/processo/despesas/salvar",
+            url: pathname+"/despesas/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -898,7 +920,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/processos/despesas/"+processo
+            	window.location.href = pathname+"/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
@@ -1119,6 +1141,21 @@ $(document).ready(function() {
 		}]
 	});
 
-	
+	$("input[data-vreembolso='N']").click( function(){
+		
+		if( $(this).is(':checked') ){
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", false );
+		}else{
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", true );
+			$("input[data-identificador='"+$(this).attr('name')+"']").val('');
+		}
+	})
+
+	$("input[data-vreembolso='N']").each(function(){
+		if(!$(this).is(':checked') ){
+			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", true );
+			$("input[data-identificador='"+$(this).attr('name')+"']").val('');
+		}
+	});
 
 });

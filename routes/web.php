@@ -48,7 +48,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
 	Route::get('processos/despesas/{id}','ProcessoController@financas');
-	Route::post('processo/despesas/salvar','ProcessoController@salvarDespesas');
+	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
@@ -57,6 +57,7 @@ Route::group(['middleware' => ['web']], function () {
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
+	Route::get('configuracoes/tipos-de-contato','TipoContatoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
 	Route::get('configuracoes/cargos','CargoController@index');
@@ -132,6 +133,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('grupo/cidade/{id}','GrupoCidadeController@cidades');
 
 	Route::resource('areas','AreaController');
+	Route::resource('tipos-de-contato','TipoContatoController');
 	Route::resource('tipos-de-servico','TipoServicoController');
 	Route::resource('tipos-de-processo','TipoProcessoController');
 	Route::resource('tipos-de-despesa','TipoDespesaController');
@@ -151,5 +153,12 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('users','PermissaoController@users');
 	Route::get('role/{role}/usuario/delete/{user}','RoleController@deleteRoleUser');
 	Route::post('role/usuario/adicionar','RoleController@adicionarRole');
+
+	Route::post('varas/importar','VaraController@importar');
+
+	Route::get('layouts/varas-importar', function(){
+
+		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
+	});
 
 });

@@ -49,7 +49,7 @@ class Processo extends Model implements AuditableContract
 
     public function advogadoSolicitante()
     {
-        return $this->hasOne('App\Contato','cd_contato_cot', 'cd_contato_cot')->where('cd_tipo_contato_tct', \TipoContato::ADVOGADO);
+        return $this->hasOne('App\Contato','cd_contato_cot', 'cd_contato_cot');
     }
 
     public function tipoProcesso()

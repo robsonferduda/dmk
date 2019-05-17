@@ -468,7 +468,7 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->select('cd_cliente_cli','nm_razao_social_cli','nm_fantasia_cli','taxa_imposto_cli','nu_cliente_cli')->get();
 
         $results = array();
         foreach ($resultados as $ret)
@@ -480,7 +480,7 @@ class ClienteController extends Controller
                 $nome = $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }
             
-           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome ];
+           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome, 'nota' => $ret->taxa_imposto_cli ];
         }
  
         return response()->json($results);
@@ -526,12 +526,12 @@ class ClienteController extends Controller
     public function buscaAdvogados($cliente){
         $conta = \Session::get('SESSION_CD_CONTA');
         $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
+        $contatos = Contato::with(['tipoContato' => function($query){
+            $query->select('nm_tipo_contato_tct','cd_tipo_contato_tct');
+        }])->where('cd_conta_con',$conta)
+          ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+          ->select('cd_contato_cot', 'nm_contato_cot','cd_tipo_contato_tct')->get()->toJson();
 
-        $contatos = Contato::where('cd_conta_con',$conta)
-                           ->where('cd_tipo_contato_tct', \TipoContato::ADVOGADO)
-                           ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
-                           ->get();
-
-        echo json_encode($contatos);
+        echo $contatos;
     }
 }

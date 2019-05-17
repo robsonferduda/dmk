@@ -45,7 +45,7 @@
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
-                                            <ul class="list-unstyled">
+                                            <ul class="list-unstyled" style=" line-height: 1.5;">
                                            
                                                 <li>
                                                     <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
@@ -74,7 +74,19 @@
                                                     @if(!empty($processo->correspondente))
                                                         <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
                                                     @endif
-                                                </li>                                                
+                                                </li>      
+                                                <li style="color: #3276B1">
+                                                    <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                                <li style="color: #3276B1">
+                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                </li>     
+                                                <li style="color: #3276B1">
+                                                    <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : ' ' }}
+                                                </li>   
+                                                <li style="color: #3276B1">
+                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
+                                                </li>                                      
                                                 <li>
                                                     <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
                                                 </li>
@@ -93,7 +105,7 @@
                                     <legend><i class="fa fa-fw"></i> <strong></strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
-                                            <ul class="list-unstyled">
+                                            <ul class="list-unstyled" style=" line-height: 1.5;">
                                                 <li>
                                                     <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
                                                 </li>

@@ -218,7 +218,6 @@ return [
         'TipoEntidade' => App\Enums\TipoEntidade::class,
         'TipoIdentificacao' => App\Enums\TipoIdentificacao::class,
         'TipoFone' => App\Enums\TipoFone::class,
-        'TipoContato' => App\Enums\TipoContato::class,
 
     ],
 

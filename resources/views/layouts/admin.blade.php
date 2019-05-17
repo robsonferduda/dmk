@@ -201,6 +201,9 @@
                                 <a href="{{ url('configuracoes/grupos-de-cidades') }}" title="Tipos de Serviço"><span class="menu-item-parent">Grupos de Cidades</span></a>
                             </li>
                             <li>
+                                <a href="{{ url('configuracoes/tipos-de-contato') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Contato</span></a>
+                            </li>
+                            <li>
                                 <a href="{{ url('configuracoes/tipos-de-processo') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Processo</span></a>
                             </li>
                             <li>

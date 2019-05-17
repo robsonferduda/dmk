@@ -254,6 +254,7 @@
                                                             <th style="width: 50%">Tipos de Serviços</th>
                                                             <th style="">Valor Cliente</th>
                                                             <th style="">Valor Correspondente</th>
+                                                            <th style="">Nota Fiscal Cliente</th>
                                                         </thead>
                                                         <tbody>  
                                                             <tr>  
@@ -281,6 +282,15 @@
                                                                     <div class="input-group">
                                                                         <span class="input-group-addon">$</span>
                                                                             <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ old('taxa_honorario_correspondente',(!empty($processoTaxaHonorario->vl_taxa_honorario_correspondente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth : '')}}" >
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                            <input name="nota_fiscal_cliente" style="width: 100px;padding-left: 12px" id="nota_fiscal_cliente" type="text" class="form-control taxa-honorario"  value="{{ old('nota_fiscal_cliente',(!empty($processoTaxaHonorario->vl_taxa_cliente_pth)) ? $processoTaxaHonorario->vl_taxa_cliente_pth : '')}}" title="Aguardando seleção do Cliente" >
                                                                     </div>
                                                                     </div>
                                                                 </td>
@@ -354,6 +364,8 @@
           select: function(event, ui) {
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
+            $("input[name='nota_fiscal_cliente']").val(ui.item.nota);
+            $("input[name='nota_fiscal_cliente']").prop('disabled', false);
 
             buscaAdvogado();
             
@@ -450,9 +462,9 @@
                         $.each(response,function(index,element){
 
                             if($("#contatoAux").val() != element.cd_contato_cot){
-                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');                            
+                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+' ( '+element.tipo_contato.nm_tipo_contato_tct+' )'+'</option>');                            
                             }else{
-                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');      
+                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'( '+element.tipo_contato.nm_tipo_contato_tct+' )'+'</option>');      
                             }
                                 
                             });       

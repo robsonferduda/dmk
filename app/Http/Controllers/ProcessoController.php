@@ -8,6 +8,7 @@ use App\Vara;
 use App\Estado;
 use App\Cidade;
 use App\Cliente;
+use App\Conta;
 use App\Correspondente;
 use App\TipoProcesso;
 use App\Processo;
@@ -89,6 +90,7 @@ class ProcessoController extends Controller
         $despesasReembolsaveisCorrespondente = 0;
         $honorarioCliente = 0;
         $honorarioCorrespondente = 0;
+        $taxaCliente = 0;
         foreach ($processo->tiposDespesa as $despesa) {
 
             if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
@@ -112,15 +114,22 @@ class ProcessoController extends Controller
             }
         }
 
-        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
-            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;            
+        if(!empty($processo->honorario->vl_taxa_cliente_pth))
+            $taxaCliente = $processo->honorario->vl_taxa_cliente_pth;            
         
+        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
+            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;     
+
         if(!empty($processo->honorario->vl_taxa_honorario_correspondente_pth))
             $honorarioCorrespondente = $processo->honorario->vl_taxa_honorario_correspondente_pth;
 
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
 
-        $entrada = $honorarioCliente + $honorarioCorrespondente;
-        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente;
+        if($conta->fl_despesa_nao_reembolsavel_con == 'N')
+            $despesasCliente = 0;
+
+        $entrada = $honorarioCliente + $despesasReembolsaveisCliente;
+        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente + $honorarioCorrespondente + $taxaCliente;
         $receita = $entrada - $saida;
 
         //dd($despesasCliente);
@@ -133,7 +142,9 @@ class ProcessoController extends Controller
                                           'honorarioCorrespondente' => $honorarioCorrespondente,
                                           'entrada' => $entrada,
                                           'saida' => $saida,
-                                          'receita' => $receita]);
+                                          'receita' => $receita,
+                                          'taxa' => $taxaCliente,
+                                          'flDespesa' => $conta->fl_despesa_nao_reembolsavel_con]);
     }
 
     public function clonar($id){
@@ -153,6 +164,12 @@ class ProcessoController extends Controller
     private function salvarHonorarios($id,$dados){
 
         $processo_id = $id;
+
+        if(empty($dados->nota_fiscal_cliente)){
+            $dados->nota_fiscal_cliente = NULL;
+        }else{
+            $dados->nota_fiscal_cliente = str_replace(",", ".", $dados->nota_fiscal_cliente);
+        }
 
         if(empty($dados->valor_cliente)){
             $dados->valor_cliente = NULL;
@@ -174,6 +191,7 @@ class ProcessoController extends Controller
             $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
             $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
             $valor->cd_tipo_servico_tse = $dados->servico;
+            $valor->vl_taxa_cliente_pth = $dados->nota_fiscal_cliente;
            
             if(!$valor->saveOrFail()){
                 Flash::error('Erro ao atualizar dados');
@@ -188,7 +206,8 @@ class ProcessoController extends Controller
                 'cd_processo_pro' => $processo_id,
                 'cd_tipo_servico_tse' => $dados->servico,
                 'vl_taxa_honorario_cliente_pth' => $dados->valor_cliente,
-                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente
+                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente,
+                'vl_taxa_cliente_pth' => $dados->nota_fiscal_cliente
             ]);
 
             if(!$valor){
@@ -213,8 +232,12 @@ class ProcessoController extends Controller
 
         $dados = json_decode($request->valores);
 
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
+
         foreach ($dados as $dado) {
 
+            if($conta->fl_despesa_nao_reembolsavel_con == 'N' && $dado->reembolso == 'N')
+                continue;
 
             if(empty($dado->valor)){
                 $dado->valor = NULL;
@@ -435,11 +458,13 @@ class ProcessoController extends Controller
                                          'qtdServicoCliente' => $qtdProcessoTiposServicoCliente,
                                          'qtdServicoCorrespondente' => $qtdProcessoTiposServicoCorrespondente
                                         ]);*/
-
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
+                               
         return view('processo/financas',['despesas' => $despesas,
                                          'tiposDeServico' => $tiposDeServico,
                                          'id' => $id,
-                                         'honorariosProcesso' => $honorariosProcesso
+                                         'honorariosProcesso' => $honorariosProcesso,
+                                         'conta' => $conta
                                         ]);
 
     }
@@ -477,7 +502,13 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
         
-        $varas          = Vara::orderBy('nm_vara_var')->get();  
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
         $tiposProcesso  = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
         $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
        
@@ -496,7 +527,13 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
 
-        $varas         = Vara::orderBy('nm_vara_var')->get();  
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
         $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
 
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
@@ -523,7 +560,7 @@ class ProcessoController extends Controller
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
         $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
-        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth')->first();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth','vl_taxa_cliente_pth')->first();
 
         return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
 
@@ -577,11 +614,12 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
-        return redirect('processos');
+        return redirect('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro));
 
     }
 
@@ -610,11 +648,15 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
+    
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
-         
+
+
+        
         DB::commit();
         Flash::success('Dados atualizados com sucesso');
-        return redirect('processos');
+        return redirect('processos/detalhes/'.\Crypt::encrypt($id));
 
 
     }

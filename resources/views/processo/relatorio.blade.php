@@ -41,7 +41,7 @@
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-info"></i> <strong>Relatório</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
+                                    <div class="row" style="margin-left: 5px;" style=" line-height: 1.5;">
                                         <p>
                                             <ul class="list-unstyled">
                                            
@@ -71,22 +71,21 @@
                                                 <li>
                                                     <strong>Honorários: </strong> <span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$honorarioCliente) }}</span>
                                                 </li>
-                                                <li>
-                                                    <strong>Despesas: </strong><span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasCliente) }}</span>
-                                                </li>
+                                                @if($flDespesa == 'S')
+                                                    <li>
+                                                        <strong>Despesas: </strong><span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasCliente) }}</span>
+                                                    </li>
+                                                @endif
                                                 <li>
                                                     <strong>Despesas Reembolsáveis: </strong><span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$despesasReembolsaveisCliente) }}</span>
                                                 </li>
                                                 <li>
-                                                    <strong>Nota Fiscal: </strong> {{ $processo->nm_preposto_pro }}
+                                                    <strong>Nota Fiscal: </strong><span style="color: red;font-weight: bold;"> R$ {{ str_replace('.',',',$taxa) }}</span>
                                                 </li>
                                                 <legend><i class="fa">Correpondente:</i> </legend>    
                                                 <li>
-                                                    <strong>Honorários: </strong> <span style="color: green;font-weight: bold;">R$ {{ str_replace('.',',',$honorarioCorrespondente) }}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Despesas: </strong> <span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasCorrespondente) }}</span>
-                                                </li>        
+                                                    <strong>Honorários: </strong> <span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$honorarioCorrespondente) }}</span>
+                                                </li>                                                     
                                                 <li>
                                                     <strong>Despesas Reembolsáveis: </strong><span style="color: red;font-weight: bold;">R$ {{ str_replace('.',',',$despesasReembolsaveisCorrespondente) }}</span>
                                                 </li>                                                                        
@@ -102,7 +101,7 @@
                                     <legend><i class="fa fa-fw"></i> <strong></strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
-                                            <ul class="list-unstyled">
+                                            <ul class="list-unstyled" style=" line-height: 1.5;">
                                                 
                                                 <legend><i class="fa">Totais:</i> </legend>
                                                 <li>
