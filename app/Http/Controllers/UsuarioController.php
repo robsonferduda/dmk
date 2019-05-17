@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use App\Nivel;
 use App\Entidade;
@@ -36,7 +37,7 @@ class UsuarioController extends Controller
     }
 
     public function index()
-    {
+    {        
 
         $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
@@ -67,6 +68,19 @@ class UsuarioController extends Controller
     }
 
     public function novo(){
+
+        //Auth::user()->removePermission('user');
+
+        Auth::user()->addPermission('user'); 
+        //Auth::user()->addPermission('view.user',true);
+
+        //dd(Auth::user()->getPermissions());
+
+        //Auth::user()->removePermission('user');
+
+        //dd(Auth::user()->hasPermission('view.user'));
+
+        dd(Auth::user()->can('view.user'));
 
         $niveis        = Nivel::where('fl_nivel_conta_niv','S')->orderBy('dc_nivel_niv')->get();
         $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();

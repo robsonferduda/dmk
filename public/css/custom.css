@@ -16,6 +16,8 @@
 .novoModal{ display: pointer; }
 .label-black{color: #000; }
 .box-desconto{display: none;}
+.box-left{ padding-left: 0px }
+.excluirUserRole{ cursor: pointer; }
 .tabelah {
     width: 100%;
     overflow-x: scroll;

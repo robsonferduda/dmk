@@ -212,6 +212,23 @@
                         </ul>   
                     </li>
                     @endrole
+
+                    <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
+                        <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'permissoes') ? 'display: block;' : 'display: none;' }}">
+                            <li>
+                                <a href="{{ url('roles') }}" title="Perfis"><span class="menu-item-parent">Perfis</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('permissoes') }}" title="Perfis"><span class="menu-item-parent">Permissões</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('users') }}" title="Perfis"><span class="menu-item-parent">Usuários</span></a>
+                            </li>
+                        </ul>   
+                    </li>
+
+
                     <li class="">
                         <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>
                     </li> 
@@ -248,7 +265,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="modal fade in modal_top_alto" id="processamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">

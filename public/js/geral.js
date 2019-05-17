@@ -70,6 +70,186 @@ $(document).ready(function() {
 	    }
 	});
 
+	$(".roleOption").click(function(){
+
+		var id  = $(this).data('id');
+		$("#role_msg h3").remove();
+		$("#user").val(id);
+		$("#table-user-role > tbody > tr").remove();
+
+		$.ajax(
+            {
+                url: pathname+"/role/usuario/"+id,
+                type: 'GET',
+                dataType: "JSON",
+            beforeSend: function()
+            {
+            	$("#role_msg_sistema").html('<h3 class="center"><i class="fa fa-cog fa-spin"></i> Buscando dados...</h3>');
+            },
+            success: function(response)
+            {                    		
+            	if(response.length > 0){
+					$.each(response, function(index, value){
+
+						$('#table-user-role > tbody').append('<tr><td>'+value.name+'</td><td class="center"><a class="excluirUserRole" data-id="'+value.id+'" data-user="'+id+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+
+					});
+					$(".excluirUserRole").on("click", function(){ 
+					    var user = $(this).data('user');
+					    var role = $(this).data('id'); 
+					    deleteUserRole(user, role);
+					});
+				}else{
+					$("#role_msg").html('<h3 class="center">Usuário não possui perfis associados</h3>');
+				}
+				$("#role_msg_sistema h3").remove();
+            },
+            error: function(response)
+            {
+            }
+        });
+
+		$("#modal_roles").modal('show');
+	});
+
+	$('#modal_roles').on('show.bs.modal', function (e) {
+		$(".msg-selecao-role").html("");
+	});
+
+	$("#btnAddRole").click(function(){
+
+		var id = $("#user").val();
+		var role = $("#role option:selected").val();
+		$(".msg-selecao-role").html("");
+		$("#role_msg").html("");
+
+		console.log(id);
+		if(role > 0){
+
+			$.ajax(
+	        {
+	        	type: "POST",
+	            url: pathname+"/role/usuario/adicionar",
+	            data: {
+	                "_token": $('meta[name="token"]').attr('content'),
+	                "id": id,
+	                "role" : role
+	            },
+	            beforeSend: function()
+	            {
+	            	$("#role_msg").html('<h3 class="center"><i class="fa fa-cog fa-spin"></i> Processando requisição...</h3>');
+	            },
+	            success: function(response)
+	            {
+	            	if(response.status){
+	            		$("#role_msg").html('<h3 class="center text-success">'+response.msg+'</h3>');
+
+	            		$.ajax(
+				            {
+				                url: pathname+"/role/usuario/"+id,
+				                type: 'GET',
+				                dataType: "JSON",
+				            beforeSend: function()
+				            {
+				            	$("#role_msg_sistema").html('<h3 class="center"><i class="fa fa-cog fa-spin"></i> Atualizando tabela...</h3>');
+				            },
+				            success: function(response)
+				            {                    		
+				            	if(response.length > 0){
+				            		$("#table-user-role > tbody > tr").remove();
+									$.each(response, function(index, value){
+										$('#table-user-role > tbody').append('<tr><td>'+value.name+'</td><td class="center"><a class="excluirUserRole" data-id="'+value.id+'" data-user="'+id+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+									});
+									$(".excluirUserRole").on("click", function(){ 
+									    var user = $(this).data('user');
+									    var role = $(this).data('id'); 
+									    deleteUserRole(user, role);
+									});
+								}else{
+									$("#role_msg").html('<h3 class="center">Usuário não possui perfis associados</h3>');
+								}
+
+								$("#role_msg h3").remove();
+								$("#role_msg_sistema h3").remove();
+				            },
+				            error: function(response)
+				            {
+				            }
+				        });
+
+
+	            	}else{
+	            		$("#role_msg").html('<h3 class="center text-danger">'+response.msg+'</h3>');
+	            	}
+
+	            },
+			   	error: function(response)
+			   	{
+			   		console.log("Erro");
+			   	}
+	        });
+
+		}else{
+			$(".msg-selecao-role").html('<span class="text-danger">Selecione um perfil para adicionar</span>');
+		}		
+
+	});
+
+	function deleteUserRole(user,role){
+
+		$.ajax(
+            {
+                url: pathname+"/role/"+role+"/usuario/delete/"+user,
+                type: 'GET',
+                dataType: "JSON",
+            beforeSend: function()
+            {
+            	$("#role_msg_sistema").html('<h3 class="center"><i class="fa fa-cog fa-spin"></i> Excluindo perfil...</h3>');
+            },
+            success: function(response)
+            {                    		
+            		$.ajax(
+			            {
+			                url: pathname+"/role/usuario/"+user,
+			                type: 'GET',
+			                dataType: "JSON",
+			            beforeSend: function()
+			            {
+			            	$("#role_msg_sistema").html('<h3 class="center"><i class="fa fa-cog fa-spin"></i> Atualizando perfis...</h3>');
+			            },
+			            success: function(response)
+			            {                    		
+			            	$("#table-user-role > tbody > tr").remove();
+			            	if(response.length > 0){
+								$.each(response, function(index, value){
+
+									$('#table-user-role > tbody').append('<tr><td>'+value.name+'</td><td class="center"><a class="excluirUserRole" data-id="'+value.id+'" data-user="'+user+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+
+								});
+								$(".excluirUserRole").on("click", function(){ 
+								    var user = $(this).data('user');
+								    var role = $(this).data('id'); 
+								    deleteUserRole(user, role);
+								});
+							}else{
+								$("#role_msg").html('<h3 class="center">Usuário não possui perfis associados</h3>');
+							}
+							$("#role_msg_sistema h3").remove();
+			            },
+			            error: function(response)
+			            {
+			            }
+			        });
+
+				
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}
+
 	$(".btn-save-area").click(function(){
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});

@@ -40,7 +40,7 @@ class ContatoController extends Controller
                         ->leftJoin('endereco_eletronico_ele','endereco_eletronico_ele.cd_entidade_ete','=','entidade_ete.cd_entidade_ete')
                         ->leftJoin('cidade_cde','cidade_cde.cd_cidade_cde','=','endereco_ede.cd_cidade_cde')
                         ->where('contato_cot.cd_conta_con',$this->conta)
-                        ->where('contato_cot.nm_contato_cot', 'LIKE', $inicial.'%')
+                        ->where('contato_cot.nm_contato_cot', 'ilike', $inicial.'%')
                         ->whereNull('contato_cot.deleted_at')
                         ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
                         ->get();

@@ -22,8 +22,6 @@ Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
 
-	Route::get('permissao/teste','PermissaoController@index');
-
 	Route::get('image-crop', 'ImageController@imageCrop');
 	Route::post('image-crop', 'ImageController@imageCropPost');
     
@@ -144,5 +142,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('processos','ProcessoController');
 	Route::resource('usuarios','UsuarioController');
+
+	//Rotas de permissão
+	Route::get('roles','RoleController@index');
+	Route::get('role/usuario/{id}','RoleController@roleUser');
+	Route::get('role/novo','RoleController@novo');
+	Route::get('permissoes','PermissaoController@index');
+	Route::get('users','PermissaoController@users');
+	Route::get('role/{role}/usuario/delete/{user}','RoleController@deleteRoleUser');
+	Route::post('role/usuario/adicionar','RoleController@adicionarRole');
 
 });
