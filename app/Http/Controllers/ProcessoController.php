@@ -90,6 +90,7 @@ class ProcessoController extends Controller
         $despesasReembolsaveisCorrespondente = 0;
         $honorarioCliente = 0;
         $honorarioCorrespondente = 0;
+        $taxaCliente = 0;
         foreach ($processo->tiposDespesa as $despesa) {
 
             if(!empty($despesa->pivot->vl_processo_despesa_pde) && $despesa->pivot->fl_despesa_reembolsavel_pde == 'N' && $despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE){
@@ -113,15 +114,22 @@ class ProcessoController extends Controller
             }
         }
 
-        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
-            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;            
+        if(!empty($processo->honorario->vl_taxa_cliente_pth))
+            $taxaCliente = $processo->honorario->vl_taxa_cliente_pth;            
         
+        if(!empty($processo->honorario->vl_taxa_honorario_cliente_pth))
+            $honorarioCliente = $processo->honorario->vl_taxa_honorario_cliente_pth;     
+
         if(!empty($processo->honorario->vl_taxa_honorario_correspondente_pth))
             $honorarioCorrespondente = $processo->honorario->vl_taxa_honorario_correspondente_pth;
 
+        $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
 
-        $entrada = $honorarioCliente + $honorarioCorrespondente;
-        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente;
+        if($conta->fl_despesa_nao_reembolsavel_con == 'N')
+            $despesasCliente = 0;
+
+        $entrada = $honorarioCliente + $despesasReembolsaveisCliente;
+        $saida   = $despesasCliente + $despesasReembolsaveisCorrespondente + $honorarioCorrespondente + $taxaCliente;
         $receita = $entrada - $saida;
 
         //dd($despesasCliente);
@@ -134,7 +142,9 @@ class ProcessoController extends Controller
                                           'honorarioCorrespondente' => $honorarioCorrespondente,
                                           'entrada' => $entrada,
                                           'saida' => $saida,
-                                          'receita' => $receita]);
+                                          'receita' => $receita,
+                                          'taxa' => $taxaCliente,
+                                          'flDespesa' => $conta->fl_despesa_nao_reembolsavel_con]);
     }
 
     public function clonar($id){
