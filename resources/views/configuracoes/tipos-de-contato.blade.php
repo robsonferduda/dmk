@@ -43,8 +43,11 @@
                                     <tr>                                    
                                         <td data-id="{{ $tipo->cd_tipo_contato_tct }}" data-nome="{{ $tipo->nm_tipo_contato_tct }}">{{ $tipo->nm_tipo_contato_tct }}</td>
                                         <td>
-                                            <button class="btn btn-primary btn-xs editar_tipo_contato" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
-                                            <button data-url="../tipos-de-contato/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            @if($tipo->fl_tipo_padrao_tct == 'N')
+                                                <button class="btn btn-primary btn-xs editar_tipo_contato" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
+                                            
+                                                <button data-url="../tipos-de-contato/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

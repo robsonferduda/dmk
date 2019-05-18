@@ -11,6 +11,7 @@ use App\Conta;
 use App\Estado;
 use App\Entidade;
 use App\TipoFone;
+use App\Traits\BootConta;
 use App\Enums\Nivel;
 use App\Enums\Roles;
 use Laracasts\Flash\Flash;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Session;
 
 class ContaController extends Controller
 {
+    use BootConta;
     
     public function __construct()
     {
@@ -78,6 +80,8 @@ class ContaController extends Controller
             $conta->saveOrFail();
 
             if($conta->cd_conta_con){
+
+                $this->bootConta($conta->cd_conta_con);
 
                 $entidade = new Entidade;
                 $entidade->cd_conta_con = $conta->cd_conta_con;
