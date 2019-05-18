@@ -98,6 +98,9 @@ class ContaController extends Controller
                     $role = Role::find(Roles::ADMINISTRADOR);
                     $user->assignRole($role);
 
+                    Session::put('SESSION_CD_CONTA', $conta->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                    Session::put('SESSION_CD_ENTIDADE', $entidade->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+
                     Auth::login($user);
                 }
             }
