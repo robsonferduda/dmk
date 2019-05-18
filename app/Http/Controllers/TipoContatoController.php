@@ -53,7 +53,7 @@ class TipoContatoController extends Controller
 
     public function update(Request $request,$id)
     {
-        $tipo = TipoContato::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $tipo = TipoContato::where('cd_conta_con',$this->cdContaCon)->where('fl_tipo_padrao_tct', 'N')->findOrFail($id);
  
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
 
@@ -69,7 +69,7 @@ class TipoContatoController extends Controller
 
     public function destroy($id)
     {
-        $tipo = TipoContato::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $tipo = TipoContato::where('cd_conta_con',$this->cdContaCon)->where('fl_tipo_padrao_tct', 'N')->findOrFail($id);
         
         if($tipo->delete())
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
