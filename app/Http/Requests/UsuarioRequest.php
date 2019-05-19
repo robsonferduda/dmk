@@ -30,8 +30,7 @@ class UsuarioRequest extends FormRequest
 
         $data = [
             'name'     => 'required',
-            'email'    => 'required',
-            'cd_nivel_niv' => 'required'
+            'email'    => 'required'
         ];
 
         if($this->request->get('_method') != 'PUT'){
@@ -62,8 +61,7 @@ class UsuarioRequest extends FormRequest
             'password.confirmed' => 'As senhas não conferem!',
             'data_nascimento.date_format' => 'Campo Data de Nascimento com formato inválido',
             'data_admissao.date_format' => 'Campo Data de Admissão com formato inválido',
-            'cd_tipo_fone_tfo.required' => 'Campo Tipo do Telefone é obrigatório quanto o telefone está preenchido',
-            'cd_nivel_niv' => 'O campo Perfil é obrigatório'
+            'cd_tipo_fone_tfo.required' => 'Campo Tipo do Telefone é obrigatório quanto o telefone está preenchido'
 
         ];
     }

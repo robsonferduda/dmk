@@ -19,6 +19,7 @@ use App\RegistroBancario;
 use App\Departamento;
 use App\Cargo;
 use App\Http\Requests\UsuarioRequest;
+use App\Http\Requests\UsuarioSenhaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
@@ -69,19 +70,8 @@ class UsuarioController extends Controller
 
     public function novo(){
 
-        //Auth::user()->removePermission('user');
-
         Auth::user()->addPermission('user'); 
-        //Auth::user()->addPermission('view.user',true);
-
-        //dd(Auth::user()->getPermissions());
-
-        //Auth::user()->removePermission('user');
-
-        //dd(Auth::user()->hasPermission('view.user'));
-
-        dd(Auth::user()->can('view.user'));
-
+        
         $niveis        = Nivel::where('fl_nivel_conta_niv','S')->orderBy('dc_nivel_niv')->get();
         $estadoCivis   = EstadoCivil::orderBy('nm_estado_civil_esc')->get();
         $tiposFone     = TipoFone::orderBy('dc_tipo_fone_tfo')->get();
@@ -169,6 +159,8 @@ class UsuarioController extends Controller
         if($entidade){
 
             $request->merge(['password' => \Hash::make($request->password)]);
+
+            $request->merge(['cd_nivel_niv' => \Nivel::COLABORADOR]);
 
             $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
             $request->merge(['data_admissao'   => date('Y-m-d',strtotime(str_replace('/','-',$request->data_admissao)))]);
@@ -315,7 +307,6 @@ class UsuarioController extends Controller
         $request->merge(['cd_entidade_ete' => $usuario->cd_entidade_ete]);
 
         if($usuario->cd_entidade_ete){
-
 
             if(!empty($request->data_nascimento))
                 $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
@@ -604,8 +595,39 @@ class UsuarioController extends Controller
 
     }
 
+    public function alterarSenha(UsuarioSenhaRequest $request,$id){
+
+        DB::beginTransaction();
+
+        $id = \Crypt::decrypt($id);
+        
+        $usuario  = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+
+        $request->merge(['password' => \Hash::make($request->password)]);
+
+        $usuario->fill($request->all());
+        if($usuario->saveOrFail()){
+        
+            DB::commit();
+            Flash::success('Senha alterada com sucesso');
+            return redirect('usuarios');
+        
+        }else{
+            
+            DB::rollBack();
+            Flash::error('Erro ao alterar senha');
+            return redirect('usuarios');
+            
+        }
+
+
+    }
+
     public function destroy($id)
     {
+
+        $id = \Crypt::decrypt($id);
+        
         $usuario = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
         if($usuario->delete())

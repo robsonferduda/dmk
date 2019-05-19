@@ -121,6 +121,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('usuarios/novo','UsuarioController@novo');
 	Route::get('usuarios/detalhes/{id}','UsuarioController@detalhes');
 	Route::get('usuarios/editar/{cdUsuario}','UsuarioController@editar');
+	Route::put('usuarios/alterar-senha/{id}','UsuarioController@alterarSenha');
 	Route::get('configuracoes/novo-grupo-de-cidades','GrupoCidadeController@novo');
 	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
 	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
