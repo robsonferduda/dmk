@@ -263,6 +263,10 @@ $(document).ready(function() {
 		var id  = $(this).closest('tr').find('td[data-id]').data('id');
 		var url = $(this).data('url');
 
+		if(!id){
+			id = $(this).data('id');
+		}
+
 		$("#modal_exclusao #url").val(url);
 		$("#modal_exclusao #id_exclusao").val(id);
 		$("#modal_exclusao").modal('show');

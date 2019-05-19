@@ -6,6 +6,7 @@
 .boxBtnTopo > button{margin-top: 10px; margin-left: 5px;}
 .boxBtnTopo .btnMargin {margin-right: 15px;}
 .marginTop10{margin-top: 10px;}
+.marginBottom5{margin-bottom: 5px;}
 .marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 #erroFone{color: #af4c4c; margin-top: 5px;}
@@ -22,7 +23,7 @@
     width: 100%;
     overflow-x: scroll;
 }
-
+.btn-upload{ padding: 1px 8px; padding: 1px 8px; color: #3276b1; cursor: pointer; }
 .btn-atuacao{ margin-right: 3px; margin-top: 3px;  }
 
 .taxa-honorario{ min-width: 90px; }

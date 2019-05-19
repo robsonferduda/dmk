@@ -37,6 +37,11 @@ class Processo extends Model implements AuditableContract
 
     public $timestamps = true;
 
+    public function anexos()
+    {
+        return $this->hasMany('App\AnexoProcesso','cd_processo_pro', 'cd_processo_pro');
+    }
+
     public function cliente()
     {
         return $this->hasOne('App\Cliente','cd_cliente_cli', 'cd_cliente_cli');

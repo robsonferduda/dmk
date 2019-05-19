@@ -48,6 +48,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
 	Route::get('processos/despesas/{id}','ProcessoController@financas');
+	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento');
 	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::get('processos/buscar','ProcessoController@buscar');
@@ -108,6 +109,9 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');
 	Route::get('email/excluir/{id}','EnderecoEletronicoController@excluir');
+
+	Route::resource('files','FileUploadController');
+	Route::post('file-upload', 'FileUploadController@upload')->name('file-upload');
 
 	Route::get('fones/entidade/{id}','FoneController@fones');
 	Route::get('fones/excluir/{id}','FoneController@excluir');

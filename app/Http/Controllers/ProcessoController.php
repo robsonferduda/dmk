@@ -70,12 +70,21 @@ class ProcessoController extends Controller
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso]);
     }
 
-     public function acompanhar()
+    public function acompanhar()
     {
 
         $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         return view('processo/acompanhamento',['processos' => $processos]);
+    }
+
+    public function acompanhamento($id){
+
+        $id = \Crypt::decrypt($id); 
+
+        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+    
+        return view('processo/acompanhar',['processo' => $processo]);
     }
 
     public function relatorio($id){
