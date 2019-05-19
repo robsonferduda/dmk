@@ -334,6 +334,21 @@ $(document).ready(function() {
 
 	});
 
+	$(".alterar_senha").click(function(){
+
+		var id = $(this).closest('tr').find('td[data-id]').data('id');
+		var action    = "usuarios/alterar-senha/"+id;
+
+		$('#frm-alterar-senha #id').val(id);
+		$('#frm-alterar-senha').attr('action', action);	
+		$('#alterarSenha').modal('show');
+	
+	});
+
+	$(".btn-alterar-senha").click(function(){
+		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+	});
+
 	$(".editar_tipo_contato").click(function(){
 
 		var id        = $(this).closest('tr').find('td[data-id]').data('id');

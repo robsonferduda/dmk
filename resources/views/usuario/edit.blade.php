@@ -71,13 +71,13 @@
                                        
                                         <div class="row">
                             
-                                            <section class="col col-8">
+                                            <section class="col col-sm-12">
                                                 <label class="label">Nome<span class="text-danger">*</span></label>
                                                 <label class="input">
                                                     <input required type="text" name="name" placeholder="Nome" value="{{ old('name') ? old('name') : $usuario->name }}">
                                                 </label>
                                             </section>
-                                            <section class="col col-4">
+                                      {{--   <section class="col col-4">
                                                 <label class="label">Perfil<span class="text-danger">*</span></label>
                                                 <label class="select"> 
                                                     <select required name="cd_nivel_niv">
@@ -87,7 +87,7 @@
                                                         @endforeach
                                                       
                                                     </select> <i></i> </label>
-                                            </section>
+                                            </section>--}}
                                         </div>
                                         <div class="row">
                                             <section class="col col-4">

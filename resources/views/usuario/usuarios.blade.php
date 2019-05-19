@@ -30,14 +30,14 @@
                         <span class="input-group-addon">Nome</span>
                         <input size="30" type="text" name="nome" class="form-control" id="Nome" placeholder="Nome" >
                     </div>                    
-                    <div class="form-group">
+                {{--    <div class="form-group">
                         <select name="perfil" class="form-control">
                             <option value="">Perfil</option>
                             @foreach(\App\Nivel::all() as $nivel)
                                 <option value="{{ $nivel->cd_nivel_niv }}">{{ $nivel->dc_nivel_niv }}</option>
                             @endforeach
                         </select>
-                    </div>                
+                    </div>  --}}          
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                     <a href="{{ url('usuarios') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
                 </form>
@@ -54,7 +54,7 @@
                                 <tr>                                    
                                     <th style="width: 35%;">Usuário</th>
                                     <th style="width: 25%;">E-mail</th>
-                                    <th style="width: 15%;">Perfil</th>
+                                    {{--<th style="width: 15%;">Nível</th>--}}
                                    
                                     <th style="width: 20%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
@@ -62,13 +62,14 @@
                             <tbody>
                                 @foreach($usuarios as $usuario)
                                     <tr>                                    
-                                        <td data-id="{{ $usuario->id }}" data-nome="{{ $usuario->name }}">{{ $usuario->name }}</td>
+                                        <td data-id="{{ \Crypt::encrypt($usuario->id) }}" data-nome="{{ $usuario->name }}">{{ $usuario->name }}</td>
                                         <td data-email="{{ $usuario->email }}">{{ $usuario->email }}</td>
-                                        <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td>
+                                      {{--  <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td> --}}
                                         <td>
                                             <a class="btn btn-default btn-xs" title="Detalhes" href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a class="btn btn-primary btn-xs editar_vara" title="Editar" href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-edit"></i></a>
-                                            <button data-url="usuarios/"  title="Excluir" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i></button>
+                                            <a data-toggle="modal" class="btn btn-warning btn-xs alterar_senha" title="Alterar Senha" href="" }}"><i class="fa fa-key"></i></a>
+                                            <button data-url="usuarios/"  title="Excluir" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i></button>                                          
                                         </td>
                                     </tr>
                                 @endforeach
@@ -78,6 +79,44 @@
                 </div>
             </div>
         </article>
+    </div>
+</div>
+<div class="modal fade modal_top_alto" id="alterarSenha" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-edit"></i> Alterar Senha
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-alterar-senha', 'method' => 'PUT', 'url' => 'usuarios/alterar-senha', 'class' => 'smart-form']) !!}
+                     <fieldset>
+                       <section class="col col-6">
+                            <label class="label">Senha<span class="text-danger">*</span></label>
+                            <label class="input">
+                                 <input required type="password" name="password" placeholder="Senha">
+                            </label>
+                            </section>  
+                            <section class="col col-6">
+                                <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input required type="password" name="password_confirmation" placeholder="Confirmar Senha">
+                                </label>
+                            </section>     
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-alterar-senha"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
     </div>
 </div>
 @endsection
