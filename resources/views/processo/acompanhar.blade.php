@@ -3,26 +3,23 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Clientes</a></li>
-        <li>Novo</li>
+        <li><a href="{{ url('processos') }}">Processos</a></li>
+        <li>Acompanhamento</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Detalhes </span> <span>> {{ $processo->nu_processo_pro }}</span>
+                <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Acompanhamento </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info fa-lg"></i>Relatório</a>
-            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
+            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i> Relatório</a>
+            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            
-           
         </div>
     </div>
     <div class="row">
@@ -31,6 +28,26 @@
                 @include('layouts/messages')
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="well">
+                    <form action="{{ url('correspondente/todos') }}" class="form-inline" method="GET" role="search">
+                        {{ csrf_field() }}
+                        <fieldset>
+                            <div class="row"> 
+                                <section class="col col-md-4">
+                                    <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                    <label class="label label-black" >Status do Processo</label>          
+                                    <select id="cidade" name="cd_cidade_cde" class="select2">
+                                        <option selected value="">Selecione uma situação</option>
+                                    </select> 
+                                </section> 
+                                <section class="col col-md-6">
+                                    <button class="btn btn-success marginTop17" type="submit"><i class="fa fa-refresh"></i> Atualizar Status</button>
+                                    <a data-toggle="modal" href="" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
+                                </section> 
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">
                         <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -67,6 +84,121 @@
                                 </fieldset>
                             </div>
                         </div>             
+                </div>
+            </article>
+            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="well">
+                    <div class="col-md-6">
+                        <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
+                        <div class="messaging">
+                            <div class="inbox_msg">
+                                <div class="mesgs">
+                                    <div class="msg_history">
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>Test which is a new approach to have all
+                                                solutions</p>
+                                              <span class="time_date"> 11:01 AM    |    June 9</span></div>
+                                          </div>
+                                        </div>
+                                        <div class="outgoing_msg">
+                                          <div class="sent_msg">
+                                            <p>Test which is a new approach to have all
+                                              solutions</p>
+                                            <span class="time_date"> 11:01 AM    |    June 9</span> </div>
+                                        </div>
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>Test, which is a new approach to have</p>
+                                              <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
+                                          </div>
+                                        </div>
+                                        <div class="outgoing_msg">
+                                          <div class="sent_msg">
+                                            <p>Apollo University, Delhi, India Test</p>
+                                            <span class="time_date"> 11:01 AM    |    Today</span> </div>
+                                        </div>
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>We work directly with our designers and suppliers,
+                                                and sell direct to you, which means quality, exclusive
+                                                products, at a price anyone can afford.</p>
+                                              <span class="time_date"> 11:01 AM    |    Today</span></div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class="type_msg">
+                                        <div class="input_msg_write">
+                                            <input type="text" class="write_msg" placeholder="Escrever mensagem" />
+                                        <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
+                        <div class="messaging">
+                            <div class="inbox_msg">
+                                <div class="mesgs">
+                                    <div class="msg_history">
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>Test which is a new approach to have all
+                                                solutions</p>
+                                              <span class="time_date"> 11:01 AM    |    June 9</span></div>
+                                          </div>
+                                        </div>
+                                        <div class="outgoing_msg">
+                                          <div class="sent_msg">
+                                            <p>Test which is a new approach to have all
+                                              solutions</p>
+                                            <span class="time_date"> 11:01 AM    |    June 9</span> </div>
+                                        </div>
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>Test, which is a new approach to have</p>
+                                              <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
+                                          </div>
+                                        </div>
+                                        <div class="outgoing_msg">
+                                          <div class="sent_msg">
+                                            <p>Apollo University, Delhi, India Test</p>
+                                            <span class="time_date"> 11:01 AM    |    Today</span> </div>
+                                        </div>
+                                        <div class="incoming_msg">
+                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                                          <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                              <p>We work directly with our designers and suppliers,
+                                                and sell direct to you, which means quality, exclusive
+                                                products, at a price anyone can afford.</p>
+                                              <span class="time_date"> 11:01 AM    |    Today</span></div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class="type_msg">
+                                        <div class="input_msg_write">
+                                            <input type="text" class="write_msg" placeholder="Escrever mensagem" />
+                                        <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
             </article>
         </div>

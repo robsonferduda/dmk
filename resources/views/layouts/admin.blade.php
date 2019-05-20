@@ -230,23 +230,23 @@
                             </li>
                         </ul>   
                     </li>
-
-
                     <li class="">
                         <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>
                     </li> 
+                    <li>
+                        <span class="minifyme"> 
+                            <a href="{{ url('configuracao/minify') }}"><i class="fa fa-arrow-circle-left hit" style="color: white;" data-toggle="modal" data-target="#redefinir_tela"></i></a> 
+                        </span>
+                    </li>
                 </ul>
-            </nav>
-
-            <span class="minifyme"> 
-                <a href="{{ url('configuracao/minify') }}"><i class="fa fa-arrow-circle-left hit" style="color: white;" data-toggle="modal" data-target="#redefinir_tela"></i></a> 
-            </span>
-
+            </nav>          
         </aside>
 
         <div id="main" role="main">
             @yield('content')
         </div>
+
+        <div style="clear: both;"></div>
        
         <div class="page-footer">
             <div class="row">
@@ -254,7 +254,7 @@
                     <span class="txt-color-white">Nome do Sistema <span class="hidden-xs"> - Slogan</span> © 2019</span>
                 </div>
             </div>
-        </div>
+        </div>    
 
         <div class="modal fade in modal_top_alto" id="redefinir_tela" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">

@@ -26,6 +26,20 @@ $(document).ready(function() {
 
 	/** =======================================================   **/
 
+	//Redimensionar tela
+
+	if($('aside').height() < 800){
+		$("#main").css('min-height',($('aside').height()+200));
+		$("aside").css('height',($('#main').height()));
+	}
+
+	$(".item_pai").click(function(){
+		if($('aside').height() < 800){
+			$("#main").css('min-height',($('aside').height()+200));
+			$("aside").css('height',($('#main').height()));
+		}
+	});
+
 	$('.upload-result').on('click', function (ev) {
             $uploadCrop.croppie('result', {
                 type: 'canvas',
