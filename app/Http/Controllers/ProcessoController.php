@@ -50,6 +50,8 @@ class ProcessoController extends Controller
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
         }
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
@@ -67,7 +69,7 @@ class ProcessoController extends Controller
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
         }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro')->get();          
 
-        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso]);
+        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
 
     public function acompanhar()
@@ -493,13 +495,35 @@ class ProcessoController extends Controller
      
         $numero   = $request->get('nu_processo_pro');
         $tipo = $request->get('cd_tipo_processo_tpo');
+        $tipoServico = $request->get('cd_tipo_servico_tse');
+
+        if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso');
+
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
 
         $processos = Processo::where('cd_conta_con', $this->cdContaCon);
+
+        if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+
+            $query->where('cd_tipo_servico_tse', $tipoServico);
+
+        });
         if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
         if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
-          $processos = $processos->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo]);
+        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso]);
     }
 
     public function novo(){
@@ -511,7 +535,7 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
         
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
 
         $varas = \DB::table(\DB::raw("($sub) as sub "))
         ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
@@ -519,7 +543,7 @@ class ProcessoController extends Controller
         ->get();
 
         $tiposProcesso  = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
-        $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
         return view('processo/novo',['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico]);
 
@@ -536,7 +560,7 @@ class ProcessoController extends Controller
             $estados =  \Cache::get('estados');
         }
 
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->toSql();
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
 
         $varas = \DB::table(\DB::raw("($sub) as sub "))
         ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
@@ -568,7 +592,7 @@ class ProcessoController extends Controller
         if(!empty($processo->dt_prazo_fatal_pro))
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
-        $tiposDeServico = TipoServico::orderBy('nm_tipo_servico_tse')->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth','vl_taxa_cliente_pth')->first();
 
         return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
