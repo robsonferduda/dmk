@@ -93,7 +93,7 @@
           <div class="content" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;">
 
             <!-- START CENTERED WHITE CONTAINER -->
-            <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">Cadastre-se no Sistema DMK - Uma solução completa para Correspondentes</span>
+            <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">Cadastre-se no Sistema DMK</span>
             <table class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;">
 
               <!-- START MAIN CONTENT AREA -->
@@ -103,7 +103,7 @@
                     <tr>
                       <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
                         <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Olá,</p>
-                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Você recebeu essa mensagem porque foi convidado por <strong>{{ $nome }}</strong> para realizar o cadastro em nosso sistema e ter a seu alcance uma plataforma completa para o gerenciamento dos seus dados como correspondente em processos em todo o Brasil. Para realizar o cadastro, clique no endereço abaixo: </p>
+                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Você recebeu um convite do <strong>{{ $nome }}</strong> para realizar o cadastro como correspondente em nosso sistema. Clique no botão abaixo para se cadastrar: </p>
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
                           <tbody>
                             <tr>
@@ -119,8 +119,8 @@
                             </tr>
                           </tbody>
                         </table>
-                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Após fazer o cadastro, você terá acesso a uma plataforma completa para administrar seus processos e correpondentes em todo Brasil.</p>
-                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Aguardamos seu cadastro!</p>
+                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Após realizar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.</p>
+                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Aguardamos seu cadastro para darmos início a parceria.</p>
                       </td>
                     </tr>
                   </table>
@@ -129,6 +129,7 @@
 
             <!-- END MAIN CONTENT AREA -->
             </table>
+            <p><strong style="color: #eb5a46;">Este e-mail foi gerado automaticamente, por favor não responda.</strong></p>
 
             <!-- START FOOTER -->
             <div class="footer" style="clear: both; Margin-top: 10px; text-align: center; width: 100%;">

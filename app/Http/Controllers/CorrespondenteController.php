@@ -468,11 +468,13 @@ class CorrespondenteController extends Controller
         
         $data = array('nome'=>Auth::user()->name);
 
+        /*
         $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
         if(!empty($unique)){
             Flash::warning('Email já cadastrado no sistema. Utilize a busca para encontrar o registro.');
             return redirect('correspondente/novo');
         }
+        */
             
         Mail::send('correspondente/email_convite', $data, function($message) use ($to_name, $to_email) {
             $message->to($to_email, $to_name)
