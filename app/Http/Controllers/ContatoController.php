@@ -7,6 +7,7 @@ use App\Fone;
 use App\Contato;
 use App\Entidade;
 use App\Endereco;
+use App\TipoContato;
 use App\EnderecoEletronico;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContatoRequest;
@@ -65,13 +66,15 @@ class ContatoController extends Controller
     public function editar($id)
     {
         $contato = Contato::where('cd_contato_cot',$id)->first();
-        return view('contato/editar',['contato' => $contato]);
+        $tipos = TipoContato::where('cd_conta_con',$this->conta)->get();
+
+        return view('contato/editar',['contato' => $contato, 'tipos' => $tipos]);
     }
 
     public function novo(){
 
-    	return view('contato/novo');
-
+        $tipos = TipoContato::where('cd_conta_con',$this->conta)->get();
+    	return view('contato/novo',['tipos' => $tipos]);
     }
 
     public function store(ContatoRequest $request)

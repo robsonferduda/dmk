@@ -48,7 +48,7 @@
                                             <label class="label" >Tipo de Contato <span class="text-danger">Campo obrigatório</span></label>          
                                             <select  id="cd_tipo_contato_tct" name="cd_tipo_contato_tct" class="select2">
                                                 <option selected>Selecione um tipo</option>
-                                                @foreach(App\TipoContato::all() as $tipo) 
+                                                @foreach($tipos as $tipo) 
                                                     <option {!! ($contato->cd_tipo_contato_tct == $tipo->cd_tipo_contato_tct) ? 'selected' : ''  !!} value="{{$tipo->cd_tipo_contato_tct}}">{{ $tipo->nm_tipo_contato_tct}}</option>
                                                 @endforeach
                                             </select> 
