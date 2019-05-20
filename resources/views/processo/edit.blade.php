@@ -251,7 +251,7 @@
                                                 <div class="tabelah">
                                                     <table class="table table-bordered">
                                                         <thead>
-                                                            <th style="width: 50%">Tipos de Serviços</th>
+                                                            <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
                                                             <th style="">Valor Cliente</th>
                                                             <th style="">Valor Correspondente</th>
                                                             <th style="">Nota Fiscal Cliente</th>
@@ -259,7 +259,7 @@
                                                         <tbody>  
                                                             <tr>  
                                                                 <td>                                       
-                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
+                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" >
                                                                         <option selected value="">Selecione um tipo de serviço
                                                                         </option>      
 
@@ -330,6 +330,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
 
