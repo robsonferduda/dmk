@@ -246,7 +246,7 @@
                                                 <div class="tabelah">
                                                     <table class="table table-bordered">
                                                         <thead>
-                                                            <th style="width: 50%">Tipos de Serviços</th>
+                                                            <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
                                                             <th style="">Valor Cliente</th>
                                                             <th style="">Valor Correspondente</th>
                                                             <th style="">Nota Fiscal Cliente</th>
