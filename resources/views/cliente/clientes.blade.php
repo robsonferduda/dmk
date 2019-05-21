@@ -85,7 +85,8 @@
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i></a>
-                                            <a title="Honorários" class="btn btn-warning btn-xs" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i></a>                                         
+                                            <a title="Honorários" class="btn btn-warning btn-xs" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i></a>
+                                            <a title="Contatos" class="btn btn-default btn-xs" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-group"></i></a>                              
                                             <button title="Excluir" data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
