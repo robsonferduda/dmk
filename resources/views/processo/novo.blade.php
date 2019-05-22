@@ -333,6 +333,7 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
+            $("#taxa-honorario-correspondente").val('');
 
           },
           open: function(event, ui){
@@ -361,6 +362,7 @@
             $("input[name='cd_cliente_cli']").val(ui.item.id);
             $("input[name='nota_fiscal_cliente']").val(ui.item.nota);
             $("input[name='nota_fiscal_cliente']").prop('disabled', false);
+            $("#taxa-honorario-cliente").val('');
 
             buscaAdvogado();
         
