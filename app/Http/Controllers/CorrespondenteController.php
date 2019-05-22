@@ -589,6 +589,7 @@ class CorrespondenteController extends Controller
         $atuacao = new CidadeAtuacao();
         $atuacao->cd_entidade_ete = $request->entidade;
         $atuacao->cd_cidade_cde = $request->cidade;
+        $atuacao->fl_origem_cat = $request->atuacao;
 
         if($atuacao->save())
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);

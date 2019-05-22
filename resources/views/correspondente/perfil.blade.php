@@ -71,6 +71,11 @@
                                         <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>OAB</strong>: {{ ($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : 'Não informado' }}</span>
                                     </p>
                                 </li>
+                                <li>
+                                    <p class="text-muted">
+                                        <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}</span>
+                                    </p>
+                                </li>
                             </ul>
 
                         <h4 style="margin-top: 25px;">
