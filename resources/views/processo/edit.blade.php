@@ -246,9 +246,9 @@
                                         
                                                 <div class="alert alert-info" role="alert">
                                                     <i class="fa-fw fa fa-info"></i>
-                                                    <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                                    <strong>Informação!</strong> Ao selecionar o tipo de serviço, os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente na cidade selecionada, caso os valores existam. Sendo permitida sua mudança.
                                                 </div>
-                                                <div class="tabelah">
+                                                <div class="">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
