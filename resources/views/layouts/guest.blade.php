@@ -53,7 +53,7 @@
 		<div style="position: relative; top: 25%;">
 			<div id="content" class="container">
 				<div class="row">
-					<div style="width: 25%; margin: 0 auto; top: 30%;">
+					<div class="col-xs-10 col-sm-10 col-md-3 col-lg-3" style="margin: 0 auto; top: 30%; float: none;">
 						<div class="well no-padding">
 							@yield('content')
 						</div>
