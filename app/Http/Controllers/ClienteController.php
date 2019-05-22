@@ -34,7 +34,7 @@ class ClienteController extends Controller
 
     public function index()
     {
-        $clientes = Cliente::with('tipoPessoa')->where('cd_conta_con', $this->conta)->take(10)->orderBy('created_at','DESC')->get();
+        $clientes = Cliente::with('entidade')->with('tipoPessoa')->where('cd_conta_con', $this->conta)->take(10)->orderBy('created_at','DESC')->get();
         return view('cliente/clientes',['clientes' => $clientes]);
     }
 
@@ -56,7 +56,7 @@ class ClienteController extends Controller
 
             $dados = DB::table('contato_cot')
                         ->leftJoin('tipo_contato_tct','tipo_contato_tct.cd_tipo_contato_tct','=','contato_cot.cd_tipo_contato_tct')
-                        ->leftJoin('entidade_ete','entidade_ete.cd_entidade_ete','=','contato_cot.cd_entidade_ete')
+                        ->leftJoin('entidade_ete','entidade_ete.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete')
                         ->leftJoin('endereco_ede','endereco_ede.cd_entidade_ete','=','entidade_ete.cd_entidade_ete')
                         ->leftJoin('fone_fon','fone_fon.cd_entidade_ete','=','entidade_ete.cd_entidade_ete')
                         ->leftJoin('endereco_eletronico_ele','endereco_eletronico_ele.cd_entidade_ete','=','entidade_ete.cd_entidade_ete')
@@ -372,7 +372,7 @@ class ClienteController extends Controller
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
     public function listar()
     {
-        $clientes = Cliente::take(10)->orderBy('created_at','DESC')->get();
+        $clientes = Cliente::with('entidade')->where('cd_conta_con',$this->conta)->take(10)->orderBy('created_at','DESC')->get();
         return view('cliente/clientes',['clientes' => $clientes]);
     }
 
@@ -387,7 +387,7 @@ class ClienteController extends Controller
 
                                 $join->on('cliente_cli.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
                                 $join->where('entidade_ete.cd_tipo_entidade_tpe','=',8);
-                                if(!empty($nome)) $join->where('nm_razao_social_cli','ilike',"%$nome%");
+                                if(!empty($nome)) $join->where('nm_razao_social_cli','ILIKE','%'.$nome.'%');
                                 if(!empty($tipo)) $join->where('cliente_cli.cd_tipo_pessoa_tpp','=',$tipo);
                                 if(!empty($situacao)) $join->where('fl_ativo_cli','=',$situacao);
 
