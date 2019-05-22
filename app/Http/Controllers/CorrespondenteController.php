@@ -480,7 +480,7 @@ class CorrespondenteController extends Controller
         Mail::send('correspondente/email_convite', $data, function($message) use ($to_name, $to_email) {
             $message->to($to_email, $to_name)
                     ->subject('Cadastro Sistema DMK');
-            $message->from('robsonferduda@gmail.com','Administrador do Sistema');
+            $message->from('financeiro@dmkadvogados.com.br','Atendimento DMK');
             Flash::success('Convite enviado com sucesso. O destinatário poderá realizar seu cadastro para aparecer nas buscas por correspondentes.');
         });
 
