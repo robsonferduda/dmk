@@ -364,7 +364,9 @@ $(document).ready(function() {
 	});
 
 	$(".btn-alterar-senha").click(function(){
-		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+
+		if($('#frm-alterar-senha #password').val().trim() != '' && $('#frm-alterar-senha #password_confirmation').val().trim() != '')
+			$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
 	$(".editar_tipo_contato").click(function(){
