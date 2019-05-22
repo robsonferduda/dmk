@@ -35,7 +35,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
+	Route::get('cliente/contatos/{id}','ClienteController@contatos');
+	Route::get('cliente/{id}/contato/novo','ClienteController@novoContato');
+	Route::get('cliente/{id}/contato/buscar/{inicial}','ClienteController@buscarContato');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
+	Route::post('cliente/contato/novo/{id}','ClienteController@createContato');
 	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
 	Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCliente');
@@ -166,4 +170,7 @@ Route::group(['middleware' => ['web']], function () {
 		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
 	});
 
+	Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
+	Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
+	
 });

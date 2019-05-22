@@ -88,13 +88,13 @@
                             <hr/>
 
                             <header>
-                                <i class="fa fa-check"></i> Cidades de Atuação 
+                                <i class="fa fa-map-marker"></i> Comarca de Origem
                             </header>
                             <fieldset>
                                 <div class="row">                     
                                     <section class="col col-4">
                                         <label class="label" >Estado</label>          
-                                        <select  id="estado_atuacao" name="cd_estado_est" class="select2">
+                                        <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
                                                 @foreach(\App\Estado::all() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
@@ -104,13 +104,43 @@
                                     <section class="col col-6">
                                         <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
                                         <label class="label">Cidade</label>          
-                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2">
+                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
                                             <option selected value="">Selecione a cidade</option>
                                         </select> 
                                     </section> 
                                     <section class="col col-2">
                                         <label class="label" style="color: white;">Adicionar</label>
-                                        <button id="adicionar-atuacao" type="button" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
+                                        <button data-atuacao="S" type="button" class="btn btn-success adicionar-atuacao" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
+                                    </section>
+                                </div> 
+                            </fieldset>
+
+                            <hr/>
+
+                            <header>
+                                <i class="fa fa-check"></i> Cidades de Atuação 
+                            </header>
+                            <fieldset>
+                                <div class="row">                     
+                                    <section class="col col-4">
+                                        <label class="label" >Estado</label>          
+                                        <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
+                                            <option selected value="">Selecione</option>
+                                                @foreach(\App\Estado::all() as $estado) 
+                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                @endforeach
+                                        </select> 
+                                    </section>
+                                    <section class="col col-6">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                        <label class="label">Cidade</label>          
+                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
+                                            <option selected value="">Selecione a cidade</option>
+                                        </select> 
+                                    </section> 
+                                    <section class="col col-2">
+                                        <label class="label" style="color: white;">Adicionar</label>
+                                        <button data-atuacao="N" type="button" class="btn btn-success adicionar-atuacao" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
                                     </section>
                                 </div> 
                             </fieldset>
@@ -280,7 +310,7 @@
                                         <div class="row">                    
                                             <section class="col col-4">                                               
                                                 <label class="label">Estado</label>          
-                                                <select id="estado" name="cd_estado_est" class="select2 estado">
+                                                <select id="pai_cidade_endereco" name="cd_estado_est" class="select2 estado">
                                                     <option selected value="">Selecione</option>
                                                     @foreach(\App\Estado::all() as $estado) 
                                                         <option {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade) ? (old('cd_estado_est', $correspondente->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
@@ -291,7 +321,7 @@
                                             <section class="col col-8">
                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
                                                <label class="label" >Cidade</label>          
-                                                <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
+                                                <select  id="cidade" disabled name="cd_cidade_cde" class="select2 pai_cidade_endereco">
                                                    <option selected value="">Selecione a cidade</option>
                                                 </select> 
                                             </section>                               
@@ -360,21 +390,32 @@
 @endsection
 @section('script')
 <script type="text/javascript">
+
     $(document).ready(function() {
 
-        $('#adicionar-atuacao').click(function(){
+        var _location = document.location.toString();
+        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+        var applicationName = _location.substring(0, applicationNameIndex) + '/';
+        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
+        var pathname = _location.substring(0, webFolderIndex);
+
+        $('.adicionar-atuacao').click(function(){
 
             var entidade = $("#entidade").val();
             var cidade = $("#cidade_atuacao").val();
+            var atuacao = $(this).data("atuacao");
+
+            alert(atuacao);
 
             $.ajax(
             {
                 type: "POST",
-                url: "http://localhost/dmk/public/correspondente/atuacao/adicionar",
+                url: pathname+"/correspondente/atuacao/adicionar",
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
                     "entidade": entidade,
-                    "cidade": cidade
+                    "cidade": cidade,
+                    "atuacao": atuacao
                 },
                 beforeSend: function()
                 {
@@ -402,7 +443,7 @@
 
             $.ajax({
 
-                url: "http://localhost/dmk/public/correspondente/atuacao/"+entidade,
+                url: pathname+"/correspondente/atuacao/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
 
@@ -418,7 +459,7 @@
                         entidade = $("#entidade").val();
 
                         $.ajax({
-                                url: 'http://localhost/dmk/public/correspondente/atuacao/excluir/'+atuacao,
+                                url: pathname+'/correspondente/atuacao/excluir/'+atuacao,
                                 type: 'GET',
                                 dataType: "JSON",
                             success: function(response)
@@ -439,8 +480,6 @@
 
                 }
             });
-
-
         }
 
         $(".btn-atuacao").click(function(){
@@ -449,7 +488,7 @@
             entidade = $("#entidade").val();
 
             $.ajax({
-                    url: 'http://localhost/dmk/public/correspondente/atuacao/excluir/'+atuacao,
+                    url: pathname+'/correspondente/atuacao/excluir/'+atuacao,
                     type: 'GET',
                     dataType: "JSON",
                 success: function(response)
@@ -465,38 +504,36 @@
 
         });
 
-        var buscaCidade = function(){
-
-            estado = $("#estado").val();
+        var buscaCidade = function(estado,target){
 
             if(estado != ''){
 
                 $.ajax(
                     {
-                        url: 'http://localhost/dmk/public/cidades-por-estado/'+estado,
+                        url: pathname+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Carregando...</option>');
-                            $('#cidade').prop( "disabled", true );
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Carregando...</option>');
+                            $('.'+target).prop( "disabled", true );
 
                         },
                         success: function(response)
                         {                    
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Selecione</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                    $('.'+target).append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
                                 }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                    $('.'+target).append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
                                 }
                                 
                             });       
-                            $('#cidade').trigger('change');     
-                            $('#cidade').prop( "disabled", false );        
+                            $('.'+target).trigger('change');     
+                            $('.'+target).prop( "disabled", false );        
                         },
                         error: function(response)
                         {
@@ -506,57 +543,8 @@
             }
         }
 
-        buscaCidade();
-
-        $("#estado").change(function(){
-            buscaCidade(); 
-        });
-
-        var buscaCidadeAtuacao = function(){
-
-            estado = $("#estado_atuacao").val();
-
-            if(estado != ''){
-
-                $.ajax(
-                    {
-                        url: 'http://localhost/dmk/public/cidades-por-estado/'+estado,
-                        type: 'GET',
-                        dataType: "JSON",
-                        beforeSend: function(){
-                            $('#cidade_atuacao').empty();
-                            $('#cidade_atuacao').append('<option selected value="">Carregando...</option>');
-                            $('#cidade_atuacao').prop( "disabled", true );
-
-                        },
-                        success: function(response)
-                        {                    
-                            $('#cidade_atuacao').empty();
-                            $('#cidade_atuacao').append('<option selected value="">Selecione</option>');
-                            $.each(response,function(index,element){
-
-                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade_atuacao').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
-                                }else{
-                                    $('#cidade_atuacao').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
-                                }
-                                
-                            });       
-                            $('#cidade_atuacao').trigger('change');     
-                            $('#cidade_atuacao').prop( "disabled", false );        
-                        },
-                        error: function(response)
-                        {
-                            //console.log(response);
-                        }
-                    });
-            }
-        }
-
-        buscaCidadeAtuacao();
-
-        $("#estado_atuacao").change(function(){
-            buscaCidadeAtuacao(); 
+        $(".estado").change(function(){
+            buscaCidade($(this).val(),$(this).attr('id')); 
         });
 
     });

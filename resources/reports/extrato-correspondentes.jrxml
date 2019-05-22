@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
+	<property name="template.type" value="columnar"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bancoQuery" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+      t2.nm_titular_dba,
+      t2.nu_cpf_cnpj_dba,
+      t4.nm_banco_ban,  
+      t2.nu_agencia_dba,
+      t2.nu_conta_dba,
+      sum(t5.vl_taxa_honorario_correspondente_pth) as vl_taxa_honorario_correspondente_pth,
+      t6.nm_tipo_conta_tcb,
+      t0.nm_razao_social_con
+FROM
+    public.conta_con t0
+    INNER JOIN entidade_ete t1 ON (t0.cd_conta_con = t1.cd_conta_con)
+    INNER JOIN dados_bancarios_dba t2 ON (t1.cd_entidade_ete = t2.cd_entidade_ete)
+    INNER JOIN processo_pro t3 ON (t3.cd_correspondente_cor = t0.cd_conta_con)
+    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
+    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+    INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
+WHERE
+    t0.fl_correspondente_con = 'S'
+    AND
+    t3.deleted_at IS NULL
+    $P!{bancoQuery}
+GROUP BY 
+     t2.nm_titular_dba,
+      t2.nu_cpf_cnpj_dba,
+      t4.nm_banco_ban,  
+      t2.nu_agencia_dba,
+      t2.nu_conta_dba,
+      t6.nm_tipo_conta_tcb,
+      t0.nm_razao_social_con]]>
+	</queryString>
+	<field name="nm_titular_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_titular_dba"/>
+	</field>
+	<field name="nu_cpf_cnpj_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_cpf_cnpj_dba"/>
+	</field>
+	<field name="nm_banco_ban" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_banco_ban"/>
+	</field>
+	<field name="nu_agencia_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_agencia_dba"/>
+	</field>
+	<field name="nu_conta_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_conta_dba"/>
+	</field>
+	<field name="vl_taxa_honorario_correspondente_pth" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="vl_taxa_honorario_correspondente_pth"/>
+	</field>
+	<field name="nm_tipo_conta_tcb" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
+	</field>
+	<field name="nm_razao_social_con" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_razao_social_con"/>
+	</field>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{nm_razao_social_con}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="355" y="0" width="100" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor: R$]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="100" y="0" width="190" height="15" uuid="b24d7a17-bcce-4fb0-bf6e-10995c5292f5"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nm_razao_social_con}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="100" height="15" uuid="ae46ff28-8817-4d2e-aae7-99f0f09d687c"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Razão Social:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="23">
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="2" y="10" width="551" height="1" uuid="5e41185f-9c90-45ca-839b-e28b308c1430"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="151" splitType="Stretch">
+			<image>
+				<reportElement x="2" y="0" width="118" height="132" uuid="d47168ce-aae1-4efc-8d24-e15195025a5a"/>
+				<imageExpression><![CDATA["../tree1.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Title" x="120" y="10" width="435" height="93" uuid="f49d68fd-a2c7-44ec-a5fc-9300d10c85a1"/>
+				<textElement>
+					<font size="80" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DMK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="220" y="103" width="333" height="29" uuid="eef58983-008d-4a5b-8e47-97f8d4670c7a"/>
+				<textElement>
+					<font size="22" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Pagamento Correspondentes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="554" height="16" uuid="7346e15a-7e5e-49a7-a383-4bdf0df0338d"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[20/05/2019 até 21/05/2019]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="82" splitType="Stretch">
+			<textField>
+				<reportElement x="100" y="0" width="180" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
+				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="15" uuid="ce5d8451-df5a-47cf-9ac5-6ea894dad8c3"/>
+				<text><![CDATA[Nome do Titular]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="15" width="180" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a"/>
+				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="15" width="100" height="15" uuid="d4595ba4-4dcd-412f-aaee-7ec9457bf732"/>
+				<text><![CDATA[CPF/CNPJ:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="30" width="180" height="15" uuid="80a3b43c-cc86-41e5-b332-58a315b2474c"/>
+				<textFieldExpression><![CDATA[$F{nm_banco_ban}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="30" width="100" height="15" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2"/>
+				<text><![CDATA[Banco:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="45" width="180" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
+				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="45" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
+				<text><![CDATA[Conta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="60" width="180" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
+				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="60" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
+				<text><![CDATA[Tipo de Conta:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="12" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="fab082df-3ca0-43ac-900e-4da3f8b5a45d"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="2" y="0" width="555" height="13" forecolor="#D0B48E" backcolor="#9DB1B8" uuid="bfdca178-800d-445c-9a31-bb616a00e8ce"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="513" y="0" width="40" height="13" forecolor="#FFFFFF" uuid="2fba0f87-635e-476d-858f-d102b26146fe"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" mode="Transparent" x="433" y="0" width="80" height="13" forecolor="#FFFFFF" uuid="e454d23d-bcfc-4c79-a399-0ef520a3150a"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF" uuid="14d8de1e-8695-4078-a67f-0e69172574d5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

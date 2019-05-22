@@ -24,7 +24,6 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 10 clientes cadastrados. Utilize as opções de busca para personalizar o resultado.</label>
                 <form action="{{ url('cliente/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="input-group">
@@ -53,6 +52,7 @@
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                 </form>
             </div>
+            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 10 clientes cadastrados. Utilize as opções de busca para personalizar o resultado.</label>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -85,7 +85,8 @@
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i></a>
-                                            <a title="Honorários" class="btn btn-warning btn-xs" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i></a>                                         
+                                            <a title="Honorários" class="btn btn-warning btn-xs" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i></a>
+                                            <a title="Contatos" class="btn btn-default btn-xs" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i></a>                              
                                             <button title="Excluir" data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>

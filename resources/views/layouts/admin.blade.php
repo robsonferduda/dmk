@@ -116,6 +116,9 @@
                             <li>
                                 <a href="{{ url('correspondentes') }}" title="Correspondentes"><span class="menu-item-parent">Listar</span></a>
                             </li>
+                            {{--<li>
+                                <a href="{{ url('correspondente/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
+                            </li>--}}
                         </ul>   
                     </li>
                     @endrole
@@ -215,7 +218,7 @@
                         </ul>   
                     </li>
                     @endrole
-
+                    @role('administrator') 
                     <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
                         <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'permissoes') ? 'display: block;' : 'display: none;' }}">
@@ -230,6 +233,7 @@
                             </li>
                         </ul>   
                     </li>
+                    @endrole
                     <li class="">
                         <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>
                     </li> 

@@ -15,7 +15,8 @@ class CidadeAtuacao extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
     						'cd_entidade_ete',
-    						'cd_cidade_cde'
+    						'cd_cidade_cde',
+                            'fl_origem_cat'
     					  ];
 
     public $timestamps = true;
