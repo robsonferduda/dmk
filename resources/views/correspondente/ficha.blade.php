@@ -405,8 +405,6 @@
             var cidade = $("#cidade_atuacao").val();
             var atuacao = $(this).data("atuacao");
 
-            alert(atuacao);
-
             $.ajax(
             {
                 type: "POST",

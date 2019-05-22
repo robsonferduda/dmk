@@ -16,6 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-list"></i> Listar Correspondentes</a>
+            <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo Correspondente</button>   
             <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite para Cadastro</button>            
         </div>
     </div>
@@ -29,9 +30,6 @@
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
-                            <section class="col col-md-12"> 
-                                <span>BUSCAR NO DIRETÓRIO CENTRAL DE CORRESPONDENTES</span><span class="text-primary"> Selecione um ou mais critérios<span><hr/>
-                            </section>
                             <section class="col col-md-4">
                                 <label class="label label-black" >Nome</label><br>
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
@@ -112,46 +110,46 @@
         </article>
     </div>
 </div>
-<div class="modal fade modal_top_alto" id="modalCadastroCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+<div class="modal fade modal_top_alto" id="modalNovoCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Cadastrar Correspondente</h4>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Novo Correspondente</h4>
             </div>            
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/convidar', 'class' => 'form']) !!}
-                        <div class="row"> 
-                            <section class="col col-md-6"> 
-                                <div class="form-group" style="width: 100%;">
-                                    <label>Email</label>
-                                    <input type="text" class="form-control" name="email" id="email" placeholder="Email" value="{{old('email')}}">
-                                </div> 
-                            </section>
-                            <section class="col col-md-6"> 
-                                <div class="form-group" style="width: 100%;">
-                                    <label>CPF/CNPJ</label>
-                                    <input type="text" class="form-control" name="email" id="email" placeholder="CPF/CNPJ" value="{{old('email')}}">
-                                </div>  
-                            </section>
+                        
+                        {!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro/conta', 'class' => 'smart-form client-form']) !!}
+                        <div class="well" style="margin: 0px 15px; padding: 5px;">
+                            <p>
+                                <strong class="text-danger">Atenção!</strong><br/>
+                                Ao realizar o cadastro, o correpondente é cadastrado e inserido automaticamente na sua lista de correspondentes.
+                                O email informado recebe uma mensagem com as informações de cadastro e o endereço para acessar o sistema atualizar seus dados pessoais.
+                            </p>
                         </div>
-                        <div class="row marginTop10"> 
-                            <section class="col col-md-12"> 
-                                <div class="form-group" style="width: 100%;">
-                                    <label>Nome</label>
-                                    <input type="text" class="form-control" name="email" id="email" placeholder="Nome" value="{{old('email')}}">
-                                </div> 
-                            </section>
-                        </div>
-                        <div class="row">    
-                            <div class="center marginTop20">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
-                                <button type="submit" id="btnSalvarTelefone" class="btn btn-success"><i class="fa-fw fa fa-save"></i> Salvar</button>
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
+                            <fieldset>
+                                    <h5 style="margin-bottom: 10px;"><strong>Dados do Correspondente</strong></h5>
+                                    <section>
+                                        <label class="input"> <i class="icon-append fa fa-user"></i>
+                                        <input type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
+                                        <b class="tooltip tooltip-bottom-right">Nome Completo</b> </label>
+                                    </section>
+                                    <section>
+                                        <label class="input"> <i class="icon-append fa fa-envelope"></i>
+                                        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
+                                        <b class="tooltip tooltip-bottom-right">Informe seu email</b> </label>
+                                    </section>
+                                    <section class="center"> 
+                                        <p>Todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
+                                    </section>
+                                </fieldset>
+                                <footer>
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Cadastrar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>                                    
+                                </footer>
+                        {!! Form::close() !!} 
                     </div>
                 </div>
             </div>
@@ -169,7 +167,10 @@
                 <div class="row">
                     <div class="col-md-12 center">
                         {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/convidar', 'class' => 'form-inline']) !!}
-                            <span>Informe o email do convidado para enviar o endereço para cadastro</span>
+                            <p style="font-size: 14px;">
+                                Ao enviar o convite o correspondente receberá uma mensagem, no email informado abaixo, para acessar o sistema e realizar seu cadastro.
+                            </p>
+                            <span>Informe o email do correspondente para enviar o convite</span>
                             <div style="margin-top: 8px;">
                                 <div class="form-group" style="width: 100%;">
                                     <input type="text" class="form-control" style="width: 60%;" name="email" id="email" placeholder="Email" value="{{old('email')}}">
@@ -200,7 +201,7 @@
                     <div class="col-md-12 center">
                         {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/adicionar', 'class' => 'form-inline']) !!}
                             <p style="font-size: 14px;">
-                                Essa operação irá adicionar o corresponde da coleção na sua lista de correspondentes.
+                                Essa operação irá adicionar o correspondentes a sua lista de correspondentes.
                                 Após adicionar o correspondente você pode adicionar os valores referentes aos serviços prestados, por comarca.
                             </p>
                             <h6>Confirma a inclusão na sua lista de Correspondentes?</h6>
@@ -229,12 +230,15 @@
             </div>            
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 center data-modal-correspondente-loading">
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, buscando dados...</h2>
+                    </div>
+                    <div class="col-md-12 data-modal-correspondente" style="display: none">
                         <label id="nm_correspondente"><strong>Nome: </strong><span></span></label><br/>
                         <label id="tipo_correpondente"><strong>Tipo: </strong><span></span></label><br/>
                         <label id="identificacao_correpondente"><strong>CPF/CNPJ: </strong><span></span></label><br/>
                         <label id="email_correpondente"><strong>Email: </strong><span></span></label><br/>
-                        <label id="fone_correpondente"><strong>Telefone: </strong><span></span></label><hr>
+                        <label id="fone_correpondente"><strong>Telefone: </strong><span></span></label>
                     </div>
                 </div>
             </div>
@@ -247,6 +251,7 @@
 @endsection
 @section('script')
 <script type="text/javascript">
+
     $(document).ready(function() {
 
         $('.modal_dados_correspondente').click(function () {
@@ -259,16 +264,19 @@
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
-                    $("#label > span").empty();                           
+                    $("#label > span").empty(); 
+                    $('#modalDadosCorrespondente').modal('show');                           
                 },
                 success: function(response){      
 
+                    $(".data-modal-correspondente-loading").css('display','none');
+                    $(".data-modal-correspondente").css('display','block');
                     $("#nm_correspondente span").append(response.dados.nm_razao_social_con);
-
-                    $('#modalDadosCorrespondente').modal('show');                                   
+                                                      
                 },
                 error: function(response)
                 {
+                    $(".data-modal-correspondente-loading").css('display','none');
                     alert("Erro ao processar requisição");
                 }
             });
