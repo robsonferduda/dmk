@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-info fa-lg"></i>Relatório</a>
+            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o fa-lg"></i> Relatório</a>
              <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>               
@@ -246,9 +246,9 @@
                                         
                                                 <div class="alert alert-info" role="alert">
                                                     <i class="fa-fw fa fa-info"></i>
-                                                    <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                                    <strong>Informação!</strong> Ao selecionar o tipo de serviço, os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente na cidade selecionada, caso os valores existam. Sendo permitida sua mudança.
                                                 </div>
-                                                <div class="tabelah">
+                                                <div class="">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
@@ -340,6 +340,7 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
+            $("#taxa-honorario-correspondente").val('');
 
           },
           open: function(event, ui){
@@ -367,6 +368,7 @@
             $("input[name='cd_cliente_cli']").val(ui.item.id);
             $("input[name='nota_fiscal_cliente']").val(ui.item.nota);
             $("input[name='nota_fiscal_cliente']").prop('disabled', false);
+            $("#taxa-honorario-cliente").val('');
 
             buscaAdvogado();
             

@@ -171,4 +171,7 @@ Route::group(['middleware' => ['web']], function () {
 		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
 	});
 
+	Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
+	Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
+	
 });

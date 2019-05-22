@@ -241,9 +241,9 @@
                                         
                                                 <div class="alert alert-info" role="alert">
                                                     <i class="fa-fw fa fa-info"></i>
-                                                    <strong>Informação!</strong> Os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente ao selecionar o tipo de serviço. Sendo permitida sua mudança.                          
+                                                    <strong>Informação!</strong> Ao selecionar o tipo de serviço, os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente na cidade selecionada, caso os valores existam. Sendo permitida sua mudança.                          
                                                 </div>
-                                                <div class="tabelah">
+                                                <div class="">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
@@ -333,6 +333,7 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
+            $("#taxa-honorario-correspondente").val('');
 
           },
           open: function(event, ui){
@@ -361,6 +362,7 @@
             $("input[name='cd_cliente_cli']").val(ui.item.id);
             $("input[name='nota_fiscal_cliente']").val(ui.item.nota);
             $("input[name='nota_fiscal_cliente']").prop('disabled', false);
+            $("#taxa-honorario-cliente").val('');
 
             buscaAdvogado();
         

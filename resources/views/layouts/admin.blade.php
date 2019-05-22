@@ -116,6 +116,9 @@
                             <li>
                                 <a href="{{ url('correspondentes') }}" title="Correspondentes"><span class="menu-item-parent">Listar</span></a>
                             </li>
+                            {{--<li>
+                                <a href="{{ url('correspondente/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
+                            </li>--}}
                         </ul>   
                     </li>
                     @endrole
