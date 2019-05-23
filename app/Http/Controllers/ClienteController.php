@@ -257,7 +257,7 @@ class ClienteController extends Controller
 
         //Carrega dados do combo        
         $grupos = GrupoCidade::all();
-        $servicos = TipoServico::all();
+        $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         if(empty(session('lista_cidades'))){
             \Session::put('lista_cidades', array());
