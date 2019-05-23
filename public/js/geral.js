@@ -21,8 +21,7 @@ $(document).ready(function() {
 	$('.telefone').mask("(00) 0000-00009");
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
-	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});
-	
+	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});	
 
 	/** =======================================================   **/
 
@@ -364,7 +363,9 @@ $(document).ready(function() {
 	});
 
 	$(".btn-alterar-senha").click(function(){
-		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
+
+		if($('#frm-alterar-senha #password').val().trim() != '' && $('#frm-alterar-senha #password_confirmation').val().trim() != '')
+			$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
 	$(".editar_tipo_contato").click(function(){

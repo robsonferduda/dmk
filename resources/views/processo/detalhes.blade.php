@@ -3,8 +3,8 @@
 <div id="ribbon">
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
-        <li><a href="{{ url('clientes') }}">Clientes</a></li>
-        <li>Novo</li>
+        <li><a href="{{ url('clientes') }}">Processo</a></li>
+        <li>Detalhes</li>
     </ol>
 </div>
 <div id="content">

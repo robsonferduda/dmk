@@ -155,6 +155,7 @@ class UsuarioController extends Controller
         ]);
 
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
+        $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
         if($entidade){
 
@@ -305,6 +306,7 @@ class UsuarioController extends Controller
 
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
         $request->merge(['cd_entidade_ete' => $usuario->cd_entidade_ete]);
+        $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
         if($usuario->cd_entidade_ete){
 
