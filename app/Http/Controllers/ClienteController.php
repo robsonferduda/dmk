@@ -184,7 +184,7 @@ class ClienteController extends Controller
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
         
         //Dados para combos
-        $grupos = GrupoCidade::all();
+        $grupos = GrupoCidade::where('cd_conta_con',$conta)->get();
         $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         //Inicialização de variáveis
@@ -256,7 +256,7 @@ class ClienteController extends Controller
         
 
         //Carrega dados do combo        
-        $grupos = GrupoCidade::all();
+        $grupos = GrupoCidade::where('cd_conta_con',$conta)->get();
         $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         if(empty(session('lista_cidades'))){
