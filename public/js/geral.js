@@ -7,7 +7,6 @@ $(document).ready(function() {
     var pathname = _location.substring(0, webFolderIndex);
     var pathnameX = _location.substring(0, webFolderIndex);
 
-
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
@@ -989,7 +988,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: pathname+"/cliente/honorarios/salvar",
+            url: pathname+"../cliente/honorarios/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -1037,7 +1036,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: pathname+"/correspondente/honorarios/salvar",
+            url: pathname+"../correspondente/honorarios/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -1050,7 +1049,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/correspondente/honorarios/"+correspondente;
+            	window.location.href = pathname+"../correspondente/honorarios/"+correspondente;
             },
 		   	error: function(response)
 		   	{

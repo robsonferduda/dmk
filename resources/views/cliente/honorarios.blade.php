@@ -236,7 +236,7 @@
         var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
         var applicationName = _location.substring(0, applicationNameIndex) + '/';
         var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var webFolderFullPath = _location.substring(0, webFolderIndex); 
+        var pathname = _location.substring(0, webFolderIndex); 
 
         var buscaCidade = function(){
 
@@ -246,7 +246,7 @@
 
                 $.ajax(
                     {
-                        url: webFolderFullPath+'/cidades-por-estado/'+estado,
+                        url: pathname+'../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
