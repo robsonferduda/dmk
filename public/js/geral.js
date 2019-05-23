@@ -1037,7 +1037,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: "http://localhost/dmk/public/correspondente/honorarios/salvar",
+            url: pathname+"/correspondente/honorarios/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -1050,7 +1050,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = "http://localhost/dmk/public/correspondente/honorarios/"+correspondente;
+            	window.location.href = pathname+"/correspondente/honorarios/"+correspondente;
             },
 		   	error: function(response)
 		   	{

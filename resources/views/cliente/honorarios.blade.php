@@ -246,7 +246,7 @@
 
                 $.ajax(
                     {
-                        url: webFolderFullPath+'/public/cidades-por-estado/'+estado,
+                        url: webFolderFullPath+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
