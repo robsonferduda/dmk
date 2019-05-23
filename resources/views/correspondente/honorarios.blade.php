@@ -230,7 +230,7 @@
 
                 $.ajax(
                     {
-                        url: 'http://localhost/dmk/public/correspondente/'+entidade+'/cidades-por-estado/'+estado,
+                        url: webFolderFullPath+'/correspondente/'+entidade+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){

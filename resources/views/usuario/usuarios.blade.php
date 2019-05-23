@@ -98,13 +98,13 @@
                        <section class="col col-6">
                             <label class="label">Senha<span class="text-danger">*</span></label>
                             <label class="input">
-                                 <input required type="password" name="password" placeholder="Senha">
+                                 <input type="password" name="password" id="password" placeholder="Senha" required>
                             </label>
                             </section>  
                             <section class="col col-6">
                                 <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
                                 <label class="input">
-                                    <input required type="password" name="password_confirmation" placeholder="Confirmar Senha">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Senha" required>
                                 </label>
                             </section>     
                      

@@ -98,6 +98,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('correspondente/remover','CorrespondenteController@remover');
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
 	Route::post('correspondente/despesas','CorrespondenteController@adicionarDespesas');
+	Route::post('correspondente/cadastro/conta','CorrespondenteController@novoCorrespondenteConta');
 
 	//Rotas para a ROLE correspondente
 	Route::get('correspondente/clientes','CorrespondenteController@clientes');

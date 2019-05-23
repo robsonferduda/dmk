@@ -170,13 +170,30 @@ class ContatoController extends Controller
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
         $request->merge(['cd_conta_con' => $this->conta]);
 
-        DB::transaction(function() use ($request,$id){
+        $contato = Contato::where('cd_contato_cot',$id)->first();
+        $contato->fill($request->all());
 
-            $contato = Contato::where('cd_contato_cot',$id)->first();
-            $contato->fill($request->all());
-            $contato->saveOrFail();
+        if($contato->saveOrFail()){
 
-        });
+            //Atualização de endereço - Exige que pelo menos o logradouro esteja preenchido
+            if(!empty($request->dc_logradouro_ede)){
+
+                $endereco = Endereco::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$contato->cd_entidade_ete)->first();
+
+                if($endereco){
+                            
+                    $endereco->fill($request->all());
+                    $endereco->saveOrFail();
+
+                }else{
+
+                    $endereco = new Endereco();
+                    $endereco->fill($request->all());
+                    $endereco->saveOrFail();
+                }
+                        
+            }
+        }
 
         Flash::success('Contato atualizado com sucesso');
         return redirect('contatos');

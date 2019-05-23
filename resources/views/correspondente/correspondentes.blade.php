@@ -93,7 +93,7 @@
 
                                             <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
-                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
+                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> </a>
 
                                             <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->contaCorrespondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
                                         </td>

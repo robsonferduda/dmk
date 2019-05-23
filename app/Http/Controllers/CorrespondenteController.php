@@ -431,7 +431,7 @@ class CorrespondenteController extends Controller
                                     $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
                                     $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
 
-                                    if(!empty($nome)) $join->where('nm_razao_social_con','like','%'.$nome.'%');
+                                    if(!empty($nome)) $join->where('nm_razao_social_con','ilike','%'.$nome.'%');
                                     
                                     if(!empty($identificacao)){
                                         $join->join('identificacao_ide', function($join) use ($identificacao){
@@ -480,7 +480,8 @@ class CorrespondenteController extends Controller
         Mail::send('correspondente/email_convite', $data, function($message) use ($to_name, $to_email) {
             $message->to($to_email, $to_name)
                     ->subject('Cadastro Sistema DMK');
-            $message->from('robsonferduda@gmail.com','Administrador do Sistema');
+            $message->from('financeiro@dmkadvogados.com.br','Atendimento DMK');
+            Flash::success('Convite enviado com sucesso. O destinatário poderá realizar seu cadastro para aparecer nas buscas por correspondentes.');
         });
 
         if(Mail::failures()){
@@ -490,6 +491,68 @@ class CorrespondenteController extends Controller
 
         return redirect('correspondente/novo');
 
+    }
+
+    public function novoCorrespondenteConta(Request $request)
+    {
+        DB::transaction(function() use ($request){
+
+            $input = $request->all();
+            $email = $input['email']; 
+            $nome  = $input['nm_razao_social_con'];
+
+            $conta = new Correspondente();        
+            $conta->fill($request->all());
+            $conta->fl_correspondente_con = "S";
+            $conta->saveOrFail();
+
+            if($conta->cd_conta_con){
+
+                $entidade = new Entidade;
+                $entidade->cd_conta_con = $conta->cd_conta_con;
+                $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CORRESPONDENTE;
+                $entidade->saveOrFail();
+
+                if($entidade->cd_entidade_ete){
+
+                    $user = new User();
+                    $user->cd_conta_con = $conta->cd_conta_con;
+                    $user->cd_entidade_ete = $entidade->cd_entidade_ete;
+                    $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
+                    $user->name = $nome;
+                    $user->email = $email;
+                    $user->password = Hash::make("correspondente");
+                    $user->save();
+
+                    if($user->id){
+
+                        $role = Role::find(Roles::CORRESPONDENTE);
+                        $user->assignRole($role);
+
+                        $enderecoEletronico = new EnderecoEletronico();
+                        $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
+                        $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
+                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                        $enderecoEletronico->save();
+                    }
+
+                    //Após cadastrar, vincula a conta que realizou o cadastro
+                    $correspondente = new ContaCorrespondente();
+                    $correspondente->cd_conta_con = $this->conta;
+                    $correspondente->cd_correspondente_cor = $conta->cd_conta_con;        
+                    
+                    if($correspondente->save())
+                        Flash::success('Correspondente adicionado com sucesso');
+                    else{
+                        Flash::error('Erro ao adicionar correspondente');
+                        return redirect()->back();
+                    }
+                }
+            }
+        });
+
+        return redirect('correspondentes');
     }
 
     public function cadastro(CorrespondenteRequest $request){

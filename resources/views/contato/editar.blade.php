@@ -64,19 +64,19 @@
                                         <section class="col col-2">
                                             <label class="label">CEP</label>
                                             <label class="input">
-                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{old('nu_cep_ede')}}">
+                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($contato->entidade->endereco) ? $contato->entidade->endereco->nu_cep_ede : '' }}">
                                             </label>
                                         </section> 
                                         <section class="col col-sm-8">
                                             <label class="label">Logradouro</label>
                                             <label class="input">
-                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede')}}">
+                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : ($contato->entidade->endereco) ? $contato->entidade->endereco->dc_logradouro_ede : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-2">
                                             <label class="label">Nº</label>
                                             <label class="input">
-                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede')}}">
+                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : ($contato->entidade->endereco) ? $contato->entidade->endereco->nu_numero_ede : '' }}">
                                             </label>
                                         </section>
                                     </div>
@@ -85,13 +85,13 @@
                                         <section class="col col-6">
                                             <label class="label">Bairro</label>
                                             <label class="input">
-                                                <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede')}}">
+                                                <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : ($contato->entidade->endereco) ? $contato->entidade->endereco->nm_bairro_ede : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-6">
                                             <label class="label">Complemento</label>
                                             <label class="input">
-                                                <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede')}}">
+                                                <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : ($contato->entidade->endereco) ? $contato->entidade->endereco->dc_complemento_ede : '' }}">
                                             </label>
                                         </section>                                                                    
                                     </div> 
@@ -102,7 +102,7 @@
                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                 <option selected value="">Selecione um estado</option>
                                                 @foreach(App\Estado::all() as $estado) 
-                                                    <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                    <option {{ ($contato->entidade->endereco and $contato->entidade->endereco->cidade) ? (old('cd_estado_est', $contato->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
 
                                             </select> 
@@ -234,7 +234,7 @@
 
                 $.ajax(
                     {
-                        url: '../cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
