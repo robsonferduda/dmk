@@ -13,6 +13,7 @@ use App\EnderecoEletronico;
 use App\Identificacao;
 use App\TipoContato;
 use App\TipoServico;
+use App\TipoDespesa;
 use App\GrupoCidade;
 use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
@@ -366,7 +367,8 @@ class ClienteController extends Controller
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
     public function novo()
     {
-        return view('cliente/novo');
+        $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+        return view('cliente/novo',['despesas' => $despesas]);
     }
 
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
@@ -486,7 +488,9 @@ class ClienteController extends Controller
     public function editar($id){
 
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
-        return view('cliente/editar',['cliente' => $cliente]);
+        $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+
+        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas]);
 
     }
 

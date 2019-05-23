@@ -142,7 +142,7 @@
                                         <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Selecione as despesas reembolsáveis do cliente</label>
                                         <div class="row">
                                             <div class="col col-12">
-                                                @foreach(\App\TipoDespesa::where('fl_reembolso_tds','S')->get() as $despesa)
+                                                @foreach($despesas as $despesa)
                                                     <label class="checkbox">
                                                         <input type="checkbox" name="despesas[]" value="{{ $despesa->cd_tipo_despesa_tds }}">
                                                         <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
