@@ -282,7 +282,7 @@ class ClienteController extends Controller
 
         //Carrega lista de serviços da tabela
         if($servico == 0){
-            $lista_servicos = TipoServico::all();
+            $lista_servicos = TipoServico::where('cd_conta_con',$conta)->get();
         }else{
             $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
         }
