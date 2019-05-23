@@ -21,8 +21,7 @@ $(document).ready(function() {
 	$('.telefone').mask("(00) 0000-00009");
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
-	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});
-	
+	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});	
 
 	/** =======================================================   **/
 

@@ -273,7 +273,7 @@
                                      <section class="col col-6">
                                         <label class="label">CEP</label>
                                         <label class="input">
-                                            <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
+                                            <input type="text" class="cep" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
                                         </label>
                                     </section>                                  
                                 </div> 
@@ -352,8 +352,8 @@
                         </div>
                     </div>        
                             <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    Cadastrar
+                                <button type="submit" class="btn btn-success">
+                                   <i class="fa fa-save"></i> Cadastrar
                                 </button>
                             </footer>
                         {!! Form::close() !!}                      
