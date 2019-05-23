@@ -1001,12 +1001,12 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = pathname+"/cliente/honorarios/"+cliente;
+            	//window.location.href = pathname+"/cliente/honorarios/"+cliente;
             },
 		   	error: function(response)
 		   	{
 		   		console.log("Erro");
-		   		location.reload();
+		   		//location.reload();
 		   	}
         });
         
