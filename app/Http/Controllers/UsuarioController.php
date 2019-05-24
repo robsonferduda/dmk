@@ -40,7 +40,7 @@ class UsuarioController extends Controller
     public function index()
     {        
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','!=',1)->orderBy('name')->get();
 
         return view('usuario/usuarios',['usuarios' => $usuarios]);
     }
