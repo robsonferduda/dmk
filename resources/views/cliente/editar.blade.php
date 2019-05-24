@@ -180,7 +180,7 @@
                                         <section class="col col-2">
                                             <label class="label">Nº</label>
                                             <label class="input">
-                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede')}}">
+                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->nu_numero_ede : '' }}">
                                             </label>
                                         </section>
                                     </div>
