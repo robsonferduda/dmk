@@ -489,8 +489,26 @@ class ClienteController extends Controller
 
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
         $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+        $despesas_selecionadas = array();
+        $disponiveis = array();
 
-        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas]);
+        $despesas_cliente = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+
+        foreach ($despesas_cliente as $d) {
+            $despesas_selecionadas[] = $d->TipoDespesa()->first();
+        }
+
+        foreach ($despesas as $t) {
+            $disponiveis[] = $t;
+        }
+
+        $despesas = array_udiff($disponiveis, $despesas_selecionadas,
+                                  function ($obj_a, $obj_b) {
+                                    return $obj_a->cd_tipo_despesa_tds - $obj_b->cd_tipo_despesa_tds;
+                                  }
+                                );
+
+        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas, 'despesas_selecionadas' => $despesas_selecionadas]);
 
     }
 
@@ -582,6 +600,60 @@ class ClienteController extends Controller
                 'nu_identificacao_ide'      => (!empty($nu_identificacao_ide)) ? $nu_identificacao_ide : ''
                 ]);
             }            
+
+            //Gerenciamento das despesas do cliente
+            $selecionadas = array();
+            $despesas_cliente = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+            $despesas_remover = $request->remover;
+            $despesas_adicionar = $request->despesas;
+
+            foreach ($despesas_cliente as $d) {
+                $selecionadas[] = $d->TipoDespesa()->first()->cd_tipo_despesa_tds;
+            }
+
+            if($despesas_remover == null){ //Remover tudo
+
+                for ($i=0; $i < count($selecionadas); $i++){ 
+                    
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$selecionadas[$i])->first();
+                    $despesa->delete();
+                }
+
+            }else{
+
+                $diferenca = array_diff($selecionadas, $despesas_remover);
+
+                if(count($diferenca) > 0){
+
+                    $valores = array_values($diferenca);
+                    for ($i=0; $i < count($valores); $i++) { 
+                        
+                        $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$valores[$i])->first();
+                        $despesa->delete();
+
+                    }
+
+                }
+
+            }
+
+            //Adiciona as novas despesas que foram marcadas
+            if(!empty($despesas_adicionar)){
+
+                for($i = 0; $i < count($despesas_adicionar); $i++) {
+
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$despesas_adicionar[$i])->first();
+
+                    if(!$despesa){
+
+                        $reembolso = ReembolsoTipoDespesa::create([
+                            'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
+                            'cd_conta_con'              => $this->conta, 
+                            'cd_tipo_despesa_tds'       => $despesas_adicionar[$i]
+                        ]);
+                    }
+                }
+            }
 
             Flash::success('Dados atualizados com sucesso');
         }
