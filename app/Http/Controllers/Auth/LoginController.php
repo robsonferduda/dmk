@@ -50,8 +50,32 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::ADMIN]) or Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::COLABORADOR])) {
 
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            return redirect()->intended('home');
+        }
+
+        $this->incrementLoginAttempts($request);
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    public function loginCorrespondente(Request $request)
+    {
+
+        dd($request->all());
+
+        $this->validateLogin($request);
+
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::CORRESPONDENTE ])) {
 
             Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
             Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 

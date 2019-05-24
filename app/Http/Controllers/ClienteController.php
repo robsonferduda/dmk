@@ -13,6 +13,7 @@ use App\EnderecoEletronico;
 use App\Identificacao;
 use App\TipoContato;
 use App\TipoServico;
+use App\TipoDespesa;
 use App\GrupoCidade;
 use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
@@ -183,7 +184,7 @@ class ClienteController extends Controller
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
         
         //Dados para combos
-        $grupos = GrupoCidade::all();
+        $grupos = GrupoCidade::where('cd_conta_con',$conta)->get();
         $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         //Inicialização de variáveis
@@ -255,8 +256,8 @@ class ClienteController extends Controller
         
 
         //Carrega dados do combo        
-        $grupos = GrupoCidade::all();
-        $servicos = TipoServico::all();
+        $grupos = GrupoCidade::where('cd_conta_con',$conta)->get();
+        $servicos = TipoServico::where('cd_conta_con',$conta)->get();
 
         if(empty(session('lista_cidades'))){
             \Session::put('lista_cidades', array());
@@ -281,7 +282,7 @@ class ClienteController extends Controller
 
         //Carrega lista de serviços da tabela
         if($servico == 0){
-            $lista_servicos = TipoServico::all();
+            $lista_servicos = TipoServico::where('cd_conta_con',$conta)->get();
         }else{
             $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
         }
@@ -366,7 +367,8 @@ class ClienteController extends Controller
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
     public function novo()
     {
-        return view('cliente/novo');
+        $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+        return view('cliente/novo',['despesas' => $despesas]);
     }
 
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
@@ -486,7 +488,9 @@ class ClienteController extends Controller
     public function editar($id){
 
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
-        return view('cliente/editar',['cliente' => $cliente]);
+        $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+
+        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas]);
 
     }
 

@@ -310,7 +310,7 @@
                                      <section class="col col-2">
                                         <label class="label">CEP</label>
                                         <label class="input">
-                                            <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : $usuario->entidade->endereco->nu_cep_ede }}">
+                                            <input type="text" class="cep" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : $usuario->entidade->endereco->nu_cep_ede }}">
                                         </label>
                                     </section>                                  
                                 </div> 
@@ -338,8 +338,8 @@
                             </fieldset>                           
                             
                             <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    Atualizar
+                                <button type="submit" class="btn btn-success">
+                                   <i class="fa fa-save"></i> Salvar
                                 </button>
                             </footer>
                         {!! Form::close() !!}                      
