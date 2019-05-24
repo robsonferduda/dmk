@@ -642,14 +642,14 @@ class ClienteController extends Controller
 
                 for($i = 0; $i < count($despesas_adicionar); $i++) {
 
-                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$despesas[$i])->first();
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$despesas_adicionar[$i])->first();
 
                     if(!$despesa){
 
                         $reembolso = ReembolsoTipoDespesa::create([
                             'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
                             'cd_conta_con'              => $this->conta, 
-                            'cd_tipo_despesa_tds'       => $despesas[$i]
+                            'cd_tipo_despesa_tds'       => $despesas_adicionar[$i]
                         ]);
                     }
                 }
