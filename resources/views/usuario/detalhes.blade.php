@@ -181,6 +181,22 @@
                                     </div>
                                 </fieldset>
                             </div>
+                        </div> 
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-fw"></i> <strong></strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        <p>    
+                                            <ul class="list-unstyled">
+                                                <li style="display: inline-block;max-width: 100%;word-break:break-all;">
+                                                    <strong>Observações: </strong> {{ $usuario->observacao }} 
+                                                </li>
+                                            </ul>
+                                        </p> 
+                                    </div>
+                                </fieldset>
+                            </div>
                         </div>                    
                     </div>
                 </div>

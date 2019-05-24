@@ -350,6 +350,20 @@
                                 </div> 
                             </fieldset>
                         </div>
+                        <div class="col col-sm-12">
+                            <header>
+                                <i class="fa  fa-file-text-o"></i> Observações 
+                            </header>
+                            <fieldset>
+                                <div class="row"> 
+                                    <section class="col col-sm-12">
+                                    <label class="input">
+                                        <textarea class="form-control" rows="4" name="observacao" value="{{old('observacao')}}" >{{old('observacao')}}</textarea>
+                                    </label>
+                                    </section> 
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>        
                             <footer>
                                 <button type="submit" class="btn btn-success">
