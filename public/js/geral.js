@@ -1066,7 +1066,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: "../grupo/cidade/"+grupo,
+                url: "../../grupo/cidade/"+grupo,
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
