@@ -57,6 +57,7 @@
                     <div class="widget-body no-padding">
                         
                         {!! Form::open(['id' => 'frm-add-usuario', 'url' => 'usuarios', 'class' => 'smart-form']) !!}
+                        <input type="hidden" name="telefones" id="telefones">
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
@@ -137,43 +138,68 @@
                                                   
                                                 </select> <i></i> </label>
                                         </section>
-                                    </div>                              
+                                    </div>    
+                                    <div class="row">
+                                        <section class="col col-sm-12">
+                                            <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
+                                            <label class="input">
+                                                <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email')}}">
+                                            </label>
+                                        </section>
+                                    </div>                          
                                     
                                 </fieldset>
                         </div>
                         <div  class="col col-6">
                             <header>
-                                <i class="fa fa-phone"></i> Contatos
+                                <i class="fa fa-phone"></i> Telefone
                             </header>
                             <fieldset>
-                                <div class="row">
-                                   <section class="col col-sm-12">
-                                        <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
-                                        <label class="input">
-                                            <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email')}}">
-                                        </label>
-                                    </section>
-                                    
-                                </div>
-                                <div class="row">
-                                    <section class="col col-4">
-                                        <label class="label">Tipo do Telefone</label>
-                                        <label class="select"> 
-                                            <select name="cd_tipo_fone_tfo">
-                                                <option value="" >Selecione</option>
-                                                @foreach($tiposFone as $tipoFone)
-                                                    <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                                @endforeach
+                                
+                                <div class="col col-sm-12">
+                                    <fieldset>
+                                        <div class="row">    
+                                            <section class="col col-5">
+                                               
+                                                <label class="input">
+                                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
+                                                </label>
+                                            </section>                     
+                                            <section class="col col-4">
+                                                  
+                                                <label class="select"> 
+                                                <select name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                    <option value="0">Tipo</option>
+                                                    @foreach(\App\TipoFone::all() as $tipoFone)
+                                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                    @endforeach   
+                                                </select><i></i>
+                                                </label>
+                                            </section> 
+                                            <section class="col col-3">
                                               
-                                            </select> <i></i> </label>
-                                    </section>
-                                    <section class="col col-8">
-                                        <label class="label">Telefone</label>
-                                        <label class="input">
-                                            <input type="text" name="nu_fone_fon" placeholder="Ex: (99) 999999999" value="{{old('nu_fone_fon')}}">
-                                        </label>
-                                    </section>
-                                </div>
+                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                            </section>
+                                        </div> 
+                                        <div class="row center" id="erroFone"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            
+                                            <table id="tabelaFone" class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Tipo</th>
+                                                        <th>Telefone</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>                                       
+                                            
+                                    </div>
                              
                             </fieldset>
                         </div>
