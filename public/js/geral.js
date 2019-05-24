@@ -667,7 +667,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: "../email/entidade/"+entidade,
+                url: "../../email/entidade/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
@@ -683,7 +683,7 @@ $(document).ready(function() {
 					
 					$.ajax(
 			            {
-			                url: "../email/excluir/"+id,
+			                url: "../../email/excluir/"+id,
 			                type: 'GET',
 			                dataType: "JSON",
 			            success: function(response)
@@ -761,7 +761,7 @@ $(document).ready(function() {
 		
 		$.ajax(
             {
-                url: "../email/excluir/"+id,
+                url: "../../email/excluir/"+id,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
