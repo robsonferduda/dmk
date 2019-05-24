@@ -36,6 +36,7 @@
                         {!! Form::open(['id' => 'frm-add-cliente', 'url' => ['clientes', $cliente->cd_cliente_cli], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         <input type="hidden" name="telefones" id="telefones">
                         <input type="hidden" name="emails" id="emails">
+                        <input type="hidden" name="entidade" id="entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
                         <div class="row">
                             <section class="col col-8">
                                 <header>

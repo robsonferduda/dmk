@@ -712,7 +712,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: "../fones/entidade/"+entidade,
+                url: "../../fones/entidade/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
@@ -728,7 +728,7 @@ $(document).ready(function() {
 					
 					$.ajax(
 			            {
-			                url: "../fones/excluir/"+id,
+			                url: "../../fones/excluir/"+id,
 			                type: 'GET',
 			                dataType: "JSON",
 			            success: function(response)
@@ -786,7 +786,7 @@ $(document).ready(function() {
 		
 		$.ajax(
             {
-                url: "../fones/excluir/"+id,
+                url: "../../fones/excluir/"+id,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
