@@ -601,6 +601,60 @@ class ClienteController extends Controller
                 ]);
             }            
 
+            //Gerenciamento das despesas do cliente
+            $selecionadas = array();
+            $despesas_cliente = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+            $despesas_remover = $request->remover;
+            $despesas_adicionar = $request->despesas;
+
+            foreach ($despesas_cliente as $d) {
+                $selecionadas[] = $d->TipoDespesa()->first()->cd_tipo_despesa_tds;
+            }
+
+            if($despesas_remover == null){ //Remover tudo
+
+                for ($i=0; $i < count($selecionadas); $i++){ 
+                    
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$selecionadas[$i])->first();
+                    $despesa->delete();
+                }
+
+            }else{
+
+                $diferenca = array_diff($selecionadas, $despesas_remover);
+
+                if(count($diferenca) > 0){
+
+                    $valores = array_values($diferenca);
+                    for ($i=0; $i < count($valores); $i++) { 
+                        
+                        $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$valores[$i])->first();
+                        $despesa->delete();
+
+                    }
+
+                }
+
+            }
+
+            //Adiciona as novas despesas que foram marcadas
+            if(!empty($despesas_adicionar)){
+
+                for($i = 0; $i < count($despesas_adicionar); $i++) {
+
+                    $despesa = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->where('cd_tipo_despesa_tds',$despesas[$i])->first();
+
+                    if(!$despesa){
+
+                        $reembolso = ReembolsoTipoDespesa::create([
+                            'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
+                            'cd_conta_con'              => $this->conta, 
+                            'cd_tipo_despesa_tds'       => $despesas[$i]
+                        ]);
+                    }
+                }
+            }
+
             Flash::success('Dados atualizados com sucesso');
         }
         else
