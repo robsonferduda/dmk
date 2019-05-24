@@ -454,47 +454,22 @@ class UsuarioController extends Controller
                         }
                 }
 
-                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
+                    //Inserção de telefones
+                if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
-                    $fone = Fone::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-                             
-                    if($fone){
-
-                        $fone->fill($request->all());
-
-                        if(!$fone->saveOrFail()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        } 
-                    }else{
+                    $fones = json_decode($request->telefones);
+                    for($i = 0; $i < count($fones); $i++) {
 
                         $fone = Fone::create([
                             'cd_entidade_ete'           => $usuario->cd_entidade_ete,
                             'cd_conta_con'              => $this->cdContaCon, 
-                            'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
-                            'nu_fone_fon'               => $request->nu_fone_fon
+                            'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                            'nu_fone_fon'               => $fones[$i]->numero
                         ]);
 
-                        if(!$fone){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }   
                     }
-
-                }else{
-
-                    $fone = Fone::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-
-                    if($fone)
-                        if(!$fone->delete()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }
-
                 }
+
 
                 if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
 
