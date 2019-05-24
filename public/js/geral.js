@@ -667,7 +667,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: pathnameX+"email/entidade/"+entidade,
+                url: "../email/entidade/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
@@ -683,7 +683,7 @@ $(document).ready(function() {
 					
 					$.ajax(
 			            {
-			                url: pathnameX+"email/excluir/"+id,
+			                url: "../email/excluir/"+id,
 			                type: 'GET',
 			                dataType: "JSON",
 			            success: function(response)
@@ -712,7 +712,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: pathnameX+"fones/entidade/"+entidade,
+                url: "../fones/entidade/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
@@ -728,7 +728,7 @@ $(document).ready(function() {
 					
 					$.ajax(
 			            {
-			                url: pathnameX+"fones/excluir/"+id,
+			                url: "../fones/excluir/"+id,
 			                type: 'GET',
 			                dataType: "JSON",
 			            success: function(response)
@@ -761,7 +761,7 @@ $(document).ready(function() {
 		
 		$.ajax(
             {
-                url: pathnameX+"email/excluir/"+id,
+                url: "../email/excluir/"+id,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
@@ -786,7 +786,7 @@ $(document).ready(function() {
 		
 		$.ajax(
             {
-                url: pathnameX+"fones/excluir/"+id,
+                url: "../fones/excluir/"+id,
                 type: 'GET',
                 dataType: "JSON",
             success: function(response)
