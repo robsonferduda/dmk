@@ -272,71 +272,91 @@
                                             </section>
                                         </div> 
                                     </fieldset>
+                                </div>                            
+                                <div class="col col-6">
+                                    <header>
+                                    <i class="fa fa-building"></i> Endereço 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">                                   
+                                            <section class="col col-6">
+                                                
+                                                <label class="label" >Estado</label>          
+                                                <select  id="estado" name="cd_estado_est" class="select2">
+                                                    <option selected value="">Selecione</option>
+                                                     @foreach($estados as $estado) 
+                                                        <option {{ (old('cd_estado_est', $usuario->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ? 'selected' : '' ) }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                    @endforeach
+                                                </select> 
+                                            </section>
+                                            <section class="col col-6">
+                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde') ? old('cd_cidade_cde') : $usuario->entidade->endereco->cd_cidade_cde }}">
+                                                <label class="label" >Cidade</label>          
+                                                <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
+                                                    <option selected value="">Selecione o Estado</option>
+                                                </select> 
+                                            </section>  
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-sm-12">
+                                                <label class="label">Logradouro</label>
+                                                <label class="input">
+                                                    <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : $usuario->entidade->endereco->dc_logradouro_ede }}">
+                                                </label>
+                                            </section>                           
+                                        </div>
+                                    </fieldset>    
                                 </div>
-                            </div>
-
-                            <header>
-                                <i class="fa fa-building"></i> Endereço 
-                            </header>
-
-                            <fieldset>
-
-                                <div class="row">
-                    
-                                    <section class="col col-3">
-                                       
-                                        <label class="label" >Estado</label>          
-                                        <select  id="estado" name="cd_estado_est" class="select2">
-                                            <option selected value="">Selecione</option>
-                                            @foreach($estados as $estado) 
-                                                <option {{ (old('cd_estado_est', $usuario->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ? 'selected' : '' ) }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                            @endforeach
-
-                                        </select> 
-                                    </section>
-                                    <section class="col col-3">
-                                       <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde') ? old('cd_cidade_cde') : $usuario->entidade->endereco->cd_cidade_cde }}">
-                                       <label class="label" >Cidade</label>          
-                                        <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                           <option selected value="">Selecione o Estado</option>
-                                        </select> 
-                                    </section>  
-                                    <section class="col col-4">
-                                        <label class="label">Bairro</label>
-                                        <label class="input">
-                                            <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : $usuario->entidade->endereco->nm_bairro_ede }}">
-                                        </label>
-                                    </section>      
-                                     <section class="col col-2">
-                                        <label class="label">CEP</label>
-                                        <label class="input">
-                                            <input type="text" class="cep" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : $usuario->entidade->endereco->nu_cep_ede }}">
-                                        </label>
-                                    </section>                                  
+                               <div class="col col-6">
+                                    <header>
+                                    <i class="">&nbsp</i>
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="label">Bairro</label>
+                                                <label class="input">
+                                                    <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : $usuario->entidade->endereco->nm_bairro_ede }}">
+                                                </label>
+                                            </section>      
+                                            <section class="col col-6">
+                                                <label class="label">CEP</label>
+                                                <label class="input">
+                                                    <input type="text" class="cep" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : $usuario->entidade->endereco->nu_cep_ede }}">
+                                                </label>
+                                            </section>  
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">Nº</label>
+                                                <label class="input">
+                                                   <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : $usuario->entidade->endereco->nu_numero_ede}}">
+                                                </label>
+                                            </section>
+                                            <section class="col col-8">
+                                                <label class="label">Complemento</label>
+                                                <label class="input">
+                                                    <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : $usuario->entidade->endereco->dc_complemento_ede }}">
+                                                </label>
+                                            </section>
+                                        </div>         
+                                    </fieldset>                       
                                 </div> 
-                                
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="label">Logradouro</label>
-                                        <label class="input">
-                                            <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : $usuario->entidade->endereco->dc_logradouro_ede }}">
-                                        </label>
-                                    </section>
-                                    <section class="col col-2">
-                                        <label class="label">Nº</label>
-                                        <label class="input">
-                                            <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : $usuario->entidade->endereco->nu_numero_ede}}">
-                                        </label>
-                                    </section>
-                                    <section class="col col-4">
-                                        <label class="label">Complemento</label>
-                                        <label class="input">
-                                            <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : $usuario->entidade->endereco->dc_complemento_ede }}">
-                                        </label>
-                                    </section>
-                                </div>
-                            </fieldset>                           
-                            
+                                <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="observacao" value="{{(old('observacao')  ? old('observacao') : $usuario->observacao)}}" >{{ old('observacao') ? old('observacao') :  $usuario->observacao }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>                    
+                            </div>
                             <footer>
                                 <button type="submit" class="btn btn-success">
                                    <i class="fa fa-save"></i> Salvar

@@ -24,7 +24,8 @@ class User extends Authenticatable
         'data_admissao',
         'cd_estado_civil_esc',
         'cd_departamento_dep',
-        'cd_cargo_car'
+        'cd_cargo_car',
+        'observacao'
     ];
 
     
