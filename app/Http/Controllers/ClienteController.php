@@ -489,8 +489,26 @@ class ClienteController extends Controller
 
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
         $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds','S')->get();
+        $despesas_selecionadas = array();
+        $disponiveis = array();
 
-        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas]);
+        $despesas_cliente = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+
+        foreach ($despesas_cliente as $d) {
+            $despesas_selecionadas[] = $d->TipoDespesa()->first();
+        }
+
+        foreach ($despesas as $t) {
+            $disponiveis[] = $t;
+        }
+
+        $despesas = array_udiff($disponiveis, $despesas_selecionadas,
+                                  function ($obj_a, $obj_b) {
+                                    return $obj_a->cd_tipo_despesa_tds - $obj_b->cd_tipo_despesa_tds;
+                                  }
+                                );
+
+        return view('cliente/editar',['cliente' => $cliente, 'despesas' => $despesas, 'despesas_selecionadas' => $despesas_selecionadas]);
 
     }
 

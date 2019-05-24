@@ -150,6 +150,12 @@
                                                         <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
                                                     </label>
                                                 @endforeach
+                                                @foreach($despesas_selecionadas as $despesa)
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" name="remover[]" checked="checked" value="{{ $despesa->cd_tipo_despesa_tds }}">
+                                                        <i></i>{{ $despesa->nm_tipo_despesa_tds }} 
+                                                    </label>
+                                                @endforeach
                                             </div> 
                                         </div>
                                     </section>
@@ -328,7 +334,7 @@
                             </div>
 
                             <footer>
-                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Cadastrar</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar</button>
                                 <a href="{{ url('clientes') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                             </footer>
                         {!! Form::close() !!}                   
