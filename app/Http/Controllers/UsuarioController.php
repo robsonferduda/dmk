@@ -226,21 +226,25 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
-                    
-                    $fone = Fone::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
-                        'nu_fone_fon'               => $request->nu_fone_fon
-                    ]);
+                if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
-                    if(!$fone){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
+                    $fones = json_decode($request->telefones);
+                    for($i = 0; $i < count($fones); $i++) {
 
+                        $fone = Fone::create([
+                            'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                            'cd_conta_con'              => $this->cdContaCon, 
+                            'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                            'nu_fone_fon'               => $fones[$i]->numero
+                        ]);
+
+                        if(!$fone){
+                            DB::rollBack();
+                            Flash::error('Erro ao inserir dados');
+                            return redirect('usuarios');
+                        }   
+
+                    }
                 }
 
                 if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
