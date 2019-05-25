@@ -63,7 +63,10 @@
                                                 </li>                                                
                                                 <li>
                                                     <strong>Cargo: </strong> {{ !empty($usuario->cargo->nm_cargo_car) ? $usuario->cargo->nm_cargo_car : ' ' }}
-                                                </li>                                                                                               
+                                                </li>   
+                                                <li>
+                                                    <strong>Email: </strong> {{ $usuario->email }}
+                                                </li>                                                                                            
                                             </ul>
                                         </p> 
                                     </div>
@@ -73,24 +76,18 @@
                         <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-phone"></i> <strong> Contatos</strong></legend>
+                                    <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        <p>
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <strong>Email: </strong> {{ $usuario->email }}
-                                                </li>
-                                                <li>
-                                                    <strong>Tipo do Telefone: </strong> {{ !empty($usuario->entidade->fone->tipo->dc_tipo_fone_tfo) ? $usuario->entidade->fone->tipo->dc_tipo_fone_tfo : ' '  }}
-                                                </li>
-                                                <li>
-                                                    <strong>Telefone: </strong> {{ !empty($usuario->entidade->fone->nu_fone_fon) ? $usuario->entidade->fone->nu_fone_fon : ' ' }}
-                                                </li>                                                                                 
-                                            </ul>
-                                        </p> 
+                                        @if(count($usuario->entidade->fone()->get()) > 0)
+                                            @foreach($usuario->entidade->fone()->get() as $fone)
+                                                <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
+                                            @endforeach   
+                                        @else
+                                            <span>Nenhum telefone infomado</span>
+                                        @endif
                                     </div>
                                 </fieldset>
-                            </div>
+                            </div>           
                         </div>  
                         <div class="col-md-12">
                             <div class="col-md-6">
