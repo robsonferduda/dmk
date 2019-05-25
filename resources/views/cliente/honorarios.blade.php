@@ -32,7 +32,7 @@
                         <h2>Honorários por Tipo de Serviço</h2>             
                     </header>
                     <div class="col-sm-12">
-                        <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
+                        <h5><strong>Cliente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">

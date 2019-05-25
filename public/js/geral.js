@@ -38,6 +38,29 @@ $(document).ready(function() {
 		}
 	});
 
+	CKEDITOR.editorConfig = function( config )
+			{
+				config.toolbar = 'MyToolbar';
+
+				config.toolbar_MyToolbar =
+				[
+					{ name: 'document', items : [ 'NewPage','Preview' ] },
+					
+				];
+			};
+			
+			CKEDITOR.replace( 'observacao', { toolbar : [
+														{ name: 'document', items : [ 'NewPage','Preview' ] },
+														{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
+														{ name: 'insert', items : [ 'Image','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+												                '/',
+														{ name: 'styles', items : [ 'Styles','Format' ] },
+														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
+														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+														{ name: 'links', items : [ 'Link','Unlink','Anchor' ] }
+													], height: '200px', startupFocus : true} );
+
+
 	$('.upload-result').on('click', function (ev) {
             $uploadCrop.croppie('result', {
                 type: 'canvas',

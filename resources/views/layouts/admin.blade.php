@@ -392,6 +392,7 @@
         <script src="{{ asset('js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
         <script src="{{ asset('js/plugin/croppie.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery.form.js') }}"></script>
+        <script src="{{ asset('js/plugin/ckeditor/ckeditor.js') }}"></script>
         @yield('script')
         <script>
         
