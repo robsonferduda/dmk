@@ -33,7 +33,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('cliente/limpar-selecao/{id}','ClienteController@limparSelecao');
 	Route::get('cliente/buscar','ClienteController@buscar');
-	Route::get('cliente/buscar-honorarios','ClienteController@buscarHonorarios');
+	Route::get('cliente/buscar-honorarios/{id}','ClienteController@buscarHonorarios');
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');

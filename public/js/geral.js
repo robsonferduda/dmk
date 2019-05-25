@@ -988,7 +988,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: "../cliente/honorarios/salvar",
+            url: "../../cliente/honorarios/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -1001,7 +1001,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = "../cliente/honorarios/"+cliente;
+            	window.location.href = "../../cliente/honorarios/"+cliente;
             },
 		   	error: function(response)
 		   	{

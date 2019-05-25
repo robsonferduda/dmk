@@ -39,7 +39,7 @@
                                     <span>Selecione um grupo de cidades ou uma cidade específica e clique em "Adicionar" para visualizar e alterar dados.</span><hr/>
                                     <div class="row">
                                         <div class="col-md-12">  
-                                            <form action="{{ url('cliente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
+                                            <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
