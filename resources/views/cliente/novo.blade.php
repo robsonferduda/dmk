@@ -213,7 +213,7 @@
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                               <option selected value="">Selecione uma Cidade</option>
+                                               <option selected value="">Selecione uma cidade</option>
                                             </select> 
                                         </section>  
                                     </div>
@@ -452,7 +452,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
