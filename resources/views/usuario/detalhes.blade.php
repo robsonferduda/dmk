@@ -187,7 +187,7 @@
                                         <p>    
                                             <ul class="list-unstyled">
                                                 <li style="display: inline-block;max-width: 100%;word-break:break-all;">
-                                                    <strong>Observações: </strong> {{ $usuario->observacao }} 
+                                                    <strong>Observações: </strong> {!! $usuario->observacao !!} 
                                                 </li>
                                             </ul>
                                         </p> 

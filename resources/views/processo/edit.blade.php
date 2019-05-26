@@ -229,7 +229,7 @@
                                     <section class="col col-sm-12">
                                     <label class="label">Observações</label>
                                     <label class="input">
-                                        <textarea class="form-control" rows="4" name="dc_observacao_pro" value="{{ old('dc_observacao_pro') ? old('dc_observacao_pro') : $processo->dc_observacao_pro }}" >{{ old('dc_observacao_pro') ? old('dc_observacao_pro') :  $processo->dc_observacao_pro }}</textarea>
+                                        <textarea class="form-control" id="observacao" rows="4" name="dc_observacao_pro" value="{{ old('dc_observacao_pro') ? old('dc_observacao_pro') : $processo->dc_observacao_pro }}" >{{ old('dc_observacao_pro') ? old('dc_observacao_pro') :  $processo->dc_observacao_pro }}</textarea>
                                     </label>
                                     </section> 
                                 </div>

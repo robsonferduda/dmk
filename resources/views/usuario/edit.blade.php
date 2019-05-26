@@ -380,7 +380,7 @@
                                         <div class="row"> 
                                             <section class="col col-sm-12">
                                             <label class="input">
-                                                <textarea class="form-control" rows="4" name="observacao" value="{{(old('observacao')  ? old('observacao') : $usuario->observacao)}}" >{{ old('observacao') ? old('observacao') :  $usuario->observacao }}</textarea>
+                                                <textarea class="form-control" id="observacao" rows="4" name="observacao_usu" value="{{(old('observacao_usu')  ? old('observacao_usu') : $usuario->observacao)}}" >{{ old('observacao_usu') ? old('observacao_usu') :  $usuario->observacao }}</textarea>
                                             </label>
                                             </section> 
                                         </div>
