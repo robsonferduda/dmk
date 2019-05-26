@@ -157,6 +157,8 @@ class UsuarioController extends Controller
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
+        $request->merge(['observacao' => $request->observacao_usu]);
+        
         if($entidade){
 
             $request->merge(['password' => \Hash::make($request->password)]);
@@ -312,6 +314,8 @@ class UsuarioController extends Controller
         $request->merge(['cd_entidade_ete' => $usuario->cd_entidade_ete]);
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
+        $request->merge(['observacao' => $request->observacao_usu]);
+        
         if($usuario->cd_entidade_ete){
 
             if(!empty($request->data_nascimento))
