@@ -1062,7 +1062,7 @@ $(document).ready(function() {
 		$.ajax(
         {
         	type: "POST",
-            url: "../correspondente/honorarios/salvar",
+            url: "../../correspondente/honorarios/salvar",
             data: {
                 "_token": $('meta[name="token"]').attr('content'),
                 "valores": JSON.stringify(valores),
@@ -1075,7 +1075,7 @@ $(document).ready(function() {
             success: function(response)
             {
             	console.log("Sucesso");
-            	window.location.href = "../correspondente/honorarios/"+correspondente;
+            	window.location.href = "../../correspondente/honorarios/"+correspondente;
             },
 		   	error: function(response)
 		   	{
