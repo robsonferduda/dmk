@@ -11,6 +11,7 @@
 .marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 #erroFone{color: #af4c4c; margin-top: 5px;}
+#erroContaBancaria{color: #af4c4c; margin-top: 5px;}
 #erroEmail{color: #af4c4c; margin-top: 5px;}
 .select2-container .select2-choice, .select2-selection{padding: 0 8px;}
 .error{color:#bb2020;}
