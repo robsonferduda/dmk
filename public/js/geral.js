@@ -638,6 +638,75 @@ $(document).ready(function() {
 
 	});
 
+	var registrosBancarios = new Array();
+
+	$("#btnSalvarContaBancaria").click(function(){
+
+		var flag = true;
+		var titular = $("#nm_titular_dba").val();
+		var cpf = $("#nu_cpf_cnpj_dba").val();
+	    var banco = $("#cd_banco_ban option:selected").val();
+	    var bancoText = $("#cd_banco_ban option:selected").text();
+	    var tipo = $("#cd_tipo_conta_tcb option:selected").val();
+	    var tipoText = $("#cd_tipo_conta_tcb option:selected").text();
+	    var agencia = $("#nu_agencia_dba").val();
+	    var conta = $("#nu_conta_dba").val();
+		
+		if(titular.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Titular obrigatório"); }
+		if(cpf.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo CPF obrigatório"); }
+		if(banco.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Banco obrigatório"); }
+		if(tipo.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Tipo de Conta obrigatório"); }
+		if(agencia.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Agência obrigatório"); }
+		if(conta.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Conta obrigatório"); }
+
+		if(flag){
+
+			var registroBancario = {titular: titular, cpf: cpf, banco: banco,bancoText: bancoText,tipo: tipo,tipoText:tipoText, agencia: agencia, conta:conta};
+
+			registrosBancarios.push(registroBancario);
+
+			$("#tabelaRegistroBancario > tbody > tr").remove();	
+			
+			if($('#entidade').val() != ''){
+				loadRegistrosBancarios($('#entidade').val());
+			}
+			$.each(registrosBancarios, function(index, value){
+				$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+			});			
+
+			$("#nm_titular_dba").val('');
+		    $("#nu_cpf_cnpj_dba").val('');
+	    	$("#cd_banco_ban").val('').trigger('change');
+	   		$("#cd_tipo_conta_tcb").val('');
+	    	$("#nu_agencia_dba").val('');
+	    	$("#nu_conta_dba").val('');
+
+			$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
+		}
+
+	});
+
+	$(document).on('click','.excluiRegistroBancario',function(){
+
+				var id = $(this).data("id");
+				//var entidade = $("#entidade").val()
+
+				console.log(registrosBancarios);
+				console.log(id);
+				registrosBancarios.splice(id,1); //Remove o registro do vetor que está na memória
+
+				$("#tabelaRegistroBancario > tbody > tr").remove();	
+				//loadTelefones(entidade);
+
+				$.each(registrosBancarios, function(index, value){
+					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});
+
+				$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
+
+	});
+
+
 	$("#btnSalvarEmail").click(function(){
 
 		var flag = true;
@@ -779,6 +848,28 @@ $(document).ready(function() {
 
 	}
 
+	function loadRegistrosBancarios(entidade){
+
+		$.ajax(
+            {
+                url: "../../registro-bancario/entidade/"+entidade,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {              
+            	console.log(response);      	
+				$.each(response, function(index, value){
+					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.banco.nm_banco_ban+'</td><td>'+value.tipo_conta.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});   
+
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}
+
 
 	$('.excluirEmailBase').on('click', function(){
 
@@ -804,6 +895,31 @@ $(document).ready(function() {
         });
 
 	}); 
+
+	$(document).on('click','.excluirDadosBancariosBase',function(){
+
+		var id = $(this).data("codigo");
+		var entidade = $("#entidade").val();
+		
+		$.ajax(
+            {
+                url: "../../registro-bancario/excluir/"+id,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+            	$("#tabelaRegistroBancario > tbody > tr").remove();	
+				loadRegistrosBancarios(entidade);
+				$.each(registrosBancarios, function(index, value){
+					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				});
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	});   
 
 	$('.excluirFoneBase').on('click', function(){
 

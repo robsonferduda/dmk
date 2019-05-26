@@ -115,20 +115,32 @@
                                     <legend><i class="fa fa-bank"></i> <strong>Dados Bancários</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         <p>    
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <strong>Banco: </strong> {{ !empty($usuario->entidade->banco->banco->nm_banco_ban) ? $usuario->entidade->banco->banco->nm_banco_ban : ' ' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Tipo de Conta </strong> {{ !empty($usuario->entidade->banco->tipoConta->nm_tipo_conta_tcb) ? $usuario->entidade->banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Agência: </strong> {{ !empty($usuario->entidade->banco->nu_agencia_dba) ? $usuario->entidade->banco->nu_agencia_dba : ' ' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Conta: </strong> {{ !empty($usuario->entidade->banco->nu_conta_dba) ? $usuario->entidade->banco->nu_conta_dba : ' ' }}
-                                                </li>
-                                            </ul>
+                                            @if(count($usuario->entidade->banco()->get()) > 0)
+                                                @foreach($usuario->entidade->banco()->get() as $banco)
+                                                <ul class="list-unstyled">
+                                                    <li>
+                                                        <strong>Titular: </strong> {{ !empty($banco->nm_titular_dba) ? $banco->nm_titular_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>CPF: </strong> {{ !empty($banco->nu_cpf_cnpj_dba) ? $banco->nu_cpf_cnpj_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Tipo de Conta </strong> {{ !empty($banco->tipoConta->nm_tipo_conta_tcb) ? $banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
+                                                    </li>
+                                                </ul>
+                                                @endforeach   
+                                            @else
+                                                <span>Nenhum telefone infomado</span>
+                                            @endif
                                         </p> 
                                     </div>
                                 </fieldset>

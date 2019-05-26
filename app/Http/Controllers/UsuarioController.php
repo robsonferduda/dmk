@@ -263,23 +263,29 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
+                if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
 
-                    $registro = new RegistroBancario();
+                    $registrosBancarios = json_decode($request->registrosBancarios);
+                    for($i = 0; $i < count($registrosBancarios); $i++) {
 
-                    $request->merge(['nm_titular_dba'  => $request->name]);
-                    $request->merge(['nu_cpf_cnpj_dba' => $request->cpf]);
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $entidade->cd_entidade_ete,
+                            'cd_conta_con'    => $this->cdContaCon, 
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
+                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
+                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
+                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
 
-                    $registro->fill($request->all());
-                    //dd($request->all());
+                        if(!$registro){
+                            DB::rollBack();
+                            Flash::error('Erro ao inserir dados');
+                            return redirect('usuarios');
+                        }   
 
-                    if(!$registro->saveOrFail()){
-                        
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
+                    }
                 }
 
             }else{

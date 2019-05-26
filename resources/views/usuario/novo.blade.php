@@ -58,6 +58,8 @@
                         
                         {!! Form::open(['id' => 'frm-add-usuario', 'url' => 'usuarios', 'class' => 'smart-form']) !!}
                         <input type="hidden" name="telefones" id="telefones">
+                        <input type="hidden" name="registrosBancarios" id="registrosBancarios">
+                        <input type="hidden" name="entidade" id="entidade" value=""> 
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
@@ -246,7 +248,7 @@
                                     <section class="col col-4">
                                         <label class="label">CPF</label>
                                         <label class="input">
-                                            <input type="text" name="cpf" placeholder="CPF" value="{{old('cpf')}}">
+                                            <input type="text" class="cpf" name="cpf" placeholder="CPF" value="{{old('cpf')}}">
                                         </label>
                                     </section>
                                     <section class="col col-4">
@@ -260,7 +262,7 @@
                         </div>                       
                     </div>
                     <div class="row">
-                        <div  class="col col-6">                         
+                        <div  class="col col-sm-12">                         
 
                             <header>
                                 <i class="fa fa-building"></i> Endereço 
@@ -270,7 +272,7 @@
 
                                 <div class="row">
                     
-                                    <section class="col col-6">
+                                    <section class="col col-3">
                                        
                                         <label class="label" >Estado</label>          
                                         <select  id="estado" name="cd_estado_est" class="select2">
@@ -281,85 +283,84 @@
 
                                         </select> 
                                     </section>
-                                    <section class="col col-6">
+                                    <section class="col col-3">
                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                        <label class="label" >Cidade</label>          
                                         <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
                                            <option selected value="">Selecione uma Cidade</option>
                                         </select> 
                                     </section>  
-                                </div>
-                                <div class="row">
-                                    <section class="col col-6">
+                                    <section class="col col-3">
                                         <label class="label">Bairro</label>
                                         <label class="input">
                                             <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede')}}">
                                         </label>
                                     </section>      
-                                     <section class="col col-6">
+                                     <section class="col col-3">
                                         <label class="label">CEP</label>
                                         <label class="input">
                                             <input type="text" class="cep" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede')}}">
                                         </label>
-                                    </section>                                  
-                                </div> 
-                                
+                                    </section>   
+                                </div>                        
                                 <div class="row">
-                                    <section class="col col-sm-12">
+                                    <section class="col col-6">
                                         <label class="label">Logradouro</label>
                                         <label class="input">
                                             <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede')}}">
                                         </label>
                                     </section>
-                                </div>
-                                <div class="row">
                                     <section class="col col-3">
                                         <label class="label">Nº</label>
                                         <label class="input">
                                             <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede')}}">
                                         </label>
                                     </section>
-                                    <section class="col col-9">
+                                    <section class="col col-3">
                                         <label class="label">Complemento</label>
                                         <label class="input">
                                             <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede')}}">
                                         </label>
                                     </section>
                                 </div>
+                               
                             </fieldset>
                         </div>
-                        <div  class="col col-6">     
+                        <div  class="col col-sm-12">     
                             <header>
                                 <i class="fa fa-bank"></i> Dados Bancários 
                             </header>
 
                             <fieldset>
-
                                 <div class="row">
-                                    
-                                    <section class="col col-8">
-                                       
+                                    <section class="col col-4">
+                                        <label class="label">Titular</label>
+                                        <label class="input">
+                                            <input type="text" name="nm_titular_dba" id="nm_titular_dba" placeholder="TItular" value="{{old('nm_titular_dba')}}">
+                                        </label>
+                                    </section> 
+                                    <section class="col col-4">  
+                                        <label class="label">CPF</label>
+                                        <label class="input">
+                                            <input type="text" name="nu_cpf_cnpj_dba" id="nu_cpf_cnpj_dba" class="cpf" placeholder="CPF" value="{{old('nu_cpf_cnpj_dba')}}">
+                                        </label>
+                                    </section>   
+                                    <section class="col col-4">
                                         <label class="label" >Banco</label>          
-                                        <select  name="cd_banco_ban" class="select2">
+                                        <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
                                             <option selected value="">Selecione</option>
                                             @foreach($bancos as $banco)
                                                 <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
                                             @endforeach
 
                                         </select> 
-                                    </section>
-                                    <section class="col col-4">
-                                        <label class="label">Agência</label>
-                                        <label class="input">
-                                            <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba')}}">
-                                        </label>
-                                    </section>
+                                    </section>                        
                                 </div>
                                 <div class="row">
-                                    <section class="col col-8">
+                                    <section class="col col-4">
                                         <label class="label">Tipo de Conta</label>
                                         <label class="select"> 
-                                            <select name="cd_tipo_conta_tcb">
+                                            <select name="cd_tipo_conta_tcb" id="cd_tipo_conta_tcb">
                                                 <option value="" >Selecione</option>
                                                 @foreach($tiposConta as $tipoConta)
                                                     <option {!! (old('cd_tipo_conta_tcb') == $tipoConta->cd_tipo_conta_tcb ? 'selected' : '' ) !!}  value="{{ $tipoConta->cd_tipo_conta_tcb }}" >{{ $tipoConta->nm_tipo_conta_tcb }}</option>
@@ -368,13 +369,44 @@
                                             </select> <i></i> </label>
                                     </section>
                                     <section class="col col-4">
+                                        <label class="label">Agência</label>
+                                        <label class="input">
+                                            <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba')}}" id="nu_agencia_dba">
+                                        </label>
+                                    </section>
+                                    <section class="col col-4">
                                         <label class="label">Conta</label>
                                         <label class="input">
-                                            <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}">
+                                            <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}" id="nu_conta_dba">
                                         </label>
                                     </section>
                                 </div> 
-                            </fieldset>
+                                <div class="row">
+                                    <section class="col col-sm-12">
+                                        <button type="button" id="btnSalvarContaBancaria" class="btn btn-success" style="padding: 6px 15px;float: right;"><i class="fa fa-plus"></i> Adicionar</button>
+                                    </section>
+                                </div>
+                                <div class="row center" id="erroContaBancaria"></div>
+                                </fieldset>
+                                <div class="row" style="margin: 0; padding: 5px 13px;">            
+                                    <table id="tabelaRegistroBancario" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Titular</th>
+                                                <th>CPF</th>
+                                                <th>Banco</th>
+                                                <th>Tipo de Conta</th>
+                                                <th>Agência</th>
+                                                <th>Conta</th>
+                                                <th class="center">Opções</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                    
+                                        </tbody>
+                                    </table>                                               
+                                </div>
+                            
                         </div>
                         <div class="col col-sm-12">
                             <header>
