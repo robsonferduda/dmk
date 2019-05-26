@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Config;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -46,7 +47,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //return parent::render($request, $exception);
-        return response()->view('errors/erro',['request' => $request, 'erro' => $exception]); 
+        if(Config::get('app.debug'))
+            return parent::render($request, $exception);
+        else
+            return response()->view('errors/erro',['request' => $request, 'erro' => $exception]); 
     }
 }
