@@ -221,7 +221,7 @@
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                               <option selected value="">Selecione uma Cidade</option>
+                                               <option selected value="">Selecione uma cidade</option>
                                             </select> 
                                         </section>  
                                     </div>
@@ -364,12 +364,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var _location = document.location.toString();
-        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
-        var applicationName = _location.substring(0, applicationNameIndex) + '/';
-        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var pathname = _location.substring(0, webFolderIndex);
-
         flag = $('#fl_nota_fiscal_cli').is(':checked');
             if(flag){
                 $('.box-desconto').css('display','block');
@@ -399,7 +393,7 @@
 
                 $.ajax(
                     {
-                        url: pathname+'/cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
@@ -411,7 +405,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

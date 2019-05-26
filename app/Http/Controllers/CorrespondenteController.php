@@ -92,7 +92,7 @@ class CorrespondenteController extends Controller
         $correspondente = Correspondente::where('cd_conta_con',$id)->first();
 
         $despesas = ReembolsoTipoDespesa::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
-        $todas = TipoDespesa::where('fl_reembolso_tds','S')->get();
+        $todas = TipoDespesa::where('cd_conta_con',$this->conta)->where('fl_reembolso_tds','S')->get();
 
         foreach ($despesas as $d) {
             $selecionadas[] = $d->TipoDespesa()->first();
