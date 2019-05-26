@@ -38,7 +38,9 @@ $(document).ready(function() {
 		}
 	});
 
-	CKEDITOR.editorConfig = function( config )
+	if($('#observacao').length){
+
+		CKEDITOR.editorConfig = function( config )
 			{
 				config.toolbar = 'MyToolbar';
 
@@ -60,6 +62,7 @@ $(document).ready(function() {
 														{ name: 'links', items : [ 'Link','Unlink','Anchor' ] }
 													], height: '200px', startupFocus : true} );
 
+	}
 
 	$('.upload-result').on('click', function (ev) {
             $uploadCrop.croppie('result', {

@@ -384,7 +384,7 @@
                                 <div class="row"> 
                                     <section class="col col-sm-12">
                                     <label class="input">
-                                        <textarea class="form-control" rows="4" name="observacao" value="{{old('observacao')}}" >{{old('observacao')}}</textarea>
+                                        <textarea class="form-control" rows="4" name="observacao_cli" value="{{old('observacao')}}" >{{old('observacao')}}</textarea>
                                     </label>
                                     </section> 
                                 </div>

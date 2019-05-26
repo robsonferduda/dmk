@@ -331,6 +331,20 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="observacao_cli" id="observacao" value="{{old('observacao_cli')}}" >{{old('observacao_cli') ? old('observacao_cli') : ($cliente->observacao_cli) ? $cliente->observacao_cli : '' }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>
                             </div>
 
                             <footer>
