@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('contato/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="{{ url('contato/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
@@ -31,6 +31,19 @@
                         <a class="btn btn-default btn-xs btn_sigla" href="{{ url('contato/buscar/'.$letra) }}">{{ $letra }}</a>
                     @endif
                 @endforeach
+            </div>
+            <div class="well">
+                <form action="{{ url('contato/buscar') }}" class="form-inline" method="POST" role="search">
+                    {{ csrf_field() }}
+
+                    <div class="input-group" style="width: 30%">
+                        <span class="input-group-addon">Cliente</span>
+                        <input type="hidden" name="cd_cliente_cli" value="{{ (!empty($codCliente)) ? $codCliente: ''  }}" >
+                        <input name="nm_cliente_cli" value="{{ (!empty($nomeCliente)) ? $nomeCliente: '' }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
+                    </div>
+                    
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
@@ -81,4 +94,32 @@
         </article>
     </div>
 </div>
+@endsection
+@section('script')
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var path = "{{ url('autocompleteCliente') }}";
+
+        $( "#client" ).autocomplete({
+          source: path,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_cliente_cli']").val(ui.item.id);
+            
+          },
+          open: function(event, ui){
+            
+          }
+        });
+    
+
+    });
+   
+
+    
+</script>
+
 @endsection

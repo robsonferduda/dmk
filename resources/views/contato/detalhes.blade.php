@@ -39,6 +39,12 @@
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
                                             <ul class="list-unstyled">
+                                                
+                                                @if(!empty($contato->entidadeCliente->cliente))
+                                                    <li>
+                                                        <strong>Cliente: </strong> {{ $contato->entidadeCliente->cliente->nm_razao_social_cli }}
+                                                    </li>
+                                                @endif
                                                 <li>
                                                     <strong>Nome: </strong> {{ $contato->nm_contato_cot }}
                                                 </li>
@@ -120,6 +126,22 @@
                                     </div>
                                 </fieldset>
                             </div>
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <fieldset style="margin-bottom: 15px;">
+                                        <legend><i class="fa fa-fw"></i> <strong></strong></legend>
+                                        <div class="row" style="margin-left: 5px;">
+                                            <p>    
+                                                <ul class="list-unstyled">
+                                                    <li style="display: inline-block;max-width: 100%;word-break:break-all;">
+                                                        <strong>Observações: </strong> {!! $contato->dc_observacao_cot !!} 
+                                                    </li>
+                                                </ul>
+                                            </p> 
+                                        </div>
+                                    </fieldset>
+                                </div>
+                         </div>       
                     </div>                    
                 </div>
             </article>

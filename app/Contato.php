@@ -28,6 +28,11 @@ class Contato extends Model
 
     public function entidade()
     {
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_contato_ete');
+    }
+
+    public function entidadeCliente()
+    {
         return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
     }
   
