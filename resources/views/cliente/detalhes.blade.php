@@ -173,6 +173,14 @@
                                 </fieldset>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-file-text-o fa-fw"></i> <strong>Observação</strong></legend>
+                                    {!! $cliente->observacao_cli !!}
+                                </fieldset>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </article>

@@ -15,8 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
-            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>      
+            <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
+            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>      
         </div>
     </div>
     <div class="row">
@@ -221,7 +221,7 @@
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                               <option selected value="">Selecione uma Cidade</option>
+                                               <option selected value="">Selecione uma cidade</option>
                                             </select> 
                                         </section>  
                                     </div>
@@ -331,6 +331,20 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="observacao_cli" id="observacao" value="{{old('observacao_cli')}}" >{{old('observacao_cli') ? old('observacao_cli') : ($cliente->observacao_cli) ? $cliente->observacao_cli : '' }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>
                             </div>
 
                             <footer>
@@ -349,12 +363,6 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
-
-        var _location = document.location.toString();
-        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
-        var applicationName = _location.substring(0, applicationNameIndex) + '/';
-        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var pathname = _location.substring(0, webFolderIndex);
 
         flag = $('#fl_nota_fiscal_cli').is(':checked');
             if(flag){
@@ -385,7 +393,7 @@
 
                 $.ajax(
                     {
-                        url: pathname+'/cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
@@ -397,7 +405,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

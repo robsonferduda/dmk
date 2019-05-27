@@ -61,8 +61,11 @@
                     <div class="widget-body no-padding">
                         
                         {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['usuarios',$usuario->id], 'class' => 'smart-form','method' => 'PUT']) !!}
+                            <input type="hidden" name="telefones" id="telefones">
+                            <input type="hidden" name="entidade" id="entidade" value="{{ $usuario->entidade->cd_entidade_ete }}">
+                            <input type="hidden" name="registrosBancarios" id="registrosBancarios">
                             <div class="row">
-                                <div  class="col col-6">
+                                <div  class="col col-sm-12">
                                     <header>
                                         <i class="fa fa-user"></i> Dados Básicos
                                     </header>
@@ -71,38 +74,25 @@
                                        
                                         <div class="row">
                             
-                                            <section class="col col-sm-12">
+                                            <section class="col col-3">
                                                 <label class="label">Nome<span class="text-danger">*</span></label>
                                                 <label class="input">
                                                     <input required type="text" name="name" placeholder="Nome" value="{{ old('name') ? old('name') : $usuario->name }}">
                                                 </label>
                                             </section>
-                                      {{--   <section class="col col-4">
-                                                <label class="label">Perfil<span class="text-danger">*</span></label>
-                                                <label class="select"> 
-                                                    <select required name="cd_nivel_niv">
-                                                        <option value="" >Selecione</option>
-                                                        @foreach($niveis as $nivel)
-                                                            <option {{ (old('cd_nivel_niv',$usuario->cd_nivel_niv) ==  $nivel->cd_nivel_niv ? 'selected' : '' ) }} value="{{ $nivel->cd_nivel_niv }}" >{{ $nivel->dc_nivel_niv }}</option>
-                                                        @endforeach
-                                                      
-                                                    </select> <i></i> </label>
-                                            </section>--}}
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-4">
+                                             <section class="col col-3">
                                                 <label class="label">Data de Nascimento</label>
                                                 <label class="input">
                                                     <input type="text" name="data_nascimento" class="data_nascimento" placeholder="___ /___ /___" value="{{old('data_nascimento') ? old('data_nascimento') : $usuario->data_nascimento}}">
                                                 </label>
                                             </section>                                                                                                
-                                            <section class="col col-4">
+                                            <section class="col col-3">
                                                 <label class="label">Data de Admissão</label>
                                                 <label class="input">
                                                     <input type="text" name="data_admissao" class="data_admissao" placeholder="___ /___ /___" value="{{old('data_admissao') ? old('data_admissao') : $usuario->data_admissao}}">
                                                 </label>
                                             </section>
-                                            <section class="col col-4">
+                                             <section class="col col-3">
                                                 <label class="label">Estado Civil</label>
                                                 <label class="select"> 
                                                     <select name="cd_estado_civil_esc">
@@ -113,70 +103,42 @@
                                                       
                                                     </select> <i></i> </label>
                                             </section>
-                                                                                
-                                        </div> 
-                                        <div class="row">
-                                        <section class="col col-6">
-                                            <label class="label">Departamento</label>
-                                            <label class="select"> 
-                                                <select name="cd_departamento_dep">
-                                                    <option value="" >Selecione</option>
-                                                    @foreach($departamentos as $departamento)
-                                                        <option {!! (old('cd_departamento_dep',$usuario->cd_departamento_dep) == $departamento->cd_departamento_dep ? 'selected' : '' ) !!} value="{{ $departamento->cd_departamento_dep }}" >{{ $departamento->nm_departamento_dep }}</option>
-                                                    @endforeach
-                                                  
-                                                </select> <i></i> </label>
-                                        </section>
-                                        <section class="col col-6">
-                                            <label class="label">Cargo</label>
-                                            <label class="select"> 
-                                                <select name="cd_cargo_car">
-                                                    <option value="" >Selecione</option>
-                                                    @foreach($cargos as $cargo)
-                                                        <option {!! (old('cd_cargo_car',$usuario->cd_cargo_car) == $cargo->cd_cargo_car ? 'selected' : '' ) !!} value="{{ $cargo->cd_cargo_car }}" >{{ $cargo->nm_cargo_car }}</option>
-                                                    @endforeach
-                                                  
-                                                </select> <i></i> </label>
-                                        </section>
-                                    </div>                                              
-                                        
-                                    </fieldset>
-                                </div>  
-                                <div  class="col col-6">
-                                    <header>
-                                        <i class="fa fa-phone"></i> Contatos
-                                    </header>
-                                    <fieldset>
-                                        <div class="row">
-                                           <section class="col col-sm-12">
-                                                <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
-                                                <label class="input">
-                                                    <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email') ? old('email') : $usuario->email }}">
-                                                </label>
-                                            </section>
                                         </div>
+                                        
                                         <div class="row">
-                                            <section class="col col-4">
-                                                <label class="label">Tipo do Telefone</label>
+                                             <section class="col col-6">
+                                                    <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
+                                                    <label class="input">
+                                                        <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email') ? old('email') : $usuario->email }}">
+                                                    </label>
+                                                </section>
+                                            <section class="col col-3">
+                                                <label class="label">Departamento</label>
                                                 <label class="select"> 
-                                                    <select name="cd_tipo_fone_tfo">
+                                                    <select name="cd_departamento_dep">
                                                         <option value="" >Selecione</option>
-                                                        @foreach($tiposFone as $tipoFone)
-                                                            <option {!! (old('cd_tipo_fone_tfo', $usuario->entidade->fone->cd_tipo_fone_tfo) == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                        @foreach($departamentos as $departamento)
+                                                            <option {!! (old('cd_departamento_dep',$usuario->cd_departamento_dep) == $departamento->cd_departamento_dep ? 'selected' : '' ) !!} value="{{ $departamento->cd_departamento_dep }}" >{{ $departamento->nm_departamento_dep }}</option>
                                                         @endforeach
                                                       
                                                     </select> <i></i> </label>
                                             </section>
-                                            <section class="col col-8">
-                                                <label class="label">Telefone</label>
-                                                <label class="input">
-                                                    <input type="text" name="nu_fone_fon" placeholder="Ex: (99) 999999999" value="{{old('nu_fone_fon') ? old('nu_fone_fon') : $usuario->entidade->fone->nu_fone_fon }}">
-                                                </label>
+                                            <section class="col col-3">
+                                                <label class="label">Cargo</label>
+                                                <label class="select"> 
+                                                    <select name="cd_cargo_car">
+                                                        <option value="" >Selecione</option>
+                                                        @foreach($cargos as $cargo)
+                                                            <option {!! (old('cd_cargo_car',$usuario->cd_cargo_car) == $cargo->cd_cargo_car ? 'selected' : '' ) !!} value="{{ $cargo->cd_cargo_car }}" >{{ $cargo->nm_cargo_car }}</option>
+                                                        @endforeach
+                                                      
+                                                    </select> <i></i> </label>
                                             </section>
-                                        </div>
-                                     
+                                    </div>                                              
+                                  
                                     </fieldset>
-                                </div>
+                                </div>  
+                                
                             </div>
 
                            <!--  <header>
@@ -225,54 +187,63 @@
                                         </div> 
                                     </fieldset>
                                 </div>
-                                <div class="col col-6">
+                                <div  class="col col-6">
                                     <header>
-                                        <i class="fa fa-bank"></i> Dados Bancários 
+                                        <i class="fa fa-phone"></i> Telefone
                                     </header>
-
                                     <fieldset>
 
-                                        <div class="row">
-                                            
-                                            <section class="col col-8">
-                                               
-                                                <label class="label" >Banco</label>          
-                                                <select  name="cd_banco_ban" class="select2">
-                                                    <option selected value="">Selecione</option>
-                                                    @foreach($bancos as $banco)
-                                                        <option {{ (old('cd_banco_ban',$usuario->entidade->banco->cd_banco_ban) == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' ) }}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
-                                                    @endforeach
-
-                                                </select> 
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="label">Agência</label>
+                                    <div class="col col-sm-12">  
+                                        <fieldset>  
+                                        <div class="row">    
+                                            <section class="col col-5">
                                                 <label class="input">
-                                                    <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba') ? old('nu_agencia_dba') : $usuario->entidade->banco->nu_agencia_dba }}">
+                                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
                                                 </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-8">
-                                                <label class="label">Tipo de Conta</label>
-                                                <label class="select"> 
-                                                    <select name="cd_tipo_conta_tcb">
-                                                        <option value="" >Selecione</option>
-                                                        @foreach($tiposConta as $tipoConta)
-                                                            <option {!! (old('cd_tipo_conta_tcb', $usuario->entidade->banco->cd_tipo_conta_tcb) == $tipoConta->cd_tipo_conta_tcb ? 'selected' : '' ) !!}  value="{{ $tipoConta->cd_tipo_conta_tcb }}" >{{ $tipoConta->nm_tipo_conta_tcb }}</option>
-                                                        @endforeach
-                                                      
-                                                    </select> <i></i> </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="label">Conta</label>
-                                                <label class="input">
-                                                    <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba') ? old('nu_conta_dba') : $usuario->entidade->banco->nu_conta_dba }}">
-                                                </label>
+                                            </section>                     
+                                            <section class="col col-4">    
+                                                <select class="select2" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                    <option value="0">Tipo</option>
+                                                    @foreach(\App\TipoFone::all() as $tipoFone)
+                                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                    @endforeach   
+                                                </select>
+                                            </section> 
+                                            <section class="col col-1">
+                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
                                             </section>
                                         </div> 
+                                        <div class="row center" id="erroFone"></div>
                                     </fieldset>
-                                </div>                            
+
+                                     <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            
+                                            <table id="tabelaFone" class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Tipo</th>
+                                                        <th>Telefone</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($usuario->entidade->fone()->get() as $fone)
+                                                        <tr>
+                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                            <td>{{ $fone->nu_fone_fon }}</td>
+                                                            <td class="center">
+                                                                <a class="excluirFoneBase" style="cursor: pointer;" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>                                       
+                                            
+                                    </div>
+                                     
+                                    </fieldset>
+                                </div>
+                                                  
                                 <div class="col col-6">
                                     <header>
                                     <i class="fa fa-building"></i> Endereço 
@@ -342,6 +313,101 @@
                                         </div>         
                                     </fieldset>                       
                                 </div> 
+                                 <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa fa-bank"></i> Dados Bancários 
+                                    </header>
+
+                                    <fieldset>
+
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">Titular</label>
+                                                <label class="input">
+                                                    <input type="text" name="nm_titular_dba" id="nm_titular_dba" placeholder="TItular" value="{{old('nm_titular_dba')}}">
+                                                </label>
+                                            </section> 
+                                            <section class="col col-4">  
+                                                <label class="label">CPF</label>
+                                                <label class="input">
+                                                    <input type="text" class="cpf" name="nu_cpf_cnpj_dba" id="nu_cpf_cnpj_dba" class="cpf" placeholder="CPF" value="{{old('nu_cpf_cnpj_dba')}}">
+                                                </label>
+                                            </section>   
+                                            <section class="col col-4">
+                                                <label class="label" >Banco</label>          
+                                                <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
+                                                    <option selected value="">Selecione</option>
+                                                    @foreach($bancos as $banco)
+                                                        <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
+                                                    @endforeach
+
+                                                </select> 
+                                            </section>                        
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">Tipo de Conta</label>
+                                                <label class="select"> 
+                                                    <select name="cd_tipo_conta_tcb" id="cd_tipo_conta_tcb">
+                                                        <option value="" >Selecione</option>
+                                                        @foreach($tiposConta as $tipoConta)
+                                                            <option {!! (old('cd_tipo_conta_tcb') == $tipoConta->cd_tipo_conta_tcb ? 'selected' : '' ) !!}  value="{{ $tipoConta->cd_tipo_conta_tcb }}" >{{ $tipoConta->nm_tipo_conta_tcb }}</option>
+                                                        @endforeach
+                                                      
+                                                    </select> <i></i> </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">Agência</label>
+                                                <label class="input">
+                                                    <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba')}}" id="nu_agencia_dba">
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">Conta</label>
+                                                <label class="input">
+                                                    <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}" id="nu_conta_dba">
+                                                </label>
+                                            </section>
+                                        </div> 
+                                        <div class="row">
+                                            <section class="col col-sm-12">
+                                                <button type="button" id="btnSalvarContaBancaria" class="btn btn-success" style="padding: 6px 15px;float: right;"><i class="fa fa-plus"></i> Adicionar</button>
+                                            </section>
+                                        </div>
+                                        <div class="row center" id="erroContaBancaria"></div>
+                                        </fieldset>
+                                        <div class="row" style="margin: 0; padding: 5px 13px;">            
+                                            <table id="tabelaRegistroBancario" class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Titular</th>
+                                                        <th>CPF</th>
+                                                        <th>Banco</th>
+                                                        <th>Tipo de Conta</th>
+                                                        <th>Agência</th>
+                                                        <th>Conta</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($usuario->entidade->banco()->get() as $banco)
+                                                       <tr>
+                                                            <td>{{ $banco->nm_titular_dba }}</td>
+                                                            <td>{{ $banco->nu_cpf_cnpj_dba }}</td>
+                                                            <td>{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT).' - '.$banco->banco->nm_banco_ban }}</td>
+                                                            <td>{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
+                                                            <td>{{ $banco->nu_agencia_dba }}</td>
+                                                            <td>{{ $banco->nu_conta_dba }}</td>
+                                                            <td class="center">
+                                                                <a class="excluirDadosBancariosBase" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach     
+                                                </tbody>
+                                            </table>                                               
+                                        </div>
+                                    </fieldset>
+                                </div>         
                                 <div class="col col-sm-12">
                                     <header>
                                         <i class="fa  fa-file-text-o"></i> Observações 
@@ -350,7 +416,7 @@
                                         <div class="row"> 
                                             <section class="col col-sm-12">
                                             <label class="input">
-                                                <textarea class="form-control" rows="4" name="observacao" value="{{(old('observacao')  ? old('observacao') : $usuario->observacao)}}" >{{ old('observacao') ? old('observacao') :  $usuario->observacao }}</textarea>
+                                                <textarea class="form-control" id="observacao" rows="4" name="observacao_usu" value="{{(old('observacao_usu')  ? old('observacao_usu') : $usuario->observacao)}}" >{{ old('observacao_usu') ? old('observacao_usu') :  $usuario->observacao }}</textarea>
                                             </label>
                                             </section> 
                                         </div>

@@ -33,7 +33,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('cliente/limpar-selecao/{id}','ClienteController@limparSelecao');
 	Route::get('cliente/buscar','ClienteController@buscar');
-	Route::get('cliente/buscar-honorarios','ClienteController@buscarHonorarios');
+	Route::get('cliente/buscar-honorarios/{id}','ClienteController@buscarHonorarios');
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
@@ -93,7 +93,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
-	Route::get('correspondente/buscar-honorarios','CorrespondenteController@buscarHonorarios');
+	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
@@ -122,6 +122,9 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('fones/entidade/{id}','FoneController@fones');
 	Route::get('fones/excluir/{id}','FoneController@excluir');
+
+	Route::get('registro-bancario/entidade/{id}','RegistroBancarioController@registros');
+	Route::get('registro-bancario/excluir/{id}','RegistroBancarioController@excluir');
 
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');

@@ -20,7 +20,8 @@ class Cliente extends Model
         'nm_fantasia_cli',
         'fl_nota_fiscal_cli',
         'taxa_imposto_cli',
-        'dt_inicial_cli'
+        'dt_inicial_cli',
+        'observacao_cli'
     ];
 
     public $timestamps = true;

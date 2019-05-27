@@ -213,7 +213,7 @@
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade</label>          
                                             <select  id="cidade" disabled name="cd_cidade_cde" class="select2">
-                                               <option selected value="">Selecione uma Cidade</option>
+                                               <option selected value="">Selecione uma cidade</option>
                                             </select> 
                                         </section>  
                                     </div>
@@ -307,6 +307,21 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="observacao_cli" id="observacao" value="{{old('observacao_cli')}}" >{{old('observacao')}}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                
                             </div>
 
                             <footer>
@@ -403,6 +418,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+
+
         $("#fl_nota_fiscal_cli").click(function(){
 
             flag = $('#fl_nota_fiscal_cli').is(':checked');
@@ -435,7 +452,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

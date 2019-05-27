@@ -157,6 +157,8 @@ class UsuarioController extends Controller
         $request->merge(['cd_conta_con' => $this->cdContaCon]);
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
+        $request->merge(['observacao' => $request->observacao_usu]);
+        
         if($entidade){
 
             $request->merge(['password' => \Hash::make($request->password)]);
@@ -226,21 +228,25 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
-                    
-                    $fone = Fone::create([
-                        'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                        'cd_conta_con'              => $this->cdContaCon, 
-                        'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
-                        'nu_fone_fon'               => $request->nu_fone_fon
-                    ]);
+                if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
-                    if(!$fone){
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
+                    $fones = json_decode($request->telefones);
+                    for($i = 0; $i < count($fones); $i++) {
 
+                        $fone = Fone::create([
+                            'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                            'cd_conta_con'              => $this->cdContaCon, 
+                            'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                            'nu_fone_fon'               => $fones[$i]->numero
+                        ]);
+
+                        if(!$fone){
+                            DB::rollBack();
+                            Flash::error('Erro ao inserir dados');
+                            return redirect('usuarios');
+                        }   
+
+                    }
                 }
 
                 if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
@@ -257,23 +263,29 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
+                if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
 
-                    $registro = new RegistroBancario();
+                    $registrosBancarios = json_decode($request->registrosBancarios);
+                    for($i = 0; $i < count($registrosBancarios); $i++) {
 
-                    $request->merge(['nm_titular_dba'  => $request->name]);
-                    $request->merge(['nu_cpf_cnpj_dba' => $request->cpf]);
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $entidade->cd_entidade_ete,
+                            'cd_conta_con'    => $this->cdContaCon, 
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
+                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
+                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
+                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
 
-                    $registro->fill($request->all());
-                    //dd($request->all());
+                        if(!$registro){
+                            DB::rollBack();
+                            Flash::error('Erro ao inserir dados');
+                            return redirect('usuarios');
+                        }   
 
-                    if(!$registro->saveOrFail()){
-                        
-                        DB::rollBack();
-                        Flash::error('Erro ao inserir dados');
-                        return redirect('usuarios');
-                    }   
-
+                    }
                 }
 
             }else{
@@ -308,6 +320,8 @@ class UsuarioController extends Controller
         $request->merge(['cd_entidade_ete' => $usuario->cd_entidade_ete]);
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
+        $request->merge(['observacao' => $request->observacao_usu]);
+        
         if($usuario->cd_entidade_ete){
 
             if(!empty($request->data_nascimento))
@@ -450,47 +464,22 @@ class UsuarioController extends Controller
                         }
                 }
 
-                if(!empty($request->nu_fone_fon) && !empty($request->cd_tipo_fone_tfo)){
+                    //Inserção de telefones
+                if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
-                    $fone = Fone::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-                             
-                    if($fone){
-
-                        $fone->fill($request->all());
-
-                        if(!$fone->saveOrFail()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        } 
-                    }else{
+                    $fones = json_decode($request->telefones);
+                    for($i = 0; $i < count($fones); $i++) {
 
                         $fone = Fone::create([
                             'cd_entidade_ete'           => $usuario->cd_entidade_ete,
                             'cd_conta_con'              => $this->cdContaCon, 
-                            'cd_tipo_fone_tfo'          => $request->cd_tipo_fone_tfo,
-                            'nu_fone_fon'               => $request->nu_fone_fon
+                            'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                            'nu_fone_fon'               => $fones[$i]->numero
                         ]);
 
-                        if(!$fone){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }   
                     }
-
-                }else{
-
-                    $fone = Fone::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-
-                    if($fone)
-                        if(!$fone->delete()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }
-
                 }
+
 
                 if(!empty($request->cd_cidade_cde) || !empty($request->nm_bairro_ede) || !empty($request->dc_logradouro_ede)){
 
@@ -533,47 +522,29 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
+                if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
 
-                    $request->merge(['nm_titular_dba'  => $request->name]);
-                    $request->merge(['nu_cpf_cnpj_dba' => $request->cpf]);
+                    $registrosBancarios = json_decode($request->registrosBancarios);
+                    for($i = 0; $i < count($registrosBancarios); $i++) {
 
-                    $registro = RegistroBancario::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $usuario->cd_entidade_ete,
+                            'cd_conta_con'    => $this->cdContaCon, 
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
+                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
+                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
+                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
 
-                    if($registro){
-                        
-                        $registro->fill($request->all());
-
-                        if(!$registro->saveOrFail()){
+                        if(!$registro){
                             DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
+                            Flash::error('Erro ao inserir dados');
                             return redirect('usuarios');
-                        } 
-
-                    }else{
-
-                        $registro = new RegistroBancario();
-
-                        $registro->fill($request->all());
-
-                        if(!$registro->saveOrFail()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        } 
+                        }   
 
                     }
-                }else{
-
-                    $registro = RegistroBancario::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-
-                    if($registro)
-                        if(!$registro->delete()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }
-
                 }
                         
             }else{
