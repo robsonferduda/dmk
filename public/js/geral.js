@@ -607,7 +607,7 @@ $(document).ready(function() {
 			loadTelefones(entidade);
 
 			$.each(telefones, function(index, value){
-				$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 			});			
 
 			$('.excluirFone').on('click', function(){
@@ -621,7 +621,7 @@ $(document).ready(function() {
 				loadTelefones(entidade);
 
 				$.each(telefones, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});
 
 				$("#telefones").val(JSON.stringify(telefones));
@@ -786,7 +786,7 @@ $(document).ready(function() {
 			            	$("#tabelaEmail > tbody > tr").remove();	
 							loadEmails(entidade);
 							$.each(emails, function(index, value){
-								$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+								$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 							});
 			            },
 			            error: function(response)
@@ -813,7 +813,7 @@ $(document).ready(function() {
             success: function(response)
             {                    	
 				$.each(response, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_fone_tfo+'</td><td>'+value.nu_fone_fon+'</td><td class="center"><a class="excluirFoneBase" data-codigo="'+value.cd_fone_fon+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_fone_tfo+'</td><td>'+value.nu_fone_fon+'</td><td class="center"><a class="excluirFoneBase" style="cursor:pointer"  data-codigo="'+value.cd_fone_fon+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});   
 
 				$('.excluirFoneBase').on('click', function(){
@@ -831,7 +831,7 @@ $(document).ready(function() {
 			            	$("#tabelaFone > tbody > tr").remove();	
 							loadTelefones(entidade);
 							$.each(telefones, function(index, value){
-								$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+								$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone"  style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 							});
 			            },
 			            error: function(response)
@@ -886,7 +886,7 @@ $(document).ready(function() {
             	$("#tabelaEmail > tbody > tr").remove();	
 				loadEmails(entidade);
 				$.each(emails, function(index, value){
-					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});
             },
             error: function(response)
@@ -936,7 +936,7 @@ $(document).ready(function() {
             	$("#tabelaFone > tbody > tr").remove();	
 				loadTelefones(entidade);
 				$.each(telefones, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});
             },
             error: function(response)
