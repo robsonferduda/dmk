@@ -522,47 +522,29 @@ class UsuarioController extends Controller
 
                 }
 
-                if(!empty($request->cd_banco_ban) && !empty($request->nu_agencia_dba) && !empty($request->cd_tipo_conta_tcb) && !empty($request->nu_conta_dba)){
+                if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
 
-                    $request->merge(['nm_titular_dba'  => $request->name]);
-                    $request->merge(['nu_cpf_cnpj_dba' => $request->cpf]);
+                    $registrosBancarios = json_decode($request->registrosBancarios);
+                    for($i = 0; $i < count($registrosBancarios); $i++) {
 
-                    $registro = RegistroBancario::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $usuario->cd_entidade_ete,
+                            'cd_conta_con'    => $this->cdContaCon, 
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
+                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
+                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
+                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
 
-                    if($registro){
-                        
-                        $registro->fill($request->all());
-
-                        if(!$registro->saveOrFail()){
+                        if(!$registro){
                             DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
+                            Flash::error('Erro ao inserir dados');
                             return redirect('usuarios');
-                        } 
-
-                    }else{
-
-                        $registro = new RegistroBancario();
-
-                        $registro->fill($request->all());
-
-                        if(!$registro->saveOrFail()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        } 
+                        }   
 
                     }
-                }else{
-
-                    $registro = RegistroBancario::where('cd_conta_con',$this->cdContaCon)->where('cd_entidade_ete',$usuario->cd_entidade_ete)->first();
-
-                    if($registro)
-                        if(!$registro->delete()){
-                            DB::rollBack();
-                            Flash::error('Erro ao atualizar dados');
-                            return redirect('usuarios');
-                        }
-
                 }
                         
             }else{
