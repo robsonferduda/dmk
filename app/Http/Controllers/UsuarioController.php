@@ -149,6 +149,15 @@ class UsuarioController extends Controller
 
         DB::beginTransaction();
 
+        $existe = User::withTrashed()->where('cd_conta_con',$this->cdContaCon)->where('cd_nivel_niv', '!=', 3)->where('email',$request->email)->first();
+
+        if($existe){
+
+            DB::rollBack();
+            Flash::error('E-mail já existente em nossa base de dados');
+            return redirect('usuarios');
+        }
+
         $entidade = Entidade::create([
             'cd_conta_con'         => $this->cdContaCon,
             'cd_tipo_entidade_tpe' => \TipoEntidade::USUARIO
