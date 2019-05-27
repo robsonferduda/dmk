@@ -40,7 +40,7 @@
                                     
                                     <div class="row">
                                         <div class="col-md-12">  
-                                            <form action="{{ url('correspondente/buscar-honorarios') }}" class="smart-form'" method="GET" role="search">
+                                            <form action="{{ url('correspondente/buscar-honorarios/'.$cliente->cd_conta_con) }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_conta_con }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
@@ -215,12 +215,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var _location = document.location.toString();
-        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
-        var applicationName = _location.substring(0, applicationNameIndex) + '/';
-        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var webFolderFullPath = _location.substring(0, webFolderIndex); 
-
         var buscaCidade = function(){
 
             estado = $("#estado").val();
@@ -230,7 +224,7 @@
 
                 $.ajax(
                     {
-                        url: webFolderFullPath+'/correspondente/'+entidade+'/cidades-por-estado/'+estado,
+                        url: '../../correspondente/'+entidade+'/cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
@@ -242,7 +236,7 @@
                         success: function(response)
                         {                    
                             $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
