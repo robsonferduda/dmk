@@ -143,7 +143,7 @@
                                     </div>    
                                     <div class="row">
                                         <section class="col col-sm-12">
-                                            <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
+                                            <label class="label">E-mail<span class="text-danger">* Utilizado na autenticação</span></label>
                                             <label class="input">
                                                 <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email')}}">
                                             </label>
@@ -218,7 +218,7 @@
                                     <section class="col col-6">
                                         <label class="label">Senha<span class="text-danger">*</span></label>
                                         <label class="input">
-                                            <input required type="password" name="password" placeholder="Senha">
+                                            <input required type="password" id="password" name="password" placeholder="Senha">
                                         </label>
                                     </section>  
                                     <section class="col col-6">
@@ -492,6 +492,50 @@
         $("#estado").change(function(){
             
             buscaCidade(); 
+
+        });
+
+
+        $(function() {
+                // Validation
+                $("#frm-add-usuario").validate({
+                    rules : {
+                        name : {
+                            required: true,
+                        },
+                        email : {
+                            required: true,
+                        },
+                        password : {
+                            required : true,
+                            minlength : 3,
+                            maxlength : 20
+                        },
+                        password_confirmation : {
+                            required : true,
+                            minlength : 3,
+                            maxlength : 20,
+                            equalTo : '#password'
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        name : {
+                            required : 'Campo Nome Obrigatório'
+                        },
+                        email : {
+                            required : 'Campo E-mail senha'
+                        },
+                        password : {
+                            required : 'Digite sua senha'
+                        },
+                        password_confirmation : {
+                            required : 'Confirme a senha',
+                            equalTo : 'As senhas informadas são diferentes'
+                        }
+                    },
+                });
 
         });
 
