@@ -38,6 +38,21 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
+    protected function prepareResponse($request, Exception $e)
+    {
+        if (! $this->isHttpException($e) && config('app.debug')) {
+            return $this->toIlluminateResponse($this->convertExceptionToResponse($e), $e);
+        }
+
+        if (! $this->isHttpException($e)) {
+           return response()->view('errors/erro',['request' => $request, 'erro' => $e]);
+        }
+
+        return $this->toIlluminateResponse(
+            $this->renderHttpException($e), $e
+        );
+    }
+
     /**
      * Render an exception into an HTTP response.
      *
@@ -47,6 +62,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        return parent::render($request, $exception);
+
         if(Config::get('app.debug'))
             return parent::render($request, $exception);
         else

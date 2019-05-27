@@ -18,7 +18,7 @@ class RegistroBancarioController extends Controller
 
     public function registros($id)
     {  
-        dd(RegistroBancario::with('banco')->where('cd_entidade_ete',$id)->get());
+        dd(RegistroBancario::with('banco')->with('tipoConta')->where('cd_entidade_ete',$id)->get());
 
         return response()->json(RegstroBancario::with('tipoConta')->with('banco')->where('cd_entidade_ete',$id)->get()); 
       
