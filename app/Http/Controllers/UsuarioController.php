@@ -78,8 +78,8 @@ class UsuarioController extends Controller
         $estados       = Estado::orderBy('nm_estado_est')->get();
         $bancos        = Banco::orderBy('cd_banco_ban')->get();
         $tiposConta    = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
-        $departamentos = Departamento::orderBy('nm_departamento_dep')->get();
-        $cargos         = Cargo::orderBy('nm_cargo_car')->get();
+        $departamentos = Departamento::orderBy('nm_departamento_dep')->where('cd_conta_con',$this->cdContaCon)->get();
+        $cargos         = Cargo::orderBy('nm_cargo_car')->where('cd_conta_con',$this->cdContaCon)->get();
 
         return view('usuario/novo',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, 'departamentos' => $departamentos, 'cargos' => $cargos]);
 
@@ -95,8 +95,8 @@ class UsuarioController extends Controller
         $estados       = Estado::orderBy('nm_estado_est')->get();
         $bancos        = Banco::orderBy('cd_banco_ban')->get();
         $tiposConta    = TipoConta::orderBy('nm_tipo_conta_tcb')->get();
-        $departamentos = Departamento::orderBy('nm_departamento_dep')->get();
-        $cargos        = Cargo::orderBy('nm_cargo_car')->get();
+        $departamentos = Departamento::orderBy('nm_departamento_dep')->where('cd_conta_con',$this->cdContaCon)->get();
+        $cargos        = Cargo::orderBy('nm_cargo_car')->where('cd_conta_con',$this->cdContaCon)->get();
 
         $usuario = User::with('entidade')->where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
 
