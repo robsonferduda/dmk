@@ -107,7 +107,7 @@
                                         
                                         <div class="row">
                                              <section class="col col-6">
-                                                    <label class="label">Email<span class="text-danger">* Utilizado na autenticação</span></label>
+                                                    <label class="label">E-mail<span class="text-danger">* Utilizado na autenticação</span></label>
                                                     <label class="input">
                                                         <input required type="text" name="email" class="email" placeholder="E-mail" value="{{old('email') ? old('email') : $usuario->email }}">
                                                     </label>
@@ -492,6 +492,32 @@
         $("#estado").change(function(){
             
             buscaCidade(); 
+
+        });
+
+        $(function() {
+                // Validation
+                $("#frm-edit-usuario").validate({
+                    rules : {
+                        name : {
+                            required: true,
+                        },
+                        email : {
+                            required: true,
+                        },
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        name : {
+                            required : 'Campo Nome Obrigatório'
+                        },
+                        email : {
+                            required : 'Campo E-mail senha'
+                        },
+                    
+                    },
+                });
 
         });
 
