@@ -859,7 +859,7 @@ $(document).ready(function() {
             {              
             	console.log(response);      	
 				$.each(response, function(index, value){
-					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.banco.nm_banco_ban+'</td><td>'+value.tipo_conta.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.nm_banco_ban+'</td><td>'+value.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-codigo="'+value.cd_dados_bancarios_dba+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});   
 
             },

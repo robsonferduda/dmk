@@ -7,6 +7,7 @@ use Auth;
 use App\RegistroBancario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 
 class RegistroBancarioController extends Controller
 {
@@ -18,9 +19,15 @@ class RegistroBancarioController extends Controller
 
     public function registros($id)
     {  
-        dd(RegistroBancario::with('banco')->with('tipoConta')->where('cd_entidade_ete',$id)->get());
 
-        return response()->json(RegstroBancario::with('tipoConta')->with('banco')->where('cd_entidade_ete',$id)->get()); 
+        $registro = DB::table('dados_bancarios_dba')
+                ->join('banco_ban','dados_bancarios_dba.cd_banco_ban','=','banco_ban.cd_banco_ban')
+                ->join('tipo_conta_banco_tcb','dados_bancarios_dba.cd_tipo_conta_tcb','=','tipo_conta_banco_tcb.cd_tipo_conta_tcb')
+                ->where('dados_bancarios_dba.cd_entidade_ete','=',$id)
+                ->whereNull('dados_bancarios_dba.deleted_at')
+                ->get();
+
+        return response()->json($registro); 
       
     }
 
