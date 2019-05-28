@@ -36,11 +36,12 @@
                 <form action="{{ url('contato/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
 
-                    <div class="input-group" style="width: 30%">
+                    <div class="input-group col-md-5">
                         <span class="input-group-addon">Cliente</span>
                         <input type="hidden" name="cd_cliente_cli" value="{{ (!empty($codCliente)) ? $codCliente: ''  }}" >
                         <input name="nm_cliente_cli" value="{{ (!empty($nomeCliente)) ? $nomeCliente: '' }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
                         <div style="clear: all;"></div>
+                        <span id="limpar-cliente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                         <span id="novo-contato-cliente" title="Adicionar contato ao cliente" class="input-group-addon btn btn-success"><i class="fa fa-plus"></i></span>
                     </div>
 
@@ -57,7 +58,9 @@
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                     <input type="hidden" id="entidade-cliente" value="{{ (!empty($entidade)) ? $entidade : '' }}">
                 </form>
+                <div style="clear: both;"></div>
             </div>
+
             <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Utilize as opções de busca por "Letra" ou um dos campos de filtro para listar os contatos.</label>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
@@ -79,9 +82,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $ctrl = 0; @endphp
+                               
                                 @foreach($dados as $d)
-                                    @if($ctrl != $d->cd_contato_cot)
+                                   
                                         <tr>
                                             <td data-id="{{ $d->cd_contato_cot }}"><a href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}">{{ $d->nm_contato_cot }}</a></td>
                                             <td>{{ ($d->nm_cidade_cde) ? $d->nm_cidade_cde : 'Não informado' }}</td>
@@ -94,8 +97,8 @@
                                                 <button title="Excluir" data-url="contatos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> </button>
                                             </td>
                                         </tr>
-                                    @endif
-                                    @php $ctrl = $d->cd_contato_cot; @endphp
+                                    
+                    
                                 @endforeach                                
                             </tbody>
                         </table>
@@ -127,7 +130,7 @@
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
             $('#entidade-cliente').val(ui.item.entidade);
-
+             $("input[name='nm_cliente_cli']").css('background-color','#ffffff').focus();
           },
           open: function(event, ui){
             
@@ -139,7 +142,16 @@
             var entidade = $('#entidade-cliente').val();
             if(entidade != ''){
                 window.location.href = applicationName +'cliente/'+entidade+'/contato/novo';
+            }else{
+                $("input[name='nm_cliente_cli']").css('background-color','#ffd8cc').focus();
             }
+
+        });
+
+        $('#limpar-cliente').click(function(){
+            $('#entidade-cliente').val('');
+            $("input[name='cd_cliente_cli']").val('');
+            $("input[name='nm_cliente_cli']").val('');
 
         });
 

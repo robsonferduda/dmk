@@ -60,8 +60,14 @@ class ClienteController extends Controller
         $dados = DB::table('contato_cot')
                         ->leftJoin('tipo_contato_tct','tipo_contato_tct.cd_tipo_contato_tct','=','contato_cot.cd_tipo_contato_tct')
                         ->leftJoin('endereco_ede','endereco_ede.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete')
-                        ->leftJoin('fone_fon','fone_fon.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete')
-                        ->leftJoin('endereco_eletronico_ele','endereco_eletronico_ele.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete')
+                        ->leftJoin('vi_fone_max_create_entidate_fon', function($join){
+                            $join->on('vi_fone_max_create_entidate_fon.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete');
+                            $join->whereNull('vi_fone_max_create_entidate_fon.deleted_at');
+                        })
+                        ->leftJoin('vi_endereco_eletronico_max_create_entidate_ele', function($join){
+                            $join->on('vi_endereco_eletronico_max_create_entidate_ele.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete');
+                            $join->whereNull('vi_endereco_eletronico_max_create_entidate_ele.deleted_at');
+                        })
                         ->leftJoin('cidade_cde','cidade_cde.cd_cidade_cde','=','endereco_ede.cd_cidade_cde');
                         if(!empty($id)){
                             $dados->leftJoin('cliente_cli','cliente_cli.cd_entidade_ete','=','contato_cot.cd_entidade_ete')
