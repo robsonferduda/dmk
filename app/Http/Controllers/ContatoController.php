@@ -248,12 +248,13 @@ class ContatoController extends Controller
 
         if($contato->saveOrFail()){
 
+            # =============== Importante ========================
+            $request->merge(['cd_entidade_ete' => $contato->cd_entidade_contato_ete]);
+
             //Atualização de endereço - Exige que pelo menos o logradouro esteja preenchido
             if(!empty($request->dc_logradouro_ede)){
 
                 $endereco = Endereco::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$contato->cd_entidade_contato_ete)->first();
-
-                $request->merge(['cd_entidade_ete' => $contato->cd_entidade_contato_ete]);
 
                 if($endereco){
                             

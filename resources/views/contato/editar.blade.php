@@ -35,6 +35,7 @@
                         {!! Form::open(['id' => 'frm-add-contato', 'url' => ['contatos',$contato->cd_contato_cot], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         <input type="hidden" name="telefones" id="telefones">
                         <input type="hidden" name="emails" id="emails">
+                        <input type="hidden" name="entidade" id="entidade" value="{{ $contato->entidade->cd_entidade_ete }}">
                         <div class="row">
                             <div style="padding: 5px 20px;">
                                 <header>
@@ -180,6 +181,15 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @foreach($contato->entidade->fone()->get() as $fone)
+                                                        <tr>
+                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                            <td>{{ $fone->nu_fone_fon }}</td>
+                                                            <td class="center">
+                                                                <a class="excluirFoneBase" style="cursor: pointer;" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
                                                     
                                                 </tbody>
                                             </table>                                       
