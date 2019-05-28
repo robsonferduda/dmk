@@ -30,6 +30,8 @@ class ContatoController extends Controller
         $dados = array();
     	$contato = new Contato();
 
+        $tiposContato = TipoContato::where('cd_conta_con', $this->conta)->orderBy('nm_tipo_contato_tct')->get();
+
     	if(session('inicial')){
 
     		$inicial = session('inicial');
@@ -43,12 +45,13 @@ class ContatoController extends Controller
                         ->where('contato_cot.cd_conta_con',$this->conta)
                         ->where('contato_cot.nm_contato_cot', 'ilike', $inicial.'%')
                         ->whereNull('contato_cot.deleted_at')
+                        ->orderBy('contato_cot.nm_contato_cot')
                         ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
                         ->get();
 
     	}
 
-    	return view('contato/index',['dados' => $dados]);
+    	return view('contato/index',['dados' => $dados,'tiposContato' => $tiposContato]);
     }
 
     public function filtrar(Request $request){
@@ -56,6 +59,8 @@ class ContatoController extends Controller
         Session::put('inicial',NULL);
 
         $dados = array();
+
+        $tiposContato = TipoContato::where('cd_conta_con', $this->conta)->orderBy('nm_tipo_contato_tct')->get();
 
         $nomeCliente = '';
         $codCliente = '';
@@ -79,14 +84,18 @@ class ContatoController extends Controller
                                 $nomeCliente = $cliente->nu_cliente_cli.' - '.$cliente->nm_razao_social_cli;
                             }
                             
-
                         }
+
+                        if(!empty($request->cd_tipo_contato_tct))
+                            $dados->where('tipo_contato_tct.cd_tipo_contato_tct',$request->cd_tipo_contato_tct);
+
             $dados   =  $dados->where('contato_cot.cd_conta_con',$this->conta)
                         ->whereNull('contato_cot.deleted_at')
+                        ->orderBy('contato_cot.nm_contato_cot')
                         ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
                         ->get();
 
-        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente]);
+        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'tiposContato' => $tiposContato, 'tipoContato' => $request->cd_tipo_contato_tct]);
     }
 
     public function buscar($inicial)
@@ -263,7 +272,12 @@ class ContatoController extends Controller
         }
 
         Flash::success('Contato atualizado com sucesso');
-        return redirect('contatos');
+
+        if(!empty($request->cd_cliente_cli)){
+            return redirect('cliente/contatos/'.$cliente->cd_entidade_ete);
+        }else{
+            return redirect('contatos');
+        }
     }
 
     public function destroy($id)

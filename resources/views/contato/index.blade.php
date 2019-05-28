@@ -40,11 +40,25 @@
                         <span class="input-group-addon">Cliente</span>
                         <input type="hidden" name="cd_cliente_cli" value="{{ (!empty($codCliente)) ? $codCliente: ''  }}" >
                         <input name="nm_cliente_cli" value="{{ (!empty($nomeCliente)) ? $nomeCliente: '' }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
+                        <div style="clear: all;"></div>
+                        <span id="novo-contato-cliente" title="Adicionar contato ao cliente" class="input-group-addon btn btn-success"><i class="fa fa-plus"></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="cd_tipo_contato_tct" class="form-control">
+                            <option value="">Tipos de Contato</option>
+                            @foreach($tiposContato as $tipo)
+
+                                <option {{ (!empty($tipoContato) && $tipoContato == $tipo->cd_tipo_contato_tct) ? 'selected' : ''}} value="{{ $tipo->cd_tipo_contato_tct }}">{{ $tipo->nm_tipo_contato_tct }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                    <input type="hidden" id="entidade-cliente" value="{{ (!empty($entidade)) ? $entidade : '' }}">
                 </form>
             </div>
+            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema não lista nenhum contato. Utilize as opções de busca por "Letra" ou um dos campos de filtro para realizar a busca.</label>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-book"></i> </span>
@@ -100,6 +114,10 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        var _location = document.location.toString();
+        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
+        var applicationName = _location.substring(0, applicationNameIndex) + '/';
+
         var path = "{{ url('autocompleteCliente') }}";
 
         $( "#client" ).autocomplete({
@@ -108,13 +126,23 @@
           select: function(event, ui) {
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
-            
+            $('#entidade-cliente').val(ui.item.entidade);
+
           },
           open: function(event, ui){
             
           }
         });
     
+        $('#novo-contato-cliente').click(function(){
+
+            var entidade = $('#entidade-cliente').val();
+            if(entidade != ''){
+                window.location.href = applicationName +'cliente/'+entidade+'/contato/novo';
+            }
+
+        });
+
 
     });
    

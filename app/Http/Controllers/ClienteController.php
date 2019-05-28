@@ -54,6 +54,9 @@ class ClienteController extends Controller
         $nomeCliente = '';
         $codCliente = '';
 
+        $tiposContato = TipoContato::where('cd_conta_con', $this->conta)->orderBy('nm_tipo_contato_tct')->get();
+
+
         $dados = DB::table('contato_cot')
                         ->leftJoin('tipo_contato_tct','tipo_contato_tct.cd_tipo_contato_tct','=','contato_cot.cd_tipo_contato_tct')
                         ->leftJoin('endereco_ede','endereco_ede.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete')
@@ -81,7 +84,7 @@ class ClienteController extends Controller
                         ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
                         ->get();
 
-        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente]);
+        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'entidade' => $id, 'tiposContato' => $tiposContato]);
     }
 
     public function buscarContato($cliente,$inicial)
@@ -702,7 +705,7 @@ class ClienteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->select('cd_cliente_cli','nm_razao_social_cli','nm_fantasia_cli','taxa_imposto_cli','nu_cliente_cli')->get();
+        $resultados = Cliente::where('nm_razao_social_cli', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_cli', 'ilike', '%'. $search. '%')->select('cd_entidade_ete','cd_cliente_cli','nm_razao_social_cli','nm_fantasia_cli','taxa_imposto_cli','nu_cliente_cli')->get();
 
         $results = array();
         foreach ($resultados as $ret)
@@ -714,7 +717,7 @@ class ClienteController extends Controller
                 $nome = $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }
             
-           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome, 'nota' => $ret->taxa_imposto_cli ];
+           $results[] = [ 'id' => $ret->cd_cliente_cli, 'value' => $nome, 'nota' => $ret->taxa_imposto_cli, 'entidade' => $ret->cd_entidade_ete ];
         }
  
         return response()->json($results);
