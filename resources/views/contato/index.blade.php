@@ -58,7 +58,7 @@
                     <input type="hidden" id="entidade-cliente" value="{{ (!empty($entidade)) ? $entidade : '' }}">
                 </form>
             </div>
-            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema não lista nenhum contato. Utilize as opções de busca por "Letra" ou um dos campos de filtro para realizar a busca.</label>
+            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação!. Utilize as opções de busca por "Letra" ou um dos campos de filtro para listar os contatos.</label>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-book"></i> </span>
