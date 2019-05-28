@@ -270,6 +270,37 @@ class ContatoController extends Controller
                 }
                         
             }
+
+            if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
+
+                $fones = json_decode($request->telefones);
+                for($i = 0; $i < count($fones); $i++) {
+
+                    $fone = Fone::create([
+                        'cd_entidade_ete'           => $contato->cd_entidade_contato_ete,
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
+                        'nu_fone_fon'               => $fones[$i]->numero
+                    ]);
+
+                }
+            }
+
+            //Inserção de emails
+            if(!empty($request->emails) && count(json_decode($request->emails)) > 0){
+
+                $emails = json_decode($request->emails);
+                for($i = 0; $i < count($emails); $i++) {
+
+                    $email = EnderecoEletronico::create([
+                        'cd_entidade_ete'                 => $contato->cd_entidade_contato_ete,
+                        'cd_conta_con'                    => $this->conta, 
+                        'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
+                        'dc_endereco_eletronico_ede'      => $emails[$i]->email
+                    ]);
+
+                }
+            }
         }
 
         Flash::success('Contato atualizado com sucesso');
@@ -277,6 +308,9 @@ class ContatoController extends Controller
         if(!empty($request->cd_cliente_cli)){
             return redirect('cliente/contatos/'.$cliente->cd_entidade_ete);
         }else{
+
+            session::put('inicial', strtoupper(trim($request->nm_contato_cot)[0]));
+
             return redirect('contatos');
         }
     }

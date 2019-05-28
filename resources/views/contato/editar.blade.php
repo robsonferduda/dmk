@@ -233,7 +233,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                
+                                                @foreach($contato->entidade->enderecoEletronico()->get() as $email)
+                                                    <tr>
+                                                        <td class="center">{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</td>
+                                                        <td>{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
+                                                        <td class="center">
+                                                            <a class="excluirEmailBase" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                        </td>
+                                                    </tr>                                                  
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
