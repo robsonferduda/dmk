@@ -337,8 +337,9 @@ class ClienteController extends Controller
         if($grupo > 0 and $cidade == 0) {
 
             $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
+         
             foreach($grupo as $g){
-                $lista_cidades_grupo[] = $g->cidade()->first();
+                $lista_cidades_grupo[] = $g->cidade;
             }
         }
 
