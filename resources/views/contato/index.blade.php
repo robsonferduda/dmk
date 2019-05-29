@@ -89,8 +89,8 @@
                                             <td data-id="{{ $d->cd_contato_cot }}"><a href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}">{{ $d->nm_contato_cot }}</a></td>
                                             <td>{{ ($d->nm_cidade_cde) ? $d->nm_cidade_cde : 'Não informado' }}</td>
                                             <td>{{ $d->nm_tipo_contato_tct }}</td>
-                                            <td>{{ ($d->nu_fone_fon) ? $d->nu_fone_fon : 'Não informado' }}</td>
-                                            <td>{{ ($d->dc_endereco_eletronico_ede) ? $d->dc_endereco_eletronico_ede : 'Não informado' }}</td>
+                                            <td>{!! ($d->nu_fone_fon) ? $d->nu_fone_fon. (($d->totalFone > 1 ) ? ' <i style="color: #305d8c;" class="fa  fa-plus-square-o"></i>' : '') : 'Não informado' !!}</td>
+                                            <td>{!! ($d->dc_endereco_eletronico_ede) ? $d->dc_endereco_eletronico_ede. (($d->totalEmail > 1 ) ? ' <i style="color: #305d8c;" class="fa fa-plus-square-o"></i>' : '') : 'Não informado' !!}</td>
                                             <td class="center">
                                                 <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}"><i class="fa fa-file-text-o"></i> </a>
                                                 <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('contato/editar/'.$d->cd_contato_cot) }}"><i class="fa fa-edit"></i> </a>
