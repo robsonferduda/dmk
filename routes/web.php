@@ -81,6 +81,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('contatos','ContatoController@index');
 	Route::get('contato/novo','ContatoController@novo');
 	Route::get('contato/buscar/{inicial}','ContatoController@buscar');
+	Route::post('contato/buscar','ContatoController@filtrar');
 	Route::get('contato/detalhes/{id}','ContatoController@detalhes');
 	Route::get('contato/editar/{id}','ContatoController@editar');
 	Route::post('contato/salvar','ContatoController@salvar');

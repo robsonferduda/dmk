@@ -241,4 +241,10 @@ span.tags
   overflow-y: auto;
 }
 
-
+.ui-menu-item a
+{
+  max-width:100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}  

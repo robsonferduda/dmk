@@ -35,6 +35,7 @@
                         {!! Form::open(['id' => 'frm-add-contato', 'url' => ['contatos',$contato->cd_contato_cot], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         <input type="hidden" name="telefones" id="telefones">
                         <input type="hidden" name="emails" id="emails">
+                        <input type="hidden" name="entidade" id="entidade" value="{{ $contato->entidade->cd_entidade_ete }}">
                         <div class="row">
                             <div style="padding: 5px 20px;">
                                 <header>
@@ -42,6 +43,29 @@
                                 </header>
 
                                 <fieldset>
+
+                                     <section>
+                                        <div class="onoffswitch-container" style="margin-left: 0px;">
+                                            <span class="onoffswitch-title">Contato com Cliente?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" class="onoffswitch-checkbox"  value="N" id="contato_cliente">
+                                                <label class="onoffswitch-label" for="contato_cliente"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>   
+                                        <div class="row">
+                                            <section class="col col-4 box-cliente">
+                                                 <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli') ? old('cd_cliente_cli') : (!empty($contato->entidadeCliente->cliente->cd_cliente_cli)) ?  $contato->entidadeCliente->cliente->cd_cliente_cli : '' }}" >
+                                                <label class="label">Cliente<span class="text-danger">*</span></label>
+                                                <label class="input">
+                                                    <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli') ? old('nm_cliente_cli') : $nome }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
+                                                </label> 
+                                            </section>
+                                        </div>
+                                                                       
+                                    </section>
 
                                     <div class="row">
                                         <section class="col col-4">
@@ -157,6 +181,15 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @foreach($contato->entidade->fone()->get() as $fone)
+                                                        <tr>
+                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                            <td>{{ $fone->nu_fone_fon }}</td>
+                                                            <td class="center">
+                                                                <a class="excluirFoneBase" style="cursor: pointer;" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
                                                     
                                                 </tbody>
                                             </table>                                       
@@ -200,11 +233,33 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                
+                                                @foreach($contato->entidade->enderecoEletronico()->get() as $email)
+                                                    <tr>
+                                                        <td class="center">{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</td>
+                                                        <td>{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
+                                                        <td class="center">
+                                                            <a class="excluirEmailBase" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                        </td>
+                                                    </tr>                                                  
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" id="observacao" rows="4" name="dc_observacao_cot" value="{{(old('dc_observacao_cot')  ? old('dc_observacao_cot') : $contato->dc_observacao_cot)}}" >{{ old('dc_observacao_cot') ? old('dc_observacao_cot') :  $contato->dc_observacao_cot }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>           
                             </div>
 
                             <footer>
@@ -225,6 +280,46 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
+
+        var path = "{{ url('autocompleteCliente') }}";
+
+        
+        if($("input[name='cd_cliente_cli']").val() != ''){
+            $('.box-cliente').css('display','block');
+            $('#contato_cliente').prop('checked',true);
+        }else{
+            $('.box-cliente').css('display','none');
+        }
+
+        
+
+        $("#contato_cliente").click(function(){
+
+            flag = $('#contato_cliente').is(':checked');
+            if(flag){
+                $('.box-cliente').css('display','block');
+                $('#nm_cliente_cli').focus();
+            }
+            else{
+                $("input[name='cd_cliente_cli']").val('');
+                $("input[name='nm_cliente_cli']").val('');
+
+                $('.box-cliente').css('display','none');
+            }
+        });
+
+        $( "#client" ).autocomplete({
+          source: path,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_cliente_cli']").val(ui.item.id);
+                
+          },
+          open: function(event, ui){
+            
+          }
+        });
 
         var buscaCidade = function(){
 
