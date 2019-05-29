@@ -38,9 +38,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/contatos/{id}','ClienteController@contatos');
+	Route::post('cliente/honorarios/organizar','ClienteController@organizar');
 	Route::get('cliente/{id}/contato/novo','ClienteController@novoContato');
 	Route::get('cliente/{id}/contato/buscar/{inicial}','ClienteController@buscarContato');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
+	Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}','ClienteController@excluirHonorarios');
 	Route::post('cliente/contato/novo/{id}','ClienteController@createContato');
 	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');

@@ -310,6 +310,18 @@ $(document).ready(function() {
 		$("#modal_exclusao").modal('show');
 	});
 
+	$(".excluir_registro_honorario").click(function(){
+
+		var id = $(this).data('id');
+		var url = $(this).data('url');
+		var texto = $(this).data('texto');
+
+		$("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
+		$("#modal_exclusao_honorario #url_honorario").val(url);
+		$("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
+		$("#modal_exclusao_honorario").modal('show');
+	});
+
 	$(".adicionar_registro").click(function(){
 
 		var id  = $(this).data('id');
@@ -341,6 +353,39 @@ $(document).ready(function() {
 		$('#frm-edit-area').attr('action', action);						
 
 	    $('#editArea').modal('show');
+	});
+
+	$("#btn_confirma_exclusao_honorario").click(function(){
+
+		var id = $("#id_exclusao_honorario").val();
+		var url= $("#url_honorario").val();
+        var token = $(this).data("token");
+
+        $.ajax(
+        {
+            url: url+id,
+            type: 'DELETE',
+            dataType: "JSON",
+            data: {
+                "id": id,
+                "_method": 'DELETE',
+                "_token": $('meta[name="token"]').attr('content'),
+            },
+            beforeSend: function()
+            {
+            	$(".msg_retorno_honorario").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');
+            },
+            success: function(response)
+            {
+            	$(".msg_retorno_honorario").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Os dados serão atualizados!</strong></h4>')
+                location.reload();
+            },
+		   	error: function(response)
+		   	{
+		   		$(".msg_retorno_honorario").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
+		   	}
+        });
+
 	});
 
 	$("#btn_confirma_exclusao").click(function(){

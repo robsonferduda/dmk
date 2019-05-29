@@ -181,17 +181,18 @@ class ClienteController extends Controller
     public function honorarios($id)
     {
         //Inicialização de variáveis
-        $organizar = 0; 
         $cidades = array();
         $valores = array();    
         $lista_servicos = array();
+
+        if(empty(\Session::get('organizar')))
+            \Session::put('organizar',1);
 
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
         
         //Dados para combos
         $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
-        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
-           
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
 
         //Limpa dados da sessão
         \Session::forget('lista_cidades');
@@ -237,8 +238,15 @@ class ClienteController extends Controller
                                           'grupos' => $grupos, 
                                           'servicos' => $servicos,                                            
                                           'valores' => $valores, 
-                                          'organizar' => $organizar, 
+                                          'organizar' => \Session::get('organizar'), 
                                           'lista_servicos' => $lista_servicos]);
+    }
+
+    public function organizar(Request $request)
+    {
+        $cliente = $request->cd_cliente;
+        \Session::put('organizar',$request->organizar);
+        return redirect('cliente/honorarios/'.$cliente);
     }
 
     public function buscarHonorarios(Request $request)
@@ -248,7 +256,7 @@ class ClienteController extends Controller
         $grupo = $request->grupo_cidade;
         $cidade = $request->cd_cidade_cde;
         $servico = $request->servico;
-        $organizar = $request->organizar;
+        $organizar = \Session::get('organizar');
         $valores = null;
 
         $lista_cidades = array();
@@ -257,12 +265,11 @@ class ClienteController extends Controller
         $lista_cidades_honorarios = array();
         $lista_merge = array();
 
-        $lista_servicos = array();
-        
+        $lista_servicos = array();        
 
         //Carrega dados do combo        
         $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
-        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
 
         if(empty(session('lista_cidades'))){
             \Session::put('lista_cidades', array());
@@ -298,6 +305,13 @@ class ClienteController extends Controller
                 $lista_temp[] = $servico;
         }
         $lista_servicos = $lista_temp;
+
+        usort($lista_servicos,
+            function($a, $b) {
+                if( $a->nm_tipo_servico_tse == $b->nm_tipo_servico_tse ) return 0;
+                return (($a->nm_tipo_servico_tse < $b->nm_tipo_servico_tse) ? -1 : 1);
+            }
+        );
 
         //Carrega cidades do grupo
         if($grupo > 0 and $cidade == 0) {
@@ -369,6 +383,27 @@ class ClienteController extends Controller
                                           'organizar' => $organizar,
                                           'lista_servicos' => $lista_servicos                                           
                                           ]);
+    }
+
+    public function excluirHonorarios($entidade,$tipo,$id)
+    {
+        $taxa = TaxaHonorario::where('cd_conta_con',$this->conta)
+                                    ->where('cd_entidade_ete',$entidade)
+                                    ->when($tipo == 'comarca',
+                                        function($q) use($id){
+                                            return $q->where('cd_cidade_cde',$id);
+                                    })
+                                    ->when($tipo == 'servico',
+                                        function($q) use($id){
+                                            return $q->where('cd_tipo_servico_tse',$id);
+                                    })
+                                    ->delete();
+
+        if($taxa)
+            return Response::json(array('message' => 'Registros excluídos com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500); 
+
     }
 
     public function limparSelecao($id){
