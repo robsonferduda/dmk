@@ -285,7 +285,7 @@
 
         $( "#client" ).autocomplete({
           source: path,
-          minLength: 3,
+          minLength: 2,
           select: function(event, ui) {
 
             $("input[name='cd_cliente_cli']").val(ui.item.id);
