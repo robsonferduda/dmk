@@ -79,7 +79,13 @@
                                         </section>
                                     </div> 
                                     <div class="row">
-                                        <section class="col col-sm-12">                                       
+                                        <section class="col col-4">
+                                            <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
+                                            <label class="input">
+                                                <input class="form-control" value="{{old('nu_acompanhamento_pro')}}" type="text" name="nu_acompanhamento_pro" maxlength="50">
+                                            </label>
+                                        </section> 
+                                        <section class="col col-8">                                       
                                             <label class="label" >Advogado Solicitante</label> 
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
@@ -519,6 +525,7 @@
         if($("input[name='cd_cliente_cli']").val() != '' && $("input[name='cd_cliente_cli']").val() != null){
 
             buscaAdvogado();
+            $("input[name='nota_fiscal_cliente']").prop('disabled', false);
         }
 
         buscaCidade();

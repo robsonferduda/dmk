@@ -32,7 +32,8 @@ class Processo extends Model implements AuditableContract
     						'nm_autor_pro',
     						'nm_preposto_pro',
     						'nm_reu_pro',
-    						'nu_processo_pro'
+    						'nu_processo_pro',
+                            'nu_acompanhamento_pro'
     					  ];
 
     public $timestamps = true;

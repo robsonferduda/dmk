@@ -542,7 +542,7 @@ class ProcessoController extends Controller
         ->orderByRaw("nullif(number,'')::int,caracter")
         ->get();
 
-        $tiposProcesso  = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
+        $tiposProcesso  = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
         $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
         return view('processo/novo',['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico]);
@@ -567,7 +567,7 @@ class ProcessoController extends Controller
         ->orderByRaw("nullif(number,'')::int,caracter")
         ->get();
 
-        $tiposProcesso = TipoProcesso::orderBy('nm_tipo_processo_tpo')->get();
+        $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
 
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
 
