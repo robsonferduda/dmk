@@ -316,8 +316,12 @@ class CorrespondenteController extends Controller
         //Ordena a lista de cidades
         usort($lista_cidades,
             function($a, $b) {
-                if( $a->nm_cidade_cde == $b->nm_cidade_cde ) return 0;
-                return (($a->nm_cidade_cde < $b->nm_cidade_cde) ? -1 : 1);
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) )
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) )
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
             }
         );
  

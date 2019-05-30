@@ -363,7 +363,7 @@ $(document).ready(function() {
 
         $.ajax(
         {
-            url: url+id,
+            url: "../../cliente/honorarios/"+url+id,
             type: 'DELETE',
             dataType: "JSON",
             data: {
@@ -1162,13 +1162,9 @@ $(document).ready(function() {
     		var valor = $(this).val();
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");;
-
-    		if(valor){
     			
-				var dados = {servico: servico, cidade: cidade, valor: valor};
-				valores.push(dados);
-
-    		}
+			var dados = {servico: servico, cidade: cidade, valor: valor};
+			valores.push(dados);
     		
 		});
 		
@@ -1210,13 +1206,9 @@ $(document).ready(function() {
     		var valor = $(this).val();
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");;
-
-    		if(valor){
     			
-				var dados = {servico: servico, cidade: cidade, valor: valor};
-				valores.push(dados);
-
-    		}
+			var dados = {servico: servico, cidade: cidade, valor: valor};
+			valores.push(dados);
     		
 		});
 		

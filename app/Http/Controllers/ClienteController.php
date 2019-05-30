@@ -375,10 +375,14 @@ class ClienteController extends Controller
         \Session::forget('lista_cidades');
 
         //Ordena a lista de cidades
-        usort($lista_cidades,
+         usort($lista_cidades,
             function($a, $b) {
-                if( $a->nm_cidade_cde == $b->nm_cidade_cde ) return 0;
-                return (($a->nm_cidade_cde < $b->nm_cidade_cde) ? -1 : 1);
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
             }
         );
  
@@ -784,7 +788,7 @@ class ClienteController extends Controller
 
                 if(!empty($valor)){
 
-                    $valor->nu_taxa_the = str_replace(",", ".", $valores[$i]->valor);
+                    $valor->nu_taxa_the = ($valores[$i]->valor) ? str_replace(",", ".", $valores[$i]->valor) : 0;
                     $valor->saveOrFail();
 
                 }else{
@@ -794,7 +798,7 @@ class ClienteController extends Controller
                         'cd_conta_con'              => $conta, 
                         'cd_tipo_servico_tse'       => $valores[$i]->servico,
                         'cd_cidade_cde'             => $valores[$i]->cidade,
-                        'nu_taxa_the'               => str_replace(",", ".", $valores[$i]->valor),
+                        'nu_taxa_the'               => ($valores[$i]->valor) ? str_replace(",", ".", $valores[$i]->valor) : 0,
                         'dc_observacao_the'         => "--"
                     ]);
                 }
