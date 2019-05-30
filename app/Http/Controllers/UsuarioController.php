@@ -149,7 +149,7 @@ class UsuarioController extends Controller
 
         DB::beginTransaction();
 
-        $existe = User::withTrashed()->where('cd_conta_con',$this->cdContaCon)->where('cd_nivel_niv', '!=', 3)->where('email',$request->email)->first();
+        $existe = User::withTrashed()->where('cd_nivel_niv', '!=', 3)->where('email',$request->email)->first();
 
         if($existe){
 
@@ -174,8 +174,10 @@ class UsuarioController extends Controller
 
             $request->merge(['cd_nivel_niv' => \Nivel::COLABORADOR]);
 
-            $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
-            $request->merge(['data_admissao'   => date('Y-m-d',strtotime(str_replace('/','-',$request->data_admissao)))]);
+            if(!empty($request->data_nascimento))
+                $request->merge(['data_nascimento' => date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento)))]);
+            if(!empty($request->data_admissao))
+                $request->merge(['data_admissao'   => date('Y-m-d',strtotime(str_replace('/','-',$request->data_admissao)))]);
             $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
 
             $usuario = new user();
@@ -322,6 +324,21 @@ class UsuarioController extends Controller
     {
         
         DB::beginTransaction();
+
+        $usuario  = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+
+        if(strtolower($usuario->email) != strtolower($request->email)){
+
+            $existe = User::withTrashed()->where('cd_nivel_niv', '!=', 3)->where('email',$request->email)->first();
+
+            if($existe){
+
+                DB::rollBack();
+                Flash::error('E-mail já existente em nossa base de dados');
+                return redirect('usuarios');
+            }
+        }
+
 
         $usuario  = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 

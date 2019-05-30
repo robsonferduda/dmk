@@ -51,6 +51,9 @@
                                                     <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
                                                 </li>
                                                 <li>
+                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : ' ' }}
+                                                </li>
+                                                <li>
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
                                                 </li>
                                                 <li>
