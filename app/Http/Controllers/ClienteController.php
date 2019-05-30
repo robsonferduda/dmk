@@ -241,7 +241,8 @@ class ClienteController extends Controller
         } 
 
         //Carrega os serviços
-        $honorarios = TaxaHonorario::where('cd_conta_con',$cliente->cd_conta_con)
+        $honorarios = TaxaHonorario::with('tipoServico')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
                                     ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
                                     ->select('cd_tipo_servico_tse')
                                     ->groupBy('cd_tipo_servico_tse')

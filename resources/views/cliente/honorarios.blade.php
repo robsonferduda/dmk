@@ -108,7 +108,10 @@
                             </div>
                         </div>
 
-                        <a href="#" rel="popover-hover" data-placement="top" data-original-title="Organizar Tabela" data-content="Organiza os dados da tabela por cidades ou pelos tipos de serviço. O valor selecionado será disposto em ordem alfabética na primeira coluna da tabela. Você pode alterar a organização quando desejar."><i class="fa fa-question-circle text-primary"></i></a> <strong> ORGANIZAR POR:</strong> 
+                        <a href="#" rel="popover-hover" data-placement="top" data-original-title="Organizar Tabela" data-content="Organiza os dados da tabela por cidades ou pelos tipos de serviço. O valor selecionado será disposto em ordem alfabética na primeira coluna da tabela. Você pode alterar a organização quando desejar.">
+                            <i class="fa fa-question-circle text-primary"></i>
+                        </a> 
+                        <strong> ORGANIZAR POR:</strong> 
                         <div class="well">
                             <div class="row"> 
                                 <form action="{{ url('cliente/honorarios/organizar') }}" class="smart-form'" method="POST" role="search">
@@ -160,20 +163,9 @@
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    <div class="input-group">
-                                                                                        <span class="input-group-addon">$</span>
-                                                                                        <input type="text" class="form-control taxa-honorario" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" value="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">
-                                                                                        <div class="input-group-btn">
-                                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
-                                                                                                <span class="caret"></span>
-                                                                                            </button>
-                                                                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                 <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
-                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
-                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    
+                                                                                        {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}
+                                                                                        
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -200,20 +192,9 @@
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    <div class="input-group">
-                                                                                        <span class="input-group-addon">$</span>
-                                                                                        <input type="text" class="form-control taxa-honorario" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" value="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">
-                                                                                        <div class="input-group-btn">
-                                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
-                                                                                                <span class="caret"></span>
-                                                                                            </button>
-                                                                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
-                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
-                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    
+                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}
+                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
