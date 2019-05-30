@@ -228,7 +228,8 @@ class ClienteController extends Controller
         } 
 
         //Carrega as cidades
-        $honorarios = TaxaHonorario::where('cd_conta_con',$cliente->cd_conta_con)
+        $honorarios = TaxaHonorario::with('cidade')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
                                     ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
                                     ->select('cd_cidade_cde')
                                     ->groupBy('cd_cidade_cde')
@@ -301,7 +302,8 @@ class ClienteController extends Controller
         }
 
         //Carrega serviços já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$cliente->cd_conta_con)
+        $honorarios = TaxaHonorario::with('tipoServico')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
                                     ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
                                     ->select('cd_tipo_servico_tse')
                                     ->groupBy('cd_tipo_servico_tse')
@@ -350,7 +352,8 @@ class ClienteController extends Controller
         }
 
         //Carrega cidades já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$cliente->cd_conta_con)
+        $honorarios = TaxaHonorario::with('cidade')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
                                     ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
                                     ->select('cd_cidade_cde')
                                     ->groupBy('cd_cidade_cde')

@@ -163,8 +163,10 @@
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    
-                                                                                        {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}
+                                                                                        
+                                                                                        <a href="form-x-editable.html#" class="valor_honorario" data-type="text" data-pk="1" data-placement="top" data-placeholder="Required" data-original-title="Digite o valor do honorário">
+                                                                                            {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
+                                                                                        </a>                                                                                        
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -192,9 +194,11 @@
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    
-                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}
-                                                                                     
+
+                                                                                    <a href="form-x-editable.html#" class="valor_honorario" data-type="text" data-pk="1" data-placement="top" data-placeholder="Required" data-original-title="Enter your firstname">
+                                                                                        
+                                                                                        {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
+                                                                                    </a>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -222,6 +226,13 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $('.valor_honorario').editable({
+                validate: function (value) {
+                    if ($.trim(value) == '')
+                        return 'Valor obrigatório';
+                }
+            });
 
         var buscaCidade = function(){
 
