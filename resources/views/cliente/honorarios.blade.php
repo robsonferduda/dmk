@@ -164,7 +164,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        <a href="form-x-editable.html#" class="valor_honorario" data-type="text" data-pk="1" data-placement="top" data-placeholder="Required" data-original-title="Digite o valor do honorário">
+                                                                                        <a href="form-x-editable.html#" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">
                                                                                             {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
                                                                                         </a>                                                                                        
                                                                                         
@@ -195,7 +195,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    <a href="form-x-editable.html#" class="valor_honorario" data-type="text" data-pk="1" data-placement="top" data-placeholder="Required" data-original-title="Enter your firstname">
+                                                                                    <a href="form-x-editable.html#" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">
                                                                                         
                                                                                         {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
                                                                                     </a>                                                                                     
@@ -228,11 +228,63 @@
     $(document).ready(function() {
 
         $('.valor_honorario').editable({
-                validate: function (value) {
-                    if ($.trim(value) == '')
-                        return 'Valor obrigatório';
+            validate: function (value) {
+                if ($.trim(value) == '')
+                    return 'Valor obrigatório';
+            },
+            tpl: '<input type="text" style="width: 20px;" class="form-control taxa-honorario">'
+        });
+
+        $('.valor_honorario').on('shown', function (e, editable) {
+
+            var cidade = $(this).data('cidade');
+            var servico = $(this).data('servico');
+            var tipo = $(this).data('tipo');
+
+            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
+
+        });
+
+        $(document).on("focus", ".taxa-honorario", function () {
+            $(this).mask('#####000,00', {reverse: true});
+        });
+
+        $(document).on("click", ".atualizaValores", function () {
+
+            var cidade = $(this).closest("ul").data("cidade");
+            var servico = $(this).closest("ul").data("servico");
+            var tipo = $(this).data("tipo");
+            var valor = $(".taxa-honorario").val().replace(".", ",");
+
+            
+            $(".valor_honorario").each(function(){
+
+
+                if(tipo === "cidade"){
+
+                    var valor_cidade = $(this).data("cidade");
+
+                    if(valor_cidade === cidade){
+                        $(this).text(valor);
+                    }
                 }
+
+                if(tipo === "servico"){
+
+                    var valor_servico = $(this).data("servico");
+
+                    if(valor_servico === servico){
+                        $(this).text(valor);
+                    }
+                }
+
+                if(tipo === "tabela"){
+                    $(this).text(valor);
+                }
+     
             });
+
+        });
 
         var buscaCidade = function(){
 

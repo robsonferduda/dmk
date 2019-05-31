@@ -1157,9 +1157,9 @@ $(document).ready(function() {
 		var entidade = $("#cd_entidade").val();
 		var cliente = $("#cd_cliente").val();
 		
-		$('.taxa-honorario').each(function(i, obj) {
+		$('.valor_honorario').each(function(i, obj) {
     		
-    		var valor = $(this).val();
+    		var valor = $(this).text();
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");;
     			
