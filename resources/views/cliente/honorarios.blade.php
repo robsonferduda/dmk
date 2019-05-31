@@ -164,9 +164,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        <span style="border: none; cursor: pointer;" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">
-                                                                                            {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
-                                                                                        </span>                                                                                        
+                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                        
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -195,10 +193,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    <span style="border: none; cursor: pointer;" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">
-                                                                                        
-                                                                                        {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
-                                                                                    </span>                                                                                     
+                                                                                    <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -232,7 +227,10 @@
                 if ($.trim(value) == '')
                     return 'Valor obrigatório';
             },
-            tpl: '<input type="text" style="width: 20px;" class="form-control taxa-honorario">'
+            tpl: '<input type="text" style="width: 20px;" class="form-control taxa-honorario">',
+            success: function(){
+                $(this).attr("data-edit","S");
+            }
         });
 
         $('.valor_honorario').on('shown', function (e, editable) {
@@ -265,6 +263,7 @@
                     var valor_cidade = $(this).data("cidade");
 
                     if(valor_cidade === cidade){
+                        $(this).attr("data-edit","S");
                         $(this).text(valor);
                     }
                 }
@@ -274,11 +273,13 @@
                     var valor_servico = $(this).data("servico");
 
                     if(valor_servico === servico){
+                        $(this).attr("data-edit","S");
                         $(this).text(valor);
                     }
                 }
 
                 if(tipo === "tabela"){
+                    $(this).attr("data-edit","S");
                     $(this).text(valor);
                 }
      

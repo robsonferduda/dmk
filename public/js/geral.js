@@ -1162,8 +1162,9 @@ $(document).ready(function() {
     		var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");
+			var flag = $(this).attr("data-edit");
 
-			if(valor != 'Adicionar'){
+			if(valor != 'Adicionar' && flag == 'S'){
     			
 				var dados = {servico: servico, cidade: cidade, valor: valor};
 				valores.push(dados);
