@@ -1163,7 +1163,7 @@ $(document).ready(function() {
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");
 
-			if(!valor === 'Adicionar'){
+			if(valor != 'Adicionar'){
     			
 				var dados = {servico: servico, cidade: cidade, valor: valor};
 				valores.push(dados);
