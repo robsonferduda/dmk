@@ -1161,10 +1161,13 @@ $(document).ready(function() {
     		
     		var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
     		var servico = $(this).data("servico");
-			var cidade = $(this).data("cidade");;
+			var cidade = $(this).data("cidade");
+
+			if(!valor === 'Adicionar'){
     			
-			var dados = {servico: servico, cidade: cidade, valor: valor};
-			valores.push(dados);
+				var dados = {servico: servico, cidade: cidade, valor: valor};
+				valores.push(dados);
+			}
     		
 		});
 		
