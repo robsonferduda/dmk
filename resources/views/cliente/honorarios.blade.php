@@ -164,9 +164,9 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        <a href="form-x-editable.html#" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">
+                                                                                        <span style="border: none; cursor: pointer;" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">
                                                                                             {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
-                                                                                        </a>                                                                                        
+                                                                                        </span>                                                                                        
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -195,10 +195,10 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    <a href="form-x-editable.html#" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">
+                                                                                    <span style="border: none; cursor: pointer;" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">
                                                                                         
                                                                                         {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}
-                                                                                    </a>                                                                                     
+                                                                                    </span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
