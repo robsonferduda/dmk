@@ -1159,7 +1159,7 @@ $(document).ready(function() {
 		
 		$('.valor_honorario').each(function(i, obj) {
     		
-    		var valor = $(this).text();
+    		var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
     		var servico = $(this).data("servico");
 			var cidade = $(this).data("cidade");;
     			
