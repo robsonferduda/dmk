@@ -242,7 +242,7 @@ class ClienteController extends Controller
         } 
 
         //Ordena a lista de cidades
-         usort($cidades,
+        usort($cidades,
             function($a, $b) {
 
                 $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
@@ -266,6 +266,17 @@ class ClienteController extends Controller
                 $lista_servicos[] = $honorario->tipoServico;
             }
         } 
+
+        usort($lista_servicos,
+            function($a, $b) {
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
+            }
+        );
 
         return view('cliente/honorarios',['cidades' => $cidades,
                                           'cliente' => $cliente, 
@@ -343,8 +354,12 @@ class ClienteController extends Controller
 
         usort($lista_servicos,
             function($a, $b) {
-                if( $a->nm_tipo_servico_tse == $b->nm_tipo_servico_tse ) return 0;
-                return (($a->nm_tipo_servico_tse < $b->nm_tipo_servico_tse) ? -1 : 1);
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
             }
         );
 
