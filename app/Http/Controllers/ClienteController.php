@@ -241,6 +241,18 @@ class ClienteController extends Controller
             }
         } 
 
+        //Ordena a lista de cidades
+         usort($cidades,
+            function($a, $b) {
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
+            }
+        );
+
         //Carrega os serviços
         $honorarios = TaxaHonorario::with('tipoServico')
                                     ->where('cd_conta_con',$cliente->cd_conta_con)
