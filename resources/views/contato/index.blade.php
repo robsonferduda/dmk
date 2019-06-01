@@ -54,9 +54,11 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <input type="hidden" name='entidade_cliente' id="entidade-cliente" value="{{ (!empty($entidade)) ? $entidade : '' }}">
                     
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <input type="hidden" id="entidade-cliente" value="{{ (!empty($entidade)) ? $entidade : '' }}">
+                    
                 </form>
                 <div style="clear: both;"></div>
             </div>
