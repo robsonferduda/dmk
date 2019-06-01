@@ -1157,14 +1157,18 @@ $(document).ready(function() {
 		var entidade = $("#cd_entidade").val();
 		var cliente = $("#cd_cliente").val();
 		
-		$('.taxa-honorario').each(function(i, obj) {
+		$('.valor_honorario').each(function(i, obj) {
     		
-    		var valor = $(this).val();
+    		var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
     		var servico = $(this).data("servico");
-			var cidade = $(this).data("cidade");;
+			var cidade = $(this).data("cidade");
+			var flag = $(this).attr("data-edit");
+
+			if(valor != 'Adicionar' && flag == 'S'){
     			
-			var dados = {servico: servico, cidade: cidade, valor: valor};
-			valores.push(dados);
+				var dados = {servico: servico, cidade: cidade, valor: valor};
+				valores.push(dados);
+			}
     		
 		});
 		
