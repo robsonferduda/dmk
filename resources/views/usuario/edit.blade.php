@@ -313,7 +313,7 @@
                                         </div>         
                                     </fieldset>                       
                                 </div> 
-                                 <div class="col col-sm-12">
+                                <div class="col col-sm-12">
                                     <header>
                                         <i class="fa fa-bank"></i> Dados Bancários 
                                     </header>

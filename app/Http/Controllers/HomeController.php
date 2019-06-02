@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\User;
+use App\Conta;
+use App\Processo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -19,7 +21,9 @@ class HomeController extends Controller
     {
         if(!Auth::guest()){
 
-            $role = (User::find(Auth::user()->id)->role()->first()) ? User::find(Auth::user()->id)->role()->first()->slug : null; 
+            $role = Auth::user()->role()->first();
+
+            $role = ($role) ? $role->slug : null; 
 
             switch ($role) {
                 case 'correspondente':
@@ -27,7 +31,9 @@ class HomeController extends Controller
                     break;
                 
                 default:
-                    return view('home');
+                    $conta = Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first();
+                    $processos = Processo::where('cd_conta_con',$conta->cd_conta_con)->get();
+                    return view('home',['conta' => $conta, 'processos' => $processos]);
                     break;
             }
             

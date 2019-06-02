@@ -15,20 +15,20 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            @if(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->cd_tipo_pessoa_tpp == null)
-                    <div class="alert alert-warning fade in">
-                        <button class="close" data-dismiss="alert">×</button>
-                            <i class="fa-fw fa fa-warning"></i><strong> Atenção!</strong> Seu cadastro está incompleto, <a href="{{ url('conta/atualizar/'.\Crypt::encrypt(\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)) }}">clique aqui</a> para atualizar seus dados!
-                    </div>
-                @endif   
+            @if($conta->cd_tipo_pessoa_tpp == null)
+                <div class="alert alert-warning fade in">
+                    <button class="close" data-dismiss="alert">×</button>
+                    <i class="fa-fw fa fa-warning"></i><strong> Atenção!</strong> Seu cadastro está incompleto, <a href="{{ url('conta/atualizar/'.\Crypt::encrypt($conta->cd_conta_con)) }}">clique aqui</a> para atualizar seus dados!
+                </div>
+            @endif   
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect">
                 <div class="col-sm-12 col-md-6 col-lg-3">
-                    @if(file_exists('public/img/users/ent'.Auth::user()->entidade->cd_entidade_ete.'.png')) 
-                        <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.Auth::user()->entidade->cd_entidade_ete.'.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                    @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                        <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
                     @else
                         <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 80%; margin: 0 auto;" class="img-circle img-responsive"></a>
                     @endif
@@ -36,9 +36,11 @@
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
                     <h4><span>Olá <b>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}</b>!</span></h4>
                     <h5>
-                        <a href="{{ url("usuarios/".Auth::user()->id) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
+                        @role('colaborador')
+                            <a href="{{ url("usuarios/".Auth::user()->id) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
+                        @endrole
                         @role('administrator') 
-                            <a href="{{ url("conta/detalhes/".\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con) }}">| Minha Conta</a>  
+                            <a href="{{ url("conta/detalhes/".\Crypt::encrypt(Auth::user()->cd_conta_con)) }}"> Minha Conta</a>  
                         @endrole
                     </h5>
                 </div>
@@ -52,8 +54,8 @@
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
                     <h4><span><b>Meus Processos</b></span></h4>
-                    @if(count(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->processo) > 0)
-                        <h5>{{ count(\App\Conta::where('cd_conta_con',\App\Entidade::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first()->cd_conta_con)->first()->processo) }} processos cadastrados</h5>
+                    @if(count($processos) > 0)
+                        <h5>{{ count($processos) }} processos cadastrados</h5>
                     @else
                         <h5>
                         Nenhum processo cadastrado</h5>

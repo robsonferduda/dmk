@@ -45,7 +45,7 @@
                 <span> 
                     @role('correspondente') 
                         <a href="{{ url("correspondente/perfil/".Auth::user()->cd_entidade_ete) }}">
-                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                            @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                                 <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
                             @else
                                 <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
@@ -54,9 +54,22 @@
                                 {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
                             </span>
                         </a> 
-                    @else
-                        <a href="{{ url("usuarios/".Auth::user()->id) }}">
-                            @if(file_exists('img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                    @endrole
+                    @role('administrator')
+                        <a href="{{ url("conta/detalhes/".\Crypt::encrypt(Auth::user()->cd_conta_con)) }}">
+                            @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                            @else
+                                <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                            @endif
+                            <span>
+                                {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                            </span>
+                        </a> 
+                    @endrole 
+                    @role('colaborador')
+                        <a href="{{ url("usuarios/".\Crypt::encrypt(Auth::user()->id)) }}">
+                            @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                                 <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
                             @else
                                 <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">

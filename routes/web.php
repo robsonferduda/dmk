@@ -139,6 +139,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/editar-grupo-de-cidades/{cdGrupo}','GrupoCidadeController@editar');
 	Route::get('cidades-por-estado/{estados}','CidadeController@buscaCidadePorEstado');
 
+	Route::resource('contas','ContaController');
 	Route::get('conta/detalhes/{id}','ContaController@detalhes');
 	Route::get('conta/atualizar/{id}','ContaController@editar');
 	Route::post('conta/update','ContaController@update');

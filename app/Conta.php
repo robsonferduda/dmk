@@ -16,6 +16,8 @@ class Conta extends Model implements AuditableContract
     protected $primaryKey = 'cd_conta_con';
     protected $fillable = [
     						'nm_razao_social_con',
+                            'cd_tipo_pessoa_tpp',
+                            'nm_fantasia_con',
                             'fl_despesa_nao_reembolsavel_con'
     					  ];
     public $timestamps = true;
