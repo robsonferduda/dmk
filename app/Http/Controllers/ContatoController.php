@@ -104,10 +104,10 @@ class ContatoController extends Controller
             $dados   =  $dados->where('contato_cot.cd_conta_con',$this->conta)
                         ->whereNull('contato_cot.deleted_at')
                         ->orderBy('contato_cot.nm_contato_cot')
-                        ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
+                        ->select('vi_fone_max_create_entidate_fon.total as totalFone','vi_endereco_eletronico_max_create_entidate_ele.total as totalEmail','contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
                         ->get();
 
-        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'tiposContato' => $tiposContato, 'tipoContato' => $request->cd_tipo_contato_tct]);
+        return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'tiposContato' => $tiposContato, 'tipoContato' => $request->cd_tipo_contato_tct, 'entidade' => $request->entidade_cliente]);
     }
 
     public function buscar($inicial)
