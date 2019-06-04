@@ -26,7 +26,7 @@
                     @if ($errors->has('password'))
                         <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
                     @endif
-                <div class="note"><a href="forgotpassword.html">Esqueceu sua senha?</a></div>
+                <div class="note"><a href="{{ url('password/reset') }}">Esqueceu sua senha?</a></div>
             </section>
         </fieldset>
         <footer>

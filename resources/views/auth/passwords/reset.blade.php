@@ -1,65 +1,48 @@
-@extends('layouts.app')
-
+@extends('layouts.guest')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+    <form class="smart-form client-form" method="POST" action="{{ route('password.request') }}">
+        @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="hidden" name="email" value="{{ urldecode($email) }}">
+            <header><i class="fa fa-lock"></i> Recuperar Senha</header>
+            <fieldset style="padding-top: 8px;">  
+                @if(count($niveis) > 1)
+                    <p class="text-primary" style="margin-bottom: 5px;">Encontramos {{ count($niveis) }} perfis de usuário para esse email. Qual gostaria de alterar?</p>
+                    <section>
+                        <label class="label">Selecione um perfil</label>
+                        <label class="select">
+                            <select name="nivel">
+                                <option value="0">Selecione</option>
+                                @foreach($niveis as $nivel)
+                                    <option value="{{ $nivel->cd_nivel_niv }}">{{ $nivel->dc_nivel_niv }}</option>
+                                @endforeach
+                            </select> <i></i></label>
+                    </section>
+                @else
+                    <input type="hidden" name="nivel" value="{{ $niveis[0] }}">
+                @endif
+                <section>
+                    @if ($errors->has('email'))
+                        <span class="help-block text-danger"><strong>{{ $errors->first('email') }}</strong></span>
+                    @endif
+                    <label class="label">Senha</label>
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>
+                        <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                        <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b> </label>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.request') }}" aria-label="{{ __('Reset Password') }}">
-                        @csrf
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $email ?? old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                        @if ($errors->has('password'))
+                            <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
+                        @endif
+                </section>
+                <section>
+                    <label class="label">Confirmação de Senha</label>
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>
+                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                        <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Por segurança, confirme sua senha</b> </label>
+                </section>
+            </fieldset>
+            <footer style="text-align: center;">
+                <button style="float: none" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Confirmar</button>
+            </footer>
+    </form>
 @endsection
