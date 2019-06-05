@@ -53,8 +53,11 @@ class CorrespondenteController extends Controller
                                 $sql->where('cd_conta_con',$this->conta);
 
                             })
+                            ->with(['entidade.atuacao' => function($query){
+                                $query->where('fl_origem_cat','S');
+                                $query->with('cidade');
+                            }])
                             ->with('contaCorrespondente')
-                            ->with('entidade')
                             ->with('entidade.identificacao')
                             ->with('entidade.usuario')
                             ->where('fl_correspondente_con','S')

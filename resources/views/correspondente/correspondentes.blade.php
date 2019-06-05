@@ -28,9 +28,6 @@
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
-                            <section class="col col-md-12"> 
-                                <span>FILTROS PARA BUSCA (Selecione um ou mais critérios)</span><hr/>
-                            </section>
                             <section class="col col-md-3">                                       
                                 <label class="label label-black" >Estado</label>          
                                 <select  id="estado" name="cd_estado_est" class="select2">
@@ -84,10 +81,10 @@
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
-                                        <td>{{ ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : "Não informado" }}</td>
+                                        <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{{ $correspondente->nm_razao_social_con }}</td>
-                                        <td>{{ $correspondente->nm_razao_social_con }}</td>
-                                        <td>{{ ($correspondente->entidade->usuario) ? $correspondente->entidade->usuario->email: 'Não informado' }}</td>
+                                        <td>{!! ($correspondente->entidade->usuario) ? $correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
 
