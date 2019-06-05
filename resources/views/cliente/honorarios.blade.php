@@ -258,7 +258,7 @@
             $(".valor_honorario").each(function(){
 
 
-                if(tipo === "cidade"){
+                if(tipo === "servico"){
 
                     var valor_cidade = $(this).data("cidade");
 
@@ -268,7 +268,7 @@
                     }
                 }
 
-                if(tipo === "servico"){
+                if(tipo === "cidade"){
 
                     var valor_servico = $(this).data("servico");
 
