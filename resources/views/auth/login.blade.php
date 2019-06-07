@@ -11,7 +11,7 @@
                 <label class="label">E-mail</label>
                 <label class="input"> <i class="icon-append fa fa-user"></i>
                     <input type="email" name="email">
-                    <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i>  Digite seu usuário (email)</b></label>
 
                     @if ($errors->has('email'))
                         <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>
@@ -21,7 +21,7 @@
                 <label class="label">Senha</label>
                 <label class="input"> <i class="icon-append fa fa-lock"></i>
                     <input type="password" name="password">
-                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b> </label>
 
                     @if ($errors->has('password'))
                         <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>

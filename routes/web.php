@@ -15,10 +15,10 @@ Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
 Route::get('correspondente', function(){ return view('correspondente/cadastro'); });
-Route::get('autenticacao', function(){ return view('auth/correspondente'); });
 Route::resource('contas','ContaController');
+Route::get('autenticacao', function(){ return view('auth/correspondente'); });
+Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
-Route::post('autenticacao', 'LoginController@loginCorrespondente')->name('autenticacao');
 
 Auth::routes();
 
