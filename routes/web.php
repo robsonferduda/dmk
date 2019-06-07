@@ -92,8 +92,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
 	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
-	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
 	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');

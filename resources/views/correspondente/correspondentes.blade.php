@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
@@ -44,13 +44,13 @@
                                     <option selected value="">Selecione uma cidade</option>
                                 </select> 
                             </section> 
-                            <section class="col col-md-3">
-                                <label class="label label-black" >Nome</label><br>
-                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
-                            </section>
                             <section class="col col-md-2">
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
+                            </section>
+                            <section class="col col-md-3">
+                                <label class="label label-black" >Nome</label><br>
+                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
                             <section class="col col-md-1">
                                 <label class="label" >Buscar</label>
@@ -71,8 +71,8 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>    
-                                    <th style="width: 15%;">CPF/CNPJ</th>    
-                                    <th style="width: 20%;">Comarca de Origem</th>                            
+                                    <th style="width: 20%;">Comarca de Origem</th> 
+                                    <th style="width: 15%;">CPF/CNPJ</th>                                                                   
                                     <th style="width: 30%;">Nome</th>
                                     <th style="width: 20%;" class="center">Email</th>                                  
                                     <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -81,8 +81,8 @@
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
-                                        <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{{ $correspondente->nm_razao_social_con }}</td>
                                         <td>{!! ($correspondente->entidade->usuario) ? $correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
