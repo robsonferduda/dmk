@@ -103,7 +103,7 @@
                                             </label>
                                         </section> 
                                          <section class="col col-6" >                                       
-                                            <label class="label" >Tipos de Processo<span class="text-danger">*</span></label>          
+                                            <label class="label" >Tipo de Processo<span class="text-danger">*</span></label>          
                                             <label class="select">
                                                 <select  name="cd_tipo_processo_tpo" required>
                                                     <option selected value="">Selecione o Tipo de Processo</option>     
@@ -138,7 +138,7 @@
                                         <section class="col col-6">
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade<span class="text-danger">*</span></label>          
-                                            <select  id="cidade" disabled name="cd_cidade_cde" class="select2" required>
+                                            <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
                                                <option selected value="">Selecione uma Cidade</option>
                                             </select> 
                                         </section>  
@@ -536,6 +536,84 @@
 
         });
 
+        $(function() {
+                // Validation
+            var validobj = $("#frm-add-processo").validate({
+
+                    ignore: 'input[type=hidden], .select2-input, .select2-focusser',
+                    rules : {
+                        nm_cliente_cli : {
+                            required: true,
+                        },
+                        nu_processo_pro : {
+                            required: true
+                        },
+                        cd_tipo_processo_tpo : {
+                            required: true
+                        },
+                        cd_cidade_cde: {
+                            required: true
+                        }
+                       
+                        
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        nm_cliente_cli : {
+                            required : 'Campo Cliente é Obrigatório'
+                        },
+                        nu_processo_pro : {
+                            required : 'Campo Nº Processo é Obrigatório'
+                        },
+                        cd_tipo_processo_tpo : {
+                            required : 'Campo Tipo de Processo é Obrigatório'
+                        },
+                        cd_cidade_cde: {
+                            required : 'Campo Cidade é Obrigatório'
+                        }
+                       
+                        
+                    },
+
+                    errorPlacement: function (error, element) {
+                        var elem = $(element);
+                        console.log(elem);
+                        if(element.attr("name") == "cd_cidade_cde") {
+                            error.appendTo( element.next("span") );
+                        } else {
+                            error.insertAfter(element);
+                        }
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                        } else {
+                            elem.addClass(errorClass);
+                        }
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
+                        } else {
+                            elem.removeClass(errorClass);
+                        }
+                    }    
+                });
+
+            $(document).on("change", ".select2", function () {
+                if (!$.isEmptyObject(validobj.submitted)) {
+                    validobj.form();
+                }
+            });
+
+        });
+
+        $('#cidade').select2({}).focus(function () {
+            $(this).select2('focus');
+        });
 
     });
    
