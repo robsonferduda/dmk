@@ -553,6 +553,9 @@
                         },
                         cd_cidade_cde: {
                             required: true
+                        },
+                        cd_tipo_servico_tse: {
+                            required: true
                         }
                        
                         
@@ -571,6 +574,9 @@
                         },
                         cd_cidade_cde: {
                             required : 'Campo Cidade é Obrigatório'
+                        },
+                        cd_tipo_servico_tse: {
+                            required : 'Campo Tipo de Serviço é Obrigatório'
                         }
                        
                         
@@ -579,7 +585,7 @@
                     errorPlacement: function (error, element) {
                         var elem = $(element);
                         console.log(elem);
-                        if(element.attr("name") == "cd_cidade_cde") {
+                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ) {
                             error.appendTo( element.next("span") );
                         } else {
                             error.insertAfter(element);
