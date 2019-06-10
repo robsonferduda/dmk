@@ -307,10 +307,11 @@
                     </div> 
                      
                           
-                        <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Cadastrar
+                        <footer>                            
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-fw fa fa-save"></i>Cadastrar
                             </button>
+                            <a href="{{ url('processos') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                         </footer>
                         {!! Form::close() !!}                      
                         

@@ -314,9 +314,10 @@
                      
                           
                         <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Atualizar
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-fw fa fa-save"></i>Atualizar
                             </button>
+                            <a href="{{ url('processos') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                         </footer>
                         {!! Form::close() !!}                      
                         
