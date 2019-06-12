@@ -248,3 +248,6 @@ span.tags
   overflow: hidden;
   text-overflow: ellipsis;
 }  
+.select2-selection.required {
+    background-color: yellow !important;
+}
