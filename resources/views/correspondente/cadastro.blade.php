@@ -16,6 +16,12 @@
 						@endif
 					</div>
 					</section>
+
+					@if(Session::get('flag_convite'))
+						<input type="hidden" name="token" value="{{ Session::get('token') }}">
+						<input type="hidden" name="conta" value="{{ Session::get('conta') }}">
+					@endif
+					
 					<section>
 						<label class="input"> <i class="icon-append fa fa-user"></i>
 						<input type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">

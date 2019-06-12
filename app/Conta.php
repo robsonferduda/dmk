@@ -2,15 +2,19 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use App\Notifications\ConviteNotification as ConviteNotification;
+use App\Notifications\FiliacaoNotification as FiliacaoNotification;
 
 class Conta extends Model implements AuditableContract
 {
 	use SoftDeletes;
     use Auditable;
+    use Notifiable;
 
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
@@ -41,5 +45,20 @@ class Conta extends Model implements AuditableContract
     public function processo()
     {
         return $this->hasMany('App\Processo','cd_conta_con','cd_conta_con');
+    }
+
+    public function convite()
+    {
+        return $this->hasMany('App\ConviteCorrespondente','cd_conta_con','cd_conta_con');
+    }
+
+    public function enviarConvite($convite)
+    {
+        $this->notify(new ConviteNotification($convite));
+    }
+
+    public function enviarFiliacao($convite)
+    {
+        $this->notify(new FiliacaoNotification($convite));
     }
 }

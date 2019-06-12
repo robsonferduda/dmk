@@ -14,7 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
-Route::get('correspondente', function(){ return view('correspondente/cadastro'); });
+Route::get('correspondente', function(){ return view('correspondente/cadastro'); })->name('correspondente');
 Route::resource('contas','ContaController');
 Route::get('autenticacao', function(){ return view('auth/correspondente'); });
 Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
@@ -98,6 +98,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
 	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
+	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
+	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
 	Route::post('correspondente/remover','CorrespondenteController@remover');
