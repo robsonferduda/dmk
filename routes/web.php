@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
+Route::get('msg-filiacao', function(){ return view('errors/msg_filiacao'); })->name('msg-filiacao');
 Route::get('correspondente', function(){ return view('correspondente/cadastro'); })->name('correspondente');
 Route::resource('contas','ContaController');
 Route::get('autenticacao', function(){ return view('auth/correspondente'); });

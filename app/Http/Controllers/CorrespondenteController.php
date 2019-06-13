@@ -44,7 +44,6 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('correspondente', ['only' => ['aceitarFiliacao']]);
         $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite']]);
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
@@ -515,48 +514,51 @@ class CorrespondenteController extends Controller
         $convite = ConviteCorrespondente::where('token_coc',$token)->first();
 
         //Verificar para quem pertence o convite
-        if(Auth::user()->email != $convite->email_coc){
-            Flash::error('Esse convite não pertence ao seu usuário e foi desconsiderado pelo sistema.');
-            return redirect('correspondente/clientes');
+        if(Auth::user() and (Auth::user()->email != $convite->email_coc)){
+            \Session::put('retorno', array('tipo' => 'erro','msg' => 'Esse convite não pertence ao seu usuário e foi desconsiderado pelo sistema.'));
+            return Redirect::route('msg-filiacao');
         }
 
         //Verificar se o convite já foi aceito
         if($convite->fl_aceite_coc == 'S'){
-            Flash::error('Esse convite já foi aceito pelo seu usuário.');
-            return redirect('correspondente/clientes');
+            \Session::put('retorno', array('tipo' => 'erro','msg' => 'O convite foi aceito e não está mais disponível'));
+            return Redirect::route('msg-filiacao');
         }
 
-        $convite->fl_aceite_coc = 'S';
-        $convite->dt_aceite_coc = date("Y-m-d H:i:s");
-        
-        if($convite->save()){
+        //Busca os dados do correspondente
+        $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$convite->email_coc)->first(); 
 
-            $correspondente = ContaCorrespondente::where('cd_conta_con', $convite->cd_conta_con)->where('cd_correspondente_cor',$this->conta)->first();
+        //Verifica se o correspondente já possui cadastro e busca os dados
+        $correspondente = ContaCorrespondente::where('cd_conta_con', $convite->cd_conta_con)->where('cd_correspondente_cor',$user->cd_conta_con)->first();
 
-            if(is_null($correspondente)){
+        if(is_null($correspondente)){
 
-                $correspondente = new ContaCorrespondente();
-                $correspondente->cd_conta_con = $convite->cd_conta_con;
-                $correspondente->cd_correspondente_cor = $this->conta;        
+            $correspondente = new ContaCorrespondente();
+            $correspondente->cd_conta_con = $convite->cd_conta_con;
+            $correspondente->cd_correspondente_cor = $user->cd_conta_con;        
                 
-                if($correspondente->save()){
+            if($correspondente->save()){
 
-                    $conta = Conta::where('cd_conta_con',$convite->cd_conta_con)->first();
-                    Flash::success('Você foi adicionado como correspondente de '.$conta->nm_razao_social_con.' com sucesso');
+                $convite->fl_aceite_coc = 'S';
+                $convite->dt_aceite_coc = date("Y-m-d H:i:s");
+                $convite->save();
 
-                }else{
-                    Flash::error('Erro ao aceitar convite');
-                    return redirect()->back();
-                }
+                $conta = Conta::where('cd_conta_con',$convite->cd_conta_con)->first();
+                \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Você foi adicionado como correspondente de '.$conta->nm_razao_social_con.' com sucesso'));
+                return Redirect::route('msg-filiacao');
 
             }else{
-                Flash::warning('Você já faz parte dessa rede de correspondentes');
-                return redirect()->back();
+                
+                \Session::put('retorno', array('tipo' => 'erro','msg' => 'Erro ao aceitar convite'));
+                return Redirect::route('msg-filiacao');
             }
 
+        }else{
+    
+            \Session::put('retorno', array('tipo' => 'erro','msg' => 'Você já faz parte dessa rede de correspondentes'));
+            return Redirect::route('msg-filiacao');
         }
 
-        return redirect('correspondente/clientes');
     }
 
     public function novoCorrespondenteConta(Request $request)
