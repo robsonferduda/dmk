@@ -490,7 +490,7 @@ class CorrespondenteController extends Controller
 
         if(!empty($unique)){
             $conta->enviarFiliacao($convite);
-            Flash::success('O correspondente já fazia parte do nosso cadastro. Foi encaminhada um convite para atuar como colaborador em parceria com seu escritório');
+            Flash::success('O email informado já está cadastrado como correspondente. Foi encaminhado um convite para atuar como colaborador em parceria com seu escritório');
         }else{
             $conta->enviarConvite($convite);
             Flash::success('Convite enviado com sucesso. O destinatário poderá realizar seu cadastro para aparecer nas buscas por correspondentes.');
@@ -905,7 +905,9 @@ class CorrespondenteController extends Controller
 
     public function clientes(){
 
-        return view('correspondente/clientes');
+        $clientes = ContaCorrespondente::where('cd_correspondente_cor',$this->conta)->with('conta')->get();
+
+        return view('correspondente/clientes',['clientes' => $clientes]);
 
     }
 

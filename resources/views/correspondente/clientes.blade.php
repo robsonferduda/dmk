@@ -23,8 +23,37 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="well">
-                
+            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Clientes</h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>                         
+                                <tr>    
+                                    <th style="width: 20%;">Data de Filiação</th> 
+                                    <th style="width: 55%;">Cliente</th>                                                                                                  
+                                    <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($clientes as $cliente)
+                                    <tr>
+                                        <td>{{ date('d/m/Y H:i:s', strtotime($cliente->created_at)) }}</td>
+                                        <td>{{ $cliente->conta->nm_razao_social_con }}</td>
+                                        <td class="center">
+                                            <a title="Detalhes" class="btn btn-default btn-xs" href=""><i class="fa fa-file-text-o"></i> </a>
+                                            <a title="Processos" class="btn btn-info btn-xs"  href=""><i class="fa fa-archive"></i> </a>
+                                            <a title="Honorários" class="btn btn-warning btn-xs"  href=""><i class="fa fa-money"></i> </a>
+                                        </td>
+                                    </tr>
+                                @endforeach                                                           
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </article>
     </div>
