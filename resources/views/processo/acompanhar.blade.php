@@ -72,7 +72,66 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        
+                                        <p>
+                                            <ul class="list-unstyled" style=" line-height: 1.5;">
+                                           
+                                                <li>
+                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
+                                                </li>
+                                                <li>
+                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
+                                                </li>
+                                                                                       
+                                                <li>
+                                                    <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Autor: </strong> {{ $processo->nm_autor_pro }}
+                                                </li>
+                                                <li>
+                                                    <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : ' ' }}
+                                                </li> 
+                                                <li>
+                                                    <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Correspondente: </strong> 
+                                                    @if(!empty($processo->correspondente))
+                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                    @endif
+                                                </li>                                           
+                                                <li>
+                                                    <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
+                                                </li>
+                                                <li>
+                                                    <strong>Processo Criado por: </strong>  {{ !empty($processo->audits()->where('event','created')->with('user')->get()->last()->user->name) ?  $processo->audits()->where('event','created')->with('user')->get()->last()->user->name : ' ' }} 
+                                                </li>
+                                                <li>
+                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Data Prazo Fatal: </strong> {{ !empty($processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Réu: </strong> {{ $processo->nm_reu_pro }}
+                                                </li>
+                                                <li>
+                                                    <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : ' ' }}
+                                                </li>
+                                                <li style="color: #3276B1">
+                                                    <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                            </ul>
+                                        </p> 
                                     </div>
                                 </fieldset>
                             </div>
