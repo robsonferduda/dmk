@@ -18,6 +18,7 @@ use App\Cidade;
 use App\GrupoCidade;
 use App\CidadeAtuacao;
 use App\Correspondente;
+use App\ConviteCorrespondente;
 use App\TipoDespesa;
 use App\TipoServico;
 use App\TaxaHonorario;
@@ -31,6 +32,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ConviteRequest;
 use App\Http\Requests\CorrespondenteRequest;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use App\RelatorioJasper;
@@ -42,7 +44,8 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['cadastro']]);
+        $this->middleware('correspondente', ['only' => ['aceitarFiliacao']]);
+        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite']]);
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
@@ -53,8 +56,11 @@ class CorrespondenteController extends Controller
                                 $sql->where('cd_conta_con',$this->conta);
 
                             })
+                            ->with(['entidade.atuacao' => function($query){
+                                $query->where('fl_origem_cat','S');
+                                $query->with('cidade');
+                            }])
                             ->with('contaCorrespondente')
-                            ->with('entidade')
                             ->with('entidade.identificacao')
                             ->with('entidade.usuario')
                             ->where('fl_correspondente_con','S')
@@ -83,6 +89,86 @@ class CorrespondenteController extends Controller
         $dados = array('dados' => $correspondente->toArray(), 'endereco' => $endereco);
 
         echo json_encode($dados);
+    }
+
+    public function buscar(Request $request){
+
+        $estado = $request->get('cd_estado_est');
+        $cidade = $request->get('cd_cidade_cde');
+        $nome = $request->get('nome');
+        $identificacao = $request->get('identificacao');
+
+        $correspondentes = Correspondente::whereHas('contaCorrespondente', function($sql) use($nome){
+
+                                if(!empty($nome)) $sql->where('nm_razao_social_con','ilike',"%$nome%");
+                                $sql->where('cd_conta_con',$this->conta);
+
+                                if(!empty($identificacao)){
+
+                                    $join('entidade_ete', function($join) use ($identificacao){
+                                    
+                                        $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
+                                        $join->join('identificacao_ide', function($join) use ($identificacao){
+                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
+                                            $join->where('nu_identificacao_ide','=',$identificacao);
+                                        });
+                                    }); 
+                                }
+                            })
+                            ->with('entidade')
+                            ->with('entidade.usuario')
+                            ->with('contaCorrespondente')
+                            ->with('entidade.identificacao')
+                            ->where('fl_correspondente_con','S')
+                            ->orderBy('conta_con.nm_razao_social_con','DESC')
+                            ->get();
+
+        return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
+
+    }
+
+    public function buscarTodos(Request $request){
+
+        $nome = $request->get('nome');
+        $email = $request->get('email');
+        $identificacao = $request->get('identificacao');
+        $correspondentes = array();
+
+        if(empty($nome) and empty($email) and empty($identificacao)){
+            Flash::warning('Preencha pelo menos um termo para a busca');
+            return view('correspondente/novo',['correspondetes' => $correspondentes]);
+        }
+
+        $correspondentes = Correspondente::join('entidade_ete', function($join) use ($nome, $email, $identificacao){
+                                    
+                                    $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
+                                    $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
+
+                                    if(!empty($nome)) $join->where('nm_razao_social_con','ilike','%'.$nome.'%');
+                                    
+                                    if(!empty($identificacao)){
+                                        $join->join('identificacao_ide', function($join) use ($identificacao){
+                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
+                                            $join->where('nu_identificacao_ide','=',$identificacao);
+                                        });
+                                    } 
+
+                                    if(!empty($email)){
+                                        $join->join('users', function($join) use ($email){
+                                            $join->on('entidade_ete.cd_entidade_ete','=','users.cd_entidade_ete');
+                                            $join->where('email','=',$email);
+                                        });
+                                    }
+
+                            })
+                            ->orderBy('conta_con.nm_fantasia_con','DESC')
+                            ->get();
+
+        if(count($correspondentes) == 0)
+            \Session::put('busca_vazia', true);
+
+        return view('correspondente/novo',['correspondetes' => $correspondentes]);
+
     }
 
     public function despesas($id)
@@ -382,86 +468,6 @@ class CorrespondenteController extends Controller
         }
     }
 
-    public function buscar(Request $request){
-
-        $estado = $request->get('cd_estado_est');
-        $cidade = $request->get('cd_cidade_cde');
-        $nome = $request->get('nome');
-        $identificacao = $request->get('identificacao');
-
-        $correspondentes = Correspondente::whereHas('contaCorrespondente', function($sql) use($nome){
-
-                                if(!empty($nome)) $sql->where('nm_razao_social_con','ilike',"%$nome%");
-                                $sql->where('cd_conta_con',$this->conta);
-
-                                if(!empty($identificacao)){
-
-                                    $join('entidade_ete', function($join) use ($identificacao){
-                                    
-                                        $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
-                                        $join->join('identificacao_ide', function($join) use ($identificacao){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                            $join->where('nu_identificacao_ide','=',$identificacao);
-                                        });
-                                    }); 
-                                }
-                            })
-                            ->with('entidade')
-                            ->with('entidade.usuario')
-                            ->with('contaCorrespondente')
-                            ->with('entidade.identificacao')
-                            ->where('fl_correspondente_con','S')
-                            ->orderBy('conta_con.nm_razao_social_con','DESC')
-                            ->get();
-
-        return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
-
-    }
-
-    public function buscarTodos(Request $request){
-
-        $nome = $request->get('nome');
-        $email = $request->get('email');
-        $identificacao = $request->get('identificacao');
-        $correspondentes = array();
-
-        if(empty($nome) and empty($email) and empty($identificacao)){
-            Flash::warning('Preencha pelo menos um termo para a busca');
-            return view('correspondente/novo',['correspondetes' => $correspondentes]);
-        }
-
-        $correspondentes = Correspondente::join('entidade_ete', function($join) use ($nome, $email, $identificacao){
-                                    
-                                    $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
-                                    $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
-
-                                    if(!empty($nome)) $join->where('nm_razao_social_con','ilike','%'.$nome.'%');
-                                    
-                                    if(!empty($identificacao)){
-                                        $join->join('identificacao_ide', function($join) use ($identificacao){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                            $join->where('nu_identificacao_ide','=',$identificacao);
-                                        });
-                                    } 
-
-                                    if(!empty($email)){
-                                        $join->join('users', function($join) use ($email){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','users.cd_entidade_ete');
-                                            $join->where('email','=',$email);
-                                        });
-                                    }
-
-                            })
-                            ->orderBy('conta_con.nm_fantasia_con','DESC')
-                            ->get();
-
-        if(count($correspondentes) == 0)
-            \Session::put('busca_vazia', true);
-
-        return view('correspondente/novo',['correspondetes' => $correspondentes]);
-
-    }
-
     public function novo(){
         return view('correspondente/novo');
     }
@@ -470,31 +476,87 @@ class CorrespondenteController extends Controller
 
         $to_name = 'Convidado';
         $to_email = $request->email;
+        $conta = Conta::where('cd_conta_con',$this->conta)->first();
         
         $data = array('nome'=>Auth::user()->name);
 
-        /*
+        $convite = ConviteCorrespondente::create(['cd_conta_con' => $this->conta,
+                                                  'token_coc'    => $token = str_random(40),
+                                                  'email_coc'    => $to_email
+        ]);
+
+        $conta->email = $to_email;
         $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
+
         if(!empty($unique)){
-            Flash::warning('Email já cadastrado no sistema. Utilize a busca para encontrar o registro.');
-            return redirect('correspondente/novo');
-        }
-        */
-            
-        Mail::send('correspondente/email_convite', $data, function($message) use ($to_name, $to_email) {
-            $message->to($to_email, $to_name)
-                    ->subject('Cadastro Sistema DMK');
-            $message->from('financeiro@dmkadvogados.com.br','Atendimento DMK');
+            $conta->enviarFiliacao($convite);
+            Flash::success('O email informado já está cadastrado como correspondente. Foi encaminhado um convite para atuar como colaborador em parceria com seu escritório');
+        }else{
+            $conta->enviarConvite($convite);
             Flash::success('Convite enviado com sucesso. O destinatário poderá realizar seu cadastro para aparecer nas buscas por correspondentes.');
-        });
-
-        if(Mail::failures()){
-
-
         }
 
         return redirect('correspondente/novo');
+    }
 
+    public function aceitarConvite($token)
+    {
+        //No caso de convite, o correspondente estará deslogado, pois ele ainda não possui cadastro
+        $convite = ConviteCorrespondente::where('token_coc',$token)->first();
+        \Session::put('token',$convite->token_coc);
+        \Session::put('flag_convite',true);
+        \Session::put('conta',$convite->cd_conta_con);
+        return Redirect::route('correspondente');
+
+    }
+
+    public function aceitarFiliacao($token)
+    {
+        $convite = ConviteCorrespondente::where('token_coc',$token)->first();
+
+        //Verificar para quem pertence o convite
+        if(Auth::user()->email != $convite->email_coc){
+            Flash::error('Esse convite não pertence ao seu usuário e foi desconsiderado pelo sistema.');
+            return redirect('correspondente/clientes');
+        }
+
+        //Verificar se o convite já foi aceito
+        if($convite->fl_aceite_coc == 'S'){
+            Flash::error('Esse convite já foi aceito pelo seu usuário.');
+            return redirect('correspondente/clientes');
+        }
+
+        $convite->fl_aceite_coc = 'S';
+        $convite->dt_aceite_coc = date("Y-m-d H:i:s");
+        
+        if($convite->save()){
+
+            $correspondente = ContaCorrespondente::where('cd_conta_con', $convite->cd_conta_con)->where('cd_correspondente_cor',$this->conta)->first();
+
+            if(is_null($correspondente)){
+
+                $correspondente = new ContaCorrespondente();
+                $correspondente->cd_conta_con = $convite->cd_conta_con;
+                $correspondente->cd_correspondente_cor = $this->conta;        
+                
+                if($correspondente->save()){
+
+                    $conta = Conta::where('cd_conta_con',$convite->cd_conta_con)->first();
+                    Flash::success('Você foi adicionado como correspondente de '.$conta->nm_razao_social_con.' com sucesso');
+
+                }else{
+                    Flash::error('Erro ao aceitar convite');
+                    return redirect()->back();
+                }
+
+            }else{
+                Flash::warning('Você já faz parte dessa rede de correspondentes');
+                return redirect()->back();
+            }
+
+        }
+
+        return redirect('correspondente/clientes');
     }
 
     public function novoCorrespondenteConta(Request $request)
@@ -567,6 +629,14 @@ class CorrespondenteController extends Controller
             $email = $input['email']; 
             $nome  = $input['nm_razao_social_con'];
             $senha = $input['password'];
+            $flag_convite = false;
+
+            if($request->token and $request->conta){
+
+                $token = $request->token;
+                $conta_convite = $request->conta;
+                $flag_convite = true;
+            }
 
             $conta = new Correspondente();        
             $conta->fill($request->all());
@@ -603,6 +673,25 @@ class CorrespondenteController extends Controller
                         $enderecoEletronico->dc_endereco_eletronico_ede = $email;
                         $enderecoEletronico->save();
                     }
+
+                    //Se o login se originou de um convite, registra o correpondente
+                    if($flag_convite){
+
+                        $vinculo = ContaCorrespondente::create(['cd_conta_con' => $conta_convite,
+                                                                'cd_correspondente_cor' => $conta->cd_conta_con
+                        ]);
+
+                        if($vinculo){
+
+                            $convite = ConviteCorrespondente::where('token_coc',$token)->first();
+                            $convite->fl_aceite_coc = 'S';
+                            $convite->dt_aceite_coc = date("Y-m-d H:i:s");
+                        
+                            $convite->save();
+                        }
+                        
+                    }
+                    
 
                     Session::put('SESSION_CD_CONTA', $conta->cd_conta_con);
                     Auth::login($user);
@@ -816,7 +905,9 @@ class CorrespondenteController extends Controller
 
     public function clientes(){
 
-        return view('correspondente/clientes');
+        $clientes = ContaCorrespondente::where('cd_correspondente_cor',$this->conta)->with('conta')->get();
+
+        return view('correspondente/clientes',['clientes' => $clientes]);
 
     }
 
@@ -846,10 +937,12 @@ class CorrespondenteController extends Controller
 
         $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
 
+        /*
         if(count($correspondente->entidade->atuacao()->get()) == 0 or count($correspondente->entidade->fone()->get()) == 0){
 
             return redirect('correspondente/ficha/'.$correspondente->cd_conta_con)->with(['flag' => true]); 
         }
+        */
         
         return view('correspondente/dashboard',['correspondente' => $correspondente]);
 

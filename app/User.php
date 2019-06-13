@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Kodeine\Acl\Traits\HasRole;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use App\Notifications\MailResetPasswordNotification as MailResetPasswordNotification;
 
 class User extends Authenticatable implements AuditableContract
 {
@@ -34,6 +35,11 @@ class User extends Authenticatable implements AuditableContract
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MailResetPasswordNotification($token));
+    }
 
     public function entidade()
     {

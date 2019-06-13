@@ -314,9 +314,10 @@
                      
                           
                         <footer>
-                            <button type="submit" class="btn btn-primary">
-                                Atualizar
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-fw fa fa-save"></i>Atualizar
                             </button>
+                            <a href="{{ url('processos') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</a>
                         </footer>
                         {!! Form::close() !!}                      
                         
@@ -541,6 +542,91 @@
 
         });
 
+        $(function() {
+                // Validation
+            var validobj = $("#frm-add-processo").validate({
+
+                    ignore: 'input[type=hidden], .select2-input, .select2-focusser',
+                    rules : {
+                        nm_cliente_cli : {
+                            required: true,
+                        },
+                        nu_processo_pro : {
+                            required: true
+                        },
+                        cd_tipo_processo_tpo : {
+                            required: true
+                        },
+                        cd_cidade_cde: {
+                            required: true
+                        },
+                        cd_tipo_servico_tse: {
+                            required: true
+                        }
+                       
+                        
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        nm_cliente_cli : {
+                            required : 'Campo Cliente é Obrigatório'
+                        },
+                        nu_processo_pro : {
+                            required : 'Campo Nº Processo é Obrigatório'
+                        },
+                        cd_tipo_processo_tpo : {
+                            required : 'Campo Tipo de Processo é Obrigatório'
+                        },
+                        cd_cidade_cde: {
+                            required : 'Campo Cidade é Obrigatório'
+                        },
+                        cd_tipo_servico_tse: {
+                            required : 'Campo Tipo de Serviço é Obrigatório'
+                        }
+                       
+                        
+                    },
+
+                    errorPlacement: function (error, element) {
+                        var elem = $(element);
+                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ) {
+                            
+                            error.appendTo( element.next("span") );
+                            
+                        } else {
+                            error.insertAfter(element);
+                        }
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                        } else {
+                            elem.addClass(errorClass);
+                        }
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
+                        } else {
+                            elem.removeClass(errorClass);
+                        }
+                    }    
+                });
+
+            $(document).on("change", ".select2", function () {
+                if (!$.isEmptyObject(validobj.submitted)) {
+                    validobj.form();
+                }
+            });
+
+        });
+
+        $('#cidade').select2({}).focus(function () {
+            $(this).select2('focus');
+        });
 
     });
    

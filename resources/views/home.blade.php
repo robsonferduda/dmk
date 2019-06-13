@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-home"></i>Início 
+                <i class="fa-fw fa fa-home"></i>Painel Administrativo 
             </h1>
         </div>
     </div>
@@ -25,12 +25,12 @@
     </div>
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center connect">
+            <div class="well text-center connect" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                         <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
                     @else
-                        <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 80%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                        <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
                     @endif
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
@@ -48,31 +48,33 @@
             </div>
         </div>  
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center">
+            <div class="well text-center" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     <a href="{{ url('processos') }}"><img src="{{ asset('img/processo.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
-                    <h4><span><b>Meus Processos</b></span></h4>
-                    @if(count($processos) > 0)
-                        <h5>{{ count($processos) }} processos cadastrados</h5>
-                    @else
-                        <h5>
-                        Nenhum processo cadastrado</h5>
-                    @endif
-                    <h5><a href="{{ url('processos/novo') }}">Adicionar Novo</a></h5>
+                    <h4>
+                        <span><b>Processos</b></span>
+                    </h4>
+                    
+                    <h5>
+                        @if(count($processos) > 0)
+                            <span>({{ count($processos) }})</span>
+                        @endif
+                        <a href="{{ url('processos') }}">Meus Processos</a>
+                    </h5>
                 </div>
                 <div style="clear: both;"></div>
             </div>
         </div> 
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center">
+            <div class="well text-center" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     <a href="{{ url('processos') }}"><img src="{{ asset('img/legal.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
                     <h4><span><b>Correspondentes</b></span></h4>                    
-                    <h5><a href="{{ url('correspondente/buscar') }}">Buscar</a> | <a href="{{ url('correspondente/novo') }}">Adicionar Novo</a></h5>
+                    <h5><a href="{{ url('correspondente/novo') }}"><i class="fa fa-plus-circle"></i> Novo</a></h5>
                 </div>
                 <div style="clear: both;"></div>
             </div>

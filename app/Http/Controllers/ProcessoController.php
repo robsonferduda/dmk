@@ -656,6 +656,26 @@ class ProcessoController extends Controller
 
     }
 
+    public function atualizarStatus(Request $request)
+    {
+
+        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
+        
+        if($request->status == 0){
+            Flash::warning('Obrigatório selecionar uma situação');
+        }else{
+        
+            $processo->cd_status_processo_stp = $request->status;
+            if($processo->save())
+                Flash::success('Situação atualizada com sucesso');
+            else
+                Flash::success('Erro ao atualizar situação do processo');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+
+    }
+
     public function update(ProcessoRequest $request,$id)
     {
         

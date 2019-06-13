@@ -14,11 +14,11 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
-Route::get('correspondente', function(){ return view('correspondente/cadastro'); });
-Route::get('autenticacao', function(){ return view('auth/correspondente'); });
+Route::get('correspondente', function(){ return view('correspondente/cadastro'); })->name('correspondente');
 Route::resource('contas','ContaController');
+Route::get('autenticacao', function(){ return view('auth/correspondente'); });
+Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
-Route::post('autenticacao', 'LoginController@loginCorrespondente')->name('autenticacao');
 
 Auth::routes();
 
@@ -59,6 +59,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento');
 	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
+	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/acompanhar','ProcessoController@acompanhar');
@@ -92,12 +93,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
 	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
-	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
 	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
+	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
+	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
 	Route::post('correspondente/remover','CorrespondenteController@remover');

@@ -42,6 +42,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
         $this->validateLogin($request);
 
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -63,8 +64,6 @@ class LoginController extends Controller
 
     public function loginCorrespondente(Request $request)
     {
-
-        dd($request->all());
 
         $this->validateLogin($request);
 

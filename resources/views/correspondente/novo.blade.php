@@ -16,8 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-list"></i> Listar Correspondentes</a>
-            <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo Correspondente</button>   
-            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite para Cadastro</button>            
+            <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo</button>   
+            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite</button>            
         </div>
     </div>
     <div class="row">
@@ -29,18 +29,30 @@
                 <form action="{{ url('correspondente/todos') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <fieldset>
-                        <div class="row"> 
-                            <section class="col col-md-4">
-                                <label class="label label-black" >Nome</label><br>
-                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
-                            </section>
-                             <section class="col col-md-3">
-                                <label class="label label-black" >Email</label><br>
-                                <input type="text" style="width: 100%;" name="email" class="form-control" id="email" placeholder="Email">
+                        <div class="row">
+                            <section class="col col-md-3">                                       
+                                <label class="label label-black" >Estado</label>          
+                                <select  id="estado" name="cd_estado_est" class="select2">
+                                    <option selected value="">Selecione um estado</option>
+                                    @foreach(App\Estado::all() as $estado) 
+                                        <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                    @endforeach
+                                </select>
                             </section>
                             <section class="col col-md-3">
+                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                <label class="label label-black" >Cidade</label>          
+                                <select id="cidade" name="cd_cidade_cde" class="select2">
+                                    <option selected value="">Selecione uma cidade</option>
+                                </select> 
+                            </section>  
+                            <section class="col col-md-2">
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
+                            </section>
+                            <section class="col col-md-3">
+                                <label class="label label-black">Nome</label><br>
+                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
                             <section class="col col-md-1">
                                 <label class="label" >Buscar</label>
@@ -62,24 +74,26 @@
                             <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                                 <thead>                         
                                     <tr>    
+                                        <th style="width: 20%;">Comarca de Origem</th>
                                         <th style="width: 15%;">CPF/CNPJ</th>                                
-                                        <th style="width: 45%;">Nome</th>
-                                        <th style="width: 15%;" class="center">Email</th>                                  
-                                        <th style="width: 25%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                        <th style="width: 30%;">Nome</th>
+                                        <th style="width: 20%;" class="center">Email</th>                                  
+                                        <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($correspondetes as $correspondente)
                                         <tr>
+                                            <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                             <td>{{ ($correspondente->entidade->cpf()->first()) ? $correspondente->entidade->cpf()->first()->nu_identificacao_ide : "Não informado" }}</td>
                                             <td>{{ $correspondente->nm_razao_social_con }}</td>
                                             <td>{{ $correspondente->entidade->usuario->email }}</td>
                                             <td class="center">
-                                                <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-folder"></i> Dados</button>
+                                                <button title="Dados do Correspondente" class="btn btn-default btn-xs modal_dados_correspondente" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-file-text-o"></i></button>
                                                 @if($correspondente->contaCorrespondente()->where('cd_conta_con',1)->first())
-                                                    <button title="Dados do Correspondente" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr}}"><i class="fa fa-times"></i> Remover</button>   
+                                                    <button title="Adicionar" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->contaCorrespondente()->first()->cd_conta_correspondente_ccr}}"><i class="fa fa-times"></i></button>   
                                                 @else
-                                                    <button title="Dados do Correspondente" class="btn btn-primary btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i> Adicionar</button>   
+                                                    <button title="Remover" class="btn btn-success btn-xs adicionar_registro" data-url="{{ url('correspondente/adicionar/'.$correspondente->cd_conta_con) }}" data-id="{{ $correspondente->cd_conta_con }}"><i class="fa fa-plus"></i></button>   
 
                                                 @endif                                            
                                             </td>

@@ -2,7 +2,7 @@
 @section('content')
     <form class="smart-form client-form" method="POST" action="{{ route('autenticacao') }}">
     {{ csrf_field() }}
-        <header><i class="fa fa-lock"></i> Login</header>
+        <header><i class="fa fa-lock"></i> Acesso Correspondentes</header>
         <fieldset style="padding-top: 8px;">  
             <div style="text-align: center; margin-bottom: 10px;">
                 <img src="img/logo.png" style="width: 25%;" alt="Sistema DMK"> 
@@ -11,7 +11,7 @@
                 <label class="label">E-mail</label>
                 <label class="input"> <i class="icon-append fa fa-user"></i>
                     <input type="email" name="email">
-                    <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Digite seu usuário (email)</b></label>
 
                     @if ($errors->has('email'))
                         <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>
@@ -21,12 +21,12 @@
                 <label class="label">Senha</label>
                 <label class="input"> <i class="icon-append fa fa-lock"></i>
                     <input type="password" name="password">
-                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b> </label>
 
                     @if ($errors->has('password'))
                         <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
                     @endif
-                <div class="note"><a href="forgotpassword.html">Esqueceu sua senha?</a></div>
+                <div class="note"><a href="{{ url('password/reset') }}">Esqueceu sua senha?</a></div>
             </section>
         </fieldset>
         <footer>
