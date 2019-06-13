@@ -590,9 +590,10 @@
 
                     errorPlacement: function (error, element) {
                         var elem = $(element);
-                        console.log(elem);
                         if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ) {
+                            
                             error.appendTo( element.next("span") );
+                            
                         } else {
                             error.insertAfter(element);
                         }
