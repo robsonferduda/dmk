@@ -20,7 +20,12 @@
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
             <a data-toggle="modal" href="" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
-            <a data-toggle="modal" href="" class="btn btn-danger  pull-right marginTop17"><i class="fa fa-ban"></i> Cancelar</a>
+            <form style="display: inline; margin-top: 10px;" class="pull-right" action="{{ url('processo/atualizar-status') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                <input type="hidden" id="status_cancelamento" name="status" value="7">     
+                <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+            </form>
         </div>
     </div>
     <div class="row">
