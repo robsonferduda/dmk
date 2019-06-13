@@ -23,7 +23,7 @@
             <form style="display: inline; margin-top: 10px;" class="pull-right" action="{{ url('processo/atualizar-status') }}" method="POST">
                 {{ csrf_field() }}
                 <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                <input type="hidden" id="status_cancelamento" name="status" value="7">     
+                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
                 <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
             </form>
         </div>
@@ -34,6 +34,12 @@
                 @include('layouts/messages')
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::CANCELADO)
+                    <div class="alert alert-danger fade in">
+                        <i class="fa-fw fa fa-times"></i>
+                        <strong>Processo Cancelado!</strong> O processo está cancelado.
+                    </div>
+                @endif
                 <div class="well">
                     <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                         {{ csrf_field() }}
