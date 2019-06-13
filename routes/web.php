@@ -59,6 +59,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento');
 	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
+	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/acompanhar','ProcessoController@acompanhar');

@@ -17,9 +17,10 @@
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
             <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o fa-lg"></i> Relatório</a>
             <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a data-toggle="modal" href="" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
+            <a data-toggle="modal" href="" class="btn btn-danger  pull-right marginTop17"><i class="fa fa-ban"></i> Cancelar</a>
         </div>
     </div>
     <div class="row">
@@ -29,20 +30,22 @@
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
-                    <form action="{{ url('correspondente/todos') }}" class="form-inline" method="GET" role="search">
+                    <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                         {{ csrf_field() }}
                         <fieldset>
                             <div class="row"> 
                                 <section class="col col-md-4">
-                                    <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                    <label class="label label-black" >Status do Processo</label>          
-                                    <select id="cidade" name="cd_cidade_cde" class="select2">
-                                        <option selected value="">Selecione uma situação</option>
+                                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                    <label class="label label-black" >Selecione um Status para o Processo</label>          
+                                    <select id="status" name="status" class="select2">
+                                        <option selected value="0">Selecione uma situação</option>
+                                        @foreach(App\StatusProcesso::all() as $status)
+                                            <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                        @endforeach
                                     </select> 
                                 </section> 
                                 <section class="col col-md-6">
                                     <button class="btn btn-success marginTop17" type="submit"><i class="fa fa-refresh"></i> Atualizar Status</button>
-                                    <a data-toggle="modal" href="" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
                                 </section> 
                             </div>
                         </fieldset>
@@ -207,7 +210,7 @@
 <div class="modal fade modal_top_alto" id="modalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ url('file-upload') }}" enctype="multipart/form-data">
+            <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
             @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -273,7 +276,7 @@
     var percent = $('.percent');
     var status = $('#status');
  
-    $('form').ajaxForm({
+    $('#frm-anexo').ajaxForm({
         beforeSubmit: validate,
         beforeSend: function(){
             $(".upload-msg").empty();
