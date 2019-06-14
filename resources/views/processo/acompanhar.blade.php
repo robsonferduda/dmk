@@ -159,6 +159,7 @@
                         </div>             
                 </div>
             </article>
+            <!--
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
                     <div class="col-md-6">
@@ -274,6 +275,7 @@
                     <div style="clear: both;"></div>
                 </div>
             </article>
+             -->
         </div>
     </div>
 </div>
