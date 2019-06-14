@@ -393,12 +393,6 @@
 
     $(document).ready(function() {
 
-        var _location = document.location.toString();
-        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
-        var applicationName = _location.substring(0, applicationNameIndex) + '/';
-        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var pathname = _location.substring(0, webFolderIndex);
-
         $('.adicionar-atuacao').click(function(){
 
             var entidade = $("#entidade").val();
@@ -408,7 +402,7 @@
             $.ajax(
             {
                 type: "POST",
-                url: pathname+"/correspondente/atuacao/adicionar",
+                url: "../../correspondente/atuacao/adicionar",
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
                     "entidade": entidade,
@@ -441,7 +435,7 @@
 
             $.ajax({
 
-                url: pathname+"/correspondente/atuacao/"+entidade,
+                url: "../../correspondente/atuacao/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
 
@@ -457,7 +451,7 @@
                         entidade = $("#entidade").val();
 
                         $.ajax({
-                                url: pathname+'/correspondente/atuacao/excluir/'+atuacao,
+                                url: '../../correspondente/atuacao/excluir/'+atuacao,
                                 type: 'GET',
                                 dataType: "JSON",
                             success: function(response)
@@ -486,7 +480,7 @@
             entidade = $("#entidade").val();
 
             $.ajax({
-                    url: pathname+'/correspondente/atuacao/excluir/'+atuacao,
+                    url: pathname+'../../correspondente/atuacao/excluir/'+atuacao,
                     type: 'GET',
                     dataType: "JSON",
                 success: function(response)
@@ -508,7 +502,7 @@
 
                 $.ajax(
                     {
-                        url: pathname+'/cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
