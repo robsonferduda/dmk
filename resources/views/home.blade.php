@@ -61,7 +61,7 @@
                         @if(count($processos) > 0)
                             <span>({{ count($processos) }})</span>
                         @endif
-                        <a href="{{ url('processos/novo') }}">Meus Processos</a>
+                        <a href="{{ url('processos') }}">Meus Processos</a>
                     </h5>
                 </div>
                 <div style="clear: both;"></div>

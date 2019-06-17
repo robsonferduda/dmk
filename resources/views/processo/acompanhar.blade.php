@@ -17,9 +17,15 @@
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
             <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
             <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a data-toggle="modal" href="" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
+            <form style="display: inline; margin-top: 10px;" class="pull-right" action="{{ url('processo/atualizar-status') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+            </form>
         </div>
     </div>
     <div class="row">
@@ -28,21 +34,29 @@
                 @include('layouts/messages')
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::CANCELADO)
+                    <div class="alert alert-danger fade in">
+                        <i class="fa-fw fa fa-times"></i>
+                        <strong>Processo Cancelado!</strong> O processo está cancelado.
+                    </div>
+                @endif
                 <div class="well">
-                    <form action="{{ url('correspondente/todos') }}" class="form-inline" method="GET" role="search">
+                    <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                         {{ csrf_field() }}
                         <fieldset>
                             <div class="row"> 
                                 <section class="col col-md-4">
-                                    <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                    <label class="label label-black" >Status do Processo</label>          
-                                    <select id="cidade" name="cd_cidade_cde" class="select2">
-                                        <option selected value="">Selecione uma situação</option>
+                                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                    <label class="label label-black" >Selecione um Status para o Processo</label>          
+                                    <select id="status" name="status" class="select2">
+                                        <option selected value="0">Selecione uma situação</option>
+                                        @foreach(App\StatusProcesso::all() as $status)
+                                            <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                        @endforeach
                                     </select> 
                                 </section> 
                                 <section class="col col-md-6">
                                     <button class="btn btn-success marginTop17" type="submit"><i class="fa fa-refresh"></i> Atualizar Status</button>
-                                    <a data-toggle="modal" href="" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
                                 </section> 
                             </div>
                         </fieldset>
@@ -58,7 +72,66 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        
+                                        <p>
+                                            <ul class="list-unstyled" style=" line-height: 1.5;">
+                                           
+                                                <li>
+                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
+                                                </li>
+                                                <li>
+                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
+                                                </li>
+                                                                                       
+                                                <li>
+                                                    <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Autor: </strong> {{ $processo->nm_autor_pro }}
+                                                </li>
+                                                <li>
+                                                    <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : ' ' }}
+                                                </li> 
+                                                <li>
+                                                    <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Correspondente: </strong> 
+                                                    @if(!empty($processo->correspondente))
+                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                    @endif
+                                                </li>                                           
+                                                <li>
+                                                    <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
+                                                </li>
+                                                <li>
+                                                    <strong>Processo Criado por: </strong>  {{ !empty($processo->audits()->where('event','created')->with('user')->get()->last()->user->name) ?  $processo->audits()->where('event','created')->with('user')->get()->last()->user->name : ' ' }} 
+                                                </li>
+                                                <li>
+                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Data Prazo Fatal: </strong> {{ !empty($processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' ' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Réu: </strong> {{ $processo->nm_reu_pro }}
+                                                </li>
+                                                <li>
+                                                    <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : ' ' }}
+                                                </li>
+                                                <li style="color: #3276B1">
+                                                    <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                            </ul>
+                                        </p> 
                                     </div>
                                 </fieldset>
                             </div>
@@ -86,6 +159,7 @@
                         </div>             
                 </div>
             </article>
+            <!--
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
                     <div class="col-md-6">
@@ -201,13 +275,14 @@
                     <div style="clear: both;"></div>
                 </div>
             </article>
+             -->
         </div>
     </div>
 </div>
 <div class="modal fade modal_top_alto" id="modalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ url('file-upload') }}" enctype="multipart/form-data">
+            <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
             @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -273,7 +348,7 @@
     var percent = $('.percent');
     var status = $('#status');
  
-    $('form').ajaxForm({
+    $('#frm-anexo').ajaxForm({
         beforeSubmit: validate,
         beforeSend: function(){
             $(".upload-msg").empty();

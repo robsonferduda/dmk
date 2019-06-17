@@ -45,7 +45,7 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::All();
+            $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
@@ -653,6 +653,26 @@ class ProcessoController extends Controller
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
         return redirect('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro));
+
+    }
+
+    public function atualizarStatus(Request $request)
+    {
+
+        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
+        
+        if($request->status == 0){
+            Flash::warning('Obrigatório selecionar uma situação');
+        }else{
+        
+            $processo->cd_status_processo_stp = $request->status;
+            if($processo->save())
+                Flash::success('Situação atualizada com sucesso');
+            else
+                Flash::success('Erro ao atualizar situação do processo');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
 
     }
 
