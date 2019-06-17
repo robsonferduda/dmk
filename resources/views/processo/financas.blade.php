@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-file-text-o fa-lg"></i> Relatório</a>
+            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
