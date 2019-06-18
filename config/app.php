@@ -219,7 +219,8 @@ return [
         'TipoIdentificacao' => App\Enums\TipoIdentificacao::class,
         'TipoFone' => App\Enums\TipoFone::class,
         'Nivel' => App\Enums\Nivel::class,
-
+        'Nivel' => App\Enums\Nivel::class,
+        'StatusProcesso' => App\Enums\StatusProcesso::class
     ],
 
 ];

@@ -33,7 +33,8 @@ class Processo extends Model implements AuditableContract
     						'nm_preposto_pro',
     						'nm_reu_pro',
     						'nu_processo_pro',
-                            'nu_acompanhamento_pro'
+                            'nu_acompanhamento_pro',
+                            'cd_status_processo_stp'
     					  ];
 
     public $timestamps = true;
@@ -80,5 +81,10 @@ class Processo extends Model implements AuditableContract
     public function honorario()
     {
         return $this->hasOne('App\ProcessoTaxaHonorario','cd_processo_pro', 'cd_processo_pro');
+    }
+
+    public function status()
+    {
+        return $this->hasOne('App\StatusProcesso','cd_status_processo_stp', 'cd_status_processo_stp');
     }
 }

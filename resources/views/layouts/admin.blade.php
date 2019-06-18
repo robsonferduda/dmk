@@ -155,8 +155,8 @@
                             <li>
                                 <a href="{{ url('processos') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                             </li>
-                            {{---<li>
-                                <a href="{{ url('processos/acompanhar') }}" title="Dashboard"><span class="menu-item-parent">Acompanhar</span></a>
+                            {{--<li>
+                                <a href="{{ url('processos/acompanhamento') }}" title="Dashboard"><span class="menu-item-parent">Acompanhamento</span></a>
                             </li>--}}
                         </ul>   
                     </li>

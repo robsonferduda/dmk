@@ -45,7 +45,45 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
+       
+        $processos = Processo::with(array('correspondente' => function($query){
+              $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+        }))->with(array('cidade' => function($query){
+              $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
+              $query->with(array('estado' => function($query){
+                  $query->select('sg_estado_est','cd_estado_est');
+        }));
+        }))->with(array('honorario' => function($query){
+              $query->select('cd_processo_pro','cd_tipo_servico_tse');
+              $query->with(array('tipoServico' => function($query){
+                  $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
+        }));
+        }))->with('status')
+        ->with(array('cliente' => function($query){
+              $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+
+        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+    }
+
+    public function acompanhar()
+    {
+
+       if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso');
+
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
@@ -67,17 +105,11 @@ class ProcessoController extends Controller
         }));
         }))->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro')->get();          
+        }))->with('status')
+        ->where('cd_conta_con', $this->cdContaCon)
+        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
 
-        return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
-    }
-
-    public function acompanhar()
-    {
-
-        $processos = Processo::where('cd_conta_con', $this->cdContaCon)->orderBy('nu_processo_pro')->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
-
-        return view('processo/acompanhamento',['processos' => $processos]);
+        return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
 
     public function acompanhamento($id){
@@ -87,6 +119,26 @@ class ProcessoController extends Controller
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
     
         return view('processo/acompanhar',['processo' => $processo]);
+    }
+
+     public function atualizarStatus(Request $request)
+    {
+
+        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
+        
+        if($request->status == 0){
+            Flash::warning('Obrigatório selecionar uma situação');
+        }else{
+        
+            $processo->cd_status_processo_stp = $request->status;
+            if($processo->save())
+                Flash::success('Situação atualizada com sucesso');
+            else
+                Flash::success('Erro ao atualizar situação do processo');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+
     }
 
     public function relatorio($id){
@@ -653,26 +705,6 @@ class ProcessoController extends Controller
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
         return redirect('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro));
-
-    }
-
-    public function atualizarStatus(Request $request)
-    {
-
-        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
-        
-        if($request->status == 0){
-            Flash::warning('Obrigatório selecionar uma situação');
-        }else{
-        
-            $processo->cd_status_processo_stp = $request->status;
-            if($processo->save())
-                Flash::success('Situação atualizada com sucesso');
-            else
-                Flash::success('Erro ao atualizar situação do processo');
-        }
-
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
 
     }
 

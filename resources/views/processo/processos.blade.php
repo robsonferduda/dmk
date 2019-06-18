@@ -55,7 +55,7 @@
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
                     <h2>Processos</h2>
                 </header>
-                <div>
+                 <div>
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
@@ -67,8 +67,8 @@
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
                                     <th style="width: 11%;">Parte Adversa</th>
-                                   
-                                    <th style="width: 14%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th>Status</th>
+                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
@@ -91,7 +91,6 @@
                                         }
                                         
                                     @endphp
-
 
                                     <tr style="background-color: {{ $cor }}; font-weight: bold;">        
                                         <td>
@@ -117,18 +116,20 @@
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                      
+                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
                                         <td>
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
                                                     <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                                     <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
                                                     <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
-                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
                                                 </div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
+                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
                                                     <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
                                                     <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
+                                                </div>
+                                                <div style="display: block;padding: 1px 1px 1px 1px">
                                                     <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                                 </div>    
                                             </div>                                        
