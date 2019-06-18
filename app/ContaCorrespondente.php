@@ -16,7 +16,9 @@ class ContaCorrespondente extends Model implements AuditableContract
     protected $primaryKey = 'cd_conta_correspondente_ccr';
     protected $fillable = [
                             'cd_conta_con',
-                            'cd_correspondente_cor'
+                            'cd_correspondente_cor',
+                            'cd_entidade_ete',
+                            'nm_conta_correspondente_ccr'
                           ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];

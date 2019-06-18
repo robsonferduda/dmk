@@ -83,7 +83,7 @@
                                     <tr>
                                         <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
-                                        <td>{{ $correspondente->nm_razao_social_con }}</td>
+                                        <td>{{ $correspondente->contaCorrespondente->nm_conta_correspondente_ccr }}</td>
                                         <td>{!! ($correspondente->entidade->usuario) ? $correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->contaCorrespondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>

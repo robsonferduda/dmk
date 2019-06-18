@@ -31,6 +31,7 @@ use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\ConviteRequest;
 use App\Http\Requests\CorrespondenteRequest;
+use App\Http\Requests\CadastroCorrespondenteRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -142,6 +143,12 @@ class CorrespondenteController extends Controller
                                     
                                     $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
                                     $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
+
+                                    $join->leftJoin('cidade_atuacao_cat', function($join){
+
+                                        $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
+
+                                    });
 
                                     if(!empty($nome)) $join->where('nm_razao_social_con','ilike','%'.$nome.'%');
                                     
@@ -561,7 +568,8 @@ class CorrespondenteController extends Controller
 
     }
 
-    public function novoCorrespondenteConta(Request $request)
+    //Cadastro de correspondente realizado pela conta
+    public function novoCorrespondenteConta(CadastroCorrespondenteRequest $request)
     {
         DB::transaction(function() use ($request){
 
@@ -569,55 +577,111 @@ class CorrespondenteController extends Controller
             $email = $input['email']; 
             $nome  = $input['nm_razao_social_con'];
 
-            $conta = new Correspondente();        
-            $conta->fill($request->all());
-            $conta->fl_correspondente_con = "S";
-            $conta->saveOrFail();
+            //Primeiro passo é verificar se existe um usuário do tipo correspondente com o email informado
+            $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
 
-            if($conta->cd_conta_con){
+            if(empty($unique)){
 
-                $entidade = new Entidade;
-                $entidade->cd_conta_con = $conta->cd_conta_con;
-                $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CORRESPONDENTE;
-                $entidade->saveOrFail();
+                $conta = new Correspondente();        
+                $conta->fill($request->all());
+                $conta->fl_correspondente_con = "S";
+                $conta->saveOrFail();
 
-                if($entidade->cd_entidade_ete){
+                if($conta->cd_conta_con){
 
-                    $user = new User();
-                    $user->cd_conta_con = $conta->cd_conta_con;
-                    $user->cd_entidade_ete = $entidade->cd_entidade_ete;
-                    $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
-                    $user->name = $nome;
-                    $user->email = $email;
-                    $user->password = Hash::make("correspondente");
-                    $user->save();
+                    //Entidade criado do tipo correspondente. Usada para vincular um usuário ao correspondente
+                    $entidade = new Entidade;
+                    $entidade->cd_conta_con = $conta->cd_conta_con;
+                    $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CORRESPONDENTE;
+                    $entidade->saveOrFail();
 
-                    if($user->id){
+                    //Entidade usada para criar identificador único para cada conta alterar seus dados de correspondente
+                    $entidade_correspondente = new Entidade;
+                    $entidade_correspondente->cd_conta_con = $this->conta;
+                    $entidade_correspondente->cd_tipo_entidade_tpe = \TipoEntidade::CONTA_CORRESPONDENTE;
+                    $entidade_correspondente->saveOrFail();
 
-                        $role = Role::find(Roles::CORRESPONDENTE);
-                        $user->assignRole($role);
+                    if($entidade->cd_entidade_ete and $entidade_correspondente->cd_entidade_ete ){
 
-                        $enderecoEletronico = new EnderecoEletronico();
-                        $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
-                        $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
-                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
-                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
-                        $enderecoEletronico->save();
-                    }
+                        $user = new User();
+                        $user->cd_conta_con = $conta->cd_conta_con;
+                        $user->cd_entidade_ete = $entidade->cd_entidade_ete;
+                        $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
+                        $user->name = $nome;
+                        $user->email = $email;
+                        $user->password = Hash::make("correspondente");
+                        $user->save();
 
-                    //Após cadastrar, vincula a conta que realizou o cadastro
-                    $correspondente = new ContaCorrespondente();
-                    $correspondente->cd_conta_con = $this->conta;
-                    $correspondente->cd_correspondente_cor = $conta->cd_conta_con;        
-                    
-                    if($correspondente->save())
-                        Flash::success('Correspondente adicionado com sucesso');
-                    else{
-                        Flash::error('Erro ao adicionar correspondente');
-                        return redirect()->back();
+                        if($user->id){
+
+                            $role = Role::find(Roles::CORRESPONDENTE);
+                            $user->assignRole($role);
+
+                            $enderecoEletronico = new EnderecoEletronico();
+                            $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
+                            $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
+                            $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                            $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                            $enderecoEletronico->save();
+                        }
+
+                        //Após cadastrar, vincula a conta que realizou o cadastro
+                        $correspondente = new ContaCorrespondente();
+                        $correspondente->cd_conta_con = $this->conta;
+                        $correspondente->cd_correspondente_cor = $conta->cd_conta_con;  
+                        $correspondente->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;      
+                        $correspondente->nm_conta_correspondente_ccr = $nome;
+                        
+                        if($correspondente->save())
+                            Flash::success('Correspondente adicionado com sucesso');
+                        else{
+                            Flash::error('Erro ao adicionar correspondente');
+                            return redirect()->back();
+                        }
                     }
                 }
+
+            }else{
+
+                //Verifica se o correspondente já está presente na conta
+                $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->first();
+
+                if(is_null($correspondente)){
+
+                    //Se já possui cadastro, cria somente a entidade para associar os dados e insere o vínculo com a conta
+                    $entidade_correspondente = new Entidade;
+                    $entidade_correspondente->cd_conta_con = $this->conta;
+                    $entidade_correspondente->cd_tipo_entidade_tpe = \TipoEntidade::CONTA_CORRESPONDENTE;
+                    
+                    if($entidade_correspondente->saveOrFail()){
+
+                        //Após cadastrar, vincula a conta que realizou o cadastro
+                        $correspondente = new ContaCorrespondente();
+                        $correspondente->cd_conta_con = $this->conta;
+                        $correspondente->cd_correspondente_cor = $unique->cd_conta_con;  
+                        $correspondente->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;      
+                        $correspondente->nm_conta_correspondente_ccr = $nome; //Insere mesmo nome do usuário já utilizado
+                            
+                        if($correspondente->save())
+                            Flash::success('Correspondente adicionado com sucesso');
+                        else{
+                            Flash::error('Erro ao adicionar correspondente');
+                            return redirect()->back();
+                        }
+
+                    }else{
+                        Flash::error('Erro ao adicionar correspondente');
+                        return redirect()->back();
+                    }        
+                    
+
+                }else{
+                    Flash::warning('Correspondente já faz parte da sua lista');
+                    return redirect()->back();
+                }    
+
             }
+
         });
 
         return redirect('correspondentes');

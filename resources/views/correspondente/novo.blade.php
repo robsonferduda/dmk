@@ -84,7 +84,7 @@
                                 <tbody>
                                     @foreach($correspondetes as $correspondente)
                                         <tr>
-                                            <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
+                                            <td>{!! '<span class="text-danger">Não informado</span>' !!}</td>
                                             <td>{{ ($correspondente->entidade->cpf()->first()) ? $correspondente->entidade->cpf()->first()->nu_identificacao_ide : "Não informado" }}</td>
                                             <td>{{ $correspondente->nm_razao_social_con }}</td>
                                             <td>{{ $correspondente->entidade->usuario->email }}</td>
@@ -135,7 +135,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         
-                        {!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro/conta', 'class' => 'smart-form client-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro/conta', 'id' => 'frmAddCorrespondente', 'class' => 'smart-form client-form']) !!}
                         <div class="well" style="margin: 0px 15px; padding: 5px;">
                             <p>
                                 <strong class="text-danger">Atenção!</strong><br/>
@@ -147,16 +147,16 @@
                                     <h5 style="margin-bottom: 10px;"><strong>Dados do Correspondente</strong></h5>
                                     <section>
                                         <label class="input"> <i class="icon-append fa fa-user"></i>
-                                        <input type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
+                                        <input type="text" name="nm_razao_social_con" id="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
                                         <b class="tooltip tooltip-bottom-right">Nome Completo</b> </label>
                                     </section>
                                     <section>
                                         <label class="input"> <i class="icon-append fa fa-envelope"></i>
-                                        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
-                                        <b class="tooltip tooltip-bottom-right">Informe seu email</b> </label>
+                                        <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}">
+                                        <b class="tooltip tooltip-bottom-right">Email do Correspondente</b> </label>
                                     </section>
                                     <section class="center"> 
-                                        <p>Todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
+                                        <p>O sistema gera a senha automaticamente e todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
                                     </section>
                                 </fieldset>
                                 <footer>
@@ -294,7 +294,34 @@
                     alert("Erro ao processar requisição");
                 }
             });
-        });        
+        }); 
+
+        $(function() {
+
+            $("#frmAddCorrespondente").validate({
+                rules : {
+                    nm_razao_social_con : {
+                        required : true
+                    },
+                    email : {
+                        required : true
+                    }
+
+                },
+
+                messages : {
+                    nm_razao_social_con : {
+                        required : 'Campo nome é obrigatório'
+                    },
+                    email : {
+                        required : 'Campo email é obrigatório'
+                    }
+                },
+                errorPlacement : function(error, element) {
+                    error.insertAfter(element.parent());
+                }
+            });
+        });       
 
     });
 </script>
