@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-info"></i> Processos <span>> Relatório </span> <span>> {{ $processo->nu_processo_pro }}</span>
+                <i class="fa-fw fa fa-usd"></i> Processos <span>> Relatório </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
@@ -40,7 +40,7 @@
                         <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-info"></i> <strong>Relatório</strong></legend>
+                                    <legend><i class="fa fa-usd"></i> <strong>Relatório</strong></legend>
                                     <div class="row" style="margin-left: 5px;" style=" line-height: 1.5;">
                                         <p>
                                             <ul class="list-unstyled">
