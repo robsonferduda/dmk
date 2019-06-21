@@ -48,6 +48,14 @@
                     </div>                
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                     <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                    <div style="display: block;margin-top: 10px">
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Finalizado
+                       </span>
+                       <span style="display: inline-block;">
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Cancelado
+                       </span>
+                    </div>  
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -61,38 +69,33 @@
                             <thead>                         
                                 <tr style="font-size: 12px">                   
                                     <th style="width:11%">Prazo Fatal</th>                    
-                                    <th style="width: 13%;">Nº Processo</th>
-                                    <th style="width: 12%;">Cidade</th>                                                  
-                                    <th style="width: 11%;">Tipo de Serviço</th>
-                                    <th style="width: 15%;">Cliente</th>
-                                    <th style="width: 15%;">Correspondente</th>
-                                    <th style="width: 11%;">Parte Adversa</th>
+                                    <th>Nº Processo</th>
+                                    <th>Cidade</th>                                                  
+                                    <th>Tipo de Serviço</th>
+                                    <th>Cliente</th>
+                                    <th>Correspondente</th>
+                                    <th>Parte Adversa</th>
                                     <th>Status</th>
-                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="min-width: 85px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
                                 @foreach($processos as $processo)
                                     @php $cor = ''; 
 
-                                        if(!empty($processo->dt_prazo_fatal_pro)){
+                                        $cor = "#ffffff"; 
 
-                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#f2cf59";   
-
-                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#8ec9bb";
-
-                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
-                                                $cor = "#fb8e7e";                                         
+                                        if($processo->status->cd_status_processo_stp == StatusProcesso::FINALIZADO){
+                                            $cor = "#8ec9bb";
+                                        }
                                             
-                                        }else{
-                                            $cor = "#ffffff"; 
+                                        if($processo->status->cd_status_processo_stp == StatusProcesso::CANCELADO){
+                                            $cor = "#fb8e7e";
                                         }
                                         
                                     @endphp
 
-                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">        
+                                    <tr style="background-color: {{ $cor }};">        
                                         <td>
                                             @if(!empty($processo->dt_prazo_fatal_pro))
                                                 {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}

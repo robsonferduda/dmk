@@ -169,15 +169,15 @@
                                         </label>
                                     </section> 
                                     <section class="col col-4">
-                                        <label class="label">Hora da Audiência</label>
-                                        <label class="input">
-                                           <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{old('hr_audiencia_pro')}}" >
-                                        </label>
-                                    </section> 
-                                     <section class="col col-4">
                                         <label class="label">Data Prazo Fatal</label>
                                         <label class="input">
                                            <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}">
+                                        </label>
+                                    </section> 
+                                    <section class="col col-4">
+                                        <label class="label">Hora da Audiência</label>
+                                        <label class="input">
+                                           <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{old('hr_audiencia_pro')}}" >
                                         </label>
                                     </section> 
                                 </div>    
