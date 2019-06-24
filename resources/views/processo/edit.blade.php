@@ -172,17 +172,17 @@
                                         <label class="input">
                                            <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : $processo->dt_solicitacao_pro }}">
                                         </label>
+                                    </section>                                     
+                                    <section class="col col-4">
+                                        <label class="label">Data Prazo Fatal</label>
+                                        <label class="input">
+                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{ old('dt_prazo_fatal_pro') ? old('dt_prazo_fatal_pro') : $processo->dt_prazo_fatal_pro }}">
+                                        </label>
                                     </section> 
                                     <section class="col col-4">
                                         <label class="label">Hora da Audiência</label>
                                         <label class="input">
                                            <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : $processo->hr_audiencia_pro}}" >
-                                        </label>
-                                    </section> 
-                                     <section class="col col-4">
-                                        <label class="label">Data Prazo Fatal</label>
-                                        <label class="input">
-                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{ old('dt_prazo_fatal_pro') ? old('dt_prazo_fatal_pro') : $processo->dt_prazo_fatal_pro }}">
                                         </label>
                                     </section> 
                                 </div>    

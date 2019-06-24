@@ -45,9 +45,20 @@
                                 <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
                             @endforeach
                         </select>
-                    </div>                
+                    </div>    
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                     <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                    <div style="display: block;margin-top: 10px">
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Dentro do Prazo
+                       </span>
+                       <span style="display: inline-block;">
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
+                       </span>
+                       <span style="display: inline-block;">
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
+                       </span>
+                    </div>  
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -92,7 +103,7 @@
                                         
                                     @endphp
 
-                                    <tr style="background-color: {{ $cor }}; font-weight: bold;">        
+                                    <tr style="background-color: {{ $cor }};">        
                                         <td>
                                             @if(!empty($processo->dt_prazo_fatal_pro))
                                                 {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}

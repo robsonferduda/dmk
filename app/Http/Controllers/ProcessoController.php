@@ -68,7 +68,7 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
 
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
@@ -704,8 +704,7 @@ class ProcessoController extends Controller
 
         DB::commit();
         Flash::success('Dados inseridos com sucesso');
-        return redirect('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro));
-
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
     }
 
     public function update(ProcessoRequest $request,$id)
@@ -737,13 +736,10 @@ class ProcessoController extends Controller
     
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
-
-        
         DB::commit();
         Flash::success('Dados atualizados com sucesso');
-        return redirect('processos/detalhes/'.\Crypt::encrypt($id));
-
-
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
+        
     }
 
     public function destroy($id)
