@@ -21,7 +21,7 @@
                 @elseif(Session::get('retorno')['tipo'] == 'sucesso')
 
                     <h1>
-                        <small class="text-success slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Ocorreu um erro ao processar sua requisição</strong></small>
+                        <small class="text-success slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Sua requisição foi realizada com sucesso</strong></small>
                     </h1>
                     <h4>{{ Session::get('retorno')['msg'] }}</h4> 
 

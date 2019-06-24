@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CadastroCorrespondenteNotification extends Notification
+class VinculoCorrespondenteNotification extends Notification
 {
     use Queueable;
 
@@ -44,12 +44,12 @@ class CadastroCorrespondenteNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Cadastro Correspondente'))
+            ->subject(Lang::getFromJson('Novo Correspondente'))
             ->markdown('email.convite')
-            ->line(Lang::getFromJson($this->conta->nm_razao_social_con.' adicionou você como correspondente no Sistema DMK. Utilize o endereço abaixo para acessar o sistema:'))
+            ->line(Lang::getFromJson('Você foi adicionado como corresponde por '.$this->conta->nm_razao_social_con.'. Clique no botão abaixo para acessar:'))
             ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao')))
-            ->line(Lang::getFromJson('Após acessar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
-            ->line(Lang::getFromJson('Aguardamos você para darmos início a parceria.'));
+            ->line(Lang::getFromJson('Após acessar, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
+            ->line(Lang::getFromJson('Aguardamos seu cadastro para darmos início a parceria.'));
     }
 
     /**

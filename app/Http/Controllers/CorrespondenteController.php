@@ -177,6 +177,98 @@ class CorrespondenteController extends Controller
 
     }
 
+    //Cadastro de correspondentes pela interface do sistema, aberto, sem receber convite
+    public function cadastro(CorrespondenteRequest $request){
+
+        DB::transaction(function() use ($request){
+
+            $input = $request->all();
+            $email = $input['email']; 
+            $nome  = $input['nm_razao_social_con'];
+            $senha = $input['password'];
+            $flag_convite = false;
+
+            //Se existe o token, indica que o cadastro é via convite
+            if($request->token and $request->conta){
+
+                $token = $request->token;
+                $conta_convite = $request->conta;
+                $flag_convite = true;
+            }
+
+            $conta = new Correspondente();        
+            $conta->fill($request->all());
+            $conta->fl_correspondente_con = "S";
+            $conta->saveOrFail();
+
+            if($conta->cd_conta_con){
+
+                $entidade = new Entidade;
+                $entidade->cd_conta_con = $conta->cd_conta_con;
+                $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CORRESPONDENTE;
+                $entidade->saveOrFail();
+
+                if($entidade->cd_entidade_ete){
+
+                    $user = new User();
+                    $user->cd_conta_con = $conta->cd_conta_con;
+                    $user->cd_entidade_ete = $entidade->cd_entidade_ete;
+                    $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
+                    $user->name = $nome;
+                    $user->email = $email;
+                    $user->password = Hash::make($senha);
+                    $user->save();
+
+                    if($user->id){
+
+                        $role = Role::find(Roles::CORRESPONDENTE);
+                        $user->assignRole($role);
+
+                        $enderecoEletronico = new EnderecoEletronico();
+                        $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
+                        $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
+                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                        $enderecoEletronico->save();
+                    }
+
+                    //Se o login se originou de um convite, registra o correpondente
+                    if($flag_convite){
+
+                        //Entidade usada para criar identificador único para cada conta alterar seus dados de correspondente
+                        $entidade_correspondente = new Entidade;
+                        $entidade_correspondente->cd_conta_con = $conta_convite;
+                        $entidade_correspondente->cd_tipo_entidade_tpe = \TipoEntidade::CONTA_CORRESPONDENTE;
+                        $entidade_correspondente->saveOrFail();
+
+                        $vinculo = ContaCorrespondente::create(['cd_conta_con' => $conta_convite,
+                                                                'cd_correspondente_cor' => $conta->cd_conta_con,
+                                                                'cd_entidade_ete' => $entidade_correspondente->cd_entidade_ete,
+                                                                'nm_conta_correspondente_ccr' => $nome
+                        ]);
+
+                        //Se inseriu a conta correspondente, atualiza o convite
+                        if($vinculo){
+
+                            $convite = ConviteCorrespondente::where('token_coc',$token)->first();
+                            $convite->fl_aceite_coc = 'S';
+                            $convite->dt_aceite_coc = date("Y-m-d H:i:s");
+                        
+                            $convite->save();
+                        }
+                        
+                    }   
+                    $conta->email = $email;
+                    $conta->notificacaoConfirmacao($conta);                 
+
+                    Session::put('SESSION_CD_CONTA', $conta->cd_conta_con);
+                    Auth::login($user);
+                }
+            }
+        });
+        return redirect('home');
+    }
+
     public function despesas($id)
     {
         $selecionadas = array();
@@ -571,7 +663,7 @@ class CorrespondenteController extends Controller
     //Cadastro de correspondente realizado pela conta
     public function novoCorrespondenteConta(CadastroCorrespondenteRequest $request)
     {
-        DB::transaction(function() use ($request){
+        $id = DB::transaction(function() use ($request){
 
             $input = $request->all();
             $email = $input['email']; 
@@ -579,6 +671,9 @@ class CorrespondenteController extends Controller
 
             //Primeiro passo é verificar se existe um usuário do tipo correspondente com o email informado
             $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
+            $conta_logada = Conta::where('cd_conta_con',$this->conta)->first();
+            $correspondente_cadastro = new Correspondente();
+            $correspondente_cadastro->email = $email;
 
             if(empty($unique)){
 
@@ -632,9 +727,11 @@ class CorrespondenteController extends Controller
                         $correspondente->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;      
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
-                        if($correspondente->save())
+                        if($correspondente->save()){
+                            $conta->notificacaoCadastro($conta_logada);
                             Flash::success('Correspondente adicionado com sucesso');
-                        else{
+                            return $conta->cd_conta_con;
+                        }else{
                             Flash::error('Erro ao adicionar correspondente');
                             return redirect()->back();
                         }
@@ -662,9 +759,12 @@ class CorrespondenteController extends Controller
                         $correspondente->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;      
                         $correspondente->nm_conta_correspondente_ccr = $nome; //Insere mesmo nome do usuário já utilizado
                             
-                        if($correspondente->save())
+                        if($correspondente->save()){
+                            $correspondente_cadastro->notificacaoFiliacao($conta_logada);
                             Flash::success('Correspondente adicionado com sucesso');
-                        else{
+                            return $unique->cd_conta_con;
+
+                        }else{
                             Flash::error('Erro ao adicionar correspondente');
                             return redirect()->back();
                         }
@@ -684,87 +784,10 @@ class CorrespondenteController extends Controller
 
         });
 
-        return redirect('correspondentes');
-    }
-
-    public function cadastro(CorrespondenteRequest $request){
-
-        DB::transaction(function() use ($request){
-
-            $input = $request->all();
-            $email = $input['email']; 
-            $nome  = $input['nm_razao_social_con'];
-            $senha = $input['password'];
-            $flag_convite = false;
-
-            if($request->token and $request->conta){
-
-                $token = $request->token;
-                $conta_convite = $request->conta;
-                $flag_convite = true;
-            }
-
-            $conta = new Correspondente();        
-            $conta->fill($request->all());
-            $conta->fl_correspondente_con = "S";
-            $conta->saveOrFail();
-
-            if($conta->cd_conta_con){
-
-                $entidade = new Entidade;
-                $entidade->cd_conta_con = $conta->cd_conta_con;
-                $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CORRESPONDENTE;
-                $entidade->saveOrFail();
-
-                if($entidade->cd_entidade_ete){
-
-                    $user = new User();
-                    $user->cd_conta_con = $conta->cd_conta_con;
-                    $user->cd_entidade_ete = $entidade->cd_entidade_ete;
-                    $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
-                    $user->name = $nome;
-                    $user->email = $email;
-                    $user->password = Hash::make($senha);
-                    $user->save();
-
-                    if($user->id){
-
-                        $role = Role::find(Roles::CORRESPONDENTE);
-                        $user->assignRole($role);
-
-                        $enderecoEletronico = new EnderecoEletronico();
-                        $enderecoEletronico->cd_conta_con = $conta->cd_conta_con;
-                        $enderecoEletronico->cd_entidade_ete = $entidade->cd_entidade_ete;
-                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
-                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
-                        $enderecoEletronico->save();
-                    }
-
-                    //Se o login se originou de um convite, registra o correpondente
-                    if($flag_convite){
-
-                        $vinculo = ContaCorrespondente::create(['cd_conta_con' => $conta_convite,
-                                                                'cd_correspondente_cor' => $conta->cd_conta_con
-                        ]);
-
-                        if($vinculo){
-
-                            $convite = ConviteCorrespondente::where('token_coc',$token)->first();
-                            $convite->fl_aceite_coc = 'S';
-                            $convite->dt_aceite_coc = date("Y-m-d H:i:s");
-                        
-                            $convite->save();
-                        }
-                        
-                    }
-                    
-
-                    Session::put('SESSION_CD_CONTA', $conta->cd_conta_con);
-                    Auth::login($user);
-                }
-            }
-        });
-        return redirect('home');
+        if($id)
+            return redirect('correspondente/detalhes/'.$id);
+        else
+            return redirect('correspondente/novo');
     }
 
     public function adicionar(Request $request){

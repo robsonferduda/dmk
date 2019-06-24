@@ -2,15 +2,20 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use App\Notifications\CadastroCorrespondenteNotification;
+use App\Notifications\VinculoCorrespondenteNotification;
+use App\Notifications\CorrespondenteNotification;
 
 class Correspondente extends Model implements AuditableContract
 {
 	use SoftDeletes;
     use Auditable;
+    use Notifiable;
 
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
@@ -43,5 +48,20 @@ class Correspondente extends Model implements AuditableContract
     public function contaCorrespondente()
     {
         return $this->hasOne('App\ContaCorrespondente','cd_correspondente_cor', 'cd_conta_con');
+    }
+
+    public function notificacaoConfirmacao($correspondente)
+    {
+        $this->notify(new CorrespondenteNotification($correspondente));
+    }
+
+    public function notificacaoCadastro($conta)
+    {
+        $this->notify(new CadastroCorrespondenteNotification($conta));
+    }
+
+    public function notificacaoFiliacao($conta)
+    {
+        $this->notify(new VinculoCorrespondenteNotification($conta));
     }
 }
