@@ -18,10 +18,16 @@ class ContaCorrespondente extends Model implements AuditableContract
                             'cd_conta_con',
                             'cd_correspondente_cor',
                             'cd_entidade_ete',
-                            'nm_conta_correspondente_ccr'
+                            'nm_conta_correspondente_ccr',
+                            'cd_tipo_pessoa_tpp'
                           ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
+
+    public function tipoPessoa()
+    {
+        return $this->hasOne('App\TipoPessoa','cd_tipo_pessoa_tpp', 'cd_tipo_pessoa_tpp');
+    }
 
     public function correspondente()
     {
@@ -31,6 +37,11 @@ class ContaCorrespondente extends Model implements AuditableContract
     public function conta()
     {
         return $this->hasOne('App\Conta','cd_conta_con', 'cd_conta_con');
+    }
+
+    public function entidade()
+    {
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
     }
 
 }

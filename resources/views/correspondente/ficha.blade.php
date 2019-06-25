@@ -23,23 +23,18 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            @if($flag or Session::get('flag'))
-                <div class="alert alert-block alert-warning">
-                    <span class="alert-heading">Atenção!</span>
-                    Para utilizar todas as funcionalidades do sistema, você deve preencher os dados obrigatórios do seu perfil
-                </div>
-            @endif
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i></span><h2>Cadastro de Usuário </h2>             
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['correspondente/editar',$correspondente->cd_entidade_ete], 'class' => 'smart-form','method' => 'PUT']) !!}
-                            <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_conta_con }}">
+                        {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['correspondente/editar',$correspondente->correspondente->cd_entidade_ete], 'class' => 'smart-form','method' => 'PUT']) !!}
+                            <input type="hidden" name="conta" id="conta" value="{{ $correspondente->correspondente->cd_conta_con }}">
                             <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">
                             <input type="hidden" name="telefones" id="telefones">
                             <input type="hidden" name="emails" id="emails">
+                            <input type="hidden" name="registrosBancarios" id="registrosBancarios">
                                     <header>
                                         <i class="fa fa-user"></i> Dados Básicos
                                     </header>
@@ -73,7 +68,7 @@
                                            <section class="col col-6">
                                                 <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
                                                 <label class="input">
-                                                    <input required type="text" name="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') ? old('nm_razao_social_con') : $correspondente->nm_razao_social_con }}">
+                                                    <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_conta_correspondente_ccr }}">
                                                 </label>
                                             </section>
 
@@ -157,116 +152,8 @@
                                 </div>
                             </div>
 
-                            <hr style="margin-top: 20px;" />
-                            <div class="row">
-                                <div class="col col-6">
-                                    <header>
-                                        <i class="fa fa-phone"></i> Telefones
-                                    </header>
-                                    <fieldset>
-                                        <div class="row">    
-                                            <section class="col col-5">
-                                                <label class="input">
-                                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
-                                                </label>
-                                            </section>                     
-                                            <section class="col col-4">    
-                                                <select class="select2" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
-                                                    <option value="0">Tipo</option>
-                                                    @foreach(\App\TipoFone::all() as $tipoFone)
-                                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                                    @endforeach   
-                                                </select>
-                                            </section> 
-                                            <section class="col col-1">
-                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
-                                            </section>
-                                        </div> 
-                                        <div class="row center" id="erroFone"></div>
-                                    </fieldset>
-
-                                    <div class="row" style="margin: 0; padding: 5px 13px;">
-                                            @if(count($correspondente->entidade->fone()->get()) == 0)
-                                                <div style="margin-bottom: 5px;"><span class="text-danger"> Informe pelo menos um telefone para contato</span></div>
-                                            @endif
-                                            <table id="tabelaFone" class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="center">Tipo</th>
-                                                        <th>Telefone</th>
-                                                        <th class="center">Opções</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($correspondente->entidade->fone()->get() as $fone)
-                                                        <tr>
-                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
-                                                            <td>{{ $fone->nu_fone_fon }}</td>
-                                                            <td class="center">
-                                                                <a class="excluirFoneBase" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>                                       
-                                            
-                                    </div>
-                                </div>
-                                <div class="col col-6">
-                                    <header>
-                                        <i class="fa fa-envelope"></i> Emails
-                                    </header>
-
-                                    <fieldset>
-                                        <div class="row">    
-                                            <section class="col col-5">
-                                                <label class="input">
-                                                    <input type="text" name="dc_endereco_eletronico_ede" id="dc_endereco_eletronico_ede" placeholder="Email" value="{{ old('dc_endereco_eletronico_ede') }}">
-                                                </label>
-                                            </section>                     
-                                            <section class="col col-4">    
-                                                <select  id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" class="select2" style="float: left;">
-                                                    <option selected value="">Selecione</option>
-                                                        @foreach(\App\TipoEnderecoEletronico::all() as $tipo) 
-                                                            <option value="{{$tipo->cd_tipo_endereco_eletronico_tee}}">{{ $tipo->dc_tipo_endereco_eletronico_tee}}</option>
-                                                        @endforeach
-                                                </select> 
-                                            </section> 
-                                            <section class="col col-1">
-                                                <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
-                                            </section>
-                                        </div> 
-                                        <div class="row center" id="erroEmail"></div>
-                                    </fieldset>
-
-                                    <div class="row" style="margin: 0; padding: 5px 13px;">
-                                        <table id="tabelaEmail" class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th class="center">Tipo</th>
-                                                    <th>Email</th>
-                                                    <th class="center">Opções</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($correspondente->entidade->enderecoEletronico()->get() as $email)
-                                                    <tr>
-                                                        <td class="center">{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</td>
-                                                        <td>{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
-                                                        <td class="center">
-                                                            <a class="excluirEmailBase" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> Excluir</a>
-                                                        </td>
-                                                    </tr>                                                  
-                                                @endforeach  
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr style="margin-top: 20px;" />
-                            <div class="row">
-                                <div class="col col-6">
-                                    <header>
+                                                  <div class="row" style="padding: 5px 20px;">
+                                                                    <header>
                                         <i class="fa fa-building"></i> Endereço 
                                     </header>
 
@@ -327,55 +214,219 @@
                                             </section>                               
                                         </div> 
                                     </fieldset>  
+
+                                </div>
+
+                            <hr style="margin-top: 20px;" />
+                            <div class="row">
+                                <div class="col col-6">
+                                    <header>
+                                        <i class="fa fa-phone"></i> Telefones
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">    
+                                            <section class="col col-5">
+                                                <label class="input">
+                                                    <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
+                                                </label>
+                                            </section>                     
+                                            <section class="col col-4">
+                                                <label class="select">     
+                                                    <select name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                        <option value="0">Tipo</option>
+                                                        @foreach(\App\TipoFone::all() as $tipoFone)
+                                                            <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                        @endforeach   
+                                                    </select>
+                                                <i></i> </label>
+                                            </section> 
+                                            <section class="col col-1">
+                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                            </section>
+                                        </div> 
+                                        <div class="row center" id="erroFone"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            @if(count($correspondente->entidade->fone()->get()) == 0)
+                                                <div style="margin-bottom: 5px;"><span class="text-danger"> Informe pelo menos um telefone para contato</span></div>
+                                            @endif
+                                            <table id="tabelaFone" class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Tipo</th>
+                                                        <th>Telefone</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($correspondente->entidade->fone()->get() as $fone)
+                                                        <tr>
+                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                            <td>{{ $fone->nu_fone_fon }}</td>
+                                                            <td class="center">
+                                                                <a class="excluirFoneBase" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>                                       
+                                            
+                                    </div>
                                 </div>
                                 <div class="col col-6">
+                                    <header>
+                                        <i class="fa fa-envelope"></i> Emails
+                                    </header>
+
+                                    <fieldset>
+                                        <div class="row">    
+                                            <section class="col col-5">
+                                                <label class="input">
+                                                    <input type="text" name="dc_endereco_eletronico_ede" id="dc_endereco_eletronico_ede" placeholder="Email" value="{{ old('dc_endereco_eletronico_ede') }}">
+                                                </label>
+                                            </section>                     
+                                            <section class="col col-4">  
+                                                <label class="select">  
+                                                    <select  id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" style="float: left;">
+                                                        <option selected value="">Selecione</option>
+                                                            @foreach(\App\TipoEnderecoEletronico::all() as $tipo) 
+                                                                <option value="{{$tipo->cd_tipo_endereco_eletronico_tee}}">{{ $tipo->dc_tipo_endereco_eletronico_tee}}</option>
+                                                            @endforeach
+                                                    </select> 
+                                                <i></i> </label>
+                                            </section> 
+                                            <section class="col col-1">
+                                                <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                            </section>
+                                        </div> 
+                                        <div class="row center" id="erroEmail"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
+                                        <table id="tabelaEmail" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="center">Tipo</th>
+                                                    <th>Email</th>
+                                                    <th class="center">Opções</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($correspondente->entidade->enderecoEletronico()->get() as $email)
+                                                    <tr>
+                                                        <td class="center">{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</td>
+                                                        <td>{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
+                                                        <td class="center">
+                                                            <a class="excluirEmailBase" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                        </td>
+                                                    </tr>                                                  
+                                                @endforeach  
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                                
+                             <div class="row" style="padding: 5px 20px;">
                                     <header>
                                         <i class="fa fa-bank"></i> Dados Bancários 
                                     </header>
                                            
                                             <fieldset>
 
-                                                <div class="row">
-                                                    
-                                                    <section class="col col-8">
-                                                       
+                                                 <div class="row">
+                                                    <section class="col col-4">
+                                                        <label class="label">Titular</label>
+                                                        <label class="input">
+                                                            <input type="text" name="nm_titular_dba" id="nm_titular_dba" placeholder="TItular" value="{{old('nm_titular_dba')}}">
+                                                        </label>
+                                                    </section> 
+                                                    <section class="col col-4">  
+                                                        <label class="label">CPF/CNPJ <span class="text-primary" style="margin-bottom: 5px;"> (Digite somente números)</span></label>
+                                                        <label class="input">
+                                                            <input type="text" name="nu_cpf_cnpj_dba" id="nu_cpf_cnpj_dba" placeholder="CPF" value="{{old('nu_cpf_cnpj_dba')}}">
+                                                        </label>
+                                                    </section>   
+                                                    <section class="col col-4">
                                                         <label class="label" >Banco</label>          
-                                                        <select  name="cd_banco_ban" class="select2">
+                                                        <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
                                                             <option selected value="">Selecione</option>
                                                             @foreach(\App\Banco::all() as $banco)
-                                                                <option {{ ($correspondente->entidade->banco) ? (old('cd_banco_ban',$correspondente->entidade->banco->cd_banco_ban) == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' ) : '' }}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
+                                                                <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
                                                             @endforeach
 
                                                         </select> 
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Agência</label>
-                                                        <label class="input">
-                                                            <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba') ? old('nu_agencia_dba') : ($correspondente->entidade->banco) ? $correspondente->entidade->banco->nu_agencia_dba : '' }}">
-                                                        </label>
-                                                    </section>
+                                                    </section>                        
                                                 </div>
                                                 <div class="row">
-                                                    <section class="col col-8">
+                                                    <section class="col col-4">
                                                         <label class="label">Tipo de Conta</label>
                                                         <label class="select"> 
-                                                            <select name="cd_tipo_conta_tcb">
+                                                            <select name="cd_tipo_conta_tcb" id="cd_tipo_conta_tcb">
                                                                 <option value="" >Selecione</option>
                                                                 @foreach(\App\TipoConta::all() as $tipoConta)
-                                                                    <option {!! ($correspondente->entidade->banco) ? (old('cd_tipo_conta_tcb', $correspondente->entidade->banco->cd_tipo_conta_tcb) == $tipoConta->cd_tipo_conta_tcb ? 'selected' : '' ) : '' !!}  value="{{ $tipoConta->cd_tipo_conta_tcb }}" >{{ $tipoConta->nm_tipo_conta_tcb }}</option>
+                                                                    <option {!! (old('cd_tipo_conta_tcb') == $tipoConta->cd_tipo_conta_tcb ? 'selected' : '' ) !!}  value="{{ $tipoConta->cd_tipo_conta_tcb }}" >{{ $tipoConta->nm_tipo_conta_tcb }}</option>
                                                                 @endforeach
                                                               
                                                             </select> <i></i> </label>
                                                     </section>
                                                     <section class="col col-4">
-                                                        <label class="label">Conta</label>
+                                                        <label class="label">Agência</label>
                                                         <label class="input">
-                                                            <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba') ? old('nu_conta_dba') : ($correspondente->entidade->banco) ? $correspondente->entidade->banco->nu_conta_dba : '' }}">
+                                                            <input type="text" name="nu_agencia_dba" placeholder="Agência" value="{{old('nu_agencia_dba')}}" id="nu_agencia_dba">
                                                         </label>
                                                     </section>
-                                                </div>                                  
+                                                    <section class="col col-4">
+                                                        <label class="label">Conta</label>
+                                                        <label class="input">
+                                                            <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}" id="nu_conta_dba">
+                                                        </label>
+                                                    </section>
+                                                </div>
+
+                                                <div class="row">
+                                                    <section class="col col-sm-12">
+                                                        <button type="button" id="btnSalvarContaBancaria" class="btn btn-success" style="padding: 6px 15px;float: right;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                    </section>
+                                                </div>
+                                                <div class="row center" id="erroContaBancaria"></div>
+                                                </fieldset>
+                                                <div class="row" style="margin: 0; padding: 5px 13px;">            
+                                                    <table id="tabelaRegistroBancario" class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Titular</th>
+                                                                <th>CPF</th>
+                                                                <th>Banco</th>
+                                                                <th>Tipo de Conta</th>
+                                                                <th>Agência</th>
+                                                                <th>Conta</th>
+                                                                <th class="center">Opções</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($correspondente->entidade->banco()->get() as $banco)
+                                                               <tr>
+                                                                    <td>{{ $banco->nm_titular_dba }}</td>
+                                                                    <td>{{ $banco->nu_cpf_cnpj_dba }}</td>
+                                                                    <td>{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT).' - '.$banco->banco->nm_banco_ban }}</td>
+                                                                    <td>{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
+                                                                    <td>{{ $banco->nu_agencia_dba }}</td>
+                                                                    <td>{{ $banco->nu_conta_dba }}</td>
+                                                                    <td class="center">
+                                                                        <a class="excluirDadosBancariosBase" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach     
+                                                        </tbody>
+                                                    </table>                                               
+                                                </div>
+
                                 </div>
-                            </div>
+                            
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>
                                 <a href="{{ url('correspondente/dashboard/'.$correspondente->entidade->cd_entidade_ete) }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>

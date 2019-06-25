@@ -260,7 +260,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col col-sm-12">
+                                <div class="row" style="padding: 5px 20px;">
                                     <header>
                                         <i class="fa fa-bank"></i> Dados Bancários 
                                     </header>

@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Detalhes </span> <span>> {{ $correspondente->nm_razao_social_con }}</span>
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Detalhes </span> <span>> {{ $correspondente->nm_conta_correspondente_ccr }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -19,7 +19,7 @@
             <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>   
             <a data-toggle="modal" href="{{ url('correspondente/despesas/'.$correspondente->cd_conta_con) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-dollar fa-lg"></i> Despesas</a>   
             <a data-toggle="modal" href="{{ url('correspondente/honorarios/'.$correspondente->cd_conta_con) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
-            <a data-toggle="modal" href="{{ url('correspondente/dados/'.$correspondente->cd_conta_con) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar Dados</a> 
+            <a data-toggle="modal" href="{{ url('correspondente/ficha/'.$correspondente->correspondente->cd_conta_con) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar Dados</a> 
         </div>
     </div>
     <div class="row">
@@ -36,7 +36,7 @@
                 
                     <div class="col-sm-12">
 
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-group fa-fw"></i> <strong>Dados Básicos</strong></legend>
@@ -44,10 +44,7 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Razão Social: </strong> {{ $correspondente->nm_razao_social_con }}
-                                                </li>
-                                                <li>
-                                                    <strong>Nome Fantasia: </strong> {{ $correspondente->nm_fantasia_con }}
+                                                    <strong>Razão Social: </strong> {{ $correspondente->nm_conta_correspondente_ccr }}
                                                 </li>
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}
@@ -60,13 +57,24 @@
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ ($correspondente->entidade->cnpj()->first()) ? $correspondente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
-                                                @endif                                            
+                                                @endif  
+                                                @if($correspondente->entidade->oab()->first())
+                                                     <li>
+                                                        <strong>OAB: </strong> {{ ($correspondente->entidade->oab()->first()) ? $correspondente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                    </li>
+                                                @endif 
+                                                <li>
+                                                    <p class="text-muted">
+                                                        <span class="txt-color-darken"><strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}</span>
+                                                    </p>
+                                                </li>                                         
                                             </ul>
                                         </p> 
                                     </div>
                                 </fieldset>
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
@@ -83,6 +91,46 @@
                                 </fieldset>
                             </div>
                         </div>
+
+                        <div class="col-md-4">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-bank"></i> <strong>Dados Bancários</strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        <p>    
+                                            @if(count($correspondente->entidade->banco()->get()) > 0)
+                                                @foreach($correspondente->entidade->banco()->get() as $banco)
+                                                <ul class="list-unstyled">
+                                                    <li>
+                                                        <strong>Titular: </strong> {{ !empty($banco->nm_titular_dba) ? $banco->nm_titular_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>CPF: </strong> {{ !empty($banco->nu_cpf_cnpj_dba) ? $banco->nu_cpf_cnpj_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Tipo de Conta </strong> {{ !empty($banco->tipoConta->nm_tipo_conta_tcb) ? $banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
+                                                    </li>
+                                                </ul>
+                                                @endforeach   
+                                            @else
+                                                <span>Nenhuma conta infomada</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+
                         <div class="col-md-12">
                         </div>
                         <div class="col-md-4">
