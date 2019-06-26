@@ -51,21 +51,21 @@ class CorrespondenteController extends Controller
 
     public function index()
     {
-        $correspondentes = Correspondente::whereHas('contaCorrespondente', function($sql){
+        $correspondentes = ContaCorrespondente::with('entidade')
+                                              ->with('correspondente')
+                                              ->with(['entidade.identificacao' => function($query){
+                                                    $query->where('cd_tipo_identificacao_tpi',1);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
 
-                                $sql->where('cd_conta_con',$this->conta);
-
-                            })
-                            ->with(['entidade.atuacao' => function($query){
-                                $query->where('fl_origem_cat','S');
-                                $query->with('cidade');
-                            }])
-                            ->with('contaCorrespondente')
-                            ->with('entidade.identificacao')
-                            ->with('entidade.usuario')
-                            ->where('fl_correspondente_con','S')
-                            ->orderBy('conta_con.nm_razao_social_con','DESC')
-                            ->get();
+                                              }])
+                                              ->with('correspondente.entidade.usuario')
+                                              ->with(['entidade.atuacao' => function($query){
+                                                    $query->where('fl_origem_cat','S');
+                                                    $query->with('cidade');
+                                                }])
+                                              ->where('cd_conta_con', $this->conta)
+                                              ->orderBy('nm_conta_correspondente_ccr','DESC')
+                                              ->get(); 
 
         return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
     }
@@ -857,6 +857,12 @@ class CorrespondenteController extends Controller
     public function listarAtuacao($entidade){
 
         return response()->json(CidadeAtuacao::with('cidade')->where('cd_entidade_ete',$entidade)->get()); 
+
+    }
+
+    public function listarOrigem($entidade){
+
+        return response()->json(CidadeAtuacao::with('cidade')->where('cd_entidade_ete',$entidade)->where('fl_origem_cat','S')->get()); 
 
     }
 
