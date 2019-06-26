@@ -560,7 +560,7 @@
                 success: function(response)
                 {                       
                     $.each(response, function(index, value){
-                        $('.box_btn_atuacao').append('<button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"><i class="fa fa-times"></i> '+value.cidade.nm_cidade_cde+'</button>');
+                        $('.box_btn_atuacao').append('<button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"> '+value.cidade.nm_cidade_cde+' <i class="fa fa-times"></i> </button>');
                     });
 
                     $('.btn-atuacao').on('click', function(){
@@ -607,7 +607,7 @@
                     $('.erro-origem-vazia').html("");
 
                     $.each(response, function(index, value){
-                        $('.box_btn_origem').append('<button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"><i class="fa fa-times"></i> '+value.cidade.nm_cidade_cde+'</button>');
+                        $('.box_btn_origem').append('<button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'">'+value.cidade.nm_cidade_cde+' <i class="fa fa-times"></i> </button>');
                     });
 
                     $('.btn-atuacao').on('click', function(){
