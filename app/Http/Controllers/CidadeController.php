@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use App\Cidade;
 use App\CidadeAtuacao;
+use App\ContaCorrespondente;
 use App\Http\Requests\CidadeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -18,6 +19,7 @@ class CidadeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->conta = \Session::get('SESSION_CD_CONTA');
         
     }
 
@@ -41,7 +43,14 @@ class CidadeController extends Controller
 
     public function buscaCidadePorEstadoCorrespondente($entidade,$estado)
     {
+        $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$entidade)->first();
+            $atuacao = $correspondente->entidade->atuacao()->get();
 
+            foreach ($atuacao as $a) {
+                $cidades[] = $a->cidade;
+            }
+
+            /*
         $cidades = DB::table('public.cidade_atuacao_cat')
                        ->select('public.cidade_cde.cd_cidade_cde','nm_cidade_cde','public.cidade_cde.cd_estado_est')
                        ->join('public.cidade_cde', function($join) use ($estado){
@@ -53,6 +62,7 @@ class CidadeController extends Controller
                        ->join('public.estado_est','public.cidade_cde.cd_estado_est','=','public.estado_est.cd_estado_est')
                        ->where('cd_entidade_ete',$entidade)
                        ->get();
+                       */
 
         echo json_encode($cidades);
     }

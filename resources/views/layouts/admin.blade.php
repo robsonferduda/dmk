@@ -296,6 +296,24 @@
             </div>
         </div>
 
+        <div class="modal fade modal_top_alto" id="modal_erro" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-times"></i> Erro de Processamento<strong></strong></h4>
+                    </div>
+                        <div class="modal-body" style="text-align: center;">
+                                <h4 class="text-danger"><i class="fa fa-times"></i> Ops...</h4>
+                                <h4>Ocorreu um erro ao processar sua operação. Tente novamente ou entre em contato com nosso suporte técnico.</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Fechar</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade in" id="upload-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width: 800px;">
                 <div class="modal-content">

@@ -1230,14 +1230,19 @@ $(document).ready(function() {
 		var entidade = $("#cd_entidade").val();
 		var correspondente = $("#cd_correspondente").val();
 		
-		$('.taxa-honorario').each(function(i, obj) {
+		$('.valor_honorario').each(function(i, obj) {
     		
-    		var valor = $(this).val();
+    		var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
     		var servico = $(this).data("servico");
-			var cidade = $(this).data("cidade");;
+			var cidade = $(this).data("cidade");
+			var flag = $(this).attr("data-edit");
     			
-			var dados = {servico: servico, cidade: cidade, valor: valor};
-			valores.push(dados);
+    		if(valor != 'Adicionar' && flag == 'S'){
+
+				var dados = {servico: servico, cidade: cidade, valor: valor};
+				valores.push(dados);
+
+			}
     		
 		});
 		
@@ -1256,13 +1261,13 @@ $(document).ready(function() {
             },
             success: function(response)
             {
-            	console.log("Sucesso");
-            	window.location.href = "../../correspondente/honorarios/"+correspondente;
+            	$("#processamento").modal('hide');
+            	//window.location.href = "../../correspondente/honorarios/"+correspondente;
             },
 		   	error: function(response)
 		   	{
-		   		console.log("Erro");
-		   		location.reload();
+		   		$("#modal_erro").modal('show');
+		   		//location.reload();
 		   	}
         });
         

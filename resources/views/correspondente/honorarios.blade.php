@@ -32,7 +32,7 @@
                     </header>
                     <div class="col-sm-12">
                         <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_con }}</h5>
-                        <span class="text-primary"><i class="fa fa-info-circle"></i> Selecione a cidade e os serviços para adicionar um valor dos honorários</span>
+                        <span class="text-primary"><i class="fa fa-info-circle"></i> Selecione cidades e os serviços para adicionar valores aos honorários</span>
                         <div class="well">
                             <div class="row">
 
@@ -42,7 +42,7 @@
                                         <div class="col-md-12">  
                                             <form action="{{ url('correspondente/buscar-honorarios/'.$cliente->cd_conta_con) }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
-                                                <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_conta_con }}">
+                                                <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_correspondente_cor }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
 
                                                 <fieldset>
@@ -60,14 +60,15 @@
                                                         </section>
 
                                                         <section class="col col-md-4">
-                                                           <label class="label label-black" >Cidades (informadas pelo correspondente)</label>          
+                                                           <label class="label label-black" >Cidades de Atuação</label>          
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
                                                                <option selected value="">Selecione uma cidade</option>
+                                                               <option value="0">Todas</option>
                                                             </select> 
                                                         </section> 
 
-                                                        <section class="col col-md-3">
-                                                           <label class="label label-black" >Tipos de Serviço</label>          
+                                                        <section class="col col-md-4">
+                                                           <label class="label label-black" >Serviços</label>          
                                                             <select name="servico" class="form-control">
                                                                 <option value="">Selecione um serviço</option>
                                                                 <option value="0">Todos</option>
@@ -75,20 +76,11 @@
                                                                     <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
                                                                 @endforeach
                                                             </select>
-                                                        </section> 
-
-                                                        <section class="col col-md-2">
-                                                            <label class="label label-black">Ordem</label>          
-                                                            <select  id="cidade" name="organizar" class="form-control">
-                                                               <option value="0">Selecione</option>
-                                                               <option value="1">Serviços</option>
-                                                               <option value="2">Cidades</option>
-                                                            </select> 
-                                                        </section> 
+                                                        </section>  
 
                                                         <section class="col col-md-1">
                                                             <label class="label">Adicionar</label>          
-                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> </button>
+                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> Adicionar</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                                           
@@ -110,43 +102,45 @@
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
                                             <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
 
-                                                <a href="{{ url('correspondente/limpar-selecao/'.$cliente->cd_conta_con) }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
+
+                                                <div class="btn-group pull-right header-btn">
+                                                    <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
+                                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="{{ url('correspondente/honorarios/organizar/2') }}">Cidades</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ url('correspondente/honorarios/organizar/1') }}">Serviços</a>
+                                                            </li>
+                                                        </ul>
+                                                </div>
+
                                             </div> 
                                             
-                                                @if($organizar == 1)
+                                                @if(Session::get('organizar') == 1)
                                                     <div class="tabelah">
-                                                        <table class="table table-bordered">
+                                                        <table class="table table-bordered" style="margin-bottom: 150px;">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th>{{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td>{{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    <div class="input-group">
-                                                                                        <span class="input-group-addon">$</span>
-                                                                                        <input type="text" class="form-control taxa-honorario" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" value="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">
-                                                                                        <div class="input-group-btn">
-                                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
-                                                                                                <span class="caret"></span>
-                                                                                            </button>
-                                                                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                 <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
-                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
-                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                        
+                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                        
+                                                                                        
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -157,36 +151,24 @@
                                                     </div>
                                                 @else
                                                     <div class="tabelah">
-                                                        <table class="table table-bordered">
+                                                        <table class="table table-bordered" style="margin-bottom: 150px;">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Cidade</th>
                                                                     @foreach($lista_servicos as $servico)
-                                                                        <th>{{ $servico->nm_tipo_servico_tse }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td>{{ $cidade->nm_cidade_cde  }}</td>
+                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div></td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
-                                                                                    <div class="input-group">
-                                                                                        <span class="input-group-addon">$</span>
-                                                                                        <input type="text" class="form-control taxa-honorario" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" value="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">
-                                                                                        <div class="input-group-btn">
-                                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false">
-                                                                                                <span class="caret"></span>
-                                                                                            </button>
-                                                                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                                                                <li><a class="toda-cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todas as cidades</a></li>
-                                                                                                <li><a class="todo-servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor para todos os serviços</a></li>
-                                                                                                <li><a class="toda-tabela" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}"  data-valor="{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '' }}">Repetir valor em toda tabela</a></li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                    </div>
+
+                                                                                    <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -215,6 +197,71 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        $('.valor_honorario').editable({
+            validate: function (value) {
+                if ($.trim(value) == '')
+                    return 'Valor obrigatório';
+            },
+            tpl: '<input type="text" style="width: 20px;" class="form-control taxa-honorario">',
+            success: function(){
+                $(this).attr("data-edit","S");
+            }
+        });
+
+        $('.valor_honorario').on('shown', function (e, editable) {
+
+            var cidade = $(this).data('cidade');
+            var servico = $(this).data('servico');
+            var tipo = $(this).data('tipo');
+
+            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
+
+        });
+
+        $(document).on("focus", ".taxa-honorario", function () {
+            $(this).mask('#####000,00', {reverse: true});
+        });
+
+        $(document).on("click", ".atualizaValores", function () {
+
+            var cidade = $(this).closest("ul").data("cidade");
+            var servico = $(this).closest("ul").data("servico");
+            var tipo = $(this).data("tipo");
+            var valor = $(".taxa-honorario").val().replace(".", ",");
+
+            
+            $(".valor_honorario").each(function(){
+
+
+                if(tipo === "servico"){
+
+                    var valor_cidade = $(this).data("cidade");
+
+                    if(valor_cidade === cidade){
+                        $(this).attr("data-edit","S");
+                        $(this).text(valor);
+                    }
+                }
+
+                if(tipo === "cidade"){
+
+                    var valor_servico = $(this).data("servico");
+
+                    if(valor_servico === servico){
+                        $(this).attr("data-edit","S");
+                        $(this).text(valor);
+                    }
+                }
+
+                if(tipo === "tabela"){
+                    $(this).attr("data-edit","S");
+                    $(this).text(valor);
+                }
+     
+            });
+
+        });
+
         var buscaCidade = function(){
 
             estado = $("#estado").val();
@@ -237,6 +284,7 @@
                         {                    
                             $('#cidade').empty();
                             $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
+                            $('#cidade').append('<option selected value="0">Todas</option>');
                             $.each(response,function(index,element){
 
                                 $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      

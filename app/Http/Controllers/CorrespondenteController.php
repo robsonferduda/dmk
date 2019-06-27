@@ -362,8 +362,11 @@ class CorrespondenteController extends Controller
         $lista_servicos = array();
         $cidades = array();
         $valores = array();
-        $organizar = 1;  
-        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
+        
+        $this->inicializaOrdem();
+
+        //$correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
+        $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();  
         
         //Dados utilizados pelo combo
         $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
@@ -407,18 +410,18 @@ class CorrespondenteController extends Controller
             }
         } 
 
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'organizar' => $organizar, 'lista_servicos' => $lista_servicos]);
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'lista_servicos' => $lista_servicos]);
 
     }
 
     public function buscarHonorarios(Request $request)
     {
         $cd_correspondente = $request->cd_correspondente;
-        $correspondente = Correspondente::with('entidade')->where('cd_conta_con',$cd_correspondente)->first();
+        
+        $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first(); 
         
         $cidade = $request->cd_cidade_cde;
         $servico = $request->servico;
-        $organizar = $request->organizar;
         $valores = null;
 
         $lista_cidades = array();
@@ -426,7 +429,9 @@ class CorrespondenteController extends Controller
         $lista_cidades_honorarios = array();
         $lista_merge = array();
 
-        $lista_servicos = array();        
+        $lista_servicos = array();     
+
+        $this->inicializaOrdem();   
 
         //Carrega dados do combo        
         $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
@@ -441,7 +446,7 @@ class CorrespondenteController extends Controller
 
         //Carrega serviços já cadastradas
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
+                                    ->where('cd_entidade_ete',$correspondente->correspondente->cd_entidade_ete)
                                     ->select('cd_tipo_servico_tse')
                                     ->groupBy('cd_tipo_servico_tse')
                                     ->get(); 
@@ -469,6 +474,15 @@ class CorrespondenteController extends Controller
         //Carrega cidade selecionada        
         if($cidade > 0){
             $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
+        }elseif($cidade == 0){
+
+            $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first();
+            $atuacao = $correspondente->entidade->atuacao()->get();
+
+            foreach ($atuacao as $a) {
+                $lista_cidades_honorarios[] = $a->cidade;
+            }
+
         }
 
         //Carrega cidades já cadastradas
@@ -523,12 +537,24 @@ class CorrespondenteController extends Controller
         }  
         
         //Envia dados e renderiza tela
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'organizar' => $organizar, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
     }
 
     public function limparSelecao($id){
         \Session::forget('lista_cidades');
         return redirect('correspondente/honorarios/'.$id);
+    }
+
+    public function inicializaOrdem()
+    {
+        if(empty(session('organizar')))
+            \Session::put('organizar',2); //Ordenação por cidades
+    }
+
+    public function ordenarHonorarios($ordem)
+    {
+        \Session::put('organizar',$ordem); 
+        return redirect()->back();
     }
 
     public function salvarHonorarios(Request $request){
