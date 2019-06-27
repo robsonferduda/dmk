@@ -1028,7 +1028,18 @@ class CorrespondenteController extends Controller
 
     }
 
-     public function dashboard($id){
+    public function dadosCliente($cliente)
+    {
+        $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $cliente)->where('cd_correspondente_cor',$this->conta)->first();
+        return view('correspondente/dados',['correspondente' => $correspondente]);
+    }
+
+    public function processosCliente($cliente)
+    {
+        return view('correspondente/processos');
+    }
+
+    public function dashboard($id){
 
         $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
 

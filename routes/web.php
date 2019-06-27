@@ -112,6 +112,8 @@ Route::group(['middleware' => ['web']], function () {
 
 	//Rotas para a ROLE correspondente
 	Route::get('correspondente/clientes','CorrespondenteController@clientes');
+	Route::get('correspondente/cliente/{cliente}/dados','CorrespondenteController@dadosCliente');
+	Route::get('correspondente/cliente/{cliente}/processos','CorrespondenteController@processosCliente');
 	Route::get('correspondente/dados','CorrespondenteController@dados');
 	Route::get('correspondente/processos','CorrespondenteController@processos');
 	Route::get('correspondente/dashboard/{id}','CorrespondenteController@dashboard');
