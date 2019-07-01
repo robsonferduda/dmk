@@ -15,7 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo</button>   
+            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite</button> 
         </div>
     </div>
     <div class="row">
@@ -30,7 +31,7 @@
                         <div class="row"> 
                             <section class="col col-md-3">                                       
                                 <label class="label label-black" >Estado</label>          
-                                <select  id="estado" name="cd_estado_est" class="select2">
+                                <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
                                     <option selected value="">Selecione um estado</option>
                                     @foreach(App\Estado::all() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
@@ -40,7 +41,7 @@
                             <section class="col col-md-3">
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                 <label class="label label-black" >Cidade</label>          
-                                <select id="cidade" name="cd_cidade_cde" class="select2">
+                                <select id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
                                     <option selected value="">Selecione uma cidade</option>
                                 </select> 
                             </section> 
@@ -109,49 +110,235 @@
         </article>
     </div>
 </div>
+<div class="modal fade modal_top_alto" id="modalNovoCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-plus"></i> Novo Correspondente</h4>
+            </div>            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        
+                        {!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro/conta', 'id' => 'frmAddCorrespondente', 'class' => 'smart-form client-form']) !!}
+                        <div class="well" style="margin: 0px 15px; padding: 5px;">
+                            <p>
+                                <strong class="text-danger">Atenção!</strong><br/>
+                                Ao realizar o cadastro, o correpondente é cadastrado e inserido automaticamente na sua lista de correspondentes.
+                                O email informado recebe uma mensagem com as informações de cadastro e o endereço para acessar o sistema atualizar seus dados pessoais.
+                            </p>
+                        </div>
+                            <fieldset>
+                                    <h5 style="margin-bottom: 10px;"><strong>Dados do Correspondente</strong></h5>
+                                    <section>
+                                        <label class="input"> <i class="icon-append fa fa-user"></i>
+                                        <input type="text" name="nm_razao_social_con" id="nm_razao_social_con" placeholder="Nome" value="{{ old('nm_razao_social_con') }}">
+                                        <b class="tooltip tooltip-bottom-right">Nome Completo</b> </label>
+                                    </section>
+                                    <section>
+                                        <label class="input"> <i class="icon-append fa fa-envelope"></i>
+                                        <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}">
+                                        <b class="tooltip tooltip-bottom-right">Email do Correspondente</b> </label>
+                                    </section>
+                                    <section class="center"> 
+                                        <p>O sistema gera a senha automaticamente e todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
+                                    </section>
+                                </fieldset>
+                                <footer>
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Cadastrar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>                                    
+                                </footer>
+                        {!! Form::close() !!} 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modal_top_alto" id="modalConviteCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-send"></i> Enviar Convite para Cadastro</h4>
+            </div>            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 center">
+                        {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/convidar', 'class' => 'form-inline']) !!}
+                            <p style="font-size: 14px;">
+                                Ao enviar o convite o correspondente receberá uma mensagem, no email informado abaixo, para acessar o sistema e realizar seu cadastro.
+                            </p>
+                            <span>Informe o email do correspondente para enviar o convite</span>
+                            <div style="margin-top: 8px;">
+                                <div class="form-group" style="width: 100%;">
+                                    <input type="text" class="form-control" style="width: 60%;" name="email" id="email" placeholder="Email" value="{{old('email')}}">
+                                </div>                        
+                            </div>
+                            <div class="center marginTop20">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>
+                                <button type="submit" id="btnSalvarTelefone" class="btn btn-success"><i class="fa-fw fa fa-send"></i> Enviar</button>
+                            </div>
+
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="modal_confirma_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> <strong> Adicionar Correspondente</strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 center">
+                        {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/adicionar', 'class' => 'form-inline']) !!}
+                            <p style="font-size: 14px;">
+                                Essa operação irá adicionar o correspondentes a sua lista de correspondentes.
+                                Após adicionar o correspondente você pode adicionar os valores referentes aos serviços prestados, por comarca.
+                            </p>
+                            <h6>Confirma a inclusão na sua lista de Correspondentes?</h6>
+                            <input type="hidden" name="id" id="id_correspondente">
+                            <input type="hidden" name="url" id="url">
+                            <div class="msg_retorno"></div>
+
+                            <div class="center marginTop20">
+                                <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</button>
+                            </div>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="modalDadosCorrespondente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa-fw fa fa-legal"></i> Dados do Correspondente</h4>
+            </div>            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 center data-modal-correspondente-loading">
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, buscando dados...</h2>
+                    </div>
+                    <div class="col-md-12 data-modal-correspondente" style="display: none">
+                        <label id="nm_correspondente"><strong>Nome: </strong><span></span></label><br/>
+                        <label id="tipo_correpondente"><strong>Tipo: </strong><span></span></label><br/>
+                        <label id="identificacao_correpondente"><strong>CPF/CNPJ: </strong><span></span></label><br/>
+                        <label id="email_correpondente"><strong>Email: </strong><span></span></label><br/>
+                        <label id="fone_correpondente"><strong>Telefone: </strong><span></span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var _location = document.location.toString();
-        var applicationNameIndex = _location.indexOf('/', _location.indexOf('://') + 3);
-        var applicationName = _location.substring(0, applicationNameIndex) + '/';
-        var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
-        var pathname = _location.substring(0, webFolderIndex);
+        $('.modal_dados_correspondente').click(function () {
+            
+            var id = $(this).data("id");
 
-        var buscaCidade = function(){
+            $.ajax({
+                
+                url: '../correspondente/dados/'+id,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $("#label > span").empty(); 
+                    $('#modalDadosCorrespondente').modal('show');                           
+                },
+                success: function(response){      
 
-            estado = $("#estado").val();
+                    $(".data-modal-correspondente-loading").css('display','none');
+                    $(".data-modal-correspondente").css('display','block');
+                    $("#nm_correspondente span").append(response.dados.nm_razao_social_con);
+                                                      
+                },
+                error: function(response)
+                {
+                    $(".data-modal-correspondente-loading").css('display','none');
+                    alert("Erro ao processar requisição");
+                }
+            });
+        }); 
+
+        $(function() {
+
+            $("#frmAddCorrespondente").validate({
+                rules : {
+                    nm_razao_social_con : {
+                        required : true
+                    },
+                    email : {
+                        required : true
+                    }
+
+                },
+
+                messages : {
+                    nm_razao_social_con : {
+                        required : 'Campo nome é obrigatório'
+                    },
+                    email : {
+                        required : 'Campo email é obrigatório'
+                    }
+                },
+                errorPlacement : function(error, element) {
+                    error.insertAfter(element.parent());
+                }
+            });
+        });  
+
+        var buscaCidade = function(estado,target){
 
             if(estado != ''){
 
                 $.ajax(
                     {
-                        url: pathname+'/cidades-por-estado/'+estado,
+                        url: '../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Carregando...</option>');
-                            $('#cidade').prop( "disabled", true );
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Carregando...</option>');
+                            $('.'+target).prop( "disabled", true );
 
                         },
                         success: function(response)
                         {                    
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Selecione</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                    $('.'+target).append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
                                 }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                    $('.'+target).append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
                                 }
                                 
                             });       
-                            $('#cidade').trigger('change');     
-                            $('#cidade').prop( "disabled", false );        
+                            $('.'+target).trigger('change');     
+                            $('.'+target).prop( "disabled", false );        
                         },
                         error: function(response)
                         {
@@ -161,13 +348,9 @@
             }
         }
 
-        buscaCidade();
-
-        $("#estado").change(function(){
-            
-            buscaCidade(); 
-
-        });
+        $(".estado").change(function(){
+            buscaCidade($(this).val(),$(this).attr('id')); 
+        });     
 
     });
 </script>

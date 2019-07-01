@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
                     <h4><span><b>Correspondentes</b></span></h4>                    
-                    <h5><a href="{{ url('correspondente/novo') }}"><i class="fa fa-plus-circle"></i> Novo</a></h5>
+                    <h5><a href="{{ url('correspondentes') }}">Meus Correspondentes</a></h5>
                 </div>
                 <div style="clear: both;"></div>
             </div>

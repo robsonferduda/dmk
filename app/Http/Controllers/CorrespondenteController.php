@@ -98,82 +98,80 @@ class CorrespondenteController extends Controller
         $nome = $request->get('nome');
         $identificacao = $request->get('identificacao');
 
-        $correspondentes = Correspondente::whereHas('contaCorrespondente', function($sql) use($nome){
+        $correspondentes = ContaCorrespondente::with('entidade')
+                                                ->with('correspondente')
+                                                ->with(['entidade.identificacao' => function($query){
+                                                    $query->where('cd_tipo_identificacao_tpi',1);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
 
-                                if(!empty($nome)) $sql->where('nm_razao_social_con','ilike',"%$nome%");
-                                $sql->where('cd_conta_con',$this->conta);
+                                                }])
+                                                ->with('correspondente.entidade.usuario')
+                                                ->with(['entidade.atuacao' => function($query){
+                                                    $query->where('fl_origem_cat','S');
+                                                    $query->with('cidade');
+                                                }])
+                                                ->where('conta_correspondente_ccr.cd_conta_con', $this->conta)
 
-                                if(!empty($identificacao)){
+                                                ->when(!empty($nome), function($sql) use($nome){
+                                                    $sql->where('nm_conta_correspondente_ccr','ilike',"%$nome%");
+                                                })
+                                              
+                                                ->when(!empty($identificacao), function($join) use($identificacao){
 
-                                    $join('entidade_ete', function($join) use ($identificacao){
+                                                    $join->join('entidade_ete AS t0', function($join) use ($identificacao){
                                     
-                                        $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
-                                        $join->join('identificacao_ide', function($join) use ($identificacao){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                            $join->where('nu_identificacao_ide','=',$identificacao);
-                                        });
-                                    }); 
-                                }
-                            })
-                            ->with('entidade')
-                            ->with('entidade.usuario')
-                            ->with('contaCorrespondente')
-                            ->with('entidade.identificacao')
-                            ->where('fl_correspondente_con','S')
-                            ->orderBy('conta_con.nm_razao_social_con','DESC')
-                            ->get();
+                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','t0.cd_entidade_ete');
+                                                        $join->join('identificacao_ide', function($join) use ($identificacao){
+                                                            $join->on('t0.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
+                                                            $join->where('nu_identificacao_ide','=',$identificacao);
+                                                        });
+                                                    }); 
+                                                })
+
+                                                ->when(!empty($cidade), function($join) use ($cidade){
+
+                                                    $join->join('entidade_ete', function($join) use ($cidade){
+                                    
+                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
+                                                        $join->join('cidade_atuacao_cat', function($join) use ($cidade){
+                                                            $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
+                                                            $join->where('cd_cidade_cde','=',$cidade);
+                                                            $join->where('fl_origem_cat','=','S');
+                                                            $join->whereNull('cidade_atuacao_cat.deleted_at');
+                                                        });
+                                                    }); 
+
+                                                })
+
+                                                ->when((!empty($estado) and empty($cidade)), function($join) use ($estado){
+
+                                                    $join->join('entidade_ete', function($join) use ($estado){
+                                    
+                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
+                                                        $join->join('cidade_atuacao_cat', function($join) use ($estado){
+                                                            $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
+                                                            $join->join('cidade_cde', function($join) use ($estado){
+                                                                $join->on('cidade_cde.cd_cidade_cde','=','cidade_atuacao_cat.cd_cidade_cde');
+                                                                $join->where('fl_origem_cat','=','S');
+                                                                $join->join('estado_est', function($join) use ($estado){
+                                                                    $join->on('cidade_cde.cd_estado_est','=','estado_est.cd_estado_est');
+                                                                    $join->where('cidade_cde.cd_estado_est','=',$estado);
+                                                                });
+                                                                
+                                                            });
+                                                            $join->whereNull('cidade_atuacao_cat.deleted_at');
+                                                        });
+                                                    }); 
+
+                                                })
+
+                                                ->orderBy('nm_conta_correspondente_ccr','DESC')
+                                                ->get();
+
+        if(is_null($correspondentes))
+            Flash::warning('Não existem correspondentes que correspondam aos valores pesquisados');
 
         return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
-
-    }
-
-    public function buscarTodos(Request $request){
-
-        $nome = $request->get('nome');
-        $email = $request->get('email');
-        $identificacao = $request->get('identificacao');
-        $correspondentes = array();
-
-        if(empty($nome) and empty($email) and empty($identificacao)){
-            Flash::warning('Preencha pelo menos um termo para a busca');
-            return view('correspondente/novo',['correspondetes' => $correspondentes]);
-        }
-
-        $correspondentes = Correspondente::join('entidade_ete', function($join) use ($nome, $email, $identificacao){
-                                    
-                                    $join->on('conta_con.cd_conta_con','=','entidade_ete.cd_conta_con');
-                                    $join->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE);
-
-                                    $join->leftJoin('cidade_atuacao_cat', function($join){
-
-                                        $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
-
-                                    });
-
-                                    if(!empty($nome)) $join->where('nm_razao_social_con','ilike','%'.$nome.'%');
-                                    
-                                    if(!empty($identificacao)){
-                                        $join->join('identificacao_ide', function($join) use ($identificacao){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                            $join->where('nu_identificacao_ide','=',$identificacao);
-                                        });
-                                    } 
-
-                                    if(!empty($email)){
-                                        $join->join('users', function($join) use ($email){
-                                            $join->on('entidade_ete.cd_entidade_ete','=','users.cd_entidade_ete');
-                                            $join->where('email','=',$email);
-                                        });
-                                    }
-
-                            })
-                            ->orderBy('conta_con.nm_fantasia_con','DESC')
-                            ->get();
-
-        if(count($correspondentes) == 0)
-            \Session::put('busca_vazia', true);
-
-        return view('correspondente/novo',['correspondetes' => $correspondentes]);
 
     }
 
@@ -592,10 +590,6 @@ class CorrespondenteController extends Controller
         }
     }
 
-    public function novo(){
-        return view('correspondente/novo');
-    }
-
     public function convidar(ConviteRequest $request){
 
         $to_name = 'Convidado';
@@ -620,7 +614,7 @@ class CorrespondenteController extends Controller
             Flash::success('Convite enviado com sucesso. O destinatário poderá realizar seu cadastro para aparecer nas buscas por correspondentes.');
         }
 
-        return redirect('correspondente/novo');
+        return redirect('correspondentes');
     }
 
     public function aceitarConvite($token)
@@ -759,7 +753,7 @@ class CorrespondenteController extends Controller
                             return $conta->cd_conta_con;
                         }else{
                             Flash::error('Erro ao adicionar correspondente');
-                            return redirect()->back();
+                            return false;
                         }
                     }
                 }
@@ -792,18 +786,19 @@ class CorrespondenteController extends Controller
 
                         }else{
                             Flash::error('Erro ao adicionar correspondente');
-                            return redirect()->back();
+                            return false;
                         }
 
                     }else{
                         Flash::error('Erro ao adicionar correspondente');
-                        return redirect()->back();
+                        return false;
                     }        
                     
 
                 }else{
+
                     Flash::warning('Correspondente já faz parte da sua lista');
-                    return redirect()->back();
+                    return false;
                 }    
 
             }
@@ -813,7 +808,7 @@ class CorrespondenteController extends Controller
         if($id)
             return redirect('correspondente/detalhes/'.$id);
         else
-            return redirect('correspondente/novo');
+            return redirect('correspondentes');
     }
 
     public function adicionar(Request $request){
