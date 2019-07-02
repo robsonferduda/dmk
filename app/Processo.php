@@ -1,16 +1,19 @@
 <?php
 
 namespace App;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use App\Notifications\CorrespondenteProcessoNotification;
 
 class Processo extends Model implements AuditableContract
 {
 
 	use SoftDeletes;
     use Auditable;
+    use Notifiable;
 
     protected $table = 'processo_pro';
     protected $primaryKey = 'cd_processo_pro';
@@ -86,5 +89,10 @@ class Processo extends Model implements AuditableContract
     public function status()
     {
         return $this->hasOne('App\StatusProcesso','cd_status_processo_stp', 'cd_status_processo_stp');
+    }
+
+    public function notificarCorrespondente($processo)
+    {
+        $this->notify(new CorrespondenteProcessoNotification($processo));
     }
 }

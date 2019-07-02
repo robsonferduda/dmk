@@ -64,8 +64,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
+	Route::get('processos/notificar/{id}','ProcessoController@notificarCorrespondente');
 	Route::get('processos/acompanhar','ProcessoController@acompanhar');
 	Route::get('processos/relatorio/{id}','ProcessoController@relatorio');
+	Route::get('processo/notificacao/resposta/{resposta}/{id}','ProcessoController@responderNotificacao')->name('resposta');
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');

@@ -17,6 +17,8 @@ use App\TipoDespesa;
 use App\TipoServico;
 use App\ProcessoTaxaHonorario;
 use App\TaxaHonorario;
+use App\EnderecoEletronico;
+use App\ContaCorrespondente;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -750,5 +752,45 @@ class ProcessoController extends Controller
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+    }
+
+    public function notificarCorrespondente($id_processo){
+
+        $id = \Crypt::decrypt($id_processo);
+        $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
+
+        if(empty($processo->cd_correspondente_cor)){
+
+            Flash::error('Nenhum correspondente informado para o processo');
+
+        }else{
+
+            $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
+            $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+            if(count($emails) == 0){
+
+                Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+
+            }else{
+
+                $lista = '';
+
+                foreach ($emails as $email) {
+
+                    $processo->email =  $email->dc_endereco_eletronico_ede;
+                    $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                    $processo->conta = $processo->cliente->nm_razao_social_cli;
+                    $processo->notificarCorrespondente($processo);
+                    $lista .= $email->dc_endereco_eletronico_ede.',';
+                }
+
+                Flash::success('Notificação enviada com sucesso para: '.substr($lista,0,-1));
+
+            }
+
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
     }
 }

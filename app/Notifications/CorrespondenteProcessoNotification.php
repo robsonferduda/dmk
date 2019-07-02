@@ -13,6 +13,7 @@ class CorrespondenteProcessoNotification extends Notification
     use Queueable;
 
     public $processo;
+    public $options;
 
     /**
      * Create a new notification instance.
@@ -43,15 +44,40 @@ class CorrespondenteProcessoNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $token = \Crypt::encrypt($this->processo->cd_processo_pro);  
+        $token = \Crypt::encrypt($this->processo->cd_processo_pro); 
+        $cod_cli = (!empty($this->processo->cliente->cod_externo_cli)) ? $this->processo->cliente->cod_externo_cli.' - '.$this->processo->cliente->nm_razao_social_cli : $this->processo->cliente->nm_razao_social_cli;
+
+        $this->options = array('url_yes' => url(config('app.url').route('resposta', ['resposta' => 'S','token' => $token], false)), 
+                               'url_not' => url(config('app.url').route('resposta', ['resposta' => 'N','token' => $token], false)),
+                               'text_yes' => "Aceitar Diligência",
+                               'text_not' => "Recusar Diligência"
+                        );
 
         return (new MailMessage)
             ->subject(Lang::getFromJson('Solicitação de Diligência'))
-            ->markdown('email.convite')
-            ->line(Lang::getFromJson('Olá nome_do_correspondente. '.$notifiable->nm_razao_social_con.' acaba de receber uma nova solicitação.'))
-            ->line(Lang::getFromJson('Após realizar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
-            ->line(Lang::getFromJson('Aguardamos seu cadastro para darmos início a parceria.'));
-            ->action(Lang::getFromJson('Responder Solicitação'), url(config('app.url').route('correspondente.processo', ['token' => $token], false)))
+            ->markdown('email.resposta',$this->options)
+            ->line(Lang::getFromJson('Olá '.$notifiable->correspondente.','))
+            ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$notifiable->conta.'.'))
+
+            ->line(Lang::getFromJson(''))
+            ->line(Lang::getFromJson('Dados da Solicitação'))
+            ->line(Lang::getFromJson('------------------------------------------------'))
+
+            ->line(Lang::getFromJson('Data Prazo Fatal: '.date('d/m/Y', strtotime($this->processo->dt_prazo_fatal_pro))))
+            ->line(Lang::getFromJson('Número do Processo: '.$this->processo->nu_processo_pro))
+            ->line(Lang::getFromJson('Parte Autora: '.$this->processo->nm_autor_pro))
+            ->line(Lang::getFromJson('Parte Ré: '.$this->processo->nm_reu_pro))
+            ->line(Lang::getFromJson('Solicitante: '.$this->processo->advogadoSolicitante->nm_contato_cot))
+            ->line(Lang::getFromJson('Tipo: '.$this->processo->honorario->tipoServico->nm_tipo_servico_tse))
+            ->line(Lang::getFromJson('Vara: '.$this->processo->vara->nm_vara_var))
+            ->line(Lang::getFromJson('Cidade/UF: '.$this->processo->cidade->nm_cidade_cde.'/'.$this->processo->cidade->estado->nm_estado_est))
+            ->line(Lang::getFromJson('Código do Cliente: '.$cod_cli))
+            ->line(Lang::getFromJson('------------------------------------------------'))
+
+            ->line(Lang::getFromJson('Para responder, selecione uma das opções abaixo:'))
+            ->action(Lang::getFromJson('Aceitar Diligência'),null)
+            ->action(Lang::getFromJson('Recusar Diligência'),null)
+            ->line(Lang::getFromJson('Aguardamos a sua resposta.'));
     }
 
     /**

@@ -24,7 +24,8 @@ class Cliente extends Model implements AuditableContract
         'fl_nota_fiscal_cli',
         'taxa_imposto_cli',
         'dt_inicial_cli',
-        'observacao_cli'
+        'observacao_cli',
+        'cod_externo_cli'
     ];
 
     public $timestamps = true;

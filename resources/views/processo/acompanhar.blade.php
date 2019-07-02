@@ -19,7 +19,7 @@
             <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
+            <a data-toggle="modal" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
             <form style="display: inline; margin-top: 10px;" class="pull-right" action="{{ url('processo/atualizar-status') }}" method="POST">
                 {{ csrf_field() }}
                 <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
@@ -76,10 +76,14 @@
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
                                            
                                                 <li>
-                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
+                                                    <strong>Cliente: </strong>
+                                                    <a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">
+                                                        {{ ($processo->cliente->cod_externo_cli) ? $processo->cliente->cod_externo_cli.' - ' : '' }}
+                                                        {{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}
+                                                    </a> 
                                                 </li>
                                                 <li>
-                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : ' ' }}
+                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não Informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
