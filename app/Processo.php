@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CorrespondenteProcessoNotification;
+use App\Notifications\ContaProcessoNotification;
+
 
 class Processo extends Model implements AuditableContract
 {
@@ -81,6 +83,12 @@ class Processo extends Model implements AuditableContract
     {
         return $this->hasOne('App\Correspondente','cd_conta_con', 'cd_correspondente_cor');
     }
+
+    public function conta()
+    {
+        return $this->hasOne('App\Conta','cd_conta_con', 'cd_conta_con');
+    }
+
     public function honorario()
     {
         return $this->hasOne('App\ProcessoTaxaHonorario','cd_processo_pro', 'cd_processo_pro');
@@ -94,5 +102,10 @@ class Processo extends Model implements AuditableContract
     public function notificarCorrespondente($processo)
     {
         $this->notify(new CorrespondenteProcessoNotification($processo));
+    }
+
+    public function notificarConta($processo)
+    {
+        $this->notify(new ContaProcessoNotification($processo));
     }
 }

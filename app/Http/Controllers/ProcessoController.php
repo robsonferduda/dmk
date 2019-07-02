@@ -22,6 +22,7 @@ use App\ContaCorrespondente;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Laracasts\Flash\Flash;
@@ -33,7 +34,7 @@ class ProcessoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth',['except' => ['responderNotificacao']]);
         $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
     }
 
@@ -774,21 +775,53 @@ class ProcessoController extends Controller
 
                 $lista = '';
 
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE;
+                $processo->save();
+
                 foreach ($emails as $email) {
 
                     $processo->email =  $email->dc_endereco_eletronico_ede;
                     $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                    $processo->conta = $processo->cliente->nm_razao_social_cli;
+                    $processo->conta = $processo->conta->nm_razao_social_con;
                     $processo->notificarCorrespondente($processo);
-                    $lista .= $email->dc_endereco_eletronico_ede.',';
+                    $lista .= $email->dc_endereco_eletronico_ede.', ';
                 }
 
-                Flash::success('Notificação enviada com sucesso para: '.substr($lista,0,-1));
+                Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista),0,-1));
 
             }
 
         }
 
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
+    }
+
+    public function responderNotificacao($resposta,$token)
+    {
+        $id = \Crypt::decrypt($token);
+        $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
+
+        $email = User::where('cd_conta_con',$processo->cd_conta_con)->where('cd_nivel_niv',1)->first()->email;
+
+        if($resposta == 'S'){
+
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
+            $processo->save();
+
+        }else{
+
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE;
+            $processo->save();
+        }
+
+        $processo->email = $email;
+        $processo->token = $token;
+        $processo->parecer = $resposta;
+        $processo->correspondente = $processo->correspondente->nm_razao_social_con;
+        $processo->notificarConta($processo);
+
+        \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida e o interessado notificado sobre a decisão.'));
+        return Redirect::route('msg-filiacao');
+
     }
 }

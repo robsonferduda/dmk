@@ -55,7 +55,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('autocompleteCorrespondente', 'CorrespondenteController@search');
 	Route::get('processos/novo','ProcessoController@novo');
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
-	Route::get('processos/detalhes/{id}','ProcessoController@detalhes');
+	Route::get('processos/detalhes/{id}','ProcessoController@detalhes')->name('processos.detalhes');
 	Route::get('processos/despesas/{id}','ProcessoController@financas');
 	Route::get('processos/acompanhamento','ProcessoController@acompanhar');
 	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento');
