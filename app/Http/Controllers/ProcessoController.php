@@ -633,11 +633,9 @@ class ProcessoController extends Controller
 
         $nomeCorrespondente = '';
         if(!empty($processo->correspondente)){ 
-            if(!empty($processo->correspondente->nm_fantasia_con)){
-                    $nomeCorrespondente =  $processo->correspondente->nm_razao_social_con.' ('.$processo->cliente->nm_fantasia_con.')';
-            }else{
-                    $nomeCorrespondente = $processo->correspondente->nm_razao_social_con;
-            }
+                            
+            $nomeCorrespondente = $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr;
+            
         }
 
         if(!empty($processo->dt_solicitacao_pro))

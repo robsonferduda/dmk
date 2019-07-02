@@ -1079,21 +1079,12 @@ class CorrespondenteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = ContaCorrespondente::whereHas('correspondente', function ($query) use ($search) {
-            $query->where('nm_razao_social_con', 'ilike', '%'. $search. '%')->orWhere('nm_fantasia_con', 'ilike', '%'. $search. '%');
-        })->get();
+        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')->get();
 
         $results = array();
         foreach ($resultados as $ret)
         {
-
-            if(!empty($ret->correspondente->nm_fantasia_con)){
-                $nome =  $ret->correspondente->nm_razao_social_con.' ('.$ret->correspondente->nm_fantasia_con.')';
-            }else{
-                $nome = $ret->correspondente->nm_razao_social_con;
-            }
-            
-           $results[] = [ 'id' => $ret->correspondente->cd_conta_con, 'value' => $nome ];
+           $results[] = [ 'id' => $ret->correspondente->cd_conta_con, 'value' => $ret->nm_conta_correspondente_ccr ];
         }
  
         return response()->json($results);

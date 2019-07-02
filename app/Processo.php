@@ -79,7 +79,7 @@ class Processo extends Model implements AuditableContract
 
     public function correspondente()
     {
-        return $this->hasOne('App\Conta','cd_conta_con', 'cd_correspondente_cor');
+        return $this->hasOne('App\Correspondente','cd_conta_con', 'cd_correspondente_cor');
     }
     public function honorario()
     {
