@@ -338,7 +338,7 @@
                                                 <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
                                                     <option selected value="">Selecione</option>
                                                     @foreach($bancos as $banco)
-                                                        <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
+                                                        <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{ $banco->nm_banco_ban}}</option>
                                                     @endforeach
 
                                                 </select> 
@@ -392,14 +392,18 @@
                                                 <tbody>
                                                     @foreach($usuario->entidade->banco()->get() as $banco)
                                                        <tr>
-                                                            <td>{{ $banco->nm_titular_dba }}</td>
-                                                            <td>{{ $banco->nu_cpf_cnpj_dba }}</td>
-                                                            <td>{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT).' - '.$banco->banco->nm_banco_ban }}</td>
-                                                            <td>{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
-                                                            <td>{{ $banco->nu_agencia_dba }}</td>
-                                                            <td>{{ $banco->nu_conta_dba }}</td>
+                                                            <td data-nm_titular_dba="{{ $banco->nm_titular_dba }}" >{{ $banco->nm_titular_dba }}</td>
+                                                            <td data-nu_cpf_cnpj_dba="{{ $banco->nu_cpf_cnpj_dba }}" >{{ $banco->nu_cpf_cnpj_dba }}</td>
+                                                            <td data-cd_banco_ban="{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT) }}" >{{ $banco->banco->nm_banco_ban }}</td>
+                                                            <td data-cd_tipo_conta_tcb="{{ $banco->cd_tipo_conta_tcb }}" >{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
+                                                            <td data-nu_agencia_dba="{{ $banco->nu_agencia_dba }}" >{{ $banco->nu_agencia_dba }}</td>
+                                                            <td data-nu_conta_dba="{{ $banco->nu_conta_dba }}" >{{ $banco->nu_conta_dba }}</td>
                                                             <td class="center">
-                                                                <a class="excluirDadosBancariosBase" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                               
+                                                                    <a class="editarDadosBancarios" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}"><i class="fa fa-edit"></i> Editar</a>&nbsp;
+                                                    
+                                                                    <a class="excluirDadosBancariosBase" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                    
                                                             </td>
                                                         </tr>
                                                     @endforeach     

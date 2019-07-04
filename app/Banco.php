@@ -19,4 +19,7 @@ class Banco extends Model
 
     public $timestamps = true;
 
+    public function getNmBancoBanAttribute($value){
+        return  str_pad($this->cd_banco_ban,3, '0', STR_PAD_LEFT).' - '.$value;
+    }
 }

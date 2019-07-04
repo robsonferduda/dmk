@@ -220,7 +220,8 @@ return [
         'TipoFone' => App\Enums\TipoFone::class,
         'Nivel' => App\Enums\Nivel::class,
         'Nivel' => App\Enums\Nivel::class,
-        'StatusProcesso' => App\Enums\StatusProcesso::class
+        'StatusProcesso' => App\Enums\StatusProcesso::class,
+        'Helper' => App\Helpers\Helper::class,
     ],
 
 ];
