@@ -35,4 +35,13 @@ class RegistroBancario extends Model
     {
         return $this->hasOne('App\TipoConta','cd_tipo_conta_tcb', 'cd_tipo_conta_tcb');
     }
+
+    public function getNuCpfCnpjDbaAttribute($value){
+        return \Helper::formatarCnpjCpf($value);
+    }
+
+    public function setNuCpfCnpjDbaAttribute($value){
+        $this->attributes['nu_cpf_cnpj_dba']  =  \Helper::limparCnpjCpf($value);
+    }
+
 }

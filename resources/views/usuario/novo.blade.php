@@ -350,7 +350,7 @@
                                         <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
                                             <option selected value="">Selecione</option>
                                             @foreach($bancos as $banco)
-                                                <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}} - {{ $banco->nm_banco_ban}}</option>
+                                                <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{ $banco->nm_banco_ban}}</option>
                                             @endforeach
 
                                         </select> 

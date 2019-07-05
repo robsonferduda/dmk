@@ -140,6 +140,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('fones/excluir/{id}','FoneController@excluir');
 
 	Route::get('registro-bancario/entidade/{id}','RegistroBancarioController@registros');
+	Route::get('registro-bancario/id/{id}','RegistroBancarioController@registro');
 	Route::get('registro-bancario/excluir/{id}','RegistroBancarioController@excluir');
 
 	Route::get('usuarios','UsuarioController@index');

@@ -186,7 +186,7 @@ $(document).ready(function() {
 		$(".msg-selecao-role").html("");
 		$("#role_msg").html("");
 
-		console.log(id);
+		
 		if(role > 0){
 
 			$.ajax(
@@ -248,7 +248,7 @@ $(document).ready(function() {
 	            },
 			   	error: function(response)
 			   	{
-			   		console.log("Erro");
+			   		
 			   	}
 	        });
 
@@ -708,6 +708,76 @@ $(document).ready(function() {
 
 	});
 
+	function loadRegistroBancario(id){
+
+		$.ajax(
+            {
+                url: "../../registro-bancario/id/"+id,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {              
+            	  	
+				
+            	var tamanho = response[0].nu_cpf_cnpj_dba.length;
+
+			    if(tamanho <= 11){
+			        $("#nu_cpf_cnpj_dba").val(response[0].nu_cpf_cnpj_dba).mask("999.999.999-99");
+			    } else {
+			        $("#nu_cpf_cnpj_dba").val(response[0].nu_cpf_cnpj_dba).mask("99.999.999/9999-99");
+			    }
+
+				$("#nm_titular_dba").val(response[0].nm_titular_dba);
+				$("#cd_banco_ban").val(response[0].cd_banco_ban).trigger('change');
+				$("#cd_tipo_conta_tcb").val(response[0].cd_tipo_conta_tcb).trigger('change');
+				$("#nu_agencia_dba").val(response[0].nu_agencia_dba);
+				$("#nu_conta_dba").val(response[0].nu_conta_dba);
+
+				$('#idRegistroBancario').val(response[0].cd_dados_bancarios_dba);
+
+				//$.each(response, function(index, value){
+					//$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.nm_banco_ban+'</td><td>'+value.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-codigo="'+value.cd_dados_bancarios_dba+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				//});   
+
+            },
+            error: function(response)
+            {
+            }
+        });
+
+	}
+
+
+	$(document).on('click','.editarDadosBancarios',function(){
+
+		var id = $(this).data("codigo");
+		var nm_titular_dba = $(this).closest('tr').find('td[data-nm_titular_dba]').data('nm_titular_dba');
+		var nu_cpf_cnpj_dba = $(this).closest('tr').find('td[data-nu_cpf_cnpj_dba]').data('nu_cpf_cnpj_dba');
+		var cd_banco_ban = $(this).closest('tr').find('td[data-cd_banco_ban]').data('cd_banco_ban');
+		var cd_tipo_conta_tcb = $(this).closest('tr').find('td[data-cd_tipo_conta_tcb]').data('cd_tipo_conta_tcb');
+		var nu_agencia_dba = $(this).closest('tr').find('td[data-nu_agencia_dba]').data('nu_agencia_dba');
+		var nu_conta_dba = $(this).closest('tr').find('td[data-nu_conta_dba]').data('nu_conta_dba');
+
+		nu_cpf_cnpj_dba = nu_cpf_cnpj_dba.replace(/\./g,'').replace('-','').replace('/','');
+
+		var tamanho = nu_cpf_cnpj_dba.length;
+
+		if(tamanho <= 11){
+		    $("#nu_cpf_cnpj_dba").val(nu_cpf_cnpj_dba).mask("999.999.999-99");
+		} else {
+		    $("#nu_cpf_cnpj_dba").val(nu_cpf_cnpj_dba).mask("99.999.999/9999-99");
+		}
+
+		$("#nm_titular_dba").val(nm_titular_dba);
+		$("#cd_banco_ban").val(cd_banco_ban).trigger('change');
+		$("#cd_tipo_conta_tcb").val(cd_tipo_conta_tcb).trigger('change');
+		$("#nu_agencia_dba").val(nu_agencia_dba);
+		$("#nu_conta_dba").val(nu_conta_dba);
+	
+		$(this).next().trigger('click');
+
+	});
+
 	var registrosBancarios = new Array();
 
 	$("#btnSalvarContaBancaria").click(function(){
@@ -721,7 +791,7 @@ $(document).ready(function() {
 	    var tipoText = $("#cd_tipo_conta_tcb option:selected").text();
 	    var agencia = $("#nu_agencia_dba").val();
 	    var conta = $("#nu_conta_dba").val();
-		
+	    
 		if(titular.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Titular obrigatório"); }
 		if(cpf.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo CPF obrigatório"); }
 		if(banco.trim() == ''){ flag = false; $("#erroContaBancaria").html("Campo Banco obrigatório"); }
@@ -741,7 +811,7 @@ $(document).ready(function() {
 				loadRegistrosBancarios($('#entidade').val());
 			}
 			$.each(registrosBancarios, function(index, value){
-				$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-id='"+index+"'><i class='fa fa-edit'></i> Editar</a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-id='"+index+"'><i class='fa fa-trash'></i> Excluir</a></td></tr>");
 			});			
 
 			$("#nm_titular_dba").val('');
@@ -754,6 +824,8 @@ $(document).ready(function() {
 			$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
 		}
 
+		$('#idRegistroBancario').val('');
+
 	});
 
 	$(document).on('click','.excluiRegistroBancario',function(){
@@ -761,8 +833,6 @@ $(document).ready(function() {
 				var id = $(this).data("id");
 				//var entidade = $("#entidade").val()
 
-				console.log(registrosBancarios);
-				console.log(id);
 				registrosBancarios.splice(id,1); //Remove o registro do vetor que está na memória
 
 				$("#tabelaRegistroBancario > tbody > tr").remove();	
@@ -771,6 +841,10 @@ $(document).ready(function() {
 				$.each(registrosBancarios, function(index, value){
 					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 				});
+
+				if($('#entidade').val() != ''){
+					loadRegistrosBancarios($('#entidade').val());
+				}
 
 				$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
 
@@ -927,9 +1001,14 @@ $(document).ready(function() {
                 dataType: "JSON",
             success: function(response)
             {              
-            	console.log(response);      	
+            	      	
 				$.each(response, function(index, value){
-					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.nm_banco_ban+'</td><td>'+value.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-codigo="'+value.cd_dados_bancarios_dba+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+														
+					value.nu_cpf_cnpj_dba = formatCnpjCpf(value.nu_cpf_cnpj_dba);
+					
+					//append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.nm_banco_ban+'</td><td>'+value.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-codigo="'+value.cd_dados_bancarios_dba+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.nm_titular_dba+"' >"+value.nm_titular_dba+"</td><td data-nu_cpf_cnpj_dba='"+value.nu_cpf_cnpj_dba+"' >"+value.nu_cpf_cnpj_dba+"</td><td data-cd_banco_ban='"+value.cd_banco_ban+"' >"+value.nm_banco_ban+"</td><td data-cd_tipo_conta_tcb='"+value.cd_tipo_conta_tcb+"' >"+value.nm_tipo_conta_tcb+"</td><td data-nu_agencia_dba='"+value.nu_agencia_dba+"' >"+value.nu_agencia_dba+"</td><td data-nu_conta_dba='"+value.nu_conta_dba+"' >"+value.nu_conta_dba+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-edit'></i> Editar</a>&nbsp;<a class='excluirDadosBancariosBase' style='cursor:pointer' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-trash'></i> Excluir</a></td></tr>");
+
 				});   
 
             },
@@ -938,6 +1017,17 @@ $(document).ready(function() {
             }
         });
 
+	}
+
+	function formatCnpjCpf(value)
+	{
+	  const cnpjCpf = value.replace(/\D/g, '');
+	  
+	  if (cnpjCpf.length === 11) {
+	    return cnpjCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3-\$4");
+	  } 
+	  
+	  return cnpjCpf.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3/\$4-\$5");
 	}
 
 
@@ -980,8 +1070,8 @@ $(document).ready(function() {
             {                    	
             	$("#tabelaRegistroBancario > tbody > tr").remove();	
 				loadRegistrosBancarios(entidade);
-				$.each(registrosBancarios, function(index, value){
-					$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.titular+'</td><td>'+value.cpf+'</td><td>'+value.bancoText+'</td><td>'+value.tipoText+'</td><td>'+value.agencia+'</td><td>'+value.conta+'</td><td class="center"><a class="excluiRegistroBancario" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+				$.each(registrosBancarios, function(index, value){					
+					$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-id='"+index+"'><i class='fa fa-edit'></i> Editar</a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-id='"+index+"'><i class='fa fa-trash'></i> Excluir</a></td></tr>");
 				});
             },
             error: function(response)
@@ -1053,12 +1143,12 @@ $(document).ready(function() {
             },
             success: function(response)
             {
-            	console.log("Sucesso");
+            	
             	window.location.href = pathname+"/processos/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
-		   		console.log("Erro");
+		   		
 		   		location.reload();
 		   	}
         });
@@ -1147,7 +1237,7 @@ $(document).ready(function() {
     		
 		});
 
-		console.log(valores);
+		
 
 		$.ajax(
         {
@@ -1164,12 +1254,12 @@ $(document).ready(function() {
             },
             success: function(response)
             {
-            	console.log("Sucesso");
+            	
             	window.location.href = pathname+"/despesas/"+processo
             },
 		   	error: function(response)
 		   	{
-		   		console.log("Erro");
+		   		
 		   		location.reload();
 		   	}
         });
@@ -1212,12 +1302,12 @@ $(document).ready(function() {
             },
             success: function(response)
             {
-            	console.log("Sucesso");
+            	
             	window.location.href = "../../cliente/honorarios/"+cliente;
             },
 		   	error: function(response)
 		   	{
-		   		console.log("Erro");
+		   		
 		   		//location.reload();
 		   	}
         });
