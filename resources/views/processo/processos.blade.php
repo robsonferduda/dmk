@@ -114,8 +114,8 @@
                                             <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>                                            
                                         </td>
                                         <td>
-                                            @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                            @if(!empty($processo->correspondente->contaCorrespondente))
+                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>

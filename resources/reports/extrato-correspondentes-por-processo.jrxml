@@ -15,6 +15,8 @@
 		</conditionalStyle>
 	</style>
 	<parameter name="bancoQuery" class="java.lang.String"/>
+	<parameter name="conta" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
       nu_processo_pro,
@@ -25,21 +27,21 @@
       t2.nu_conta_dba,
       t5.vl_taxa_honorario_correspondente_pth,
       t6.nm_tipo_conta_tcb,
-      t0.nm_razao_social_con,
-      t7.nm_tipo_servico_tse
+      t8.nm_conta_correspondente_ccr as nm_razao_social_con,
+      t7.nm_tipo_servico_tse,
+      t3.dt_prazo_fatal_pro
 FROM
-    public.conta_con t0
-    INNER JOIN entidade_ete t1 ON (t0.cd_conta_con = t1.cd_conta_con)
-    INNER JOIN dados_bancarios_dba t2 ON (t1.cd_entidade_ete = t2.cd_entidade_ete)
-    INNER JOIN processo_pro t3 ON (t3.cd_correspondente_cor = t0.cd_conta_con)
-    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    processo_pro t3
     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
-    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
     INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
+    INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
+    INNER JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete)
+    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
 WHERE
-    t0.fl_correspondente_con = 'S'
-    AND
     t3.deleted_at IS NULL
+    and
+    t8.cd_conta_con = $P{conta}  	
 $P!{bancoQuery}]]>
 	</queryString>
 	<field name="nu_processo_pro" class="java.lang.String">
@@ -72,10 +74,13 @@ $P!{bancoQuery}]]>
 	<field name="nm_tipo_servico_tse" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_servico_tse"/>
 	</field>
+	<field name="dt_prazo_fatal_pro" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="dt_prazo_fatal_pro"/>
+	</field>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{nu_processo_pro}]]></groupExpression>
 		<groupHeader>
-			<band height="47">
+			<band height="50">
 				<textField>
 					<reportElement x="100" y="0" width="190" height="15" uuid="15eaab07-6d44-4d80-b618-81bf088bcdf8"/>
 					<textElement>
@@ -91,18 +96,20 @@ $P!{bancoQuery}]]>
 					<text><![CDATA[Processo:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
+					<reportElement isPrintRepeatedValues="false" x="455" y="30" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77">
+						<printWhenExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth} != null]]></printWhenExpression>
+					</reportElement>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["R$"+$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="355" y="0" width="100" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
-					<textElement textAlignment="Right">
+					<reportElement x="390" y="30" width="64" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
+					<textElement textAlignment="Center">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Valor: R$]]></text>
+					<text><![CDATA[Valor:]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="100" y="15" width="190" height="15" uuid="b24d7a17-bcce-4fb0-bf6e-10995c5292f5"/>
@@ -132,6 +139,19 @@ $P!{bancoQuery}]]>
 					</textElement>
 					<text><![CDATA[Tipo de Serviço:]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="455" y="1" width="100" height="14" uuid="9f35827d-4dc4-4968-ba89-a36deab76535">
+						<printWhenExpression><![CDATA[$F{dt_prazo_fatal_pro} != null]]></printWhenExpression>
+					</reportElement>
+					<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dt_prazo_fatal_pro})]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="390" y="0" width="64" height="15" uuid="5c4bc7bf-7d04-4df3-8c4f-0e07eaaef400"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Prazo Fatal:]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -147,17 +167,17 @@ $P!{bancoQuery}]]>
 	</background>
 	<title>
 		<band height="147" splitType="Stretch">
-			<image>
-				<reportElement x="2" y="0" width="118" height="132" uuid="d47168ce-aae1-4efc-8d24-e15195025a5a"/>
-				<imageExpression><![CDATA["../tree1.png"]]></imageExpression>
+			<image scaleImage="RetainShape">
+				<reportElement x="20" y="7" width="132" height="132" uuid="d47168ce-aae1-4efc-8d24-e15195025a5a"/>
+				<imageExpression><![CDATA["tree1.png"]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement style="Title" x="120" y="10" width="435" height="93" uuid="f49d68fd-a2c7-44ec-a5fc-9300d10c85a1"/>
-				<textElement>
-					<font size="80" isBold="false"/>
+			<textField>
+				<reportElement style="Title" x="160" y="10" width="395" height="93" uuid="d3b0bd1f-ad5c-4a5e-86b0-9f0097287016"/>
+				<textElement verticalAlignment="Middle">
+					<font size="26" isBold="false"/>
 				</textElement>
-				<text><![CDATA[DMK]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement style="SubTitle" x="220" y="103" width="333" height="29" uuid="eef58983-008d-4a5b-8e47-97f8d4670c7a"/>
 				<textElement>
@@ -169,13 +189,13 @@ $P!{bancoQuery}]]>
 	</title>
 	<pageHeader>
 		<band height="26" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="0" width="554" height="16" uuid="cbf00957-2fa7-442b-b6c9-c2ea967aeee3"/>
+			<textField>
+				<reportElement x="0" y="0" width="554" height="16" uuid="3d48d093-e1ef-4653-8be9-0b7279d15882"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[20/05/2019 até 21/05/2019]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{dataInicio} +" até "+$P{dataFim} ]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -183,6 +203,7 @@ $P!{bancoQuery}]]>
 	</columnHeader>
 	<detail>
 		<band height="82" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<textField>
 				<reportElement x="100" y="0" width="180" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>

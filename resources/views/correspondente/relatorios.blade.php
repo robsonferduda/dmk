@@ -28,42 +28,53 @@
                 <form action="{{ url('correspondente/relatorios/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <div class="input-group class="col col-2">
-                            <span class="input-group-addon">Data de Início</span>
-                            <input class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon">Data Fim</span>
-                            <input class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <select name="relatorio" class="form-control" required>
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data de Início</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
+                            
+                        </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data Fim</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">                            
+                        </section>
+                        <section class="col col-md-4">                                                        
+                            <label class="label label-black"></label><br />
+                            <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
                                 <option value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
                                 <option value="pagamento-correspondentes-sumarizado">Pagamento de Correspondentes (Sumarizado)</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon">Correspondente</span>
-                            <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor')}}">
-                            <input class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}">
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon">Processo</span>
-                            <input type="text" name="nu_processo_pro" class="form-control" id="nu_processo_pro" placeholder="">
-                        </div>
-                        <div class="form-group">
+                            </select>                            
+                        </section>     
+                        <section class="col col-md-4">      
+                            <label class="label label-black"></label><br />     
                             <select name="cd_banco_ban" class="select2">
                                 <option value="">Banco</option>
                                 @foreach(\App\Banco::all() as $banco)
                                     <option value="{{ $banco->cd_banco_ban }}">{{ $banco->nm_banco_ban }}</option>
                                 @endforeach
-                            </select>
-                        </div>
+                            </select>                            
+                        </section>                                         
                     </div>
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                    <div class="row">
+
+                        <section class="col col-md-4">                           
+                            <label class="label label-black">Correspondente</label><br />
+                            <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor')}}">
+                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}">                         
+                        </section>
+                        
+                        <section class="col col-md-3">
+                            <label class="label label-black">Processo</label><br />
+                            <input style="width: 100%" type="text" name="nu_processo_pro" class="form-control" id="nu_processo_pro" placeholder="">    
+                        </section>     
+                         <section class="col col-md-3">
+                            <br />
+                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
+                        </section>                                   
+                    </div>
+                    <div class="row">
+
+                    </div>
                 </form>
             </div>
             <div style="clear: both;"></div>

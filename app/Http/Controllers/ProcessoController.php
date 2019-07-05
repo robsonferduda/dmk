@@ -58,6 +58,9 @@ class ProcessoController extends Controller
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+              $query->with(array('contaCorrespondente' => function($query){
+                    $query->where('cd_conta_con', $this->cdContaCon);
+              }));
         }))->with(array('cidade' => function($query){
               $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
               $query->with(array('estado' => function($query){
@@ -96,6 +99,9 @@ class ProcessoController extends Controller
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+              $query->with(array('contaCorrespondente' => function($query){
+                    $query->where('cd_conta_con', $this->cdContaCon);
+              }));
         }))->with(array('cidade' => function($query){
               $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
               $query->with(array('estado' => function($query){
@@ -365,7 +371,7 @@ class ProcessoController extends Controller
     public function buscaValorCorrespondente($correspondente,$cidade,$tipoServico){
 
         $valor = '';
-        $entidade = Entidade::select('cd_entidade_ete')->where('cd_conta_con',$correspondente)->first();
+        $entidade = ContaCorrespondente::select('cd_entidade_ete')->where('cd_conta_con',$this->cdContaCon)->where('cd_correspondente_cor',$correspondente)->first();
        
         if(!empty($cidade) && !empty($entidade)){
             $valor = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
