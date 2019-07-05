@@ -70,6 +70,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processo/notificacao/resposta/{resposta}/{id}','ProcessoController@responderNotificacao')->name('resposta');
 	
 	Route::get('configuracoes/areas','AreaController@index');
+	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
 	Route::get('configuracoes/tipos-de-contato','TipoContatoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-processo','TipoProcessoController@index');
 	Route::get('configuracoes/despesas-valores','TipoDespesaController@indexValorReembolsavel');
 	Route::put('configuracoes/despesas-valores/salvar','TipoDespesaController@valorReembolsavelSalvar');
+	Route::put('configuracoes/notificacoes/salvar','NotificacaoController@salvarPreferencias');
 
 	Route::resource('contatos','ContatoController');
 	Route::get('contatos','ContatoController@index');
@@ -97,7 +99,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
 	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
-	Route::get('correspondente/todos','CorrespondenteController@buscarTodos');
+	Route::get('correspondente/todos',function(){ return view('correspondente/todos'); });
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
