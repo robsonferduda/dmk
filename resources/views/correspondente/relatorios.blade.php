@@ -30,12 +30,12 @@
                     <div class="row">
                         <section class="col col-md-2">
                             <label class="label label-black">Data de Início</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{old('dtInicio')}}" required >
                             
                         </section>
                         <section class="col col-md-2">                           
                             <label class="label label-black">Data Fim</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">                            
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{old('dtFim')}}" required >                            
                         </section>
                         <section class="col col-md-4">                                                        
                             <label class="label label-black"></label><br />

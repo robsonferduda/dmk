@@ -40,17 +40,31 @@ class RelatorioCorrespondenteController extends Controller
         if($request->relatorio == 'pagamento-correspondentes-por-processo'){
             $sourceName = 'extrato-correspondentes-por-processo.jrxml';
             $fileName   = 'Pagamento de Correspondentes (Por Processo)';
+            $empresa    = 'DMK';
         }
 
         if($request->relatorio == 'pagamento-correspondentes-sumarizado'){
             $sourceName = 'extrato-correspondentes.jrxml';
             $fileName   = 'Pagamento de Correspondentes (Sumarizado)';
+            $empresa    = 'DMK';
         }
+
+        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
+        $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
+       
+        $dataQuery = " AND dt_prazo_fatal_pro between '$dtInicio' and '$dtFim' ";
 
         $bancoQuery = '';
 
-        if(!empty($bancoQuery)) $bancoQuery = " AND t2.cd_banco_ban = '002' ";
-        $parametros = array('bancoQuery' => $bancoQuery);
+        //dd($request);
+
+        if(!empty($request->cd_banco_ban)) $bancoQuery = " AND t2.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";
+        $parametros = array('bancoQuery' => $bancoQuery,
+                            'dataQuery'  => $dataQuery,
+                            'conta'      => $this->conta, 
+                            'dataInicio' => $request->dtInicio,
+                            'dataFim'    => $request->dtFim,
+                            'empresa'    => $empresa);
 
         $jasper = new RelatorioJasper();
         return $jasper->processar($parametros,$sourceName,$fileName);
