@@ -175,6 +175,19 @@ class CorrespondenteController extends Controller
 
     }
 
+    public function novo()
+    {
+        return view('correspondente/novo');        
+    }
+
+    public function buscarTodos(Request $request)
+    {
+        $correspondentes = Correspondente::with('entidade')->with('entidade.usuario')->where('fl_correspondente_con','S')->orderBy('cd_conta_con')->get();
+
+        //$correspondentes = null;
+        return view('correspondente/todos',['correspondentes' => $correspondentes]);        
+    }
+
     //Cadastro de correspondentes pela interface do sistema, aberto, sem receber convite
     public function cadastro(CorrespondenteRequest $request){
 
@@ -748,8 +761,10 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
                         if($correspondente->save()){
-                            $conta->notificacaoCadastro($conta_logada);
-                            Flash::success('Correspondente adicionado com sucesso');
+                            if($conta->notificacaoCadastro($conta_logada))
+                                Flash::success('Correspondente adicionado com sucesso');
+                            else
+                                Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
                             return $conta->cd_conta_con;
                         }else{
                             Flash::error('Erro ao adicionar correspondente');
@@ -772,6 +787,13 @@ class CorrespondenteController extends Controller
                     
                     if($entidade_correspondente->saveOrFail()){
 
+                        $enderecoEletronico = new EnderecoEletronico();
+                        $enderecoEletronico->cd_conta_con = $this->conta;
+                        $enderecoEletronico->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;
+                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                        $enderecoEletronico->save();
+
                         //Após cadastrar, vincula a conta que realizou o cadastro
                         $correspondente = new ContaCorrespondente();
                         $correspondente->cd_conta_con = $this->conta;
@@ -780,8 +802,10 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome; //Insere mesmo nome do usuário já utilizado
                             
                         if($correspondente->save()){
-                            $correspondente_cadastro->notificacaoFiliacao($conta_logada);
-                            Flash::success('Correspondente adicionado com sucesso');
+                            if($correspondente_cadastro->notificacaoFiliacao($conta_logada))
+                                Flash::success('Correspondente adicionado com sucesso');
+                            else
+                                Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
                             return $unique->cd_conta_con;
 
                         }else{

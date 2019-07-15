@@ -119,8 +119,7 @@
             </div>            
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12">
-                        
+                    <div class="col-md-12">                        
                         {!! Form::open(['id' => 'frm-add-conta', 'url' => 'correspondente/cadastro/conta', 'id' => 'frmAddCorrespondente', 'class' => 'smart-form client-form']) !!}
                         <div class="well" style="margin: 0px 15px; padding: 5px;">
                             <p>

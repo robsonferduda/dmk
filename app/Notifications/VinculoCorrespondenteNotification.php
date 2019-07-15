@@ -43,13 +43,16 @@ class VinculoCorrespondenteNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject(Lang::getFromJson('Novo Correspondente'))
-            ->markdown('email.convite')
-            ->line(Lang::getFromJson('Você foi adicionado como corresponde por '.$this->conta->nm_razao_social_con.'. Clique no botão abaixo para acessar:'))
-            ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao')))
-            ->line(Lang::getFromJson('Após acessar, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
-            ->line(Lang::getFromJson('Aguardamos seu cadastro para darmos início a parceria.'));
+        
+            return (new MailMessage)
+                ->subject(Lang::getFromJson('Novo Correspondente'))
+                ->markdown('email.convite')
+                ->line(Lang::getFromJson('Você foi adicionado como corresponde por '.$this->conta->nm_razao_social_con.'. Clique no botão abaixo para acessar:'))
+                ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao')))
+                ->line(Lang::getFromJson('Após acessar, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
+                ->line(Lang::getFromJson('Aguardamos seu cadastro para darmos início a parceria.'));
+
+
     }
 
     /**

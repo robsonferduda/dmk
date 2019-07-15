@@ -100,6 +100,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
 	Route::get('correspondente/buscar','CorrespondenteController@buscar');
 	Route::get('correspondente/todos',function(){ return view('correspondente/todos'); });
+	Route::get('correspondente/todos/buscar','CorrespondenteController@buscarTodos');
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
