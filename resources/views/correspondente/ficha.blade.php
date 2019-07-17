@@ -208,7 +208,7 @@
                                                 <label class="label">Estado</label>          
                                                 <select id="pai_cidade_endereco" name="cd_estado_est" class="select2 estado">
                                                     <option selected value="">Selecione</option>
-                                                    @foreach(\App\Estado::all() as $estado) 
+                                                    @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                         <option {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade) ? (old('cd_estado_est', $correspondente->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                     @endforeach
 
