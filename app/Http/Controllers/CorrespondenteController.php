@@ -1002,6 +1002,8 @@ class CorrespondenteController extends Controller
         $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
         $conta_correspondente = ContaCorrespondente::where('cd_conta_con',$this->conta)->where('cd_correspondente_cor',$request->conta)->first();
 
+        $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
+
         $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
         $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
 
