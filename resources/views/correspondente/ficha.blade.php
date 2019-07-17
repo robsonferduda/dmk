@@ -25,7 +25,7 @@
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
                 <header role="heading" class="ui-sortable-handle">
-                    <span class="widget-icon"> <i class="fa fa-edit"></i></span><h2>Cadastro de Usuário </h2>             
+                    <span class="widget-icon"> <i class="fa fa-edit"></i></span><h2>Cadastro de Correspondente </h2>             
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
@@ -84,6 +84,9 @@
 
                             <header>
                                 <i class="fa fa-map-marker"></i> Comarca de Origem
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarca de Origem" data-content="Informe a comarca de origem do correspondente. Caso deseje alterar o valor informado, clique sobre ela para excluir e adicione novamente.">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
                             </header>
                             <fieldset>
                                 <div class="row">                     
@@ -123,13 +126,16 @@
                             <hr/>
 
                             <header>
-                                <i class="fa fa-check"></i> Cidades de Atuação 
+                                <i class="fa fa-check"></i> Comarcas de Atuação 
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarcas de Atuação" data-html="true" data-content="Para informar somente uma cidade, selecione o estado e em seguida a cidade desejada. Para inserir todas as cidades de um estado, selecione o estado e na opção Cidade selecione a opção: <strong>Todas as cidades <strong>">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
                             </header>
                             <fieldset>
                                 <div class="row">                     
                                     <section class="col col-4">
                                         <label class="label" >Estado</label>          
-                                        <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
+                                        <select id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
                                                 @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
@@ -479,6 +485,7 @@
         $('.adicionar-atuacao').click(function(){
 
             var entidade = $("#entidade").val();
+            var estado = $("#pai_cidade_atuacao").val();
             var cidade = $("#cidade_atuacao").val();
             var atuacao = $(this).data("atuacao");
 
@@ -491,6 +498,7 @@
                     "_token": $('meta[name="token"]').attr('content'),
                     "entidade": entidade,
                     "cidade": cidade,
+                    "estado": estado,
                     "atuacao": atuacao
                 },
                 beforeSend: function()
@@ -693,6 +701,7 @@
                         {                    
                             $('.'+target).empty();
                             $('.'+target).append('<option selected value="">Selecione</option>');
+                            $('.'+target).append('<option value="0">Todas as cidades</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

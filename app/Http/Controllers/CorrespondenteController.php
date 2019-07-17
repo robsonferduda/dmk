@@ -12,6 +12,7 @@ use App\Enums\TipoEnderecoEletronico;
 use App\Fone;
 use App\User;
 use App\Conta;
+use App\Estado;
 use App\Endereco;
 use App\Entidade;
 use App\Cidade;
@@ -894,7 +895,6 @@ class CorrespondenteController extends Controller
 
     public function adicionarAtuacao(Request $request){
 
-
         if($request->atuacao == 'S'){
 
             $origem = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('fl_origem_cat',$request->atuacao)->first();
@@ -927,25 +927,49 @@ class CorrespondenteController extends Controller
 
         }else{
 
-            $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
+            if($request->cidade == 0){
 
-            if($atuacao){
+                $cidades = Cidade::where('cd_estado_est',$request->estado)->get();
 
-                return Response::json(['msg' => 'Comarca de atuação já informada'], 500);
+                foreach ($cidades as $cidade) {
+                    
+                    $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $cidade->cd_cidade_cde)->first();
+
+                    if(!$atuacao){
+
+                        $atuacao = new CidadeAtuacao();
+                        $atuacao->cd_entidade_ete = $request->entidade;
+                        $atuacao->cd_cidade_cde = $cidade->cd_cidade_cde;
+                        $atuacao->fl_origem_cat = 'N';
+
+                        $atuacao->save();
+
+                    }
+
+                }
+                return Response::json(array('message' => 'Cidades adicionadas com sucesso'), 200);
 
             }else{
 
-                $atuacao = new CidadeAtuacao();
-                $atuacao->cd_entidade_ete = $request->entidade;
-                $atuacao->cd_cidade_cde = $request->cidade;
-                $atuacao->fl_origem_cat = $request->atuacao;
+                $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
 
-                if($atuacao->save())
-                    return Response::json(array('message' => 'Registro adicionado com sucesso'), 200);
-                else
-                    return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
-            } 
+                if($atuacao){
 
+                    return Response::json(['msg' => 'Comarca de atuação já informada'], 500);
+
+                }else{
+
+                    $atuacao = new CidadeAtuacao();
+                    $atuacao->cd_entidade_ete = $request->entidade;
+                    $atuacao->cd_cidade_cde = $request->cidade;
+                    $atuacao->fl_origem_cat = $request->atuacao;
+
+                    if($atuacao->save())
+                        return Response::json(array('message' => 'Registro adicionado com sucesso'), 200);
+                    else
+                        return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
+                } 
+            }
         }
 
     }
