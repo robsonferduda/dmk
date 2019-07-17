@@ -91,7 +91,7 @@
                                         <label class="label" >Estado</label>          
                                         <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::all() as $estado) 
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
                                         </select> 
@@ -131,7 +131,7 @@
                                         <label class="label" >Estado</label>          
                                         <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::all() as $estado) 
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
                                         </select> 
