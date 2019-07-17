@@ -876,15 +876,59 @@ class CorrespondenteController extends Controller
 
     public function adicionarAtuacao(Request $request){
 
-        $atuacao = new CidadeAtuacao();
-        $atuacao->cd_entidade_ete = $request->entidade;
-        $atuacao->cd_cidade_cde = $request->cidade;
-        $atuacao->fl_origem_cat = $request->atuacao;
 
-        if($atuacao->save())
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        else
-            return Response::json(array('message' => 'Erro ao excluir o registro'), 500); 
+        if($request->atuacao == 'S'){
+
+            $origem = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('fl_origem_cat',$request->atuacao)->first();
+
+            if($origem){
+
+                return Response::json(['msg' => 'Comarca de origem já foi informada'], 500);
+
+            }else{
+
+                $cidade = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
+
+                if($cidade){
+
+                    $cidade->fl_origem_cat = 'S';
+                    $cidade->save();
+
+                }else{
+
+                    $atuacao = new CidadeAtuacao();
+                    $atuacao->cd_entidade_ete = $request->entidade;
+                    $atuacao->cd_cidade_cde = $request->cidade;
+                    $atuacao->fl_origem_cat = $request->atuacao;
+                    $atuacao->save();
+
+                }
+                 
+            }
+                
+
+        }else{
+
+            $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
+
+            if($atuacao){
+
+                return Response::json(['msg' => 'Comarca de atuação já informada'], 500);
+
+            }else{
+
+                $atuacao = new CidadeAtuacao();
+                $atuacao->cd_entidade_ete = $request->entidade;
+                $atuacao->cd_cidade_cde = $request->cidade;
+                $atuacao->fl_origem_cat = $request->atuacao;
+
+                if($atuacao->save())
+                    return Response::json(array('message' => 'Registro adicionado com sucesso'), 200);
+                else
+                    return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
+            } 
+
+        }
 
     }
 

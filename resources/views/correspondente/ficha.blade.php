@@ -461,7 +461,8 @@
             </div>
                 <div class="modal-body" style="text-align: center;">
                         <h4 class="text-danger"><i class="fa fa-times"></i> Ops...</h4>
-                        <h4>Ocorreu um erro ao processar sua operação. Tente novamente ou entre em contato com nosso suporte técnico.</h4>
+                        <h4>Ocorreu um erro ao processar sua operação.</h4>
+                        <h4 class="msg_erro_adicao"></h4>
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Fechar</a>
@@ -485,6 +486,7 @@
             {
                 type: "POST",
                 url: "../../correspondente/atuacao/adicionar",
+                dataType: "json",
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
                     "entidade": entidade,
@@ -506,8 +508,9 @@
                 },
                 error: function(response)
                 {
-                    console.log("Erro");
+                    console.log(response.responseJSON.msg);
                     $("#processamento").modal('hide');
+                    $(".msg_erro_adicao").html(response.responseJSON.msg);
                     $("#modal_erro_atuacao").modal('show');
                 }
             });
@@ -546,8 +549,10 @@
                 },
                 error: function(response)
                 {
-                    console.log("Erro");
+                    console.log(response.responseJSON.msg);
                     $("#processamento").modal('hide');
+                    $(".msg_erro_adicao").html(response.responseJSON.msg);
+                    $("#modal_erro_atuacao").modal('show');
                 }
             });
 
