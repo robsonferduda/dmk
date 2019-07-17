@@ -59,8 +59,12 @@
 
                         <section class="col col-md-4">                           
                             <label class="label label-black">Correspondente</label><br />
+                            <div class="input-group" style="width: 100%">
                             <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor')}}">
-                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}">                         
+                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}"> 
+                             <div style="clear: all;"></div>
+                            <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
+                            </div>                        
                         </section>
                         
                         <section class="col col-md-3">
@@ -87,6 +91,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        $( "#correspondente_auto_complete" ).focusout(function(){
+           if($("input[name='cd_correspondente_cor']").val() == ''){
+                $("#correspondente_auto_complete").val('');
+           }
+        });
+
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
 
         $( "#correspondente_auto_complete" ).autocomplete({
@@ -100,6 +110,12 @@
           open: function(event, ui){
             
           }
+        });
+
+        $('#limpar-correspondente').click(function(){
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='nm_correspondente_cor']").val('');
+
         });
     
     });
