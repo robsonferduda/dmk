@@ -64,7 +64,7 @@ class RelatorioJasper
         $input = resource_path()."/reports/$sourceName";   
         $output = $output;
         $options = [
-            'format' => ['pdf'],
+            'format' => ['xls'],
             'locale' => 'pt',
             'params' => $this->parametros,
             'db_connection' => $this->getDatabaseConfig()
@@ -76,7 +76,7 @@ class RelatorioJasper
             $options
         )->execute();
 
-        $file = $output . '.pdf';
+        $file = $output . '.xls';
         $path = $file;
 
         // caso o arquivo não tenha sido gerado retorno um erro 404

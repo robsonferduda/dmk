@@ -85,7 +85,9 @@ class RelatorioCorrespondenteController extends Controller
         $jasper = new RelatorioJasper();
         $jasper->processar($parametros,$sourceName,$fileName,false);
 
-        return view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
+        return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
+                                ->with('dtFim' ,str_replace('/','',$request->dtFim))
+                                ->with('relatorio',$request->relatorio); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
     }
 
     private function getFiles(){

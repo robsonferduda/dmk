@@ -27,18 +27,18 @@
                     <div class="row">
                         <section class="col col-md-2">
                             <label class="label label-black">Data de Início</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{old('dtInicio')}}" required >
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
                             
                         </section>
                         <section class="col col-md-2">                           
                             <label class="label label-black">Data Fim</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{old('dtFim')}}" required >                            
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
                         </section>
                         <section class="col col-md-4">                                                        
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
-                                <option value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
+                                <option {{ (\Session::get('relatorio') ? 'selected' : '') }} value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
                                 <option value="pagamento-correspondentes-sumarizado">Pagamento de Correspondentes (Sumarizado)</option>
                             </select>                            
                         </section>     
@@ -109,7 +109,7 @@
                                             {{ $arquivo['data'] }}
                                         </td>
                                         <td>
-                                            <a href="../arquivo/{{$arquivo['nome']}}" >{{ $arquivo['nome'] }}</a>
+                                            <a href="arquivo/{{$arquivo['nome']}}" >{{ $arquivo['nome'] }}</a>
                                         </td>
                                         <td>
                                             {{ $arquivo['tamanho'].'KB' }}

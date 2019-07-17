@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="2200" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2160" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
+	<property name="template.type" value="columnar"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="bancoQuery" class="java.lang.String"/>
+	<parameter name="dataQuery" class="java.lang.String"/>
+	<parameter name="conta" class="java.lang.Integer"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="dataInicio" class="java.lang.String"/>
+	<parameter name="dataFim" class="java.lang.String"/>
+	<parameter name="correspondenteQuery" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+      nu_processo_pro,
+      t2.nm_titular_dba,
+      t2.nu_cpf_cnpj_dba,
+      t4.cd_banco_ban,
+      t4.nm_banco_ban,  
+      t2.nu_agencia_dba,
+      t2.nu_conta_dba,
+      t5.vl_taxa_honorario_correspondente_pth,
+      t6.nm_tipo_conta_tcb,
+      t8.nm_conta_correspondente_ccr as nm_razao_social_con,
+      t7.nm_tipo_servico_tse,
+      t3.dt_prazo_fatal_pro
+FROM
+    processo_pro t3
+    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
+    INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
+    INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
+    INNER JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete)
+    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+WHERE
+    t3.deleted_at IS NULL
+    and
+    t8.cd_conta_con = $P{conta}  	
+$P!{dataQuery}
+$P!{bancoQuery}
+$P!{correspondenteQuery}]]>
+	</queryString>
+	<field name="nu_processo_pro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_processo_pro"/>
+	</field>
+	<field name="nm_titular_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_titular_dba"/>
+	</field>
+	<field name="nu_cpf_cnpj_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_cpf_cnpj_dba"/>
+	</field>
+	<field name="cd_banco_ban" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cd_banco_ban"/>
+	</field>
+	<field name="nm_banco_ban" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_banco_ban"/>
+	</field>
+	<field name="nu_agencia_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_agencia_dba"/>
+	</field>
+	<field name="nu_conta_dba" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nu_conta_dba"/>
+	</field>
+	<field name="vl_taxa_honorario_correspondente_pth" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="vl_taxa_honorario_correspondente_pth"/>
+	</field>
+	<field name="nm_tipo_conta_tcb" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
+	</field>
+	<field name="nm_razao_social_con" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_razao_social_con"/>
+	</field>
+	<field name="nm_tipo_servico_tse" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_servico_tse"/>
+	</field>
+	<field name="dt_prazo_fatal_pro" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="dt_prazo_fatal_pro"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="132">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+			<textField>
+				<reportElement x="0" y="0" width="1960" height="66" uuid="43cbd898-2560-4973-aff8-eabee6eae517">
+					<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+					<property name="com.jaspersoft.layout.grid.y" value="1"/>
+					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+				</reportElement>
+				<textElement>
+					<font size="26" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="SubTitle" x="0" y="66" width="1960" height="66" uuid="1ab5730b-df42-4fb8-83ad-79e09bdfa639">
+					<property name="com.jaspersoft.layout.grid.x" value="-1"/>
+					<property name="com.jaspersoft.layout.grid.y" value="2"/>
+					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+					<property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+					<property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+					<property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="22" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Pagamentos de Correspondentes]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+			<staticText>
+				<reportElement x="0" y="0" width="179" height="23" uuid="ad70ca34-8359-49fb-973e-353335044f02">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9fe36938-7772-42d8-83ea-341ab0a97e0c"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Processo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="179" y="0" width="179" height="23" uuid="3652f5a1-3bed-4cf3-85bd-ba9198932866">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6681762-4648-431c-94d1-ad982a889938"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razão Social]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="358" y="0" width="178" height="23" uuid="bdc1acba-80b8-4f3a-b6d9-837b0e95326a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c393130a-6d0f-46cd-b76e-780800880b29"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Serviço]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="536" y="0" width="178" height="23" uuid="cb02b493-4f2f-479d-a118-c583e26308bb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3edf1c1c-c065-4bec-b0a2-4e57d832a552"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prazo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="714" y="0" width="178" height="23" uuid="31158f80-f195-47cd-99ee-e51e045ed18f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="892" y="0" width="178" height="23" uuid="74257b0b-cc59-4e92-a557-1ddee1c5e1ad">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4010f1d4-c33d-45a4-bf54-a419ed386225"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome do Titular]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1070" y="0" width="178" height="23" uuid="a937817a-e71c-4cd4-8798-d572027fa20c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="839c6979-e3e1-4d1c-a330-44c32b835f3f"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPF/CNPJ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1248" y="0" width="252" height="23" uuid="8eb7d0b1-a98d-45b4-869c-f55c2caf15e7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a52172cf-35bf-4081-a80e-ff8502eeff37"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Banco]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1500" y="0" width="178" height="23" uuid="62238bfe-637c-4487-b8b5-56ca01930289">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffdfc381-0609-46c0-99dd-77211e38c55c"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1678" y="0" width="178" height="23" uuid="0d679a98-85e2-4b0e-9207-785c91c59053">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93cbf96-5ed9-4c39-93db-38cc59208b0f"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Conta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1856" y="0" width="178" height="23" uuid="09b30d58-508a-49ea-a3e5-766623ffccee">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9c0da29-4617-4235-87e9-95a9b6eba8ba"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Conta]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+			<textField>
+				<reportElement x="0" y="0" width="179" height="17" isPrintWhenDetailOverflows="true" uuid="a6e94697-37bb-42c7-872b-2475918e70eb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9fe36938-7772-42d8-83ea-341ab0a97e0c"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nu_processo_pro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="179" y="0" width="179" height="17" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6681762-4648-431c-94d1-ad982a889938"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nm_razao_social_con}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="358" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="15192a77-5da8-4df6-a7eb-0d6740865b19">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c393130a-6d0f-46cd-b76e-780800880b29"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nm_tipo_servico_tse}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="536" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="7f883af9-6bac-4fd2-85ba-407a7ae0797b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3edf1c1c-c065-4bec-b0a2-4e57d832a552"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{dt_prazo_fatal_pro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="714" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="892" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="78134d10-fff5-4901-916f-19be5706a4f4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4010f1d4-c33d-45a4-bf54-a419ed386225"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1070" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="e47acc9e-9a65-433e-adef-2d8d945495ef">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="839c6979-e3e1-4d1c-a330-44c32b835f3f"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="1248" y="0" width="252" height="17" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a52172cf-35bf-4081-a80e-ff8502eeff37"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1500" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffdfc381-0609-46c0-99dd-77211e38c55c"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1678" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="f749dc17-6160-48c3-82d4-c34be44bb02d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93cbf96-5ed9-4c39-93db-38cc59208b0f"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1856" y="0" width="178" height="17" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9c0da29-4617-4235-87e9-95a9b6eba8ba"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
