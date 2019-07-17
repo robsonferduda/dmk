@@ -53,7 +53,7 @@
                                             <section class="col col-3 box-pessoa-juridica">
                                                 <label class="label">CNPJ</label>
                                                 <label class="input">
-                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
+                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
                     
