@@ -708,6 +708,7 @@ class CorrespondenteController extends Controller
             $correspondente_cadastro = new Correspondente();
             $correspondente_cadastro->email = $email;
 
+            //Se ainda não existe correspondente, cria e vincula ele à conta
             if(empty($unique)){
 
                 $conta = new Correspondente();        
@@ -776,9 +777,9 @@ class CorrespondenteController extends Controller
             }else{
 
                 //Verifica se o correspondente já está presente na conta
-                $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->first();
+                $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->withTrashed()->get();
 
-                if(is_null($correspondente)){
+                if($conta_correspondente->isEmpty()){
 
                     //Se já possui cadastro, cria somente a entidade para associar os dados e insere o vínculo com a conta
                     $entidade_correspondente = new Entidade;
@@ -821,8 +822,25 @@ class CorrespondenteController extends Controller
 
                 }else{
 
-                    Flash::warning('Correspondente já faz parte da sua lista');
-                    return false;
+                    //Quando existir correspondente que foi excluído, restaura o código antigo, fazendo deleted_at = null
+                    $correspondente = $conta_correspondente->get(0);
+
+                    if(is_null($correspondente->deleted_at)){
+
+                        Flash::warning('Correspondente já faz parte da sua lista');
+                        return false;
+
+                    }else{
+
+                        $correspondente->nm_conta_correspondente_ccr = $nome;
+                        $correspondente->deleted_at = null;
+                        $correspondente->save();
+
+                        Flash::success('Correspondente adicionado com sucesso');
+                        return $correspondente->cd_correspondente_cor;
+
+                    }
+
                 }    
 
             }
