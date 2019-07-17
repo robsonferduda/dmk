@@ -14,9 +14,6 @@
                 <i class="fa-fw fa fa-file-o"></i> Correspondentes <span> > Relatórios</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-        </div>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -67,13 +64,20 @@
                             </div>                        
                         </section>
                         
-                        <section class="col col-md-3">
+                        {{--<section class="col col-md-3">
                             <label class="label label-black">Processo</label><br />
-                            <input style="width: 100%" type="text" name="nu_processo_pro" class="form-control" id="nu_processo_pro" placeholder="">    
-                        </section>     
-                         <section class="col col-md-3">
+                            <input style="width: 100%" type="text" name="nu_processo_pro" id="nu_processo_pro" placeholder="">    
+                        </section> --}}    
+                        <section class="col col-md-2">
+                            <br />           
+                            <input type="checkbox" name="pdf" id="pdf" >  
+                            <label class="label label-black">PDF</label>  
+                            <input type="checkbox" name="excel" id="excel" >  
+                            <label class="label label-black">Excel</label>                              
+                        </section>
+                        <section class="col col-md-3">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar PDF</button>
+                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
                         </section>                                   
                     </div>
                     <div class="row">
@@ -82,7 +86,48 @@
                 </form>
             </div>
             <div style="clear: both;"></div>
+             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Arquivos</h2>
+                </header>
+                 <div>
+                    <div class="widget-body no-padding">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>                         
+                                <tr style="font-size: 12px">                   
+                                    <th>Data</th>                    
+                                    <th>Nome</th>
+                                    <th>Tamanho</th>                                                                                      
+                                    <th data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 12px">
+                                @foreach($arquivos as $arquivo)
+                                    <tr>
+                                        <td>
+                                            {{ $arquivo['data'] }}
+                                        </td>
+                                        <td>
+                                            <a href="../arquivo/{{$arquivo['nome']}}" >{{ $arquivo['nome'] }}</a>
+                                        </td>
+                                        <td>
+                                            {{ $arquivo['tamanho'].'KB' }}
+                                        </td>
+                                        <td>
+                                            <div style="display: block;padding: 1px 1px 1px 1px">
+                                                <button title="Excluir" data-url="reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                            </div>    
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </article>
+
     </div>
 </div>
 @endsection

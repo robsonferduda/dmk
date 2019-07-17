@@ -19,9 +19,9 @@ class RelatorioCorrespondenteController extends Controller
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
-    public function relatorios(){
-        
-        return view('correspondente/relatorios');
+    public function relatorios(){   
+
+        return view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
 
         // $fileName = "correspondente";
         // $sourceName = "extrato-correspondentes.jrxml";
@@ -42,14 +42,29 @@ class RelatorioCorrespondenteController extends Controller
 
         $empresa = $conta->nm_razao_social_con;
 
+        $bancoQuery = '';
+        $correspondenteQuery = '';
+
         if($request->relatorio == 'pagamento-correspondentes-por-processo'){
             $sourceName = 'extrato-correspondentes-por-processo.jrxml';
-            $fileName   = 'Pagamento de Correspondentes (Por Processo)';            
+            $fileName   = 'Pagamento de Correspondentes (Por Processo)';     
+
+            if(!empty($request->cd_correspondente_cor))
+                $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
+
+            if(!empty($request->cd_banco_ban)) 
+                $bancoQuery = " AND t2.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";       
         }
 
         if($request->relatorio == 'pagamento-correspondentes-sumarizado'){
             $sourceName = 'extrato-correspondentes.jrxml';
             $fileName   = 'Pagamento de Correspondentes (Sumarizado)';
+
+            if(!empty($request->cd_correspondente_cor))
+                $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
+
+            if(!empty($request->cd_banco_ban)) 
+                $bancoQuery = " AND t4.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";  
         }
 
         $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
@@ -57,13 +72,8 @@ class RelatorioCorrespondenteController extends Controller
        
         $dataQuery = " AND dt_prazo_fatal_pro between '$dtInicio' and '$dtFim' ";
 
-        $bancoQuery = '';
-        $correspondenteQuery = '';
-
-        if(!empty($request->cd_correspondente_cor))
-            $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
-
-        if(!empty($request->cd_banco_ban)) $bancoQuery = " AND t2.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";
+       //dd($dataQuery);
+        
         $parametros = array('bancoQuery'          => $bancoQuery,
                             'dataQuery'           => $dataQuery,
                             'conta'               => $this->conta, 
@@ -73,7 +83,34 @@ class RelatorioCorrespondenteController extends Controller
                             'correspondenteQuery' => $correspondenteQuery);
 
         $jasper = new RelatorioJasper();
-        return $jasper->processar($parametros,$sourceName,$fileName);
+        $jasper->processar($parametros,$sourceName,$fileName,false);
+
+        return view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
+    }
+
+    private function getFiles(){
+
+        $arquivos = array();
+        foreach(\Storage::disk('reports')->files("$this->conta") as $file){
+
+            $arquivos[] = array('nome' => substr($file, strpos($file,'/')+1), 'data' => date('d/m/Y H:i:s',\Storage::disk('reports')->lastModified($file)),'tamanho' => round(\Storage::disk('reports')->size($file)/1024,2) );           
+        }
+
+        return $arquivos;
+    }
+
+    public function excluir($nome){
+        
+        \Storage::disk('reports')->delete("$this->conta/".$nome);
+
+        return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
+
+    }
+
+    public function arquivo($nome){
+        //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
+        return response()->download(storage_path('reports/'."$this->conta/".$nome));
+
     }
 
 }
