@@ -20,12 +20,7 @@
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
             <a data-toggle="modal" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
-            <form style="display: inline; margin-top: 10px;" class="pull-right" action="{{ url('processo/atualizar-status') }}" method="POST">
-                {{ csrf_field() }}
-                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
-            </form>
+            
         </div>
     </div>
     <div class="row">
@@ -41,26 +36,44 @@
                     </div>
                 @endif
                 <div class="well">
-                    <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
-                        {{ csrf_field() }}
-                        <fieldset>
-                            <div class="row"> 
-                                <section class="col col-md-4">
-                                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
-                                    <label class="label label-black" >Selecione um Status para o Processo</label>          
-                                    <select id="status" name="status" class="select2">
-                                        <option selected value="0">Selecione uma situação</option>
-                                        @foreach(App\StatusProcesso::all() as $status)
-                                            <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
-                                        @endforeach
-                                    </select> 
-                                </section> 
-                                <section class="col col-md-6">
-                                    <button class="btn btn-success marginTop17" type="submit"><i class="fa fa-refresh"></i> Atualizar Status</button>
-                                </section> 
-                            </div>
-                        </fieldset>
-                    </form>
+                    <div style="float: left; width: 60%;">
+                        <form style="display: inline;" action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
+                            {{ csrf_field() }}
+                            <fieldset>
+                                
+                                    <div style="float: left; width: 60%;">
+                                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                        <label class="label label-black" >Selecione um Status para o Processo</label>          
+                                        <select id="status" name="status" class="select2">
+                                            <option selected value="0">Selecione uma situação</option>
+                                            @foreach(App\StatusProcesso::all() as $status)
+                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </section> 
+                                    <div  style="float: left; width: 30%;">
+                                        <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
+                                    </section> 
+                                
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div style="float: left; width: 35%;">
+                        <form style="display: inline; float: left; margin-left: 20px; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+                        </form>
+                    
+                        <form style="display: inline; float: left; margin-left: 20px; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
+                            <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                        </form>
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">

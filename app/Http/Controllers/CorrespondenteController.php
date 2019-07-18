@@ -56,7 +56,7 @@ class CorrespondenteController extends Controller
                                               ->with('correspondente')
                                               ->with(['entidade.identificacao' => function($query){
                                                     $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
 
                                               }])
                                               ->with('correspondente.entidade.usuario')
@@ -103,7 +103,7 @@ class CorrespondenteController extends Controller
                                                 ->with('correspondente')
                                                 ->with(['entidade.identificacao' => function($query){
                                                     $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
 
                                                 }])
                                                 ->with('correspondente.entidade.usuario')
