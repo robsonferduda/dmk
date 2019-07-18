@@ -20,32 +20,20 @@ $(document).ready(function() {
 	$('.telefone').mask("(00) 0000-00009");
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
-	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});	
+	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});
 
-	$("#nu_cpf_cnpj_dba").keydown(function(){
-	    try {
-	        $("#nu_cpf_cnpj_dba").unmask();
-	    } catch (e) {}
+	var CpfCnpjMaskBehavior = function (val){
+			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';
+		},
+    	cpfCnpjpOptions = {
+    		onKeyPress: function(val, e, field, options){
+      			field.mask(CpfCnpjMaskBehavior.apply({}, arguments), options);
+      		}
+    	};
 
-	    var tamanho = $("#nu_cpf_cnpj_dba").val().length;
-
-	    if(tamanho < 11){
-	        $("#nu_cpf_cnpj_dba").mask("999.999.999-99");
-	    } else {
-	        $("#nu_cpf_cnpj_dba").mask("99.999.999/9999-99");
-	    }
-
-	    // ajustando foco
-	    var elem = this;
-	    setTimeout(function(){
-	        // mudo a posição do seletor
-	        elem.selectionStart = elem.selectionEnd = 10000;
-	    }, 0);
-	    // reaplico o valor para mudar o foco
-	    var currentValue = $(this).val();
-	    $(this).val('');
-	    $(this).val(currentValue);
-	});
+	$(function() {
+		$('#nu_cpf_cnpj_dba').mask(CpfCnpjMaskBehavior, cpfCnpjpOptions);
+	})	
 
 	/** =======================================================   **/
 
