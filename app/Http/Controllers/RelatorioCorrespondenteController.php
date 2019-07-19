@@ -99,15 +99,22 @@ class RelatorioCorrespondenteController extends Controller
 
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
-                                ->with('relatorio',$request->relatorio); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
+                                ->with('relatorio',$request->relatorio)
+                                ->with('extensao',$request->extensao); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
     }
 
     private function getFiles(){
 
         $arquivos = array();
-        foreach(\Storage::disk('reports')->files("$this->conta") as $file){
 
-            $arquivos[] = array('nome' => substr($file, strpos($file,'/')+1), 'data' => date('d/m/Y H:i:s',\Storage::disk('reports')->lastModified($file)),'tamanho' => round(\Storage::disk('reports')->size($file)/1024,2) );           
+        $files = collect(\File::allFiles(storage_path()."/reports/".$this->conta))
+                 ->sortByDesc(function ($file) {
+                    return $file->getCTime();
+                });
+        
+        foreach($files as $file){
+            
+            $arquivos[] = array('nome' => $file->getFilename(), 'data' => date('d/m/Y H:i:s',$file->getCTime()),'tamanho' => round($file->getSize()/1024,2) );           
         }
 
         return $arquivos;

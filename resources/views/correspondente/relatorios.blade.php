@@ -38,8 +38,8 @@
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
-                                <option {{ (\Session::get('relatorio') ? 'selected' : '') }} value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
-                                <option value="pagamento-correspondentes-sumarizado">Pagamento de Correspondentes (Sumarizado)</option>
+                                <option {{ (\Session::get('relatorio') == 'pagamento-correspondentes-por-processo'  ? 'selected' : '') }} value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
+                                <option {{ (\Session::get('relatorio') == 'pagamento-correspondentes-sumarizado'  ? 'selected' : '' ) }} value="pagamento-correspondentes-sumarizado">Pagamento de Correspondentes (Sumarizado)</option>
                             </select>                            
                         </section>     
                         <section class="col col-md-4">      
@@ -70,10 +70,13 @@
                         </section> --}}    
                         <section class="col col-md-2">
                             <br />           
-                            <input type="radio" name="extensao" id="extensao" value="pdf" checked>  
+                            <input type="radio" name="extensao" id="extensao" value="pdf" {{ (\Session::get('extensao') != 'xlsx'  ? 'checked' : '') }} >  
                             <label class="label label-black">PDF</label>  
-                            <input type="radio" name="extensao" id="extensao" value="xlsx" >  
-                            <label class="label label-black">Excel</label>                              
+                            <input type="radio" name="extensao" id="extensao" value="xlsx" {{ (\Session::get('extensao') == 'xlsx'  ? 'checked' : '') }} >  
+                            <label class="label label-black">Excel</label>      
+                            <input type="checkbox" name="finalizado" id="finalizado" value="S" checked="" >  
+                            <label class="label label-black">Processo Finalizado</label> 
+
                         </section> 
                         <section class="col col-md-3">
                             <br />

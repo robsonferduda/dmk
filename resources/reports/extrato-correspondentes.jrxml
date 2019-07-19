@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DMKAdapterLocalHost.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
@@ -37,7 +37,7 @@ FROM
     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
     INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
     INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
-    INNER JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete)
+    INNER JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete  and t2.deleted_at is null)
     INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
     INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
 WHERE
@@ -89,7 +89,7 @@ GROUP BY
 		<groupHeader>
 			<band height="21">
 				<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
-				<textField pattern="¤#,##0.##;¤-##0.##">
+				<textField pattern="R$#,##0.##;R$-##0.##">
 					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
 					<textElement>
 						<font isBold="true"/>
