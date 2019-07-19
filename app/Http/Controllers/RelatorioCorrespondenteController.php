@@ -46,7 +46,13 @@ class RelatorioCorrespondenteController extends Controller
         $correspondenteQuery = '';
 
         if($request->relatorio == 'pagamento-correspondentes-por-processo'){
-            $sourceName = 'extrato-correspondentes-por-processo.jrxml';
+
+            if($request->extensao == 'pdf'){
+                $sourceName = 'extrato-correspondentes-por-processo.jrxml';
+            }else{
+                $sourceName = 'extrato-correspondentes-por-processo-xls.jrxml';
+            }
+
             $fileName   = 'Pagamento de Correspondentes (Por Processo)';     
 
             if(!empty($request->cd_correspondente_cor))
@@ -57,7 +63,12 @@ class RelatorioCorrespondenteController extends Controller
         }
 
         if($request->relatorio == 'pagamento-correspondentes-sumarizado'){
-            $sourceName = 'extrato-correspondentes.jrxml';
+
+            if($request->extensao == 'pdf'){
+                $sourceName = 'extrato-correspondentes.jrxml';
+            }else{
+                $sourceName = 'extrato-correspondentes-xls.jrxml';
+            }
             $fileName   = 'Pagamento de Correspondentes (Sumarizado)';
 
             if(!empty($request->cd_correspondente_cor))
@@ -83,7 +94,8 @@ class RelatorioCorrespondenteController extends Controller
                             'correspondenteQuery' => $correspondenteQuery);
 
         $jasper = new RelatorioJasper();
-        $jasper->processar($parametros,$sourceName,$fileName,false);
+
+        $jasper->processar($parametros,$sourceName,$fileName,false,$request->extensao);
 
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))

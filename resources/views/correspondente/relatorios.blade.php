@@ -70,11 +70,11 @@
                         </section> --}}    
                         <section class="col col-md-2">
                             <br />           
-                            <input type="checkbox" name="pdf" id="pdf" >  
+                            <input type="radio" name="extensao" id="extensao" value="pdf" checked>  
                             <label class="label label-black">PDF</label>  
-                            <input type="checkbox" name="excel" id="excel" >  
+                            <input type="radio" name="extensao" id="extensao" value="xlsx" >  
                             <label class="label label-black">Excel</label>                              
-                        </section>
+                        </section> 
                         <section class="col col-md-3">
                             <br />
                             <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>

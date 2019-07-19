@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DMKAdapterLocalHost.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
@@ -88,7 +88,8 @@ GROUP BY
 		<groupExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></groupExpression>
 		<groupHeader>
 			<band height="21">
-				<textField>
+				<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
+				<textField pattern="¤#,##0.##;¤-##0.##">
 					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
 					<textElement>
 						<font isBold="true"/>
@@ -96,11 +97,11 @@ GROUP BY
 					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="355" y="0" width="100" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
-					<textElement textAlignment="Right">
+					<reportElement x="400" y="0" width="55" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
+					<textElement textAlignment="Left">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Valor: R$]]></text>
+					<text><![CDATA[Valor:]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="100" y="0" width="190" height="15" uuid="b24d7a17-bcce-4fb0-bf6e-10995c5292f5"/>
@@ -143,26 +144,38 @@ GROUP BY
 				<textElement textAlignment="Center">
 					<font size="22" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Pagamentos de Correspondentes]]></text>
+				<text><![CDATA[Pagamento de Correspondentes]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="25" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="554" height="16" uuid="0d3ff172-1f17-4b2f-ab87-3cd2fe8da6e4"/>
+				<reportElement x="0" y="0" width="554" height="12" uuid="0d3ff172-1f17-4b2f-ab87-3cd2fe8da6e4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dataInicio} +" até "+$P{dataFim}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="12" width="554" height="12" forecolor="#D40C08" uuid="70580998-928a-4a9f-a30c-b432dc1bcd92">
+					<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Não há registros para os parâmetros informados!]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="82" splitType="Stretch">
+		<band height="90" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
 			<textField>
 				<reportElement x="100" y="0" width="280" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
@@ -184,25 +197,33 @@ GROUP BY
 				<text><![CDATA[Banco:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="45" width="280" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
+				<reportElement x="100" y="60" width="280" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="45" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
+				<reportElement x="0" y="60" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
 				<text><![CDATA[Conta:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="60" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
+				<reportElement x="100" y="75" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="60" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
+				<reportElement x="0" y="75" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
 				<text><![CDATA[Tipo de Conta:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="100" y="30" width="280" height="15" uuid="6a8d8f86-1d27-4813-a774-1b459a2126e9"/>
 				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="100" y="45" width="280" height="15" uuid="6ce7d71f-7929-428d-83b4-fc99ff6b9576"/>
+				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="45" width="100" height="15" uuid="86be7ff8-072b-48fa-870d-e49c993239b9"/>
+				<text><![CDATA[Agência]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

@@ -50,7 +50,7 @@ class RelatorioJasper
         ];
     }
 
-    public function processar($parametros = array(),$sourceName,$fileName,$download=true)
+    public function processar($parametros = array(),$sourceName,$fileName,$download=true,$extensao='pdf')
     {
     
         \File::makeDirectory(storage_path().'/reports/'.$this->conta, $mode = 0744, true, true);
@@ -64,7 +64,7 @@ class RelatorioJasper
         $input = resource_path()."/reports/$sourceName";   
         $output = $output;
         $options = [
-            'format' => ['xls'],
+            'format' => [$extensao],
             'locale' => 'pt',
             'params' => $this->parametros,
             'db_connection' => $this->getDatabaseConfig()
@@ -76,7 +76,7 @@ class RelatorioJasper
             $options
         )->execute();
 
-        $file = $output . '.xls';
+        $file = $output . '.'.$extensao;
         $path = $file;
 
         // caso o arquivo não tenha sido gerado retorno um erro 404
