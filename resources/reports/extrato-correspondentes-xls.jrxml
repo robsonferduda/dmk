@@ -248,7 +248,7 @@ GROUP BY
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></textFieldExpression>
 			</textField>
-			<textField pattern="R$#,##0.##;R$-##0.##">
+			<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
 				<reportElement x="179" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
 				</reportElement>
