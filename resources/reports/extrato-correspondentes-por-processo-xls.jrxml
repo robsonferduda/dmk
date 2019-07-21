@@ -335,7 +335,7 @@ GROUP BY
 				<reportElement stretchType="ElementGroupHeight" x="1248" y="0" width="252" height="19" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a52172cf-35bf-4081-a80e-ff8502eeff37"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cd_banco_ban}  != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="1500" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">

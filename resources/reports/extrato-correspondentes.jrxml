@@ -107,7 +107,7 @@ GROUP BY
 		<groupHeader>
 			<band height="21">
 				<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
-				<textField pattern="R$#,##0.##;R$-##0.##">
+				<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
 					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
 					<textElement>
 						<font isBold="true"/>
@@ -167,7 +167,7 @@ GROUP BY
 		</band>
 	</title>
 	<pageHeader>
-		<band height="25" splitType="Stretch">
+		<band height="25" splitType="Immediate">
 			<textField>
 				<reportElement x="0" y="0" width="554" height="12" uuid="0d3ff172-1f17-4b2f-ab87-3cd2fe8da6e4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -232,7 +232,7 @@ GROUP BY
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="30" width="280" height="15" uuid="6a8d8f86-1d27-4813-a774-1b459a2126e9"/>
-				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cd_banco_ban}  != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="45" width="280" height="15" uuid="6ce7d71f-7929-428d-83b4-fc99ff6b9576"/>

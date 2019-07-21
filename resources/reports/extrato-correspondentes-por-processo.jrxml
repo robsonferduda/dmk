@@ -143,7 +143,7 @@ GROUP BY
 					</textElement>
 					<text><![CDATA[Processo:]]></text>
 				</staticText>
-				<textField pattern="R$#,##0.##;R$-##0.##">
+				<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
 					<reportElement isPrintRepeatedValues="false" x="455" y="30" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77">
 						<printWhenExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth} != null]]></printWhenExpression>
 					</reportElement>
@@ -236,7 +236,7 @@ GROUP BY
 		</band>
 	</title>
 	<pageHeader>
-		<band height="26" splitType="Stretch">
+		<band height="26" splitType="Immediate">
 			<textField>
 				<reportElement x="0" y="0" width="554" height="12" uuid="3d48d093-e1ef-4653-8be9-0b7279d15882"/>
 				<textElement textAlignment="Center">
@@ -280,7 +280,7 @@ GROUP BY
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="30" width="280" height="15" uuid="80a3b43c-cc86-41e5-b332-58a315b2474c"/>
-				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cd_banco_ban}   != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="30" width="100" height="15" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2"/>
