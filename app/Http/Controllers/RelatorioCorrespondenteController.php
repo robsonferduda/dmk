@@ -121,6 +121,8 @@ class RelatorioCorrespondenteController extends Controller
 
     private function getFiles(){
 
+        \File::makeDirectory(storage_path().'/reports/'.$this->conta, $mode = 0744, true, true);
+
         $arquivos = array();
 
         $files = collect(\File::allFiles(storage_path()."/reports/".$this->conta))
