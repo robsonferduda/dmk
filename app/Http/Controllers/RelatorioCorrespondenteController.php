@@ -38,69 +38,85 @@ class RelatorioCorrespondenteController extends Controller
 
     public function buscar(Request $request){
 
-        $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
-        $empresa = $conta->nm_razao_social_con;
+        if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
 
-        $bancoQuery = '';
-        $correspondenteQuery = '';
+            $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
-        if($request->relatorio == 'pagamento-correspondentes-por-processo'){
+            $empresa = $conta->nm_razao_social_con;
 
-            if($request->extensao == 'pdf'){
-                $sourceName = 'extrato-correspondentes-por-processo.jrxml';
-            }else{
-                $sourceName = 'extrato-correspondentes-por-processo-xls.jrxml';
+            $bancoQuery = '';
+            $correspondenteQuery = '';
+            $statusQuery = '';
+
+            if($request->relatorio == 'pagamento-correspondentes-por-processo'){
+
+                if($request->extensao == 'pdf'){
+                    $sourceName = 'extrato-correspondentes-por-processo.jrxml';
+                }else{
+                    $sourceName = 'extrato-correspondentes-por-processo-xls.jrxml';
+                }
+
+                $fileName   = 'Pagamento de Correspondentes (Por Processo)';     
+
+                if(!empty($request->cd_correspondente_cor))
+                    $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
+
+                if(!empty($request->cd_banco_ban)) 
+                    $bancoQuery = " AND t2.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";       
             }
 
-            $fileName   = 'Pagamento de Correspondentes (Por Processo)';     
+            if($request->relatorio == 'pagamento-correspondentes-sumarizado'){
 
-            if(!empty($request->cd_correspondente_cor))
-                $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
+                if($request->extensao == 'pdf'){
+                    $sourceName = 'extrato-correspondentes.jrxml';
+                }else{
+                    $sourceName = 'extrato-correspondentes-xls.jrxml';
+                }
+                $fileName   = 'Pagamento de Correspondentes (Sumarizado)';
 
-            if(!empty($request->cd_banco_ban)) 
-                $bancoQuery = " AND t2.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";       
-        }
+                if(!empty($request->cd_correspondente_cor))
+                    $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
 
-        if($request->relatorio == 'pagamento-correspondentes-sumarizado'){
-
-            if($request->extensao == 'pdf'){
-                $sourceName = 'extrato-correspondentes.jrxml';
-            }else{
-                $sourceName = 'extrato-correspondentes-xls.jrxml';
+                if(!empty($request->cd_banco_ban)) 
+                    $bancoQuery = " AND t4.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";  
             }
-            $fileName   = 'Pagamento de Correspondentes (Sumarizado)';
 
-            if(!empty($request->cd_correspondente_cor))
-                $correspondenteQuery = "  AND t8.cd_correspondente_cor =  {$request->cd_correspondente_cor} ";
+            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
+            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
 
-            if(!empty($request->cd_banco_ban)) 
-                $bancoQuery = " AND t4.cd_banco_ban = '".str_pad($request->cd_banco_ban,3, '0', STR_PAD_LEFT)."' ";  
-        }
+            $dataQuery = " AND dt_prazo_fatal_pro between '$dtInicio' and '$dtFim' ";
 
-        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
-        $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
-       
-        $dataQuery = " AND dt_prazo_fatal_pro between '$dtInicio' and '$dtFim' ";
+            if(!empty($request->finalizado))
+                $statusQuery = ' AND t3.cd_status_processo_stp = '.\StatusProcesso::FINALIZADO;
+            
+            $parametros = array('bancoQuery'          => $bancoQuery,
+                                'dataQuery'           => $dataQuery,
+                                'conta'               => $this->conta, 
+                                'dataInicio'          => $request->dtInicio,
+                                'dataFim'             => $request->dtFim,
+                                'empresa'             => $empresa,
+                                'correspondenteQuery' => $correspondenteQuery,
+                                'statusQuery'         => $statusQuery);
 
-       //dd($dataQuery);
+            $jasper = new RelatorioJasper();
+
+            $jasper->processar($parametros,$sourceName,$fileName,false,$request->extensao);
         
-        $parametros = array('bancoQuery'          => $bancoQuery,
-                            'dataQuery'           => $dataQuery,
-                            'conta'               => $this->conta, 
-                            'dataInicio'          => $request->dtInicio,
-                            'dataFim'             => $request->dtFim,
-                            'empresa'             => $empresa,
-                            'correspondenteQuery' => $correspondenteQuery);
+        }else{
 
-        $jasper = new RelatorioJasper();
+            Flash::error('Data(s) inválida(s) !');
 
-        $jasper->processar($parametros,$sourceName,$fileName,false,$request->extensao);
+        }
 
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
                                 ->with('relatorio',$request->relatorio)
-                                ->with('extensao',$request->extensao); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
+                                ->with('extensao',$request->extensao)
+                                ->with('finalizado',$request->finalizado)
+                                ->with('banco',$request->cd_banco_ban)
+                                ->with('correspondente',$request->cd_correspondente_cor)
+                                ->with('nmCorrespondente',$request->nm_correspondente_cor); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
     }
 
     private function getFiles(){

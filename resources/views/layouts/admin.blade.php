@@ -121,14 +121,23 @@
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('correspondente/novo') }}" title="Correspondente Novo"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('correspondente/todos') }}" title="Buscar Correspondentes"><span class="menu-item-parent">Buscar</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('correspondentes') }}" title="Correspondentes"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('correspondente/novo') }}" title="Novo Correspondente"><span class="menu-item-parent">Novo</span></a>
                             </li>
+                            <li>
+                                <a href="{{ url('correspondentes') }}" title="Meus Correspondentes"><span class="menu-item-parent">Meus Correspondentes</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
+                            </li>
+<<<<<<< HEAD
                             <li>
                                 <a href="{{ url('correspondente/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                             </li>
+=======
+>>>>>>> master
                         </ul>   
                     </li>
                     @endrole
@@ -212,6 +221,9 @@
                             </li>
                             <li>
                                 <a href="{{ url('configuracoes/grupos-de-cidades') }}" title="Tipos de Serviço"><span class="menu-item-parent">Grupos de Cidades</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('configuracoes/notificacoes') }}" title="Notificações"><span class="menu-item-parent">Notificações</span></a>
                             </li>
                             <li>
                                 <a href="{{ url('configuracoes/tipos-de-contato') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Contato</span></a>

@@ -123,7 +123,7 @@
                                         </td>
                                         <td>
                                             @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }}</a>
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
@@ -141,7 +141,7 @@
                                                     <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
                                                 </div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                                    <button title="Excluir" data-url="../processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                                 </div>    
                                             </div>                                        
                                         </td>

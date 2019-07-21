@@ -47,7 +47,7 @@
                             <select name="cd_banco_ban" class="select2">
                                 <option value="">Banco</option>
                                 @foreach(\App\Banco::all() as $banco)
-                                    <option value="{{ $banco->cd_banco_ban }}">{{ $banco->nm_banco_ban }}</option>
+                                    <option {{ (\Session::get('banco') == $banco->cd_banco_ban  ? 'selected' : '' ) }}  value="{{ $banco->cd_banco_ban }}">{{ $banco->nm_banco_ban }}</option>
                                 @endforeach
                             </select>                            
                         </section>                                         
@@ -57,8 +57,8 @@
                         <section class="col col-md-4">                           
                             <label class="label label-black">Correspondente</label><br />
                             <div class="input-group" style="width: 100%">
-                            <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor')}}">
-                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}"> 
+                            <input type="hidden" name="cd_correspondente_cor" value="{{(old('cd_correspondente_cor') ? old('cd_correspondente_cor') : (\Session::get('correspondente') ? \Session::get('correspondente') : '')) }}">
+                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{(old('nm_correspondente_cor') ? old('nm_correspondente_cor') : (\Session::get('nmCorrespondente') ? \Session::get('nmCorrespondente') : '')) }}"> 
                              <div style="clear: all;"></div>
                             <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
@@ -68,14 +68,14 @@
                             <label class="label label-black">Processo</label><br />
                             <input style="width: 100%" type="text" name="nu_processo_pro" id="nu_processo_pro" placeholder="">    
                         </section> --}}    
-                        <section class="col col-md-2">
+                        <section class="col col-md-4">
                             <br />           
                             <input type="radio" name="extensao" id="extensao" value="pdf" {{ (\Session::get('extensao') != 'xlsx'  ? 'checked' : '') }} >  
                             <label class="label label-black">PDF</label>  
                             <input type="radio" name="extensao" id="extensao" value="xlsx" {{ (\Session::get('extensao') == 'xlsx'  ? 'checked' : '') }} >  
                             <label class="label label-black">Excel</label>      
-                            <input type="checkbox" name="finalizado" id="finalizado" value="S" checked="" >  
-                            <label class="label label-black">Processo Finalizado</label> 
+                            <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ (\Session::get('finalizado') == 'S'  ? 'checked' : '') }}>  
+                            <label class="label label-black">Processos Finalizados</label> 
 
                         </section> 
                         <section class="col col-md-3">

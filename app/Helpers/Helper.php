@@ -21,4 +21,16 @@ class Helper
 	  	return str_replace(array('/','.','-'), '', $value);
 	}
 
+	public static function validaData($dat){
+		$data = explode("/","$dat"); // fatia a string $dat em pedados, usando / como referência
+		$d = $data[0];
+		$m = $data[1];
+		$y = $data[2];
+
+		// verifica se a data é válida!
+		// 1 = true (válida)
+		// 0 = false (inválida)
+		return checkdate($m,$d,$y);
+	}
+
 }

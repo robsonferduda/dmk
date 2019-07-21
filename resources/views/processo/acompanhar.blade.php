@@ -107,7 +107,8 @@
                                                 <li>
                                                     <strong>Correspondente: </strong> 
                                                     @if(!empty($processo->correspondente))
-                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
+                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ 
+                                                        $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr }}</a>
                                                     @endif
                                                 </li>                                           
                                                 <li>
