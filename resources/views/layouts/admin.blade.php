@@ -132,12 +132,6 @@
                             <li>
                                 <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
                             </li>
-<<<<<<< HEAD
-                            <li>
-                                <a href="{{ url('correspondente/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
-                            </li>
-=======
->>>>>>> master
                         </ul>   
                     </li>
                     @endrole

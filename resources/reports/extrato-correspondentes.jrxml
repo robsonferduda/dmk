@@ -2,8 +2,10 @@
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DMKAdapterLocalHost.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="302"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="689"/>
 	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -32,15 +34,18 @@
       t2.nu_conta_dba,
       t6.nm_tipo_conta_tcb,
       t8.nm_conta_correspondente_ccr,
-      sum(t5.vl_taxa_honorario_correspondente_pth) as vl_taxa_honorario_correspondente_pth
+      sum(t5.vl_taxa_honorario_correspondente_pth) as vl_taxa_honorario_correspondente_pth,
+      sum(t9.vl_processo_despesa_pde) as vl_processo_despesa_pde 
 FROM
     processo_pro t3
-    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
+    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
     INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
     INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
-    INNER JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete  and t2.deleted_at is null)
-    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
-    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+    LEFT JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete  and t2.deleted_at is null)
+    LEFT JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    LEFT JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+	LEFT JOIN processo_despesa_pde t9 ON (t3.cd_processo_pro = t9.cd_processo_pro and fl_despesa_reembolsavel_pde = 'S' and cd_tipo_entidade_tpe = 6 and t3.deleted_at is null)
+	
 WHERE
     t3.deleted_at IS NULL
     AND
@@ -61,30 +66,41 @@ GROUP BY
 	</queryString>
 	<field name="nm_titular_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nm_titular_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
 	</field>
 	<field name="nu_cpf_cnpj_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_cpf_cnpj_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
 	</field>
 	<field name="cd_banco_ban" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="cd_banco_ban"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="banco_ban"/>
 	</field>
 	<field name="nm_banco_ban" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nm_banco_ban"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="banco_ban"/>
 	</field>
 	<field name="nu_agencia_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_agencia_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
 	</field>
 	<field name="nu_conta_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_conta_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
+	</field>
+	<field name="nm_tipo_conta_tcb" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipo_conta_banco_tcb"/>
+	</field>
+	<field name="nm_conta_correspondente_ccr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_conta_correspondente_ccr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_correspondente_ccr"/>
 	</field>
 	<field name="vl_taxa_honorario_correspondente_pth" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="vl_taxa_honorario_correspondente_pth"/>
 	</field>
-	<field name="nm_tipo_conta_tcb" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
-	</field>
-	<field name="nm_conta_correspondente_ccr" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nm_conta_correspondente_ccr"/>
+	<field name="vl_processo_despesa_pde" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="vl_processo_despesa_pde"/>
 	</field>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></groupExpression>
@@ -96,7 +112,7 @@ GROUP BY
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="400" y="0" width="55" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
@@ -178,7 +194,7 @@ GROUP BY
 	<detail>
 		<band height="90" splitType="Stretch">
 			<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="0" width="280" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
 			</textField>
@@ -186,7 +202,7 @@ GROUP BY
 				<reportElement x="0" y="0" width="100" height="15" uuid="ce5d8451-df5a-47cf-9ac5-6ea894dad8c3"/>
 				<text><![CDATA[Nome do Titular]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="15" width="280" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a"/>
 				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
 			</textField>
@@ -198,7 +214,7 @@ GROUP BY
 				<reportElement x="0" y="30" width="100" height="15" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2"/>
 				<text><![CDATA[Banco:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="60" width="280" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
@@ -206,7 +222,7 @@ GROUP BY
 				<reportElement x="0" y="60" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
 				<text><![CDATA[Conta:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="75" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
 			</textField>
@@ -214,11 +230,11 @@ GROUP BY
 				<reportElement x="0" y="75" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
 				<text><![CDATA[Tipo de Conta:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="30" width="280" height="15" uuid="6a8d8f86-1d27-4813-a774-1b459a2126e9"/>
 				<textFieldExpression><![CDATA[String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="100" y="45" width="280" height="15" uuid="6ce7d71f-7929-428d-83b4-fc99ff6b9576"/>
 				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
 			</textField>
