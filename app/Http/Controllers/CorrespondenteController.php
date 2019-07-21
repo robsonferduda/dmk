@@ -12,6 +12,7 @@ use App\Enums\TipoEnderecoEletronico;
 use App\Fone;
 use App\User;
 use App\Conta;
+use App\Estado;
 use App\Endereco;
 use App\Entidade;
 use App\Cidade;
@@ -55,7 +56,7 @@ class CorrespondenteController extends Controller
                                               ->with('correspondente')
                                               ->with(['entidade.identificacao' => function($query){
                                                     $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
 
                                               }])
                                               ->with('correspondente.entidade.usuario')
@@ -102,7 +103,7 @@ class CorrespondenteController extends Controller
                                                 ->with('correspondente')
                                                 ->with(['entidade.identificacao' => function($query){
                                                     $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',2);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
 
                                                 }])
                                                 ->with('correspondente.entidade.usuario')
@@ -173,6 +174,19 @@ class CorrespondenteController extends Controller
 
         return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
 
+    }
+
+    public function novo()
+    {
+        return view('correspondente/novo');        
+    }
+
+    public function buscarTodos(Request $request)
+    {
+        $correspondentes = Correspondente::with('entidade')->with('entidade.usuario')->where('fl_correspondente_con','S')->orderBy('cd_conta_con')->get();
+
+        //$correspondentes = null;
+        return view('correspondente/todos',['correspondentes' => $correspondentes]);        
     }
 
     //Cadastro de correspondentes pela interface do sistema, aberto, sem receber convite
@@ -695,6 +709,7 @@ class CorrespondenteController extends Controller
             $correspondente_cadastro = new Correspondente();
             $correspondente_cadastro->email = $email;
 
+            //Se ainda não existe correspondente, cria e vincula ele à conta
             if(empty($unique)){
 
                 $conta = new Correspondente();        
@@ -748,8 +763,10 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
                         if($correspondente->save()){
-                            $conta->notificacaoCadastro($conta_logada);
-                            Flash::success('Correspondente adicionado com sucesso');
+                            if($conta->notificacaoCadastro($conta_logada))
+                                Flash::success('Correspondente adicionado com sucesso');
+                            else
+                                Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
                             return $conta->cd_conta_con;
                         }else{
                             Flash::error('Erro ao adicionar correspondente');
@@ -761,9 +778,9 @@ class CorrespondenteController extends Controller
             }else{
 
                 //Verifica se o correspondente já está presente na conta
-                $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->first();
+                $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->withTrashed()->get();
 
-                if(is_null($correspondente)){
+                if($conta_correspondente->isEmpty()){
 
                     //Se já possui cadastro, cria somente a entidade para associar os dados e insere o vínculo com a conta
                     $entidade_correspondente = new Entidade;
@@ -771,6 +788,13 @@ class CorrespondenteController extends Controller
                     $entidade_correspondente->cd_tipo_entidade_tpe = \TipoEntidade::CONTA_CORRESPONDENTE;
                     
                     if($entidade_correspondente->saveOrFail()){
+
+                        $enderecoEletronico = new EnderecoEletronico();
+                        $enderecoEletronico->cd_conta_con = $this->conta;
+                        $enderecoEletronico->cd_entidade_ete = $entidade_correspondente->cd_entidade_ete;
+                        $enderecoEletronico->cd_tipo_endereco_eletronico_tee = TipoEnderecoEletronico::NOTIFICACAO;
+                        $enderecoEletronico->dc_endereco_eletronico_ede = $email;
+                        $enderecoEletronico->save();
 
                         //Após cadastrar, vincula a conta que realizou o cadastro
                         $correspondente = new ContaCorrespondente();
@@ -780,8 +804,10 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome; //Insere mesmo nome do usuário já utilizado
                             
                         if($correspondente->save()){
-                            $correspondente_cadastro->notificacaoFiliacao($conta_logada);
-                            Flash::success('Correspondente adicionado com sucesso');
+                            if($correspondente_cadastro->notificacaoFiliacao($conta_logada))
+                                Flash::success('Correspondente adicionado com sucesso');
+                            else
+                                Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
                             return $unique->cd_conta_con;
 
                         }else{
@@ -797,8 +823,25 @@ class CorrespondenteController extends Controller
 
                 }else{
 
-                    Flash::warning('Correspondente já faz parte da sua lista');
-                    return false;
+                    //Quando existir correspondente que foi excluído, restaura o código antigo, fazendo deleted_at = null
+                    $correspondente = $conta_correspondente->get(0);
+
+                    if(is_null($correspondente->deleted_at)){
+
+                        Flash::warning('Correspondente já faz parte da sua lista');
+                        return false;
+
+                    }else{
+
+                        $correspondente->nm_conta_correspondente_ccr = $nome;
+                        $correspondente->deleted_at = null;
+                        $correspondente->save();
+
+                        Flash::success('Correspondente adicionado com sucesso');
+                        return $correspondente->cd_correspondente_cor;
+
+                    }
+
                 }    
 
             }
@@ -852,15 +895,82 @@ class CorrespondenteController extends Controller
 
     public function adicionarAtuacao(Request $request){
 
-        $atuacao = new CidadeAtuacao();
-        $atuacao->cd_entidade_ete = $request->entidade;
-        $atuacao->cd_cidade_cde = $request->cidade;
-        $atuacao->fl_origem_cat = $request->atuacao;
+        if($request->atuacao == 'S'){
 
-        if($atuacao->save())
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        else
-            return Response::json(array('message' => 'Erro ao excluir o registro'), 500); 
+            $origem = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('fl_origem_cat',$request->atuacao)->first();
+
+            if($origem){
+
+                return Response::json(['msg' => 'Comarca de origem já foi informada'], 500);
+
+            }else{
+
+                $cidade = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
+
+                if($cidade){
+
+                    $cidade->fl_origem_cat = 'S';
+                    $cidade->save();
+
+                }else{
+
+                    $atuacao = new CidadeAtuacao();
+                    $atuacao->cd_entidade_ete = $request->entidade;
+                    $atuacao->cd_cidade_cde = $request->cidade;
+                    $atuacao->fl_origem_cat = $request->atuacao;
+                    $atuacao->save();
+
+                }
+                 
+            }
+                
+
+        }else{
+
+            if($request->cidade == 0){
+
+                $cidades = Cidade::where('cd_estado_est',$request->estado)->get();
+
+                foreach ($cidades as $cidade) {
+                    
+                    $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $cidade->cd_cidade_cde)->first();
+
+                    if(!$atuacao){
+
+                        $atuacao = new CidadeAtuacao();
+                        $atuacao->cd_entidade_ete = $request->entidade;
+                        $atuacao->cd_cidade_cde = $cidade->cd_cidade_cde;
+                        $atuacao->fl_origem_cat = 'N';
+
+                        $atuacao->save();
+
+                    }
+
+                }
+                return Response::json(array('message' => 'Cidades adicionadas com sucesso'), 200);
+
+            }else{
+
+                $atuacao = CidadeAtuacao::where('cd_entidade_ete',$request->entidade)->where('cd_cidade_cde', $request->cidade)->first();
+
+                if($atuacao){
+
+                    return Response::json(['msg' => 'Comarca de atuação já informada'], 500);
+
+                }else{
+
+                    $atuacao = new CidadeAtuacao();
+                    $atuacao->cd_entidade_ete = $request->entidade;
+                    $atuacao->cd_cidade_cde = $request->cidade;
+                    $atuacao->fl_origem_cat = $request->atuacao;
+
+                    if($atuacao->save())
+                        return Response::json(array('message' => 'Registro adicionado com sucesso'), 200);
+                    else
+                        return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
+                } 
+            }
+        }
 
     }
 
@@ -891,6 +1001,8 @@ class CorrespondenteController extends Controller
 
         $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
         $conta_correspondente = ContaCorrespondente::where('cd_conta_con',$this->conta)->where('cd_correspondente_cor',$request->conta)->first();
+
+        $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
         $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
         $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;

@@ -19,8 +19,16 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="well" style="margin-left: 15px;">
-                <form action="{{ url('correspondente/buscar') }}" class="form-inline" method="GET" role="search">
+            <div style="margin-left: 15px; margin-right: 15px;">
+                <div class="alert alert-danger fade in">
+                    <i class="fa-fw fa fa-times"></i>
+                    <strong>Atenção!</strong> Os dados apresentados aqui são somente teste. Essa tela depende do cadastro de correspondentes para ser utilizada.
+                </div>
+            </div>
+        </article>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="well" style="margin-left: 15px; margin-right: 15px;">
+                <form action="{{ url('correspondente/todos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
@@ -40,12 +48,11 @@
                                     <option selected value="">Selecione uma cidade</option>
                                 </select> 
                             </section> 
-                            <section class="col col-md-3">
+                            <section class="col col-md-5">
                                 <label class="label label-black">Nome</label><br>
-                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
-                            </section>
-                            <section class="col col-md-2">
-                                <button style="margin-top: 17px;" class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                <input type="text" name="nome" style="width: 75%" class="form-control" id="Nome" placeholder="Nome">
+                            
+                                <button class="btn btn-primary" style="width: 20%"  type="submit"><i class="fa fa-search"></i> Buscar</button>
                             </section>
                         </div>
                     </fieldset>
@@ -53,30 +60,32 @@
             </div>
         </article>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            @foreach(App\Correspondente::with('entidade')->with('entidade.usuario')->where('fl_correspondente_con','S')->orderBy('cd_conta_con')->get() as $correspondente)
-                <div class="col-md-4">
-                    <div class="well" style="min-height: 160px; padding: 15px 2px; display: table;">
-                        <div class="col-sm-12" style="display: table-row;">
-                            <div class="col-xs-12 col-sm-6 col-md-4 text-center">
-                                <figure>
-                                    @if(file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
-                                        <img src="{{ asset('img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
-                                    @else
-                                        <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
-                                    @endif
-                                </figure>
-                                <button style="margin-top: 10px; padding: 3px 10px;" class="btn btn-xs btn-success"><span class="fa fa-send"></span> Convidar</button>
-                            </div>
-                            <div class="col-xs-12 col-sm-5 col-md-8">
-                                <label style="font-size: 16px;">{{ $correspondente->nm_razao_social_con }}</label>
-                                <p><strong><i class="fa fa-phone"></i> Telefone: </strong>(99) 99999-9999</p>
-                                <p><strong><i class="fa fa-envelope"></i> Email: </strong>{{ (!empty($correspondente->entidade->usuario)) ? $correspondente->entidade->usuario->email : 'Não informado' }}</p>
-                                <p><strong><i class="fa fa-map-marker"></i> Comarca: </strong>Florianópolis</p>
-                            </div>       
-                        </div>            
-                    </div>                 
-                </div>
-            @endforeach
+            @if(isset($correspondentes))
+                @foreach($correspondentes as $correspondente)
+                    <div class="col-md-4">
+                        <div class="well" style="min-height: 160px; padding: 15px 2px; display: table;">
+                            <div class="col-sm-12" style="display: table-row;">
+                                <div class="col-xs-12 col-sm-6 col-md-4 text-center">
+                                    <figure>
+                                        @if(file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
+                                            <img src="{{ asset('img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
+                                        @else
+                                            <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
+                                        @endif
+                                    </figure>
+                                    <button style="margin-top: 10px; padding: 3px 10px;" class="btn btn-xs btn-success"><span class="fa fa-send"></span> Convidar</button>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-8">
+                                    <label style="font-size: 16px;">{{ $correspondente->nm_razao_social_con }}</label>
+                                    <p><strong><i class="fa fa-phone"></i> Telefone: </strong>(99) 99999-9999</p>
+                                    <p><strong><i class="fa fa-envelope"></i> Email: </strong>{{ (!empty($correspondente->entidade->usuario)) ? $correspondente->entidade->usuario->email : 'Não informado' }}</p>
+                                    <p><strong><i class="fa fa-map-marker"></i> Comarca: </strong>Florianópolis</p>
+                                </div>       
+                            </div>            
+                        </div>                 
+                    </div>
+                @endforeach
+            @endif
         </article>
     </div>
 </div>

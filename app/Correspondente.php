@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
+use App\Traits\VerifyNotification;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CadastroCorrespondenteNotification;
 use App\Notifications\VinculoCorrespondenteNotification;
@@ -16,6 +17,7 @@ class Correspondente extends Model implements AuditableContract
 	use SoftDeletes;
     use Auditable;
     use Notifiable;
+    use VerifyNotification;
 
     protected $table = 'conta_con';
     protected $primaryKey = 'cd_conta_con';
@@ -57,11 +59,17 @@ class Correspondente extends Model implements AuditableContract
 
     public function notificacaoCadastro($conta)
     {
-        $this->notify(new CadastroCorrespondenteNotification($conta));
+        if($this->getFlagEnvio() == 'S')
+            $this->notify(new CadastroCorrespondenteNotification($conta));
+        else
+            return false;
     }
 
     public function notificacaoFiliacao($conta)
     {
-        $this->notify(new VinculoCorrespondenteNotification($conta));
+        if($this->getFlagEnvio() == 'S')
+            $this->notify(new VinculoCorrespondenteNotification($conta));
+        else
+            return false;
     }
 }

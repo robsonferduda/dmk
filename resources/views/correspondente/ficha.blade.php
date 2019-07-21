@@ -25,7 +25,7 @@
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
                 <header role="heading" class="ui-sortable-handle">
-                    <span class="widget-icon"> <i class="fa fa-edit"></i></span><h2>Cadastro de Usuário </h2>             
+                    <span class="widget-icon"> <i class="fa fa-edit"></i></span><h2>Cadastro de Correspondente </h2>             
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
@@ -53,7 +53,7 @@
                                             <section class="col col-3 box-pessoa-juridica">
                                                 <label class="label">CNPJ</label>
                                                 <label class="input">
-                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
+                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
                     
@@ -84,6 +84,9 @@
 
                             <header>
                                 <i class="fa fa-map-marker"></i> Comarca de Origem
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarca de Origem" data-content="Informe a comarca de origem do correspondente. Caso deseje alterar o valor informado, clique sobre ela para excluir e adicione novamente.">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
                             </header>
                             <fieldset>
                                 <div class="row">                     
@@ -91,7 +94,7 @@
                                         <label class="label" >Estado</label>          
                                         <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::all() as $estado) 
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
                                         </select> 
@@ -123,15 +126,18 @@
                             <hr/>
 
                             <header>
-                                <i class="fa fa-check"></i> Cidades de Atuação 
+                                <i class="fa fa-check"></i> Comarcas de Atuação 
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarcas de Atuação" data-html="true" data-content="Para informar somente uma cidade, selecione o estado e em seguida a cidade desejada. Para inserir todas as cidades de um estado, selecione o estado e na opção Cidade selecione a opção: <strong>Todas as cidades <strong>">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
                             </header>
                             <fieldset>
                                 <div class="row">                     
                                     <section class="col col-4">
                                         <label class="label" >Estado</label>          
-                                        <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
+                                        <select id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
                                             <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::all() as $estado) 
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                     <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
                                         </select> 
@@ -208,7 +214,7 @@
                                                 <label class="label">Estado</label>          
                                                 <select id="pai_cidade_endereco" name="cd_estado_est" class="select2 estado">
                                                     <option selected value="">Selecione</option>
-                                                    @foreach(\App\Estado::all() as $estado) 
+                                                    @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                         <option {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade) ? (old('cd_estado_est', $correspondente->entidade->endereco->cidade->cd_estado_est) == $estado->cd_estado_est ) ? 'selected' : '' : ''  }} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                     @endforeach
 
@@ -461,7 +467,8 @@
             </div>
                 <div class="modal-body" style="text-align: center;">
                         <h4 class="text-danger"><i class="fa fa-times"></i> Ops...</h4>
-                        <h4>Ocorreu um erro ao processar sua operação. Tente novamente ou entre em contato com nosso suporte técnico.</h4>
+                        <h4>Ocorreu um erro ao processar sua operação.</h4>
+                        <h4 class="msg_erro_adicao"></h4>
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Fechar</a>
@@ -478,6 +485,7 @@
         $('.adicionar-atuacao').click(function(){
 
             var entidade = $("#entidade").val();
+            var estado = $("#pai_cidade_atuacao").val();
             var cidade = $("#cidade_atuacao").val();
             var atuacao = $(this).data("atuacao");
 
@@ -485,10 +493,12 @@
             {
                 type: "POST",
                 url: "../../correspondente/atuacao/adicionar",
+                dataType: "json",
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
                     "entidade": entidade,
                     "cidade": cidade,
+                    "estado": estado,
                     "atuacao": atuacao
                 },
                 beforeSend: function()
@@ -506,8 +516,9 @@
                 },
                 error: function(response)
                 {
-                    console.log("Erro");
+                    console.log(response.responseJSON.msg);
                     $("#processamento").modal('hide');
+                    $(".msg_erro_adicao").html(response.responseJSON.msg);
                     $("#modal_erro_atuacao").modal('show');
                 }
             });
@@ -546,8 +557,10 @@
                 },
                 error: function(response)
                 {
-                    console.log("Erro");
+                    console.log(response.responseJSON.msg);
                     $("#processamento").modal('hide');
+                    $(".msg_erro_adicao").html(response.responseJSON.msg);
+                    $("#modal_erro_atuacao").modal('show');
                 }
             });
 
@@ -688,6 +701,7 @@
                         {                    
                             $('.'+target).empty();
                             $('.'+target).append('<option selected value="">Selecione</option>');
+                            $('.'+target).append('<option value="0">Todas as cidades</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){

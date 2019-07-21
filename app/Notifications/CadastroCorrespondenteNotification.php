@@ -3,14 +3,15 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use App\Traits\VerifyNotification;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CadastroCorrespondenteNotification extends Notification
+class CadastroCorrespondenteNotification extends Notification, VerificaEnvio
 {
-    use Queueable;
+    use Queueable, VerifyNotification;
 
     public $conta;
 
