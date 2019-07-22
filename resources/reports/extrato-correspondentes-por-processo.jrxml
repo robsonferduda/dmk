@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DMKAdapter.xml"/>
@@ -207,9 +207,9 @@ GROUP BY
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="14">
+			<band height="17">
 				<line>
-					<reportElement positionType="FixRelativeToBottom" x="2" y="10" width="551" height="1" uuid="5e41185f-9c90-45ca-839b-e28b308c1430"/>
+					<reportElement positionType="FixRelativeToBottom" x="2" y="8" width="551" height="1" uuid="5e41185f-9c90-45ca-839b-e28b308c1430"/>
 				</line>
 			</band>
 		</groupFooter>
@@ -218,16 +218,16 @@ GROUP BY
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="147" splitType="Stretch">
+		<band height="114" splitType="Stretch">
 			<textField>
-				<reportElement style="Title" x="0" y="10" width="555" height="93" uuid="d3b0bd1f-ad5c-4a5e-86b0-9f0097287016"/>
+				<reportElement style="Title" x="0" y="10" width="555" height="69" uuid="d3b0bd1f-ad5c-4a5e-86b0-9f0097287016"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="26" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="SubTitle" x="0" y="103" width="553" height="29" uuid="eef58983-008d-4a5b-8e47-97f8d4670c7a"/>
+				<reportElement style="SubTitle" x="1" y="80" width="553" height="29" uuid="eef58983-008d-4a5b-8e47-97f8d4670c7a"/>
 				<textElement textAlignment="Center">
 					<font size="22" isBold="false"/>
 				</textElement>
