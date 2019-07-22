@@ -428,7 +428,7 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-        <script src="{{ asset('js/geral.js') }}?v={{ date('YmdHis') }}"></script>
+        {!!  Minify::javascript('/js/geral.js') !!}
         <script src="{{ asset('js/menu.js') }}"></script>
         <script src="{{ asset('js/app.config.js') }}"></script>
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>

@@ -163,6 +163,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
+        'Devfactory\Minify\MinifyServiceProvider',
 
 
     ],
@@ -222,6 +223,7 @@ return [
         'Nivel' => App\Enums\Nivel::class,
         'StatusProcesso' => App\Enums\StatusProcesso::class,
         'Helper' => App\Helpers\Helper::class,
+        'Minify'        => 'Devfactory\Minify\Facades\MinifyFacade',
     ],
 
 ];

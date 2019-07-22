@@ -18,7 +18,8 @@
         "lavela/phpjasper": "^3.0",
         "maatwebsite/excel": "^3.1",
         "owen-it/laravel-auditing": "8",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+	"devfactory/minify": "1.0.*"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
