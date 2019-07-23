@@ -48,7 +48,7 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::All();
+            $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
@@ -89,7 +89,7 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::All();
+            $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
