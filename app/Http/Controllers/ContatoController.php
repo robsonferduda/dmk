@@ -47,12 +47,13 @@ class ContatoController extends Controller
                             $join->on('vi_endereco_eletronico_max_create_entidate_ele.cd_entidade_ete','=','contato_cot.cd_entidade_contato_ete');
                             $join->whereNull('vi_endereco_eletronico_max_create_entidate_ele.deleted_at');
                         })
+                        ->leftJoin('cliente_cli','cliente_cli.cd_entidade_ete','=','contato_cot.cd_entidade_ete')
                         ->leftJoin('cidade_cde','cidade_cde.cd_cidade_cde','=','endereco_ede.cd_cidade_cde')
                         ->where('contato_cot.cd_conta_con',$this->conta)
                         ->where('contato_cot.nm_contato_cot', 'ilike', $inicial.'%')
                         ->whereNull('contato_cot.deleted_at')
                         ->orderBy('contato_cot.nm_contato_cot')
-                        ->select('vi_fone_max_create_entidate_fon.total as totalFone','vi_endereco_eletronico_max_create_entidate_ele.total as totalEmail','contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
+                        ->select('vi_fone_max_create_entidate_fon.total as totalFone','vi_endereco_eletronico_max_create_entidate_ele.total as totalEmail','contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede','cliente_cli.nm_razao_social_cli')
                         ->get();
 
     	}
@@ -104,7 +105,7 @@ class ContatoController extends Controller
             $dados   =  $dados->where('contato_cot.cd_conta_con',$this->conta)
                         ->whereNull('contato_cot.deleted_at')
                         ->orderBy('contato_cot.nm_contato_cot')
-                        ->select('vi_fone_max_create_entidate_fon.total as totalFone','vi_endereco_eletronico_max_create_entidate_ele.total as totalEmail','contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
+                        ->select('vi_fone_max_create_entidate_fon.total as totalFone','vi_endereco_eletronico_max_create_entidate_ele.total as totalEmail','contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede','cliente_cli.nm_razao_social_cli')
                         ->get();
 
         return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'tiposContato' => $tiposContato, 'tipoContato' => $request->cd_tipo_contato_tct, 'entidade' => $request->entidade_cliente]);

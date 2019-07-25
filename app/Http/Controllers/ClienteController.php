@@ -87,7 +87,7 @@ class ClienteController extends Controller
                         }
             $dados   =  $dados->where('contato_cot.cd_conta_con',$this->conta)
                         ->whereNull('contato_cot.deleted_at')
-                        ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede')
+                        ->select('contato_cot.cd_contato_cot','contato_cot.nm_contato_cot','nm_tipo_contato_tct','nm_cidade_cde','nu_fone_fon','dc_endereco_eletronico_ede','cliente_cli.nm_razao_social_cli')
                         ->get();
 
         return view('contato/index',['dados' => $dados, 'codCliente' => $codCliente, 'nomeCliente' => $nomeCliente, 'entidade' => $id, 'tiposContato' => $tiposContato]);
