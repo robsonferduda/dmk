@@ -557,6 +557,10 @@ class ProcessoController extends Controller
         $numero   = $request->get('nu_processo_pro');
         $tipo = $request->get('cd_tipo_processo_tpo');
         $tipoServico = $request->get('cd_tipo_servico_tse');
+        $autor = $request->get('nm_autor_pro');
+        $reu = $request->get('nm_reu_pro');
+        $acompanhamento = $request->get('nu_acompanhamento_pro');
+
 
         if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
         {
@@ -582,9 +586,13 @@ class ProcessoController extends Controller
         });
         if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
         if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
+        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
+        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+
           $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso]);
+        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
     }
 
     public function novo(){
