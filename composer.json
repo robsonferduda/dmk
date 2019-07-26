@@ -8,6 +8,7 @@
         "php": "^7.1.3",
         "barryvdh/laravel-debugbar": "^3.2",
         "bensampo/laravel-enum": "^1.16",
+        "devfactory/minify": "1.0.*",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
         "kodeine/laravel-acl": "~1.0@dev",
@@ -17,9 +18,10 @@
         "laravelcollective/html": "^5.4.0",
         "lavela/phpjasper": "^3.0",
         "maatwebsite/excel": "^3.1",
+        "maddhatter/laravel-fullcalendar": "^1.3",
         "owen-it/laravel-auditing": "8",
         "predis/predis": "^1.1",
-	"devfactory/minify": "1.0.*"
+        "spatie/laravel-google-calendar": "^2.2"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
