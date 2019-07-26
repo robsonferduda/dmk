@@ -33,11 +33,11 @@
                         </section>               
                         <section class="col col-md-4">
                             <label class="label label-black">Autor</label><br />
-                            <input style="width: 100%" size="20" type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
+                            <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>                  
                         <section class="col col-md-4">
                             <label class="label label-black">Réu</label><br />
-                            <input style="width: 100%" size="20" type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
+                            <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section>                           
                     </div>  
                     <div class="row"> 
@@ -61,7 +61,7 @@
                         </section>   
                         <section class="col col-md-2">
                             <label class="label label-black">Nº Externo</label><br />
-                            <input style="width: 100%" size="20" type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
+                            <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
                         </section>    
                         <section class="col col-md-3">
                             <br />
