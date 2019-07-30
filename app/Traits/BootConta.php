@@ -4,20 +4,42 @@ namespace App\Traits;
 use App\TipoContato;
 use App\TipoServico;
 use App\TipoProcesso;
+use App\Conta;
+use App\Calendario;
 
 trait BootConta
 {
    
     public function bootConta($cdConta)
     {
-       $this->criarTipoContato($cdConta);
-       $this->criarTipoServico($cdConta);
-       $this->criarTipoProcesso($cdConta);
+       //$this->criarTipoContato($cdConta);
+       //$this->criarTipoServico($cdConta);
+       //$this->criarTipoProcesso($cdConta);
        $this->criarCalendario($cdConta);
     }
 
     private function criarCalendario($cdConta){
-        exit;
+       
+        $scopes = [ \Google_Service_Calendar::CALENDAR ];
+
+        $conta = Conta::where('cd_conta_con',$cdConta)->first();
+
+        $client = new \Google_Client();
+        $client->setScopes($scopes);
+        $client->setAuthConfig(storage_path().'/app/calendario-dmk.json');
+
+        $service = new \Google_Service_Calendar($client);
+
+        $calendar = new \Google_Service_Calendar_Calendar();
+        $calendar->setSummary('Calendário - '.$conta->nm_razao_social_con);
+        $calendar->setTimeZone(config('app.timezone'));
+        $createdCalendar = $service->calendars->insert($calendar);
+
+        $calendario = new Calendario();
+        
+        $calendario->create([ 'cd_conta_con' => $cdConta,
+                        'id_calendario_google_cal' => $createdCalendar->getId(),
+                     ]); 
     }
 
     private function criarTipoContato($cdConta){
