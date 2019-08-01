@@ -525,7 +525,9 @@
         @yield('script')
         <script>
         
-        var hostname = document.location.hostname;        
+        var hostname = document.location.hostname;  
+
+        /*      
 
         var socket = io.connect('https://127.0.0.1:3000',{secure: true},verify=false);
         socket.on("notificacao:App\\Events\\EventNotification", function(message){
@@ -563,6 +565,7 @@
             }
 
         });
+        */
 
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
