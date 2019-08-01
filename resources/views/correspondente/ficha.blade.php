@@ -446,6 +446,21 @@
                                                 </div>
 
                                 </div>
+
+                                <div class="row" style="padding: 5px 20px;">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="obs_ccr" id="observacao" value="{{old('obs_ccr')}}" >{{old('obs_ccr') ? old('obs_ccr') : ($correspondente->obs_ccr) ? $correspondente->obs_ccr : '' }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
+                                </div>
                             
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>

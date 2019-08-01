@@ -1010,6 +1010,7 @@ class CorrespondenteController extends Controller
 
         $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
         $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+        $conta_correspondente->obs_ccr = $request->obs_ccr;
 
         if($conta_correspondente->saveOrFail()){
 
