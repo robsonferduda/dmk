@@ -40,7 +40,10 @@
                             </section>
                             <section class="col col-md-3">
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                <label class="label label-black" >Cidade</label>          
+                                <label class="label label-black" >Cidade de Atuação</label>
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Cidades de Atuação" data-content="A busca considera as cidades de atuação do correspondente, independente dela ser a comarca de origem. Para ver todas as comarcas de atuação, visualize o cadastro completo.">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a>          
                                 <select id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
                                     <option selected value="">Selecione uma cidade</option>
                                 </select> 
