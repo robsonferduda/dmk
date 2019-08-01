@@ -22,7 +22,8 @@ class Conta extends Model implements AuditableContract
     						'nm_razao_social_con',
                             'cd_tipo_pessoa_tpp',
                             'nm_fantasia_con',
-                            'fl_despesa_nao_reembolsavel_con'
+                            'fl_despesa_nao_reembolsavel_con',
+                            'fl_envio_enter_con'
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];

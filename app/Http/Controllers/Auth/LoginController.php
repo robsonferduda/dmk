@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
+use App\Entidade;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -55,6 +56,9 @@ class LoginController extends Controller
 
             Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
             Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+
+            Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+            
             return redirect()->intended('home');
         }
 
@@ -78,6 +82,7 @@ class LoginController extends Controller
 
             Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
             Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
             return redirect()->intended('home');
         }
 

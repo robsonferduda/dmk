@@ -200,6 +200,17 @@
                                 </fieldset>
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        {!! $correspondente->obs_ccr !!}
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
                     
                         <div class="col-md-12">
                             <div class="col-md-12">

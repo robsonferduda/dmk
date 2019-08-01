@@ -14,11 +14,13 @@ use App\TipoProcesso;
 use App\Processo;
 use App\ProcessoDespesa;
 use App\TipoDespesa;
+use App\Enums\TipoMensagem;
 use App\TipoServico;
 use App\ProcessoTaxaHonorario;
 use App\TaxaHonorario;
 use App\EnderecoEletronico;
 use App\ContaCorrespondente;
+use App\ProcessoMensagem;
 use App\Http\Requests\ProcessoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -116,7 +118,7 @@ class ProcessoController extends Controller
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
         }))->with('status')
         ->where('cd_conta_con', $this->cdContaCon)
-        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();        
 
         return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
@@ -126,11 +128,17 @@ class ProcessoController extends Controller
         $id = \Crypt::decrypt($id); 
 
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+
+        (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
+
+        $mensagens_externas = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
+
+        $mensagens_internas = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::INTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
     
-        return view('processo/acompanhar',['processo' => $processo]);
+        return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
     }
 
-     public function atualizarStatus(Request $request)
+    public function atualizarStatus(Request $request)
     {
 
         $processo = Processo::where('cd_processo_pro',$request->processo)->first();

@@ -6,6 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
+        <meta name="conta" content="{{ session::get('SESSION_CD_CONTA') }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
@@ -17,7 +18,8 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}?v={{ date('YmdHis') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">        
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">         
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
     
     </head>
@@ -26,6 +28,72 @@
         <header id="header">
             <div id="logo-group">
                 <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>
+
+                @php
+                    $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(session::get('SESSION_CD_CONTA'));
+                @endphp
+
+                <span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i><b class="badge badge-count">{{ count($mensagens_pendentes) }}</b></span>
+
+                <div class="ajax-dropdown">
+
+                    <div class="btn-group center">
+                        <strong>Mensagens não lidas</strong>
+                    </div>
+
+                    <div class="ajax-notifications custom-scroll" style="padding: 1px 0;">
+                        @foreach($mensagens_pendentes as $mensagem)
+                            <ul class="notification-body">
+                                @if($mensagem->cd_tipo_mensagem_tim == \App\Enums\TipoMensagem::EXTERNA )
+                                    <li>
+                                        <span class="unread">
+                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="msg">
+                                                @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png'))                                                                           
+                                                    <img src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
+                                                @else
+                                                    <img src="{{ asset('img/users/user.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
+                                                @endif
+                                                
+                                                <span class="from">
+                                                        {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                <i class="icon-paperclip"></i></span>
+                                                <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
+                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
+                                                <span class="msg-body">
+                                                    {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </li>
+                                @else
+                                    <li>
+                                        <span class="unread">
+                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="msg">
+                                                @if(file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png'))                                                                           
+                                                    <img src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
+                                                @else
+                                                    <img src="{{ asset('img/users/user.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
+                                                @endif
+                                                
+                                                <span class="from">
+                                                        {{ $mensagem->entidadeInterna->usuario->name }}
+                                                <i class="icon-paperclip"></i></span>
+                                                <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
+                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
+                                                <span class="msg-body">
+                                                    {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </li>
+                                @endif
+                            </ul>
+                        @endforeach
+                    </div>
+
+                    <span> Última atualização em {{ date('H:i:s d/m/Y') }}</span>
+
+                </div>
             </div>
            
             <div class="pull-right">
@@ -429,18 +497,22 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-        {!!  Minify::javascript('/js/geral.js') !!}
+        {!!  Minify::javascript(asset('/js/geral.js')) !!}
         <script src="{{ asset('js/menu.js') }}"></script>
-        <script src="{{ asset('js/app.config.js') }}"></script>
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
+
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
         <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
+
+        <script src="{{ asset('js/app.config.js') }}"></script>
+
 
         <!--[if IE 8]>
             <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
         <![endif]-->
+
+        <script src="{{ asset('js/smartwidgets/jarvis.widget.min.js') }}"></script>
         
-        <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-validate/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('js/plugin/datatables/dataTables.colVis.min.js') }}"></script>
@@ -453,9 +525,55 @@
         <script src="{{ asset('js/plugin/jquery.form.js') }}"></script>
         <script src="{{ asset('js/plugin/ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('js/plugin/x-editable/x-editable.min.js') }}"></script>
+        <script src="{{ asset('js/socket.io-1.2.0.js') }}"></script>
+        <script src="{{ asset('js/css-loader.js') }}"></script>
+        <script src="{{ asset('js/app.min.js') }}"></script>
         @yield('script')
         <script>
         
+        var hostname = document.location.hostname;  
+
+        /*      
+
+        var socket = io.connect('https://127.0.0.1:3000',{secure: true},verify=false);
+        socket.on("notificacao:App\\Events\\EventNotification", function(message){
+
+            cod_conta = $('meta[name="conta"]').attr('content');
+            path = window.location.protocol + "//" + window.location.host + "/dmk/";
+
+            if(message.data.canal == 'notificacao'){
+
+                if(message.data.conta == cod_conta){
+                    
+                    $('.badge-count').html(message.data.total);
+                    $(".notification-body > li").remove();
+
+                    console.log(message.data.mensagens.length);
+
+                    for (var i = 0; i < message.data.mensagens.length; i++) {
+                        
+                        item = '<li>'+
+                                                '<span class="unread">'+
+                                                    '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
+                                                        '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
+                                                        '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
+                                                        '<time>'+message.data.mensagens[i].data+'</time>'+
+                                                        '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
+                                                        '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
+                                                    '</a>' +
+                                                '</span>'+
+                                            '</li>';
+                                               
+                        $('.notification-body').append(item);
+
+                    }
+                }
+            }
+
+        });
+        */
+
+
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 
         $.ajaxSetup({

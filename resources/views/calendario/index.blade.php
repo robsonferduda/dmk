@@ -283,6 +283,8 @@
                     },
             
                     select: function (start, end, allDay) {
+
+                        alert(start);
                         var title = prompt('Event Title:');
                         if (title) {
                             calendar.fullCalendar('renderEvent', {
@@ -296,10 +298,10 @@
                         calendar.fullCalendar('unselect');
                     },
                     loading: function (bool) {
-                        alert(bool);
+                        $('.fc-view').loader('show');
                     },
                     eventAfterAllRender: function (view) {
-
+                        $('.fc-view').loader('hide');
                         
                     },
                     events: {

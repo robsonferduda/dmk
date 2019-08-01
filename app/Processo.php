@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CorrespondenteProcessoNotification;
 use App\Notifications\ContaProcessoNotification;
+use App\Notifications\MensagemProcessoNotification;
 
 
 class Processo extends Model implements AuditableContract
@@ -107,5 +108,10 @@ class Processo extends Model implements AuditableContract
     public function notificarConta($processo)
     {
         $this->notify(new ContaProcessoNotification($processo));
+    }
+
+    public function notificarNovaMensagem($processo)
+    {
+        $this->notify(new MensagemProcessoNotification($processo));
     }
 }

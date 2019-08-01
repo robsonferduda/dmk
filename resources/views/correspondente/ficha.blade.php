@@ -179,7 +179,7 @@
                                             <section class="col col-3">
                                                 <label class="label">CEP</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
+                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
                                                 </label>
                                             </section>     
 
@@ -445,6 +445,21 @@
                                                     </table>                                               
                                                 </div>
 
+                                </div>
+
+                                <div class="row" style="padding: 5px 20px;">
+                                    <header>
+                                        <i class="fa  fa-file-text-o"></i> Observações 
+                                    </header>
+                                    <fieldset>
+                                        <div class="row"> 
+                                            <section class="col col-sm-12">
+                                            <label class="input">
+                                                <textarea class="form-control" rows="4" name="obs_ccr" id="observacao" value="{{old('obs_ccr')}}" >{{old('obs_ccr') ? old('obs_ccr') : ($correspondente->obs_ccr) ? $correspondente->obs_ccr : '' }}</textarea>
+                                            </label>
+                                            </section> 
+                                        </div>
+                                    </fieldset>
                                 </div>
                             
                             <footer>

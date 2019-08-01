@@ -169,6 +169,7 @@ span.tags
 
 .active_chat{ background:#ebebeb;}
 
+.incoming_msg{margin-bottom: 12px;}
 .incoming_msg_img {
   display: inline-block;
   width: 6%;

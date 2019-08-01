@@ -6,15 +6,17 @@ use Auth;
 use App\User;
 use App\Conta;
 use App\Processo;
+use App\ProcessoMensagem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
+    private $conta;
     
     public function __construct()
     {
-        
+         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
     public function index()
