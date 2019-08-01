@@ -12,9 +12,9 @@ trait BootConta
    
     public function bootConta($cdConta)
     {
-       //$this->criarTipoContato($cdConta);
-       //$this->criarTipoServico($cdConta);
-       //$this->criarTipoProcesso($cdConta);
+       $this->criarTipoContato($cdConta);
+       $this->criarTipoServico($cdConta);
+       $this->criarTipoProcesso($cdConta);
        $this->criarCalendario($cdConta);
     }
 
