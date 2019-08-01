@@ -179,7 +179,7 @@
                                             <section class="col col-3">
                                                 <label class="label">CEP</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_cep_ede" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
+                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
                                                 </label>
                                             </section>     
 
