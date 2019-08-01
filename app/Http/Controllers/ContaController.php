@@ -277,4 +277,14 @@ class ContaController extends Controller
         return redirect('conta/detalhes/'.\Crypt::encrypt($id));
     }
 
+    public function atualizarFlagEnvio(Request $request)
+    {
+        if($request->flag == 'true') $flag = 'S'; else $flag = 'N';
+
+        $conta = Conta::where('cd_conta_con',$request->conta)->first();
+        $conta->fl_envio_enter_con = $flag;
+
+        $conta->save();
+    }
+
 }

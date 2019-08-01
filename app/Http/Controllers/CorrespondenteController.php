@@ -13,15 +13,19 @@ use App\Fone;
 use App\User;
 use App\Conta;
 use App\Estado;
+use App\Processo;
 use App\Endereco;
 use App\Entidade;
 use App\Cidade;
 use App\GrupoCidade;
+use App\Enums\TipoMensagem;
 use App\CidadeAtuacao;
 use App\Correspondente;
 use App\ConviteCorrespondente;
 use App\TipoDespesa;
+use App\TipoProcesso;
 use App\TipoServico;
+use App\ProcessoMensagem;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\EnderecoEletronico;
@@ -1150,8 +1154,39 @@ class CorrespondenteController extends Controller
 
     public function processos(){
 
-        return view('correspondente/processos');
+        if (!empty(\Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso');
 
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->conta,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
+
+        $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
+
+        return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+
+    }
+
+    public function acompanhamento($id){
+
+        $id = \Crypt::decrypt($id); 
+
+        (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->conta);
+
+        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_correspondente_cor',$this->conta)->first();
+        
+        $mensagens = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
+
+    
+        return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens]);
     }
 
     public function perfil($id){

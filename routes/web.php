@@ -58,10 +58,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes')->name('processos.detalhes');
 	Route::get('processos/despesas/{id}','ProcessoController@financas');
 	Route::get('processos/acompanhamento','ProcessoController@acompanhar');
-	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento');
+	Route::get('processos/acompanhamento/{id}','ProcessoController@acompanhamento')->name('processo.acompanhar');
 	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
+	Route::post('processo/mensagem/enviar','MensagemController@enviar');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/notificar/{id}','ProcessoController@notificarCorrespondente');
@@ -109,6 +110,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
+	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento');
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
 	Route::post('correspondente/remover','CorrespondenteController@remover');
@@ -159,6 +161,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('conta/atualizar/{id}','ContaController@editar');
 	Route::post('conta/update','ContaController@update');
 	Route::post('conta/telefone/adicionar','ContaController@adicionarTelefone');
+	Route::post('conta/configuracoes/flag_envio','ContaController@atualizarFlagEnvio');
 
 	Route::get('entidade/teste','EntidadeController@index');
 

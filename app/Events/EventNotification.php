@@ -17,19 +17,11 @@ class EventNotification extends Event implements ShouldBroadcast
 
     public $data;
 
-    public function __construct()
+    public function __construct($data)
     {
-        $this->data = array(
-            'power'=> '10',
-            'data-hora' => date("Y-m-d H:i:s")
-        );
+        $this->data = $data;
     }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
+    
     public function broadcastOn()
     {
         return ['notificacao'];

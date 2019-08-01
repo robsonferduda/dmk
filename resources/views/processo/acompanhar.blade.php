@@ -15,12 +15,10 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
-            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>   
-            <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default  pull-right marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>
-            
+            <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento </a> 
+            <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
+            <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
         </div>
     </div>
     <div class="row">
@@ -36,12 +34,12 @@
                     </div>
                 @endif
                 <div class="well">
-                    <div style="float: left; width: 60%;">
-                        <form style="display: inline;" action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
+                    <div style="float: left; margin-right: 10px;">
+                        <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                             {{ csrf_field() }}
-                            <fieldset>
+                            
                                 
-                                    <div style="float: left; width: 60%;">
+                                    <div style="float: left; width: 300px; margin-right: 10px;">
                                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
                                         <label class="label label-black" >Selecione um Status para o Processo</label>          
                                         <select id="status" name="status" class="select2">
@@ -50,29 +48,32 @@
                                                 <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
                                             @endforeach
                                         </select> 
-                                    </section> 
-                                    <div  style="float: left; width: 30%;">
-                                        <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
-                                    </section> 
-                                
-                            </fieldset>
+                                    </div> 
+                                    <div  style="float: left; ">
+                                        <div style="" >
+                                            <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
+                                        </div>                                     
+                                    </div>                                 
+                            
                         </form>
                     </div>
-                    <div style="float: left; width: 35%;">
-                        <form style="display: inline; float: left; margin-left: 20px; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                            <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
-                        </form>
+
+                    <form style="display: inline; float: left; margin-right: 10px; margin-top: 17px; "  action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
+                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                    </form>
+
+                    <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                        <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+                    </form>
+
+                    <a style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
                     
-                        <form style="display: inline; float: left; margin-left: 20px; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
-                            <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                        </form>
-                    </div>
                     <div style="clear: both;"></div>
                 </div>
                 <div class="jarviswidget jarviswidget-sortable">
@@ -85,6 +86,9 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
+                                        <input type="hidden" name="conta_logada" id="conta_logada" value="{{ Auth::user()->cd_conta_con }}">
+                                        <input type="hidden" name="processo" id="processo" value="{{ $processo->cd_processo_pro }}">
+                                        <input type="hidden" name="msg_correspondente" id="msg_correspondente" value="{{ $processo->cd_correspondente_cor }}">
                                         <p>
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
                                            
@@ -176,123 +180,161 @@
                         </div>             
                 </div>
             </article>
-            <!--
+            
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
-                    <div class="col-md-6">
-                        <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
+                    <div class="col-sm-12 col-md-6">
+                        @if(Session::get('SESSION_NIVEL') != 3)
+                            <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
+                        @else
+                            <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens</h4>
+                        @endif
                         <div class="messaging">
                             <div class="inbox_msg">
                                 <div class="mesgs">
-                                    <div class="msg_history">
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>Test which is a new approach to have all
-                                                solutions</p>
-                                              <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                                          </div>
-                                        </div>
-                                        <div class="outgoing_msg">
-                                          <div class="sent_msg">
-                                            <p>Test which is a new approach to have all
-                                              solutions</p>
-                                            <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-                                        </div>
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>Test, which is a new approach to have</p>
-                                              <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-                                          </div>
-                                        </div>
-                                        <div class="outgoing_msg">
-                                          <div class="sent_msg">
-                                            <p>Apollo University, Delhi, India Test</p>
-                                            <span class="time_date"> 11:01 AM    |    Today</span> </div>
-                                        </div>
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>We work directly with our designers and suppliers,
-                                                and sell direct to you, which means quality, exclusive
-                                                products, at a price anyone can afford.</p>
-                                              <span class="time_date"> 11:01 AM    |    Today</span></div>
-                                          </div>
-                                        </div>
+                                    <div class="msg_history msg_history_externo">
+
+                                        @if(count($mensagens_externas) > 0)
+                                            @foreach($mensagens_externas as $mensagem)                                                
+
+                                                    @if($mensagem->remetente_prm == Auth::user()->cd_conta_con)
+                                                        
+                                                        <div class="outgoing_msg">
+                                                          <div class="sent_msg">
+                                                            <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                            <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span> </div>
+                                                        </div>
+                                                        
+                                                    @else
+                                                         <div class="incoming_msg">
+                                                            <div class="incoming_msg_img"> 
+                                                                
+
+                                                                @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
+                                                                    <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
+                                                                @else
+                                                                    <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
+                                                                @endif
+                                                            </div>
+                                                            <div class="received_msg">
+                                                            <div class="received_withd_msg">
+                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                               
+                                           @endforeach
+                                        @else
+
+                                            <div class="outgoing_msg">
+                                                <div class="sent_msg">
+                                                <p>Nenhum histórico de mensagens</p>
+                                                <span class="time_date"></span> </div>
+                                            </div>
+
+                                        @endif
+
                                     </div>
+
+                                    <div class="checkbox">
+                                      
+                                        @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
+                                            <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter" id="fl_envio_enter" value="S" checked="checked">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                        @else
+                                            <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter" id="fl_envio_enter" value="S">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                        @endif
+                                    </div>
+
                                     <div class="type_msg">
                                         <div class="input_msg_write">
-                                            <input type="text" class="write_msg" placeholder="Escrever mensagem" />
-                                        <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                            <input type="text" id="texto_mensagem" class="write_msg" placeholder="Escrever mensagem" />
+                                            <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+
+
+                    
+                    @if(Session::get('SESSION_NIVEL') != 3)
+                        <div class="col-sm-12 col-md-6">
+                            <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
+                            <div class="messaging">
+                                <div class="inbox_msg">
+                                    <div class="mesgs">
+                                        <div class="msg_history msg_history_interno">
+
+                                            @if(count($mensagens_externas) > 0)
+                                                @foreach($mensagens_internas as $mensagem)                                                
+
+                                                    
+                                                        @if($mensagem->remetente_prm == Auth::user()->cd_conta_con or $mensagem->remetente_prm == Session::get('SESSION_CD_ENTIDADE'))
+                                                            
+                                                            <div class="outgoing_msg">
+                                                              <div class="sent_msg">
+                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span> </div>
+                                                            </div>
+                                                            
+                                                        @else
+                                                           
+                                                                 <div class="incoming_msg">
+                                                                    <div class="incoming_msg_img">                                                            
+                                                                        @if(file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png')) 
+                                                                            <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="user_profile"> 
+                                                                        @else
+                                                                            <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="received_msg">
+                                                                    <div class="received_withd_msg">
+                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                        <span class="time_date"><strong>{{ $mensagem->entidadeInterna->usuario->name }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                        @endif
+                                                    
+                                                   
+                                               @endforeach
+                                            @else
+
+                                                <div class="outgoing_msg">
+                                                    <div class="sent_msg">
+                                                    <p>Nenhum histórico de mensagens</p>
+                                                    <span class="time_date"></span> </div>
+                                                </div>
+
+                                            @endif
+                                           
+                                        </div>
+                                        <div class="checkbox">
+                                          
+                                            @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
+                                                <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S" checked="checked">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                            @else
+                                                <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                            @endif
+                                        </div>
+                                        <div class="type_msg">
+                                            <div class="input_msg_write">
+                                                <input type="text" id="texto_mensagem_interno" class="write_msg" placeholder="Escrever mensagem" />
+                                            <button class="msg_send_btn msg_send_interno" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
-                        <div class="messaging">
-                            <div class="inbox_msg">
-                                <div class="mesgs">
-                                    <div class="msg_history">
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>Test which is a new approach to have all
-                                                solutions</p>
-                                              <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                                          </div>
-                                        </div>
-                                        <div class="outgoing_msg">
-                                          <div class="sent_msg">
-                                            <p>Test which is a new approach to have all
-                                              solutions</p>
-                                            <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-                                        </div>
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>Test, which is a new approach to have</p>
-                                              <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-                                          </div>
-                                        </div>
-                                        <div class="outgoing_msg">
-                                          <div class="sent_msg">
-                                            <p>Apollo University, Delhi, India Test</p>
-                                            <span class="time_date"> 11:01 AM    |    Today</span> </div>
-                                        </div>
-                                        <div class="incoming_msg">
-                                          <div class="incoming_msg_img"> <img class="img_msg" src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                                          <div class="received_msg">
-                                            <div class="received_withd_msg">
-                                              <p>We work directly with our designers and suppliers,
-                                                and sell direct to you, which means quality, exclusive
-                                                products, at a price anyone can afford.</p>
-                                              <span class="time_date"> 11:01 AM    |    Today</span></div>
-                                          </div>
-                                        </div>
-                                    </div>
-                                    <div class="type_msg">
-                                        <div class="input_msg_write">
-                                            <input type="text" class="write_msg" placeholder="Escrever mensagem" />
-                                        <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                     <div style="clear: both;"></div>
                 </div>
             </article>
-             -->
+            
         </div>
     </div>
 </div>
@@ -337,11 +379,194 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        //Posiciona a lista de mensagens na última mensagem enviada
+        $('.msg_history').scrollTop($('.msg_history')[0].scrollHeight);
+
+        //Verifica se a oção de envio com Enter está ativada
+        var callback = function(e){
+                
+            var text = e.type;
+            var code = e.which ? e.which : e.keyCode;
+            if(13 === code){
+
+                flag = $('#fl_envio_enter').is(':checked'); 
+
+                if(flag){
+                    $('.msg_send_externo').trigger('click');
+                }
+            } 
+        };
+
+        $('#texto_mensagem').keypress(callback);     
+
+         //Verifica se a oção de envio com Enter está ativada
+        var icallback = function(e){
+                
+            var text = e.type;
+            var code = e.which ? e.which : e.keyCode;
+            if(13 === code){
+
+                flag = $('#fl_envio_enter_interno').is(':checked'); 
+
+                if(flag){
+
+                    $('.msg_send_interno').trigger('click');
+                }
+            } 
+        };
+
+        $('#texto_mensagem_interno').keypress(icallback);   
+
         $('#modalUpload').on('show.bs.modal', function () {
             $("#arquivo").empty();
             $("#poster").empty();
             $(".upload-msg").empty();
         });
+
+        $(".fl_envio_enter").change(function(){
+
+            flag = $(this).is(':checked');   
+            conta = $("#conta_logada").val();         
+
+            $.ajax({
+
+                type: "POST",
+                url: "../../conta/configuracoes/flag_envio",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "conta": conta,
+                    "flag": flag
+                },
+                beforeSend: function()
+                {
+                    
+                },
+                success: function(response)
+                {
+                    //Formatando data
+                    
+                    //location.reload();
+                },
+                error: function(response)
+                {
+                    
+                    //location.reload();
+                }
+            });
+
+        });
+
+        $('.msg_send_externo').click(function(){
+
+            processo = $("#processo").val();
+            correspondente = $("#msg_correspondente").val();
+            conta = $("#conta").val();
+            msg = $("#texto_mensagem").val();
+
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../processo/mensagem/enviar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "processo": processo,
+                    "conta": conta,
+                    "correspondente": correspondente,
+                    "msg": msg,
+                    "tipo": 'externo'
+                },
+                beforeSend: function()
+                {
+                    $('.msg_history_externo').loader('show');
+                },
+                success: function(response)
+                {
+                    //Formatando data
+                    data = response.objeto.created_at.split(' ');
+                    dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
+
+                    var m = '<div class="outgoing_msg">'+
+                                '<div class="sent_msg">' +
+                                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                                    '<span class="time_date">'+dt_msg+'</span>'+
+                                '</div>'+
+                            '</div>';
+
+                    $(".msg_history_externo").append(m);
+
+                    $('.msg_history_externo').loader('hide');
+                    
+                    $(".msg_history_externo").append('');
+                    $('.msg_history_externo').scrollTop($('.msg_history_externo')[0].scrollHeight);
+                    $("#texto_mensagem").val("");
+                    $("#texto_mensagem").focus();
+                    //location.reload();
+                },
+                error: function(response)
+                {
+                    $('.msg_history_externo').loader('hide');
+                    //location.reload();
+                }
+            });
+
+        });
+
+        $('.msg_send_interno').click(function(){
+
+            processo = $("#processo").val();
+            correspondente = $("#msg_correspondente").val();
+            conta = $("#conta").val();
+            msg = $("#texto_mensagem_interno").val();
+
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../processo/mensagem/enviar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "processo": processo,
+                    "conta": conta,
+                    "correspondente": correspondente,
+                    "msg": msg,
+                    "tipo": 'interna'
+                },
+                beforeSend: function()
+                {
+                    $('.msg_history_interno').loader('show');
+                },
+                success: function(response)
+                {
+                    //Formatando data
+                    data = response.objeto.created_at.split(' ');
+                    dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
+
+                    var m = '<div class="outgoing_msg">'+
+                                '<div class="sent_msg">' +
+                                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                                    '<span class="time_date">'+dt_msg+'</span>'+
+                                '</div>'+
+                            '</div>';
+
+                    $(".msg_history_interno").append(m);
+
+                    $('.msg_history_interno').loader('hide');
+                    
+                    $(".msg_history_interno").append('');
+                    $('.msg_history_interno').scrollTop($('.msg_history_interno')[0].scrollHeight);
+                    $("#texto_mensagem_interno").val("");
+                    $("#texto_mensagem_interno").focus();
+                    //location.reload();
+                },
+                error: function(response)
+                {
+                    $('.msg_history_interno').loader('hide');
+                    //location.reload();
+                }
+            });
+
+        });
+
     });
 
     function validate(formData, jqForm, options) {
