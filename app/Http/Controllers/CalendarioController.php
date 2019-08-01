@@ -46,14 +46,31 @@ class CalendarioController extends Controller
         return view('calendario/index');
     }
 
-    public function buscarEventosPorData(){
+    public function buscarEventosPorData(Request $request){
 
-        echo json_encode('teste');
+        $calendario = Calendario::where('cd_conta_con',$this->cdContaCon)->first();
 
-        // $optParams['timeMin'] = date("c", strtotime(date('2019-07-30 23:00:00')));
-        // $optParams['timeMax'] = date("c", strtotime(date('2019-09-30 23:00:00')));
+        $optParams['timeMin'] = date("c", strtotime(current(explode("(",$request->start))));
+        $optParams['timeMax'] = date("c", strtotime(current(explode("(",$request->end))));
 
-        // $events = $service->events->listEvents('primary', $optParams);
+        $events = $this->getServiceCalendario()->events->listEvents($calendario->id_calendario_google_cal, $optParams);
+
+        $eventos = array();
+        foreach ($events->getItems() as $event) {
+            
+            $obj = new \StdClass();
+            $obj->title = $event->summary;
+
+            if(!empty($event->start->getDateTime())){
+                $obj->start = $event->start->getDateTime();
+            }else{
+                $obj->start = $event->start->getDate();
+            }
+
+            $eventos[] = $obj;
+        }
+
+        echo json_encode($eventos);
 
     }
 

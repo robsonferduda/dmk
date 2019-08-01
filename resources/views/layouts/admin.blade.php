@@ -433,8 +433,8 @@
         <script src="{{ asset('js/menu.js') }}"></script>
         <script src="{{ asset('js/app.config.js') }}"></script>
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
-        <script src="js/plugin/moment/moment.min.js"></script>
-        <script src="js/plugin/fullcalendar/fullcalendar.min.js"></script>
+        <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
 
         <!--[if IE 8]>
             <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>

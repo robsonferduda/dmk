@@ -295,30 +295,22 @@
                         }
                         calendar.fullCalendar('unselect');
                     },
-
-                    events: function(start, end, timezone, callback) {
-                        $.ajax({
-                            url: "{{url('calendario/eventos-por-data')}}",
-                            dataType: 'json',
-                           // type: 'POST',
-                            data: {
-                                start: $('#calendar').fullCalendar('getCalendar').view.start,
-                                end: $('#calendar').fullCalendar('getCalendar').view.end,
-                            },
-                            success: function(doc) {
-                                console.log(start);
-
-                                var events = [];
-                                $(doc).find('event').each(function() {
-                                    events.push({
-                                        title: $(this).attr('title'),
-                                        start: $(this).attr('start') // will be parsed
-                                    });
-                                });
-                            } 
-                        });
+                    loading: function (bool) {
+                        alert(bool);
                     },
+                    eventAfterAllRender: function (view) {
 
+                        
+                    },
+                    events: {
+                        url: "{{url('calendario/eventos-por-data')}}",
+                        type: 'POST',
+                        error: function() {
+                            alert('there was an error while fetching events!');
+                        },
+                        color: '#71843F',   // a non-ajax option
+                        textColor: 'white' // a non-ajax option
+                    },                                       
                     eventRender: function (event, element, icon) {
 
                         if (!event.description == "") {
@@ -369,68 +361,68 @@
         
                 $('.fc-next-button').click(function(){
                     
-                    var calendar = $('#calendar').fullCalendar('getCalendar');
-                    var view = calendar.view;
-                    var start = view.start._d;
-                    var end = view.end._d;
-                    var dates = { start: start, end: end };
+                    // var calendar = $('#calendar').fullCalendar('getCalendar');
+                    // var view = calendar.view;
+                    // var start = view.start._d;
+                    // var end = view.end._d;
+                    // var dates = { start: start, end: end };
 
 
-                    var events = [{
-                        title: 'All Day Event',
-                        start: new Date(y, m, 1),
-                        description: 'long description',
-                        className: ["event", "bg-color-greenLight"],
-                        icon: 'fa-check'
-                    }, {
-                        title: 'Long Event',
-                        start: new Date(y, m, d - 5),
-                        end: new Date(y, m, d - 2),
-                        className: ["event", "bg-color-red"],
-                        icon: 'fa-lock'
-                    }, {
-                        id: 999,
-                        title: 'Repeating Event',
-                        start: new Date(y, m, d - 3, 16, 0),
-                        allDay: false,
-                        className: ["event", "bg-color-blue"],
-                        icon: 'fa-clock-o'
-                    }, {
-                        id: 999,
-                        title: 'Repeating Event',
-                        start: new Date(y, m, d + 4, 16, 0),
-                        allDay: false,
-                        className: ["event", "bg-color-blue"],
-                        icon: 'fa-clock-o'
-                    }, {
-                        title: 'Meeting',
-                        start: new Date(y, m, d, 10, 30),
-                        allDay: false,
-                        className: ["event", "bg-color-darken"]
-                    }, {
-                        title: 'Lunch',
-                        start: new Date(y, m, d, 12, 0),
-                        end: new Date(y, m, d, 14, 0),
-                        allDay: false,
-                        className: ["event", "bg-color-darken"]
-                    }, {
-                        title: 'Birthday Party',
-                        start: new Date(y, m, d + 1, 19, 0),
-                        end: new Date(y, m, d + 1, 22, 30),
-                        allDay: false,
-                        className: ["event", "bg-color-darken"]
-                    }, {
-                        title: 'Smartadmin Open Day',
-                        start: new Date(y, m, 28),
-                        end: new Date(y, m, 29),
-                        className: ["event", "bg-color-darken"]
-                    }];
+                    // var events = [{
+                    //     title: 'All Day Event',
+                    //     start: new Date(y, m, 1),
+                    //     description: 'long description',
+                    //     className: ["event", "bg-color-greenLight"],
+                    //     icon: 'fa-check'
+                    // }, {
+                    //     title: 'Long Event',
+                    //     start: new Date(y, m, d - 5),
+                    //     end: new Date(y, m, d - 2),
+                    //     className: ["event", "bg-color-red"],
+                    //     icon: 'fa-lock'
+                    // }, {
+                    //     id: 999,
+                    //     title: 'Repeating Event',
+                    //     start: new Date(y, m, d - 3, 16, 0),
+                    //     allDay: false,
+                    //     className: ["event", "bg-color-blue"],
+                    //     icon: 'fa-clock-o'
+                    // }, {
+                    //     id: 999,
+                    //     title: 'Repeating Event',
+                    //     start: new Date(y, m, d + 4, 16, 0),
+                    //     allDay: false,
+                    //     className: ["event", "bg-color-blue"],
+                    //     icon: 'fa-clock-o'
+                    // }, {
+                    //     title: 'Meeting',
+                    //     start: new Date(y, m, d, 10, 30),
+                    //     allDay: false,
+                    //     className: ["event", "bg-color-darken"]
+                    // }, {
+                    //     title: 'Lunch',
+                    //     start: new Date(y, m, d, 12, 0),
+                    //     end: new Date(y, m, d, 14, 0),
+                    //     allDay: false,
+                    //     className: ["event", "bg-color-darken"]
+                    // }, {
+                    //     title: 'Birthday Party',
+                    //     start: new Date(y, m, d + 1, 19, 0),
+                    //     end: new Date(y, m, d + 1, 22, 30),
+                    //     allDay: false,
+                    //     className: ["event", "bg-color-darken"]
+                    // }, {
+                    //     title: 'Smartadmin Open Day',
+                    //     start: new Date(y, m, 28),
+                    //     end: new Date(y, m, 29),
+                    //     className: ["event", "bg-color-darken"]
+                    // }];
 
-                    $('#calendar').fullCalendar('removeEventSource',events);
-                    $('#calendar').fullCalendar('addEventSource',events);
-                    $('#calendar').fullCalendar('refetchEvents');
+                    // $('#calendar').fullCalendar('removeEventSource',events);
+                    // $('#calendar').fullCalendar('addEventSource',events);
+                    // $('#calendar').fullCalendar('refetchEvents');
 
-                    console.log(dates);
+                    // console.log(dates);
         
                 });
 
