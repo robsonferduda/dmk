@@ -1226,7 +1226,7 @@ class CorrespondenteController extends Controller
     {
         $search = $request->get('term');
       
-        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')->get();
+        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')->where('cd_conta_con',$this->conta)->get();
 
         $results = array();
         foreach ($resultados as $ret)

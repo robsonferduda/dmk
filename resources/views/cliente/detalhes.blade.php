@@ -9,14 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Clientes <span>> Detalhes </span> <span>> {{ $cliente->nm_fantasia_cli }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn btnMargin"><i class="fa fa-money fa-lg"></i> Honorários</a> 
             <a data-toggle="modal" href="{{ url('clientes') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-group fa-lg"></i> Listar Clientes</a>
+            <a data-toggle="modal" target="blank" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-book fa-lg"></i>Contatos</a>
             <a data-toggle="modal" href="{{ url('cliente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
 

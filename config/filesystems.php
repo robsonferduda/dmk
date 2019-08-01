@@ -43,6 +43,11 @@ return [
 
     'disks' => [
 
+        'reports' => [
+            'driver' => 'local',
+            'root' => storage_path('reports'),
+        ],
+        
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

@@ -50,7 +50,7 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::All();
+            $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
@@ -60,6 +60,9 @@ class ProcessoController extends Controller
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+              $query->with(array('contaCorrespondente' => function($query){
+                    $query->where('cd_conta_con', $this->cdContaCon);
+              }));
         }))->with(array('cidade' => function($query){
               $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
               $query->with(array('estado' => function($query){
@@ -88,7 +91,7 @@ class ProcessoController extends Controller
 
         }else{
 
-            $tiposProcesso = TipoProcesso::All();
+            $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
 
@@ -98,6 +101,9 @@ class ProcessoController extends Controller
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+              $query->with(array('contaCorrespondente' => function($query){
+                    $query->where('cd_conta_con', $this->cdContaCon);
+              }));
         }))->with(array('cidade' => function($query){
               $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
               $query->with(array('estado' => function($query){
@@ -373,7 +379,7 @@ class ProcessoController extends Controller
     public function buscaValorCorrespondente($correspondente,$cidade,$tipoServico){
 
         $valor = '';
-        $entidade = Entidade::select('cd_entidade_ete')->where('cd_conta_con',$correspondente)->first();
+        $entidade = ContaCorrespondente::select('cd_entidade_ete')->where('cd_conta_con',$this->cdContaCon)->where('cd_correspondente_cor',$correspondente)->first();
        
         if(!empty($cidade) && !empty($entidade)){
             $valor = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
@@ -559,6 +565,10 @@ class ProcessoController extends Controller
         $numero   = $request->get('nu_processo_pro');
         $tipo = $request->get('cd_tipo_processo_tpo');
         $tipoServico = $request->get('cd_tipo_servico_tse');
+        $autor = $request->get('nm_autor_pro');
+        $reu = $request->get('nm_reu_pro');
+        $acompanhamento = $request->get('nu_acompanhamento_pro');
+
 
         if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
         {
@@ -584,9 +594,13 @@ class ProcessoController extends Controller
         });
         if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
         if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
+        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
+        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+
           $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso]);
+        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
     }
 
     public function novo(){

@@ -76,6 +76,7 @@
                             <thead>                         
                                 <tr>    
                                     <th>Nome</th>
+                                    <th>Cliente</th>
                                     <th>Comarca</th> 
                                     <th>Tipo de Contato</th>                                
                                     <th>Telefone</th>
@@ -89,6 +90,7 @@
                                    
                                         <tr>
                                             <td data-id="{{ $d->cd_contato_cot }}"><a href="{{ url('contato/detalhes/'.$d->cd_contato_cot) }}">{{ $d->nm_contato_cot }}</a></td>
+                                            <td>{{ $d->nm_razao_social_cli ? $d->nm_razao_social_cli : 'Não informado' }}</td>
                                             <td>{{ ($d->nm_cidade_cde) ? $d->nm_cidade_cde : 'Não informado' }}</td>
                                             <td>{{ $d->nm_tipo_contato_tct }}</td>
                                             <td>{!! ($d->nu_fone_fon) ? $d->nu_fone_fon. (($d->totalFone > 1 ) ? ' <i style="color: #305d8c;" class="fa  fa-plus-square-o"></i>' : '') : 'Não informado' !!}</td>

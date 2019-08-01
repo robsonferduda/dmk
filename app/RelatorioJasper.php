@@ -17,6 +17,7 @@ class RelatorioJasper
         $this->password   = env('DB_PASSWORD', null);
         $this->parametros = array();
         $this->porta      = env('DB_PORT',null);
+        $this->conta      = \Session::get('SESSION_CD_CONTA');
         
     }
 
@@ -49,10 +50,12 @@ class RelatorioJasper
         ];
     }
 
-    public function processar($parametros = array(),$sourceName,$fileName)
+    public function processar($parametros = array(),$sourceName,$fileName,$download=true,$extensao='pdf')
     {
     
-        $output = public_path().'/reports/' . time() . "_$fileName";
+        \File::makeDirectory(storage_path().'/reports/'.$this->conta, $mode = 0744, true, true);
+
+        $output = storage_path().'/reports/'.$this->conta.'/'. time() . "_$fileName";
 
         $report = new PHPJasper;
 
@@ -61,7 +64,7 @@ class RelatorioJasper
         $input = resource_path()."/reports/$sourceName";   
         $output = $output;
         $options = [
-            'format' => ['pdf'],
+            'format' => [$extensao],
             'locale' => 'pt',
             'params' => $this->parametros,
             'db_connection' => $this->getDatabaseConfig()
@@ -73,21 +76,25 @@ class RelatorioJasper
             $options
         )->execute();
 
-        $file = $output . '.pdf';
+        $file = $output . '.'.$extensao;
         $path = $file;
 
         // caso o arquivo não tenha sido gerado retorno um erro 404
         if (!file_exists($file)) {
             abort(404);
         }
-        //caso tenha sido gerado pego o conteudo
-        $file = file_get_contents($file);
-        //deleto o arquivo gerado, pois iremos mandar o conteudo para o navegador
-        unlink($path);
-        // retornamos o conteudo para o navegador que íra abrir o PDF
-        return response($file, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="'.$fileName.'.pdf"');
+        
+        if($download){
+            //caso tenha sido gerado pego o conteudo
+            $file = file_get_contents($file);
+            //deleto o arquivo gerado, pois iremos mandar o conteudo para o navegador
+            unlink($path);
+            // retornamos o conteudo para o navegador que íra abrir o PDF
+
+            return response($file, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="'.$fileName.'.pdf"');
+        }
     }
 
     public function processarWithJSON($json,$fileName){

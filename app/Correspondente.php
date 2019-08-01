@@ -49,7 +49,7 @@ class Correspondente extends Model implements AuditableContract
 
     public function contaCorrespondente()
     {
-        return $this->hasOne('App\ContaCorrespondente','cd_correspondente_cor', 'cd_conta_con');
+        return $this->hasOne('App\ContaCorrespondente','cd_correspondente_cor', 'cd_conta_con')->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'));
     }
 
     public function notificacaoConfirmacao($correspondente)

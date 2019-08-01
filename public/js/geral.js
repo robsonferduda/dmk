@@ -17,7 +17,7 @@ $(document).ready(function() {
 	$('.cep').mask('00000-000');
 	$('.cpf').mask('000.000.000-00');
 	$('.cnpj').mask("00.000.000/0000-00");
-	$('.telefone').mask("(00) 0000-00009");
+	$('.telefone').mask("(00) 00000-0009");
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
 	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});

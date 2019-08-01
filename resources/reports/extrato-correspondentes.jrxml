@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dmk.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="302"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="689"/>
 	<style name="Title" forecolor="#000000" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Times New Roman" fontSize="18" isBold="false"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -15,87 +17,116 @@
 		</conditionalStyle>
 	</style>
 	<parameter name="bancoQuery" class="java.lang.String"/>
+	<parameter name="correspondenteQuery" class="java.lang.String"/>
+	<parameter name="dataQuery" class="java.lang.String"/>
+	<parameter name="dataInicio" class="java.lang.String"/>
+	<parameter name="dataFim" class="java.lang.String"/>
+	<parameter name="conta" class="java.lang.Integer"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="statusQuery" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
       t2.nm_titular_dba,
       t2.nu_cpf_cnpj_dba,
+      t4.cd_banco_ban,
       t4.nm_banco_ban,  
       t2.nu_agencia_dba,
       t2.nu_conta_dba,
-      sum(t5.vl_taxa_honorario_correspondente_pth) as vl_taxa_honorario_correspondente_pth,
       t6.nm_tipo_conta_tcb,
-      t0.nm_razao_social_con
+      t8.nm_conta_correspondente_ccr,
+      COALESCE (sum(t5.vl_taxa_honorario_correspondente_pth),0) as vl_taxa_honorario_correspondente_pth,
+   	  COALESCE(sum(t9.vl_processo_despesa_pde),0) as vl_processo_despesa_pde 
 FROM
-    public.conta_con t0
-    INNER JOIN entidade_ete t1 ON (t0.cd_conta_con = t1.cd_conta_con)
-    INNER JOIN dados_bancarios_dba t2 ON (t1.cd_entidade_ete = t2.cd_entidade_ete)
-    INNER JOIN processo_pro t3 ON (t3.cd_correspondente_cor = t0.cd_conta_con)
-    INNER JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
-    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro)
-    INNER JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+    processo_pro t3
+    INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
     INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
+    INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
+    LEFT JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete  and t2.deleted_at is null)
+    LEFT JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
+    LEFT JOIN tipo_conta_banco_tcb t6 ON (t2.cd_tipo_conta_tcb = t6.cd_tipo_conta_tcb)
+	LEFT JOIN processo_despesa_pde t9 ON (t3.cd_processo_pro = t9.cd_processo_pro and fl_despesa_reembolsavel_pde = 'S' and cd_tipo_entidade_tpe = 6 and t3.deleted_at is null)
+	
 WHERE
-    t0.fl_correspondente_con = 'S'
-    AND
     t3.deleted_at IS NULL
-    $P!{bancoQuery}
+    AND
+    t8.cd_conta_con = $P{conta}
+    $P!{dataQuery}
+	$P!{bancoQuery}
+	$P!{correspondenteQuery}
+	$P!{statusQuery}
 GROUP BY 
      t2.nm_titular_dba,
-      t2.nu_cpf_cnpj_dba,
-      t4.nm_banco_ban,  
-      t2.nu_agencia_dba,
-      t2.nu_conta_dba,
-      t6.nm_tipo_conta_tcb,
-      t0.nm_razao_social_con]]>
+     t2.nu_cpf_cnpj_dba,
+     t4.cd_banco_ban,
+     t4.nm_banco_ban,  
+     t2.nu_agencia_dba,
+     t2.nu_conta_dba,
+     t6.nm_tipo_conta_tcb,
+     t8.nm_conta_correspondente_ccr]]>
 	</queryString>
 	<field name="nm_titular_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nm_titular_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
 	</field>
 	<field name="nu_cpf_cnpj_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_cpf_cnpj_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
+	</field>
+	<field name="cd_banco_ban" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cd_banco_ban"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="banco_ban"/>
 	</field>
 	<field name="nm_banco_ban" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nm_banco_ban"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="banco_ban"/>
 	</field>
 	<field name="nu_agencia_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_agencia_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
 	</field>
 	<field name="nu_conta_dba" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nu_conta_dba"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dados_bancarios_dba"/>
+	</field>
+	<field name="nm_tipo_conta_tcb" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tipo_conta_banco_tcb"/>
+	</field>
+	<field name="nm_conta_correspondente_ccr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nm_conta_correspondente_ccr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_correspondente_ccr"/>
 	</field>
 	<field name="vl_taxa_honorario_correspondente_pth" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="vl_taxa_honorario_correspondente_pth"/>
 	</field>
-	<field name="nm_tipo_conta_tcb" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nm_tipo_conta_tcb"/>
-	</field>
-	<field name="nm_razao_social_con" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="nm_razao_social_con"/>
+	<field name="vl_processo_despesa_pde" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="vl_processo_despesa_pde"/>
 	</field>
 	<group name="Group1">
-		<groupExpression><![CDATA[$F{nm_razao_social_con}]]></groupExpression>
+		<groupExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></groupExpression>
 		<groupHeader>
 			<band height="21">
-				<textField>
+				<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
+				<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
 					<reportElement x="455" y="0" width="100" height="15" uuid="8ef76222-063c-4f69-a378-fb080cf4dc77"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="355" y="0" width="100" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
-					<textElement textAlignment="Right">
+					<reportElement x="400" y="0" width="55" height="15" uuid="7e3d47c3-a023-494b-ab3c-bb625b39a2c1"/>
+					<textElement textAlignment="Left">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Valor: R$]]></text>
+					<text><![CDATA[Valor:]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="100" y="0" width="190" height="15" uuid="b24d7a17-bcce-4fb0-bf6e-10995c5292f5"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{nm_razao_social_con}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="0" y="0" width="100" height="15" uuid="ae46ff28-8817-4d2e-aae7-99f0f09d687c"/>
@@ -119,34 +150,41 @@ GROUP BY
 	</background>
 	<title>
 		<band height="151" splitType="Stretch">
-			<image>
-				<reportElement x="2" y="0" width="118" height="132" uuid="d47168ce-aae1-4efc-8d24-e15195025a5a"/>
-				<imageExpression><![CDATA["../tree1.png"]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement style="Title" x="120" y="10" width="435" height="93" uuid="f49d68fd-a2c7-44ec-a5fc-9300d10c85a1"/>
-				<textElement>
-					<font size="80" isBold="false"/>
+			<textField>
+				<reportElement style="Title" x="0" y="10" width="555" height="93" uuid="1ef6be1f-62c5-4947-84ad-d0cf73ec50c2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="26" isBold="false"/>
 				</textElement>
-				<text><![CDATA[DMK]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement style="SubTitle" x="220" y="103" width="333" height="29" uuid="eef58983-008d-4a5b-8e47-97f8d4670c7a"/>
-				<textElement>
+				<reportElement style="SubTitle" x="0" y="103" width="553" height="29" uuid="8ae3b5cc-8a80-4080-b5c7-26eb4b0a6780"/>
+				<textElement textAlignment="Center">
 					<font size="22" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Pagamento Correspondentes]]></text>
+				<text><![CDATA[Pagamento de Correspondentes]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="25" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="0" width="554" height="16" uuid="7346e15a-7e5e-49a7-a383-4bdf0df0338d"/>
+		<band height="25" splitType="Immediate">
+			<textField>
+				<reportElement x="0" y="0" width="554" height="12" uuid="0d3ff172-1f17-4b2f-ab87-3cd2fe8da6e4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[20/05/2019 até 21/05/2019]]></text>
+				<textFieldExpression><![CDATA[$P{dataInicio} +" até "+$P{dataFim}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="12" width="554" height="12" forecolor="#D40C08" uuid="70580998-928a-4a9f-a30c-b432dc1bcd92">
+					<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Não há registros para os parâmetros informados!]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -154,46 +192,55 @@ GROUP BY
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="82" splitType="Stretch">
-			<textField>
-				<reportElement x="100" y="0" width="180" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
+		<band height="90" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="280" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="15" uuid="ce5d8451-df5a-47cf-9ac5-6ea894dad8c3"/>
 				<text><![CDATA[Nome do Titular]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="15" width="180" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="15" width="280" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a"/>
 				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="15" width="100" height="15" uuid="d4595ba4-4dcd-412f-aaee-7ec9457bf732"/>
 				<text><![CDATA[CPF/CNPJ:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="30" width="180" height="15" uuid="80a3b43c-cc86-41e5-b332-58a315b2474c"/>
-				<textFieldExpression><![CDATA[$F{nm_banco_ban}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="0" y="30" width="100" height="15" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2"/>
 				<text><![CDATA[Banco:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="45" width="180" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="60" width="280" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06"/>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="45" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
+				<reportElement x="0" y="60" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b"/>
 				<text><![CDATA[Conta:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="60" width="180" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="75" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="60" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
+				<reportElement x="0" y="75" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
 				<text><![CDATA[Tipo de Conta:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="30" width="280" height="15" uuid="6a8d8f86-1d27-4813-a774-1b459a2126e9"/>
+				<textFieldExpression><![CDATA[$F{cd_banco_ban}  != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="45" width="280" height="15" uuid="6ce7d71f-7929-428d-83b4-fc99ff6b9576"/>
+				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="45" width="100" height="15" uuid="86be7ff8-072b-48fa-870d-e49c993239b9"/>
+				<text><![CDATA[Agência]]></text>
 			</staticText>
 		</band>
 	</detail>
@@ -223,7 +270,7 @@ GROUP BY
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 				</textField>
 				<textField pattern="EEEEE dd MMMMM yyyy">
 					<reportElement style="Column header" x="2" y="0" width="197" height="13" forecolor="#FFFFFF" uuid="14d8de1e-8695-4078-a67f-0e69172574d5"/>
