@@ -26,28 +26,49 @@
             <div class="well">
                 <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
-                    <div class="input-group">
-                        <span class="input-group-addon">Nº Processo</span>
-                        <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
-                    </div>                    
-                    <div class="form-group">
-                        <select name="cd_tipo_processo_tpo" class="form-control">
-                            <option value="">Tipos de Processo</option>
-                            @foreach($tiposProcesso as $tipo)
-                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                    <div style="width: 30%" class="form-group">
-                        <select style="width: 70%" name="cd_tipo_servico_tse" class="form-control">
-                            <option value="">Tipos de Serviço</option>
-                            @foreach($tiposServico as $tipo)
-                                <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
-                            @endforeach
-                        </select>
-                    </div>                
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                    <div class="row">
+                        <section class="col col-md-4">                            
+                            <label class="label label-black">Nº Processo</label><br />
+                            <input style="width: 100%" size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="" value="{{ !empty($numero) ? $numero : '' }}" >                            
+                        </section>               
+                        <section class="col col-md-4">
+                            <label class="label label-black">Autor</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
+                        </section>                  
+                        <section class="col col-md-4">
+                            <label class="label label-black">Réu</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
+                        </section>                           
+                    </div>  
+                    <div class="row"> 
+                        <section class="col col-md-3">
+                            <label class="label label-black"></label><br />
+                            <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
+                                <option value="">Tipos de Processo</option>
+                                @foreach($tiposProcesso as $tipo)
+                                    <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                @endforeach
+                            </select>
+                        </section>
+                        <section class="col col-md-4">
+                            <label class="label label-black"></label><br />
+                            <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
+                                <option value="">Tipos de Serviço</option>
+                                @foreach($tiposServico as $tipo)
+                                    <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
+                                @endforeach
+                            </select>
+                        </section>   
+                        <section class="col col-md-2">
+                            <label class="label label-black">Nº Externo</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
+                        </section>    
+                        <section class="col col-md-3">
+                            <br />
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                            <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
+                        </section>
+                    </div>
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
                             <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Finalizado
