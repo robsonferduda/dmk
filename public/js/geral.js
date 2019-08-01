@@ -67,12 +67,11 @@ $(document).ready(function() {
 			CKEDITOR.replace( 'observacao', { toolbar : [
 														{ name: 'document', items : [ 'NewPage','Preview' ] },
 														{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
-														{ name: 'insert', items : [ 'Image','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+														{ name: 'insert', items : [ 'Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
 												                '/',
 														{ name: 'styles', items : [ 'Styles','Format' ] },
-														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
-														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-														{ name: 'links', items : [ 'Link','Unlink','Anchor' ] }
+														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike' ] },
+														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] }
 													], height: '200px', startupFocus : true} );
 
 	}
