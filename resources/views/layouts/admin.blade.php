@@ -503,6 +503,7 @@
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
         <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/fullcalendar/locale-all.js') }}"></script>
 
         <script src="{{ asset('js/app.config.js') }}"></script>
 

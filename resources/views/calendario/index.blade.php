@@ -22,7 +22,7 @@
                 
                 <div class="row">
                 
-                    <div class="col-sm-12 col-md-12 col-lg-3">
+                    {{---<div class="col-sm-12 col-md-12 col-lg-3">
                         <!-- new widget -->
                         <div class="jarviswidget jarviswidget-color-blueDark">
                             <header>
@@ -103,8 +103,8 @@
                             <!-- end widget div -->
                         </div>
                         <!-- end widget -->
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-9">
+                    </div>--}}
+                    <div class="col-sm-12 col-md-12 col-lg-12">
                 
                         <!-- new widget -->
                         <div class="jarviswidget jarviswidget-color-blueDark">
@@ -124,22 +124,22 @@
                             -->
                             <header>
                                 <span class="widget-icon"> <i class="fa fa-calendar"></i> </span>
-                                <h2> My Events </h2>
+                                <h2> Meus Eventos </h2>
                                 <div class="widget-toolbar">
                                     <!-- add: non-hidden - to disable auto hide -->
                                     <div class="btn-group">
                                         <button class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown">
-                                            Showing <i class="fa fa-caret-down"></i>
+                                            Mostrar <i class="fa fa-caret-down"></i>
                                         </button>
                                         <ul class="dropdown-menu js-status-update pull-right">
                                             <li>
-                                                <a href="javascript:void(0);" id="mt">Month</a>
+                                                <a href="javascript:void(0);" id="mt">Mês</a>
                                             </li>
                                             <li>
-                                                <a href="javascript:void(0);" id="ag">Agenda</a>
+                                                <a href="javascript:void(0);" id="ag">Semana</a>
                                             </li>
                                             <li>
-                                                <a href="javascript:void(0);" id="td">Today</a>
+                                                <a href="javascript:void(0);" id="td">Dia</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -176,6 +176,80 @@
                 </div>
                 
                 <!-- end row -->
+</div>
+<div class="modal fade modal_top_alto" id="addEvento" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> Novo Evento
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-cargo', 'url' => 'cargos', 'class' => 'smart-form']) !!}
+                     <fieldset>
+                        <div class="row">
+                            <section class="col col-md-12">
+                                
+                                <label class="label">Título</label>
+                                <label class="input">
+                                    <input type="text" name="titulo" id="titulo" required>
+                                </label>
+                                
+                            </section>                  
+                        </div>
+                        <div class="row">
+                            <section class="col col-md-6">
+                                
+                                <label class="label">Início<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="inicio" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : ''}}">
+                                </label>
+
+                                 <label class="label"></label>
+                                <label class="input">
+                                    <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="horaInicio" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : ''}}" >
+                                </label>
+                                
+                            </section>   
+                            <section class="col col-md-6">
+                                
+                                <label class="label">Fim</label>
+                                <label class="input">
+                                    <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="fim" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : ''}}">
+                                </label>
+
+                                <label class="label"></label>
+                                <label class="input">
+                                    <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="horaFim" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : ''}}" >
+                                </label>
+                                
+                            </section>                  
+                        </div>
+                        <div class="row">
+                            <section class="col col-md-12">          
+       
+                                    <label class="label">Descrição</label>
+                                    <label class="textarea">
+                                        <textarea></textarea>
+                                    </label>
+         
+                            </section>
+                        </div>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-default btn-save-cargo"><i class="fa fa-save"></i> Adicionar Evento</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 @section('script')
@@ -255,9 +329,12 @@
                 $('#calendar').fullCalendar({
             
                     header: hdr,
-                    editable: true,
-                    droppable: true, // this allows things to be dropped onto the calendar !!!
-            
+                    editable: false,
+                    droppable: false, // this allows things to be dropped onto the calendar !!!
+                    selectable: true,
+                    timeFormat: 'HH:mm',
+                    locale: 'pt-br',
+                    timezone: 'America/Sao_Paulo',
                     drop: function (date, allDay) { // this function is called when something is dropped
             
                         // retrieve the dropped element's stored Event Object
@@ -281,21 +358,30 @@
                         }
             
                     },
-            
-                    select: function (start, end, allDay) {
+                    select: function (start, end, allDay,view) {
 
-                        alert(start);
-                        var title = prompt('Event Title:');
-                        if (title) {
-                            calendar.fullCalendar('renderEvent', {
-                                    title: title,
-                                    start: start,
-                                    end: end,
-                                    allDay: allDay
-                                }, true // make the event "stick"
-                            );
+                        $('input[name=horaFim]').val('');
+                        $('input[name=horaInicio]').val('');
+                        $('input[name=inicio]').val('');
+                        $('input[name=fim]').val('');
+
+                        $('input[name=inicio]').val(moment(start).format('DD/MM/Y'));
+
+                        console.log(moment(start));
+
+                        if(view.viewSpec.type == 'month'){
+                            $('input[name=fim]').val(moment(end).subtract(1, "days").format('DD/MM/Y'));
+                        }else{
+                            $('input[name=fim]').val(moment(end).format('DD/MM/Y'));
+                            $('input[name=horaInicio]').val(moment(start).format('HH:mm'));
+                            $('input[name=horaFim]').val(moment(end).format('HH:mm'));
                         }
-                        calendar.fullCalendar('unselect');
+
+                        
+                        
+                        $('#addEvento').modal('show');
+
+                        //calendar.fullCalendar('unselect');
                     },
                     loading: function (bool) {
                         $('.fc-view').loader('show');
@@ -314,14 +400,16 @@
                         textColor: 'white' // a non-ajax option
                     },                                       
                     eventRender: function (event, element, icon) {
+                       
+                        element.find('.fc-time').css('display','inline-block')
 
                         if (!event.description == "") {
                             element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
-                                "</span>");
+                                 "</span>");
                         }
                         if (!event.icon == "") {
                             element.find('.fc-title').append("<i class='air air-top-right fa " + event.icon +
-                                " '></i>");
+                                 " '></i>");
                         }
                     },
             
@@ -359,75 +447,7 @@
                 
                 $('#td').click(function () {
                     $('#calendar').fullCalendar('changeView', 'agendaDay');
-                });         
-        
-                $('.fc-next-button').click(function(){
-                    
-                    // var calendar = $('#calendar').fullCalendar('getCalendar');
-                    // var view = calendar.view;
-                    // var start = view.start._d;
-                    // var end = view.end._d;
-                    // var dates = { start: start, end: end };
-
-
-                    // var events = [{
-                    //     title: 'All Day Event',
-                    //     start: new Date(y, m, 1),
-                    //     description: 'long description',
-                    //     className: ["event", "bg-color-greenLight"],
-                    //     icon: 'fa-check'
-                    // }, {
-                    //     title: 'Long Event',
-                    //     start: new Date(y, m, d - 5),
-                    //     end: new Date(y, m, d - 2),
-                    //     className: ["event", "bg-color-red"],
-                    //     icon: 'fa-lock'
-                    // }, {
-                    //     id: 999,
-                    //     title: 'Repeating Event',
-                    //     start: new Date(y, m, d - 3, 16, 0),
-                    //     allDay: false,
-                    //     className: ["event", "bg-color-blue"],
-                    //     icon: 'fa-clock-o'
-                    // }, {
-                    //     id: 999,
-                    //     title: 'Repeating Event',
-                    //     start: new Date(y, m, d + 4, 16, 0),
-                    //     allDay: false,
-                    //     className: ["event", "bg-color-blue"],
-                    //     icon: 'fa-clock-o'
-                    // }, {
-                    //     title: 'Meeting',
-                    //     start: new Date(y, m, d, 10, 30),
-                    //     allDay: false,
-                    //     className: ["event", "bg-color-darken"]
-                    // }, {
-                    //     title: 'Lunch',
-                    //     start: new Date(y, m, d, 12, 0),
-                    //     end: new Date(y, m, d, 14, 0),
-                    //     allDay: false,
-                    //     className: ["event", "bg-color-darken"]
-                    // }, {
-                    //     title: 'Birthday Party',
-                    //     start: new Date(y, m, d + 1, 19, 0),
-                    //     end: new Date(y, m, d + 1, 22, 30),
-                    //     allDay: false,
-                    //     className: ["event", "bg-color-darken"]
-                    // }, {
-                    //     title: 'Smartadmin Open Day',
-                    //     start: new Date(y, m, 28),
-                    //     end: new Date(y, m, 29),
-                    //     className: ["event", "bg-color-darken"]
-                    // }];
-
-                    // $('#calendar').fullCalendar('removeEventSource',events);
-                    // $('#calendar').fullCalendar('addEventSource',events);
-                    // $('#calendar').fullCalendar('refetchEvents');
-
-                    // console.log(dates);
-        
-                });
-
+                });        
         })
 	</script>
 @endsection
