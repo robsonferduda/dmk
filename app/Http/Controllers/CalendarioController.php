@@ -47,7 +47,18 @@ class CalendarioController extends Controller
     }
 
     public function adicionar(Request $request){
-        dd('request');
+
+        if(!empty($request->horaInicio)){
+            $dtInicio = str_replace('/', '-', $request->inicio.' '.$request->horaInicio);
+            $dtInicio = date("Y-m-d H:m", strtotime($dtInicio));
+        }
+
+
+        $dtInicio = date("c", strtotime($dtInicio));
+        
+        print_r($dtInicio);exit;
+
+
     }
 
     public function buscarEventosPorData(Request $request){
