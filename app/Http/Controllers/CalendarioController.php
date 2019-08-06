@@ -48,17 +48,63 @@ class CalendarioController extends Controller
 
     public function adicionar(Request $request){
 
+        $ret = new \StdClass();
+
+        $dtFim = null;
+
+        if(!empty($request->horaInicio) && empty($request->horaFim))
+            $request->horaFim = $request->horaInicio;
+
         if(!empty($request->horaInicio)){
             $dtInicio = str_replace('/', '-', $request->inicio.' '.$request->horaInicio);
-            $dtInicio = date("Y-m-d H:m", strtotime($dtInicio));
+            $dtInicio = date("Y-m-d H:i", strtotime($dtInicio));
+            $dtInicio = date("c", strtotime($dtInicio));
+        }else{
+            $dtInicio = str_replace('/', '-', $request->inicio);      
+            $dtInicio = date("Y-m-d", strtotime($dtInicio));     
+        }   
+
+        if(!empty($request->fim)){
+            if(!empty($request->horaFim)){
+                $dtFim = str_replace('/', '-', $request->fim.' '.$request->horaFim);
+                $dtFim = date("Y-m-d H:i", strtotime($dtFim));
+                $dtFim = date("c", strtotime($dtFim));
+            }else{
+                $dtFim = str_replace('/', '-', $request->fim);
+                $dtFim = date("Y-m-d", strtotime($dtFim));    
+            }           
         }
 
+        $event = new \Google_Service_Calendar_Event(array(
+            'summary' => $request->titulo       
+        ));
 
-        $dtInicio = date("c", strtotime($dtInicio));
+        if(!empty($request->descricao))
+            $event['description'] = $request->descricao;
+
+        if(!empty($request->horaInicio)){
+            $event['start'] = array('dateTime' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+        }else{
+             $event['start'] = array('date' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+        }
+
+        if(!empty($request->horaFim)){
+            $event['end'] = array('dateTime' => $dtFim, 'timeZone' => 'America/Sao_Paulo');
+        }else{
+             $event['end'] = array('date' => $dtFim, 'timeZone' => 'America/Sao_Paulo');
+        }
         
-        print_r($dtInicio);exit;
-
-
+        $calendarId = $this->getIdCalenderio();
+        $event = $this->getServiceCalendario()->events->insert($calendarId, $event);
+        
+        if(!empty($event) && !empty($event->id)){
+            $ret->id = true;            
+        }else{
+            $ret->id = false;
+            
+        }
+        
+        echo json_encode($ret);
     }
 
     public function buscarEventosPorData(Request $request){

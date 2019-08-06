@@ -270,16 +270,25 @@
                     var descricao  = $("textarea[name='descricao']").val();
 
                     $.ajax({
-                       type:'POST',
-                       url: "{{ url('calendario/evento/adicionar') }}",
-                       data:{titulo:titulo, inicio:inicio, fim:fim, horaInicio:horaInicio, horaFim:horaFim,descricao:descricao},
-                       success:function(data){
+                        type:'POST',
+                        url: "{{ url('calendario/evento/adicionar') }}",
+                        data:{titulo:titulo, inicio:inicio, fim:fim, horaInicio:horaInicio, horaFim:horaFim,descricao:descricao},
+                        success:function(data){
 
-                          alert(data.success);
+                            data = JSON.parse(data);
+                          
+                            if(data.id === true){
+                                alert(data.id);
+                            }  
+                          
+                         
 
                        }
 
                     });
+                }else{
+                   
+                    $(".msg_retorno").html('');                          
                 }
             });
             
