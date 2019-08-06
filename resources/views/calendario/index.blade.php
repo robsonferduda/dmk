@@ -189,12 +189,12 @@
                 </h4>
             </div>
             <div class="modal-body no-padding">
-                {!! Form::open(['id' => 'frm-add-cargo', 'url' => 'cargos', 'class' => 'smart-form']) !!}
-                     <fieldset>
+                {!! Form::open(['id' => 'form-add-evento', 'url' => '', 'class' => 'smart-form']) !!}
+                    <fieldset>
                         <div class="row">
                             <section class="col col-md-12">
                                 
-                                <label class="label">Título</label>
+                                <label class="label">Título<span class="text-danger">*</span></label>
                                 <label class="input">
                                     <input type="text" name="titulo" id="titulo" required>
                                 </label>
@@ -234,7 +234,7 @@
        
                                     <label class="label">Descrição</label>
                                     <label class="textarea">
-                                        <textarea></textarea>
+                                        <textarea name="descricao"></textarea>
                                     </label>
          
                             </section>
@@ -244,7 +244,7 @@
                     </fieldset>
                     <footer>
                         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                        <button type="submit" class="btn btn-default btn-save-cargo"><i class="fa fa-save"></i> Adicionar Evento</button>
+                        <button id="salvarEvento" class="btn btn-default btn-save-evento" ><i class="fa fa-save"></i> Adicionar Evento </button>
                     </footer>
                 {!! Form::close() !!}                    
             </div>
@@ -255,7 +255,58 @@
 @section('script')
 	<script type="text/javascript">
 		$(document).ready(function() {
+
+            $('#salvarEvento').click(function(e) {
+
+                if($("#form-add-evento").valid()){
+
+                    e.preventDefault();
+
+                    var titulo     = $("input[name='titulo']").val();
+                    var inicio     = $("input[name='inicio']").val();
+                    var fim        = $("input[name='fim']").val();
+                    var horaInicio = $("input[name='horaInicio']").val();
+                    var horaFim    = $("input[name='horaFim']").val();
+                    var descricao  = $("textarea[name='descricao']").val();
+
+                    $.ajax({
+                       type:'POST',
+                       url: "{{ url('calendario/evento/adicionar') }}",
+                       data:{titulo:titulo, inicio:inicio, fim:fim, horaInicio:horaInicio, horaFim:horaFim,descricao:descricao},
+                       success:function(data){
+
+                          alert(data.success);
+
+                       }
+
+                    });
+                }
+            });
             
+            var validobj = $("#form-add-evento").validate({
+
+                    
+                    rules : {
+                        titulo : {
+                            required: true,
+                        }, 
+                        inicio:{
+                            required: true,
+                        },
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        titulo : {
+                            required : 'Campo Título é Obrigatório'
+                        },  
+                        inicio:{
+                            required: 'Campo Início Obrigatório'
+                        },
+                    },
+
+            });
+
             pageSetUp();
             
 

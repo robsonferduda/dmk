@@ -46,6 +46,10 @@ class CalendarioController extends Controller
         return view('calendario/index');
     }
 
+    public function adicionar(Request $request){
+        dd('request');
+    }
+
     public function buscarEventosPorData(Request $request){
 
         $calendario = Calendario::where('cd_conta_con',$this->cdContaCon)->first();

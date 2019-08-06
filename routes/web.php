@@ -206,5 +206,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('calendar','CalendarioController@index');
 
 	Route::post('calendario/eventos-por-data','CalendarioController@buscarEventosPorData');	
+	Route::post('calendario/evento/adicionar','CalendarioController@adicionar');	
 	
 });
