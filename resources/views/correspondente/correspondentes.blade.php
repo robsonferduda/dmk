@@ -40,7 +40,10 @@
                             </section>
                             <section class="col col-md-3">
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                <label class="label label-black" >Cidade</label>          
+                                <label class="label label-black" >Cidade de Atuação</label>
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Cidades de Atuação" data-content="A busca considera as cidades de atuação do correspondente, independente dela ser a comarca de origem. Para ver todas as comarcas de atuação, visualize o cadastro completo.">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a>          
                                 <select id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
                                     <option selected value="">Selecione uma cidade</option>
                                 </select> 
@@ -76,7 +79,7 @@
                                     <th style="width: 15%;">CPF/CNPJ</th>                                                                   
                                     <th style="width: 30%;">Nome</th>
                                     <th style="width: 20%;" class="center">Email</th>                                  
-                                    <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 5%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,15 +90,17 @@
                                         <td>{{ $correspondente->nm_conta_correspondente_ccr }}</td>
                                         <td>{!! ($correspondente->correspondente->entidade->usuario) ? $correspondente->correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
-                                            <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
+                                            <div>
+                                                <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
 
-                                            <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> </a>
+                                                <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> </a>
 
-                                            <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
+                                                <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
 
-                                            <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-edit"></i> </a>
+                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-edit"></i> </a>
 
-                                            <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
+                                                <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach                                                           

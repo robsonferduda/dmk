@@ -141,7 +141,6 @@ class CorrespondenteController extends Controller
                                                         $join->join('cidade_atuacao_cat', function($join) use ($cidade){
                                                             $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
                                                             $join->where('cd_cidade_cde','=',$cidade);
-                                                            $join->where('fl_origem_cat','=','S');
                                                             $join->whereNull('cidade_atuacao_cat.deleted_at');
                                                         });
                                                     }); 

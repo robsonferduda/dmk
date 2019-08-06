@@ -7,6 +7,52 @@
         <li>Listar</li>
     </ol>
 </div>
+
+
+
+<style type="text/css">
+
+    /* Row in default-state */
+    .tbody td {
+      position: relative;
+      height: 50px;
+    }
+  
+
+    .tbody td > span {
+      
+      transform: translateY(-50%);
+      width: 100%;
+      padding-left: 15px;
+      padding-right: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /** Menu **/
+    div.menu {
+      transition: opacity .2s;
+      opacity: 0;
+    }
+
+    div.menu span {
+      width: auto;
+      
+      left: auto;
+      transform: none;
+      
+      
+    }
+
+    /* Row-Menu */
+    .tbody tr:hover div.menu {
+      opacity: 1;
+      transition: opacity .2s .4s ease-out;
+    }
+
+</style>
+
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -78,11 +124,10 @@
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
                                     <th style="width: 11%;">Parte Adversa</th>
-                                    <th>Status</th>
-                                    <th style="width: 12%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th>Status</th>                                     
                                 </tr>
                             </thead>
-                            <tbody style="font-size: 12px">
+                            <tbody style="font-size: 12px" class="tbody">
                                 @foreach($processos as $processo)
                                     @php $cor = ''; 
 
@@ -117,34 +162,41 @@
                                         </td>
                                                                    
                                        
-                                         <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
+                                         <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
+
+                                         </td>
                                         <td>
                                             <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>                                            
                                         </td>
                                         <td>
                                             @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }}</a>
+                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr : '' }}</a>
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
-                                        <td>
-                                            <div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}
+                                                                              
+                                                
+                                            <div class="menu" style="margin-top: 5px; width: 200px;">
+                                           
+                                            <span>
+                                                <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                                     <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
                                                     <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
+                                               
                                                     <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
                                                     <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
                                                     <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <button title="Excluir" data-url="../processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
-                                                </div>    
-                                            </div>                                        
-                                        </td>
+                                               
+                                                    <a title="Excluir" data-url="../processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></a>
+                                          </span>
+
+                                          </div>
+                                               
+                                           
+                                          
+                                        </div>
+                                  
                                     </tr>
                                 @endforeach
                             </tbody>
