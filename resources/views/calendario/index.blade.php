@@ -206,12 +206,12 @@
                                 
                                 <label class="label">Início<span class="text-danger">*</span></label>
                                 <label class="input">
-                                    <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="inicio" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : ''}}">
+                                    <input class="data_evento" placeholder="___ /___ /___" type="text" name="inicio" >
                                 </label>
 
                                  <label class="label"></label>
                                 <label class="input">
-                                    <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="horaInicio" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : ''}}" >
+                                    <input class="hora_evento" placeholder="___ : ___" type="text" name="horaInicio" >
                                 </label>
                                 
                             </section>   
@@ -219,12 +219,12 @@
                                 
                                 <label class="label">Fim</label>
                                 <label class="input">
-                                    <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="fim" value="{{ old('dt_solicitacao_pro') ? old('dt_solicitacao_pro') : ''}}">
+                                    <input class="data_evento" placeholder="___ /___ /___" type="text" name="fim" >
                                 </label>
 
                                 <label class="label"></label>
                                 <label class="input">
-                                    <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="horaFim" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : ''}}" >
+                                    <input class="hora_evento" placeholder="___ : ___" type="text" name="horaFim" >
                                 </label>
                                 
                             </section>                  
@@ -278,11 +278,26 @@
                             data = JSON.parse(data);
                           
                             if(data.id === true){
-                                alert(data.id);
-                            }  
+
+                                $('#addEvento').modal('hide');
+                                $('#calendar').fullCalendar('refetchEvents');
+
+                                $("input[name='titulo']").val('');
+                                $("input[name='inicio']").val('');
+                                $("input[name='fim']").val('');
+                                $("input[name='horaInicio']").val('');
+                                $("input[name='horaFim']").val('');
+                                $("textarea[name='descricao']").val('');
+
+                                $(".msg_retorno").html(''); 
+
+                            }else{
+
+                                $(".msg_retorno").html("<h3 style='color:red' >"+data.msg+"</h3>");                                
+                            } 
                           
                          
-
+                               
                        }
 
                     });
@@ -292,6 +307,37 @@
                 }
             });
             
+
+            $.validator.addMethod("dateSize",
+                function(value, element) {
+                    if(value.length != 10 && value.length != 0){
+                        return false
+                    }else{
+                        return true;
+                    }
+                },
+                "Data inválida.");
+
+            $.validator.addMethod("dateFormat",
+                function(value, element) {
+                    return value.match(/^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/);
+                },
+                "Data inválida.");
+
+             $.validator.addMethod("horaSize",
+                function(value, element) {                
+                    
+                    if(value.length != 5 && value.length != 0){
+                        return false
+                    }else{
+                        return true;
+                    }
+                    
+                },
+                "Hora inválida.");
+
+
+
             var validobj = $("#form-add-evento").validate({
 
                     
@@ -301,9 +347,20 @@
                         }, 
                         inicio:{
                             required: true,
+                            dateFormat: true,
+                            dateSize: true
                         },
+                        fim:{                        
+                            dateFormat: true,
+                            dateSize: true
+                        },
+                        horaInicio:{
+                            horaSize: true
+                        },
+                        horaFim:{
+                            horaSize: true
+                        }
                     },
-
                     // Messages for form validation
                     messages : {
                         titulo : {
@@ -460,13 +517,40 @@
                         textColor: 'white' // a non-ajax option
                     },                                       
                     eventRender: function (event, element, icon) {
-                       
-                        element.find('.fc-time').css('display','inline-block')
+                               
+                        
+                        console.log(event.description);
 
-                        if (!event.description == "") {
-                            element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
-                                 "</span>");
+                        if(event.description == null){
+                            event.description = '';
                         }
+
+                        $(element).popover({
+                            title: event.title,
+                            content: event.description,
+                            trigger: 'hover',
+                            placement: 'top',
+                            container: 'body'
+                          });
+
+                        // $(element).mouseover(function(){
+                        //     if (!event.description == "") {
+                        //         element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
+                        //           "</span>");
+                        //     }
+                        // });
+
+                        // $(element).mouseout(function(){
+                        //     if (!event.description == "") {
+                        //         element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
+                        //           "</span>");
+                        //     }
+                        // });
+
+                        element.find('.fc-time').css('display','inline-block');
+                        element.find('.fc-content').css('cursor','pointer');
+
+                        
                         if (!event.icon == "") {
                             element.find('.fc-title').append("<i class='air air-top-right fa " + event.icon +
                                  " '></i>");
@@ -475,7 +559,17 @@
             
                     windowResize: function (event, ui) {
                         $('#calendar').fullCalendar('render');
-                    }
+                    },
+                    eventClick: function (event){
+                        $('#addEvento').modal('show');
+                    },
+                    // eventMouseover: function (event,element){
+                    
+                    //     if (!event.description == "") {
+                    //         element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.description +
+                    //              "</span>");
+                    //     }                         
+                    // }
                 });
             
                 /* hide default buttons */
@@ -510,4 +604,16 @@
                 });        
         })
 	</script>
+@endsection
+@section('stylesheet')
+<style type="text/css">
+        
+    .popover {
+        max-width: 400px;
+    }
+
+    .popover-content {
+        word-wrap: break-word;
+    }
+</style>
 @endsection

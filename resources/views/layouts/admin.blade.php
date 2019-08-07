@@ -21,7 +21,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">         
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
-    
+        @yield('stylesheet')
     </head>
 
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">

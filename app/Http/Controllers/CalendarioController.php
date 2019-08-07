@@ -50,12 +50,27 @@ class CalendarioController extends Controller
 
         $ret = new \StdClass();
 
+        if(!\Helper::validaData($request->inicio)){
+            $ret->id  = false;
+            $ret->msg = 'Data início inválida.';
+            echo json_encode($ret);
+            exit;
+        }
+
         $dtFim = null;
 
         if(!empty($request->horaInicio) && empty($request->horaFim))
             $request->horaFim = $request->horaInicio;
 
         if(!empty($request->horaInicio)){
+
+            if(!\Helper::validaHoras($request->horaInicio)){
+                $ret->id  = false;
+                $ret->msg = 'Hora início inválida.';
+                echo json_encode($ret);
+                exit;
+            }
+
             $dtInicio = str_replace('/', '-', $request->inicio.' '.$request->horaInicio);
             $dtInicio = date("Y-m-d H:i", strtotime($dtInicio));
             $dtInicio = date("c", strtotime($dtInicio));
@@ -65,7 +80,23 @@ class CalendarioController extends Controller
         }   
 
         if(!empty($request->fim)){
+
+            if(!\Helper::validaData($request->fim)){
+                $ret->id  = false;
+                $ret->msg = 'Data fim inválida.';
+                echo json_encode($ret);
+                exit;
+            }
+
             if(!empty($request->horaFim)){
+
+                if(!\Helper::validaHoras($request->horaFim)){
+                    $ret->id  = false;
+                    $ret->msg = 'Hora fim inválida.';
+                    echo json_encode($ret);
+                    exit;
+                }
+
                 $dtFim = str_replace('/', '-', $request->fim.' '.$request->horaFim);
                 $dtFim = date("Y-m-d H:i", strtotime($dtFim));
                 $dtFim = date("c", strtotime($dtFim));
@@ -121,6 +152,7 @@ class CalendarioController extends Controller
             
             $obj = new \StdClass();
             $obj->title = $event->summary;
+            $obj->description = $event->description;
 
             if(!empty($event->start->getDateTime())){
                 $obj->start = $event->start->getDateTime();

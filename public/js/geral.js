@@ -10,6 +10,10 @@ $(document).ready(function() {
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
+
+	$('.hora_evento').mask('00:00');
+	$('.data_evento').mask('00/00/0000');
+
 	$('.dt_solicitacao_pro').mask('00/00/0000');
 	$('.data_nascimento').mask('00/00/0000');
 	$('.data_fundacao').mask('00/00/0000');
