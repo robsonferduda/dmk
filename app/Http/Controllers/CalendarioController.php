@@ -21,27 +21,23 @@ class CalendarioController extends Controller
     public function index()
     {
     
-        // Adicionar permissão
-        /*$rule = new \Google_Service_Calendar_AclRule();
+        $rule = new \Google_Service_Calendar_AclRule();
         $scope = new \Google_Service_Calendar_AclRuleScope();
 
-        $scope->setType("user");
-        $scope->setValue("rafael01costa@gmail.com");
+        $scope->setType("default");
         $rule->setScope($scope);
-        $rule->setRole("writer");
+        $rule->setRole("reader");
 
-        $createdRule = $service->acl->insert($calendario->id_calendario_google_cal, $rule);
-        echo $createdRule->getId();
-        */
+        $createdRule = $this->getServiceCalendario()->acl->insert($this->getIdCalenderio(), $rule);
+       
+        $calendar = $this->getServiceCalendario()->calendars->get($this->getIdCalenderio());
+        $acl = $this->getServiceCalendario()->acl->listAcl($this->getIdCalenderio());
 
-        $calendario = Calendario::where('cd_conta_con',$this->cdContaCon)->first();
+        //$this->getServiceCalendario()->acl->delete($this->getIdCalenderio(), 'default');
 
-        $calendar = $this->getServiceCalendario()->calendars->get($calendario->id_calendario_google_cal);
 
-        $optParams['timeMin'] = date("c", strtotime(date('2019-07-30 23:00:00')));
-        $optParams['timeMax'] = date("c", strtotime(date('2019-07-31 23:00:00')));
+        dd($acl);
 
-        $events = $this->getServiceCalendario()->events->listEvents($this->getIdCalenderio(), $optParams);
 
         return view('calendario/index');
     }
