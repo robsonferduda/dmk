@@ -21,22 +21,22 @@ class CalendarioController extends Controller
     public function index()
     {
     
-        $rule = new \Google_Service_Calendar_AclRule();
-        $scope = new \Google_Service_Calendar_AclRuleScope();
+        // $rule = new \Google_Service_Calendar_AclRule();
+        // $scope = new \Google_Service_Calendar_AclRuleScope();
 
-        $scope->setType("default");
-        $rule->setScope($scope);
-        $rule->setRole("reader");
+        // $scope->setType("default");
+        // $rule->setScope($scope);
+        // $rule->setRole("reader");
 
-        $createdRule = $this->getServiceCalendario()->acl->insert($this->getIdCalenderio(), $rule);
+        // $createdRule = $this->getServiceCalendario()->acl->insert($this->getIdCalenderio(), $rule);
        
-        $calendar = $this->getServiceCalendario()->calendars->get($this->getIdCalenderio());
-        $acl = $this->getServiceCalendario()->acl->listAcl($this->getIdCalenderio());
+        // $calendar = $this->getServiceCalendario()->calendars->get($this->getIdCalenderio());
+        // $acl = $this->getServiceCalendario()->acl->listAcl($this->getIdCalenderio());
 
         //$this->getServiceCalendario()->acl->delete($this->getIdCalenderio(), 'default');
 
 
-        dd($acl);
+        //dd($acl);
 
 
         return view('calendario/index');
@@ -98,7 +98,7 @@ class CalendarioController extends Controller
                 $dtFim = date("c", strtotime($dtFim));
             }else{
                 $dtFim = str_replace('/', '-', $request->fim);
-                $dtFim = date("Y-m-d", strtotime($dtFim));    
+                $dtFim = date("Y-m-d", strtotime($dtFim.' + 1 days'));    
             }           
         }
 
@@ -149,11 +149,18 @@ class CalendarioController extends Controller
             $obj = new \StdClass();
             $obj->title = $event->summary;
             $obj->description = $event->description;
+            $obj->googleCalendarId = 'dadjadjadjajdaj3j23j232j';
 
             if(!empty($event->start->getDateTime())){
                 $obj->start = $event->start->getDateTime();
             }else{
                 $obj->start = $event->start->getDate();
+            }
+
+            if(!empty($event->end->getDateTime())){
+                $obj->end = $event->end->getDateTime();
+            }else{
+                $obj->end = $event->end->getDate();
             }
 
             $eventos[] = $obj;

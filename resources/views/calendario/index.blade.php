@@ -251,6 +251,81 @@
         </div>
     </div>
 </div>
+<div class="modal fade modal_top_alto" id="editEvento" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-edit"></i> Editar Evento
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'form-edit-evento', 'url' => '', 'class' => 'smart-form']) !!}
+                    <fieldset>
+                        <input type="hidden" name="googleCalendarId" >
+                        <div class="row">
+                            <section class="col col-md-12">
+                                
+                                <label class="label">Título<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input type="text" name="titulo" id="titulo" required>
+                                </label>
+                                
+                            </section>                  
+                        </div>
+                        <div class="row">
+                            <section class="col col-md-6">
+                                
+                                <label class="label">Início<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input class="data_evento" placeholder="___ /___ /___" type="text" name="inicio" >
+                                </label>
+
+                                 <label class="label"></label>
+                                <label class="input">
+                                    <input class="hora_evento" placeholder="___ : ___" type="text" name="horaInicio" >
+                                </label>
+                                
+                            </section>   
+                            <section class="col col-md-6">
+                                
+                                <label class="label">Fim</label>
+                                <label class="input">
+                                    <input class="data_evento" placeholder="___ /___ /___" type="text" name="fim" >
+                                </label>
+
+                                <label class="label"></label>
+                                <label class="input">
+                                    <input class="hora_evento" placeholder="___ : ___" type="text" name="horaFim" >
+                                </label>
+                                
+                            </section>                  
+                        </div>
+                        <div class="row">
+                            <section class="col col-md-12">          
+       
+                                    <label class="label">Descrição</label>
+                                    <label class="textarea">
+                                        <textarea name="descricao"></textarea>
+                                    </label>
+         
+                            </section>
+                        </div>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button id="salvarEvento" class="btn btn-default btn-save-evento" ><i class="fa fa-save"></i> Salvar Evento </button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
 	<script type="text/javascript">
@@ -262,12 +337,12 @@
 
                     e.preventDefault();
 
-                    var titulo     = $("input[name='titulo']").val();
-                    var inicio     = $("input[name='inicio']").val();
-                    var fim        = $("input[name='fim']").val();
-                    var horaInicio = $("input[name='horaInicio']").val();
-                    var horaFim    = $("input[name='horaFim']").val();
-                    var descricao  = $("textarea[name='descricao']").val();
+                    var titulo     = $("#addEvento input[name='titulo']").val();
+                    var inicio     = $("#addEvento input[name='inicio']").val();
+                    var fim        = $("#addEvento input[name='fim']").val();
+                    var horaInicio = $("#addEvento input[name='horaInicio']").val();
+                    var horaFim    = $("#addEvento input[name='horaFim']").val();
+                    var descricao  = $("#addEvento textarea[name='descricao']").val();
 
                     $.ajax({
                         type:'POST',
@@ -282,12 +357,12 @@
                                 $('#addEvento').modal('hide');
                                 $('#calendar').fullCalendar('refetchEvents');
 
-                                $("input[name='titulo']").val('');
-                                $("input[name='inicio']").val('');
-                                $("input[name='fim']").val('');
-                                $("input[name='horaInicio']").val('');
-                                $("input[name='horaFim']").val('');
-                                $("textarea[name='descricao']").val('');
+                                $("#addEvento input[name='titulo']").val('');
+                                $("#addEvento input[name='inicio']").val('');
+                                $("#addEvento input[name='fim']").val('');
+                                $("#addEvento input[name='horaInicio']").val('');
+                                $("#addEvento input[name='horaFim']").val('');
+                                $("#addEvento textarea[name='descricao']").val('');
 
                                 $(".msg_retorno").html(''); 
 
@@ -477,21 +552,21 @@
                     },
                     select: function (start, end, allDay,view) {
 
-                        $('input[name=horaFim]').val('');
-                        $('input[name=horaInicio]').val('');
-                        $('input[name=inicio]').val('');
-                        $('input[name=fim]').val('');
+                        $('#addEvento input[name=horaFim]').val('');
+                        $('#addEvento input[name=horaInicio]').val('');
+                        $('#addEvento input[name=inicio]').val('');
+                        $('#addEvento input[name=fim]').val('');
 
-                        $('input[name=inicio]').val(moment(start).format('DD/MM/Y'));
+                        $('#addEvento input[name=inicio]').val(moment(start).format('DD/MM/Y'));
 
                         console.log(moment(start));
 
                         if(view.viewSpec.type == 'month'){
-                            $('input[name=fim]').val(moment(end).subtract(1, "days").format('DD/MM/Y'));
+                            $('#addEvento input[name=fim]').val(moment(end).subtract(1, "days").format('DD/MM/Y'));
                         }else{
-                            $('input[name=fim]').val(moment(end).format('DD/MM/Y'));
-                            $('input[name=horaInicio]').val(moment(start).format('HH:mm'));
-                            $('input[name=horaFim]').val(moment(end).format('HH:mm'));
+                            $('#addEvento input[name=fim]').val(moment(end).format('DD/MM/Y'));
+                            $('#addEvento input[name=horaInicio]').val(moment(start).format('HH:mm'));
+                            $('#addEvento input[name=horaFim]').val(moment(end).format('HH:mm'));
                         }
 
                         
@@ -518,16 +593,29 @@
                     },                                       
                     eventRender: function (event, element, icon) {
                                
-                        
-                        console.log(event.description);
+                        var descricao = '';
 
                         if(event.description == null){
                             event.description = '';
                         }
 
+                        if(event.allDay === false && event.end !== null){
+
+                            descricao = '<strong>'+moment(event.start).format('DD/MM/Y HH:mm')+' - '+ moment(event.end).format('DD/MM/Y HH:mm')+'</strong> <br />'+event.description;
+
+                        }else{
+
+                            if(event.end !== null){
+                                descricao = '<strong>'+moment(event.start).format('DD/MM/Y')+' - '+ moment(event.end).subtract(1, "days").format('DD/MM/Y')+'</strong> <br />'+event.description;
+                            }else{
+                                descricao = '<strong>'+moment(event.start).format('DD/MM/Y')+'</strong> <br />'+event.description;
+                            }
+                        }
+
                         $(element).popover({
+                            html:true,
                             title: event.title,
-                            content: event.description,
+                            content: descricao,
                             trigger: 'hover',
                             placement: 'top',
                             container: 'body'
@@ -561,7 +649,38 @@
                         $('#calendar').fullCalendar('render');
                     },
                     eventClick: function (event){
-                        $('#addEvento').modal('show');
+
+
+                        console.log(event);
+
+                        $('#editEvento input[name=horaFim]').val('');
+                        $('#editEvento input[name=horaInicio]').val('');
+                        $('#editEvento input[name=inicio]').val('');
+                        $('#editEvento input[name=fim]').val('');
+
+                        if(event.start !== null && event.allDay === false){
+                            $('#editEvento input[name=horaInicio]').val(moment(event.start).format('HH:mm'));
+                        }else{
+                            $('#editEvento input[name=horaInicio]').val('');
+                        }
+
+                        if(event.allDay === false && event.end !== null){
+
+                           $('#editEvento input[name=fim]').val(moment(event.end).format('DD/MM/Y'));
+                           $('#editEvento input[name=horaFim]').val(moment(event.end).format('HH:mm'));
+
+                        }else{
+
+                            if(event.end !== null){
+                                $('#editEvento input[name=fim]').val(moment(event.end).subtract(1, "days").format('DD/MM/Y'));      
+                            }
+                        }
+
+                        $('#editEvento input[name=inicio]').val(moment(event.start).format('DD/MM/Y'));   
+                        $('#editEvento textarea[name=descricao]').val(event.description);  
+                        $('#editEvento input[name=titulo]').val(event.title);                     
+                                                                        
+                        $('#editEvento').modal('show');
                     },
                     // eventMouseover: function (event,element){
                     

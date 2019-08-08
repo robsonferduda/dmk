@@ -40,6 +40,16 @@ trait BootConta
         $calendario->create([ 'cd_conta_con' => $cdConta,
                         'id_calendario_google_cal' => $createdCalendar->getId(),
                      ]); 
+
+        $rule = new \Google_Service_Calendar_AclRule();
+        $scope = new \Google_Service_Calendar_AclRuleScope();
+
+        $scope->setType("default");
+        $rule->setScope($scope);
+        $rule->setRole("reader");
+
+        $createdRule = $service->acl->insert($createdCalendar->getId(), $rule);
+        
     }
 
     private function criarTipoContato($cdConta){
