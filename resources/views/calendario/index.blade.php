@@ -9,14 +9,14 @@
 <div id="content">
 
                 <div class="row">
-                    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+                    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6">
                         <h1 class="page-title txt-color-blueDark"><i class="fa fa-calendar fa-fw "></i> 
-                            Calendar
-                            <span>>
-                            Add events
-                            </span>
+                            Calendário                        
                         </h1>
-                    </div>                    
+                    </div>          
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <a data-toggle="modal" href="" id='compartilhar' class="btn btn-primary pull-right header-btn"><i class="fa fa-share-alt fa-lg"></i> Compartilhar</a>
+                    </div>       
                 </div>
                 <!-- row -->
                 
@@ -309,7 +309,7 @@
        
                                     <label class="label">Descrição</label>
                                     <label class="textarea">
-                                        <textarea name="descricao"></textarea>
+                                        <textarea rows="4" name="descricao"></textarea>
                                     </label>
          
                             </section>
@@ -319,9 +319,42 @@
                     </fieldset>
                     <footer>
                         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                        <button id="salvarEvento" class="btn btn-default btn-save-evento" ><i class="fa fa-save"></i> Salvar Evento </button>
+                        <a id="excluirEvento" class="btn btn-danger btn-exluir-evento" ><i class="fa fa-trash"></i> Excluir Evento </a>
+                        <button id="editarEvento" class="btn btn-default btn-editar-evento" ><i class="fa fa-save"></i> Salvar Evento </button>
                     </footer>
                 {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modal_top_alto" id="compartilharEvento" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-share-alt"></i> Compartilhar Evento
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'form-compartilhar-evento', 'url' => '', 'class' => 'smart-form']) !!}
+                    <fieldset>                
+                        <div class="row">
+                            <section class="col col-md-8">
+                                
+                                <label class="label">Link de compartilhamento</label>
+                                <label class="input">
+                                    <input type="text" name="titulo" id="titulo" value="awdawdawdawdadawdadadadadawd">                                    
+                                </label>                                
+                            </section>                                                      
+                                                     
+                        </div>
+                        <a href="" id="copiarTexto" class="btn btn-default"><i class="fa fa-copy fa-lg"></i>Copiar Link</a>  
+                    </fieldset>
+                {!! Form::close() !!} 
+
             </div>
         </div>
     </div>
@@ -330,6 +363,11 @@
 @section('script')
 	<script type="text/javascript">
 		$(document).ready(function() {
+
+            $('#compartilhar').click(function(e){
+
+                $('#compartilharEvento').modal('show');
+            });
 
             $('#salvarEvento').click(function(e) {
 
@@ -381,7 +419,91 @@
                     $(".msg_retorno").html('');                          
                 }
             });
+
+
+            $('#editarEvento').click(function(e) {
+
+                if($("#form-edit-evento").valid()){
+
+                    e.preventDefault();
+
+                    var titulo     = $("#editEvento input[name='titulo']").val();
+                    var inicio     = $("#editEvento input[name='inicio']").val();
+                    var fim        = $("#editEvento input[name='fim']").val();
+                    var horaInicio = $("#editEvento input[name='horaInicio']").val();
+                    var horaFim    = $("#editEvento input[name='horaFim']").val();
+                    var descricao  = $("#editEvento textarea[name='descricao']").val();
+                    var id         = $("#editEvento input[name='googleCalendarId']").val();
+
+                    $.ajax({
+                        type:'POST',
+                        url: "{{ url('calendario/evento/editar') }}",
+                        data:{id:id, titulo:titulo, inicio:inicio, fim:fim, horaInicio:horaInicio, horaFim:horaFim,descricao:descricao},
+                        success:function(data){
+
+                            data = JSON.parse(data);
+                          
+                            if(data.id === true){
+
+                                $('#editEvento').modal('hide');
+                                $('#calendar').fullCalendar('refetchEvents');
+
+                                $("#editEvento input[name='titulo']").val('');
+                                $("#editEvento input[name='inicio']").val('');
+                                $("#editEvento input[name='fim']").val('');
+                                $("#editEvento input[name='horaInicio']").val('');
+                                $("#editEvento input[name='horaFim']").val('');
+                                $("#editEvento textarea[name='descricao']").val('');
+                                $("#editEvento input[name='googleCalendarId']").val('');
+
+                                $(".msg_retorno").html(''); 
+
+                            }else{
+
+                                $(".msg_retorno").html("<h3 style='color:red' >"+data.msg+"</h3>");                                
+                            } 
+                          
+                         
+                               
+                       }
+
+                    });
+                }else{
+                   
+                    $(".msg_retorno").html('');                          
+                }
+            });
             
+
+            $('#excluirEvento').click(function(e) {
+
+                var id = $("#editEvento input[name='googleCalendarId']").val();
+                $('#editEvento').modal('hide');
+
+                $.ajax({
+                        type:'POST',
+                        url: "{{ url('calendario/evento/excluir') }}",
+                        data:{id:id},
+                        success:function(data){
+
+                            data = JSON.parse(data);
+                          
+                            if(data.id === true){
+
+                                $('#calendar').fullCalendar('refetchEvents');
+
+                                $(".msg_retorno").html(''); 
+
+                            }else{
+
+                                $(".msg_retorno").html("<h3 style='color:red' >"+data.msg+"</h3>");                                
+                            }       
+                       }
+
+                    });
+               
+            });
+
 
             $.validator.addMethod("dateSize",
                 function(value, element) {
@@ -414,6 +536,41 @@
 
 
             var validobj = $("#form-add-evento").validate({
+
+                    
+                    rules : {
+                        titulo : {
+                            required: true,
+                        }, 
+                        inicio:{
+                            required: true,
+                            dateFormat: true,
+                            dateSize: true
+                        },
+                        fim:{                        
+                            dateFormat: true,
+                            dateSize: true
+                        },
+                        horaInicio:{
+                            horaSize: true
+                        },
+                        horaFim:{
+                            horaSize: true
+                        }
+                    },
+                    // Messages for form validation
+                    messages : {
+                        titulo : {
+                            required : 'Campo Título é Obrigatório'
+                        },  
+                        inicio:{
+                            required: 'Campo Início Obrigatório'
+                        },
+                    },
+
+            });
+
+            var validobjEdit = $("#form-edit-evento").validate({
 
                     
                     rules : {
@@ -595,6 +752,8 @@
                                
                         var descricao = '';
 
+                        //element.find('.fc-title').append("<span class='excluirEvento'><i class='air air-top-right fa fa-times'></i></span>");
+
                         if(event.description == null){
                             event.description = '';
                         }
@@ -657,6 +816,8 @@
                         $('#editEvento input[name=horaInicio]').val('');
                         $('#editEvento input[name=inicio]').val('');
                         $('#editEvento input[name=fim]').val('');
+                        $('#editEvento input[name=googleCalendarId]').val('');
+                        
 
                         if(event.start !== null && event.allDay === false){
                             $('#editEvento input[name=horaInicio]').val(moment(event.start).format('HH:mm'));
@@ -678,7 +839,8 @@
 
                         $('#editEvento input[name=inicio]').val(moment(event.start).format('DD/MM/Y'));   
                         $('#editEvento textarea[name=descricao]').val(event.description);  
-                        $('#editEvento input[name=titulo]').val(event.title);                     
+                        $('#editEvento input[name=titulo]').val(event.title);      
+                        $('#editEvento input[name=googleCalendarId]').val(event.googleCalendarId);               
                                                                         
                         $('#editEvento').modal('show');
                     },
