@@ -342,16 +342,19 @@
                 {!! Form::open(['id' => 'form-compartilhar-evento', 'url' => '', 'class' => 'smart-form']) !!}
                     <fieldset>                
                         <div class="row">
-                            <section class="col col-md-8">
+                            <section class="col col-md-12">
                                 
                                 <label class="label">Link de compartilhamento</label>
                                 <label class="input">
-                                    <input type="text" name="titulo" id="titulo" value="awdawdawdawdadawdadadadadawd">                                    
+                                    <input type="text" name="link" id="link" >                                    
                                 </label>                                
-                            </section>                                                      
-                                                     
+                            </section>   
+                                                 
                         </div>
-                        <a href="" id="copiarTexto" class="btn btn-default"><i class="fa fa-copy fa-lg"></i>Copiar Link</a>  
+                        <footer>                          
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <a id="copiarTexto" class="btn btn-default"><i class="fa fa-copy fa-lg"></i> Copiar Link</a>      
+                        </footer>   
                     </fieldset>
                 {!! Form::close() !!} 
 
@@ -366,7 +369,30 @@
 
             $('#compartilhar').click(function(e){
 
+                $.ajax({
+                    type:'GET',
+                    url: "{{ url('calendario/evento/gerar-link') }}",
+                    success:function(data){
+
+                        data = JSON.parse(data);
+
+                        $("#link").val(data);
+
+                    }
+                        
+                });
+
+
                 $('#compartilharEvento').modal('show');
+            });
+
+            $('#copiarTexto').click(function(e){
+
+                var copyText = document.getElementById("link");
+
+                copyText.select();
+                document.execCommand("copy");
+  
             });
 
             $('#salvarEvento').click(function(e) {

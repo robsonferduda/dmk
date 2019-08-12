@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Spatie\GoogleCalendar\Event;
 use App\Processo;
 use App\Calendario;
+use App\EventoProcesso;
 use Illuminate\Http\Request;
 
 class CalendarioController extends Controller
@@ -40,6 +41,55 @@ class CalendarioController extends Controller
 
 
         return view('calendario/index');
+    }
+
+    public function adicionarPorProcesso(Processo $processo){
+       
+        if(!empty($processo->dt_prazo_fatal_pro)){
+
+            $ret = new \StdClass();
+
+            if(!empty($processo->hr_audiencia_pro)){
+
+                $dtInicio = $processo->dt_prazo_fatal_pro.' '.$processo->hr_audiencia_pro;
+                $dtInicio = date("Y-m-d H:i", strtotime($dtInicio));
+                $dtInicio = date("c", strtotime($dtInicio));
+            }else{
+                $dtInicio = $processo->dt_prazo_fatal_pro; 
+                $dtInicio = date("Y-m-d", strtotime($dtInicio));     
+            }   
+
+            $event = new \Google_Service_Calendar_Event(array(
+                'summary' => $processo->nu_processo_pro       
+            ));
+
+            if(!empty($processo->hr_audiencia_pro)){
+                $event['start'] = array('dateTime' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+                $event['end'] = array('dateTime' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+            }else{
+                 $event['start'] = array('date' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+                 $event['end'] = array('date' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
+            }
+            
+            $calendarId = $this->getIdCalenderio();
+
+            $temEvento = EventoProcesso::where('cd_processo_pro',$processo->cd_processo_pro)->where('cd_conta_con',$this->cdContaCon)->first();
+
+            if(empty($temEvento)){
+                
+                $event = $this->getServiceCalendario()->events->insert($calendarId, $event);
+                
+                if(!empty($event) && !empty($event->id)){
+                    
+                    EventoProcesso::create([ 'cd_conta_con' => $this->cdContaCon,
+                            'id_evento_calendario_google_epr' => $event->id,
+                            'cd_processo_pro' => $processo->cd_processo_pro
+                    ]);   
+                    
+                }
+            }
+
+        }
     }
 
     public function adicionar(Request $request){
@@ -272,6 +322,15 @@ class CalendarioController extends Controller
 
     }
 
+    public function gerarLink(){
+
+        $calendar = $this->getServiceCalendario()->calendars->get($this->getIdCalenderio());
+
+        $link = "https://calendar.google.com/calendar/ical/".$calendar->id."/public/basic.ics";
+
+        echo json_encode($link);
+    }
+
     private function getIdCalenderio(){
 
         $calendario = Calendario::where('cd_conta_con',$this->cdContaCon)->first();
@@ -290,6 +349,16 @@ class CalendarioController extends Controller
         $service = new \Google_Service_Calendar($client);
 
         return $service;
+
+    }
+
+    public function gerarEventoProcessos(){
+
+        $processos = Processo::where('cd_conta_con',$this->cdContaCon)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::FINALIZADO])->get();
+
+        foreach ($processos as $processo) {
+            $this->adicionarPorProcesso($processo);
+        }
 
     }
 }

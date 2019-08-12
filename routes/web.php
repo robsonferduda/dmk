@@ -209,5 +209,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('calendario/evento/adicionar','CalendarioController@adicionar');	
 	Route::post('calendario/evento/editar','CalendarioController@editar');	
 	Route::post('calendario/evento/excluir','CalendarioController@excluir');	
-	
+	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
+	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
+
+
+
 });
