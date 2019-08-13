@@ -136,6 +136,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('despesas/novo','DespesasController@novo');
 	Route::get('despesa/editar/{id}','DespesasController@editar');
 	Route::get('despesas/lancamentos','DespesasController@lancamentos')->name('lancamentos');
+	Route::get('despesas/categoria/tipo/{id}','DespesasController@getTipos');
+	Route::get('despesas/tipo/categoria/{id}','DespesasController@getCategorias');
 	Route::resource('despesas','DespesasController');
 
 	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');

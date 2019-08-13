@@ -27,6 +27,18 @@ class DespesasController extends Controller
 
     }
 
+    public function getTipos($id)
+    {
+        $tipos = TipoDespesa::where('cd_conta_con',$this->conta)->where('cd_categoria_despesa_cad',$id)->orderBy('nm_tipo_despesa_tds','ASC')->get();     
+        return response()->json($tipos); 
+    }
+
+     public function getCategorias($id)
+    {
+        $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->where('cd_categoria_despesa_cad',$id)->orderBy('nm_categoria_despesa_cad','ASC')->first();     
+        return response()->json($categorias); 
+    }
+
     public function show($id)
     {   
         $despesa = Despesa::findOrFail($id);   
@@ -101,7 +113,7 @@ class DespesasController extends Controller
     {   
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
-        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->get();
+        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->orderBy('dt_vencimento_des')->get();
 
         return view('despesas/lancamentos', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
     }

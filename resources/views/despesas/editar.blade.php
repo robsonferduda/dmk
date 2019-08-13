@@ -44,9 +44,13 @@
 
                                 <div class="row">
                                     <section class="col col-3">
-                                        <label class="label">Categoria </label> 
+                                        <label class="label">Categoria 
+                                            <a href="#" rel="popover-hover" data-placement="top" data-html="true" data-original-title="Categoria da Despesa" data-content="Não é obrigatório preencher, utilize ele como filtro para o campo <strong>Tipo de Despesa</strong>. ">
+                                            <i class="fa fa-question-circle text-primary"></i>
+                                            </a>
+                                        </label> 
                                         <label class="select">
-                                            <select name="cd_categoria_despesa_cad">
+                                            <select name="cd_categoria_despesa_cad" class="categoria_despesa">
                                                 <option value="0">Selecione uma categoria</option>
                                                 @foreach($categorias as $cat)
                                                     <option value="{{ $cat->cd_categoria_despesa_cad }}" {{ ($despesa->tipo->cd_categoria_despesa_cad == $cat->cd_categoria_despesa_cad) ? 'selected' : ''  }}>{{ $cat->nm_categoria_despesa_cad }}</option>
@@ -56,23 +60,23 @@
                                     <section class="col col-3">
                                         <label class="label">Tipo de Despesa <span class="text-danger"> *</span></label>
                                         <label class="select">
-                                            <select name="cd_tipo_despesa_tds">
+                                            <select name="cd_tipo_despesa_tds" class="tipo_despesa">
                                                 <option value="">Selecione um tipo</option>
                                                 @foreach($despesas as $d)
-                                                    <option value="{{ $d->cd_tipo_despesa_tds }}" {{ ($despesa->cd_tipo_despesa_tds == $d->cd_tipo_despesa_tds) ? 'selected' : ''  }}>{{ $d->nm_tipo_despesa_tds }}</option>
+                                                    <option value="{{ $d->cd_tipo_despesa_tds }}" {{ ($despesa->cd_tipo_despesa_tds == $d->cd_tipo_despesa_tds) ? 'selected' : ''  }}  data-categoria="{{ $d->cd_categoria_despesa_cad }}">{{ $d->nm_tipo_despesa_tds }}</option>
                                                 @endforeach
                                             </select> <i></i> </label>
                                     </section>
                                     <section class="col col-2">
                                         <label class="label">Data de Vencimento <span class="text-danger"> *</span></label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
-                                            <input type="text" name="dt_vencimento_des" id="dt_vencimento_des" class="date-mask hasDatepicker" value="{{ date('d/m/Y', strtotime($despesa->dt_vencimento_des)) }}">
+                                            <input type="text" name="dt_vencimento_des" id="dt_vencimento_des" class="date-mask hasDatepicker" value="{{ ($despesa->dt_vencimento_des) ? date('d/m/Y', strtotime($despesa->dt_vencimento_des)) : '' }}">
                                         </label>
                                     </section>
                                     <section class="col col-2">
                                         <label class="label">Data de Pagamento</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
-                                            <input type="text" name="dt_pagamento_des" id="dt_pagamento_des" class="date-mask hasDatepicker" value="{{ date('d/m/Y', strtotime($despesa->dt_pagamento_des)) }}">
+                                            <input type="text" name="dt_pagamento_des" id="dt_pagamento_des" class="date-mask hasDatepicker" value="{{ ($despesa->dt_pagamento_des) ? date('d/m/Y', strtotime($despesa->dt_pagamento_des)) : '' }}">
                                         </label>
                                     </section>
                                     <section class="col col-2">

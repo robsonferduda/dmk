@@ -122,6 +122,63 @@ $(document).ready(function() {
 	    }
 	});
 
+	$(".categoria_despesa").change(function(){
+
+		var categoria = $(".categoria_despesa option:selected").val();
+
+		$.ajax(
+            {
+                url: "../../despesas/categoria/tipo/"+categoria,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $('.tipo_despesa').empty();
+                    $('.tipo_despesa').append('<option selected value="">Carregando...</option>');
+                    $('.tipo_despesa').prop( "disabled", true );
+                },
+            success: function(response)
+            {                    
+                $('.tipo_despesa').empty();
+                $('.tipo_despesa').append('<option selected value="">Selecione um tipo</option>');
+                
+                $.each(response,function(index,value){
+                    $('.tipo_despesa').append('<option value="'+value.cd_tipo_despesa_tds+'">'+value.nm_tipo_despesa_tds+'</option>');                   
+                });  
+    
+                $('.tipo_despesa').prop( "disabled", false );        
+            },
+            error: function(response)
+            {
+
+            }
+        });
+
+	});
+
+	$(".tipo_despesa").change(function(){
+
+		var categoria = $(".tipo_despesa option:selected").data('categoria');
+		var categoria_selecionada = $(".categoria_despesa option:selected").val();
+
+		if(categoria != categoria_selecionada)
+		{
+			$.ajax(
+	            {
+	                url: "../../despesas/tipo/categoria/"+categoria,
+	                type: 'GET',
+	                dataType: "JSON",
+	            success: function(response)
+	            {                    
+	                $(".categoria_despesa").val(response.cd_categoria_despesa_cad);
+	            },
+	            error: function(response)
+	            {
+
+	            }
+	        });
+		}
+	});
+
 	$(".roleOption").click(function(){
 
 		var id  = $(this).data('id');

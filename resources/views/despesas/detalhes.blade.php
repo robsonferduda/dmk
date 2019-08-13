@@ -15,11 +15,11 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('despesas/lancamentos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Despesas</a>
+            <a data-toggle="modal" href="{{ url('despesas/lancamentos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Lançamentos</a>
 
-            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Cadastrar Despesa</a>
+            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
 
-            <a data-toggle="modal" href="{{ url('despesa/editar/'.$despesa->cd_despesa_des) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-pencil fa-lg"></i> Editar Despesa</a>
+            <a data-toggle="modal" href="{{ url('despesa/editar/'.$despesa->cd_despesa_des) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-pencil fa-lg"></i> Editar</a>
         </div>
     </div>
     <div class="row">

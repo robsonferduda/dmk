@@ -44,7 +44,11 @@
 
                                 <div class="row">
                                     <section class="col col-3">
-                                        <label class="label">Categoria </label>
+                                        <label class="label">Categoria 
+                                            <a href="#" rel="popover-hover" data-placement="top" data-html="true" data-original-title="Categoria da Despesa" data-content="Não é obrigatório preencher, utilize ele como filtro para o campo <strong>Tipo de Despesa</strong>. ">
+                                            <i class="fa fa-question-circle text-primary"></i>
+                                            </a> 
+                                        </label>
                                         <label class="select">
                                             <select name="cd_categoria_despesa_cad">
                                                 <option value="0">Selecione uma categoria</option>
@@ -56,10 +60,10 @@
                                     <section class="col col-3">
                                         <label class="label">Tipo de Despesa <span class="text-danger"> *</span></label>
                                         <label class="select">
-                                            <select name="cd_tipo_despesa_tds">
+                                            <select name="cd_tipo_despesa_tds" class="tipo_despesa">
                                                 <option value="">Selecione um tipo</option>
                                                 @foreach($despesas as $despesa)
-                                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
+                                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
                                                 @endforeach
                                             </select> <i></i> </label>
                                     </section>
@@ -76,7 +80,7 @@
                                         </label>
                                     </section>
                                     <section class="col col-2">
-                                        <label class="label">Valor da Despesa</label>
+                                        <label class="label">Valor da Despesa <span class="text-danger"> *</span></label>
                                         <label class="input"> <i class="icon-append fa fa-dollar"></i>
                                             <input type="text" name="vl_valor_des" id="vl_valor_des">
                                         </label>
@@ -140,16 +144,16 @@
 
             messages : {
                 dc_descricao_des : {
-                    required : 'Preencha o campo para continuar'
+                    required : 'Campo obrigatório'
                 },
                 cd_tipo_despesa_tds : {
-                    required : 'Preencha o campo para continuar'
+                    required : 'Campo obrigatório'
                 },
                 dt_vencimento_des : {
-                    required : 'Preencha o campo para continuar'
+                    required : 'Campo obrigatório'
                 },
                 vl_valor_des : {
-                    required : 'Preencha o campo para continuar'
+                    required : 'Campo obrigatório'
                 }
             },
             errorPlacement : function(error, element) {

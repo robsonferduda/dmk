@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn btnMargin"><i class="fa fa-plus fa-lg"></i> Cadastrar Despesa</a>
+            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn btnMargin"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
@@ -34,8 +34,9 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>    
-                                    <th style="width: 15%;">Tipo</th>
-                                    <th style="width: 35%;">Despesa</th> 
+                                    <th style="width: 10%;">Categoria</th>
+                                    <th style="width: 10%;">Tipo</th>
+                                    <th style="width: 30%;">Despesa</th> 
                                     <th style="width: 10%;" class="center">Valor</th>         
                                     <th style="width: 10%;" class="center">Data de Vencimento</th>
                                     <th style="width: 10%;" class="center">Data de Pagamento</th>   
@@ -45,14 +46,34 @@
                             </thead>
                             <tbody>
                                 @forelse($lancamentos as $despesa)
-                                    <tr>
+
+                                    @php $cor = ''; 
+
+                                        if(!empty($despesa->dt_vencimento_des)){
+
+                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($despesa->dt_vencimento_des))  
+                                                $cor = "#f2cf59";   
+
+                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($despesa->dt_vencimento_des))  
+                                                $cor = "#8ec9bb";
+
+                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($despesa->dt_vencimento_des))
+                                                $cor = "#fb8e7e";                                         
+                                            
+                                        }else{
+                                            $cor = "#ffffff"; 
+                                        }
+                                        
+                                    @endphp
+                                    <tr style="background-color: {{ $cor }};">
+                                        <td data-id="{{ $despesa->cd_despesa_des }}">{{ $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad }}</td>
                                         <td data-id="{{ $despesa->cd_despesa_des }}">{{ $despesa->tipo->nm_tipo_despesa_tds }}</td>
                                         <td>{{ $despesa->dc_descricao_des }}</td>
                                         <td class="center">{{ $despesa->vl_valor_des }}</td>
-                                        <td class="center">{{ date('d/m/Y', strtotime($despesa->dt_vencimento_des)) }}</td>
-                                        <td class="center">{{ date('d/m/Y', strtotime($despesa->dt_pagamento_des)) }}</td>
+                                        <td class="center">{{ ($despesa->dt_vencimento_des) ? date('d/m/Y', strtotime($despesa->dt_vencimento_des)) : '--' }}</td>
+                                        <td class="center">{{ ($despesa->dt_pagamento_des) ? date('d/m/Y', strtotime($despesa->dt_pagamento_des)) : '--' }}</td>
                                         <td class="center">
-                                            
+                                            {{ ($despesa->dt_pagamento_des) ? 'Pago' : 'Pendente' }}
                                         </td>
                                         <td class="center">
                                             <div>

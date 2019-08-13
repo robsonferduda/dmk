@@ -247,10 +247,10 @@
                         <a href="#" title="Despesas"  class="item_pai" id="despesas"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'despesas') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('despesas/novo') }}" title="Cadastrar"><span class="menu-item-parent">Cadastrar</span></a>
+                                <a href="{{ url('despesas/novo') }}" title="Cadastrar"><span class="menu-item-parent">Novo</span></a>
                             </li>
                              <li>
-                                <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Despesas</span></a>
+                                <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
                             </li>
                             <li>
                                 <a href="{{ url('despesas/balanco') }}"" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
