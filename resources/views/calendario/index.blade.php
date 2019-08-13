@@ -771,7 +771,7 @@
                         error: function() {
                             alert('there was an error while fetching events!');
                         },
-                        color: '#71843F',   // a non-ajax option
+                        //color: '#71843F',   // a non-ajax option
                         textColor: 'white' // a non-ajax option
                     },                                       
                     eventRender: function (event, element, icon) {
@@ -836,39 +836,47 @@
                     eventClick: function (event){
 
 
-                        console.log(event);
-
-                        $('#editEvento input[name=horaFim]').val('');
-                        $('#editEvento input[name=horaInicio]').val('');
-                        $('#editEvento input[name=inicio]').val('');
-                        $('#editEvento input[name=fim]').val('');
-                        $('#editEvento input[name=googleCalendarId]').val('');
                         
 
-                        if(event.start !== null && event.allDay === false){
-                            $('#editEvento input[name=horaInicio]').val(moment(event.start).format('HH:mm'));
-                        }else{
+                        if(event.isProcesso === false){
+
+                            $('#editEvento input[name=horaFim]').val('');
                             $('#editEvento input[name=horaInicio]').val('');
-                        }
+                            $('#editEvento input[name=inicio]').val('');
+                            $('#editEvento input[name=fim]').val('');
+                            $('#editEvento input[name=googleCalendarId]').val('');
+                            
 
-                        if(event.allDay === false && event.end !== null){
-
-                           $('#editEvento input[name=fim]').val(moment(event.end).format('DD/MM/Y'));
-                           $('#editEvento input[name=horaFim]').val(moment(event.end).format('HH:mm'));
-
-                        }else{
-
-                            if(event.end !== null){
-                                $('#editEvento input[name=fim]').val(moment(event.end).subtract(1, "days").format('DD/MM/Y'));      
+                            if(event.start !== null && event.allDay === false){
+                                $('#editEvento input[name=horaInicio]').val(moment(event.start).format('HH:mm'));
+                            }else{
+                                $('#editEvento input[name=horaInicio]').val('');
                             }
-                        }
 
-                        $('#editEvento input[name=inicio]').val(moment(event.start).format('DD/MM/Y'));   
-                        $('#editEvento textarea[name=descricao]').val(event.description);  
-                        $('#editEvento input[name=titulo]').val(event.title);      
-                        $('#editEvento input[name=googleCalendarId]').val(event.googleCalendarId);               
-                                                                        
-                        $('#editEvento').modal('show');
+                            if(event.allDay === false && event.end !== null){
+
+                               $('#editEvento input[name=fim]').val(moment(event.end).format('DD/MM/Y'));
+                               $('#editEvento input[name=horaFim]').val(moment(event.end).format('HH:mm'));
+
+                            }else{
+
+                                if(event.end !== null){
+                                    $('#editEvento input[name=fim]').val(moment(event.end).subtract(1, "days").format('DD/MM/Y'));      
+                                }
+                            }
+
+                            $('#editEvento input[name=inicio]').val(moment(event.start).format('DD/MM/Y'));   
+                            $('#editEvento textarea[name=descricao]').val(event.description);  
+                            $('#editEvento input[name=titulo]').val(event.title);      
+                            $('#editEvento input[name=googleCalendarId]').val(event.googleCalendarId);               
+                                                                            
+                            $('#editEvento').modal('show');
+                        }else{
+                            if (event.url) {
+                               window.open(event.url, "_blank");
+                               return false;
+                            }           
+                        }
                     },
                     // eventMouseover: function (event,element){
                     
@@ -918,7 +926,9 @@
     .popover {
         max-width: 400px;
     }
-
+    .popover-title {
+        word-wrap: break-word;
+    }
     .popover-content {
         word-wrap: break-word;
     }

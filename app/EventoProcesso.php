@@ -20,4 +20,9 @@ class EventoProcesso extends Model
 
     public $timestamps = true;
 
+    public function processo()
+    {
+        return $this->hasOne('App\Processo','cd_processo_pro', 'cd_processo_pro');
+    }
+
 }

@@ -43,7 +43,19 @@ class CalendarioController extends Controller
         return view('calendario/index');
     }
 
+    public function excluirEventoProcesso($id){
+        
+        $evento = EventoProcesso::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+
+        $this->getServiceCalendario()->events->delete($this->getIdCalenderio(), $evento->id_evento_calendario_google_epr);
+
+        $evento->delete();
+
+    }
+
     public function adicionarPorProcesso(Processo $processo){
+
+        $calendarId = $this->getIdCalenderio();
        
         if(!empty($processo->dt_prazo_fatal_pro)){
 
@@ -59,9 +71,20 @@ class CalendarioController extends Controller
                 $dtInicio = date("Y-m-d", strtotime($dtInicio));     
             }   
 
-            $event = new \Google_Service_Calendar_Event(array(
-                'summary' => $processo->nu_processo_pro       
-            ));
+
+            $temEvento = EventoProcesso::where('cd_processo_pro',$processo->cd_processo_pro)->where('cd_conta_con',$this->cdContaCon)->first();
+
+            if(empty($temEvento)){
+
+                $event = new \Google_Service_Calendar_Event(array(
+                    'summary' => $processo->nu_processo_pro       
+                ));
+            
+            }else{
+
+                $event = $this->getServiceCalendario()->events->get($calendarId, $temEvento->id_evento_calendario_google_epr);
+                $event->summary = $processo->nu_processo_pro;
+            }
 
             if(!empty($processo->hr_audiencia_pro)){
                 $event['start'] = array('dateTime' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
@@ -71,10 +94,6 @@ class CalendarioController extends Controller
                  $event['end'] = array('date' => $dtInicio, 'timeZone' => 'America/Sao_Paulo');
             }
             
-            $calendarId = $this->getIdCalenderio();
-
-            $temEvento = EventoProcesso::where('cd_processo_pro',$processo->cd_processo_pro)->where('cd_conta_con',$this->cdContaCon)->first();
-
             if(empty($temEvento)){
                 
                 $event = $this->getServiceCalendario()->events->insert($calendarId, $event);
@@ -87,6 +106,9 @@ class CalendarioController extends Controller
                     ]);   
                     
                 }
+            }else{
+
+                $event = $this->getServiceCalendario()->events->update($calendarId,$event->getId(),$event);
             }
 
         }
@@ -184,7 +206,7 @@ class CalendarioController extends Controller
         echo json_encode($ret);
     }
 
-     public function editar(Request $request){
+    public function editar(Request $request){
 
         $ret = new \StdClass();
 
@@ -315,9 +337,31 @@ class CalendarioController extends Controller
                 $obj->end = $event->end->getDate();
             }
 
+            $obj->backgroundColor = '#71843F';
+            
+
+            $processo = EventoProcesso::with('processo')->where('id_evento_calendario_google_epr', $event->id)->where('cd_conta_con',$this->cdContaCon)->first();
+
+            $obj->isProcesso = false;
+            //print_r($processo->cd_processo_pro);
+
+            if(!empty($processo->cd_processo_pro)){
+
+                //print_r($processo->processo->cd_status_processo_stp);
+                if(!in_array($processo->processo->cd_status_processo_stp,[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])){
+                    $obj->backgroundColor = '#3b3e35';
+                }else{
+                    $obj->backgroundColor = '#cfd0cf';
+                }
+
+                $obj->url = 'processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro);
+                $obj->isProcesso = true;
+            }
+
+
             $eventos[] = $obj;
         }
-
+        //exit;
         echo json_encode($eventos);
 
     }
@@ -354,7 +398,7 @@ class CalendarioController extends Controller
 
     public function gerarEventoProcessos(){
 
-        $processos = Processo::where('cd_conta_con',$this->cdContaCon)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::FINALIZADO])->get();
+        $processos = Processo::where('cd_conta_con',$this->cdContaCon)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->get();
 
         foreach ($processos as $processo) {
             $this->adicionarPorProcesso($processo);

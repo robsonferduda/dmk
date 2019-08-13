@@ -22,6 +22,7 @@ use App\EnderecoEletronico;
 use App\ContaCorrespondente;
 use App\ProcessoMensagem;
 use App\Http\Requests\ProcessoRequest;
+use App\Http\Controllers\CalendarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
@@ -726,6 +727,9 @@ class ProcessoController extends Controller
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
         DB::commit();
+
+        (new CalendarioController)->adicionarPorProcesso($processo);
+
         Flash::success('Dados inseridos com sucesso');
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
     }
@@ -760,6 +764,9 @@ class ProcessoController extends Controller
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
         DB::commit();
+
+        (new CalendarioController)->adicionarPorProcesso($processo);
+
         Flash::success('Dados atualizados com sucesso');
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
         
@@ -769,10 +776,12 @@ class ProcessoController extends Controller
     {
         $processo = Processo::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
-        if($processo->delete())
+        if($processo->delete()){
+            (new CalendarioController)->excluirEventoProcesso($id);
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        else
+        }else{
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        }
     }
 
     public function notificarCorrespondente($id_processo){
