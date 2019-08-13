@@ -80,7 +80,7 @@
                                         </label>
                                     </section>
                                     <section class="col col-2">
-                                        <label class="label">Valor da Despesa</label>
+                                        <label class="label">Valor da Despesa <span class="text-danger"> *</span></label>
                                         <label class="input"> <i class="icon-append fa fa-dollar"></i>
                                             <input type="text" name="vl_valor_des" id="vl_valor_des"  value="{{ $despesa->vl_valor_des }}">
                                         </label>
