@@ -129,4 +129,13 @@ class DespesasController extends Controller
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         
     }
+
+    public function balanco()
+    {   
+        $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
+        $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
+        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->orderBy('dt_vencimento_des')->get();
+
+        return view('despesas/balanco', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
+    }
 }
