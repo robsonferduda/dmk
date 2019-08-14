@@ -133,6 +133,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('correspondente/atuacao/adicionar','CorrespondenteController@adicionarAtuacao');
 	Route::put('correspondente/editar','CorrespondenteController@editar');
 
+	Route::get('despesas/balanco','DespesasController@balanco');
+	Route::get('despesas/novo','DespesasController@novo');
+	Route::get('despesa/editar/{id}','DespesasController@editar');
+	Route::get('despesas/lancamentos','DespesasController@lancamentos')->name('lancamentos');
+	Route::get('despesas/categoria/tipo/{id}','DespesasController@getTipos');
+	Route::get('despesas/tipo/categoria/{id}','DespesasController@getCategorias');
+	Route::resource('despesas','DespesasController');
+
 	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');
 	Route::get('email/excluir/{id}','EnderecoEletronicoController@excluir');
 

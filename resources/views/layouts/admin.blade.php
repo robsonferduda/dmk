@@ -248,7 +248,13 @@
                         <a href="#" title="Despesas"  class="item_pai" id="despesas"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'despesas') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
+                                <a href="{{ url('despesas/novo') }}" title="Cadastrar"><span class="menu-item-parent">Novo</span></a>
+                            </li>
+                             <li>
+                                <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('despesas/balanco') }}"" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -529,12 +535,14 @@
         <script src="{{ asset('js/socket.io-1.2.0.js') }}"></script>
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
+        
         @yield('script')
         <script>
         
         var hostname = document.location.hostname;  
 
-        /*      
+        {{---    
 
         var socket = io.connect('https://127.0.0.1:3000',{secure: true},verify=false);
         socket.on("notificacao:App\\Events\\EventNotification", function(message){
@@ -572,7 +580,7 @@
             }
 
         });
-        */
+        --}}
 
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
