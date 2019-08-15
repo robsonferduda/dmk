@@ -64,13 +64,13 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>    
-                                    <th style="width: 5%;">Código</th>   
-                                    <th style="width: 25%;">Razão Social</th>                             
-                                    <th style="width: 15%;">Nome Fantasia</th>                                    
-                                    <th style="width: 8%;" class="center">Tipo de Pessoa</th>
-                                    <th style="width: 6%;" class="center">Nota Fiscal</th>
-                                    <th style="width: 6%;" class="center">Situação</th>                                   
-                                    <th style="width: 10%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="">Código</th>   
+                                    <th style="">Razão Social</th>                             
+                                    <th style="">Nome Fantasia</th>                                    
+                                    <th style="" class="center">Tipo de Pessoa</th>
+                                    <th style="" class="center">Nota Fiscal</th>
+                                    <th style="" class="center">Situação</th>                                   
+                                    <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -84,10 +84,15 @@
                                         <td class="center">{!! ($cliente->fl_ativo_cli == "S") ? '<span class="label label-success">ATIVO</span>' : '<span class="label label-danger">INATIVO</span>' !!}</td>
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('cliente/detalhes/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-file-text-o"></i></a>
-                                            <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i></a>
-                                            <a title="Honorários" class="btn btn-warning btn-xs" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i></a>
-                                            <a title="Contatos" class="btn btn-default btn-xs" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i></a>                              
-                                            <button title="Excluir" data-url="clientes/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                            <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('cliente/editar/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-edit"></i></a>                                 
+                                            <div class="dropdown" style="display: inline;">
+                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a title="Honorários" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                    <li><a title="Contatos" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i> Contatos</a></li>
+                                                    <li><a title="Excluir" data-url="clientes/" class="excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</a></li>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach                                

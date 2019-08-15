@@ -75,11 +75,11 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>    
-                                    <th style="width: 20%;">Comarca de Origem</th> 
-                                    <th style="width: 15%;">CPF/CNPJ</th>                                                                   
-                                    <th style="width: 30%;">Nome</th>
-                                    <th style="width: 20%;" class="center">Email</th>                                  
-                                    <th style="width: 5%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="">Comarca de Origem</th> 
+                                    <th style="">CPF/CNPJ</th>                                                                   
+                                    <th style="">Nome</th>
+                                    <th style="" class="center">Email</th>                                  
+                                    <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,14 +92,15 @@
                                         <td class="center">
                                             <div>
                                                 <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
-
-                                                <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> </a>
-
-                                                <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
-
                                                 <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-edit"></i> </a>
-
-                                                <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
+                                                <div class="dropdown" style="display: inline;">
+                                                    <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
+                                                        <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                        <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
