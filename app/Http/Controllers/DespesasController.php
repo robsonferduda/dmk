@@ -67,6 +67,8 @@ class DespesasController extends Controller
         try {
 
             $request->vl_valor_des = str_replace(",", ".", $request->vl_valor_des);
+            if(!empty($request->dt_vencimento_des)) $request->merge(['dt_vencimento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_des)))]);
+            if(!empty($request->dt_pagamento_des)) $request->merge(['dt_pagamento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))]);
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
@@ -93,6 +95,8 @@ class DespesasController extends Controller
     {
 
         $request->vl_valor_des = str_replace(",", ".", $request->vl_valor_des);
+        if(!empty($request->dt_vencimento_des)) $request->merge(['dt_vencimento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_des)))]);
+        if(!empty($request->dt_pagamento_des)) $request->merge(['dt_pagamento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))]);
         $request->merge(['vl_valor_des' => $request->vl_valor_des]);
         $request->merge(['cd_conta_con' => $this->conta]);
 
