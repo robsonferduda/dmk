@@ -119,7 +119,7 @@
                                     <td>{{ $entradaSaida->tipoServico->nm_tipo_servico_tse }}</td>
                                     <td>{{ $entradaSaida->processo->cliente->nm_razao_social_cli }}</td>
                                     <td>
-                                        @if(!empty($entradaSaida->processo->correspondente))
+                                        @if(!empty($entradaSaida->processo->correspondente->contaCorrespondente))
                                             {{ $entradaSaida->processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }} 
                                         @endif
                                     </td>

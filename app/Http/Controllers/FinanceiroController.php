@@ -26,10 +26,8 @@ class FinanceiroController extends Controller
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');
             $query->with(array('correspondente' => function($query){
                 $query->select('cd_conta_con');
-                $query->where('cd_conta_con',64);
                 $query->with(array('contaCorrespondente' => function($query){
                     $query->select('nm_conta_correspondente_ccr','cd_correspondente_cor');
-                    $query->where('cd_conta_con', 64);
                 }));
             }));
             $query->with(array('cliente' => function($query){
@@ -38,7 +36,7 @@ class FinanceiroController extends Controller
             }));
         }))->where('cd_conta_con',64)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse')->get();
 
-        dd($entrasSaidas);
+        //dd($entrasSaidas);
 
         return view('financeiro/entrada-saida',['entrasSaidas' => $entrasSaidas]);
     }
