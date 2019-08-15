@@ -241,6 +241,11 @@
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
                         </ul>   
+                        <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
+                            <li>
+                                <a href="index.html" title="Entrada/Saída"><span class="menu-item-parent">Entrada/Saída</span></a>
+                            </li>
+                        </ul>   
                     </li>
                     @endrole
                     @role('administrator') 
