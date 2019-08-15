@@ -102,9 +102,12 @@
                                     <th>Nº Processo</th>                    
                                     <th>Prazo Fatal</th>
                                     <th>Tipo de Serviço</th>    
-                                    <th>Cliente</th>                                       
-                                    <th>Correspondente</th>                                                                           
-                                    <th data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th>Cliente</th>
+                                    <th></th>  
+                                    <th></th>                                     
+                                    <th>Correspondente</th>   
+                                    <th></th>  
+                                    <th></th>                                                                                                             
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
@@ -118,12 +121,15 @@
                                     </td>
                                     <td>{{ $entradaSaida->tipoServico->nm_tipo_servico_tse }}</td>
                                     <td>{{ $entradaSaida->processo->cliente->nm_razao_social_cli }}</td>
+                                    <td>{{ $entradaSaida->vl_taxa_honorario_cliente_pth }}</td>
+                                    <td><input type="checkbox" name="teste"></td>
                                     <td>
                                         @if(!empty($entradaSaida->processo->correspondente->contaCorrespondente))
                                             {{ $entradaSaida->processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }} 
                                         @endif
                                     </td>
-                                    <td></td>
+                                    <td>{{ $entradaSaida->vl_taxa_honorario_correspondente_pth }}</td>
+                                    <td><input type="checkbox" name="teste"></td>                                    
                                 </tr>
                             @endforeach
                             </tbody>

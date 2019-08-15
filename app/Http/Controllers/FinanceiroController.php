@@ -32,11 +32,9 @@ class FinanceiroController extends Controller
             }));
             $query->with(array('cliente' => function($query){
                 $query->select('cd_cliente_cli','nm_razao_social_cli');
-                $query->where('cd_conta_con', 64);
+                $query->where('cd_conta_con', $this->conta);
             }));
-        }))->where('cd_conta_con',64)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse')->get();
-
-        //dd($entrasSaidas);
+        }))->has('processo')->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse')->get();
 
         return view('financeiro/entrada-saida',['entrasSaidas' => $entrasSaidas]);
     }
