@@ -220,7 +220,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
 	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
 
-	Route::get('financeiro/entrada-saida','FinanceiroController@entradaSaidaIndex');
-
+	Route::get('financeiro/entrada','FinanceiroController@entradaIndex');
+	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');
+	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
 
 });
