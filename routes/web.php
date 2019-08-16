@@ -95,6 +95,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('contato/salvar','ContatoController@salvar');
 
 	Route::resource('correspondentes', 'CorrespondenteController');
+	Route::get('correspondente/categorias','CategoriaCorrespondenteController@index');
 	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
@@ -186,6 +187,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('cargos','CargoController');
 	Route::resource('departamentos','DepartamentoController');
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
+	Route::resource('categorias-correspondentes','CategoriaCorrespondenteController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('processos','ProcessoController');
 	Route::resource('usuarios','UsuarioController');

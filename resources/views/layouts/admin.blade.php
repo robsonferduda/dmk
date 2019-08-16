@@ -189,6 +189,9 @@
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
                             <li>
+                                <a href="{{ url('correspondente/categorias') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
+                            </li>
+                            <li>
                                 <a href="{{ url('correspondente/todos') }}" title="Buscar Correspondentes"><span class="menu-item-parent">Buscar</span></a>
                             </li>
                             <li>
@@ -529,6 +532,7 @@
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
         
         @yield('script')
         <script>
@@ -597,6 +601,8 @@
                 height: 300
             }
         });
+
+        $('.colorpicker').colorpicker();
 
 
         $('#upload').on('change', function () { 

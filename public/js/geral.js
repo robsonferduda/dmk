@@ -23,6 +23,7 @@ $(document).ready(function() {
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
 	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});
+	
 
 	var CpfCnpjMaskBehavior = function (val){
 			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';
@@ -689,6 +690,22 @@ $(document).ready(function() {
 		$('#frm-edit-categoria-despesa').attr('action', action);						
 
 	    $('#editCategoriaDespesa').modal('show');
+	});
+
+	$(".editar_categoria_correspondente").click(function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var cor      = $(this).closest('tr').find('td[data-cor]').data('cor');
+		var action    = "../categorias-correspondentes/"+id;
+
+		$('#frm-edit-categoria-correspondente #cd_categoria_correspondente_cac').val(id);
+		$('#frm-edit-categoria-correspondente #dc_categoria_correspondente_cac').val(nome);
+		$('#frm-edit-categoria-correspondente #color_cac').val(cor);
+
+		$('#frm-edit-categoria-correspondente').attr('action', action);						
+
+	    $('#editCategoriaCorrespondente').modal('show');
 	});
 
 	$(".btn-save-categoria-despesa").click(function(){
