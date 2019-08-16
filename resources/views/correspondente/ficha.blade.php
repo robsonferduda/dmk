@@ -50,6 +50,7 @@
                                             </div>
                                         </section>
                                         <div class="row">
+
                                             <section class="col col-3 box-pessoa-juridica">
                                                 <label class="label">CNPJ</label>
                                                 <label class="input">
@@ -65,7 +66,7 @@
                                                 </label>
                                             </section>
                 
-                                           <section class="col col-6">
+                                           <section class="col col-4">
                                                 <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
                                                 <label class="input">
                                                     <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_conta_correspondente_ccr }}">
@@ -73,6 +74,18 @@
                                             </section>
 
                                             <section class="col col-3">
+                                                <label class="select" style="margin-bottom: 7px;">Categoria</label>   
+                                                <label class="select">     
+                                                    <select name="cd_categoria_correspondente_cac" id="categoria_cac" id="cd_categoria_correspondente_cac">
+                                                        <option value="0">Selecione uma categoria</option>
+                                                        @foreach(\App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->orderBy('dc_categoria_correspondente_cac')->get() as $categoria) 
+                                                            <option value="{{$categoria->cd_categoria_correspondente_cac}}" style="color: {{ $categoria->color_cac }};" data-color="{{ $categoria->color_cac }}" {{ ($correspondente->cd_categoria_correspondente_cac and $correspondente->cd_categoria_correspondente_cac == $categoria->cd_categoria_correspondente_cac) ? 'selected' : '' }}>{{ $categoria->dc_categoria_correspondente_cac }}</option>
+                                                        @endforeach   
+                                                    </select>
+                                                <i></i> </label>       
+                                            </section>
+
+                                            <section class="col col-2">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
                                                     <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : ''}}">

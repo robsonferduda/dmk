@@ -26,6 +26,9 @@ $(document).ready(function() {
 
 	$('#colorselector').colorselector();
 
+	color = $('#categoria_cac option:selected').data('color');
+	$("#categoria_cac").css('color',color);
+
 	var CpfCnpjMaskBehavior = function (val){
 			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';
 		},
@@ -122,6 +125,13 @@ $(document).ready(function() {
 	        $(".box-pessoa-juridica").css('display','block');
 	        $("#cnpj").focus();
 	    }
+	});
+
+	$("#categoria_cac").change(function(){
+
+		color = $('#categoria_cac option:selected').data('color');
+		$("#categoria_cac").css('color',color);
+
 	});
 
 	$(".categoria_despesa").change(function(){

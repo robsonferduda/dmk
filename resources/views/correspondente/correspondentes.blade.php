@@ -74,9 +74,10 @@
                         @if(isset($correspondetes))
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr>    
+                                <tr>   
+                                    <th style="">Categoria</th> 
                                     <th style="">Comarca de Origem</th> 
-                                    <th style="">CPF/CNPJ</th>                                                                   
+                                    <th style="">CPF/CNPJ</th>
                                     <th style="">Nome</th>
                                     <th style="" class="center">Email</th>                                  
                                     <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -85,9 +86,18 @@
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
+                                        <td>
+                                            @if($correspondente->categoria)
+                                            <span class="label label-primary" style="background-color: {{ $correspondente->categoria->color_cac }}">{{ $correspondente->categoria->dc_categoria_correspondente_cac }}</span>
+                                            @else
+                                                <span class="label label-default">Não informado</span>
+                                            @endif
+                                        </td>
                                         <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
-                                        <td>{{ $correspondente->nm_conta_correspondente_ccr }}</td>
+                                        <td>
+                                            {{ $correspondente->nm_conta_correspondente_ccr }}
+                                        </td>
                                         <td>{!! ($correspondente->correspondente->entidade->usuario) ? $correspondente->correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <div>
