@@ -35,15 +35,15 @@
                                 <tr>                                    
                                     <th style="width: 70%;">Categoria</th>
                                     <th style="width: 15%;">Cor</th>
-                                    <th style="width: 15%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 15%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($categorias as $categorias)
                                     <tr>                                    
-                                        <td data-id="{{ $categorias->cd_categoria_correspondente_cac }}" data-nome="{{ $categorias->dc_categoria_correspondente_cac }}"><span style="color: {{ $categorias->color_cac }}">{{ $categorias->dc_categoria_correspondente_cac }}</span></td>
+                                        <td data-id="{{ $categorias->cd_categoria_correspondente_cac }}" data-nome="{{ $categorias->dc_categoria_correspondente_cac }}"><strong style="color: {{ $categorias->color_cac }}">{{ $categorias->dc_categoria_correspondente_cac }}</strong></td>
                                         <td data-cor="{{ $categorias->color_cac }}">{{ $categorias->color_cac }}</td>
-                                        <td>
+                                        <td class="center">
                                             <button class="btn btn-primary btn-xs editar_categoria_correspondente" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
                                             <button data-url="../categorias-correspondentes/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
@@ -72,23 +72,36 @@
             <div class="modal-body no-padding">
                 {!! Form::open(['id' => 'frm-add-categoria-correspondente', 'url' => 'categorias-correspondentes', 'class' => 'smart-form']) !!}
                      <fieldset>
-                        <section>
-                            <div>
+                        <div class="row">
+                            <section class="col col-10">
                                 <label class="label">Nome</label>
                                 <label class="input"> <i class="icon-append fa fa-font"></i>
                                     <input type="text" name="dc_categoria_correspondente_cac" id="dc_categoria_correspondente_cac" required>
                                 </label>
-                            </div>
-                        </section>
-
-                        <section>
-                            <div>
+                            </section>
+                            <section class="col col-2">
                                 <label class="label">Cor</label>
-                                <label class="input"> <i class="icon-append fa fa-font"></i>
-                                    <input type="text" name="color_cac" id="color_cac" class="colorpicker">
-                                </label>
-                            </div>
-                        </section>
+                                <select name="color_cac" id="colorselector">
+                                    <option value="#A0522D" data-color="#A0522D">sienna</option>
+                                    <option value="#CD5C5C" data-color="#CD5C5C">indianred</option>
+                                    <option value="#FF4500" data-color="#FF4500">orangered</option>
+                                    <option value="#008B8B" data-color="#008B8B">darkcyan</option>
+                                    <option value="#B8860B" data-color="#B8860B">darkgoldenrod</option>
+                                    <option value="#32CD32" data-color="#32CD32">limegreen</option>
+                                    <option value="#FFD700" data-color="#FFD700">gold</option>
+                                    <option value="#48D1CC" data-color="#48D1CC">mediumturquoise</option>
+                                    <option value="#87CEEB" data-color="#87CEEB">skyblue</option>
+                                    <option value="#FF69B4" data-color="#FF69B4">hotpink</option>
+                                    <option value="#87CEFA" data-color="#87CEFA">lightskyblue</option>
+                                    <option value="#6495ED" data-color="#6495ED">cornflowerblue</option>
+                                    <option value="#DC143C" data-color="#DC143C">crimson</option>
+                                    <option value="#FF8C00" data-color="#FF8C00">darkorange</option>
+                                    <option value="#C71585" data-color="#C71585">mediumvioletred</option>
+                                    <option value="#000000" data-color="#000000">black</option>
+                                </select>
+                            </section>
+                        </div>
+                        
                      
                         <div class="msg_retorno"></div>
                     </fieldset>
@@ -117,23 +130,33 @@
                 {!! Form::open(['id' => 'frm-edit-categoria-correspondente', 'method' => 'PUT', 'url' => 'categorias-correspondentes', 'class' => 'smart-form']) !!}
                     <input type="hidden" name="cd_categoria_correspondente_cac" id="cd_categoria_correspondente_cac">
                     <fieldset>
-                        <section>
-                            <div>
+                            <section class="col col-10">
                                 <label class="label">Nome</label>
                                 <label class="input"> <i class="icon-append fa fa-font"></i>
                                     <input type="text" name="dc_categoria_correspondente_cac" id="dc_categoria_correspondente_cac" required>
                                 </label>
-                            </div>
-                        </section>
-
-                        <section>
-                            <div>
+                            </section>
+                            <section class="col col-2">
                                 <label class="label">Cor</label>
-                                <label class="input"> <i class="icon-append fa fa-font"></i>
-                                    <input type="text" name="color_cac" id="color_cac" class="colorpicker" required>
-                                </label>
-                            </div>
-                        </section>
+                                <select name="color_cac" id="colorselector_edit">
+                                    <option value="#A0522D" data-color="#A0522D">sienna</option>
+                                    <option value="#CD5C5C" data-color="#CD5C5C">indianred</option>
+                                    <option value="#FF4500" data-color="#FF4500">orangered</option>
+                                    <option value="#008B8B" data-color="#008B8B">darkcyan</option>
+                                    <option value="#B8860B" data-color="#B8860B">darkgoldenrod</option>
+                                    <option value="#32CD32" data-color="#32CD32">limegreen</option>
+                                    <option value="#FFD700" data-color="#FFD700">gold</option>
+                                    <option value="#48D1CC" data-color="#48D1CC">mediumturquoise</option>
+                                    <option value="#87CEEB" data-color="#87CEEB">skyblue</option>
+                                    <option value="#FF69B4" data-color="#FF69B4">hotpink</option>
+                                    <option value="#87CEFA" data-color="#87CEFA">lightskyblue</option>
+                                    <option value="#6495ED" data-color="#6495ED">cornflowerblue</option>
+                                    <option value="#DC143C" data-color="#DC143C">crimson</option>
+                                    <option value="#FF8C00" data-color="#FF8C00">darkorange</option>
+                                    <option value="#C71585" data-color="#C71585">mediumvioletred</option>
+                                    <option value="#000000" data-color="#000000">black</option>
+                                </select>
+                            </section>
                          
                         <div class="msg_retorno"></div>
                     </fieldset>

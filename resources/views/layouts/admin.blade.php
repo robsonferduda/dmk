@@ -19,7 +19,8 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">         
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
     </head>
 
@@ -532,7 +533,7 @@
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
         
         @yield('script')
         <script>
@@ -601,9 +602,6 @@
                 height: 300
             }
         });
-
-        $('.colorpicker').colorpicker();
-
 
         $('#upload').on('change', function () { 
             var reader = new FileReader();
