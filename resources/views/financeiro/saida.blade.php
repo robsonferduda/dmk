@@ -51,7 +51,7 @@
                         </section> 
                         <section class="col col-md-2">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
+                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Buscar </button>
                         </section>    
 
                     </div>
