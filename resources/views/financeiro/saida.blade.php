@@ -65,7 +65,7 @@
                 </header>
                  <div>
                     <div class="widget-body no-padding">
-                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="dt_basic_financeiro" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr style="font-size: 12px">                   
                                     <th>Nº Processo</th>                    
@@ -114,6 +114,64 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        var responsiveHelper_dt_basic_financeiro = undefined;
+        var responsiveHelper_datatable_fixed_column = undefined;
+        var responsiveHelper_datatable_col_reorder = undefined;
+        var responsiveHelper_datatable_tabletools = undefined;
+             
+        var breakpointDefinition = {
+            tablet : 1024,
+            phone : 480
+        };
+
+        $('#dt_basic_financeiro').dataTable({
+                    "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+                        "t"+
+                        "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                    "autoWidth" : true,
+                    "ordering": true,
+                    "columnDefs": [
+                                    { "orderable": false, "targets": -1 }
+                                  ],
+                    "aaSorting": [],
+                    "oLanguage": {
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sEmptyTable": "Nenhum registro encontrado",
+                        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ".",
+                        "sLengthMenu": "_MENU_ resultados por página",
+                        "sLoadingRecords": "Carregando...",
+                        "sProcessing": "Processando...",
+                        "sZeroRecords": "Nenhum registro encontrado",
+                        
+                        "oPaginate": {
+                            "sNext": "Próximo",
+                            "sPrevious": "Anterior",
+                            "sFirst": "Primeiro",
+                            "sLast": "Último"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": Ordenar colunas de forma ascendente",
+                            "sSortDescending": ": Ordenar colunas de forma descendente"
+                        },
+                    },
+                    "preDrawCallback" : function() {
+                        // Initialize the responsive datatables helper once.
+                        if (!responsiveHelper_dt_basic_financeiro) {
+                            responsiveHelper_dt_basic_financeiro = new ResponsiveDatatablesHelper($('#dt_basic_financeiro'), breakpointDefinition);
+                        }
+                    },
+                    "rowCallback" : function(nRow) {
+                        responsiveHelper_dt_basic_financeiro.createExpandIcon(nRow);
+                    },
+                    "drawCallback" : function(oSettings) {
+                        responsiveHelper_dt_basic_financeiro.respond();
+                    }
+        });
 
          $('#dialog_simple').dialog({
                 autoOpen : false,
