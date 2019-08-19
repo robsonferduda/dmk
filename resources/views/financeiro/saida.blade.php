@@ -225,12 +225,10 @@
             
         });
 
-        $(".check-pagamento-correspondente").click(function(){
-
+        $("#dt_basic_financeiro").on("click", ".check-pagamento-correspondente", function(){
            verifica($(this));
-            
         });
-
+        
         $( "#correspondente_auto_complete" ).focusout(function(){
            if($("input[name='cd_correspondente_cor']").val() == ''){
                 $("#correspondente_auto_complete").val('');

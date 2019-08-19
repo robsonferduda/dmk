@@ -222,10 +222,8 @@
             
         });
 
-        $(".check-pagamento-cliente").click(function(){
-
+        $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
            verifica($(this));
-            
         });
 
         $( "#cliente_auto_complete" ).focusout(function(){
