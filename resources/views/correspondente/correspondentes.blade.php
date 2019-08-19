@@ -29,10 +29,10 @@
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
-                            <section class="col col-md-3">                                       
+                            <section class="col col-md-2">                                       
                                 <label class="label label-black" >Estado</label>          
                                 <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
-                                    <option selected value="">Selecione um estado</option>
+                                    <option selected value="">Estado</option>
                                     @foreach(App\Estado::all() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                     @endforeach
@@ -49,16 +49,25 @@
                                 </select> 
                             </section> 
                             <section class="col col-md-2">
+                                <label class="label label-black" >Categoria</label>
+                                <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
+                                    <option selected value="">Selecione</option>
+                                    @foreach(App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->get() as $categoria) 
+                                        <option value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
+                                    @endforeach
+                                </select> 
+                            </section>
+                            <section class="col col-md-2">
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
                             </section>
-                            <section class="col col-md-3">
+                            <section class="col col-md-2">
                                 <label class="label label-black" >Nome</label><br>
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
                             <section class="col col-md-1">
                                 <label class="label" >Buscar</label>
-                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
                             </section>
                         </div>
                     </fieldset>
