@@ -44,7 +44,7 @@
                                         <label class="label label-black" >Selecione um Status para o Processo</label>          
                                         <select id="status" name="status" class="select2">
                                             <option selected value="0">Selecione uma situação</option>
-                                            @foreach(App\StatusProcesso::all() as $status)
+                                            @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
                                                 <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
                                             @endforeach
                                         </select> 
@@ -177,6 +177,31 @@
                                         
                                     @endforeach
                                 </fieldset>
+                                <section>                          
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Todos os documentos referentes ao processo foram anexados?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" name="fl_envio_notificacao_con" class="onoffswitch-checkbox" id="fl_envio_notificacao_con">
+                                            <label class="onoffswitch-label" for="fl_envio_notificacao_con"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
+                                </section>
+
+                                <section>                          
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Recebi todos os documentos referentes ao processo?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" name="fl_envio_notificacao_con" class="onoffswitch-checkbox" id="fl_envio_notificacao_con">
+                                            <label class="onoffswitch-label" for="fl_envio_notificacao_con"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
+                                </section>
                             </div>
                         </div>             
                 </div>
