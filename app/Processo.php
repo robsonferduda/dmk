@@ -114,4 +114,15 @@ class Processo extends Model implements AuditableContract
     {
         $this->notify(new MensagemProcessoNotification($processo));
     }
+
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($processo)
+        {
+            $processo->honorario()->first()->delete();
+        });
+
+    }
 }

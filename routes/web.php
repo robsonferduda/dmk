@@ -212,5 +212,21 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
 	Route::delete('correspondente/reports/{nome}','RelatorioCorrespondenteController@excluir');
 	Route::get('correspondente/arquivo/{nome}','RelatorioCorrespondenteController@arquivo');
-	
+
+	Route::get('calendar','CalendarioController@index');
+
+	Route::post('calendario/eventos-por-data','CalendarioController@buscarEventosPorData');	
+	Route::post('calendario/evento/adicionar','CalendarioController@adicionar');	
+	Route::post('calendario/evento/editar','CalendarioController@editar');	
+	Route::post('calendario/evento/excluir','CalendarioController@excluir');	
+	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
+	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
+
+	Route::get('financeiro/entradas','FinanceiroController@entradaIndex');
+	Route::get('financeiro/saidas','FinanceiroController@saidaIndex');
+	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');
+	Route::post('financeiro/saida/buscar','FinanceiroController@saidaBuscar');
+	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
+	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
+
 });
