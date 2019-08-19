@@ -241,7 +241,10 @@
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
                              <li>
-                                <a href="{{ url('financeiro/entrada') }}" title="Entrada"><span class="menu-item-parent">Entrada</span></a>
+                                <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
                             </li>
                         </ul>   
                         
