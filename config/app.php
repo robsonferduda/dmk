@@ -164,6 +164,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         'Devfactory\Minify\MinifyServiceProvider',
+        Spatie\GoogleCalendar\GoogleCalendarServiceProvider::class,
 
 
     ],
@@ -224,6 +225,7 @@ return [
         'StatusProcesso' => App\Enums\StatusProcesso::class,
         'Helper' => App\Helpers\Helper::class,
         'Minify'        => 'Devfactory\Minify\Facades\MinifyFacade',
+        'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
     ],
 
 ];

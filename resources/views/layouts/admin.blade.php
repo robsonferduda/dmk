@@ -22,6 +22,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
+        @yield('stylesheet')
     </head>
 
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">
@@ -243,7 +244,14 @@
                             <li>
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
+                             <li>
+                                <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
+                            </li>
                         </ul>   
+                        
                     </li>
                     @endrole
                     @role('administrator') 
@@ -509,8 +517,14 @@
         {!!  Minify::javascript(asset('/js/geral.js')) !!}
         <script src="{{ asset('js/menu.js') }}"></script>
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
+
+        <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/fullcalendar/locale-all.js') }}"></script>
+
         <script src="{{ asset('js/app.config.js') }}"></script>
         <script src="{{ asset('js/data-table-custom.js') }}"></script>
+
 
         <!--[if IE 8]>
             <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>

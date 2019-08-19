@@ -33,4 +33,18 @@ class Helper
 		return checkdate($m,$d,$y);
 	}
 
+	public static function validaHoras($campo){
+	    if (preg_match('/^[0-9]{2}:[0-9]{2}$/', $campo)) {
+	        $horas = substr($campo, 0, 2);
+	        $minutos = substr($campo, 3, 2);
+	        if (($horas > "23") OR ($minutos > "59")) {
+	            return false;
+	        }
+
+	        return true;
+	    }
+
+	    return false;
+	}
+
 }
