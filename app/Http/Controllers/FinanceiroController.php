@@ -23,12 +23,22 @@ class FinanceiroController extends Controller
         if(!session('flBuscar')){
             \Session::put('dtInicio',null);
             \Session::put('dtFim',null);
+            \Session::put('cliente',null);
+            \Session::put('nmCliente',null);
+            \Session::put('todas',null);
+
             $dtInicio = '';
             $dtFim = '';
+            $cliente = '';
+            $nmCliente = '';
+            $todas = '';
 
         }else{
             $dtInicio = session('dtInicio');
             $dtFim = session('dtFim');
+            $cliente = session('cliente');
+            $nmCliente = session('nmCliente');
+            $todas = session('todas');
         }
 
         $entradas = ProcessoTaxaHonorario::with(array('tipoServico' => function($query){
@@ -57,11 +67,21 @@ class FinanceiroController extends Controller
             });
         }
 
-        $entradas = $entradas->where('fl_pago_cliente_pth','N')->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
+        if(!empty($cliente)){
+            $entradas = $entradas->whereHas('processo', function($query) use ($cliente) {
+                    $query->where('cd_cliente_cli',$cliente);
+            });
+        }
+
+        if(empty($todas)){
+            $entradas = $entradas->where('fl_pago_cliente_pth','N');
+        }
+
+        $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
 
         \Session::put('flBuscar',false);
 
-        return view('financeiro/entrada',['entradas' => $entradas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim]);
+        return view('financeiro/entrada',['entradas' => $entradas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim,'cliente' => $cliente, 'nmCliente' => $nmCliente]);
     }
 
     public function entradaBuscar(Request $request){
@@ -69,18 +89,22 @@ class FinanceiroController extends Controller
         if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
 
            
-
             \Session::put('dtInicio',$request->dtInicio);
             \Session::put('dtFim',$request->dtFim);
-            \Session::put('flBuscar',true);
-            
+            \Session::put('flBuscar',true);                        
+            \Session::put('cliente',$request->cd_cliente_cli);
+            \Session::put('nmCliente',$request->nm_cliente_cli);
+
+            if(!empty($request->todas)){
+                \Session::put('todas','S');
+            }else{
+                \Session::put('todas',null);
+            }
 
         }else{
 
             Flash::error('Data(s) inválida(s) !');
         }
-
-        //dd($entradas);
 
         return redirect('financeiro/entrada');
 
@@ -88,15 +112,23 @@ class FinanceiroController extends Controller
 
     public function baixaCliente(Request $request){
 
-        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->id)->first();
+        $processosTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->whereIn('cd_processo_taxa_honorario_pth',$request->ids)->get();
             
-        $processoTaxaHonorario->fl_pago_cliente_pth = $request->checked;
+        $response = false;
+        foreach($processosTaxaHonorario as $processoTaxaHonorario){
+            
+            $processoTaxaHonorario->fl_pago_cliente_pth = $request->checked;
+            $response = $processoTaxaHonorario->saveOrFail();
 
-        if($processoTaxaHonorario->saveOrFail()){
-            echo json_encode(true);
-        }else{
-            echo json_encode(false);
+            if(!$response){
+                echo json_encode(false);
+                break;
+            }
+
         }
+
+        echo json_encode(true);
+        
     }
 
 }

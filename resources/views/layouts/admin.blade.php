@@ -240,12 +240,11 @@
                             <li>
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
-                        </ul>   
-                        <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
-                            <li>
+                             <li>
                                 <a href="{{ url('financeiro/entrada') }}" title="Entrada"><span class="menu-item-parent">Entrada</span></a>
                             </li>
                         </ul>   
+                        
                     </li>
                     @endrole
                     @role('administrator') 
