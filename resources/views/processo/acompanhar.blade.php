@@ -81,7 +81,7 @@
                         <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
                         <h2>Dados do Processo </h2>             
                     </header>                
-                        <div class="col-md-12">
+                        <div class="col-md-12 box-loader">
                             <div class="col-md-6">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
@@ -181,8 +181,8 @@
                                     <div class="onoffswitch-container">
                                         <span class="onoffswitch-title">Todos os documentos referentes ao processo foram anexados?</span> 
                                         <span class="onoffswitch">
-                                            <input type="checkbox" name="fl_envio_notificacao_con" class="onoffswitch-checkbox" id="fl_envio_notificacao_con">
-                                            <label class="onoffswitch-label" for="fl_envio_notificacao_con"> 
+                                            <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
+                                            <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                 <span class="onoffswitch-switch"></span>
                                             </label> 
@@ -194,8 +194,8 @@
                                     <div class="onoffswitch-container">
                                         <span class="onoffswitch-title">Recebi todos os documentos referentes ao processo?</span> 
                                         <span class="onoffswitch">
-                                            <input type="checkbox" name="fl_envio_notificacao_con" class="onoffswitch-checkbox" id="fl_envio_notificacao_con">
-                                            <label class="onoffswitch-label" for="fl_envio_notificacao_con"> 
+                                            <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                            <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                 <span class="onoffswitch-switch"></span>
                                             </label> 
@@ -448,6 +448,56 @@
             $("#arquivo").empty();
             $("#poster").empty();
             $(".upload-msg").empty();
+        });
+
+        $("#fl_envio_anexos_pro").change(function(){
+
+            processo = $("#processo").val();
+
+            $.ajax(
+                {
+                    url: "../../processos/atualiza/enviados/"+processo,
+                    type: 'GET',
+                    dataType: "JSON",
+                beforeSend: function()
+                {
+                    $('.box-loader').loader('show');
+                },
+                success: function(response)
+                {                    
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    $('.box-loader').loader('hide');
+                }
+            });
+
+        });
+
+        $("#fl_recebimento_anexos_pro").change(function(){
+
+            processo = $("#processo").val();
+
+            $.ajax(
+                {
+                    url: "../../processos/atualiza/recebidos/"+processo,
+                    type: 'GET',
+                    dataType: "JSON",
+                beforeSend: function()
+                {
+                    $('.box-loader').loader('show');
+                },
+                success: function(response)
+                {                    
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    $('.box-loader').loader('hide');
+                }
+            });
+
         });
 
         $(".fl_envio_enter").change(function(){

@@ -40,7 +40,9 @@ class Processo extends Model implements AuditableContract
     						'nm_reu_pro',
     						'nu_processo_pro',
                             'nu_acompanhamento_pro',
-                            'cd_status_processo_stp'
+                            'cd_status_processo_stp',
+                            'fl_envio_anexos_pro',
+                            'fl_recebimento_anexos_pro'
     					  ];
 
     public $timestamps = true;

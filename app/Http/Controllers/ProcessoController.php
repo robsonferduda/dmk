@@ -855,4 +855,37 @@ class ProcessoController extends Controller
         return Redirect::route('msg-filiacao');
 
     }
+
+    public function atualizaAnexosEnviados($id)
+    {
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+
+        if($processo->fl_envio_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
+
+        $processo->fl_envio_anexos_pro = $flag;
+        
+        if($processo->save())
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+    }
+
+    public function atualizaAnexosRecebidos($id)
+    {
+
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+
+        if($processo->fl_recebimento_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
+
+        $processo->fl_recebimento_anexos_pro = $flag;
+        
+        if($processo->save())
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+
+    }
+
 }
