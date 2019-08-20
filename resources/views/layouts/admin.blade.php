@@ -264,9 +264,6 @@
                              <li>
                                 <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
                             </li>
-                            <li>
-                                <a href="{{ url('despesas/balanco') }}"" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
-                            </li>
                         </ul>   
                     </li>
                     @endrole

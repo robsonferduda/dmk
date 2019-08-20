@@ -66,8 +66,8 @@
                                         
                                     @endphp
                                     <tr style="background-color: {{ $cor }};">
-                                        <td data-id="{{ $despesa->cd_despesa_des }}">{{ $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad }}</td>
-                                        <td data-id="{{ $despesa->cd_despesa_des }}">{{ $despesa->tipo->nm_tipo_despesa_tds }}</td>
+                                        <td data-id="{{ $despesa->cd_despesa_des }}">{{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informado' }}</td>
+                                        <td data-id="{{ $despesa->cd_despesa_des }}">{{ ($despesa->tipo) ? $despesa->tipo->nm_tipo_despesa_tds : 'Não informado' }}</td>
                                         <td>{{ $despesa->dc_descricao_des }}</td>
                                         <td class="center">{{ $despesa->vl_valor_des }}</td>
                                         <td class="center">{{ ($despesa->dt_vencimento_des) ? date('d/m/Y', strtotime($despesa->dt_vencimento_des)) : '--' }}</td>
