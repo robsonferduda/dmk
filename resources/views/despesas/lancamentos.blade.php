@@ -36,11 +36,12 @@
                                 <tr>    
                                     <th style="width: 10%;">Categoria</th>
                                     <th style="width: 10%;">Tipo</th>
-                                    <th style="width: 30%;">Despesa</th> 
+                                    <th style="width: 20%;">Descrição</th> 
                                     <th style="width: 10%;" class="center">Valor</th>         
                                     <th style="width: 10%;" class="center">Data de Vencimento</th>
                                     <th style="width: 10%;" class="center">Data de Pagamento</th>   
-                                    <th style="width: 10%;" class="center">Situação</th>                                
+                                    <th style="width: 10%;" class="center">Situação</th>  
+                                    <th style="width: 10%;" class="center">Anexos</th>                               
                                     <th style="width: 10%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
@@ -68,12 +69,19 @@
                                     <tr style="background-color: {{ $cor }};">
                                         <td data-id="{{ $despesa->cd_despesa_des }}">{{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informado' }}</td>
                                         <td data-id="{{ $despesa->cd_despesa_des }}">{{ ($despesa->tipo) ? $despesa->tipo->nm_tipo_despesa_tds : 'Não informado' }}</td>
-                                        <td>{{ $despesa->dc_descricao_des }}</td>
+                                        <td>
+                                            {{ ($despesa->dc_descricao_des) ? $despesa->dc_descricao_des : $despesa->tipo->nm_tipo_despesa_tds }}
+                                        </td>
                                         <td class="center">{{ $despesa->vl_valor_des }}</td>
                                         <td class="center">{{ ($despesa->dt_vencimento_des) ? date('d/m/Y', strtotime($despesa->dt_vencimento_des)) : '--' }}</td>
                                         <td class="center">{{ ($despesa->dt_pagamento_des) ? date('d/m/Y', strtotime($despesa->dt_pagamento_des)) : '--' }}</td>
                                         <td class="center">
                                             {{ ($despesa->dt_pagamento_des) ? 'Pago' : 'Pendente' }}
+                                        </td>
+                                        <td class="center">
+                                            @if($despesa->anexo_des)
+                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}" style="color: black;"><i class="fa fa-file"></i></a>
+                                            @endif
                                         </td>
                                         <td class="center">
                                             <div>

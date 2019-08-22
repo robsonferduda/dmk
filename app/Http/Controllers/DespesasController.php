@@ -72,6 +72,20 @@ class DespesasController extends Controller
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
+            //Parte responsável pelo upload
+            $destino = "despesas/$this->conta/";
+ 
+            $fileName = time().'.'.request()->file->getClientOriginalExtension();
+
+            if(!is_dir($destino)){
+                @mkdir(storage_path($destino), 0775);
+            }
+     
+            if(request()->file->move(storage_path($destino), $fileName)){
+                $request->merge(['anexo_des' => $fileName]);
+            }
+            //Fim do upload
+
             $despesa = new Despesa();
             $despesa->fill($request->all());
 
@@ -100,6 +114,20 @@ class DespesasController extends Controller
         $request->merge(['vl_valor_des' => $request->vl_valor_des]);
         $request->merge(['cd_conta_con' => $this->conta]);
 
+        //Parte responsável pelo upload
+        $destino = "despesas/$this->conta/";
+ 
+        $fileName = time().'.'.request()->file->getClientOriginalExtension();
+
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+     
+        if(request()->file->move(storage_path($destino), $fileName)){
+            $request->merge(['anexo_des' => $fileName]);
+        }
+        //Fim do upload
+
         $despesa = Despesa::findOrFail($id);
         $despesa->fill($request->all());
 
@@ -117,7 +145,7 @@ class DespesasController extends Controller
     {   
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
-        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->orderBy('dt_vencimento_des')->get();
+        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->whereNull('dt_pagamento_des')->orderBy('dt_vencimento_des')->get();
 
         return view('despesas/lancamentos', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
     }
@@ -141,5 +169,13 @@ class DespesasController extends Controller
         $lancamentos = Despesa::where('cd_conta_con', $this->conta)->orderBy('dt_vencimento_des')->get();
 
         return view('despesas/balanco', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
+    }
+
+    public function download($id)
+    { 
+        $id = \Crypt::decrypt($id);
+        $conta = $this->conta;
+        $despesa = Despesa::findOrFail($id);
+        return response()->download(storage_path('despesas/'.$conta.'/'.$despesa->anexo_des));
     }
 }

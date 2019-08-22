@@ -76,6 +76,21 @@
                     
                     <div style="clear: both;"></div>
                 </div>
+
+                 <div class="well">
+
+                    <form style="display: inline; float: left; margin-right: 10px; margin-top: 17px; "  action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
+                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                    </form>
+
+                    <a style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Escritório</a>          
+                    
+                    <div style="clear: both;"></div>
+                </div>
+
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">
                         <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -123,7 +138,7 @@
                                                 </li>
                                                 <li>
                                                     <strong>Correspondente: </strong> 
-                                                    @if(!empty($processo->correspondente))
+                                                    @if(!empty($processo->correspondente->contaCorrespondente))
                                                         <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ 
                                                         $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr }}</a>
                                                     @endif
