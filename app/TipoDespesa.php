@@ -26,4 +26,9 @@ class TipoDespesa extends Model
     {
         return $this->hasOne('App\CategoriaDespesa','cd_categoria_despesa_cad', 'cd_categoria_despesa_cad');
     }
+
+    public function reembolsoTipoDespesa()
+    {
+        return $this->hasMany('App\ReembolsoTipoDespesa','cd_tipo_despesa_tds', 'cd_tipo_despesa_tds');
+    }
 }
