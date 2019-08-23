@@ -62,6 +62,91 @@ class DespesasController extends Controller
         return view('despesas/editar', ['despesa' => $despesa, 'despesas' => $despesas, 'categorias' => $categorias ]); 
     }
 
+    public function buscar(Request $request)
+    {
+        
+        \Session::put('fl_buscar_despesa',true);
+        ($request->dt_vencimento_des) ? \Session::put('dt_vencimento',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_des)))) : \Session::put('dt_vencimento',null);
+        ($request->dt_pagamento_des) ? \Session::put('dt_pagamento',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))) : \Session::put('dt_pagamento',null);
+        \Session::put('categoria',$request->cd_categoria_despesa_cad);
+        \Session::put('despesa',$request->cd_tipo_despesa_tds);
+        \Session::put('situacao',$request->situacao);
+
+        return redirect('despesas/lancamentos');
+    }
+
+    public function lancamentos()
+    {   
+
+        if(!session('fl_buscar_despesa')){
+
+            \Session::put('dt_vencimento',null);
+            \Session::put('dt_pagamento',null);
+            \Session::put('categoria',null);
+            \Session::put('despesa',null);
+            \Session::put('situacao',null);
+
+            $dt_vencimento = null;
+            $dt_pagamento = null;
+            $categoria = null;
+            $despesa = null;
+            $situacao = null;
+
+        }else{
+            $dt_vencimento = session('dt_vencimento');
+            $dt_pagamento = session('dt_pagamento');
+            $categoria = session('categoria');
+            $despesa = session('despesa');
+            $situacao = session('situacao');
+        }
+
+        $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
+        $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
+        
+        $lancamentos = Despesa::with('tipo')
+                                ->with('tipo.categoriaDespesa')
+                                ->where('despesa_des.cd_conta_con', $this->conta)
+                                ->when(!session('fl_buscar_despesa'), function($sql){
+                                    $sql->whereNull('dt_pagamento_des');
+                                })
+                                ->when(!empty($categoria), function($join) use($categoria){
+                            
+                                    $join->join('tipo_despesa_tds', function($join) use ($categoria){
+                                        $join->on('despesa_des.cd_tipo_despesa_tds','=','tipo_despesa_tds.cd_tipo_despesa_tds');
+                                            $join->join('categoria_despesa_cad', function($join) use ($categoria){
+                                                $join->on('tipo_despesa_tds.cd_categoria_despesa_cad','=','categoria_despesa_cad.cd_categoria_despesa_cad');
+                                                $join->where('tipo_despesa_tds.cd_categoria_despesa_cad','=',$categoria);
+                                            });                                                            
+                                    });
+                                })
+                                ->when(!empty($despesa), function($sql) use($despesa){
+                                    $sql->where('cd_tipo_despesa_tds',$despesa);
+                                })
+                                ->when(!empty($dt_vencimento), function($sql) use($dt_vencimento){
+                                    $sql->where('dt_vencimento_des',$dt_vencimento);
+                                })
+                                ->when(!empty($dt_pagamento), function($sql) use($dt_pagamento){
+                                    $sql->where('dt_pagamento_des',$dt_pagamento);
+                                })
+                                ->when(!empty($situacao), function($sql) use($situacao){
+
+                                    if($situacao == 2){
+                                        $sql->whereNull('dt_pagamento_des');
+                                    }
+                                    if($situacao == 1){
+
+                                        $sql->whereNotNull('dt_pagamento_des');
+                                    }                                   
+                                })
+                                ->orderBy('dt_vencimento_des')
+                                ->get();
+                               
+
+        \Session::put('fl_buscar_despesa',false);
+
+        return view('despesas/lancamentos', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
+    }
+
     public function store(DespesaRequest $request)
     {
         try {
@@ -139,15 +224,6 @@ class DespesasController extends Controller
             return redirect()->back();
         }
 
-    }
-
-    public function lancamentos()
-    {   
-        $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
-        $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
-        $lancamentos = Despesa::where('cd_conta_con', $this->conta)->whereNull('dt_pagamento_des')->orderBy('dt_vencimento_des')->get();
-
-        return view('despesas/lancamentos', ['lancamentos' => $lancamentos, 'despesas' => $despesas, 'categorias' => $categorias]); 
     }
 
     public function destroy($id)

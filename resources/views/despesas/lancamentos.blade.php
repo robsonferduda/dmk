@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-dollar"></i> Despesas <span>> Lançamentos</span>
+                <i class="fa-fw fa fa-dollar"></i>Despesas <span>> Lançamentos</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -24,7 +24,55 @@
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
-                 <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+            <div class="well">
+                <form action="{{ url('despesas/buscar') }}" class="form-inline" method="POST" role="search">
+                    {{ csrf_field() }}
+                    <div class="row">
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data de Vencimento</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_vencimento_des" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
+                            
+                        </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data de Pagamento</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_pagamento_des" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}">                            
+                        </section>
+                        <section class="col col-md-2">                                       
+                            <label class="label label-black" >Categoria</label>          
+                            <select  id="cd_categoria_despesa_cad" name="cd_categoria_despesa_cad" class="select2">
+                                <option selected value="">Selecione</option>
+                                @foreach($categorias as $cat)
+                                    <option value="{{ $cat->cd_categoria_despesa_cad }}">{{ $cat->nm_categoria_despesa_cad }}</option>
+                                @endforeach
+                            </select>
+                        </section>
+                        <section class="col col-md-2">                                       
+                            <label class="label label-black" >Tipo de Despesa</label>          
+                            <select  id="cd_tipo_despesa_tds" name="cd_tipo_despesa_tds" class="select2">
+                                <option selected value="">Selecione</option>
+                                @foreach($despesas as $despesa)
+                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
+                                @endforeach
+                            </select>
+                        </section>
+                        <section class="col col-md-2">                                       
+                            <label class="label label-black" >Situação</label>          
+                            <select  id="situacao" name="situacao" class="select2">
+                                <option selected value="">Selecione</option>
+                                <option value="1">Pago</option>
+                                <option value="2">Pendente</option>
+                            </select>
+                        </section>
+                        <section class="col col-md-2">
+                            <br />
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar </button>
+                        </section>    
+
+                    </div>
+                </form>
+            </div>
+            <div style="clear: both;"></div>
+            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
                     <h2>Despesas</h2>
@@ -81,6 +129,8 @@
                                         <td class="center">
                                             @if($despesa->anexo_des)
                                                 <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}" style="color: black;"><i class="fa fa-file"></i></a>
+                                            @else
+                                                <span>Nenhum anexo</span>
                                             @endif
                                         </td>
                                         <td class="center">
@@ -95,7 +145,15 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td class="center">Nenhum registro encontrado</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endforelse                                                         
                             </tbody>

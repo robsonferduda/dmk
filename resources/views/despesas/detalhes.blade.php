@@ -41,7 +41,7 @@
                                 <p>
                                     <ul class="list-unstyled">
                                         <li>
-                                            <strong>Categoria: </strong> {{ $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad }}
+                                            <strong>Categoria: </strong> {{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informada'}}
                                         </li>
                                         <li>
                                             <strong>Tipo de Despesa: </strong> {{ $despesa->tipo->nm_tipo_despesa_tds }}
