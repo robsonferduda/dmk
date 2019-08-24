@@ -32,6 +32,10 @@ class RelatorioProcessoController extends Controller
 
         if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
 
+            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
+            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
+
+
             $cliente = $request->cd_cliente_cli;
             $conta   = $this->conta;
 
@@ -49,6 +53,10 @@ class RelatorioProcessoController extends Controller
                                     $query->where('cd_cliente_cli',$cliente);
                                  })
                                 ->where('cd_conta_con',$this->conta)
+                                ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
+                                ->when(!empty($request->finalizado), function($query){
+                                    $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+                                })
                                 ->get();
 
                 $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa', function ($query) use ($cliente,$conta) {
@@ -59,34 +67,16 @@ class RelatorioProcessoController extends Controller
                     });
                  })->get()->sortBy('nm_tipo_despesa_tds');
 
-                //dd($processos[2]);
-                dd($processos[2]->tiposDespesa->withPivot('sum'));
-
                 $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
-                return \Excel::download(new ProcessoParaClienteExport($dados), 'teste.xlsx');
+               
+                if(!$processos->isEmpty()){
+                    \Excel::store(new ProcessoParaClienteExport($dados),"/processo/{$this->conta}/".time() . "_".$request->nm_cliente_cli.'.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
+                }else{
+                    Flash::error('Não há dados para os parâmetros informados!');
+
+                }
 
             }            
-
-            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
-            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
-
-            $dataQuery = " AND dt_prazo_fatal_pro between '$dtInicio' and '$dtFim' ";
-
-            if(!empty($request->finalizado))
-                $statusQuery = ' AND t3.cd_status_processo_stp = '.\StatusProcesso::FINALIZADO;
-            
-            $parametros = array('bancoQuery'          => $bancoQuery,
-                                'dataQuery'           => $dataQuery,
-                                'conta'               => $this->conta, 
-                                'dataInicio'          => $request->dtInicio,
-                                'dataFim'             => $request->dtFim,
-                                'empresa'             => $empresa,
-                                'correspondenteQuery' => $correspondenteQuery,
-                                'statusQuery'         => $statusQuery);
-
-            $jasper = new RelatorioJasper();
-
-            $jasper->processar($parametros,$sourceName,$fileName,false,$request->extensao);
         
         }else{
 
@@ -97,11 +87,9 @@ class RelatorioProcessoController extends Controller
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
                                 ->with('relatorio',$request->relatorio)
-                                ->with('extensao',$request->extensao)
                                 ->with('finalizado',$request->finalizado)
-                                ->with('banco',$request->cd_banco_ban)
-                                ->with('correspondente',$request->cd_correspondente_cor)
-                                ->with('nmCorrespondente',$request->nm_correspondente_cor); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
+                                ->with('cliente',$request->cd_cliente_cli)
+                                ->with('nmCliente',$request->nm_cliente_cli); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
     }
 
     private function getFiles(){
@@ -125,7 +113,7 @@ class RelatorioProcessoController extends Controller
 
     public function excluir($nome){
         
-        \Storage::disk('reports')->delete("$this->conta/".$nome);
+        \Storage::disk('reports')->delete("/processo/$this->conta/".$nome);
 
         return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
 
@@ -133,7 +121,7 @@ class RelatorioProcessoController extends Controller
 
     public function arquivo($nome){
         //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
-        return response()->download(storage_path('reports/'."$this->conta/".$nome));
+        return response()->download(storage_path('reports/processo/'."$this->conta/".$nome));
 
     }
 

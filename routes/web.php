@@ -231,4 +231,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
 	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
 
+	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
+	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
+
 });

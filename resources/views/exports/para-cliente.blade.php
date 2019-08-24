@@ -2,7 +2,6 @@
     <thead>
     <tr>
         <th colspan="4" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ $dados['processos'][0]->cliente->nm_razao_social_cli }} ({{ $dados['dtInicio']}} - {{ $dados['dtFim']}})</th>
-        <th style="height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px"></th>        
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">ADVOGADO SOLICITANTE/CONTATO</th>
@@ -23,6 +22,9 @@
     </tr>
     </thead>
     <tbody>
+        @php
+            $total = 0;
+        @endphp
         @foreach($dados['processos'] as $dado)
         <tr>
             <td style="border: 1px hair #000000;vertical-align: center">
@@ -55,18 +57,36 @@
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : '0'}}
             </td>
+            @php
+                $totalDespesas = 0;
+            @endphp
             @foreach($dados['despesas'] as $despesa)
                 <td style="border: 1px hair #000000;vertical-align: center" >
                 @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->where('fl_reembolso_tds','S')->isEmpty())
-                    {{ 'R$ '.number_format($dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde, 2,',',' ') }}
+                    @php
+                        $despesa = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde;
+                        $totalDespesas += $totalDespesas+$despesa;
+                    @endphp
+                    {{ 'R$ '.number_format($totalDespesas, 2,',',' ') }}
+
                 @else
                     {{ 'R$ '.number_format(0, 2,',',' ') }}
                 @endif
                 </td>
             @endforeach
-            <td style="border: 1px hair #000000;vertical-align: center" >22222222222222222222222222</td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                @php
+                    $total += (float)$totalDespesas+(float)$dado->honorario->vl_taxa_honorario_cliente_pth
+                @endphp
+
+                {{ 'R$ '.number_format($totalDespesas+$dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') }}
+            </td>
         </tr>
         @endforeach
+        <tr>
+            <td colspan="2" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total:</td>
+            <td colspan="2" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">{{ 'R$ '.number_format($total,2,',',' ') }}</td>
+        </tr>
    
     </tbody>
 </table>
