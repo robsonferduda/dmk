@@ -71,7 +71,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processos/atualiza/enviados/{id}','ProcessoController@atualizaAnexosEnviados');
 	Route::get('processos/atualiza/recebidos/{id}','ProcessoController@atualizaAnexosRecebidos');
 	Route::get('processo/notificacao/resposta/{resposta}/{id}','ProcessoController@responderNotificacao')->name('resposta');
+	Route::get('processos/relatorios','RelatorioProcessoController@relatorios');
+	Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
+
 	
+
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
@@ -232,5 +236,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/saida/buscar','FinanceiroController@saidaBuscar');
 	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
 	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
+
+	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
+	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
 
 });

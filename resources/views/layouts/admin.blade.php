@@ -226,13 +226,16 @@
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('processos') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('processos/acompanhamento') }}" title="Dashboard"><span class="menu-item-parent">Acompanhamento</span></a>
+                                <a href="{{ url('processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                             </li>
                         </ul>   
                     </li>
