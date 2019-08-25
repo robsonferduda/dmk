@@ -55,6 +55,11 @@ class FinanceiroController extends Controller
                 $query->select('cd_cliente_cli','nm_razao_social_cli');
                 $query->where('cd_conta_con', $this->conta);
             }));
+            $query->with(array('tiposDespesa' => function($query){
+                $query->wherePivot('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE);
+                $query->wherePivot('fl_despesa_reembolsavel_pde','S');
+
+            }));
         }))->has('processo');
 
         if(!empty($dtInicio) && !empty($dtFim)){
@@ -77,7 +82,9 @@ class FinanceiroController extends Controller
             $entradas = $entradas->where('fl_pago_cliente_pth','N');
         }
 
-        $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
+        $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth','vl_taxa_cliente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
+
+        //dd($entradas);
 
         \Session::put('flBuscar',false);
 

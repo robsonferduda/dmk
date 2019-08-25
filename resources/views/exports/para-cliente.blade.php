@@ -62,7 +62,7 @@
             @endphp
             @foreach($dados['despesas'] as $despesa)
                 <td style="border: 1px hair #000000;vertical-align: center" >
-                @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->where('fl_reembolso_tds','S')->isEmpty())
+                @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->isEmpty())
                     @php
                         $despesa = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde;
                         $totalDespesas += $totalDespesas+$despesa;

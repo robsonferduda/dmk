@@ -72,7 +72,10 @@
                                     <th>Prazo Fatal</th>
                                     <th>Tipo de Serviço</th>    
                                     <th>Cliente</th>
-                                    <th>Valor</th>  
+                                    <th style="min-width:8%">Honorário</th>
+                                    <th style="min-width:8%">Despesa</th>
+                                    <th style="min-width:8%">Nota F. %</th>
+                                    <th style="min-width:8%">Total</th>  
                                     <th class="no-sort"><input type="checkbox" class="seleciona-todos" ></th> 
                                 </tr>
                             </thead>
@@ -87,7 +90,20 @@
                                     </td>
                                     <td>{{ $entrada->tipoServico->nm_tipo_servico_tse }}</td>
                                     <td>{{ $entrada->processo->cliente->nm_razao_social_cli }}</td>
-                                    <td>{{ $entrada->vl_taxa_honorario_cliente_pth }}</td>
+                                    <td>{{ 'R$ '.number_format($entrada->vl_taxa_honorario_cliente_pth,2,',',' ') }}</td>
+
+                                    @php
+
+                                        $totalDespesas = 0;
+                                        foreach($entrada->processo->tiposDespesa as $despesa){
+                                            $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                                        }
+
+                                    @endphp
+                                    <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+                                    <td>{{ (!empty($entrada->vl_taxa_cliente_pth) ? $entrada->vl_taxa_cliente_pth.'%' : ' ') }}</td>
+                                    <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)-
+                                    ((($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)*$entrada->vl_taxa_cliente_pth)/100),2,',',' ') }}</td>
                                     <td style="text-align: center;"><input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  ></td>                              
                                 </tr>
                             @endforeach
@@ -127,7 +143,7 @@
                     "autoWidth" : true,
                     "ordering": true,
                     "columnDefs": [
-                                    { "orderable": false, "targets": -1 }
+                                    { "orderable": false, "targets": [4,5,6,7,8] }
                                   ],
                     "aaSorting": [],
                     "oLanguage": {

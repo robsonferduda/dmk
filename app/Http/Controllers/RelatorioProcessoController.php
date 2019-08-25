@@ -48,6 +48,7 @@ class RelatorioProcessoController extends Controller
                                 ->with('honorario')
                                 ->with(['tiposDespesa' => function($query){
                                     $query->wherePivot('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE);
+                                    $query->wherePivot('fl_despesa_reembolsavel_pde','S');
                                 }])
                                 ->when(!empty($cliente), function($query) use($cliente){
                                     $query->where('cd_cliente_cli',$cliente);
