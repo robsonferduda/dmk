@@ -45,17 +45,17 @@ class CalendarioController extends Controller
 
     public function excluirEventoProcesso($id){
         
-        $evento = EventoProcesso::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+        /*$evento = EventoProcesso::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
 
         $this->getServiceCalendario()->events->delete($this->getIdCalenderio(), $evento->id_evento_calendario_google_epr);
 
-        $evento->delete();
+        $evento->delete();*/
 
     }
 
     public function adicionarPorProcesso(Processo $processo){
 
-        $calendarId = $this->getIdCalenderio();
+        /** $calendarId = $this->getIdCalenderio();
        
         if(!empty($processo->dt_prazo_fatal_pro)){
 
@@ -111,7 +111,7 @@ class CalendarioController extends Controller
                 $event = $this->getServiceCalendario()->events->update($calendarId,$event->getId(),$event);
             }
 
-        }
+        }*/
     }
 
     public function adicionar(Request $request){

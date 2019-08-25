@@ -186,7 +186,7 @@
                                                     <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i> Acompanhamento</a></li>
                                                     <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
                                                     <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-pdf-o"></i> Relatórios</a></li>
-                                                    <li><a title="Excluir" data-url="../processos/" class="excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</a></li>
+                                                    <li><a title="Excluir" data-url="../processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div> 
                                         </td>
