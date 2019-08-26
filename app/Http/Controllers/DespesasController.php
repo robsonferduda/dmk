@@ -66,8 +66,10 @@ class DespesasController extends Controller
     {
         
         \Session::put('fl_buscar_despesa',true);
-        ($request->dt_vencimento_des) ? \Session::put('dt_vencimento',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_des)))) : \Session::put('dt_vencimento',null);
-        ($request->dt_pagamento_des) ? \Session::put('dt_pagamento',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))) : \Session::put('dt_pagamento',null);
+        ($request->dt_vencimento_inicial) ? \Session::put('dt_vencimento_inicial',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_inicial)))) : \Session::put('dt_vencimento_inicial',null);
+        ($request->dt_vencimento_final) ? \Session::put('dt_vencimento_final',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_vencimento_final)))) : \Session::put('dt_vencimento_final',null);
+        ($request->dt_pagamento_inicial) ? \Session::put('dt_pagamento_inicial',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_inicial)))) : \Session::put('dt_pagamento_inicial',null);
+        ($request->dt_pagamento_final) ? \Session::put('dt_pagamento_final',date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_final)))) : \Session::put('dt_pagamento_final',null);
         \Session::put('categoria',$request->cd_categoria_despesa_cad);
         \Session::put('despesa',$request->cd_tipo_despesa_tds);
         \Session::put('situacao',$request->situacao);
@@ -80,21 +82,27 @@ class DespesasController extends Controller
 
         if(!session('fl_buscar_despesa')){
 
-            \Session::put('dt_vencimento',null);
-            \Session::put('dt_pagamento',null);
+            \Session::put('dt_vencimento_inicial',null);
+            \Session::put('dt_vencimento_final',null);
+            \Session::put('dt_pagamento_inicial',null);
+            \Session::put('dt_pagamento_final',null);
             \Session::put('categoria',null);
             \Session::put('despesa',null);
             \Session::put('situacao',null);
 
-            $dt_vencimento = null;
-            $dt_pagamento = null;
+            $dt_vencimento_inicial = null;
+            $dt_vencimento_final = null;
+            $dt_pagamento_inicial = null;
+            $dt_pagamento_final = null;
             $categoria = null;
             $despesa = null;
             $situacao = null;
 
         }else{
-            $dt_vencimento = session('dt_vencimento');
-            $dt_pagamento = session('dt_pagamento');
+            $dt_vencimento_inicial = session('dt_vencimento_inicial');
+            $dt_vencimento_final = session('dt_vencimento_final');
+            $dt_pagamento_inicial = session('dt_pagamento_inicial');
+            $dt_pagamento_final = session('dt_pagamento_final');
             $categoria = session('categoria');
             $despesa = session('despesa');
             $situacao = session('situacao');
@@ -119,14 +127,16 @@ class DespesasController extends Controller
                                             });                                                            
                                     });
                                 })
+                                //Operações com datas. Ao preencher uma data, a outra é obrigatória
+                                ->when(!empty($dt_vencimento_inicial) and !empty($dt_vencimento_final), function($sql) use($dt_vencimento_inicial,$dt_vencimento_final){
+                                    $sql->whereBetween('dt_vencimento_des',[$dt_vencimento_inicial,$dt_vencimento_final]);
+                                })
+                                ->when(!empty($dt_pagamento_inicial) and !empty($dt_pagamento_final), function($sql) use($dt_pagamento_inicial,$dt_pagamento_final){
+                                    $sql->whereBetween('dt_pagamento_des',[$dt_pagamento_inicial,$dt_pagamento_final]);
+                                })
+                                //Fim das operações com data
                                 ->when(!empty($despesa), function($sql) use($despesa){
                                     $sql->where('cd_tipo_despesa_tds',$despesa);
-                                })
-                                ->when(!empty($dt_vencimento), function($sql) use($dt_vencimento){
-                                    $sql->where('dt_vencimento_des',$dt_vencimento);
-                                })
-                                ->when(!empty($dt_pagamento), function($sql) use($dt_pagamento){
-                                    $sql->where('dt_pagamento_des',$dt_pagamento);
                                 })
                                 ->when(!empty($situacao), function($sql) use($situacao){
 

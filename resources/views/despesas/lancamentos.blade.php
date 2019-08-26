@@ -28,16 +28,34 @@
                 <form action="{{ url('despesas/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
                     <div class="row">
+
                         <section class="col col-md-2">
-                            <label class="label label-black">Data de Vencimento</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_vencimento_des" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
+                            <label class="label label-black">Data de Vencimento Inicial</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dt_vencimento_inicial" value="{{ \Session::get('dt_vencimento_inicial') ? date('d/m/Y', strtotime(\Session::get('dt_vencimento_inicial'))) : old('dt_vencimento_inicial') }}" >
                             
                         </section>
-                        <section class="col col-md-2">                           
-                            <label class="label label-black">Data de Pagamento</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_pagamento_des" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}">                            
+
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data de Vencimento Final</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dt_vencimento_final" value="{{ \Session::get('dt_vencimento_final') ? date('d/m/Y', strtotime(\Session::get('dt_vencimento_final'))) : old('dt_vencimento_final') }}" >
+                            
                         </section>
-                        <section class="col col-md-2">                                       
+
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data de Pagamento Inicial</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dt_pagamento_inicial" value="{{ \Session::get('dt_pagamento_inicial') ? date('d/m/Y', strtotime(\Session::get('dt_pagamento_inicial'))) : old('dt_pagamento_inicial') }}">                            
+                        </section>
+
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data de Pagamento Final</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dt_pagamento_final" value="{{ \Session::get('dt_pagamento_final') ? date('d/m/Y', strtotime(\Session::get('dt_pagamento_final'))) : old('dt_pagamento_final')  }}">                            
+                        </section>
+
+                    </div>
+                    <hr/>
+                    <div class="row">
+
+                        <section class="col col-md-3">                                       
                             <label class="label label-black" >Categoria</label>          
                             <select  id="cd_categoria_despesa_cad" name="cd_categoria_despesa_cad" class="select2">
                                 <option selected value="">Selecione</option>
@@ -46,7 +64,7 @@
                                 @endforeach
                             </select>
                         </section>
-                        <section class="col col-md-2">                                       
+                        <section class="col col-md-4">                                       
                             <label class="label label-black" >Tipo de Despesa</label>          
                             <select  id="cd_tipo_despesa_tds" name="cd_tipo_despesa_tds" class="select2">
                                 <option selected value="">Selecione</option>
@@ -55,7 +73,7 @@
                                 @endforeach
                             </select>
                         </section>
-                        <section class="col col-md-2">                                       
+                        <section class="col col-md-3">                                       
                             <label class="label label-black" >Situação</label>          
                             <select  id="situacao" name="situacao" class="select2">
                                 <option selected value="">Selecione</option>
