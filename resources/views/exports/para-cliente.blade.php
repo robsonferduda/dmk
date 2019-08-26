@@ -7,7 +7,7 @@
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">ADVOGADO SOLICITANTE/CONTATO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DA SOLICITÇÃO</th>
-        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DO SERVICO REALIZADO</th>
+        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DO SERVIÇO REALIZADO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">AUTOR</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">RÉU</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">NÚMERO DO PROCESSO</th>
