@@ -116,9 +116,10 @@
 
     </div>
     <div id="dialog_simple" title="Dialog Simple Title">
-        <p>
+        <h5>
             Essa ação irá alterar todos os itens em tela.
-        </p>
+        </h5>
+        <h4 id="valor_total_operacao" ></h4>
     </div>
 </div>
 @endsection
@@ -191,8 +192,17 @@
                 autoOpen : false,
                 width : 600,
                 resizable : false,
+                closeOnEscape: false,
                 modal : true,
-                title : "Atenção!",
+                title : "Você deseja continuar com essa operação?",
+                beforeClose: function() {
+                    
+                    if ($(".seleciona-todos").is(':checked') ) {                
+                        $(".seleciona-todos").prop('checked',false);
+                    }else {
+                        $(".seleciona-todos").prop('checked',true);
+                    }
+                },
                 buttons : [{
                     html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
                     "class" : "btn btn-success",
@@ -221,19 +231,22 @@
                     html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
                     "class" : "btn btn-danger",
                     click : function() {
-
-                        if ($(".seleciona-todos").is(':checked') ) {                
-                            $(".seleciona-todos").prop('checked',false);
-                        }else {
-                            $(".seleciona-todos").prop('checked',true);
-                        }
-
                         $(this).dialog("close");
                     }
                 }]
         });
 
         $(".seleciona-todos").click(function(){
+
+            if ($(".seleciona-todos").is(':checked') ) {                
+                
+                total = 0;            
+                $(".check-pagamento-cliente").each(function(index,element){
+                    total += parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));            
+                }); 
+                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toString().replace('.',','));  
+                
+            }
 
             $('#dialog_simple').dialog('open');
             

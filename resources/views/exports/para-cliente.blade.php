@@ -1,12 +1,13 @@
 <table>
     <thead>
     <tr>
-        <th colspan="4" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ $dados['processos'][0]->cliente->nm_razao_social_cli }} ({{ $dados['dtInicio']}} - {{ $dados['dtFim']}})</th>
+        <th colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ $dados['processos'][0]->cliente->nm_razao_social_cli }} ({{ $dados['dtInicio']}} - {{ $dados['dtFim']}})</th>
+        <th colspan="{{count($dados['despesas'])+8}}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align: center;font-weight:bold;font-size:16px"></th>
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">ADVOGADO SOLICITANTE/CONTATO</th>
-        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DA SOLICITACAO</th>
-        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DO SERVICO REALIZADO</th>
+        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DA SOLICITÇÃO</th>
+        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DO SERVIÇO REALIZADO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">AUTOR</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">RÉU</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">NÚMERO DO PROCESSO</th>
@@ -76,16 +77,20 @@
             @endforeach
             <td style="border: 1px hair #000000;vertical-align: center" >
                 @php
-                    $total += (float)$totalDespesas+(float)$dado->honorario->vl_taxa_honorario_cliente_pth
+                    $taxaHonorario = 0;
+                    if(!empty($dado->honorario))
+                        $taxaHonorario = $dado->honorario->vl_taxa_honorario_cliente_pth;
+                    
+                    $total += (float)$totalDespesas+(float)$taxaHonorario;
                 @endphp
 
-                {{ 'R$ '.number_format($totalDespesas+$dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') }}
+                {{ 'R$ '.number_format($totalDespesas+$taxaHonorario, 2,',',' ') }}
             </td>
         </tr>
         @endforeach
         <tr>
-            <td colspan="2" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total:</td>
-            <td colspan="2" style="background-color:#969696;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">{{ 'R$ '.number_format($total,2,',',' ') }}</td>
+            <td colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total: {{ 'R$ '.number_format($total,2,',',' ') }}</td>
+            <td colspan="{{count($dados['despesas'])+8}}" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;vertical-align: center;font-weight:bold;font-size:12px"></td>
         </tr>
    
     </tbody>
