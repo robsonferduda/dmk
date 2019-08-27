@@ -160,25 +160,38 @@ class FinanceiroController extends Controller
 
     public function entradaBuscar(Request $request){
 
-        if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
+        
+        \Session::put('flBuscar',true);                        
+        \Session::put('cliente',$request->cd_cliente_cli);
+        \Session::put('nmCliente',$request->nm_cliente_cli);
 
-           
-            \Session::put('dtInicio',$request->dtInicio);
-            \Session::put('dtFim',$request->dtFim);
-            \Session::put('flBuscar',true);                        
-            \Session::put('cliente',$request->cd_cliente_cli);
-            \Session::put('nmCliente',$request->nm_cliente_cli);
+        if(!empty($request->todas)){
+            \Session::put('todas','S');
+        }else{
+            \Session::put('todas',null);
+        }    
 
-            if(!empty($request->todas)){
-                \Session::put('todas','S');
-            }else{
-                \Session::put('todas',null);
-            }
-
+        if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
+        
+            Flash::error('É preciso preencher a data de início e fim.');
+        
         }else{
 
-            Flash::error('Data(s) inválida(s) !');
+            if((!empty($request->dtInicio) && !empty($request->dtFim))){
+                
+                if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
+
+                   \Session::put('dtInicio',$request->dtInicio);
+                   \Session::put('dtFim',$request->dtFim);
+                   
+
+                }else{
+
+                    Flash::error('Data(s) inválida(s) !');
+                }
+            }
         }
+
 
         return redirect('financeiro/entradas');
 
