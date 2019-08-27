@@ -43,7 +43,7 @@
                                             </a> 
                                         </label>
                                         <label class="select">
-                                            <select name="cd_categoria_despesa_cad">
+                                            <select name="cd_categoria_despesa_cad" class="categoria_despesa">
                                                 <option value="0">Selecione uma categoria</option>
                                                 @foreach($categorias as $cat)
                                                     <option value="{{ $cat->cd_categoria_despesa_cad }}">{{ $cat->nm_categoria_despesa_cad }}</option>

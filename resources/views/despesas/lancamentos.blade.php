@@ -57,19 +57,19 @@
 
                         <section class="col col-md-3">                                       
                             <label class="label label-black" >Categoria</label>          
-                            <select  id="cd_categoria_despesa_cad" name="cd_categoria_despesa_cad" class="select2">
+                            <select  id="cd_categoria_despesa_cad" name="cd_categoria_despesa_cad" class="select2 categoria_despesa">
                                 <option selected value="">Selecione</option>
                                 @foreach($categorias as $cat)
-                                    <option value="{{ $cat->cd_categoria_despesa_cad }}">{{ $cat->nm_categoria_despesa_cad }}</option>
+                                    <option value="{{ $cat->cd_categoria_despesa_cad }}" {{ (!empty(\Session::get('categoria') and \Session::get('categoria') == $cat->cd_categoria_despesa_cad) ? 'selected' : '') }} >{{ $cat->nm_categoria_despesa_cad }}</option>
                                 @endforeach
                             </select>
                         </section>
                         <section class="col col-md-4">                                       
                             <label class="label label-black" >Tipo de Despesa</label>          
-                            <select  id="cd_tipo_despesa_tds" name="cd_tipo_despesa_tds" class="select2">
+                            <select  id="cd_tipo_despesa_tds" name="cd_tipo_despesa_tds" class="select2 tipo_despesa">
                                 <option selected value="">Selecione</option>
                                 @foreach($despesas as $despesa)
-                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
+                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" {{ (!empty(\Session::get('despesa') and \Session::get('despesa') == $despesa->cd_tipo_despesa_tds ) ? 'selected' : '') }} data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
                                 @endforeach
                             </select>
                         </section>
@@ -77,8 +77,8 @@
                             <label class="label label-black" >Situação</label>          
                             <select  id="situacao" name="situacao" class="select2">
                                 <option selected value="">Selecione</option>
-                                <option value="1">Pago</option>
-                                <option value="2">Pendente</option>
+                                <option value="1" {{ (\Session::get('situacao') == 1) ? 'selected' : '' }}>Pago</option>
+                                <option value="2" {{ (\Session::get('situacao') == 2) ? 'selected' : '' }}>Pendente</option>
                             </select>
                         </section>
                         <section class="col col-md-2">
