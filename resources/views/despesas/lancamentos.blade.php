@@ -116,7 +116,7 @@
 
                                     @php $cor = ''; 
 
-                                        if(!empty($despesa->dt_vencimento_des)){
+                                        if(empty($despesa->dt_pagamento_des)){
 
                                             if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($despesa->dt_vencimento_des))  
                                                 $cor = "#f2cf59";   
