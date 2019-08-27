@@ -26,13 +26,13 @@
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
-                            <label class="label label-black">Data de Início<span class="text-danger">*</span></label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
+                            <label class="label label-black">Data prazo fatal inicial</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
-                            <label class="label label-black">Data Fim<span class="text-danger">*</span></label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
+                            <label class="label label-black">Data prazo fatal final</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}" >                            
                         </section>
 
                          <section class="col col-md-4">                           
@@ -44,14 +44,14 @@
                             <span id="limpar-cliente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
                         </section>
-                         <section class="col col-md-2">
+                         <section style="width:20%" class="col col-md-3">
                             <br />                                        
-                            <label class="label label-black">Entradas verificadas?</label>  
+                            <label class="label label-black">Incluir entradas verificadas?</label>  
                             <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
                         </section> 
-                        <section class="col col-md-2">
+                        <section class="col col-md-1">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Buscar </button>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa fa-search"></i> Buscar </button>
                         </section>    
 
                     </div>
@@ -119,7 +119,13 @@
         <h5>
             Essa ação irá alterar todos os itens em tela.
         </h5>
-        <h4 id="valor_total_operacao" ></h4>
+        <h5 id="valor_total_operacao" ></h5>
+         <div class="row">
+            <section class="col col-md-3">
+                   <label class="label label-black">Data de recebimento</label><br />
+                   <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___">        
+            </section>
+        </div>
     </div>
 </div>
 @endsection
@@ -194,9 +200,9 @@
                 resizable : false,
                 closeOnEscape: false,
                 modal : true,
-                title : "Você deseja continuar com essa operação?",
+                title : "Você deseja continuar essa operação?",
                 beforeClose: function() {
-                    
+
                     if ($(".seleciona-todos").is(':checked') ) {                
                         $(".seleciona-todos").prop('checked',false);
                     }else {
