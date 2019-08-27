@@ -33,7 +33,7 @@
                             <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Determine um intervalo de tempo para busca. Caso o período seja igual a um dia, data inicial e final devem ser iguais</label>
                         </section>
 
-                        <section class="col col-md-6 box_busca_data">
+                        <section class="col col-md-6 box_busca_data" style="width: 49%;">
                             <section class="col col-md-4">
                                 <h2 class="pull-right">VENCIMENTO</h2>
                             </section>
@@ -51,7 +51,7 @@
                             </section>
                         </section>
 
-                        <section class="col col-md-6 box_busca_data">
+                        <section class="col col-md-6 box_busca_data pull-right" style="width: 50%;">
                             <section class="col col-md-4">
                                 <h2 class="pull-right">PAGAMENTO</h2>
                             </section>
