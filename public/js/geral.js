@@ -145,7 +145,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: "../../despesas/categoria/tipo/"+categoria,
+                url: pathname+"/despesas/categoria/tipo/"+categoria,
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
@@ -181,7 +181,7 @@ $(document).ready(function() {
 		{
 			$.ajax(
 	            {
-	                url: "../../despesas/tipo/categoria/"+categoria,
+	                url: pathname+"/despesas/tipo/categoria/"+categoria,
 	                type: 'GET',
 	                dataType: "JSON",
 	            success: function(response)

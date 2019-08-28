@@ -167,19 +167,21 @@ class DespesasController extends Controller
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
-            //Parte responsável pelo upload
-            $destino = "despesas/$this->conta/";
- 
-            $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-            if(!is_dir($destino)){
-                @mkdir(storage_path($destino), 0775);
-            }
+            if($request->file){
+                //Parte responsável pelo upload
+                $destino = "despesas/$this->conta/";
      
-            if(request()->file->move(storage_path($destino), $fileName)){
-                $request->merge(['anexo_des' => $fileName]);
+                $fileName = time().'.'.request()->file->getClientOriginalExtension();
+
+                if(!is_dir($destino)){
+                    @mkdir(storage_path($destino), 0775);
+                }
+         
+                if(request()->file->move(storage_path($destino), $fileName)){
+                    $request->merge(['anexo_des' => $fileName]);
+                }
+                //Fim do upload
             }
-            //Fim do upload
 
             $despesa = new Despesa();
             $despesa->fill($request->all());
@@ -209,19 +211,21 @@ class DespesasController extends Controller
         $request->merge(['vl_valor_des' => $request->vl_valor_des]);
         $request->merge(['cd_conta_con' => $this->conta]);
 
-        //Parte responsável pelo upload
-        $destino = "despesas/$this->conta/";
- 
-        $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-        if(!is_dir($destino)){
-            @mkdir(storage_path($destino), 0775);
-        }
+        if($request->file){
+            //Parte responsável pelo upload
+            $destino = "despesas/$this->conta/";
      
-        if(request()->file->move(storage_path($destino), $fileName)){
-            $request->merge(['anexo_des' => $fileName]);
+            $fileName = time().'.'.request()->file->getClientOriginalExtension();
+
+            if(!is_dir($destino)){
+                @mkdir(storage_path($destino), 0775);
+            }
+         
+            if(request()->file->move(storage_path($destino), $fileName)){
+                $request->merge(['anexo_des' => $fileName]);
+            }
+            //Fim do upload
         }
-        //Fim do upload
 
         $despesa = Despesa::findOrFail($id);
         $despesa->fill($request->all());
