@@ -26,12 +26,12 @@
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
-                            <label class="label label-black">Data de Início<span class="text-danger">*</span></label><br />
+                            <label class="label label-black">Data prazo fatal início<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
                             
                         </section>
                         <section class="col col-md-2">                           
-                            <label class="label label-black">Data Fim<span class="text-danger">*</span></label><br />
+                            <label class="label label-black">Data prazo fatal fim<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
                         </section>
                         <section class="col col-md-2">                                                        
