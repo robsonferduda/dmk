@@ -41,40 +41,45 @@ class RelatorioProcessoController extends Controller
 
             if($request->relatorio == 'para-cliente'){
 
-                $processos = Processo::with('advogadoSolicitante')
-                                ->with('cliente')
-                                ->with('vara')
-                                ->with('cidade')                                
-                                ->with('honorario')
-                                ->with(['tiposDespesa' => function($query){
-                                    $query->wherePivot('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE);
-                                    $query->wherePivot('fl_despesa_reembolsavel_pde','S');
-                                }])
-                                ->when(!empty($cliente), function($query) use($cliente){
-                                    $query->where('cd_cliente_cli',$cliente);
-                                 })
-                                ->where('cd_conta_con',$this->conta)
-                                ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
-                                ->when(!empty($request->finalizado), function($query){
-                                    $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
-                                })
-                                ->get();
+                if(!empty($cliente)){
+                    $processos = Processo::with('advogadoSolicitante')
+                                    ->with('cliente')
+                                    ->with('vara')
+                                    ->with('cidade')                                
+                                    ->with('honorario')
+                                    ->with(['tiposDespesa' => function($query){
+                                        $query->wherePivot('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE);
+                                        $query->wherePivot('fl_despesa_reembolsavel_pde','S');
+                                    }])
+                                    ->when(!empty($cliente), function($query) use($cliente){
+                                        $query->where('cd_cliente_cli',$cliente);
+                                     })
+                                    ->where('cd_conta_con',$this->conta)
+                                    ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
+                                    ->when(!empty($request->finalizado), function($query){
+                                        $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+                                    })
+                                    ->get();
 
-                $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa', function ($query) use ($cliente,$conta) {
-                    $query->whereHas('cliente', function ($query) use ($cliente,$conta) {
-                           
-                        $query->where('cd_cliente_cli',$cliente)->where('cd_conta_con',$conta);
-                            
-                    });
-                 })->get()->sortBy('nm_tipo_despesa_tds');
+                    $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa', function ($query) use ($cliente,$conta) {
+                        $query->whereHas('cliente', function ($query) use ($cliente,$conta) {
+                               
+                            $query->where('cd_cliente_cli',$cliente)->where('cd_conta_con',$conta);
+                                
+                        });
+                     })->get()->sortBy('nm_tipo_despesa_tds');
 
-                $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
-               
-                if(!$processos->isEmpty()){
-                    \Excel::store(new ProcessoParaClienteExport($dados),"/processo/{$this->conta}/".time() . "_".$request->nm_cliente_cli.'.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
+                    $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
+                   
+                    if(!$processos->isEmpty()){
+                        \Excel::store(new ProcessoParaClienteExport($dados),"/processo/{$this->conta}/".time() . "_".$request->nm_cliente_cli.'.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
+                    }else{
+                        Flash::error('Não há dados para os parâmetros informados!');
+
+                    }
+
                 }else{
-                    Flash::error('Não há dados para os parâmetros informados!');
-
+                    Flash::error('Campo cliente obrigatório para o tipo de relatório informado!');
                 }
 
             }            

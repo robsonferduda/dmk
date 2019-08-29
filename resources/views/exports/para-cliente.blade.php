@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ $dados['processos'][0]->cliente->nm_razao_social_cli }} ({{ $dados['dtInicio']}} - {{ $dados['dtFim']}})</th>
-        <th colspan="{{count($dados['despesas'])+8}}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align: center;font-weight:bold;font-size:16px"></th>
+        <th colspan="{{count($dados['despesas'])+9}}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align: center;font-weight:bold;font-size:16px"></th>
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">ADVOGADO SOLICITANTE/CONTATO</th>
@@ -14,6 +14,7 @@
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">VARA</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">COMARCA</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DO SERVIÇO</th>
+        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">Nº EXTERNO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">HONORÁRIOS</th>
         @foreach($dados['despesas'] as $despesa)
             <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">{{ strtoupper($despesa->nm_tipo_despesa_tds) }}</th>
@@ -56,6 +57,10 @@
                 {{ $dado->honorario ? $dado->honorario->tipoServico->nm_tipo_servico_tse : ' '}}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ $dado->nu_acompanhamento_pro ? $dado->nu_acompanhamento_pro : ' '}}
+            </td>
+
+            <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : '0'}}
             </td>
             @php
@@ -90,7 +95,7 @@
         @endforeach
         <tr>
             <td colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total: {{ 'R$ '.number_format($total,2,',',' ') }}</td>
-            <td colspan="{{count($dados['despesas'])+8}}" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;vertical-align: center;font-weight:bold;font-size:12px"></td>
+            <td colspan="{{count($dados['despesas'])+9}}" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;vertical-align: center;font-weight:bold;font-size:12px"></td>
         </tr>
    
     </tbody>
