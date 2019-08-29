@@ -517,10 +517,10 @@ class ClienteController extends Controller
 
         //Validação de data
         if(!is_null($dt_inicial)){
-            
+
             if(!\Helper::validaData($dt_inicial)){
-                Flash::error('Data no formato inválido!');
-                return redirect('cliente/novo');
+                Flash::error('A data informada é inválida');
+                return redirect('cliente/novo')->withInput();
             }else{
 
                 $request->merge(['dt_inicial_cli' => date('Y-m-d',strtotime(str_replace('/','-',$dt_inicial)))]);
