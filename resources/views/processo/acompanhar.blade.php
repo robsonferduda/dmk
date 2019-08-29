@@ -62,7 +62,7 @@
                         {{ csrf_field() }}
                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
                         <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
-                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</button>
                     </form>
 
                     <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
@@ -415,6 +415,63 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade modal_top_alto" id="modalFinalizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
+            @csrf
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-check"></i> Finalizar Processo</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 upload-msg marginBottom5"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">     
+                            <div class="form-group">                                                    
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="checkbox style-0">
+                                        <span>Notificar o cliente sobre a fianlização do processo</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>Email de Envio</strong> <a href="#"><i class="fa fa-plus-circle"></i> Novo</a> </label>
+                                <input class="form-control" disabled="disabled" placeholder="Email" type="text">
+                            </div>
+                            <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
+                                
+                                @foreach($processo->anexos as $key => $anexo)
+                                    <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
+                                        <div style="float: left; width: 8%; text-align: center;">
+                                            <label class="text-default" style="margin-top: 8px;"><input type="checkbox"></label>
+                                        </div>
+                                        <div style="float: left; width: 92%">
+                                            <h4><a href="{{ url('files/'.$anexo->cd_anexo_processo_apr) }}">{{ $anexo->nm_anexo_processo_apr }}</a></h4>
+                                            <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
+                                        </div> 
+                                    </div>
+                                    @if($key < count($processo->anexos)-1)
+                                        <hr style="margin: 0" />
+                                    @endif
+                                @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                    <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-upload"></i> Finalizar Processo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('script')
 <script type="text/javascript">
