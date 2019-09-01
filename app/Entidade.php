@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\TipoEnderecoEletronico as TipoEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -86,6 +87,28 @@ class Entidade extends Model
     public function origem()
     {
         return $this->hasOne('App\CidadeAtuacao','cd_entidade_ete', 'cd_entidade_ete')->where('fl_origem_cat','S');
+    }
+
+    public function getEmailsNotificacao()
+    {
+        $emails = EnderecoEletronico::where('cd_entidade_ete',$this->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',TipoEmail::NOTIFICACAO)->get();
+        
+        if(count($emails) == 0)
+        {
+            return null;
+
+        }else{
+
+            $lista = '';
+
+            foreach ($emails as $email) {
+                $lista .= $email->dc_endereco_eletronico_ede.', ';
+            }
+
+            return substr(trim($lista),0,-1);
+
+        }
+
     }
 
     public static function boot(){

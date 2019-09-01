@@ -515,9 +515,21 @@ class ClienteController extends Controller
         $taxa_imposto_cli = ($request->taxa_imposto_cli) ? str_replace(",", ".", $request->taxa_imposto_cli) : null;
         $cep = ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null;
 
+        //Validação de data
+        if(!is_null($dt_inicial)){
+
+            if(!\Helper::validaData($dt_inicial)){
+                Flash::error('A data informada é inválida');
+                return redirect('cliente/novo')->withInput();
+            }else{
+
+                $request->merge(['dt_inicial_cli' => date('Y-m-d',strtotime(str_replace('/','-',$dt_inicial)))]);
+
+            }
+        }
+
         $request->merge(['nu_cep_ede' => $cep]);
         $request->merge(['cd_conta_con' => $cd_conta_con]);
-        $request->merge(['dt_inicial_cli' => $dt_inicial]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
 
         $entidade = Entidade::create([
@@ -619,13 +631,25 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::where('cd_cliente_cli',$id)->first();
 
-        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? date('Y-m-d',strtotime(str_replace('/','-',$request->data_nascimento_cli))) : date('Y-m-d',strtotime(str_replace('/','-',$request->data_fundacao_cli)));
+        $dt_inicial = ($request->cd_tipo_pessoa_tpp == 1) ? $request->data_nascimento_cli : $request->data_fundacao_cli;
         $taxa_imposto_cli = ($request->taxa_imposto_cli) ? str_replace(",", ".", $request->taxa_imposto_cli) : null;
         $cep = ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null;
 
+        //Validação de data
+        if(!is_null($dt_inicial)){
+
+            if(!\Helper::validaData($dt_inicial)){
+                Flash::error('Data no formato inválido!');
+                return redirect('cliente/novo');
+            }else{
+
+                $request->merge(['dt_inicial_cli' => date('Y-m-d',strtotime(str_replace('/','-',$dt_inicial)))]);
+
+            }
+        }
+
         $request->merge(['nu_cep_ede' => $cep]);
         $request->merge(['cd_conta_con' => $this->conta]);
-        $request->merge(['dt_inicial_cli' => $dt_inicial]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
         $request->merge(['cd_entidade_ete' => $cliente->entidade->cd_entidade_ete]);
 

@@ -148,6 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Kodeine\Acl\AclServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
        
 
         /*
@@ -226,6 +227,7 @@ return [
         'Helper' => App\Helpers\Helper::class,
         'Minify'        => 'Devfactory\Minify\Facades\MinifyFacade',
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
+        'Zipper' => Chumper\Zipper\Zipper::class,
     ],
 
 ];

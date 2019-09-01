@@ -58,14 +58,14 @@
                                                         <strong>CPF: </strong> {{ ($cliente->entidade->cpf()->first()) ? $cliente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Data de Nascimento: </strong> {{ date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}
+                                                        <strong>Data de Nascimento: </strong> {{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : 'Não informada' }}
                                                     </li>
                                                 @else
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ ($cliente->entidade->cnpj()->first()) ? $cliente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Data de Fundação: </strong> {{ date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}
+                                                        <strong>Data de Fundação: </strong> {{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : 'Não informado' }}
                                                     </li>    
                                                 @endif                                            
                                                 <li>
