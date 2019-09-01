@@ -58,13 +58,6 @@
                         </form>
                     </div>
 
-                    <form style="display: inline; float: left; margin-right: 10px; margin-top: 17px; "  action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
-                        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</button>
-                    </form>
-
                     <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
                         {{ csrf_field() }}
                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
@@ -72,12 +65,14 @@
                         <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
                     </form>
 
-                    <a style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
+                    <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+
+                    <a class="btn btn-default marginTop17" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
                     
                     <div style="clear: both;"></div>
                 </div>
 
-                 <div class="well">
+                <div class="well">
 
                     <form style="display: inline; float: left; margin-right: 10px; margin-top: 17px; "  action="{{ url('processo/atualizar-status') }}" method="POST">
                         {{ csrf_field() }}
@@ -419,7 +414,7 @@
 <div class="modal fade modal_top_alto" id="modalFinalizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
+            <form id="frm-anexo" action="{{ url('processo/finalizar-processo') }}" method="POST">
             @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -431,41 +426,57 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">     
+                            <input type="hidden" name="processo" value="{{ $processo->cd_processo_pro }}">
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}"> 
+                            <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> A notificação do cliente é opcional. Caso a opção não seja marcada o processo será finalizado mesmo assim.</label>    
                             <div class="form-group">                                                    
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" class="checkbox style-0">
-                                        <span>Notificar o cliente sobre a fianlização do processo</span>
+                                        <input type="checkbox" class="checkbox" name="fl_envio_arquivo" id="fl_envio_arquivo">
+                                        <span>Notificar o cliente sobre a finalização do processo (Opcional)</span>
                                     </label>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label><strong>Email de Envio</strong> <a href="#"><i class="fa fa-plus-circle"></i> Novo</a> </label>
-                                <input class="form-control" disabled="disabled" placeholder="Email" type="text">
-                            </div>
-                            <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
-                                
-                                @foreach($processo->anexos as $key => $anexo)
-                                    <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
-                                        <div style="float: left; width: 8%; text-align: center;">
-                                            <label class="text-default" style="margin-top: 8px;"><input type="checkbox"></label>
+                            <div id="box-envio-email" style="display: none;">
+
+                                <div class="form-group">
+                                    <label><strong>Email de Envio</strong> <a href="{{'../../cliente/editar/'.$processo->cliente->cd_cliente_cli}}"><i class="fa fa-plus-circle"></i> Novo</a> </label>
+                                    <input class="form-control" disabled="disabled" placeholder="Email" type="text" value="{{ ($processo->cliente->entidade->getEmailsNotificacao()) ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
+                                </div>
+                                <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
+
+                                    <div class="form-group">                                                    
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" class="checkbox" name="fl_enviar_todos" id="fl_enviar_todos">
+                                                <span>Enviar Todos</span>
+                                            </label>
                                         </div>
-                                        <div style="float: left; width: 92%">
-                                            <h4><a href="{{ url('files/'.$anexo->cd_anexo_processo_apr) }}">{{ $anexo->nm_anexo_processo_apr }}</a></h4>
-                                            <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
-                                        </div> 
                                     </div>
-                                    @if($key < count($processo->anexos)-1)
-                                        <hr style="margin: 0" />
-                                    @endif
-                                @endforeach
+                                    
+                                    @foreach($processo->anexos as $key => $anexo)
+                                        <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
+                                            <div style="float: left; width: 8%; text-align: center;">
+                                                <label class="text-default" style="margin-top: 8px;">
+                                                    <input type="checkbox" name="lista_arquivos[]" class="lista_arquivos" value="{{ $anexo->nm_local_anexo_processo_apr }}">
+                                                </label>
+                                            </div>
+                                            <div style="float: left; width: 92%">
+                                                <h4>{{ $anexo->nm_anexo_processo_apr }}</h4>
+                                                <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
+                                            </div> 
+                                        </div>
+                                        @if($key < count($processo->anexos)-1)
+                                            <hr style="margin: 0" />
+                                        @endif
+                                    @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-upload"></i> Finalizar Processo</button>
+                    <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-check"></i> Finalizar Processo</button>
                 </div>
             </form>
         </div>
@@ -477,6 +488,42 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        //Reset do modal
+        $('#modalFinalizacao').on('shown.bs.modal', function () {
+          
+            $("#box-envio-email").css( "display", 'none' );
+            $("#fl_envio_arquivo").prop( "checked", false );
+            $("#fl_enviar_todos").prop( "checked", false );
+
+            $('.lista_arquivos').each(function () {
+                $(this).prop( "checked", false );
+            });
+
+        });
+
+        $("#fl_envio_arquivo").click( function(){
+        
+            if( $(this).is(':checked') ){
+                $("#box-envio-email").css( "display", 'block' );
+            }else{
+                $("#box-envio-email").css( "display", 'none' );
+            }
+        });
+
+        $("#fl_enviar_todos").click( function(){
+        
+            if( $(this).is(':checked') ){
+                $('.lista_arquivos').each(function () {
+                    $(this).prop( "checked", true );
+                });
+            }else{
+                $('.lista_arquivos').each(function () {
+                    $(this).prop( "checked", false );
+                });
+            }
+        });
+        
 
         //Posiciona a lista de mensagens na última mensagem enviada
         $('.msg_history').scrollTop($('.msg_history')[0].scrollHeight);
