@@ -222,7 +222,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::delete('correspondente/reports/{nome}','RelatorioCorrespondenteController@excluir');
 	Route::get('correspondente/arquivo/{nome}','RelatorioCorrespondenteController@arquivo');
 
-	Route::get('calendar','CalendarioController@index');
+	Route::get('calendario','CalendarioController@index');
 
 	Route::post('calendario/eventos-por-data','CalendarioController@buscarEventosPorData');	
 	Route::post('calendario/evento/adicionar','CalendarioController@adicionar');	
