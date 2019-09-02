@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="utf-8">
-        <title>{{ "DMK" }}</title>
+        <title>{{ env('APP_NAME') }}</title>
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
