@@ -71,8 +71,8 @@
                                             <div class="dropdown" style="display: inline;">
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
-                                                    <li><a data-toggle="modal" class="alterar_senha" title="Alterar Senha" href="" }}"><i class="fa fa-key"></i> Alterar Senha</a></li>
-                                                    <li><a data-url="usuarios/"  title="Excluir" class="excluir_registro"  href=""><i class="fa fa-trash"></i> Excluir</a></li>
+                                                    <li><a data-toggle="modal" class="alterar_senha" title="Alterar Senha" href="#"}}"><i class="fa fa-key"></i> Alterar Senha</a></li>
+                                                    <li><a data-url="usuarios/"  title="Excluir" class="excluir_registro"  href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div>                                      
                                         </td>

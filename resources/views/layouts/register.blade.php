@@ -2,7 +2,7 @@
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
-		<title>{{ "DMK" }}</title>
+		<title>{{ env('APP_NAME') }}</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -41,7 +41,8 @@
 	<body id="login">
 	
 		<header id="header" style="text-align: right; padding-top: 20px;">
-			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default"><i class="fa fa-legal"></i> CORRESPONDENTES</a> </span>
+			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default"><i class="fa fa-legal"></i> CADASTRO CORRESPONDENTES</a> </span>
+			<span id="btn_correspondentes"><a href="{{ url('/correspondente/login') }}" class="btn btn-warning"><i class="fa fa-sign-in"></i> ACESSO CORRESPONDENTES</a> </span>
 			<span id="btn_login"><a href="{{ url('login') }}" class="btn btn-danger"><i class="fa fa-sign-in"></i> ACESSAR O SISTEMA</a> </span>
 		</header>
 
