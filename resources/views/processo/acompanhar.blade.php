@@ -15,10 +15,30 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento </a> 
-            <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
-            <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
+            @role('administrator')
+                <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento </a> 
+                <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
+                <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
+            @endrole
+
+            @role('correspondente')
+
+                <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                </form>
+
+                <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                    <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                </form>
+
+            @endrole
         </div>
     </div>
     <div class="row">
@@ -33,6 +53,7 @@
                         <strong>Processo Cancelado!</strong> O processo está cancelado.
                     </div>
                 @endif
+                @role('administrator')
                 <div class="well">
                     <div style="float: left; margin-right: 10px;">
                         <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
@@ -71,20 +92,7 @@
                     
                     <div style="clear: both;"></div>
                 </div>
-
-                <div class="well">
-
-                    <form style="display: inline; float: left; margin-right: 10px; margin-top: 17px; "  action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}">     
-                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                    </form>
-
-                    <a style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default marginTop17"><i class="fa fa-send-o"></i> Notificar Escritório</a>          
-                    
-                    <div style="clear: both;"></div>
-                </div>
+                @endrole
 
                 <div class="jarviswidget jarviswidget-sortable">
                     <header role="heading" class="ui-sortable-handle">

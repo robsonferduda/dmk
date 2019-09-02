@@ -551,50 +551,50 @@
         <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
         
         @yield('script')
-        <script>
+        <script type="text/javascript">
         
-        var hostname = document.location.hostname;  
+        $(document).ready(function() {
+        
+            var hostname = document.location.hostname;  
 
-        {{---    
+            var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
+            socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
-        var socket = io.connect('https://127.0.0.1:3000',{secure: true},verify=false);
-        socket.on("notificacao:App\\Events\\EventNotification", function(message){
+                cod_conta = $('meta[name="conta"]').attr('content');
+                path = window.location.protocol + "//" + window.location.host + "/dmk/";
 
-            cod_conta = $('meta[name="conta"]').attr('content');
-            path = window.location.protocol + "//" + window.location.host + "/dmk/";
+                if(message.data.canal == 'notificacao'){
 
-            if(message.data.canal == 'notificacao'){
-
-                if(message.data.conta == cod_conta){
-                    
-                    $('.badge-count').html(message.data.total);
-                    $(".notification-body > li").remove();
-
-                    console.log(message.data.mensagens.length);
-
-                    for (var i = 0; i < message.data.mensagens.length; i++) {
+                    if(message.data.conta == cod_conta){
                         
-                        item = '<li>'+
-                                                '<span class="unread">'+
-                                                    '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
-                                                        '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
-                                                        '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
-                                                        '<time>'+message.data.mensagens[i].data+'</time>'+
-                                                        '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
-                                                        '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
-                                                    '</a>' +
-                                                '</span>'+
-                                            '</li>';
-                                               
-                        $('.notification-body').append(item);
+                        $('.badge-count').html(message.data.total);
+                        $(".notification-body > li").remove();
 
+                        console.log(message.data.mensagens.length);
+
+                        for (var i = 0; i < message.data.mensagens.length; i++) {
+                            
+                            item = '<li>'+
+                                                    '<span class="unread">'+
+                                                        '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
+                                                            '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
+                                                            '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
+                                                            '<time>'+message.data.mensagens[i].data+'</time>'+
+                                                            '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
+                                                            '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
+                                                        '</a>' +
+                                                    '</span>'+
+                                                '</li>';
+                                                   
+                            $('.notification-body').append(item);
+
+                        }
                     }
                 }
-            }
+
+            });
 
         });
-        --}}
-
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 

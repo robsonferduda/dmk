@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a href="{{ url('correspondente/processos') }}" class="btn btn-primary pull-right header-btn" ><i class="fa fa-list"></i> Meus Processos</a>
         </div>
     </div>
     <div class="row">
@@ -30,16 +30,9 @@
                         <span class="input-group-addon">Nº Processo</span>
                         <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                     </div>                    
-                    <div class="form-group">
-                        <select name="cd_tipo_processo_tpo" class="form-control">
-                            <option value="">Tipos de Processo</option>
-                            @foreach($tiposProcesso as $tipo)
-                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
-                            @endforeach
-                        </select>
-                    </div> 
+                    
                     <div style="width: 30%" class="form-group">
-                        <select style="width: 70%" name="cd_tipo_servico_tse" class="form-control">
+                        <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
                             <option value="">Tipos de Serviço</option>
                             @foreach($tiposServico as $tipo)
                                 <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
@@ -47,15 +40,7 @@
                         </select>
                     </div>                
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
-                    <div style="display: block;margin-top: 10px">
-                       <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Finalizado
-                       </span>
-                       <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Cancelado
-                       </span>
-                    </div>  
+                    
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -73,29 +58,15 @@
                                     <th>Cidade</th>                                                  
                                     <th>Tipo de Serviço</th>
                                     <th>Cliente</th>
-                                    <th>Correspondente</th>
                                     <th>Parte Adversa</th>
                                     <th>Status</th>
-                                    <th style="min-width: 85px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th class="center" style="min-width: 85px"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
                                 @foreach($processos as $processo)
-                                    @php $cor = ''; 
 
-                                        $cor = "#ffffff"; 
-
-                                        if($processo->status->cd_status_processo_stp == StatusProcesso::FINALIZADO){
-                                            $cor = "#8ec9bb";
-                                        }
-                                            
-                                        if($processo->status->cd_status_processo_stp == StatusProcesso::CANCELADO){
-                                            $cor = "#fb8e7e";
-                                        }
-                                        
-                                    @endphp
-
-                                    <tr style="background-color: {{ $cor }};">        
+                                    <tr>        
                                         <td>
                                             @if(!empty($processo->dt_prazo_fatal_pro))
                                                 {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
@@ -111,30 +82,18 @@
                                        
                                          <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
                                         <td>
-                                            <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>                                            
-                                        </td>
-                                        <td>
-                                            @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
-                                            @endif
+                                            {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}                                           
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
                                         <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
-                                        <td>
+                                        <td class="center">
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
                                                     <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
-                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
-                                                    <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
+                                          
                                                     <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
-                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
-                                                </div>    
+                                                    
+                                                </div> 
                                             </div>                                        
                                         </td>
                                     </tr>
@@ -146,10 +105,5 @@
             </div>
         </article>
     </div>
-</div>
-<div id="dialog_clone_text" class="ui-dialog-content ui-widget-content" style="width: auto; min-height: 0px; max-height: none; height: auto;">
-     <p>
-        Ao clicar em "Continuar" uma cópia do processo será realizada.
-    </p>
 </div>
 @endsection
