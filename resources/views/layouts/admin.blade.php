@@ -515,7 +515,7 @@
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
         <script src="{{ asset('js/geral.js') }}"></script>
-        <script src="{{ asset('js/menu.js') }}"></script>
+         {!!  Minify::javascript(asset('js/geral.js')) !!}
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
