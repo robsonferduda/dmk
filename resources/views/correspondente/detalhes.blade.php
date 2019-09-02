@@ -64,10 +64,16 @@
                                                     </li>
                                                 @endif 
                                                 <li>
-                                                    <p class="text-muted">
-                                                        <span class="txt-color-darken"><strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}</span>
-                                                    </p>
-                                                </li>                                         
+                                                    <strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}
+                                                </li>  
+                                                <li>
+                                                    <strong>Categoria: </strong> 
+                                                    @if($correspondente->categoria)
+                                                    <span class="label label-primary" style="background-color: {{ $correspondente->categoria->color_cac }}">{{ $correspondente->categoria->dc_categoria_correspondente_cac }}</span>
+                                                    @else
+                                                        Não informado
+                                                    @endif
+                                                </li>                                       
                                             </ul>
                                         </p> 
                                     </div>

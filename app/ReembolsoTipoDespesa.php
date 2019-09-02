@@ -27,4 +27,9 @@ class ReembolsoTipoDespesa extends Model
         return $this->hasOne('App\TipoDespesa','cd_tipo_despesa_tds', 'cd_tipo_despesa_tds');
     }
 
+    public function cliente()
+    {
+        return $this->hasOne('App\Cliente','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
 }

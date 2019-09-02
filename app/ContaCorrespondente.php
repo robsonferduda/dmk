@@ -20,6 +20,7 @@ class ContaCorrespondente extends Model implements AuditableContract
                             'cd_entidade_ete',
                             'nm_conta_correspondente_ccr',
                             'cd_tipo_pessoa_tpp',
+                            'cd_categoria_correspondente_cac',
                             'obs_ccr'
                           ];
     public $timestamps = true;
@@ -43,6 +44,11 @@ class ContaCorrespondente extends Model implements AuditableContract
     public function entidade()
     {
         return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
+    public function categoria()
+    {
+        return $this->hasOne('App\CategoriaCorrespondente','cd_categoria_correspondente_cac','cd_categoria_correspondente_cac');
     }
 
 }

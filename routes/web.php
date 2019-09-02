@@ -62,14 +62,21 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processos/despesas/salvar','ProcessoController@salvarDespesas');
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
+	Route::post('processo/finalizar-processo','ProcessoController@finalizarProcesso');
 	Route::post('processo/mensagem/enviar','MensagemController@enviar');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/notificar/{id}','ProcessoController@notificarCorrespondente');
 	Route::get('processos/acompanhar','ProcessoController@acompanhar');
 	Route::get('processos/relatorio/{id}','ProcessoController@relatorio');
+	Route::get('processos/atualiza/enviados/{id}','ProcessoController@atualizaAnexosEnviados');
+	Route::get('processos/atualiza/recebidos/{id}','ProcessoController@atualizaAnexosRecebidos');
 	Route::get('processo/notificacao/resposta/{resposta}/{id}','ProcessoController@responderNotificacao')->name('resposta');
+	Route::get('processos/relatorios','RelatorioProcessoController@relatorios');
+	Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
+
 	
+
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
@@ -95,6 +102,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('contato/salvar','ContatoController@salvar');
 
 	Route::resource('correspondentes', 'CorrespondenteController');
+	Route::get('correspondente/categorias','CategoriaCorrespondenteController@index');
 	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
@@ -139,6 +147,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('despesas/lancamentos','DespesasController@lancamentos')->name('lancamentos');
 	Route::get('despesas/categoria/tipo/{id}','DespesasController@getTipos');
 	Route::get('despesas/tipo/categoria/{id}','DespesasController@getCategorias');
+	Route::get('despesas/anexos/{arquivo}','DespesasController@download');
+	Route::post('despesas/buscar','DespesasController@buscar');
 	Route::resource('despesas','DespesasController');
 
 	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');
@@ -186,6 +196,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('cargos','CargoController');
 	Route::resource('departamentos','DepartamentoController');
 	Route::resource('categorias-de-despesas','CategoriaDespesaController');
+	Route::resource('categorias-correspondentes','CategoriaCorrespondenteController');
 	Route::resource('grupos-de-cidades','GrupoCidadeController');
 	Route::resource('processos','ProcessoController');
 	Route::resource('usuarios','UsuarioController');
@@ -220,6 +231,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
 	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
 
+	Route::get('financeiro/entradas','FinanceiroController@entradaIndex');
+	Route::get('financeiro/saidas','FinanceiroController@saidaIndex');
+	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');
+	Route::post('financeiro/saida/buscar','FinanceiroController@saidaBuscar');
+	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
+	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
 
+	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
+	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
 
 });

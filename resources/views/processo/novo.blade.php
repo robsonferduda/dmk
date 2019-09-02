@@ -289,7 +289,7 @@
                                                                 <td>
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                     <div class="input-group">
-                                                                        <span class="input-group-addon">$</span>
+                                                                        <span class="input-group-addon">%</span>
                                                                             <input disabled name="nota_fiscal_cliente" style="width: 100px;padding-left: 12px" id="nota_fiscal_cliente" type="text" class="form-control taxa-honorario"  value="{{old('nota_fiscal_cliente')}}" title="Aguardando seleção do Cliente" >
                                                                     </div>
                                                                     </div>

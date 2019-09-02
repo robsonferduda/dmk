@@ -19,7 +19,8 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">         
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
         @yield('stylesheet')
     </head>
@@ -195,6 +196,9 @@
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
                             <li>
+                                <a href="{{ url('correspondente/categorias') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
+                            </li>
+                            <li>
                                 <a href="{{ url('correspondente/todos') }}" title="Buscar Correspondentes"><span class="menu-item-parent">Buscar</span></a>
                             </li>
                             <li>
@@ -227,13 +231,16 @@
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('processos/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('processos') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
                             </li>
                             <li>
-                                <a href="{{ url('processos/acompanhamento') }}" title="Dashboard"><span class="menu-item-parent">Acompanhamento</span></a>
+                                <a href="{{ url('processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -245,7 +252,14 @@
                             <li>
                                 <a href="index.html" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
+                             <li>
+                                <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
+                            </li>
                         </ul>   
+                        
                     </li>
                     @endrole
                     @role('administrator') 
@@ -257,9 +271,6 @@
                             </li>
                              <li>
                                 <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('despesas/balanco') }}"" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                             </li>
                         </ul>   
                     </li>
@@ -508,8 +519,8 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-        {!!  Minify::javascript(asset('/js/geral.js')) !!}
-        <script src="{{ asset('js/menu.js') }}"></script>
+        <script src="{{ asset('js/geral.js') }}"></script>
+         {!!  Minify::javascript(asset('js/geral.js')) !!}
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
@@ -517,6 +528,7 @@
         <script src="{{ asset('js/plugin/fullcalendar/locale-all.js') }}"></script>
 
         <script src="{{ asset('js/app.config.js') }}"></script>
+        <script src="{{ asset('js/data-table-custom.js') }}"></script>
 
 
         <!--[if IE 8]>
@@ -541,6 +553,7 @@
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
         
         @yield('script')
         <script>
@@ -610,7 +623,6 @@
             }
         });
 
-
         $('#upload').on('change', function () { 
             var reader = new FileReader();
             reader.onload = function (e) {
@@ -627,63 +639,8 @@
             
             pageSetUp();
 
-        /* BASIC ;*/
-                var responsiveHelper_dt_basic = undefined;
-                var responsiveHelper_datatable_fixed_column = undefined;
-                var responsiveHelper_datatable_col_reorder = undefined;
-                var responsiveHelper_datatable_tabletools = undefined;
-                
-                var breakpointDefinition = {
-                    tablet : 1024,
-                    phone : 480
-                };
-    
-                $('#dt_basic').dataTable({
-                    "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                        "t"+
-                        "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-                    "autoWidth" : true,
-                    "ordering": false,
-                    "oLanguage": {
-                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
-                        "sEmptyTable": "Nenhum registro encontrado",
-                        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-                        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-                        "sInfoPostFix": "",
-                        "sInfoThousands": ".",
-                        "sLengthMenu": "_MENU_ resultados por página",
-                        "sLoadingRecords": "Carregando...",
-                        "sProcessing": "Processando...",
-                        "sZeroRecords": "Nenhum registro encontrado",
-                        
-                        "oPaginate": {
-                            "sNext": "Próximo",
-                            "sPrevious": "Anterior",
-                            "sFirst": "Primeiro",
-                            "sLast": "Último"
-                        },
-                        "oAria": {
-                            "sSortAscending": ": Ordenar colunas de forma ascendente",
-                            "sSortDescending": ": Ordenar colunas de forma descendente"
-                        },
-                    },
-                    "preDrawCallback" : function() {
-                        // Initialize the responsive datatables helper once.
-                        if (!responsiveHelper_dt_basic) {
-                            responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
-                        }
-                    },
-                    "rowCallback" : function(nRow) {
-                        responsiveHelper_dt_basic.createExpandIcon(nRow);
-                    },
-                    "drawCallback" : function(oSettings) {
-                        responsiveHelper_dt_basic.respond();
-                    }
-                });
-    
-            /* END BASIC */
-            })
+
+        })
 
         </script>
 

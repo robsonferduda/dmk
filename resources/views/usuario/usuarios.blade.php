@@ -52,11 +52,11 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
-                                    <th style="width: 35%;">Usuário</th>
-                                    <th style="width: 25%;">E-mail</th>
+                                    <th style="width: 25%;">Usuário</th>
+                                    <th style="">E-mail</th>
                                     {{--<th style="width: 15%;">Nível</th>--}}
                                    
-                                    <th style="width: 20%;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 100px;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,8 +68,13 @@
                                         <td>
                                             <a class="btn btn-default btn-xs" title="Detalhes" href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a class="btn btn-primary btn-xs editar_vara" title="Editar" href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-edit"></i></a>
-                                            <a data-toggle="modal" class="btn btn-warning btn-xs alterar_senha" title="Alterar Senha" href="" }}"><i class="fa fa-key"></i></a>
-                                            <button data-url="usuarios/"  title="Excluir" class="btn btn-danger btn-xs excluir_registro"  href=""><i class="fa fa-trash"></i></button>                                          
+                                            <div class="dropdown" style="display: inline;">
+                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a data-toggle="modal" class="alterar_senha" title="Alterar Senha" href="" }}"><i class="fa fa-key"></i> Alterar Senha</a></li>
+                                                    <li><a data-url="usuarios/"  title="Excluir" class="excluir_registro"  href=""><i class="fa fa-trash"></i> Excluir</a></li>
+                                                </ul>
+                                            </div>                                      
                                         </td>
                                     </tr>
                                 @endforeach

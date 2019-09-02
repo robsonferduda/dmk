@@ -29,10 +29,10 @@
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
-                            <section class="col col-md-3">                                       
+                            <section class="col col-md-2">                                       
                                 <label class="label label-black" >Estado</label>          
                                 <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
-                                    <option selected value="">Selecione um estado</option>
+                                    <option selected value="">Estado</option>
                                     @foreach(App\Estado::all() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                     @endforeach
@@ -49,16 +49,25 @@
                                 </select> 
                             </section> 
                             <section class="col col-md-2">
+                                <label class="label label-black" >Categoria</label>
+                                <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
+                                    <option selected value="">Selecione</option>
+                                    @foreach(App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->get() as $categoria) 
+                                        <option value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
+                                    @endforeach
+                                </select> 
+                            </section>
+                            <section class="col col-md-2">
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
                             </section>
-                            <section class="col col-md-3">
+                            <section class="col col-md-2">
                                 <label class="label label-black" >Nome</label><br>
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
                             <section class="col col-md-1">
                                 <label class="label" >Buscar</label>
-                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
                             </section>
                         </div>
                     </fieldset>
@@ -74,32 +83,43 @@
                         @if(isset($correspondetes))
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr>    
-                                    <th style="width: 20%;">Comarca de Origem</th> 
-                                    <th style="width: 15%;">CPF/CNPJ</th>                                                                   
-                                    <th style="width: 30%;">Nome</th>
-                                    <th style="width: 20%;" class="center">Email</th>                                  
-                                    <th style="width: 5%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                <tr>   
+                                    <th style="">Categoria</th> 
+                                    <th style="">Comarca de Origem</th> 
+                                    <th style="">CPF/CNPJ</th>
+                                    <th style="">Nome</th>
+                                    <th style="" class="center">Email</th>                                  
+                                    <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($correspondetes as $correspondente)
                                     <tr>
+                                        <td>
+                                            @if($correspondente->categoria)
+                                            <span class="label label-primary" style="background-color: {{ $correspondente->categoria->color_cac }}">{{ $correspondente->categoria->dc_categoria_correspondente_cac }}</span>
+                                            @else
+                                                <span class="label label-default">Não informado</span>
+                                            @endif
+                                        </td>
                                         <td>{!! ($correspondente->entidade->atuacao) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
-                                        <td>{{ $correspondente->nm_conta_correspondente_ccr }}</td>
+                                        <td>
+                                            {{ $correspondente->nm_conta_correspondente_ccr }}
+                                        </td>
                                         <td>{!! ($correspondente->correspondente->entidade->usuario) ? $correspondente->correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <div>
                                                 <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-file-text-o"></i> </a>
-
-                                                <a title="Despesas" class="btn btn-info btn-xs" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> </a>
-
-                                                <a title="Honorários" class="btn btn-warning btn-xs"  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> </a>
-
                                                 <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-edit"></i> </a>
-
-                                                <button title="Excluir" class="btn btn-danger btn-xs remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> </button> 
+                                                <div class="dropdown" style="display: inline;">
+                                                    <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
+                                                        <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                        <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

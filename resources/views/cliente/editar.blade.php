@@ -64,7 +64,7 @@
                                         <section class="col col-3 box-pessoa-juridica">
                                             <label class="label">Data de Fundação</label>
                                             <label class="input">
-                                                <input type="text" name="data_fundacao_cli" class="data_fundacao" placeholder="__/__/____" value="{{old('data_fundacao') ? old('data_fundacao') : date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}">
+                                                <input type="text" name="data_fundacao_cli" class="data_fundacao" placeholder="__/__/____" value="{{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : old('data_fundacao') }}">
                                             </label>
                                         </section>
 
@@ -77,7 +77,7 @@
                                         <section class="col col-3 box-pessoa-fisica">
                                             <label class="label">Data de Nascimento</label>
                                             <label class="input">
-                                                <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____" value="{{old('data_nascimento') ? old('data_nascimento') : date('d/m/Y', strtotime($cliente->dt_inicial_cli)) }}">
+                                                <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____" value="{{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : old('data_nascimento') }}">
                                             </label>
                                         </section>
                                         <section class="col col-6">

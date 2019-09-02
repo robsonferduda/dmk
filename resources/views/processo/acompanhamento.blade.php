@@ -123,8 +123,9 @@
                                     <th style="width: 11%;">Tipo de Serviço</th>
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
-                                    <th style="width: 11%;">Parte Adversa</th>
-                                    <th>Status</th>                                     
+                                    <th style="width: 100px;">Parte Adversa</th>
+                                    <th>Status</th>  
+                                    <th style="width: 100px;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>                                   
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px" class="tbody">
@@ -174,29 +175,21 @@
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}
-                                                                              
-                                                
-                                            <div class="menu" style="margin-top: 5px; width: 200px;">
-                                           
-                                            <span>
-                                                <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
-                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
-                                                    <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
-                                               
-                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
-                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
-                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
-                                               
-                                                    <a title="Excluir" data-url="../processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></a>
-                                          </span>
-
-                                          </div>
-                                               
-                                           
-                                          
-                                        </div>
-                                  
+                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
+                                        <td>
+                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                            <div class="dropdown" style="display: inline;">
+                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
+                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i> Acompanhamento</a></li>
+                                                    <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
+                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-pdf-o"></i> Relatórios</a></li>
+                                                    <li><a title="Excluir" data-url="../processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
+                                                </ul>
+                                            </div> 
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

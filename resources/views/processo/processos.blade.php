@@ -97,7 +97,7 @@
                                     <th>Correspondente</th>
                                     <th>Parte Adversa</th>
                                     <th>Status</th>
-                                    <th style="min-width: 85px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 100px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
@@ -106,11 +106,11 @@
 
                                         $cor = "#ffffff"; 
 
-                                        if($processo->status->cd_status_processo_stp == StatusProcesso::FINALIZADO){
+                                        if($processo->status and $processo->status->cd_status_processo_stp == StatusProcesso::FINALIZADO){
                                             $cor = "#8ec9bb";
                                         }
                                             
-                                        if($processo->status->cd_status_processo_stp == StatusProcesso::CANCELADO){
+                                        if($processo->status and $processo->status->cd_status_processo_stp == StatusProcesso::CANCELADO){
                                             $cor = "#fb8e7e";
                                         }
                                         
@@ -140,23 +140,20 @@
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
+                                        <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
                                         <td>
-                                            <div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
-                                                    <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
-                                                    <a title="Despesas" class="btn btn-warning btn-xs" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Relatório" class="btn btn-default btn-xs" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i></a>
-                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
-                                                    <a title="Clonar" class="btn btn-primary btn-xs dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i></a>
-                                                </div>
-                                                <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <button title="Excluir" data-url="processos/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
-                                                </div>    
-                                            </div>                                        
+                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                            <div class="dropdown" style="display: inline;">
+                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
+                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i> Acompanhamento</a><li>
+                                                    <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
+                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-pdf-o"></i> Relatório</a></li>
+                                                    <li><a title="Excluir" data-url="processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
+                                                </ul>
+                                            </div>                                    
                                         </td>
                                     </tr>
                                 @endforeach

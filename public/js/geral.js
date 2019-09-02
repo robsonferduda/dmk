@@ -14,6 +14,7 @@ $(document).ready(function() {
 	$('.hora_evento').mask('00:00');
 	$('.data_evento').mask('00/00/0000');
 
+	$('.mascara_data').mask('00/00/0000');
 	$('.dt_solicitacao_pro').mask('00/00/0000');
 	$('.data_nascimento').mask('00/00/0000');
 	$('.data_fundacao').mask('00/00/0000');
@@ -27,6 +28,11 @@ $(document).ready(function() {
 	$(".taxa-honorario").mask('#####000,00', {reverse: true});
 	$(".taxa-despesa").mask('#####000,00', {reverse: true});
 	$("#taxa_imposto_cli").mask('#####000,00', {reverse: true});
+
+	$('#colorselector').colorselector();
+
+	color = $('#categoria_cac option:selected').data('color');
+	$("#categoria_cac").css('color',color);
 
 	var CpfCnpjMaskBehavior = function (val){
 			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';
@@ -126,13 +132,20 @@ $(document).ready(function() {
 	    }
 	});
 
+	$("#categoria_cac").change(function(){
+
+		color = $('#categoria_cac option:selected').data('color');
+		$("#categoria_cac").css('color',color);
+
+	});
+
 	$(".categoria_despesa").change(function(){
 
 		var categoria = $(".categoria_despesa option:selected").val();
 
 		$.ajax(
             {
-                url: "../../despesas/categoria/tipo/"+categoria,
+                url: pathname+"/despesas/categoria/tipo/"+categoria,
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
@@ -168,7 +181,7 @@ $(document).ready(function() {
 		{
 			$.ajax(
 	            {
-	                url: "../../despesas/tipo/categoria/"+categoria,
+	                url: pathname+"/despesas/tipo/categoria/"+categoria,
 	                type: 'GET',
 	                dataType: "JSON",
 	            success: function(response)
@@ -697,6 +710,32 @@ $(document).ready(function() {
 		$('#frm-edit-categoria-despesa').attr('action', action);						
 
 	    $('#editCategoriaDespesa').modal('show');
+	});
+
+	$(".editar_categoria_correspondente").on('click', function(){
+
+		var id        = $(this).closest('tr').find('td[data-id]').data('id');
+		var nome      = $(this).closest('tr').find('td[data-nome]').data('nome');
+		var cor      = $(this).closest('tr').find('td[data-cor]').data('cor');
+		var action    = "../categorias-correspondentes/"+id;
+
+		$('#frm-edit-categoria-correspondente #cd_categoria_correspondente_cac').val(id);
+		$('#frm-edit-categoria-correspondente #dc_categoria_correspondente_cac').val(nome);
+
+		$("#colorselector_edit option").each(function(){
+		 	$(this).removeAttr('selected');
+		});
+
+		$("#colorselector_edit option").each(function(){
+		 	if ($(this).val() == cor)
+		    	$(this).attr("selected","selected");
+		});
+
+		$('#colorselector_edit').colorselector();
+
+		$('#frm-edit-categoria-correspondente').attr('action', action);						
+
+	    $('#editCategoriaCorrespondente').modal('show');
 	});
 
 	$(".btn-save-categoria-despesa").click(function(){

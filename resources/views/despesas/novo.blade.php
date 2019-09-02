@@ -32,16 +32,9 @@
 
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm_add_despesas', 'url' => 'despesas', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm_add_despesas', 'url' => 'despesas', 'class' => 'smart-form','files' => true]) !!}
                             <header>Dados da Despesa <small style="font-size: 12px;"><span class="text-danger">* Campos obrigatórios</span></small></header>
                             <fieldset>
-                                <section>
-                                    <label class="label">Descrição <span class="text-danger"> *</span></label>
-                                    <label class="input"> <i class="icon-append fa fa-user"></i>
-                                        <input type="text" name="dc_descricao_des" id="dc_descricao_des" placeholder="Descrição">
-                                    </label>
-                                </section>
-
                                 <div class="row">
                                     <section class="col col-3">
                                         <label class="label">Categoria 
@@ -50,14 +43,14 @@
                                             </a> 
                                         </label>
                                         <label class="select">
-                                            <select name="cd_categoria_despesa_cad">
+                                            <select name="cd_categoria_despesa_cad" class="categoria_despesa">
                                                 <option value="0">Selecione uma categoria</option>
                                                 @foreach($categorias as $cat)
                                                     <option value="{{ $cat->cd_categoria_despesa_cad }}">{{ $cat->nm_categoria_despesa_cad }}</option>
                                                 @endforeach
                                             </select> <i></i> </label>
                                     </section>
-                                    <section class="col col-3">
+                                    <section class="col col-5">
                                         <label class="label">Tipo de Despesa <span class="text-danger"> *</span></label>
                                         <label class="select">
                                             <select name="cd_tipo_despesa_tds" class="tipo_despesa">
@@ -67,6 +60,14 @@
                                                 @endforeach
                                             </select> <i></i> </label>
                                     </section>
+                                    <section class="col col-4">
+                                        <label class="label">Descrição</label>
+                                        <label class="input"> <i class="icon-append fa fa-font"></i>
+                                            <input type="text" name="dc_descricao_des" id="dc_descricao_des" placeholder="Descrição">
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row">
                                     <section class="col col-2">
                                         <label class="label">Data de Vencimento <span class="text-danger"> *</span></label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
@@ -85,8 +86,13 @@
                                             <input type="text" name="vl_valor_des" id="vl_valor_des">
                                         </label>
                                     </section>
+                                    <section class="col col-6">
+                                        <label class="label">Arquivo </label>
+                                        <div class="input input-file">
+                                            <span class="button"><input id="file" type="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Buscar</span><input type="text" placeholder="Anexos do pagamento" readonly="">
+                                        </div>
+                                    </section>
                                 </div>
-
                             </fieldset>
                             
                              <div class="row" style="padding: 5px 20px;">
@@ -128,9 +134,6 @@
 
         $("#frm_add_despesas").validate({
             rules : {
-                dc_descricao_des : {
-                    required : true
-                },
                 cd_tipo_despesa_tds : {
                     required : true
                 },
@@ -143,9 +146,6 @@
             },            
 
             messages : {
-                dc_descricao_des : {
-                    required : 'Campo obrigatório'
-                },
                 cd_tipo_despesa_tds : {
                     required : 'Campo obrigatório'
                 },

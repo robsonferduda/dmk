@@ -13,5 +13,6 @@ final class StatusProcesso extends Enum
     const AGUARDANDO_CLIENTE = 5;
     const FINALIZADO = 6;
     const CANCELADO = 7;
-
+    const FINALIZADO_CORRESPONDENTE = 8;
+    const CONTRATAR_CORRESPONDENTE = 9;
 }

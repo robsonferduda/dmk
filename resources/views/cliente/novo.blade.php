@@ -45,10 +45,10 @@
                                     <section>
                                         <div class="inline-group">
                                             <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" checked="checked">
+                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="2" {{ (old('cd_tipo_pessoa_tpp') and old('cd_tipo_pessoa_tpp') == 2) ? 'checked="checked"' : ''  }}>
                                                 <i></i>Pessoa Jurídica</label>
                                             <label class="radio">
-                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1">
+                                                <input type="radio" class="tipo-pessoa" name="cd_tipo_pessoa_tpp" value="1" {{ (old('cd_tipo_pessoa_tpp') and old('cd_tipo_pessoa_tpp') == 1) ? 'checked="checked"' : ''  }}>
                                                 <i></i>Pessoa Física</label>
                                         </div>
                                     </section>
@@ -56,32 +56,32 @@
                                         <section class="col col-3 box-pessoa-juridica">
                                             <label class="label">CNPJ</label>
                                             <label class="input">
-                                                <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00">
+                                                <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ old('cnpj') }}">
                                             </label>
                                         </section>
                                         <section class="col col-3 box-pessoa-juridica">
                                             <label class="label">Data de Fundação</label>
                                             <label class="input">
-                                                <input type="text" name="data_fundacao_cli" class="data_fundacao" placeholder="__/__/____">
+                                                <input type="text" name="data_fundacao_cli" class="data_fundacao" placeholder="__/__/____" value="{{ old('data_fundacao_cli') }}">
                                             </label>
                                         </section>
 
                                         <section class="col col-3 box-pessoa-fisica">
                                             <label class="label">CPF</label>
                                             <label class="input">
-                                                <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000">
+                                                <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ old('cpf') }}">
                                             </label>
                                         </section>
                                         <section class="col col-3 box-pessoa-fisica">
                                             <label class="label">Data de Nascimento</label>
                                             <label class="input">
-                                                <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____">
+                                                <input type="text" name="data_nascimento_cli" class="data_nascimento" placeholder="__/__/____" value="{{ old('data_nascimento_cli') }}">
                                             </label>
                                         </section>
                                         <section class="col col-6">
                                             <label class="label">Razão Social <span class="text-danger">(Obrigatório)</span></label>
                                             <label class="input">
-                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social">
+                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social" value=" {{ old('nm_razao_social_cli') }}">
                                             </label>
                                         </section>                                        
                                     </div>                        
@@ -96,13 +96,13 @@
                                         <section class="col col-3">
                                             <label class="label">Inscrição Municipal</label>
                                             <label class="input">
-                                                <input type="text" name="inscricao_municipal_cli" placeholder="Inscrição Municipal">
+                                                <input type="text" name="inscricao_municipal_cli" placeholder="Inscrição Municipal" value="{{ old('inscricao_municipal_cli') }}">
                                             </label>
                                         </section>
                                         <section class="col col-3">
                                             <label class="label">Inscrição Estadual</label>
                                             <label class="input">
-                                                <input type="text" name="inscricao_estadual_cli" placeholder="Inscrição Estadual">
+                                                <input type="text" name="inscricao_estadual_cli" placeholder="Inscrição Estadual" value="{{ old('inscricao_estadual_cli') }}">
                                             </label>
                                         </section>
                                     </div>  
@@ -111,7 +111,7 @@
                                         <div class="onoffswitch-container" style="margin-left: 0px;">
                                             <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 
                                             <span class="onoffswitch">
-                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli">
+                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli" {{ (old('fl_nota_fiscal_cli') and old('fl_nota_fiscal_cli') == 'S') ? 'checked' : '' }}>
                                                 <label class="onoffswitch-label" for="fl_nota_fiscal_cli"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
@@ -124,7 +124,7 @@
                                         <section class="col col-3 box-desconto">
                                             <label class="label">Percentual de Desconto</label>
                                             <label class="input" style="width: 50%">
-                                                <input type="text" id="taxa_imposto_cli" name="taxa_imposto_cli">
+                                                <input type="text" id="taxa_imposto_cli" name="taxa_imposto_cli" value="{{ old('taxa_imposto_cli') }}">
                                             </label>    
                                         </section>
                                     </div>
@@ -166,13 +166,13 @@
                                         <section class="col col-2">
                                             <label class="label">CEP</label>
                                             <label class="input">
-                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{old('nu_cep_ede')}}">
+                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{ old('nu_cep_ede') }}">
                                             </label>
                                         </section> 
                                         <section class="col col-sm-8">
                                             <label class="label">Logradouro</label>
                                             <label class="input">
-                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede')}}">
+                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{ old('dc_logradouro_ede') }}">
                                             </label>
                                         </section>
                                         <section class="col col-2">
@@ -418,7 +418,14 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-
+        flag = $('#fl_nota_fiscal_cli').is(':checked');
+            if(flag){
+                $('.box-desconto').css('display','block');
+                $('#taxa_imposto_cli').focus();
+            }
+            else{
+                $('.box-desconto').css('display','none');
+            }
 
         $("#fl_nota_fiscal_cli").click(function(){
 

@@ -159,6 +159,40 @@ class ProcessoController extends Controller
 
     }
 
+    public function finalizarProcesso(Request $request)
+    {
+
+        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
+        $cliente = Cliente::where('cd_cliente_cli',$processo->cd_cliente_cli)->first();
+        $conta = Conta::where('cd_conta_con',$processo->cd_conta_con)->first();
+        
+        $processo->cd_status_processo_stp = $request->status;
+
+        if($processo->save()){
+
+            if($request->fl_envio_arquivo){
+                //notificarCliente
+                $emails = explode(",", $cliente->entidade->getEmailsNotificacao());
+
+                for ($i=0; $i < count($emails); $i++) { 
+                    
+                    $processo->anexos = ($request->lista_arquivos) ? $request->lista_arquivos : array();
+                    $processo->email = $emails[$i];
+                    $processo->conta = $conta->nm_razao_social_con;
+                    $processo->notificarCliente($processo);
+
+                }
+            }
+            
+            Flash::success('Situação atualizada com sucesso');
+        }
+        else
+            Flash::success('Erro ao atualizar situação do processo');
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+
+    }
+
     public function relatorio($id){
 
         $id = \Crypt::decrypt($id);
@@ -855,4 +889,37 @@ class ProcessoController extends Controller
         return Redirect::route('msg-filiacao');
 
     }
+
+    public function atualizaAnexosEnviados($id)
+    {
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+
+        if($processo->fl_envio_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
+
+        $processo->fl_envio_anexos_pro = $flag;
+        
+        if($processo->save())
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+    }
+
+    public function atualizaAnexosRecebidos($id)
+    {
+
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+
+        if($processo->fl_recebimento_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
+
+        $processo->fl_recebimento_anexos_pro = $flag;
+        
+        if($processo->save())
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+
+    }
+
 }

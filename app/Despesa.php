@@ -20,7 +20,8 @@ class Despesa extends Model
     						'dt_pagamento_des',
     						'dt_vencimento_des',
     						'vl_valor_des',
-    						'obs_des'
+    						'obs_des',
+                            'anexo_des'
     					  ];
 
     public $timestamps = true;

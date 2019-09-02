@@ -9,6 +9,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CorrespondenteProcessoNotification;
 use App\Notifications\ContaProcessoNotification;
 use App\Notifications\MensagemProcessoNotification;
+use App\Notifications\ClienteProcessoNotification;
 
 
 class Processo extends Model implements AuditableContract
@@ -40,7 +41,9 @@ class Processo extends Model implements AuditableContract
     						'nm_reu_pro',
     						'nu_processo_pro',
                             'nu_acompanhamento_pro',
-                            'cd_status_processo_stp'
+                            'cd_status_processo_stp',
+                            'fl_envio_anexos_pro',
+                            'fl_recebimento_anexos_pro'
     					  ];
 
     public $timestamps = true;
@@ -110,8 +113,24 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ContaProcessoNotification($processo));
     }
 
+    public function notificarCliente($processo)
+    {
+        $this->notify(new ClienteProcessoNotification($processo));
+    }
+
     public function notificarNovaMensagem($processo)
     {
         $this->notify(new MensagemProcessoNotification($processo));
+    }
+
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($processo)
+        {
+            $processo->honorario()->first()->delete();
+        });
+
     }
 }

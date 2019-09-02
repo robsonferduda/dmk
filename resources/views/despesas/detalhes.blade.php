@@ -41,7 +41,7 @@
                                 <p>
                                     <ul class="list-unstyled">
                                         <li>
-                                            <strong>Categoria: </strong> {{ $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad }}
+                                            <strong>Categoria: </strong> {{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informada'}}
                                         </li>
                                         <li>
                                             <strong>Tipo de Despesa: </strong> {{ $despesa->tipo->nm_tipo_despesa_tds }}
@@ -57,6 +57,14 @@
                                         </li>
                                         <li>
                                             <strong>Data de Pagamento: </strong> {{ date('d/m/Y', strtotime($despesa->dt_pagamento_des)) }}
+                                        </li>
+                                        <li>
+                                            <strong>Anexo: </strong> 
+                                            @if($despesa->anexo_des)
+                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}"><i class="fa fa-file"></i> Baixar</a>
+                                            @else
+                                                <span>Não informado</span>
+                                            @endif
                                         </li>
                                     </ul>
                                 </p>

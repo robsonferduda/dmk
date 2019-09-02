@@ -102,6 +102,7 @@ class CorrespondenteController extends Controller
         $cidade = $request->get('cd_cidade_cde');
         $nome = $request->get('nome');
         $identificacao = $request->get('identificacao');
+        $categoria = $request->get('cd_categoria_correspondente_cac');
 
         $correspondentes = ContaCorrespondente::with('entidade')
                                                 ->with('correspondente')
@@ -119,6 +120,10 @@ class CorrespondenteController extends Controller
 
                                                 ->when(!empty($nome), function($sql) use($nome){
                                                     $sql->where('nm_conta_correspondente_ccr','ilike',"%$nome%");
+                                                })
+
+                                                ->when(!empty($categoria), function($sql) use($categoria){
+                                                    $sql->where('cd_categoria_correspondente_cac',$categoria);
                                                 })
                                               
                                                 ->when(!empty($identificacao), function($join) use($identificacao){
@@ -1009,6 +1014,7 @@ class CorrespondenteController extends Controller
 
         $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
         $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+        $conta_correspondente->cd_categoria_correspondente_cac = $request->cd_categoria_correspondente_cac;
         $conta_correspondente->obs_ccr = $request->obs_ccr;
 
         if($conta_correspondente->saveOrFail()){
