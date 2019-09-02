@@ -25,7 +25,8 @@ class Cliente extends Model implements AuditableContract
         'taxa_imposto_cli',
         'dt_inicial_cli',
         'observacao_cli',
-        'cod_externo_cli'
+        'cod_externo_cli',
+        'ds_site_cli'
     ];
 
     public $timestamps = true;

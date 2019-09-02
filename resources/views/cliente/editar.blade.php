@@ -109,6 +109,15 @@
                                         </section>
                                     </div>  
 
+                                    <div class="row">
+                                        <section class="col col-6">
+                                            <label class="label">Site (Digite a URL)</label>
+                                            <label class="input">
+                                                <input type="text" name="ds_site_cli" id="ds_site_cli" value="{{ ($cliente->ds_site_cli) ? $cliente->ds_site_cli : old('ds_site_cli') }}">
+                                            </label>
+                                        </section>
+                                    </div>
+
                                     <section>
                                         <div class="onoffswitch-container" style="margin-left: 0px;">
                                             <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 

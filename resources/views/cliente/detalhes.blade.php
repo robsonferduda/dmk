@@ -51,7 +51,7 @@
                                                     <strong>Nome Fantasia: </strong> {{ $cliente->nm_fantasia_cli }}
                                                 </li>
                                                 <li>
-                                                    <strong>Tipo: </strong> {{ $cliente->tipoPessoa()->first()->nm_tipo_pessoa_tpp }}
+                                                    <strong>Tipo: </strong> {{ ($cliente->tipoPessoa()->first()) ? $cliente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não Informado' }}
                                                 </li>
                                                 @if($cliente->entidade->cpf()->first())
                                                     <li>
@@ -73,6 +73,9 @@
                                                 </li>
                                                 <li>
                                                     <strong>Inscrição Estadual: </strong> {{ $cliente->inscricao_estadual_cli }}
+                                                </li>
+                                                <li>
+                                                    <strong>Site: </strong> {{ ($cliente->ds_site_cli) ? $cliente->ds_site_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Pagamento com Nota Fiscal: </strong> {!! ($cliente->fl_nota_fiscal_cli == "S") ? '<span class="label label-success">SIM</span>' : '<span class="label label-danger">NÃO</span>' !!}
