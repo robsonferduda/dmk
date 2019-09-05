@@ -561,6 +561,22 @@ class ClienteController extends Controller
 
             }
 
+            //Inserção de emails
+            if(!empty($request->emails) && count(json_decode($request->emails)) > 0){
+
+                $emails = json_decode($request->emails);
+                for($i = 0; $i < count($emails); $i++) {
+
+                    $email = EnderecoEletronico::create([
+                        'cd_entidade_ete'                 => $entidade->cd_entidade_ete,
+                        'cd_conta_con'                    => $cd_conta_con, 
+                        'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
+                        'dc_endereco_eletronico_ede'      => $emails[$i]->email
+                    ]);
+
+                }
+            }
+
             if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
 
                 $fones = json_decode($request->telefones);
