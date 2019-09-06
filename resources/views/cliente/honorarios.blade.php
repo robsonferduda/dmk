@@ -239,7 +239,9 @@
             var servico = $(this).data('servico');
             var tipo = $(this).data('tipo');
 
-            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
+            editable.input.$input.closest('.control-group')
+                                 .find('.editable-buttons')
+                                 .append('<button type="button" title="Repetir valor para todas as cidades" class="btn btn-warning btn-sm btn-honorario atualizaValores" data-tipo="cidade" data-cidade="'+cidade+'" data-servico="'+servico+'"><strong class="icon-honorario">C</strong></button><button type="button" title="Repetir valor para todos os serviços" class="btn btn-info btn-sm btn-honorario atualizaValores" data-tipo="servico" data-cidade="'+cidade+'" data-servico="'+servico+'"><strong class="icon-honorario">S</strong></button><button type="button" title="Repetir valor para toda a tabela" class="btn btn-success btn-sm btn-honorario atualizaValores" data-tipo="tabela" data-cidade="'+cidade+'" data-servico="'+servico+'"><strong class="icon-honorario">T</strong></button>');
 
         });
 
@@ -249,8 +251,8 @@
 
         $(document).on("click", ".atualizaValores", function () {
 
-            var cidade = $(this).closest("ul").data("cidade");
-            var servico = $(this).closest("ul").data("servico");
+            var cidade = $(this).data("cidade");
+            var servico = $(this).data("servico");
             var tipo = $(this).data("tipo");
             var valor = $(".taxa-honorario").val().replace(".", ",");
 
