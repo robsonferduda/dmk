@@ -90,7 +90,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a title="Honorários" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a></li>
                                                     <li><a title="Contatos" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i> Contatos</a></li>
-                                                    <li><a title="Excluir" data-url="clientes/" class="excluir_registro" href=""><i class="fa fa-trash"></i> Excluir</a></li>
+                                                    <li><a title="Excluir" data-url="clientes/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div>
                                         </td>
