@@ -426,7 +426,8 @@ class CorrespondenteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                $lista_servicos[] = $honorario->tipoServico;
+                if($honorario->tipoServico)
+                    $lista_servicos[] = $honorario->tipoServico;
             }
         } 
 
