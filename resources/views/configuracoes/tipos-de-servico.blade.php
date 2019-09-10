@@ -44,7 +44,7 @@
                                         <td data-id="{{ $tipo->cd_tipo_servico_tse }}" data-nome="{{ $tipo->nm_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</td>
                                         <td>
                                             <button class="btn btn-primary btn-xs editar_tipo_servico" style="width: 48%;" href=""><i class="fa fa-edit"></i> Editar</button>
-                                            <button data-url="../tipos-de-servico/" class="btn btn-danger btn-xs excluir_registro" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
+                                            <button data-url="../tipos-de-servico/" class="btn btn-danger btn-xs excluir_registro_servico" style="width: 48%;" href=""><i class="fa fa-trash"></i> Excluir</button>
                                         </td>
                                     </tr>
                                 @endforeach

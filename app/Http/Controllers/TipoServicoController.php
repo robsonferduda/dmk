@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Area;
+use App\Conta;
 use App\TipoServico;
-use App\Http\Requests\TipoServicoRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Session;
+use App\TaxaHonorario;
+use App\ContaCorrespondente;
 use Laracasts\Flash\Flash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
+use App\Http\Requests\TipoServicoRequest;
 
 class TipoServicoController extends Controller
 {
@@ -101,5 +104,33 @@ class TipoServicoController extends Controller
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+    }
+
+    public function consultar($id)
+    {
+        $tipo = TipoServico::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $correspondentes = array();
+         //Carrega os serviços
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->cdContaCon)
+                                    ->select('cd_entidade_ete')
+                                    ->where('cd_tipo_servico_tse',$id)
+                                    ->groupBy('cd_entidade_ete')
+                                    ->get(); 
+
+        foreach ($honorarios as $h) {
+
+            $cc = ContaCorrespondente::where('cd_entidade_ete',$h->cd_entidade_ete)->first();
+            
+            if($cc){
+
+                $correspondentes[] = $cc->nm_conta_correspondente_ccr;
+            }
+
+        }
+
+        $retorno = array('dados' => $correspondentes, 'total' => count($correspondentes));
+        
+        return Response::json($retorno);
+
     }
 }

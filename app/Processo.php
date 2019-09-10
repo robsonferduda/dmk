@@ -43,10 +43,16 @@ class Processo extends Model implements AuditableContract
                             'nu_acompanhamento_pro',
                             'cd_status_processo_stp',
                             'fl_envio_anexos_pro',
-                            'fl_recebimento_anexos_pro'
+                            'fl_recebimento_anexos_pro',
+                            'cd_responsavel_pro'
     					  ];
 
     public $timestamps = true;
+
+    public function responsavel()
+    {
+        return $this->hasOne('App\User','id', 'cd_responsavel_pro');
+    }
 
     public function anexos()
     {

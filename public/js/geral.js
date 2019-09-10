@@ -386,8 +386,45 @@ $(document).ready(function() {
 
 	$(".excluir_registro").click(function(){
 
+		$(".msg_extra").html("");
 		var id  = $(this).closest('tr').find('td[data-id]').data('id');
 		var url = $(this).data('url');
+
+		if(!id){
+			id = $(this).data('id');
+		}
+
+		$("#modal_exclusao #url").val(url);
+		$("#modal_exclusao #id_exclusao").val(id);
+		$("#modal_exclusao").modal('show');
+	});
+
+	$(".excluir_registro_servico").click(function(){
+
+		var id  = $(this).closest('tr').find('td[data-id]').data('id');
+		var url = $(this).data('url');
+		$(".msg_extra").html("");
+
+		$.ajax(
+            {
+               url: "../configuracoes/tipos-de-servico/consulta/"+id,
+               type: 'GET',
+               dataType: "JSON",
+            success: function(response)
+            {              
+           		
+           		if(response.total > 0){
+
+           			var msg = "<strong>Atenção</strong>!<br/> O registro de serviço possui valores de honorários cadastrados para <strong>"+response.total+"</strong> correspondentes. <br/> Com a exclusão, os dados serão perdidos";
+           			$(".msg_extra").html(msg);
+           			
+           		}
+
+            },
+            error: function(response)
+            {
+            }
+        });
 
 		if(!id){
 			id = $(this).data('id');

@@ -594,6 +594,22 @@ class UsuarioController extends Controller
 
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->get('term');
+      
+        $resultados = User::where('name', 'ilike', '%'. $search. '%')->where('cd_conta_con',$this->cdContaCon)->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+           $results[] = [ 'id' => $ret->id, 'value' => $ret->name ];
+        }
+ 
+        return response()->json($results);
+            
+    } 
+
     public function alterarSenha(UsuarioSenhaRequest $request,$id){
 
         DB::beginTransaction();
