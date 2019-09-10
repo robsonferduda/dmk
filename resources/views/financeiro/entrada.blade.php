@@ -115,17 +115,23 @@
         </article>
 
     </div>
-    <div id="dialog_simple" title="Dialog Simple Title">
+    <div id="dialog_simple" title="">
         <h5>
             Essa ação irá alterar todos os itens em tela.
         </h5>
         <h5 id="valor_total_operacao" ></h5>
+         {!! Form::open(['id' => 'form-baixa']) !!}
          <div class="row">
             <section class="col col-md-3">
                    <label class="label label-black">Data de recebimento</label><br />
-                   <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___">        
+                   <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" required="">        
+            </section>
+             <section class="col col-md-4">
+                   <label class="label label-black">Nota Fiscal</label><br />
+                   <input type="text" id='notaFiscal' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" required="">        
             </section>
         </div>
+        {!! Form::close() !!}     
     </div>
 </div>
 @endsection
@@ -214,24 +220,29 @@
                     "class" : "btn btn-success",
                     click : function() {
 
-                        var ids = Array();
-                        if ($(".seleciona-todos").is(':checked') ) {                
-                            var checked = 'S';                
-                            $(".check-pagamento-cliente").each(function(index,element){
-                                ids[index] = $(this).data('id');            
-                            });   
-                               
-                        }else {
-                            var checked = 'N';   
-                            $(".check-pagamento-cliente").each(function(index,element){
-                                 ids[index] = $(this).data('id');    
-                            });
-                        }
+                        $('#form-baixa').submit(function () {
+                            alert('teste');
+                            if($(this).valid()) {
+                                var ids = Array();
+                                if ($(".seleciona-todos").is(':checked') ) {                
+                                    var checked = 'S';                
+                                    $(".check-pagamento-cliente").each(function(index,element){
+                                        ids[index] = $(this).data('id');            
+                                    });   
+                                       
+                                }else {
+                                    var checked = 'N';   
+                                    $(".check-pagamento-cliente").each(function(index,element){
+                                         ids[index] = $(this).data('id');    
+                                    });
+                                }
 
-                        if(ids.length > 0 ){
-                            verificaTodos(ids,checked); 
-                        }
-                        $(this).dialog("close");
+                                if(ids.length > 0 ){
+                                    verificaTodos(ids,checked); 
+                                }
+                                $(this).dialog("close");
+                            }
+                        });                        
                     }
                 }, {
                     html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
@@ -248,9 +259,10 @@
                 
                 total = 0;            
                 $(".check-pagamento-cliente").each(function(index,element){
-                    total += parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));            
+                    total += parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));       
+
                 }); 
-                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toString().replace('.',','));  
+                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));  
                 
             }
 
@@ -290,6 +302,10 @@
         });
 
         var verificaTodos = function(ids,checked){
+
+            var data = $("#dtBaixaCliente").val();
+
+            alert(data);
 
             $.ajax({
                 type:'POST',
@@ -344,6 +360,28 @@
                 }
             });
         }
+
+        var validobjEdit = $("#form-baixa").validate({
+
+                    
+                    rules : {
+                        
+                        dt_baixa_cliente_pth:{  
+                            required: true,                      
+                            //dateFormat: true,
+                            //dateSize: true
+                        },
+                       
+                    },
+                    // Messages for form validation
+                    messages : {
+                        dt_baixa_cliente_pth : {
+                            required : 'Campo Título é Obrigatório'
+                        },  
+                        
+                    },
+
+        });
 
     });
 </script>
