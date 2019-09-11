@@ -119,16 +119,6 @@ class FinanceiroController extends Controller
         }))->whereHas('processo' , function($query){
             $query->has('correspondente');
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');            
-            $query->with(array('correspondente' => function($query){
-                $query->select('cd_conta_con');
-                $query->with(array('contaCorrespondente' => function($query){
-                    $query->select('nm_conta_correspondente_ccr','cd_correspondente_cor');
-                }));
-            }));
-            $query->with(array('cliente' => function($query){
-                $query->select('cd_cliente_cli','nm_razao_social_cli');
-                $query->where('cd_conta_con', $this->conta);
-            }));
         });
 
         if(!empty($dtInicio) && !empty($dtFim)){
@@ -152,9 +142,9 @@ class FinanceiroController extends Controller
         }
 
         $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
-
+        //dd($saidas);
         \Session::put('flBuscar',false);
-
+        //dd($saidas[0]->processo->processoDespesa);
         return view('financeiro/saida',['saidas' => $saidas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim,'correspondente' => $correspondente, 'nmCorrespondente' => $nmCorrespondente]);
     }
 
@@ -265,6 +255,13 @@ class FinanceiroController extends Controller
         foreach($processosTaxaHonorario as $processoTaxaHonorario){
             
             $processoTaxaHonorario->fl_pago_correspondente_pth = $request->checked;
+
+             if(!empty($request->data)){
+                $processoTaxaHonorario->dt_baixa_correspondente_pth = date('Y-m-d',strtotime(str_replace('/','-',$request->data)));
+            }else{
+                $processoTaxaHonorario->dt_baixa_correspondente_pth = null;
+            }
+
             $response = $processoTaxaHonorario->saveOrFail();
 
             if(!$response){

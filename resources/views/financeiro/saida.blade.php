@@ -46,7 +46,7 @@
                         </section>
                          <section class="col col-md-2">
                             <br />                                        
-                            <label class="label label-black">Saídas verificadas?</label>  
+                            <label class="label label-black">Incluir saídas verificadas?</label>  
                             <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
                         </section> 
                         <section class="col col-md-2">
@@ -72,7 +72,9 @@
                                     <th>Prazo Fatal</th>
                                     <th>Tipo de Serviço</th>    
                                     <th>Correspondente</th>
-                                    <th>Valor</th>  
+                                    <th style="min-width:8%">Honorário</th>                                    
+                                    <th style="min-width:8%">Nota F. %</th>
+                                    <th style="min-width:8%">Total</th>                                      
                                     <th><input type="checkbox" class="seleciona-todos" ></th> 
                                 </tr>
                             </thead>
@@ -91,7 +93,22 @@
                                             {{ $saida->processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }} 
                                         @endif               
                                     </td>
-                                    <td>{{ $saida->vl_taxa_honorario_correspondente_pth }}</td>
+                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth,2,',',' ') }}</td>
+
+                                    @php
+
+                                        $totalDespesas = 0;
+                                        foreach($saida->processo->processoDespesa as $despesa){
+
+                                            if($despesa->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE && $despesa->fl_despesa_reembolsavel_pde == 'S'){
+                                                $totalDespesas += $despesa->vl_processo_despesa_pde;
+                                            
+                                            }
+                                        }
+
+                                    @endphp
+                                    <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth-$totalDespesas,2,',',' ')}}</td>
                                     <td style="text-align: center;"><input type="checkbox" class="check-pagamento-correspondente" data-id='{{ $saida->cd_processo_taxa_honorario_pth }}' {{ ($saida->fl_pago_correspondente_pth == 'N') ? '' : 'checked' }}  ></td>                              
                                 </tr>
                             @endforeach
@@ -103,10 +120,34 @@
         </article>
 
     </div>
-    <div id="dialog_simple" title="Dialog Simple Title">
-        <p>
+        <div id="dialog_simple" title="">
+        <h5>
             Essa ação irá alterar todos os itens em tela.
-        </p>
+        </h5>
+        <h5 id="valor_total_operacao" ></h5>
+        <form id="baixa">
+            <div class="row">
+                <section class="col col-md-3">
+                       <label class="label label-black">Data de recebimento</label><br />
+                       <input type="text" id='dtBaixaCorrespondente' class='form-control dt_solicitacao_pro' name="dt_baixa_correspondente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                       <span style="display: none" ></span>
+                </section>
+            </div>
+        </form>
+    </div>
+    <div id="dialog_simple_single" title="">
+        <h5>
+            Essa ação irá o item selecionado.
+        </h5>
+        <form id="baixa_single">
+            <div class="row">
+                <section class="col col-md-3">
+                       <label class="label label-black">Data de recebimento</label><br />
+                       <input type="text" id='dtBaixaCorrespondente_single' class='form-control dt_solicitacao_pro' name="dt_baixa_correspondente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                       <span style="display: none" ></span>
+                </section>            
+            </div>
+        </form>
     </div>
 </div>
 @endsection
@@ -173,47 +214,52 @@
                     }
         });
 
-         $('#dialog_simple').dialog({
+        $('#dialog_simple').dialog({
                 autoOpen : false,
                 width : 600,
                 resizable : false,
+                closeOnEscape: false,
                 modal : true,
-                title : "Atenção!",
+                title : "Você deseja continuar essa operação?",
+                beforeClose: function() {
+
+                    if ($(".seleciona-todos").is(':checked') ) {                
+                        $(".seleciona-todos").prop('checked',false);
+                    }else {
+                        $(".seleciona-todos").prop('checked',true);
+                    }
+                },
                 buttons : [{
                     html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
                     "class" : "btn btn-success",
                     click : function() {
 
-                        var ids = Array();
-                        if ($(".seleciona-todos").is(':checked') ) {                
-                            var checked = 'S';                
-                            $(".check-pagamento-correspondente").each(function(index,element){
-                                ids[index] = $(this).data('id');            
-                            });   
-                               
-                        }else {
-                            var checked = 'N';   
-                            $(".check-pagamento-correspondente").each(function(index,element){
-                                 ids[index] = $(this).data('id');    
-                            });
-                        }
+                        if($("#baixa").valid()){
 
-                        if(ids.length > 0 ){
-                            verificaTodos(ids,checked); 
+                            var ids = Array();
+                            if ($(".seleciona-todos").is(':checked') ) {                
+                                var checked = 'S';                
+                                $(".check-pagamento-correspondente").each(function(index,element){
+                                    ids[index] = $(this).data('id');            
+                                });   
+                                   
+                            }else {
+                                var checked = 'N';   
+                                $(".check-pagamento-correspondente").each(function(index,element){
+                                     ids[index] = $(this).data('id');    
+                                });
+                            }
+
+                            if(ids.length > 0 ){
+                                verificaTodos(ids,checked); 
+                            }
+                            $(this).dialog("close");
                         }
-                        $(this).dialog("close");
                     }
                 }, {
                     html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
                     "class" : "btn btn-danger",
                     click : function() {
-
-                        if ($(".seleciona-todos").is(':checked') ) {                
-                            $(".seleciona-todos").prop('checked',false);
-                        }else {
-                            $(".seleciona-todos").prop('checked',true);
-                        }
-
                         $(this).dialog("close");
                     }
                 }]
@@ -221,6 +267,18 @@
 
         $(".seleciona-todos").click(function(){
 
+           if ($(".seleciona-todos").is(':checked') ) {                
+                
+                total = 0;            
+                $(".check-pagamento-correspondente").each(function(index,element){
+                    total += parseFloat($(this).parent().parent().children().eq(6).text().replace('R$ ','').replace(',','.'));    
+
+                }); 
+                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));  
+                
+            }
+
+            $("#dtBaixaCorrespondente").val('');
             $('#dialog_simple').dialog('open');
             
         });
@@ -258,10 +316,12 @@
 
         var verificaTodos = function(ids,checked){
 
+            var data = $("#dtBaixaCorrespondente").val();
+            
             $.ajax({
                 type:'POST',
                 url: "{{ url('financeiro/correspondente/baixa') }}",
-                data:{ids:ids,checked:checked},
+                data:{ids:ids,checked:checked,data:data},
                 success:function(data){
                     ret = JSON.parse(data);        
                     
@@ -311,6 +371,27 @@
                 }
             });
         }
+
+        var validobj = $("#baixa").validate({
+
+            rules : {
+                    dt_baixa_correspondente_pth : {
+                        required: true,
+                        dateFormat: true,
+                    }, 
+               },
+                // Messages for form validation
+            messages : {
+                        dt_baixa_correspondente_pth : {
+                            required : 'Campo data é obrigatório'
+                        },                      
+                },
+            errorPlacement: function(error, element) 
+            {
+                error.insertAfter( element );
+            }
+
+        });
 
     });
 </script>

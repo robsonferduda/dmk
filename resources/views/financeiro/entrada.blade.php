@@ -327,9 +327,9 @@
 
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
            
-            if ($(this).is(':checked') ) {
-                $("#dtBaixaCliente").val('');
-                $("#notaFiscal").val('');
+            $("#dtBaixaCliente").val('');
+            $("#notaFiscal").val('');
+            if ($(this).is(':checked') ) {             
                 $('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
             }else {
                 verifica($(this));
