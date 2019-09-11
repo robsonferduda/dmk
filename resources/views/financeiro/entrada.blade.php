@@ -120,18 +120,37 @@
             Essa ação irá alterar todos os itens em tela.
         </h5>
         <h5 id="valor_total_operacao" ></h5>
-         {!! Form::open(['id' => 'form-baixa']) !!}
-         <div class="row">
-            <section class="col col-md-3">
-                   <label class="label label-black">Data de recebimento</label><br />
-                   <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" required="">        
-            </section>
-             <section class="col col-md-4">
-                   <label class="label label-black">Nota Fiscal</label><br />
-                   <input type="text" id='notaFiscal' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" required="">        
-            </section>
-        </div>
-        {!! Form::close() !!}     
+        <form id="baixa">
+            <div class="row">
+                <section class="col col-md-3">
+                       <label class="label label-black">Data de recebimento</label><br />
+                       <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                       <span style="display: none" ></span>
+                </section>
+                <section class="col col-md-4">
+                       <label class="label label-black">Nota Fiscal</label><br />
+                       <input type="text" id='notaFiscal' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" >        
+                </section>
+            </div>
+        </form>
+    </div>
+    <div id="dialog_simple_single" title="">
+        <h5>
+            Essa ação irá o item selecionado.
+        </h5>
+        <form id="baixa_single">
+            <div class="row">
+                <section class="col col-md-3">
+                       <label class="label label-black">Data de recebimento</label><br />
+                       <input type="text" id='dtBaixaCliente_single' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                       <span style="display: none" ></span>
+                </section>
+                <section class="col col-md-4">
+                       <label class="label label-black">Nota Fiscal</label><br />
+                       <input type="text" id='notaFiscal_single' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" >        
+                </section>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
@@ -220,29 +239,63 @@
                     "class" : "btn btn-success",
                     click : function() {
 
-                        $('#form-baixa').submit(function () {
-                            alert('teste');
-                            if($(this).valid()) {
-                                var ids = Array();
-                                if ($(".seleciona-todos").is(':checked') ) {                
-                                    var checked = 'S';                
-                                    $(".check-pagamento-cliente").each(function(index,element){
-                                        ids[index] = $(this).data('id');            
-                                    });   
-                                       
-                                }else {
-                                    var checked = 'N';   
-                                    $(".check-pagamento-cliente").each(function(index,element){
-                                         ids[index] = $(this).data('id');    
-                                    });
-                                }
+                        if($("#baixa").valid()){
 
-                                if(ids.length > 0 ){
-                                    verificaTodos(ids,checked); 
-                                }
-                                $(this).dialog("close");
+                            var ids = Array();
+                            if ($(".seleciona-todos").is(':checked') ) {                
+                                var checked = 'S';                
+                                $(".check-pagamento-cliente").each(function(index,element){
+                                    ids[index] = $(this).data('id');            
+                                });   
+                                   
+                            }else {
+                                var checked = 'N';   
+                                $(".check-pagamento-cliente").each(function(index,element){
+                                     ids[index] = $(this).data('id');    
+                                });
                             }
-                        });                        
+
+                            if(ids.length > 0 ){
+                                verificaTodos(ids,checked); 
+                            }
+                            $(this).dialog("close");
+                        }
+                    }
+                }, {
+                    html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
+                    "class" : "btn btn-danger",
+                    click : function() {
+                        $(this).dialog("close");
+                    }
+                }]
+        });
+
+        $('#dialog_simple_single').dialog({
+                autoOpen : false,
+                width : 600,
+                resizable : false,
+                closeOnEscape: false,
+                modal : true,
+                title : "Você deseja continuar essa operação?",
+                beforeClose: function() {
+
+                    if ($(".check-pagamento-cliente").is(':checked') ) {                
+                        $(".check-pagamento-cliente").prop('checked',false);
+                    }else {
+                        $(".check-pagamento-cliente").prop('checked',true);
+                    }
+                },
+                buttons : [{
+                    html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
+                    "class" : "btn btn-success",
+                    click : function() {
+
+                        if($("#baixa_single").valid()){
+                            
+                            verifica($(this).data('checkbox')); 
+                            
+                            $(this).dialog("close");
+                        }
                     }
                 }, {
                     html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
@@ -266,12 +319,22 @@
                 
             }
 
+            $("#dtBaixaCliente").val('');
+            $("#notaFiscal").val('');
             $('#dialog_simple').dialog('open');
             
         });
 
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
-           verifica($(this));
+           
+            if ($(this).is(':checked') ) {
+                $("#dtBaixaCliente").val('');
+                $("#notaFiscal").val('');
+                $('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
+            }else {
+                verifica($(this));
+            }
+           
         });
 
         $( "#cliente_auto_complete" ).focusout(function(){
@@ -304,13 +367,12 @@
         var verificaTodos = function(ids,checked){
 
             var data = $("#dtBaixaCliente").val();
-
-            alert(data);
+            var nota = $("#notaFiscal").val();
 
             $.ajax({
                 type:'POST',
                 url: "{{ url('financeiro/cliente/baixa') }}",
-                data:{ids:ids,checked:checked},
+                data:{ids:ids,checked:checked,data:data,nota:nota},
                 success:function(data){
                     ret = JSON.parse(data);        
                     
@@ -335,6 +397,9 @@
     
         var verifica = function(checkbox){
 
+            var data = $("#dtBaixaCliente_single").val();
+            var nota = $("#notaFiscal_single").val();
+
             var input = checkbox;
             var id = checkbox.data('id');
             if (checkbox.is(':checked') ) {
@@ -346,40 +411,70 @@
             $.ajax({
                 type:'POST',
                 url: "{{ url('financeiro/cliente/baixa') }}",
-                data:{ids:[id],checked:checked},
+                data:{ids:[id],checked:checked,data:data,nota:nota},
                 success:function(data){
                     ret = JSON.parse(data);        
                     
                     if(ret === true){
                         if(checked == 'S'){
                             input.closest('tr').css('background-color','#8ec9bb');
+                            input.prop('checked',true);
                         }else{
                             input.closest('tr').css('background-color','#fb8e7e');
                         }
                     }                                               
                 }
             });
+
+            var data = $("#dtBaixaCliente_single").val();
+            var nota = $("#notaFiscal_single").val();
         }
 
-        var validobjEdit = $("#form-baixa").validate({
+        $.validator.addMethod("dateFormat",
+                function(value, element) {
+                    return value.match(/^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/);
+                },
+                "Data inválida.");
 
-                    
-                    rules : {
-                        
-                        dt_baixa_cliente_pth:{  
-                            required: true,                      
-                            //dateFormat: true,
-                            //dateSize: true
-                        },
-                       
-                    },
-                    // Messages for form validation
-                    messages : {
+        var validobj = $("#baixa").validate({
+
+            rules : {
+                    dt_baixa_cliente_pth : {
+                        required: true,
+                        dateFormat: true,
+                    }, 
+               },
+                // Messages for form validation
+            messages : {
                         dt_baixa_cliente_pth : {
-                            required : 'Campo Título é Obrigatório'
-                        },  
-                        
-                    },
+                            required : 'Campo data é obrigatório'
+                        },                      
+                },
+            errorPlacement: function(error, element) 
+            {
+                error.insertAfter( element );
+            }
+
+        });
+
+        var validobj = $("#baixa_single").validate({
+
+            rules : {
+                    dt_baixa_cliente_pth : {
+                        required: true,
+                        dateFormat: true,
+                    }, 
+               },
+                // Messages for form validation
+            messages : {
+                        dt_baixa_cliente_pth : {
+                            required : 'Campo data é obrigatório'
+                        },                      
+                },
+            errorPlacement: function(error, element) 
+            {
+                error.insertAfter( element );
+            }
 
         });
 
