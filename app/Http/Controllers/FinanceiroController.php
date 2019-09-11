@@ -230,6 +230,20 @@ class FinanceiroController extends Controller
         foreach($processosTaxaHonorario as $processoTaxaHonorario){
             
             $processoTaxaHonorario->fl_pago_cliente_pth = $request->checked;
+            
+            if(!empty($request->data)){
+                $processoTaxaHonorario->dt_baixa_cliente_pth = date('Y-m-d',strtotime(str_replace('/','-',$request->data)));
+            }else{
+                $processoTaxaHonorario->dt_baixa_cliente_pth = null;
+            }
+
+            if(!empty($request->nota)){
+                $processoTaxaHonorario->nu_cliente_nota_fiscal_pth = $request->nota;
+            }else{
+                $processoTaxaHonorario->nu_cliente_nota_fiscal_pth = null;   
+            }
+
+
             $response = $processoTaxaHonorario->saveOrFail();
 
             if(!$response){
