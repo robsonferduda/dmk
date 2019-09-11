@@ -460,11 +460,20 @@ $(document).ready(function() {
 	$(".remover_registro").click(function(){
 
 		var id  = $(this).data('id');
-		var url = $(this).data('url');
 
 		$("#modal_cancela_correspondente #url").val(url);
-		$("#modal_cancela_correspondente #id_correspondente").val(id);
+		$("#modal_cancela_correspondente #id").val(id);
 		$("#modal_cancela_correspondente").modal('show');
+	});
+
+	$(".remover_cliente").click(function(){
+
+		var id  = $(this).data('id');
+		var url = $("#modal_excluir_cliente #frm_excluir_cliente").attr('action');
+		var url_final = url+'/'+id;
+
+		$("#modal_excluir_cliente #frm_excluir_cliente").attr('action', url_final);
+		$("#modal_excluir_cliente").modal('show');
 	});
 
 	$(".editar_area").click(function(){

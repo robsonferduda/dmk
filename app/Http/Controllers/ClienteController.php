@@ -809,13 +809,14 @@ class ClienteController extends Controller
     public function destroy($id)
     {
 
-        $cliente = Cliente::where('cd_cliente_cli',$id)->first();
+        $cliente = Cliente::where('cd_conta_con',$this->conta)->where('cd_cliente_cli',$id)->first();
 
         if($cliente->delete())
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        else
-            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
-        
+            Flash::success('Cliente excluído com sucesso');
+        else{
+            Flash::error('Erro ao excluir cliente');
+        }    
+        return redirect('clientes');  
     }
 
     public function search(Request $request)

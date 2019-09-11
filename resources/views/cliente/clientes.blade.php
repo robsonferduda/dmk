@@ -90,7 +90,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a title="Honorários" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a></li>
                                                     <li><a title="Contatos" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i> Contatos</a></li>
-                                                    <li><a title="Excluir" data-url="clientes/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
+                                                    <li><a title="Excluir" data-id="{{ $cliente->cd_cliente_cli }}" class="remover_cliente"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -107,4 +107,31 @@
         </article>
     </div>
 </div>
+ <div class="modal fade modal_top_alto" id="modal_excluir_cliente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-times"></i> <strong> Excluir Cliente</strong></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 center">
+                                <form id="frm_excluir_cliente" class="form-inline" action="{{ url('clientes') }}" method="POST">
+                                    {!! method_field('DELETE') !!}
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <h4>Essa operação irá excluir o registro definitivamente.</h4>
+                                    <h4>Deseja continuar?</h4>
+                                
+                                    <div class="center marginTop20">
+                                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection

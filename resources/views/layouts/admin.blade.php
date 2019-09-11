@@ -498,7 +498,7 @@
                             <div class="col-md-12 center">
                                 {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/remover', 'class' => 'form-inline']) !!}
                                     <p style="font-size: 14px;">
-                                        Essa operação irá remover o corresponde da sua lista de correspondentes.
+                                        Essa operação irá remover o corresponde da sua lista de correspondentes, mas o mesmo poderá ser adicionado novamente, se desejar.
                                     </p>
                                     <h6>Confirma a remoção na sua lista de Correspondentes?</h6>
                                     <input type="hidden" name="id" id="id_correspondente">
