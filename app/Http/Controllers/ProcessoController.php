@@ -681,7 +681,8 @@ class ProcessoController extends Controller
 
         $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
 
-        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+
 
         if(!empty($processo->cliente->nm_fantasia_cli)){
                 $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';

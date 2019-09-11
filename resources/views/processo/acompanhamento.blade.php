@@ -163,7 +163,7 @@
                                         </td>
                                                                    
                                        
-                                         <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
+                                         <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
 
                                          </td>
                                         <td>

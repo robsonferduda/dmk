@@ -449,6 +449,7 @@
                         <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
                     </div>
                     <div class="modal-body" style="text-align: center;">
+                        <h4 class="msg_extra text-danger"></h4>
                         <h4>Essa operação irá excluir o registro definitivamente.</h4>
                         <h4>Deseja continuar?</h4>
                         <input type="hidden" name="id" id="id_exclusao">
@@ -519,7 +520,8 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-         {!!  Minify::javascript(asset('js/geral.js'))->withFullUrl() !!}
+        <script src="{{ asset('js/geral.js') }}"></script>
+        {{--  Minify::javascript(asset('js/geral.js'))->withFullUrl() --}}
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
@@ -559,6 +561,8 @@
         
         $(document).ready(function() {
         
+        {{--
+
             var hostname = document.location.hostname;  
 
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
@@ -597,6 +601,8 @@
                 }
 
             });
+
+            --}}
 
         });
 

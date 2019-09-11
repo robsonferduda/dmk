@@ -53,6 +53,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('autocompleteCliente','ClienteController@search');
 	Route::get('autocompleteCorrespondente', 'CorrespondenteController@search');
+	Route::get('autocompleteResponsavel', 'UsuarioController@search');
 	Route::get('processos/novo','ProcessoController@novo');
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');
 	Route::get('processos/detalhes/{id}','ProcessoController@detalhes')->name('processos.detalhes');
@@ -80,6 +81,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');
+	Route::get('configuracoes/tipos-de-servico/consulta/{id}','TipoServicoController@consultar');
 	Route::get('configuracoes/tipos-de-contato','TipoContatoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');

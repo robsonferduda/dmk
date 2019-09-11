@@ -148,7 +148,7 @@
                                             </select> 
                                         </section>  
                                     </div>         
-                                     <div class="row">
+                                    <div class="row">
                                         <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >      
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
@@ -156,8 +156,17 @@
                                                 <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
                                             </label>
                                         </section>
-                                        
                                     </div> 
+
+                                    <div class="row">
+                                        <input type="hidden" name="cd_responsavel_pro" value="{{old('cd_responsavel_pro') ? old('cd_responsavel_pro') : $processo->cd_responsavel_pro}}" >      
+                                        <section class="col col-sm-12">
+                                            <label class="label">Responsável</label>
+                                            <label class="input">
+                                                <input class="form-control ui-autocomplete-input"  name="name" value="{{ ($processo->responsavel) ? $processo->responsavel->name : old('name') }}" placeholder="Digite 3 caracteres para busca" id="responsavel_auto_complete" type="text" autocomplete="off">
+                                            </label>
+                                        </section>
+                                    </div>
 
                                 </fieldset>
                         </div>
@@ -340,6 +349,7 @@
 
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+        var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
 
         $( "#correspondente_auto_complete" ).autocomplete({
           source: pathCorrespondente,
@@ -358,6 +368,25 @@
         $( "#correspondente_auto_complete" ).focusout(function(){
            if($("input[name='cd_correspondente_cor']").val() == ''){
                 $("#correspondente_auto_complete").val('');
+           }
+        });
+
+        $( "#responsavel_auto_complete" ).autocomplete({
+          source: pathResponsavel,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_responsavel_pro']").val(ui.item.id);
+
+          },
+          open: function(event, ui){
+            
+          }
+        });
+
+        $( "#responsavel_auto_complete" ).focusout(function(){
+           if($("input[name='cd_responsavel_pro']").val() == ''){
+                $("#responsavel_auto_complete").val('');
            }
         });
 
