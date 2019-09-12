@@ -27,12 +27,12 @@
                     <div class="row">
                         <section class="col col-md-2">
                             <label class="label label-black">Data de Início<span class="text-danger">*</span></label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
                             <label class="label label-black">Data Fim<span class="text-danger">*</span></label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
 
                          <section class="col col-md-4">                           
@@ -109,7 +109,14 @@
                                     @endphp
                                     <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
                                     <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth-$totalDespesas,2,',',' ')}}</td>
-                                    <td style="text-align: center;"><input type="checkbox" class="check-pagamento-correspondente" data-id='{{ $saida->cd_processo_taxa_honorario_pth }}' {{ ($saida->fl_pago_correspondente_pth == 'N') ? '' : 'checked' }}  ></td>                              
+                                    <td style="text-align: center;"><input type="checkbox" class="check-pagamento-correspondente" data-id='{{ $saida->cd_processo_taxa_honorario_pth }}' {{ ($saida->fl_pago_correspondente_pth == 'N') ? '' : 'checked' }}  > 
+                                    
+                                     @if(!empty($saida->dt_baixa_correspondente_pth))
+                                         <a href="#" rel="popover-hover" data-placement="top" data-original-title="Data de pagamento: {{ date('d/m/Y', strtotime($saida->dt_baixa_correspondente_pth)) }}"><i class="fa fa-question-circle text-primary"></i></a>
+                                        
+                                     @endif
+
+                                    </td>                              
                                 </tr>
                             @endforeach
                             </tbody>
@@ -128,7 +135,7 @@
         <form id="baixa">
             <div class="row">
                 <section class="col col-md-3">
-                       <label class="label label-black">Data de recebimento</label><br />
+                       <label class="label label-black">Data de pagamento</label><br />
                        <input type="text" id='dtBaixaCorrespondente' class='form-control dt_solicitacao_pro' name="dt_baixa_correspondente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
                        <span style="display: none" ></span>
                 </section>
@@ -142,7 +149,7 @@
         <form id="baixa_single">
             <div class="row">
                 <section class="col col-md-3">
-                       <label class="label label-black">Data de recebimento</label><br />
+                       <label class="label label-black">Data de pagamento</label><br />
                        <input type="text" id='dtBaixaCorrespondente_single' class='form-control dt_solicitacao_pro' name="dt_baixa_correspondente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
                        <span style="display: none" ></span>
                 </section>            
@@ -265,6 +272,42 @@
                 }]
         });
 
+         $('#dialog_simple_single').dialog({
+                autoOpen : false,
+                width : 600,
+                resizable : false,
+                closeOnEscape: false,
+                modal : true,
+                title : "Você deseja continuar essa operação?",
+                beforeClose: function() {
+                    
+                    if ($(this).data('checkbox').is(':checked') ) {                
+                        $(this).data('checkbox').prop('checked',false);
+                    }else {
+                        $(this).data('checkbox').prop('checked',true);
+                    }
+                },
+                buttons : [{
+                    html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
+                    "class" : "btn btn-success",
+                    click : function() {
+
+                        if($("#baixa_single").valid()){
+                            
+                            verifica($(this).data('checkbox')); 
+                            
+                            $(this).dialog("close");
+                        }
+                    }
+                }, {
+                    html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
+                    "class" : "btn btn-danger",
+                    click : function() {
+                        $(this).dialog("close");
+                    }
+                }]
+        });
+
         $(".seleciona-todos").click(function(){
 
            if ($(".seleciona-todos").is(':checked') ) {                
@@ -284,7 +327,13 @@
         });
 
         $("#dt_basic_financeiro").on("click", ".check-pagamento-correspondente", function(){
-           verifica($(this));
+            
+            $("#dtBaixaCorrespondente").val('');        
+            if ($(this).is(':checked') ) {             
+                $('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
+            }else {
+                verifica($(this));
+            }
         });
         
         $( "#correspondente_auto_complete" ).focusout(function(){
@@ -346,6 +395,8 @@
     
         var verifica = function(checkbox){
 
+            var data = $("#dtBaixaCorrespondente_single").val();
+            
             var input = checkbox;
             var id = checkbox.data('id');
             if (checkbox.is(':checked') ) {
@@ -357,22 +408,52 @@
             $.ajax({
                 type:'POST',
                 url: "{{ url('financeiro/correspondente/baixa') }}",
-                data:{ids:[id],checked:checked},
+                data:{ids:[id],checked:checked,data:data},
                 success:function(data){
                     ret = JSON.parse(data);        
                     
                     if(ret === true){
                         if(checked == 'S'){
                             input.closest('tr').css('background-color','#8ec9bb');
+                            input.prop('checked',true);
                         }else{
                             input.closest('tr').css('background-color','#fb8e7e');
                         }
                     }                                               
                 }
             });
+
+            var data = $("#dtBaixaCorrespondente_single").val('');
         }
 
+        $.validator.addMethod("dateFormat",
+                function(value, element) {
+                    return value.match(/^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/);
+                },
+            "Data inválida.");
+
         var validobj = $("#baixa").validate({
+
+            rules : {
+                    dt_baixa_correspondente_pth : {
+                        required: true,
+                        dateFormat: true,
+                    }, 
+               },
+                // Messages for form validation
+            messages : {
+                        dt_baixa_correspondente_pth : {
+                            required : 'Campo data é obrigatório'
+                        },                      
+                },
+            errorPlacement: function(error, element) 
+            {
+                error.insertAfter( element );
+            }
+
+        });
+
+        var validobj = $("#baixa_single").validate({
 
             rules : {
                     dt_baixa_correspondente_pth : {
