@@ -693,7 +693,7 @@ class ProcessoController extends Controller
         $nomeCorrespondente = '';
         if(!empty($processo->correspondente)){ 
                             
-            $nomeCorrespondente = $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr;
+            $nomeCorrespondente = ($processo->correspondente->load('contaCorrespondente')->contaCorrespondente) ? $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr : '';
             
         }
 
