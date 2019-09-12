@@ -124,6 +124,15 @@
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
                                                 </li>
                                                 <li>
+                                                    <strong>Responsável: </strong>
+                                                    @if(!empty($processo->responsavel))
+                                                     <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
+                                                    @else
+                                                        <span>Não Alocado</span>
+                                                    @endif
+                                                </li>
+
+                                                <li>
                                                     <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
                                                 </li>
                                                                                        
@@ -167,7 +176,7 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : ' ' }}
                                                 </li>
-                                                <li style="color: #3276B1">
+                                                <li>
                                                     <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
                                             </ul>

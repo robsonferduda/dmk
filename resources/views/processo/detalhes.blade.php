@@ -57,6 +57,14 @@
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
                                                 </li>
                                                 <li>
+                                                    <strong>Responsável: </strong>
+                                                    @if(!empty($processo->responsavel))
+                                                     <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
+                                                    @else
+                                                        <span>Não Alocado</span>
+                                                    @endif
+                                                </li>
+                                                <li>
                                                     <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
                                                 </li>
                                                                                        
@@ -74,20 +82,20 @@
                                                 </li>
                                                 <li>
                                                     <strong>Correspondente: </strong> 
-                                                    @if(!empty($processo->correspondente))
+                                                    @if(!empty($processo->correspondente->contaCorrespondente)))
                                                         <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
                                                     @endif
                                                 </li>      
-                                                <li style="color: #3276B1">
+                                                <li>
                                                     <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
-                                                <li style="color: #3276B1">
+                                                <li>
                                                     <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
                                                 </li>     
-                                                <li style="color: #3276B1">
+                                                <li>
                                                     <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : ' ' }}
                                                 </li>   
-                                                <li style="color: #3276B1">
+                                                <li>
                                                     <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
                                                 </li>                                      
                                                 <li>
