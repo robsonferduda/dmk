@@ -104,7 +104,18 @@
                                     <td>{{ (!empty($entrada->vl_taxa_cliente_pth) ? $entrada->vl_taxa_cliente_pth.'%' : ' ') }}</td>
                                     <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)-
                                     ((($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)*$entrada->vl_taxa_cliente_pth)/100),2,',',' ') }}</td>
-                                    <td style="text-align: center;"><input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  ></td>                              
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
+
+                                        @if(!empty($entrada->dt_baixa_cliente_pth))
+
+                                         <a href="#" rel="popover-hover" data-placement="top" data-content="Nota Fiscal: {{ $entrada->nu_cliente_nota_fiscal_pth }}"
+                                         data-original-title="Data de pagamento: {{ date('d/m/Y', strtotime($entrada->dt_baixa_cliente_pth)) }}"><i class="fa fa-question-circle text-primary"></i></a>
+                                        
+                                        @endif
+
+
+                                    </td>                              
                                 </tr>
                             @endforeach
                             </tbody>
