@@ -12,7 +12,6 @@
         "devfactory/minify": "1.0.*",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
-        "google/apiclient": "^2.0",
         "kodeine/laravel-acl": "~1.0@dev",
         "laracasts/flash": "^3.0",
         "laravel/framework": "5.6.*",
