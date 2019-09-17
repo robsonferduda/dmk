@@ -62,6 +62,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
         </div>
     </div>
     <div class="row">
@@ -205,4 +206,56 @@
         Ao clicar em "Continuar" uma cópia do processo será realizada.
     </p>
 </div>
+  <div class="modal fade in modal_top_alto" id="modal_pauta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-file-pdf-o"></i> Pauta Diária</h4>
+                     </div>
+                    <div class="modal-body">
+                        <form method="POST" class="smart-form" id="frm-pauta" action="{{ url('processo/pauta-diaria') }}">
+                        @csrf
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-4">
+                                        <label>Data da Pauta</label>
+                                        <label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input type="text" name="dt_pauta" id="dt_pauta" placeholder="__/__/____" class="mascara_data" required="required">
+                                        </label>
+                                    </section>
+                                    <section class="col col-8">
+                                        <label>Responsável</label>
+                                        <label class="select">
+                                            <select name="responsavel" required="required">
+                                                <option value="">Selecione um responsável</option>
+                                                <option value="0">Todos</option>
+                                                @foreach($responsaveis as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                @endforeach
+                                            </select> <i></i> </label>
+                                    </section>
+                                </div>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> Gerar Pauta</button>
+                                <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Fechar</a>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $('#modal_pauta').on('shown.bs.modal', function () {
+          $('#dt_pauta').trigger('focus');
+        });
+
+    });
+
+</script>
 @endsection

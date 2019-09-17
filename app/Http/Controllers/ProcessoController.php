@@ -98,6 +98,8 @@ class ProcessoController extends Controller
 
         }
 
+        $responsaveis = User::where('cd_conta_con',$this->cdContaCon)->orderBy('name')->get();
+
         $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
        
         $processos = Processo::with(array('correspondente' => function($query){
@@ -121,7 +123,7 @@ class ProcessoController extends Controller
         ->where('cd_conta_con', $this->cdContaCon)
         ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();        
 
-        return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+        return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis]);
     }
 
     public function acompanhamento($id){

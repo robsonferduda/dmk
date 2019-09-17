@@ -75,8 +75,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('processo/notificacao/resposta/{resposta}/{id}','ProcessoController@responderNotificacao')->name('resposta');
 	Route::get('processos/relatorios','RelatorioProcessoController@relatorios');
 	Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
-
-	
+	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');

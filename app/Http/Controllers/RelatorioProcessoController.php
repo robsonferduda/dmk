@@ -98,6 +98,30 @@ class RelatorioProcessoController extends Controller
                                 ->with('nmCliente',$request->nm_cliente_cli); //view('correspondente/relatorios',['arquivos' => $this->getFiles()]);
     }
 
+    public function pautaDiaria(Request $request){
+
+        if(\Helper::validaData($request->dt_pauta)){
+
+            $dt_pauta = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_pauta)));
+            $responsavel = $request->responsavel;
+
+            if($responsavel){
+
+                dd("Relatório individual");
+
+            }else{
+
+                dd("Relatório de todos");
+            }
+
+        }else{
+
+            Flash::error('Data da pauta inválida');
+            return \Redirect::back()->withInput();
+        }
+
+    }
+
     private function getFiles(){
 
         \File::makeDirectory(storage_path().'/reports/processo/'.$this->conta, $mode = 0744, true, true);
