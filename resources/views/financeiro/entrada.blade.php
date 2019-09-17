@@ -279,10 +279,10 @@
                 title : "Você deseja continuar essa operação?",
                 beforeClose: function() {
 
-                    if ($(".check-pagamento-cliente").is(':checked') ) {                
-                        $(".check-pagamento-cliente").prop('checked',false);
+                    if ($(this).data('checkbox').is(':checked') ) {                
+                        $(this).data('checkbox').prop('checked',false);
                     }else {
-                        $(".check-pagamento-cliente").prop('checked',true);
+                        $(this).data('checkbox').prop('checked',true);
                     }
                 },
                 buttons : [{
@@ -426,8 +426,8 @@
                 }
             });
 
-            var data = $("#dtBaixaCliente_single").val();
-            var nota = $("#notaFiscal_single").val();
+            var data = $("#dtBaixaCliente_single").val('');
+            var nota = $("#notaFiscal_single").val('');
         }
 
         $.validator.addMethod("dateFormat",

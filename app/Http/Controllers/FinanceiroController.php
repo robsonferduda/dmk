@@ -141,7 +141,7 @@ class FinanceiroController extends Controller
             $saidas = $saidas->where('fl_pago_correspondente_pth','N');
         }
 
-        $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
+        $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_correspondente_pth','dt_baixa_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
         //dd($saidas);
         \Session::put('flBuscar',false);
         //dd($saidas[0]->processo->processoDespesa);
@@ -188,24 +188,38 @@ class FinanceiroController extends Controller
     }
 
     public function saidaBuscar(Request $request){
+      
+        \Session::put('dtInicio',$request->dtInicio);
+        \Session::put('dtFim',$request->dtFim);
+        \Session::put('flBuscar',true);                        
+        \Session::put('correspondente',$request->cd_correspondente_cor);
+        \Session::put('nmCorrespondente',$request->nm_correspondente_cor);
 
-        if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
-           
-            \Session::put('dtInicio',$request->dtInicio);
-            \Session::put('dtFim',$request->dtFim);
-            \Session::put('flBuscar',true);                        
-            \Session::put('correspondente',$request->cd_correspondente_cor);
-            \Session::put('nmCorrespondente',$request->nm_correspondente_cor);
-
-            if(!empty($request->todas)){
-                \Session::put('todas','S');
-            }else{
-                \Session::put('todas',null);
-            }
-
+        if(!empty($request->todas)){
+            \Session::put('todas','S');
+        }else{
+            \Session::put('todas',null);
+        }
+        
+        if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
+        
+            Flash::error('É preciso preencher a data de início e fim.');
+                
         }else{
 
-            Flash::error('Data(s) inválida(s) !');
+             if((!empty($request->dtInicio) && !empty($request->dtFim))){
+                
+                if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
+
+                   \Session::put('dtInicio',$request->dtInicio);
+                   \Session::put('dtFim',$request->dtFim);
+                   
+
+                }else{
+
+                    Flash::error('Data(s) inválida(s) !');
+                }
+            }
         }
 
         return redirect('financeiro/saidas');

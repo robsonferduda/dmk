@@ -47,9 +47,14 @@ class CalendarioController extends Controller
         
         $evento = EventoProcesso::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
 
-        $this->getServiceCalendario()->events->delete($this->getIdCalenderio(), $evento->id_evento_calendario_google_epr);
+        if(!empty($evento->id_evento_calendario_google_epr)){
+            
+            $this->getServiceCalendario()->events->delete($this->getIdCalenderio(), $evento->id_evento_calendario_google_epr);
 
-        $evento->delete();
+            $evento->delete();          
+        }
+
+        
 
     }
 
