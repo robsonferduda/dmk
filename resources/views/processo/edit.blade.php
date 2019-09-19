@@ -273,15 +273,16 @@
                                                         </thead>
                                                         <tbody>  
                                                             <tr>  
-                                                                <td>                                       
+                                                                <td>      
+                                                                    <input type="hidden" id="cd_tipo_servico_tse_aux" name="cd_tipo_servico_tse_aux" value="{{old('cd_tipo_servico_tse',$processoTaxaHonorario->cd_tipo_servico_tse)}}">                                 
                                                                     <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" >
-                                                                        <option selected value="">Selecione um tipo de serviço
+                                                                        <option selected value="">Selecione um cliente e cidade
                                                                         </option>      
 
-                                                                        @foreach($tiposDeServico as $tipoDeServico)
+                                                                       {{{--@foreach($tiposDeServico as $tipoDeServico)
                                                                             <option {{ (old('cd_tipo_servico_tse') ? old('cd_tipo_servico_tse') :  (!empty($processoTaxaHonorario->cd_tipo_servico_tse) && $processoTaxaHonorario->cd_tipo_servico_tse == $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '') }} value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
                                                                             </option>  
-                                                                        @endforeach                 
+                                                                        @endforeach --}}      
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -347,6 +348,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        var controlaChangeTS = 0;
+
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
@@ -407,22 +410,73 @@
             $("#taxa-honorario-cliente").val('');
 
             buscaAdvogado();
+
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            
+            if(cliente != '' && cidade != ''){
+                buscaTiposServico(cliente,cidade);
+            } 
             
           },
           open: function(event, ui){
             
           }
         });
+
+        var buscaTiposServico = function(cliente,cidade){
+           
+            $.ajax(
+            {
+               url: "../../tipos-de-servico/cliente/"+cliente+"/cidade/"+cidade,
+               type: 'GET',
+               dataType: "JSON",
+            success: function(response)
+            {              
+                
+                $('#tipoServico').empty();
+                $('#tipoServico').append('<option selected value="">Selecione um tipo de serviço</option>');
+                $.each(response,function(index,element){
+
+                    console.log(element);
+                    if($("#cd_tipo_servico_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
+                        $('#tipoServico').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
+                    }else{
+                        $('#tipoServico').append('<option selected value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');      
+                    }
+                                
+                });       
+                $('#tipoServico').trigger('change');     
+                $('#tipoServico').prop( "disabled", false );        
+
+            },
+            error: function(response)
+            {
+            }
+            });
+        }
+  
+        $('#cidade').change(function(){
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            
+            if(cliente != '' && cidade != ''){
+                buscaTiposServico(cliente,cidade);
+            }
+        });
    
         $('#tipoServico').change(function(){
 
-            $("#taxa-honorario-cliente").val('');  
-            $("#taxa-honorario-correspondente").val('');   
-            
+            controlaChangeTS++;
+
+            if(controlaChangeTS > 1){
+                $("#taxa-honorario-cliente").val('');  
+                $("#taxa-honorario-correspondente").val('');   
+            }
             var cliente = $("input[name='cd_cliente_cli']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
             var tipoServico = $(this).val();
-            if(cliente != '' && cidade != '' && tipoServico != ''){
+            if(cliente != '' && cidade != '' && tipoServico != '' && controlaChangeTS > 1 ){
                 $.ajax({
                         
                         url: '../../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
@@ -449,7 +503,7 @@
             }
 
             var correspondente = $("input[name='cd_correspondente_cor']").val();
-            if(correspondente != '' && cidade != '' && tipoServico != ''){
+            if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTS > 1){
                 
                 $.ajax({
                         
