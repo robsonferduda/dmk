@@ -305,8 +305,6 @@ class ClienteController extends Controller
         $organizar = \Session::get('organizar');
         $valores = null;
 
-        dd($servico);
-
         $lista_cidades = array();
         $lista_cidades_selecao = array();
         $lista_cidades_grupo = array();
@@ -337,7 +335,8 @@ class ClienteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                $lista_servicos[] = $honorario->tipoServico;
+                if($honorario->tipoServico)
+                    $lista_servicos[] = $honorario->tipoServico;
             }
         }
 
