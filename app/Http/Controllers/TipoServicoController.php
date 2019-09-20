@@ -141,6 +141,7 @@ class TipoServicoController extends Controller
         $cliente = Cliente::where('cd_conta_con', $this->cdContaCon)->where('cd_cliente_cli',$cliente)->first();
        // dd($cliente);
         $honorarios = TaxaHonorario::with('tipoServico')->where('cd_conta_con',$this->cdContaCon)
+                                    ->whereHas('tipoServico')
                                     ->where('cd_entidade_ete',$cliente->cd_entidade_ete)
                                     ->where('cd_cidade_cde',$cidade)
                                     ->get(); 
