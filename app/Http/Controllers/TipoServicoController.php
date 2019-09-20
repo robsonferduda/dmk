@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Area;
 use App\Conta;
+use App\Cliente;
 use App\TipoServico;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
@@ -133,4 +134,19 @@ class TipoServicoController extends Controller
         return Response::json($retorno);
 
     }
+
+    public function consultarClienteCidade($cliente,$cidade)
+    {
+        
+        $cliente = Cliente::where('cd_conta_con', $this->cdContaCon)->where('cd_cliente_cli',$cliente)->first();
+       // dd($cliente);
+        $honorarios = TaxaHonorario::with('tipoServico')->where('cd_conta_con',$this->cdContaCon)
+                                    ->where('cd_entidade_ete',$cliente->cd_entidade_ete)
+                                    ->where('cd_cidade_cde',$cidade)
+                                    ->get(); 
+        
+        return Response::json($honorarios);
+
+    }
+
 }

@@ -82,9 +82,7 @@ class FinanceiroController extends Controller
             $entradas = $entradas->where('fl_pago_cliente_pth','N');
         }
 
-        $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth','vl_taxa_cliente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
-
-        //dd($entradas);
+        $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth','vl_taxa_cliente_pth','dt_baixa_cliente_pth','nu_cliente_nota_fiscal_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
 
         \Session::put('flBuscar',false);
 
