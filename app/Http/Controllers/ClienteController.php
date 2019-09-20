@@ -304,6 +304,8 @@ class ClienteController extends Controller
         $organizar = \Session::get('organizar');
         $valores = null;
 
+        dd($servico);
+
         $lista_cidades = array();
         $lista_cidades_selecao = array();
         $lista_cidades_grupo = array();
