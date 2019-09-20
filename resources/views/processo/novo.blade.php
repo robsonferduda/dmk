@@ -267,14 +267,15 @@
                                                         </thead>
                                                         <tbody>  
                                                             <tr>  
-                                                                <td>                                       
-                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2">
-                                                                        <option selected value="">Selecione um tipo de serviço
+                                                                <td>                     
+                                                                     <input type="hidden" id="cd_tipo_servico_tse_aux" name="cd_tipo_servico_tse_aux" value="{{old('cd_tipo_servico_tse')}}">                  
+                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" disabled>
+                                                                        <option selected value="">Selecione um cliente e cidade
                                                                         </option>      
-                                                                        @foreach($tiposDeServico as $tipoDeServico)
+                                                                       {{{-- @foreach($tiposDeServico as $tipoDeServico)
                                                                             <option  value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
                                                                             </option>  
-                                                                        @endforeach                 
+                                                                        @endforeach --}}                
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -400,7 +401,14 @@
             $("input[name='nota_fiscal_cliente']").prop('disabled', false);
             $("#taxa-honorario-cliente").val('');
 
-            buscaAdvogado();
+            buscaAdvogado();   
+
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            
+            if(cliente != '' && cidade != ''){
+                buscaTiposServico(cliente,cidade);
+            }         
         
           },
           open: function(event, ui){
@@ -408,6 +416,48 @@
           }
         });
    
+        var buscaTiposServico = function(cliente,cidade){
+
+            $.ajax(
+            {
+               url: "../tipos-de-servico/cliente/"+cliente+"/cidade/"+cidade,
+               type: 'GET',
+               dataType: "JSON",
+            success: function(response)
+            {              
+                
+                $('#tipoServico').empty();
+                $('#tipoServico').append('<option selected value="">Selecione um tipo de serviço</option>');
+                $.each(response,function(index,element){
+
+                    console.log(element);
+                    if($("#cd_tipo_servico_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
+                        $('#tipoServico').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
+                    }else{
+                        $('#cidade').append('<option selected value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');      
+                    }
+                                
+                });       
+                $('#tipoServico').trigger('change');     
+                $('#tipoServico').prop( "disabled", false );        
+
+            },
+            error: function(response)
+            {
+            }
+            });
+        }
+
+        $('#cidade').change(function(){
+            var cliente = $("input[name='cd_cliente_cli']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            
+            if(cliente != '' && cidade != ''){
+                buscaTiposServico(cliente,cidade);
+            }
+        });
+
+
         $('#tipoServico').change(function(){
 
             $("#taxa-honorario-cliente").val('');  

@@ -44,14 +44,14 @@
                             <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
                         </section>
-                         <section class="col col-md-2">
+                         <section class="col col-md-3" style="width:20%">
                             <br />                                        
                             <label class="label label-black">Incluir saídas verificadas?</label>  
                             <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
                         </section> 
-                        <section class="col col-md-2">
+                        <section class="col col-md-1">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Buscar </button>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Buscar </button>
                         </section>    
 
                     </div>
@@ -418,6 +418,7 @@
                             input.prop('checked',true);
                         }else{
                             input.closest('tr').css('background-color','#fb8e7e');
+                            input.next().remove();
                         }
                     }                                               
                 }
