@@ -272,6 +272,8 @@ class ProcessoController extends Controller
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
 
+        (new CalendarioController)->adicionarPorProcesso($novoProcesso);
+
         Flash::success('Processo clonado com sucesso');
         DB::commit(); 
 

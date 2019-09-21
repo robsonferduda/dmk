@@ -274,7 +274,7 @@
                                                         <tbody>  
                                                             <tr>  
                                                                 <td>      
-                                                                    <input type="hidden" id="cd_tipo_servico_tse_aux" name="cd_tipo_servico_tse_aux" value="{{old('cd_tipo_servico_tse',$processoTaxaHonorario->cd_tipo_servico_tse)}}">                                 
+                                                                    <input type="hidden" id="cd_tipo_servico_tse_aux" name="cd_tipo_servico_tse_aux" value="{{ ($processoTaxaHonorario) ? $processoTaxaHonorario->cd_tipo_servico_tse : old('cd_tipo_servico_tse') }}">                                 
                                                                     <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" >
                                                                         <option selected value="">Selecione um cliente e cidade
                                                                         </option>      

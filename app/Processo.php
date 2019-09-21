@@ -140,7 +140,7 @@ class Processo extends Model implements AuditableContract
 
         static::deleting(function($processo)
         {
-            $processo->honorario()->first()->delete();
+            if($processo->honorario()->first()) $processo->honorario()->first()->delete();
         });
 
     }
