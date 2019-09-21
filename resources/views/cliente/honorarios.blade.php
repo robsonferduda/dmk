@@ -33,7 +33,9 @@
                     </header>
                     <div class="col-sm-12">
                         <h5><strong>Cliente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
-                        <div class="well">
+                        <div class="col-md-12">
+                         <div class="well">
+                            <h4>Adicionar Novos Valores</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
@@ -44,9 +46,25 @@
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
 
                                                 <fieldset>
+
                                                     <div class="row"> 
 
-                                                        <section class="col col-md-3">
+                                                        <section class="col col-md-6">
+                                                        <label class="radio radio-inline">
+                                                            <input type="radio" class="radiobox style-3" name="style-0a" checked="checked">
+                                                            <span>POR GRUPO</span>  
+                                                        </label>
+                                                    </section>
+                                                        <section class="col col-md-6">
+                                                        <label class="radio radio-inline">
+                                                            <input type="radio" class="radiobox style-3" name="style-0a">
+                                                            <span>POR CIDADE</span> 
+                                                        </label>
+                                                    </section>
+
+                                                    </div>
+                                                    <div class="row box-honorario-grupo">
+                                                        <section class="col col-md-12">
                                                             <label class="label label-black" >Grupos de Cidade</label> 
                                                             <select name="grupo_cidade" id="grupo_cidade" class="form-control">
                                                                 <option value="0">Selecione um grupo</option>
@@ -55,8 +73,9 @@
                                                                 @endforeach
                                                             </select>
                                                         </section>
-
-                                                        <section class="col col-md-4">                                       
+                                                    </div>
+                                                    <div class="row box-honorario-cidade">
+                                                        <section class="col col-md-5">                                       
                                                             <label class="label label-black" >Estado</label>          
                                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                                 <option selected value="">Selecione um estado</option>
@@ -67,7 +86,7 @@
                                                             </select> 
                                                         </section>
 
-                                                        <section class="col col-md-5">
+                                                        <section class="col col-md-7">
                                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                                            <label class="label label-black" >Cidade</label>          
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
@@ -79,9 +98,9 @@
 
                                                     <div class="row"> 
 
-                                                        <section class="col col-md-3">
+                                                        <section class="col col-md-12">
                                                            <label class="label label-black" >Tipos de Serviço</label>          
-                                                            <select name="servico" class="form-control">
+                                                            <select multiple name="servico[]" class="select2">
                                                                 <option value="">Selecione um servico</option>
                                                                 <option value="0">Todos</option>
                                                                 @foreach($servicos as $servico)
@@ -90,10 +109,22 @@
                                                             </select>
                                                         </section> 
 
-                                                       
+                                                    </div>
+                                                    <div class="row"> 
+
+                                                        <section class="col col-md-9">  
+                                                            <label class="label label-black" >Organizar Por</label> <a href="#" rel="popover-hover" data-placement="top" data-original-title="Organizar Tabela" data-content="Organiza os dados da tabela por cidades ou pelos tipos de serviço. O valor selecionado será disposto em ordem alfabética na primeira coluna da tabela. Você pode alterar a organização quando desejar.">
+                            <i class="fa fa-question-circle text-primary"></i>
+                        </a> 
+                                                            <select  id="organizar" name="organizar" class="form-control">
+                                                                <option value="0">Selecione uma opção</option>
+                                                                    <option value="1" {{ ($organizar == 1) ? 'selected' : '' }}>Tipos de Serviço</option>
+                                                                    <option value="2" {{ ($organizar == 2) ? 'selected' : '' }}>Cidades</option>
+                                                            </select> 
+                                                        </section> 
 
                                                         <section class="col col-md-2">
-                                                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Novo</button>
                                                         </section>
 
                                                     </div>                                                    
@@ -107,30 +138,11 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <a href="#" rel="popover-hover" data-placement="top" data-original-title="Organizar Tabela" data-content="Organiza os dados da tabela por cidades ou pelos tipos de serviço. O valor selecionado será disposto em ordem alfabética na primeira coluna da tabela. Você pode alterar a organização quando desejar.">
-                            <i class="fa fa-question-circle text-primary"></i>
-                        </a> 
-                        <strong> ORGANIZAR POR:</strong> 
-                        <div class="well">
-                            <div class="row"> 
-                                <form action="{{ url('cliente/honorarios/organizar') }}" class="smart-form'" method="POST" role="search">
-                                    {{ csrf_field() }} 
-                                    <section class="col col-md-2">  
-                                        <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">   
-                                        <select  id="organizar" name="organizar" class="form-control">
-                                            <option value="0">Selecione uma opção</option>
-                                                <option value="1" {{ ($organizar == 1) ? 'selected' : '' }}>Tipos de Serviço</option>
-                                                <option value="2" {{ ($organizar == 2) ? 'selected' : '' }}>Cidades</option>
-                                        </select> 
-                                    </section> 
-                                    <section class="col col-md-2">
-                                        <button class="btn btn-warning" type="submit"><i class="fa fa-sort-amount-asc"></i> Reorganizar</button>
-                                    </section>
-                                </form>
-                            </div>
-                        </div>
-
+                    
+                    
+                    <div class="col-sm-12">
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">

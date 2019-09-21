@@ -272,6 +272,8 @@ class ProcessoController extends Controller
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
 
+        (new CalendarioController)->adicionarPorProcesso($novoProcesso);
+
         Flash::success('Processo clonado com sucesso');
         DB::commit(); 
 
@@ -814,7 +816,7 @@ class ProcessoController extends Controller
         $processo = Processo::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
 
         if($processo->delete()){
-            (new CalendarioController)->excluirEventoProcesso($id);
+            //(new CalendarioController)->excluirEventoProcesso($id);
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         }else{
         	return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
