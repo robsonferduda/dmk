@@ -885,9 +885,39 @@ class ClienteController extends Controller
         }
     }
 
+    public function novoAdvogado(Request $request)
+    {
+        $request->merge(['cd_conta_con' => $this->conta]);
+        $cliente = Cliente::where('cd_conta_con',$this->conta)->where('cd_cliente_cli',$request->cliente)->first();
+
+        $entidade = new Entidade;
+        $entidade->cd_conta_con = $this->conta;
+        $entidade->cd_tipo_entidade_tpe = \TipoEntidade::CONTATO;
+        $entidade->saveOrFail();
+
+        if($entidade->cd_entidade_ete){
+
+            $c = Contato::create([
+                'cd_conta_con'              => $this->conta, 
+                'cd_entidade_ete'           => $cliente->cd_entidade_ete,
+                'cd_entidade_contato_ete'   => $entidade->cd_entidade_ete,
+                'cd_tipo_contato_tct'       => 2, //Fazer Enum
+                'nm_contato_cot'            => $request->nome_advogado_solicitante
+            ]);
+
+            if($c->cd_contato_cot)
+                return Response::json(array('message' => 'Contato cadastrado com sucesso', 'id' => $c->cd_contato_cot), 200);
+            else
+                return Response::json(array('message' => 'Erro ao cadastrar registro'), 500);
+            }     
+    }
+
     public function buscaAdvogados($cliente){
+
         $conta = \Session::get('SESSION_CD_CONTA');
-        $cliente = Cliente::where('cd_conta_con',$conta)->find($cliente);
+
+        $cliente = Cliente::where('cd_conta_con',$conta)->where('cd_cliente_cli',$cliente)->first();
+
         $contatos = Contato::whereHas('tipoContato' , function($query){
             $query->where('fl_tipo_padrao_tct','S');
 

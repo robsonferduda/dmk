@@ -39,6 +39,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/contatos/{id}','ClienteController@contatos');
+	ROute::post('cliente/advogado','ClienteController@novoAdvogado');
 	Route::post('cliente/honorarios/organizar','ClienteController@organizar');
 	Route::get('cliente/{id}/contato/novo','ClienteController@novoContato');
 	Route::get('cliente/{id}/contato/buscar/{inicial}','ClienteController@buscarContato');
