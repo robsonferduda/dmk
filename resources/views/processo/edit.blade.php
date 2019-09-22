@@ -266,9 +266,8 @@
                                                 <div class="">
                                                     <table class="table table-bordered">
                                                         <thead>
-                                                            <th style="width: 50%">Tipos de Serviços<span class="text-danger">*</span></th>
-                                                            <th style="">Valor Cliente</th>
-                                                            <th style="">Valor Correspondente</th>
+                                                            <th style="width: 50%">Tipos de Serviço do Cliente<span class="text-danger">*</span></th>
+                                                            <th style="">Valor Cliente</th>               
                                                             <th style="">Nota Fiscal Cliente</th>
                                                         </thead>
                                                         <tbody>  
@@ -278,11 +277,6 @@
                                                                     <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" >
                                                                         <option selected value="">Selecione um cliente e cidade
                                                                         </option>      
-
-                                                                       {{{--@foreach($tiposDeServico as $tipoDeServico)
-                                                                            <option {{ (old('cd_tipo_servico_tse') ? old('cd_tipo_servico_tse') :  (!empty($processoTaxaHonorario->cd_tipo_servico_tse) && $processoTaxaHonorario->cd_tipo_servico_tse == $tipoDeServico->cd_tipo_servico_tse) ? 'selected' : '') }} value="{{$tipoDeServico->cd_tipo_servico_tse}}">     {{$tipoDeServico->nm_tipo_servico_tse}}
-                                                                            </option>  
-                                                                        @endforeach --}}      
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -292,16 +286,7 @@
                                                                             <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="{{ old('taxa_honorario_cliente',(!empty($processoTaxaHonorario->vl_taxa_honorario_cliente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_cliente_pth : '')}}" >
                                                                         </div>
                                                                         </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="col-md-4 col-md-offset-2">
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-addon">$</span>
-                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ old('taxa_honorario_correspondente',(!empty($processoTaxaHonorario->vl_taxa_honorario_correspondente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth : '')}}" >
-                                                                    </div>
-                                                                    </div>
-                                                                </td>
-
+                                                                </td>                                                                
                                                                 <td>
                                                                     <div class="col-md-4 col-md-offset-2">
                                                                     <div class="input-group">
@@ -311,6 +296,32 @@
                                                                     </div>
                                                                 </td>
                                                            
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <th style="width: 50%">Tipos de Serviço do Correspondente</th>
+                                                            <th style="">Valor Correspondente</th>            
+                                                        </thead>
+                                                        <tbody>  
+                                                            <tr>  
+                                                                <td>                     
+                                                                     <input type="hidden" id="cd_tipo_servico_correspondente_tse_aux" name="cd_tipo_servico_correspondente_tse_aux" value="{{ ($processoTaxaHonorario) ? $processoTaxaHonorario->cd_tipo_servico_correspondente_tse : old('cd_tipo_servico_correspondente_tse') }}">                  
+                                                                    <select id="tipoServicoCorrespondente" name="cd_tipo_servico_correspondente_tse" class="select2" disabled>
+                                                                        <option selected value="">Selecione um correspondente e cidade
+                                                                        </option>                                
+                                                                    </select>
+                                                                </td>                                      
+                                                                <td>
+                                                                    <div class="col-md-4 col-md-offset-2">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">$</span>
+                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{ old('taxa_honorario_correspondente',(!empty($processoTaxaHonorario->vl_taxa_honorario_correspondente_pth)) ? $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth : '')}}" >
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -349,6 +360,7 @@
     $(document).ready(function() {
 
         var controlaChangeTS = 0;
+        var controlaChangeTSC = 0;
 
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
@@ -361,6 +373,13 @@
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
             $("#taxa-honorario-correspondente").val('');
+
+            var correspondente = $("input[name='cd_correspondente_cor']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+
+            if(correspondente != '' && cidade != ''){
+                buscaTiposServicoCorrespondente(correspondente,cidade);
+            } 
 
           },
           open: function(event, ui){
@@ -438,7 +457,6 @@
                 $('#tipoServico').append('<option selected value="">Selecione um tipo de serviço</option>');
                 $.each(response,function(index,element){
 
-                    console.log(element);
                     if($("#cd_tipo_servico_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
                         $('#tipoServico').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
                     }else{
@@ -455,11 +473,48 @@
             }
             });
         }
+
+        var buscaTiposServicoCorrespondente = function(correspondente,cidade){
+
+            $.ajax(
+            {
+               url: "../../tipos-de-servico/correspondente/"+correspondente+"/cidade/"+cidade,
+               type: 'GET',
+               dataType: "JSON",
+            success: function(response)
+            {              
+                
+                $('#tipoServicoCorrespondente').empty();
+                $('#tipoServicoCorrespondente').append('<option selected value="">Selecione um tipo de serviço</option>');
+                $.each(response,function(index,element){
+                                        
+                    if($("#cd_tipo_servico_correspondente_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
+                        $('#tipoServicoCorrespondente').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
+                    }else{                        
+                        $('#tipoServicoCorrespondente').append('<option selected value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');      
+                    }
+                                
+                });       
+                $('#tipoServicoCorrespondente').trigger('change');     
+                $('#tipoServicoCorrespondente').prop( "disabled", false );        
+
+            },
+            error: function(response)
+            {
+            }
+            });
+        }
   
         $('#cidade').change(function(){
             var cliente = $("input[name='cd_cliente_cli']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
             
+            var correspondente = $("input[name='cd_correspondente_cor']").val();
+
+            if(correspondente != '' && cidade != ''){
+                buscaTiposServicoCorrespondente(correspondente,cidade);
+            }
+
             if(cliente != '' && cidade != ''){
                 buscaTiposServico(cliente,cidade);
             }
@@ -470,8 +525,7 @@
             controlaChangeTS++;
 
             if(controlaChangeTS > 1){
-                $("#taxa-honorario-cliente").val('');  
-                $("#taxa-honorario-correspondente").val('');   
+                $("#taxa-honorario-cliente").val('');                 
             }
             var cliente = $("input[name='cd_cliente_cli']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
@@ -501,9 +555,20 @@
                         }
                 });
             }
+        });
+
+         $('#tipoServicoCorrespondente').change(function(){
+
+            controlaChangeTSC++;
+
+            if(controlaChangeTSC > 1){
+                $("#taxa-honorario-correspondente").val('');                 
+            }
 
             var correspondente = $("input[name='cd_correspondente_cor']").val();
-            if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTS > 1){
+            var cidade = $("select[name='cd_cidade_cde']").val();
+            var tipoServico = $(this).val();
+            if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTSC > 1){
                 
                 $.ajax({
                         

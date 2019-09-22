@@ -78,7 +78,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
 	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
-
+	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
+	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
 	Route::get('configuracoes/tipos-de-servico','TipoServicoController@index');

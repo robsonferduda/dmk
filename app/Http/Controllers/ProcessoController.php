@@ -310,6 +310,7 @@ class ProcessoController extends Controller
             $valor->vl_taxa_honorario_cliente_pth = $dados->valor_cliente;
             $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
             $valor->cd_tipo_servico_tse = $dados->servico;
+            $valor->cd_tipo_servico_correspondente_tse = $dados->servicoCorrespondente;
             $valor->vl_taxa_cliente_pth = $dados->nota_fiscal_cliente;
            
             if(!$valor->saveOrFail()){
@@ -324,6 +325,7 @@ class ProcessoController extends Controller
                 'cd_conta_con' => $this->cdContaCon,
                 'cd_processo_pro' => $processo_id,
                 'cd_tipo_servico_tse' => $dados->servico,
+                'cd_tipo_servico_correspondente_tse' => $dados->servicoCorrespondente,
                 'vl_taxa_honorario_cliente_pth' => $dados->valor_cliente,
                 'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente,
                 'vl_taxa_cliente_pth' => $dados->nota_fiscal_cliente
@@ -533,50 +535,7 @@ class ProcessoController extends Controller
         $honorariosProcesso = ProcessoTaxaHonorario::where('cd_conta_con', $this->cdContaCon)
                                                    ->where('cd_processo_pro',$id)
                                                    ->orderBy('updated_at','DESC')->first();
-                                                
-        /*$qtdProcessoTiposServicoCliente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
-                                                                ->where('cd_processo_pro',$id)
-                                                                ->where('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->count();
-        
-        $qtdProcessoTiposServicoCorrespondente = ProcessoTaxaHonorario::where('cd_conta_con',$this->cdContaCon)
-                                                                ->where('cd_processo_pro',$id)
-                                                                ->where('cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE)->count();  */                                                                                             
-        /*$tiposDeServico = DB::table('processo_pro')
-                          ->join('cliente_cli','processo_pro.cd_cliente_cli', '=', 'cliente_cli.cd_cliente_cli')
-                          ->join('tipo_servico_tse','processo_pro.cd_conta_con','=','tipo_servico_tse.cd_conta_con')
-                          ->leftjoin('taxa_honorario_entidade_the', function($join){
-                               $join->on('cliente_cli.cd_entidade_ete', '=', 'taxa_honorario_entidade_the.cd_entidade_ete');
-                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'taxa_honorario_entidade_the.cd_tipo_servico_tse');
-                               $join->on('processo_pro.cd_cidade_cde', '=', 'taxa_honorario_entidade_the.cd_cidade_cde');
-                          })                    
-                          ->leftjoin('processo_taxa_honorario_pth as processo_taxa_honorario_pth_cli', function($join){
-                               $join->on('processo_pro.cd_processo_pro', '=', 'processo_taxa_honorario_pth_cli.cd_processo_pro');
-                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'processo_taxa_honorario_pth_cli.cd_tipo_servico_tse');
-                               $join->where('processo_taxa_honorario_pth_cli.cd_tipo_entidade_tpe', '=', \TipoEntidade::CLIENTE);
-                          })
-                          ->leftjoin('processo_taxa_honorario_pth as processo_taxa_honorario_pth_cor', function($join){
-                               $join->on('processo_pro.cd_processo_pro', '=', 'processo_taxa_honorario_pth_cor.cd_processo_pro');
-                               $join->on('tipo_servico_tse.cd_tipo_servico_tse', '=', 'processo_taxa_honorario_pth_cor.cd_tipo_servico_tse');
-                               $join->where('processo_taxa_honorario_pth_cor.cd_tipo_entidade_tpe', '=', \TipoEntidade::CORRESPONDENTE);
-                          })
-                          ->where('processo_pro.cd_processo_pro',$id)
-                          ->where('processo_pro.cd_conta_con',$this->cdContaCon)
-                          ->whereNull('tipo_servico_tse.deleted_at')
-                          ->orderBy('tipo_servico_tse.nm_tipo_servico_tse')
-                          ->select('tipo_servico_tse.cd_tipo_servico_tse',
-                                   'tipo_servico_tse.nm_tipo_servico_tse',
-                                   'taxa_honorario_entidade_the.nu_taxa_the',
-                                   'processo_taxa_honorario_pth_cli.vl_taxa_honorario_pth as vl_taxa_honorario_pth_cliente',
-                                   'processo_taxa_honorario_pth_cor.vl_taxa_honorario_pth as vl_taxa_honorario_pth_correspondente'
-                               )
-                          ->get();*/
-        
-        /*return view('processo/financas',['despesas' => $despesas,
-                                         'tiposDeServico' => $tiposDeServico,
-                                         'id' => $id,
-                                         'qtdServicoCliente' => $qtdProcessoTiposServicoCliente,
-                                         'qtdServicoCorrespondente' => $qtdProcessoTiposServicoCorrespondente
-                                        ]);*/
+      
         $conta = Conta::select('fl_despesa_nao_reembolsavel_con')->find($this->cdContaCon);
                                
         return view('processo/financas',['despesas' => $despesas,
@@ -708,7 +667,7 @@ class ProcessoController extends Controller
             $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
 
         $tiposDeServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
-        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth','vl_taxa_cliente_pth')->first();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse','cd_tipo_servico_correspondente_tse','vl_taxa_honorario_correspondente_pth','vl_taxa_honorario_cliente_pth','vl_taxa_cliente_pth')->first();
 
         return view('processo/edit',['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
 
@@ -762,6 +721,7 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->servicoCorrespondente = $request->cd_tipo_servico_correspondente_tse;
         $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
 
@@ -798,6 +758,7 @@ class ProcessoController extends Controller
         $dados->valor_cliente = $request->taxa_honorario_cliente;
         $dados->valor_correspondente = $request->taxa_honorario_correspondente;
         $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->servicoCorrespondente = $request->cd_tipo_servico_correspondente_tse;
         $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
     
         $this->salvarHonorarios($processo->cd_processo_pro,$dados);
