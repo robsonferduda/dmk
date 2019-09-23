@@ -351,9 +351,9 @@ class CalendarioController extends Controller
             //print_r($processo->cd_processo_pro);
 
             if(!empty($processo->cd_processo_pro)){
-
-                //print_r($processo->processo->cd_status_processo_stp);
-                if(!in_array($processo->processo->cd_status_processo_stp,[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])){
+                
+                $status = $processo->processo['cd_status_processo_stp'];
+                if(!in_array($status,[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])){
                     $obj->backgroundColor = '#708090';
                 }else{
                     $obj->backgroundColor = '#cfd0cf';
