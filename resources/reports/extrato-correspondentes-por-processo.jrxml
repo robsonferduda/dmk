@@ -43,7 +43,7 @@
 FROM
     processo_pro t3
     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
-    INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_tse = t7.cd_tipo_servico_tse)
+    INNER JOIN tipo_servico_tse t7 ON (t5.cd_tipo_servico_correspondente_tse = t7.cd_tipo_servico_tse)
     INNER JOIN conta_correspondente_ccr t8 ON (t3.cd_correspondente_cor = t8.cd_correspondente_cor)
     LEFT JOIN dados_bancarios_dba t2 ON (t8.cd_entidade_ete = t2.cd_entidade_ete  and t2.deleted_at is null)
     LEFT JOIN banco_ban t4 ON (t2.cd_banco_ban = t4.cd_banco_ban)
