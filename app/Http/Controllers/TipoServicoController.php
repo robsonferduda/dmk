@@ -150,4 +150,21 @@ class TipoServicoController extends Controller
 
     }
 
+    public function consultarCorrespondenteCidade($correspondente,$cidade)
+    {
+        
+        $correspondente = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$correspondente)->first();
+       // dd($cliente);
+        $honorarios = TaxaHonorario::with('tipoServico')->where('cd_conta_con',$this->cdContaCon)
+                                    ->whereHas('tipoServico')
+                                    ->where('cd_entidade_ete',$correspondente->cd_entidade_ete)
+                                    ->where('cd_cidade_cde',$cidade)
+                                    ->get(); 
+        
+        return Response::json($honorarios);
+
+    }
+
+    
+    
 }

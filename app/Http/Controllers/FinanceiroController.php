@@ -18,6 +18,11 @@ class FinanceiroController extends Controller
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
+    public function balancoIndex(){
+
+         return view('financeiro/balanco');
+    }
+
     public function entradaIndex(){   
 
         if(!session('flBuscar')){

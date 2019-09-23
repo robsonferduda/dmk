@@ -26,12 +26,12 @@
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
-                            <label class="label label-black">Data de Início<span class="text-danger">*</span></label><br />
+                            <label class="label label-black">Data prazo fatal inicial</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
-                            <label class="label label-black">Data Fim<span class="text-danger">*</span></label><br />
+                            <label class="label label-black">Data prazo fatal final</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
 
@@ -73,7 +73,7 @@
                                     <th>Tipo de Serviço</th>    
                                     <th>Correspondente</th>
                                     <th style="min-width:8%">Honorário</th>                                    
-                                    <th style="min-width:8%">Nota F. %</th>
+                                    <th style="min-width:8%">Despesa</th>
                                     <th style="min-width:8%">Total</th>                                      
                                     <th><input type="checkbox" class="seleciona-todos" ></th> 
                                 </tr>
@@ -108,7 +108,7 @@
 
                                     @endphp
                                     <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
-                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth-$totalDespesas,2,',',' ')}}</td>
+                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth+$totalDespesas,2,',',' ')}}</td>
                                     <td style="text-align: center;"><input type="checkbox" class="check-pagamento-correspondente" data-id='{{ $saida->cd_processo_taxa_honorario_pth }}' {{ ($saida->fl_pago_correspondente_pth == 'N') ? '' : 'checked' }}  > 
                                     
                                      @if(!empty($saida->dt_baixa_correspondente_pth))

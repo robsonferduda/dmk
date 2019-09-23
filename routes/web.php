@@ -78,6 +78,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
 	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
+	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
@@ -240,6 +241,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/saida/buscar','FinanceiroController@saidaBuscar');
 	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
 	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
+	Route::get('financeiro/balanco','FinanceiroController@balancoIndex');
+
+	
 
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
 	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
