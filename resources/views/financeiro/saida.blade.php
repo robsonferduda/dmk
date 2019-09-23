@@ -87,7 +87,11 @@
                                             {{ date('d/m/Y', strtotime($saida->processo->dt_prazo_fatal_pro)) }} 
                                         @endif
                                     </td>
-                                    <td>{{ $saida->tipoServico->nm_tipo_servico_tse }}</td>
+                                    <td>
+                                        @if(!empty($saida->tipoServicoCorrespondente->nm_tipo_servico_tse))
+                                            {{ $saida->tipoServicoCorrespondente->nm_tipo_servico_tse }} 
+                                        @endif
+                                    </td>
                                     <td>
                                          @if(!empty($saida->processo->correspondente->contaCorrespondente))
                                             {{ $saida->processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }} 

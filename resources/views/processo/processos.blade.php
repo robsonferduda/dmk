@@ -53,7 +53,7 @@
                         <section class="col col-md-4">
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
-                                <option value="">Tipos de Serviço</option>
+                                <option value="">Tipos de Serviço Cliente</option>
                                 @foreach($tiposServico as $tipo)
                                     <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
                                 @endforeach
@@ -92,7 +92,7 @@
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
                                     <th>Cidade</th>                                                  
-                                    <th>Tipo de Serviço</th>
+                                    <th>Tipo de Serviço Cliente</th>
                                     <th>Cliente</th>
                                     <th>Correspondente</th>
                                     <th>Parte Adversa</th>

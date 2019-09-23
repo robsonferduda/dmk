@@ -117,7 +117,7 @@ class FinanceiroController extends Controller
             $todas = session('todas');
         }
 
-        $saidas = ProcessoTaxaHonorario::with(array('tipoServico' => function($query){
+        $saidas = ProcessoTaxaHonorario::with(array('tipoServicoCorrespondente' => function($query){
             $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
         }))->whereHas('processo' , function($query){
             $query->has('correspondente');
@@ -144,7 +144,7 @@ class FinanceiroController extends Controller
             $saidas = $saidas->where('fl_pago_correspondente_pth','N');
         }
 
-        $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_correspondente_pth','dt_baixa_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
+        $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_correspondente_tse','fl_pago_correspondente_pth','dt_baixa_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
         //dd($saidas);
         \Session::put('flBuscar',false);
         //dd($saidas[0]->processo->processoDespesa);

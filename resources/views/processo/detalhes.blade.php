@@ -87,17 +87,20 @@
                                                     @endif
                                                 </li>      
                                                 <li>
-                                                    <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
                                                 <li>
                                                     <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
                                                 </li>     
                                                 <li>
+                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
+                                                </li>    
+                                                <li>
+                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                                <li>
                                                     <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : ' ' }}
                                                 </li>   
-                                                <li>
-                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
-                                                </li>                                      
                                                 <li>
                                                     <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
                                                 </li>
