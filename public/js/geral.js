@@ -1512,22 +1512,22 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
-                    $('#cidade').empty();
-                    $('#cidade').append('<option selected value="">Carregando...</option>');
-                    $('#cidade').prop( "disabled", true );
+                    $('#cidade_grupo').empty();
+                    $('#cidade_grupo').append('<option selected value="">Carregando...</option>');
+                    $('#cidade_grupo').prop( "disabled", true );
                 },
             success: function(response)
             {                    
-                $('#cidade').empty();
-                $('#cidade').append('<option selected value="">Selecione</option>');
-                $('#cidade').append('<option selected value="0">Todas</option>');
+                $('#cidade_grupo').empty();
+                $('#cidade_grupo').append('<option selected value="">Selecione</option>');
+                $('#cidade_grupo').append('<option selected value="0">Todas</option>');
                 
                 $.each(response,function(index,value){
-                    $('#cidade').append('<option value="'+value.cd_cidade_cde+'">'+value.cidade.nm_cidade_cde+'</option>');                   
+                    $('#cidade_grupo').append('<option value="'+value.cd_cidade_cde+'">'+value.cidade.nm_cidade_cde+'</option>');                   
                 });  
 
-                $('#cidade').trigger('change');     
-                $('#cidade').prop( "disabled", false );        
+                $('#cidade_grupo').trigger('change');     
+                $('#cidade_grupo').prop( "disabled", false );        
             },
             error: function(response)
             {

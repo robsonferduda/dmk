@@ -90,7 +90,7 @@
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
                                                 <select  id="cd_contato_cot" name="cd_contato_cot" >
-                                                    <option selected value="">Selecione um Advogado Solicitante</option>            
+                                                    <option value="">Selecione um Advogado Solicitante</option>            
                                                 </select><i></i>  
                                             </label>         
                                         </section>
@@ -408,35 +408,33 @@
                 $("#nome_advogado_solicitante").trigger('focus');
             }else{
                 $("#msg_error_advogado span").remove();
+            
+                $.ajax(
+                {
+                    type: "POST",
+                    url: "../cliente/advogado",
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "cliente": cliente,
+                        "nome_advogado_solicitante": nome
+                    },
+                    beforeSend: function()
+                    {
+                        //$("#processamento").modal('show');
+                    },
+                    success: function(response)
+                    {
+                        buscaAdvogado(); 
+                        $("#cd_contato_cot").val(response.id);
+                        $("#novoAdvogado").modal('hide');
+                    },
+                    error: function(response)
+                    {
+                        
+                        //location.reload();
+                    }
+                });
             }
-
-            $.ajax(
-            {
-                type: "POST",
-                url: "../cliente/advogado",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "cliente": cliente,
-                    "nome_advogado_solicitante": nome
-                },
-                beforeSend: function()
-                {
-                    //$("#processamento").modal('show');
-                },
-                success: function(response)
-                {
-                    
-                    buscaAdvogado(); 
-                    $("#cd_contato_cot").val(response.id);
-                    $("#novoAdvogado").modal('hide');
-                },
-                error: function(response)
-                {
-                    
-                    //location.reload();
-                }
-            });
-
 
         });
 
@@ -636,7 +634,7 @@
                     {                   
                         
                         $('#cd_contato_cot').empty();
-                        $('#cd_contato_cot').append('<option selected value="">Selecione um Advogado Solicitante</option>');
+                        $('#cd_contato_cot').append('<option value="">Selecione um Advogado Solicitante</option>');
                         $.each(response,function(index,element){
 
                             if($("#contatoAux").val() != element.cd_contato_cot){

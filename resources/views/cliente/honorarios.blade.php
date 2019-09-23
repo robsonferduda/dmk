@@ -32,50 +32,71 @@
                         <h2>Honorários por Tipo de Serviço</h2>             
                     </header>
                     <div class="col-sm-12">
-                        <h5><strong>Cliente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
+                        <h5 style="margin-left: 12px;"><strong>Cliente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
                         <div class="col-md-12">
-                         <div class="well">
-                            <h4>Adicionar Novos Valores</h4>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col-md-12">  
-                                            <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
+                            <div class="widget-body">                 
+                                <ul id="Tabs" class="nav nav-tabs bordered">
+                                    <li class="active">
+                                        <a href="#s1" data-toggle="tab" aria-expanded="false">POR GRUPO</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#s2" data-toggle="tab" aria-expanded="true">POR CIDADE</a>
+                                    </li>
+                                </ul>
+                                <div id="myTabContent1" class="tab-content padding-10">
+                                    <div class="tab-pane fade active in" id="s1">
+                                        <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
+                                            {{ csrf_field() }} 
+                                            <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
+                                            <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
+                                                <fieldset>
+                                                    <div class="row marginBottom10">
+                                                        <section class="col col-md-4">
+                                                            <label class="label label-black" >Grupos de Cidade</label> 
+                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control">
+                                                                <option value="0">Selecione um grupo</option>
+                                                                @foreach($grupos as $grupo)
+                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}" (old('grupo_cidade')) ? 'selected' : ''>{{ $grupo->nm_grupo_cidade_grc }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </section>
+                                                        <section class="col col-md-8">
+                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                                           <label class="label label-black" >Cidade</label>          
+                                                            <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
+                                                               <option selected value="">Selecione uma Cidade</option>
+                                                            </select> 
+                                                        </section> 
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <section class="col col-md-12">
+                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>          
+                                                            <select multiple name="servico[]" class="select2">
+                                                                <option value="">Selecione um servico</option>
+                                                                @foreach($servicos as $servico)
+                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </section> 
+                                                    </div>
+                                                    <div class="row center">
+                                                        <section class="col col-md-12">
+                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
+                                                        </section>
+                                                    </div>                                                    
+                                                </fieldset>                                    
+                                        </form>
+                                    </div>
+                                            <div class="tab-pane fade" id="s2">
+                                                <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
 
                                                 <fieldset>
-
-                                                    <div class="row"> 
-
-                                                        <section class="col col-md-6">
-                                                        <label class="radio radio-inline">
-                                                            <input type="radio" class="radiobox style-3" name="style-0a" checked="checked">
-                                                            <span>POR GRUPO</span>  
-                                                        </label>
-                                                    </section>
-                                                        <section class="col col-md-6">
-                                                        <label class="radio radio-inline">
-                                                            <input type="radio" class="radiobox style-3" name="style-0a">
-                                                            <span>POR CIDADE</span> 
-                                                        </label>
-                                                    </section>
-
-                                                    </div>
-                                                    <div class="row box-honorario-grupo">
-                                                        <section class="col col-md-12">
-                                                            <label class="label label-black" >Grupos de Cidade</label> 
-                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control">
-                                                                <option value="0">Selecione um grupo</option>
-                                                                @foreach($grupos as $grupo)
-                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}">{{ $grupo->nm_grupo_cidade_grc }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </section>
-                                                    </div>
-                                                    <div class="row box-honorario-cidade">
-                                                        <section class="col col-md-5">                                       
+                                                    <div class="row marginBottom10">
+                                                        <section class="col col-md-4">                                       
                                                             <label class="label label-black" >Estado</label>          
                                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                                 <option selected value="">Selecione um estado</option>
@@ -86,7 +107,7 @@
                                                             </select> 
                                                         </section>
 
-                                                        <section class="col col-md-7">
+                                                        <section class="col col-md-8">
                                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                                            <label class="label label-black" >Cidade</label>          
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
@@ -99,7 +120,7 @@
                                                     <div class="row"> 
 
                                                         <section class="col col-md-12">
-                                                           <label class="label label-black" >Tipos de Serviço</label>          
+                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>         
                                                             <select multiple name="servico[]" class="select2">
                                                                 <option value="">Selecione um servico</option>
                                                                 <option value="0">Todos</option>
@@ -110,34 +131,21 @@
                                                         </section> 
 
                                                     </div>
-                                                    <div class="row"> 
-
-                                                        <section class="col col-md-9">  
-                                                            <label class="label label-black" >Organizar Por</label> <a href="#" rel="popover-hover" data-placement="top" data-original-title="Organizar Tabela" data-content="Organiza os dados da tabela por cidades ou pelos tipos de serviço. O valor selecionado será disposto em ordem alfabética na primeira coluna da tabela. Você pode alterar a organização quando desejar.">
-                            <i class="fa fa-question-circle text-primary"></i>
-                        </a> 
-                                                            <select  id="organizar" name="organizar" class="form-control">
-                                                                <option value="0">Selecione uma opção</option>
-                                                                    <option value="1" {{ ($organizar == 1) ? 'selected' : '' }}>Tipos de Serviço</option>
-                                                                    <option value="2" {{ ($organizar == 2) ? 'selected' : '' }}>Cidades</option>
-                                                            </select> 
-                                                        </section> 
-
-                                                        <section class="col col-md-2">
-                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Novo</button>
+                                                    <div class="row center">                                               
+                                                        <section class="col col-md-12">
+                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
                                                         </section>
-
                                                     </div>                                                    
 
                                                 </fieldset><br/>
                                                                                             
                                                 
                                             </form>
+                                            </div>
+                                            
                                         </div>
+                
                                     </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     
@@ -153,9 +161,20 @@
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
                                             <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Atualizar Valores</button>
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios"  style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
 
-                                                <a href="{{ url('cliente/limpar-selecao/'.$cliente->cd_cliente_cli) }}" class="btn btn-warning pull-right header-btn" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Seleção</a>
+                                                <div class="btn-group pull-right header-btn">
+                                                    <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
+                                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="{{ url('cliente/honorarios/organizar/2') }}">Cidades</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ url('cliente/honorarios/organizar/1') }}">Serviços</a>
+                                                            </li>
+                                                        </ul>
+                                                </div>
                                             </div>                                             
                                                 @if($organizar == 1)
                                                     <div class="tabelah">
@@ -215,8 +234,6 @@
                                                         </table>
                                                     </div>
                                                 @endif
-                                            @else
-                                                <h6>Nenhum honorário cadastrado</h6>
                                             @endif
                                         </div>
                                     </div>

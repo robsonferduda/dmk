@@ -198,6 +198,12 @@ class ClienteController extends Controller
         return redirect('cliente/contatos/'.$id);
     }
 
+    public function organizar($ordem)
+    {
+        \Session::put('organizar',$ordem); 
+        return redirect()->back();
+    }
+
     public function honorarios($id)
     {
         //Inicialização de variáveis
@@ -216,6 +222,8 @@ class ClienteController extends Controller
 
         //Limpa dados da sessão
         \Session::forget('lista_cidades');
+
+        /*
 
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
@@ -278,6 +286,7 @@ class ClienteController extends Controller
                 return (($a < $b) ? -1 : 1);
             }
         );
+        */
 
         return view('cliente/honorarios',['cidades' => $cidades,
                                           'cliente' => $cliente, 
@@ -288,82 +297,30 @@ class ClienteController extends Controller
                                           'lista_servicos' => $lista_servicos]);
     }
 
-    public function organizar(Request $request)
-    {
-        $cliente = $request->cd_cliente;
-        \Session::put('organizar',$request->organizar);
-        return redirect('cliente/honorarios/'.$cliente);
-    }
-
     public function buscarHonorarios(Request $request)
     {
-        $id = $request->cd_cliente;
-        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
+
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$request->cd_cliente)->first();
         $grupo = $request->grupo_cidade;
         $cidade = $request->cd_cidade_cde;
         $servico = $request->servico;
         $organizar = \Session::get('organizar');
-        $valores = null;
-
         $lista_cidades = array();
-        $lista_cidades_selecao = array();
-        $lista_cidades_grupo = array();
-        $lista_cidades_honorarios = array();
-        $lista_merge = array();
-
-        $lista_servicos = array();        
+        $lista_servicos = array();  
+        $valores = null;
 
         //Carrega dados do combo        
         $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
         $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
 
-        if(empty(session('lista_cidades'))){
-            \Session::put('lista_cidades', array());
-        }
-
-        if(empty(session('lista_servicos'))){
-            \Session::put('lista_servicos', array());
-        }
-
-        //Carrega serviços já cadastradas
-        $honorarios = TaxaHonorario::with('tipoServico')
-                                    ->where('cd_conta_con',$cliente->cd_conta_con)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
-                                    ->select('cd_tipo_servico_tse')
-                                    ->groupBy('cd_tipo_servico_tse')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico)
-                    $lista_servicos[] = $honorario->tipoServico;
+        //Carrega serviços
+        if($request->servico){
+          
+            for ($i=0; $i < count($request->servico) ; $i++) { 
+                $lista_servicos[] = TipoServico::where('cd_conta_con',$this->conta)->where('cd_tipo_servico_tse',$request->servico[$i])->first();
             }
+
         }
-
-        //Carrega lista de serviços da tabela
-        if($servico == 0){
-            $lista_servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
-        }else{
-            $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
-        }
-
-        $lista_temp = array();
-        foreach ($lista_servicos as $servico) {
-            if(!in_array($servico, $lista_temp))
-                $lista_temp[] = $servico;
-        }
-        $lista_servicos = $lista_temp;
-
-        usort($lista_servicos,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
 
         //Carrega cidades do grupo
         if($grupo > 0 and $cidade == 0) {
@@ -371,69 +328,29 @@ class ClienteController extends Controller
             $grupo = GrupoCidadeRelacionamento::with('cidade')->where('cd_grupo_cidade_grc',$grupo)->get();
          
             foreach($grupo as $g){
-                $lista_cidades_grupo[] = $g->cidade;
+                $lista_cidades[] = $g->cidade;
             }
         }
 
-        //Carrega cidade selecionada        
+        //Ou carrega cidade selecionada        
         if($cidade > 0){
-            $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
+            $lista_cidades[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
         }
 
-        //Carrega cidades já cadastradas
-        $honorarios = TaxaHonorario::with('cidade')
-                                    ->where('cd_conta_con',$cliente->cd_conta_con)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
-                                    ->select('cd_cidade_cde')
-                                    ->groupBy('cd_cidade_cde')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $lista_cidades_honorarios[] = $honorario->cidade;
-            }
-        }
-
-        //Junta os arrays e eleimina duplicidades
-        $lista_sessao = session('lista_cidades');
-        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_grupo, $lista_cidades_honorarios, $lista_sessao);
-
-        foreach ($lista_merge as $cidade) {
-            if(!in_array($cidade, $lista_cidades))
-                $lista_cidades[] = $cidade;
-
-        }
-
-        //Após o mesge, limpa a sessão para atualizar mais tarde
-        \Session::forget('lista_cidades');
-
-        //Ordena a lista de cidades
-         usort($lista_cidades,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
- 
-        \Session::put('lista_cidades',$lista_cidades);
 
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                                    ->get();
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
                 $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
             }
-            Flash::success('Dados inseridos com sucesso na visualização');
         }  
         
         //Envia dados e renderiza tela
-        return view('cliente/honorarios',['cidades' => session('lista_cidades'),
+        return view('cliente/honorarios',['cidades' => $lista_cidades,
                                           'cliente' => $cliente, 
                                           'grupos' => $grupos, 
                                           'servicos' => $servicos, 

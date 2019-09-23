@@ -8,6 +8,7 @@
 .marginTop10{margin-top: 10px;}
 .marginTop17{margin-top: 17px;}
 .marginBottom5{margin-bottom: 5px;}
+.marginBottom10{margin-bottom: 10px;}
 .marginTop20{margin-top: 20px;}
 .msg_retorno{text-align: center; margin-bottom: 10px;}
 #erroFone{color: #af4c4c; margin-top: 5px;}
@@ -17,7 +18,7 @@
 .error{color:#bb2020;}
 .excluirFone{ display: pointer; }
 .novoModal{ display: pointer; }
-.label-black{color: #000; }
+.label-black{color: #000; font-size: 90% !important; }
 .box-desconto{display: none;}
 .box-left{ padding-left: 0px }
 .excluirUserRole{ cursor: pointer; }
