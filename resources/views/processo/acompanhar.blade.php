@@ -177,7 +177,10 @@
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : ' ' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Tipo de Serviço: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                                <li>
+                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario) && !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
                                             </ul>
                                         </p> 

@@ -35,6 +35,10 @@ class ProcessoTaxaHonorario extends Model implements AuditableContract
     {
         return $this->hasOne('App\TipoServico','cd_tipo_servico_tse', 'cd_tipo_servico_tse');
     }
+     public function tipoServicoCorrespondente()
+    {
+        return $this->hasOne('App\TipoServico','cd_tipo_servico_tse', 'cd_tipo_servico_correspondente_tse');
+    }
 
     public function processo()
     {
