@@ -36,11 +36,11 @@
                         <div class="col-md-12">
                             <div class="widget-body">                 
                                 <ul id="Tabs" class="nav nav-tabs bordered">
-                                    <li class="active">
-                                        <a href="#s1" data-toggle="tab" aria-expanded="false">POR GRUPO</a>
+                                    <li class="{{ (Session::get('opcao_visualizacao') == 'grupo') ? 'active' : (!Session::has('opcao_visualizacao')) ? 'active' : '' }}">
+                                        <a href="#s1" data-toggle="tab">POR GRUPO</a>
                                     </li>
-                                    <li class="">
-                                        <a href="#s2" data-toggle="tab" aria-expanded="true">POR CIDADE</a>
+                                    <li class="{{ (Session::get('opcao_visualizacao') == 'cidade') ? 'active' : '' }}">
+                                        <a href="#s2" data-toggle="tab">POR CIDADE</a>
                                     </li>
                                 </ul>
                                 <div id="myTabContent1" class="tab-content padding-10">
@@ -49,40 +49,42 @@
                                             {{ csrf_field() }} 
                                             <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                             <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
+                                            <input type="hidden" name="opcao_visualizacao" value="grupo">
                                                 <fieldset>
                                                     <div class="row marginBottom10">
                                                         <section class="col col-md-4">
                                                             <label class="label label-black" >Grupos de Cidade</label> 
-                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control">
+                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control" required="required">
                                                                 <option value="0">Selecione um grupo</option>
                                                                 @foreach($grupos as $grupo)
-                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}" (old('grupo_cidade')) ? 'selected' : ''>{{ $grupo->nm_grupo_cidade_grc }}</option>
+                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}" {{ (Session::get('grupo_busca_cliente') and Session::get('grupo_busca_cliente') == $grupo->cd_grupo_cidade_grc) ? 'selected' : '' }}>{{ $grupo->nm_grupo_cidade_grc }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </section>
                                                         <section class="col col-md-8">
-                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
+                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">
                                                            <label class="label label-black" >Cidade</label>          
                                                             <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
-                                                               <option selected value="">Selecione uma Cidade</option>
+                                                               <option selected value="">Selecione uma cidade</option>
                                                             </select> 
                                                         </section> 
                                                     </div>
 
                                                     <div class="row">
                                                         <section class="col col-md-12">
-                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>          
-                                                            <select multiple name="servico[]" class="select2">
+                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>       
+                                                            <select multiple name="servico[]" id="servico_grupo" class="select2" required="required">
                                                                 <option value="">Selecione um servico</option>
                                                                 @foreach($servicos as $servico)
-                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
+                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}" {{ (Session::get('servico_busca_cliente') and in_array($servico->cd_tipo_servico_tse,Session::get('servico_busca_cliente'))) ? 'selected' : '' }}>{{ $servico->nm_tipo_servico_tse }}</option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="text-danger box-msg-busca-honorarios"></div>
                                                         </section> 
                                                     </div>
                                                     <div class="row center">
                                                         <section class="col col-md-12">
-                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
+                                                            <button class="btn btn-success btnBuscaHonorariosCliente" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
                                                         </section>
                                                     </div>                                                    
                                                 </fieldset>                                    
@@ -93,6 +95,7 @@
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
+                                                <input type="hidden" name="opcao_visualizacao" value="cidade">
 
                                                 <fieldset>
                                                     <div class="row marginBottom10">
@@ -121,11 +124,11 @@
 
                                                         <section class="col col-md-12">
                                                            <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>         
-                                                            <select multiple name="servico[]" class="select2">
+                                                            <select multiple name="servico[]" class="select2" required="required">
                                                                 <option value="">Selecione um servico</option>
                                                                 <option value="0">Todos</option>
                                                                 @foreach($servicos as $servico)
-                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
+                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}" {{ (Session::get('servico_busca_cliente') and in_array($servico->cd_tipo_servico_tse,Session::get('servico_busca_cliente'))) ? 'selected' : '' }}>{{ $servico->nm_tipo_servico_tse }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </section> 
@@ -149,7 +152,10 @@
                     </div>
 
                     
-                    
+                    {{ Session::forget('opcao_visualizacao') }}
+                    {{ Session::forget('grupo_busca_cliente') }}
+                    {{ Session::forget('servico_busca_cliente') }}
+
                     <div class="col-sm-12">
                         <div class="well">
                             <div class="row">
@@ -250,6 +256,20 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $(".btnBuscaHonorariosCliente").click(function(){
+
+            var tipo_servico = $("#servico_grupo").val();
+
+            if(tipo_servico == null){
+                $(".box-msg-busca-honorarios").html("Selecione um tipo de serviço para realizar a consulta");
+                $("#servico_grupo").focus();
+                return false;
+            }else{
+                $(".box-msg-busca-honorarios").html("");
+            }
+
+        });
 
         $('.valor_honorario').editable({
             validate: function (value) {

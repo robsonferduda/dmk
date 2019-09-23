@@ -308,6 +308,13 @@ class ClienteController extends Controller
         $lista_cidades = array();
         $lista_servicos = array();  
         $valores = null;
+        $opcao_visualizacao = $request->opcao_visualizacao;
+
+        //Inicialização de sessão
+        \Session::put('opcao_visualizacao',$opcao_visualizacao);
+        \Session::put('cidade_busca_cliente',$cidade);
+        \Session::put('grupo_busca_cliente',$grupo);
+        \Session::put('servico_busca_cliente',$servico);
 
         //Carrega dados do combo        
         $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
