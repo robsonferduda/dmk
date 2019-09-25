@@ -462,7 +462,7 @@ $(document).ready(function() {
 		var id  = $(this).data('id');
 
 		$("#modal_cancela_correspondente #url").val(url);
-		$("#modal_cancela_correspondente #id").val(id);
+		$("#modal_cancela_correspondente #id_correspondente").val(id);
 		$("#modal_cancela_correspondente").modal('show');
 	});
 
