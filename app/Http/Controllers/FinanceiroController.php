@@ -7,6 +7,7 @@ use Auth;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\ProcessoTaxaHonorario;
+use App\Balanco;
 
 class FinanceiroController extends Controller
 {
@@ -20,7 +21,41 @@ class FinanceiroController extends Controller
 
     public function balancoIndex(){
 
-         return view('financeiro/balanco');
+         if(!session('flBuscar')){
+            \Session::put('dtInicio',null);
+            \Session::put('dtFim',null);
+    
+            $dtInicio = '';
+            $dtFim = '';
+            
+        }else{
+            $dtInicio = session('dtInicio');
+            $dtFim = session('dtFim');            
+        }
+
+        
+        $entradas = Balanco::where('cd_conta_con', $this->conta)->where('cod_tipo_despesa', -1);
+        $saidas = Balanco::where('cd_conta_con', $this->conta)->where('cod_tipo_despesa', -2);
+        $despesas = Balanco::where('cd_conta_con', $this->conta)->whereNotIn('cod_tipo_despesa',[-1,-2]);
+
+        if(!empty($dtInicio) && !empty($dtFim)){
+
+            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
+            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+
+            $entradas = $entradas->whereBetween('date',[$dtInicio,$dtFim]);
+            $saidas   = $saidas->whereBetween('date',[$dtInicio,$dtFim]);
+            $despesas = $despesas->whereBetween('date',[$dtInicio,$dtFim]);
+            
+        }
+
+        $entradas = $entradas->sum('valor_total');
+        $saidas   = $saidas->sum('valor_total');
+        $despesas = $despesas->sum('valor_total');
+
+        $saldo = $entradas - $saidas - $despesas;
+
+        return view('financeiro/balanco',['despesas' => $despesas,'saidas' => $saidas,'entradas' => $entradas,'saldo' => $saldo])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim]);;
     }
 
     public function entradaIndex(){   
@@ -149,6 +184,37 @@ class FinanceiroController extends Controller
         \Session::put('flBuscar',false);
         //dd($saidas[0]->processo->processoDespesa);
         return view('financeiro/saida',['saidas' => $saidas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim,'correspondente' => $correspondente, 'nmCorrespondente' => $nmCorrespondente]);
+    }
+
+    public function balancoBuscar(Request $request){
+
+        
+        \Session::put('flBuscar',true);                        
+        
+        if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
+        
+            Flash::error('É preciso preencher a data de início e fim.');
+        
+        }else{
+
+            if((!empty($request->dtInicio) && !empty($request->dtFim))){
+                
+                if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
+
+                   \Session::put('dtInicio',$request->dtInicio);
+                   \Session::put('dtFim',$request->dtFim);
+                   
+
+                }else{
+
+                    Flash::error('Data(s) inválida(s) !');
+                }
+            }
+        }
+
+
+        return redirect('financeiro/balanco');
+
     }
 
     public function entradaBuscar(Request $request){

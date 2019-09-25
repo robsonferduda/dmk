@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -244,7 +245,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
 	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
 	Route::get('financeiro/balanco','FinanceiroController@balancoIndex');
-
+	Route::post('financeiro/balanco/buscar','FinanceiroController@balancoBuscar');
+	
 	
 
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');

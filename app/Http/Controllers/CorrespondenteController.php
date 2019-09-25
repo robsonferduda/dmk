@@ -891,7 +891,6 @@ class CorrespondenteController extends Controller
     public function remover(Request $request){
 
         $correspondente = ContaCorrespondente::where('cd_conta_correspondente_ccr',$request->id)->first();
-
         if($correspondente->delete())
             Flash::success('Correspondente removido com sucesso');
         else{
