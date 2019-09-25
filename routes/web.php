@@ -36,12 +36,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/limpar-selecao/{id}','ClienteController@limparSelecao');
 	Route::get('cliente/buscar','ClienteController@buscar');
 	Route::get('cliente/buscar-honorarios/{id}','ClienteController@buscarHonorarios');
+	Route::get('cliente/honorarios/buscar/{id}','ClienteController@buscarHonorariosSalvos');
 	Route::get('cliente/novo','ClienteController@novo');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/contatos/{id}','ClienteController@contatos');
-	ROute::post('cliente/advogado','ClienteController@novoAdvogado');
+	Route::post('cliente/advogado','ClienteController@novoAdvogado');
 	Route::get('cliente/honorarios/organizar/{ordem}','ClienteController@organizar');
+	Route::get('cliente/honorarios/adicionar/{id}','ClienteController@adicionarHonorario');
 	Route::get('cliente/{id}/contato/novo','ClienteController@novoContato');
 	Route::get('cliente/{id}/contato/buscar/{inicial}','ClienteController@buscarContato');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
