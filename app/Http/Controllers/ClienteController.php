@@ -223,7 +223,126 @@ class ClienteController extends Controller
         //Limpa dados da sessão
         \Session::forget('lista_cidades');
 
-        /*
+        //Carrega os valores de honorarios para determinado grupo
+        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+            }
+        } 
+
+        //Carrega as cidades
+        $honorarios = TaxaHonorario::with('cidade')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                                    ->select('cd_cidade_cde')
+                                    ->groupBy('cd_cidade_cde')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                $cidades[] = $honorario->cidade;
+            }
+        } 
+
+        //Ordena a lista de cidades
+        usort($cidades,
+            function($a, $b) {
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
+            }
+        );
+
+        //Carrega os serviços
+        $honorarios = TaxaHonorario::with('tipoServico')
+                                    ->where('cd_conta_con',$cliente->cd_conta_con)
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                                    ->select('cd_tipo_servico_tse')
+                                    ->groupBy('cd_tipo_servico_tse')
+                                    ->get(); 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                if($honorario->tipoServico)
+                    $lista_servicos[] = $honorario->tipoServico;
+            }
+        } 
+
+        usort($lista_servicos,
+            function($a, $b) {
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
+            }
+        );
+
+        return view('cliente/honorarios',['cidades' => $cidades,
+                                          'cliente' => $cliente, 
+                                          'grupos' => $grupos, 
+                                          'servicos' => $servicos,                                            
+                                          'valores' => $valores, 
+                                          'organizar' => \Session::get('organizar'), 
+                                          'lista_servicos' => $lista_servicos]);
+    }
+
+    public function adicionarHonorario($id)
+    {
+        //Inicialização de variáveis
+        $cidades = array();
+        $valores = array();    
+        $lista_servicos = array();
+
+        if(empty(\Session::get('organizar')))
+            \Session::put('organizar',1);
+
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
+        
+        //Dados para combos
+        $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
+
+
+            return view('cliente/adicionar-honorario',['cidades' => $cidades,
+                                          'cliente' => $cliente, 
+                                          'grupos' => $grupos, 
+                                          'servicos' => $servicos,                                            
+                                          'valores' => $valores, 
+                                          'organizar' => \Session::get('organizar'), 
+                                          'lista_servicos' => $lista_servicos]);
+
+    }
+
+    
+
+    public function buscarHonorariosSalvos(Request $request)
+    {
+
+        //Inicialização de variáveis
+        $cidades = array();
+        $valores = array();    
+        $lista_servicos = array();
+        $organizar = \Session::get('organizar');
+
+        if(empty(\Session::get('organizar')))
+            \Session::put('organizar',1);
+
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$request->cd_cliente)->first();
+        
+        //Dados para combos
+        $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
+
+        //Limpa dados da sessão
+        \Session::forget('lista_cidades');
 
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
@@ -286,15 +405,17 @@ class ClienteController extends Controller
                 return (($a < $b) ? -1 : 1);
             }
         );
-        */
-
+        
+        //Envia dados e renderiza tela
         return view('cliente/honorarios',['cidades' => $cidades,
                                           'cliente' => $cliente, 
                                           'grupos' => $grupos, 
-                                          'servicos' => $servicos,                                            
-                                          'valores' => $valores, 
-                                          'organizar' => \Session::get('organizar'), 
-                                          'lista_servicos' => $lista_servicos]);
+                                          'servicos' => $servicos, 
+                                          'valores' => $valores,
+                                          'organizar' => $organizar,
+                                          'lista_servicos' => $lista_servicos                                           
+                                          ]);
+
     }
 
     public function buscarHonorarios(Request $request)
@@ -357,7 +478,7 @@ class ClienteController extends Controller
         }  
         
         //Envia dados e renderiza tela
-        return view('cliente/honorarios',['cidades' => $lista_cidades,
+        return view('cliente/adicionar-honorario',['cidades' => $lista_cidades,
                                           'cliente' => $cliente, 
                                           'grupos' => $grupos, 
                                           'servicos' => $servicos, 

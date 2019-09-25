@@ -26,135 +26,35 @@
                 @include('layouts/messages')
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                <div class="jarviswidget jarviswidget-sortable">
-                    <header role="heading" class="ui-sortable-handle">
-                        <span class="widget-icon"> <i class="fa fa-money"></i> </span>
-                        <h2>Honorários por Tipo de Serviço</h2>             
-                    </header>
-                    <div class="col-sm-12">
-                        <h5 style="margin-left: 12px;"><strong>Cliente: </strong>{{ $cliente->nm_razao_social_cli }}</h5>
-                        <div class="col-md-12">
-                            <div class="widget-body">                 
-                                <ul id="Tabs" class="nav nav-tabs bordered">
-                                    <li class="{{ (Session::get('opcao_visualizacao') == 'grupo') ? 'active' : (!Session::has('opcao_visualizacao')) ? 'active' : '' }}">
-                                        <a href="#s1" data-toggle="tab">POR GRUPO</a>
-                                    </li>
-                                    <li class="{{ (Session::get('opcao_visualizacao') == 'cidade') ? 'active' : '' }}">
-                                        <a href="#s2" data-toggle="tab">POR CIDADE</a>
-                                    </li>
-                                </ul>
-                                <div id="myTabContent1" class="tab-content padding-10">
-                                    <div class="tab-pane fade active in" id="s1">
-                                        <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
-                                            {{ csrf_field() }} 
-                                            <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
+                <div class="col-sm-12">
+                    <div class="well">
+                        <form action="{{ url('cliente/honorarios/buscar/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
+                            <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
                                             <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
                                             <input type="hidden" name="opcao_visualizacao" value="grupo">
-                                                <fieldset>
-                                                    <div class="row marginBottom10">
-                                                        <section class="col col-md-4">
-                                                            <label class="label label-black" >Grupos de Cidade</label> 
-                                                            <select name="grupo_cidade" id="grupo_cidade" class="form-control" required="required">
-                                                                <option value="0">Selecione um grupo</option>
-                                                                @foreach($grupos as $grupo)
-                                                                    <option value="{{ $grupo->cd_grupo_cidade_grc }}" {{ (Session::get('grupo_busca_cliente') and Session::get('grupo_busca_cliente') == $grupo->cd_grupo_cidade_grc) ? 'selected' : '' }}>{{ $grupo->nm_grupo_cidade_grc }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </section>
-                                                        <section class="col col-md-8">
-                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">
-                                                           <label class="label label-black" >Cidade</label>          
-                                                            <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
-                                                               <option selected value="">Selecione uma cidade</option>
-                                                            </select> 
-                                                        </section> 
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <section class="col col-md-12">
-                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>       
-                                                            <select multiple name="servico[]" id="servico_grupo" class="select2" required="required">
-                                                                <option value="">Selecione um servico</option>
-                                                                @foreach($servicos as $servico)
-                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}" {{ (Session::get('servico_busca_cliente') and in_array($servico->cd_tipo_servico_tse,Session::get('servico_busca_cliente'))) ? 'selected' : '' }}>{{ $servico->nm_tipo_servico_tse }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            <div class="text-danger box-msg-busca-honorarios"></div>
-                                                        </section> 
-                                                    </div>
-                                                    <div class="row center">
-                                                        <section class="col col-md-12">
-                                                            <button class="btn btn-success btnBuscaHonorariosCliente" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
-                                                        </section>
-                                                    </div>                                                    
-                                                </fieldset>                                    
-                                        </form>
-                                    </div>
-                                            <div class="tab-pane fade" id="s2">
-                                                <form action="{{ url('cliente/buscar-honorarios/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
-                                                {{ csrf_field() }} 
-                                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
-                                                <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
-                                                <input type="hidden" name="opcao_visualizacao" value="cidade">
-
-                                                <fieldset>
-                                                    <div class="row marginBottom10">
-                                                        <section class="col col-md-4">                                       
-                                                            <label class="label label-black" >Estado</label>          
-                                                            <select  id="estado" name="cd_estado_est" class="select2">
-                                                                <option selected value="">Selecione um estado</option>
-                                                                @foreach(App\Estado::all() as $estado) 
-                                                                    <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                                                @endforeach
-
-                                                            </select> 
-                                                        </section>
-
-                                                        <section class="col col-md-8">
-                                                           <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                                           <label class="label label-black" >Cidade</label>          
-                                                            <select id="cidade" name="cd_cidade_cde" class="select2">
-                                                               <option selected value="">Selecione uma Cidade</option>
-                                                            </select> 
-                                                        </section> 
-
-                                                    </div>
-
-                                                    <div class="row"> 
-
-                                                        <section class="col col-md-12">
-                                                           <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>         
-                                                            <select multiple name="servico[]" class="select2" required="required">
-                                                                <option value="">Selecione um servico</option>
-                                                                <option value="0">Todos</option>
-                                                                @foreach($servicos as $servico)
-                                                                    <option value="{{ $servico->cd_tipo_servico_tse }}" {{ (Session::get('servico_busca_cliente') and in_array($servico->cd_tipo_servico_tse,Session::get('servico_busca_cliente'))) ? 'selected' : '' }}>{{ $servico->nm_tipo_servico_tse }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </section> 
-
-                                                    </div>
-                                                    <div class="row center">                                               
-                                                        <section class="col col-md-12">
-                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
-                                                        </section>
-                                                    </div>                                                    
-
-                                                </fieldset><br/>
-                                                                                            
-                                                
-                                            </form>
-                                            </div>
-                                            
-                                        </div>
-                
-                                    </div>
+                            {{ csrf_field() }}
+                            <fieldset>
+                                <div class="row"> 
+                                    <section class="col col-md-4">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">       
+                                        <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
+                                            <option selected value="">Selecione uma cidade</option>
+                                        </select> 
+                                    </section> 
+                                    <section class="col col-md-6">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">        
+                                        <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
+                                            <option selected value="">Selecione uma cidade</option>
+                                        </select> 
+                                    </section>
+                                    <section class="col col-md-2">
+                                        <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                    </section>
+                                </div>
+                            </fieldset>
+                        </form>
                     </div>
-
-                    
-                    {{ Session::forget('opcao_visualizacao') }}
-                    {{ Session::forget('grupo_busca_cliente') }}
-                    {{ Session::forget('servico_busca_cliente') }}
+                </div>
 
                     <div class="col-sm-12">
                         <div class="well">
@@ -167,7 +67,8 @@
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
                                             <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorarios"  style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
+                                               
+                                                <a href="{{ url('cliente/honorarios/adicionar/'.$cliente->cd_cliente_cli) }}" class="btn btn-success pull-right header-btn" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-plus fa-lg"></i> Adicionar Valores</a>
 
                                                 <div class="btn-group pull-right header-btn">
                                                     <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
@@ -189,19 +90,19 @@
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th> {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td>{{ $servico->nm_tipo_servico_tse }}</td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                        
+                                                                                        {{ $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] }}                                                                                      
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -218,19 +119,19 @@
                                                                 <tr>
                                                                     <th>Cidade</th>
                                                                     @foreach($lista_servicos as $servico)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
+                                                                        <th>{{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div></td>
+                                                                        <td>{{ $cidade->nm_cidade_cde  }}</td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
+                                                                                    {{  $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -247,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                
             </article>
         </div>
     </div>

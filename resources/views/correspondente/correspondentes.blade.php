@@ -25,7 +25,7 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <form action="{{ url('correspondente/buscar') }}" class="form-inline" method="GET" role="search">
+                z
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
