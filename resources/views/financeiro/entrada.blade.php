@@ -432,6 +432,7 @@
                             input.prop('checked',true);
                         }else{
                             input.closest('tr').css('background-color','#fb8e7e');
+                            input.next().remove();
                         }
                     }                                               
                 }
