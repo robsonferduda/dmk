@@ -58,6 +58,8 @@ class LoginController extends Controller
             Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
 
             Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+
+            dd(Session::get('SESSION_CD_CONTA'));
             
             return redirect()->intended('home');
         }
