@@ -97,7 +97,7 @@
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td>{{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
