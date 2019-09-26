@@ -328,8 +328,10 @@ class ClienteController extends Controller
 
         //Inicialização de variáveis
         $cidades = array();
+        $cidades_tabela = array();
         $valores = array();    
         $lista_servicos = array();
+        $lista_servicos_tabela = array();
         $organizar = \Session::get('organizar');
 
         if(empty(\Session::get('organizar')))
@@ -338,7 +340,6 @@ class ClienteController extends Controller
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$request->cd_cliente)->first();
         
         //Dados para combos
-        $grupos = GrupoCidade::where('cd_conta_con',$this->conta)->get();
         $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
 
         //Limpa dados da sessão
@@ -346,11 +347,35 @@ class ClienteController extends Controller
 
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)->get();
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                                    ->when($request->cd_cidade_cde, function($query) use($request){
+                                        return $query->where('cd_cidade_cde', $request->cd_cidade_cde);
+                                    })
+                                    ->when($request->servico, function($query) use($request){
+
+                                        return $query->whereIn('cd_tipo_servico_tse', $request->servico);
+                                    })
+                                    ->get();
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
                 $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+            }
+        } 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+
+                if(!in_array($honorario->cidade, $cidades_tabela))
+                    $cidades_tabela[] = $honorario->cidade;
+            }
+        } 
+
+        if(count($honorarios) > 0){
+            foreach ($honorarios as $honorario) {
+                if($honorario->tipoServico)
+                    if(!in_array($honorario->tipoServico, $lista_servicos_tabela))
+                        $lista_servicos_tabela[] = $honorario->tipoServico;
             }
         } 
 
@@ -408,12 +433,13 @@ class ClienteController extends Controller
         
         //Envia dados e renderiza tela
         return view('cliente/honorarios',['cidades' => $cidades,
-                                          'cliente' => $cliente, 
-                                          'grupos' => $grupos, 
+                                          'cidades_tabela' => $cidades_tabela,
+                                          'cliente' => $cliente,  
                                           'servicos' => $servicos, 
                                           'valores' => $valores,
                                           'organizar' => $organizar,
-                                          'lista_servicos' => $lista_servicos                                           
+                                          'lista_servicos' => $lista_servicos,
+                                          'lista_servicos_tabela' => $lista_servicos_tabela                                           
                                           ]);
 
     }
