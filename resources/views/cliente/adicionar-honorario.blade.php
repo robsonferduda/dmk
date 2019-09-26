@@ -385,7 +385,7 @@
 
                 $.ajax(
                     {
-                        url: '../../cidades-por-estado/'+estado,
+                        url: '../../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){
