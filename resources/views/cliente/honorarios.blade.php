@@ -54,7 +54,7 @@
                                                 @endforeach
                                         </select>
                                     </section> 
-                                    <section class="col col-md-2">
+                                    <section class="col col-md-1">
                                         <label class="label">Buscar</label>
                                         <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                     </section>
@@ -110,7 +110,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--'}}                                                                                      
+                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Sem valor'}}                                                                                      
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -139,7 +139,7 @@
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    {{  (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--' }}</span>                                                                                     
+                                                                                    {{  (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Sem valor' }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
