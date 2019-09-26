@@ -5,7 +5,7 @@ $(document).ready(function() {
     var applicationName = _location.substring(0, applicationNameIndex) + '/';
     var webFolderIndex = _location.indexOf('/', _location.indexOf(applicationName) + applicationName.length);
     var pathname = _location.substring(0, webFolderIndex);
-    var pathnameX = _location.substring(0, webFolderIndex);
+    var host = document.location.origin;
 
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
@@ -145,7 +145,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: pathname+"/despesas/categoria/tipo/"+categoria,
+                url: host+"/despesas/categoria/tipo/"+categoria,
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
