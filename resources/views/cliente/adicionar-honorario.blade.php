@@ -90,7 +90,7 @@
                                                     </div>
                                                     <div class="row center">
                                                         <section class="col col-md-12">
-                                                            <button class="btn btn-success btnBuscaHonorariosCliente" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
+                                                            <button class="btn btn-primary btnBuscaHonorariosCliente" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Adicionar</button>
                                                         </section>
                                                     </div>                                                    
                                                 </fieldset>                                    
@@ -142,7 +142,7 @@
                                                     </div>
                                                     <div class="row center">                                               
                                                         <section class="col col-md-12">
-                                                            <button class="btn btn-success" type="submit" style="margin-top: 18px;"><i class="fa fa-search"></i> Consultar</button>
+                                                            <button class="btn btn-primary" type="submit" style="margin-top: 18px;"><i class="fa fa-plus"></i> Adicionar</button>
                                                         </section>
                                                     </div>                                                    
 
@@ -195,14 +195,14 @@
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}"" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}"" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
@@ -224,14 +224,14 @@
                                                                 <tr>
                                                                     <th>Cidade</th>
                                                                     @foreach($lista_servicos as $servico)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div></td>
+                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}"" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div></td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
@@ -258,6 +258,27 @@
         </div>
     </div>
 </div>
+<div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h4>Essa operação irá excluir todas as ocorrências <span id="txt_exclusao_honorario"></span>. Para excluir somente um valor, apague o valor numérico e pressione o botão <strong>Atualizar Valores</strong></h4>
+                        <h4>Deseja continuar?</h4>
+                        <input type="hidden" name="id" id="id_exclusao_honorario">
+                        <input type="hidden" name="url" id="url_honorario">
+                        <div class="msg_retorno_honorario"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -275,6 +296,18 @@
                 $(".box-msg-busca-honorarios").html("");
             }
 
+        });
+
+        $(".excluir_registro_honorario").click(function(){
+
+            var id = $(this).data('id');
+            var url = $(this).data('url');
+            var texto = $(this).data('texto');
+
+            $("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
+            $("#modal_exclusao_honorario #url_honorario").val(url);
+            $("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
+            $("#modal_exclusao_honorario").modal('show');
         });
 
         $('.valor_honorario').editable({
@@ -352,7 +385,7 @@
 
                 $.ajax(
                     {
-                        url: '../cidades-por-estado/'+estado,
+                        url: '../../cidades-por-estado/'+estado,
                         type: 'GET',
                         dataType: "JSON",
                         beforeSend: function(){

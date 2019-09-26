@@ -30,8 +30,8 @@
                     <div class="well">
                         <form action="{{ url('cliente/honorarios/buscar/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
                             <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
-                                            <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
-                                            <input type="hidden" name="opcao_visualizacao" value="grupo">
+                            <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
+                            <input type="hidden" name="opcao_visualizacao" value="grupo">
                             {{ csrf_field() }}
                             <fieldset>
                                 <div class="row"> 
@@ -62,12 +62,11 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-12">   
-                                        @if(count($cidades) > 0)
+                                        
                                             <div class="col-md-6"> 
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
-                                            <div class="col-md-6"> 
-                                               
+                                            <div class="col-md-6">                                               
                                                 <a href="{{ url('cliente/honorarios/adicionar/'.$cliente->cd_cliente_cli) }}" class="btn btn-success pull-right header-btn" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-plus fa-lg"></i> Adicionar Valores</a>
 
                                                 <div class="btn-group pull-right header-btn">
@@ -82,7 +81,8 @@
                                                             </li>
                                                         </ul>
                                                 </div>
-                                            </div>                                             
+                                            </div> 
+                                            @if(count($cidades) > 0)                                            
                                                 @if($organizar == 1)
                                                     <div class="tabelah">
                                                         <table class="table table-bordered">
@@ -90,19 +90,19 @@
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th> {{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td>{{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td dlass="center"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        {{ $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] }}                                                                                      
+                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--'}}                                                                                      
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -119,19 +119,19 @@
                                                                 <tr>
                                                                     <th>Cidade</th>
                                                                     @foreach($lista_servicos as $servico)
-                                                                        <th>{{ $servico->nm_tipo_servico_tse }}</th>
+                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td>{{ $cidade->nm_cidade_cde  }}</td>
+                                                                        <td><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    {{  $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] }}</span>                                                                                     
+                                                                                    {{  (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--' }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
@@ -141,6 +141,11 @@
                                                         </table>
                                                     </div>
                                                 @endif
+                                            @else
+                                                <div class="col-md-12 center"> 
+                                                    <hr/>
+                                                    <h4>Nenhum honorário para ser exibido</h4>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -153,6 +158,27 @@
         </div>
     </div>
 </div>
+ <div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h4>Essa operação irá excluir todas as ocorrências <span id="txt_exclusao_honorario"></span>. Para excluir somente um valor, apague o valor numérico e pressione o botão <strong>Atualizar Valores</strong></h4>
+                        <h4>Deseja continuar?</h4>
+                        <input type="hidden" name="id" id="id_exclusao_honorario">
+                        <input type="hidden" name="url" id="url_honorario">
+                        <div class="msg_retorno_honorario"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -170,6 +196,19 @@
                 $(".box-msg-busca-honorarios").html("");
             }
 
+        });
+
+
+        $(".excluir_registro_honorario").click(function(){
+
+            var id = $(this).data('id');
+            var url = $(this).data('url');
+            var texto = $(this).data('texto');
+
+            $("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
+            $("#modal_exclusao_honorario #url_honorario").val(url);
+            $("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
+            $("#modal_exclusao_honorario").modal('show');
         });
 
         $('.valor_honorario').editable({

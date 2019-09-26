@@ -435,17 +435,6 @@ $(document).ready(function() {
 		$("#modal_exclusao").modal('show');
 	});
 
-	$(".excluir_registro_honorario").click(function(){
-
-		var id = $(this).data('id');
-		var url = $(this).data('url');
-		var texto = $(this).data('texto');
-
-		$("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
-		$("#modal_exclusao_honorario #url_honorario").val(url);
-		$("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
-		$("#modal_exclusao_honorario").modal('show');
-	});
 
 	$(".adicionar_registro").click(function(){
 
@@ -497,7 +486,7 @@ $(document).ready(function() {
 
         $.ajax(
         {
-            url: "../../cliente/honorarios/"+url+id,
+            url: url+"/"+id,
             type: 'DELETE',
             dataType: "JSON",
             data: {
