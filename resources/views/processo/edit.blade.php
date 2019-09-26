@@ -122,7 +122,7 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Autor</label>
                                             <label class="input">
-                                                <input class="form-control" placeholder="" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
+                                                <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
                                             </label>
                                         </section> 
                                     </div>    
@@ -199,7 +199,7 @@
                                      <section class="col col-sm-12">
                                         <label class="label">Réu</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" type="text" name="nm_reu_pro" value="{{ old('nm_reu_pro') ? old('nm_reu_pro') : $processo->nm_reu_pro}}" >
+                                           <input class="form-control" placeholder="" type="text"  maxlength="500" name="nm_reu_pro" value="{{ old('nm_reu_pro') ? old('nm_reu_pro') : $processo->nm_reu_pro}}" >
                                         </label>
                                     </section> 
                                 </div>
@@ -223,7 +223,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Preposto</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_preposto_pro" value="{{ old('nm_preposto_pro') ? old('nm_preposto_pro') : $processo->nm_preposto_pro }}">
+                                               <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_preposto_pro" value="{{ old('nm_preposto_pro') ? old('nm_preposto_pro') : $processo->nm_preposto_pro }}">
                                             </label>
                                         </section> 
                                     </div>
