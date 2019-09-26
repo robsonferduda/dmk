@@ -243,7 +243,7 @@ class ClienteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                $cidades[] = $honorario->cidade;
+                $cidades_tabela[] = $honorario->cidade;
             }
         } 
 
@@ -270,7 +270,7 @@ class ClienteController extends Controller
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
                 if($honorario->tipoServico)
-                    $lista_servicos[] = $honorario->tipoServico;
+                    $lista_servicos_tabela[] = $honorario->tipoServico;
             }
         } 
 
