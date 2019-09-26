@@ -1,4 +1,3 @@
-
 <?php
 
 /*
@@ -41,18 +40,18 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/contatos/{id}','ClienteController@contatos');
-	Route::post('cliente/advogado','ClienteController@novoAdvogado');
 	Route::get('cliente/honorarios/organizar/{ordem}','ClienteController@organizar');
 	Route::get('cliente/honorarios/adicionar/{id}','ClienteController@adicionarHonorario');
 	Route::get('cliente/{id}/contato/novo','ClienteController@novoContato');
 	Route::get('cliente/{id}/contato/buscar/{inicial}','ClienteController@buscarContato');
 	Route::get('cliente/honorarios/{id}','ClienteController@honorarios');
-	Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}','ClienteController@excluirHonorarios');
-	Route::post('cliente/contato/novo/{id}','ClienteController@createContato');
-	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
 	Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCliente');
 	Route::get('busca-valor-correspondente/{correspondente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCorrespondente');
+	Route::post('cliente/advogado','ClienteController@novoAdvogado');
+	Route::post('cliente/contato/novo/{id}','ClienteController@createContato');
+	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
+	Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}','ClienteController@excluirHonorarios');
 	Route::resource('clientes','ClienteController');
 
 	Route::get('autocompleteCliente','ClienteController@search');
