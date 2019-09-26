@@ -54,7 +54,7 @@
                                                 @endforeach
                                         </select>
                                     </section> 
-                                    <section class="col col-md-1">
+                                    <section class="col col-md-2">
                                         <label class="label">Buscar</label>
                                         <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                     </section>
