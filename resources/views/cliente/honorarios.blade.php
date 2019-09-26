@@ -90,7 +90,7 @@
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th> {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
@@ -119,14 +119,14 @@
                                                                 <tr>
                                                                     <th>Cidade</th>
                                                                     @foreach($lista_servicos as $servico)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>{{ $servico->nm_tipo_servico_tse }}</th>
+                                                                        <th>{{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</td>
+                                                                        <td>{{ $cidade->nm_cidade_cde  }}</td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
