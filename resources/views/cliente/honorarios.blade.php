@@ -62,7 +62,7 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-12">   
-                                        @if(count($cidades) > 0)
+                                        
                                             <div class="col-md-6"> 
                                                 <h5>Honorários por Tipo de Serviço</h5> 
                                             </div>
@@ -82,7 +82,8 @@
                                                             </li>
                                                         </ul>
                                                 </div>
-                                            </div>                                             
+                                            </div>         
+                                        @if(count($cidades) > 0)                                    
                                                 @if($organizar == 1)
                                                     <div class="tabelah">
                                                         <table class="table table-bordered">
