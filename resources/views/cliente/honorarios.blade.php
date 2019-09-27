@@ -36,18 +36,26 @@
                             <fieldset>
                                 <div class="row"> 
                                     <section class="col col-md-4">
+                                        <label class="label label-black">Cidade</label>
                                         <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">       
                                         <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
-                                            <option selected value="">Selecione uma cidade</option>
+                                            <option value="">Selecione uma cidade</option>
+                                            @foreach($cidades as $cidade)                                                
+                                                <option value="{{ $cidade->cd_cidade_cde }}">{{ $cidade->nm_cidade_cde }}</option>                                                
+                                            @endforeach
                                         </select> 
                                     </section> 
                                     <section class="col col-md-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (Session::get('cidade_busca_cliente')) ? Session::get('cidade_busca_cliente') : old('cd_cidade_cde')}}">        
-                                        <select id="cidade_grupo" name="cd_cidade_cde" class="select2">
-                                            <option selected value="">Selecione uma cidade</option>
-                                        </select> 
-                                    </section>
+                                        <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>       
+                                        <select multiple name="servico[]" id="servico_grupo" class="select2">
+                                            <option value="">Selecione um servico</option>
+                                                @foreach($lista_servicos as $servico)
+                                                    <option value="{{ $servico->cd_tipo_servico_tse }}" {{ (Session::get('servico_busca_cliente') and in_array($servico->cd_tipo_servico_tse,Session::get('servico_busca_cliente'))) ? 'selected' : '' }}>{{ $servico->nm_tipo_servico_tse }}</option>
+                                                @endforeach
+                                        </select>
+                                    </section> 
                                     <section class="col col-md-2">
+                                        <label class="label">Buscar</label>
                                         <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                     </section>
                                 </div>
@@ -89,20 +97,20 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
-                                                                    @foreach($cidades as $cidade)
+                                                                    @foreach($cidades_tabela as $cidade)
                                                                         <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @foreach($lista_servicos as $servico)
+                                                                @foreach($lista_servicos_tabela as $servico)
                                                                     <tr>
                                                                         <td dlass="center"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
-                                                                        @foreach($cidades as $cidade)
+                                                                        @foreach($cidades_tabela as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--'}}                                                                                      
+                                                                                    {{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Sem valor'}}                                                                                      
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -118,20 +126,20 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>Cidade</th>
-                                                                    @foreach($lista_servicos as $servico)
+                                                                    @foreach($lista_servicos_tabela as $servico)
                                                                         <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/servico/excluir/') }}" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @foreach($cidades as $cidade)
+                                                                @foreach($cidades_tabela as $cidade)
                                                                     <tr>
                                                                         <td><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ url('cliente/honorarios/'.$cliente->entidade->cd_entidade_ete.'/comarca/excluir/') }}" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</td>
-                                                                        @foreach($lista_servicos as $servico)
+                                                                        @foreach($lista_servicos_tabela as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
 
-                                                                                    {{  (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : '--' }}</span>                                                                                     
+                                                                                    {{  (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Sem valor' }}</span>                                                                                     
                                                                                 </div>
                                                                             </td>
                                                                         @endforeach
