@@ -44,8 +44,8 @@
                                         <td>{{ date('d/m/Y H:i:s', strtotime($cliente->created_at)) }}</td>
                                         <td>{{ $cliente->conta->nm_razao_social_con }}</td>
                                         <td class="center">
-                                            <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/cliente/'.$cliente->cd_conta_con.'/dados') }}"><i class="fa fa-file-text-o"></i> </a>
-                                            <a title="Processos" class="btn btn-info btn-xs"  href="{{ url('correspondente/cliente/'.$cliente->cd_conta_con.'/processos') }}"><i class="fa fa-archive"></i> </a>
+                                            <a title="Meus Dados no Cliente" class="btn btn-default btn-xs" href="{{ url('correspondente/cliente/'.\Crypt::encrypt($cliente->cd_conta_con).'/dados') }}"><i class="fa fa-file-text-o"></i> </a>
+                                            <a title="Meus Processos" class="btn btn-info btn-xs"  href="{{ url('correspondente/cliente/'.\Crypt::encrypt($cliente->cd_conta_con).'/processos') }}"><i class="fa fa-archive"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach                                                           

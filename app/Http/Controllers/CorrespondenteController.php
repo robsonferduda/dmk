@@ -1175,6 +1175,20 @@ class CorrespondenteController extends Controller
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
 
+        $processos = Processo::with('tipoServico')
+                                    ->where('cd_correspondente_cor',$this->conta)
+                                    ->select('cd_tipo_servico_tse')
+                                    ->groupBy('cd_tipo_servico_tse')
+                                    ->get(); 
+
+        dd($processos);
+
+        if(count($processos) > 0){
+            foreach ($processos as $processo) {
+                $tiposServico[] = $processo->tipoServico;
+            }
+        } 
+
         $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
 
         return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
@@ -1204,13 +1218,35 @@ class CorrespondenteController extends Controller
 
     public function dadosCliente($cliente)
     {
+        $cliente = \Crypt::decrypt($cliente);
+
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $cliente)->where('cd_correspondente_cor',$this->conta)->first();
         return view('correspondente/dados',['correspondente' => $correspondente]);
     }
 
     public function processosCliente($cliente)
     {
-        return view('correspondente/processos');
+        $cliente = \Crypt::decrypt($cliente);
+
+        if (!empty(\Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso');
+
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->conta,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
+
+        $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
+
+        return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+
     }
 
     public function dashboard($id){
