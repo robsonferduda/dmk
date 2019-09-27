@@ -29,7 +29,7 @@
             </div>   
         </div>
         <div class="center">
-            <a href="{{ url('autenticacao') }}" class="btn btn-success"><i class="fa fa-sign-in"></i> LOGIN CORRESPONDENTE</a> 
+            <a href="{{ url('correspondente/login') }}" class="btn btn-success"><i class="fa fa-sign-in"></i> LOGIN CORRESPONDENTE</a> 
         </div>
     </div>
 </div>
