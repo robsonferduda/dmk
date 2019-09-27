@@ -788,14 +788,15 @@ class ProcessoController extends Controller
 
         $id = \Crypt::decrypt($id_processo);
         $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
 
-        if(empty($processo->cd_correspondente_cor)){
+        if(empty($processo->cd_correspondente_cor) or is_null($vinculo)){
 
             Flash::error('Nenhum correspondente informado para o processo');
 
         }else{
 
-            $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
+            
             $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
             if(count($emails) == 0){
@@ -813,7 +814,7 @@ class ProcessoController extends Controller
 
                     $processo->email =  $email->dc_endereco_eletronico_ede;
                     $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                    $processo->conta = $processo->conta->nm_razao_social_con;
+                    $processo->conta = $processo->conta['nm_razao_social_con'];
                     $processo->notificarCorrespondente($processo);
                     $lista .= $email->dc_endereco_eletronico_ede.', ';
                 }
