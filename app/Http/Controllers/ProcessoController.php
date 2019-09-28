@@ -774,9 +774,9 @@ class ProcessoController extends Controller
 
     public function destroy($id)
     {
-        $processo = Processo::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
+        $processo = Processo::where('cd_conta_con',$this->cdContaCon)->find($id);
 
-        if($processo->delete()){
+        if(!empty($processo) && $processo->delete()){
             (new CalendarioController)->excluirEventoProcesso($id);
         	return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         }else{

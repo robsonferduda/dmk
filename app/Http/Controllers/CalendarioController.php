@@ -44,10 +44,10 @@ class CalendarioController extends Controller
     }
 
     public function excluirEventoProcesso($id){
-        
+
         $evento = EventoProcesso::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
 
-        if(!empty($evento->id_evento_calendario_google_epr)){
+        if(!empty($evento) && !empty($evento->id_evento_calendario_google_epr)){
             
             $this->getServiceCalendario()->events->delete($this->getIdCalenderio(), $evento->id_evento_calendario_google_epr);
 
