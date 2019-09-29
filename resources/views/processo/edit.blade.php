@@ -183,7 +183,7 @@
                                         </label>
                                     </section>                                     
                                     <section class="col col-4">
-                                        <label class="label">Data Prazo Fatal</label>
+                                        <label class="label">Data Prazo Fatal<span class="text-danger">*</span></label>
                                         <label class="input">
                                            <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{ old('dt_prazo_fatal_pro') ? old('dt_prazo_fatal_pro') : $processo->dt_prazo_fatal_pro }}">
                                         </label>
@@ -231,7 +231,7 @@
                                          <section class="col col-sm-12">
                                             <label class="label">Advogado</label>
                                             <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{ old('nm_advogado_pro') ? old('nm_advogado_pro') : $processo->nm_advogado_pro }}" >
+                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{ old('nm_advogado_pro') ? old('nm_advogado_pro') : $processo->nm_advogado_pro }}" maxlength="500">
                                             </label>
                                         </section> 
                                     </div>
@@ -710,8 +710,19 @@
                         },
                         cd_tipo_servico_tse: {
                             required: true
+                        },
+                        dt_prazo_fatal_pro:{
+                            required: true
+                        },
+                        nm_reu_pro:{
+                            maxlength: 500
+                        },
+                        nm_autor_pro:{
+                            maxlength: 500
+                        },
+                        nm_preposto_pro:{
+                            maxlength: 500
                         }
-                       
                         
                     },
 
@@ -731,7 +742,19 @@
                         },
                         cd_tipo_servico_tse: {
                             required : 'Campo Tipo de Serviço é Obrigatório'
-                        }
+                        },
+                        dt_prazo_fatal_pro: {
+                            required : 'Campo Prazo Fatal é Obrigatório'
+                        },
+                        nm_reu_pro:{
+                            maxlength: 'O Campo Réu excedeu o número máximo de 500 caracteres'
+                        },
+                        nm_autor_pro:{
+                            maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres'
+                        },
+                        nm_preposto_pro:{
+                            maxlength: 'O Campo Preposto excedeu o número máximo de 500 caracteres'
+                        }  
                        
                         
                     },
