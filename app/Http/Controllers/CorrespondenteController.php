@@ -1181,6 +1181,38 @@ class CorrespondenteController extends Controller
 
     }
 
+    public function buscarProcesso(Request $request)
+    {
+
+        $numero   = $request->get('nu_processo_pro');
+        $tipo = $request->get('cd_tipo_processo_tpo');
+        $tipoServico = $request->get('cd_tipo_servico_tse');
+        $autor = $request->get('nm_autor_pro');
+        $reu = $request->get('nm_reu_pro');
+        $acompanhamento = $request->get('nu_acompanhamento_pro');
+
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
+
+        $processos = Processo::where('cd_correspondente_cor', $this->conta);
+
+        if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+
+            $query->where('cd_tipo_servico_tse', $tipoServico);
+
+        });
+        if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
+        if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
+        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
+        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+
+          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+
+        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
+
+    }
+
     public function acompanhamento($id){
 
         $id = \Crypt::decrypt($id); 
@@ -1210,21 +1242,44 @@ class CorrespondenteController extends Controller
 
     public function processosCliente($cliente)
     {
-        return view('correspondente/processos');
+        
+        $numero   = $request->get('nu_processo_pro');
+        $tipo = $request->get('cd_tipo_processo_tpo');
+        $tipoServico = $request->get('cd_tipo_servico_tse');
+        $autor = $request->get('nm_autor_pro');
+        $reu = $request->get('nm_reu_pro');
+        $acompanhamento = $request->get('nu_acompanhamento_pro');
+
+
+        $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
+
+        $processos = Processo::where('cd_correspondente_cor', $this->conta);
+
+        if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+
+            $query->where('cd_tipo_servico_tse', $tipoServico);
+
+        });
+        if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
+        if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
+        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
+        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+
+          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+
+        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
     }
 
     public function dashboard($id){
 
+        $id = \Crypt::decrypt($id); 
+
         $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
-
-        /*
-        if(count($correspondente->entidade->atuacao()->get()) == 0 or count($correspondente->entidade->fone()->get()) == 0){
-
-            return redirect('correspondente/ficha/'.$correspondente->cd_conta_con)->with(['flag' => true]); 
-        }
-        */
+        $convites = ConviteCorrespondente::where('cd_convite_correspondente_coc',$correspondente->cd_conta_con)->get();
+        $total_processos = Processo::count('cd_correspondente_cor',$correspondente->cd_conta_con);
         
-        return view('correspondente/dashboard',['correspondente' => $correspondente]);
+        return view('correspondente/dashboard',['correspondente' => $correspondente, 'convites' => $convites, 'total_processos' => $total_processos]);
 
     }
 

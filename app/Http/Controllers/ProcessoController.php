@@ -130,7 +130,7 @@ class ProcessoController extends Controller
 
         $id = \Crypt::decrypt($id); 
 
-        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->first();
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
 

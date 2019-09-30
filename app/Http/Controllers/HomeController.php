@@ -29,7 +29,7 @@ class HomeController extends Controller
 
             switch ($role) {
                 case 'correspondente':
-                    return redirect('correspondente/dashboard/'.Auth::user()->cd_entidade_ete);
+                    return redirect('correspondente/dashboard/'.\Crypt::encrypt(Auth::user()->cd_entidade_ete));
                     break;
                 
                 default:

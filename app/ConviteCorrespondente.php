@@ -22,4 +22,14 @@ class ConviteCorrespondente extends Model implements AuditableContract
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
+    public function correspondente()
+    {
+        return $this->hasOne('App\Conta','cd_conta_con', 'cd_convite_correspondente_coc');
+    }
+
+    public function conta()
+    {
+        return $this->hasOne('App\Conta','cd_conta_con', 'cd_conta_con');
+    }
+
 }

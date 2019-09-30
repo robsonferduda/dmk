@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-cog"></i>Processos <span> > Lista</span>
+                <i class="fa-fw fa fa-cog"></i>Processos <span> > Meus Processos</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -24,7 +24,7 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
+                <form action="{{ url('correspondente/processo/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="input-group">
                         <span class="input-group-addon">Nº Processo</span>
@@ -80,7 +80,7 @@
                                         </td>
                                                                    
                                        
-                                         <td>{{ (!empty($processo->honorario)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
+                                         <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
                                         <td>
                                             {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}                                           
                                         </td>

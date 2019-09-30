@@ -127,6 +127,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento');
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
+	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');
 	Route::post('correspondente/remover','CorrespondenteController@remover');
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
 	Route::post('correspondente/despesas','CorrespondenteController@adicionarDespesas');
