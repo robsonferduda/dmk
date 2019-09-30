@@ -172,6 +172,47 @@ $(document).ready(function() {
 
 	});
 
+	$(".categoria_despesa_multple").change(function(){
+
+		var categorias = $(".categoria_despesa_multple").val();
+		
+		if(categorias != '' && categorias != null){
+			categorias = categorias.join(',');
+		}
+
+		$.ajax(
+            {
+                url: host+"/despesas/categorias/tipo",
+                type: 'POST',
+                data: {categorias: categorias},
+                dataType: "JSON",
+                beforeSend: function(){                    
+                    $('.tipo_despesa').prop( "disabled", true );
+                },
+            success: function(response)
+            {                    
+                
+            	if(response != null){
+	                $('.tipo_despesa').empty();
+	                
+	             	
+	                $.each(response,function(index,value){
+	                    $('.tipo_despesa').append('<option value="'+value.cd_tipo_despesa_tds+'">'+value.nm_tipo_despesa_tds+'</option>');                   
+	                });  
+
+	            }  
+
+	            $('.tipo_despesa').prop( "disabled",false);    
+            },
+            error: function(response)
+            {
+            	
+            	$('.tipo_despesa').prop( "disabled",false);    
+            }
+        });
+
+	});
+
 	$(".tipo_despesa").change(function(){
 
 		var categoria = $(".tipo_despesa option:selected").data('categoria');
