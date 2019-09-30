@@ -324,7 +324,7 @@
                                     <div class="mesgs">
                                         <div class="msg_history msg_history_interno">
 
-                                            @if(count($mensagens_externas) > 0)
+                                            @if(count($mensagens_internas) > 0)
                                                 @foreach($mensagens_internas as $mensagem)                                                
 
                                                     
