@@ -8,6 +8,8 @@ use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\ProcessoTaxaHonorario;
 use App\Balanco;
+use App\CategoriaDespesa;
+use App\TipoDespesa;
 
 class FinanceiroController extends Controller
 {
@@ -22,15 +24,23 @@ class FinanceiroController extends Controller
     public function balancoIndex(){
 
          if(!session('flBuscar')){
-            \Session::put('dtInicio',null);
-            \Session::put('dtFim',null);
-    
-            $dtInicio = '';
-            $dtFim = '';
-            
+            \Session::put('dtInicio',date('d/m/Y',strtotime(date("Y-m-01"))));
+            \Session::put('dtFim',date('d/m/Y',strtotime(date("Y-m-t"))));
+            \Session::put('tipoDespesa',null);
+            \Session::put('categoria',null);
+
+            $dtInicio = date('d/m/Y',strtotime(date("Y-m-01")));
+            $dtFim = date('d/m/Y',strtotime(date("Y-m-t")));
+            $tipoDespesa = '';
+            $categoria = '';
+
         }else{
+
             $dtInicio = session('dtInicio');
-            $dtFim = session('dtFim');            
+            $dtFim = session('dtFim');   
+            $categoria = session('categoria');
+            $tipoDespesa = session('tipoDespesa');
+
         }
 
         
@@ -49,13 +59,36 @@ class FinanceiroController extends Controller
             
         }
 
+        if(empty($tipoDespesa) && !empty($categoria)){
+            $retorno = TipoDespesa::where('cd_conta_con',$this->conta)->whereIn('cd_categoria_despesa_cad',$categoria)->get();
+
+            $tipoDespesa = array();
+
+            foreach ($retorno as $ret) {
+                $tipoDespesa[] = $ret->cd_tipo_despesa_tds;
+            }
+        }
+
+        if(!empty($tipoDespesa)){
+            $despesas = $despesas->whereIn('cod_tipo_despesa',$tipoDespesa);
+        }
+
         $entradas = $entradas->sum('valor_total');
         $saidas   = $saidas->sum('valor_total');
         $despesas = $despesas->sum('valor_total');
 
         $saldo = $entradas - $saidas - $despesas;
 
-        return view('financeiro/balanco',['despesas' => $despesas,'saidas' => $saidas,'entradas' => $entradas,'saldo' => $saldo])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim]);;
+        $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
+
+        $tiposDespesa = TipoDespesa::when(!empty($categoria), function ($q) use ($categoria) { 
+                        return $q->whereIn('cd_categoria_despesa_cad',$categoria);
+                   })->where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
+        
+
+        \Session::put('flBuscar',false);
+
+        return view('financeiro/balanco',['tiposDespesa' => $tiposDespesa,'categorias' => $categorias,'despesas' => $despesas,'saidas' => $saidas,'entradas' => $entradas,'saldo' => $saldo])->with(['dtFim' => $dtFim,'tipoDespesa' => $tipoDespesa,'categoria' => $categoria]);
     }
 
     public function entradaIndex(){   
@@ -187,10 +220,11 @@ class FinanceiroController extends Controller
     }
 
     public function balancoBuscar(Request $request){
-
         
         \Session::put('flBuscar',true);                        
-        
+        \Session::put('tipoDespesa',$request->cd_tipo_despesa_tds);
+        \Session::put('categoria',$request->cd_categoria_despesa_cad);
+       
         if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
         
             Flash::error('É preciso preencher a data de início e fim.');

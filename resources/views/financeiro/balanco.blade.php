@@ -33,15 +33,32 @@
                             <label class="label label-black">Data Fim</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
-                        <section class="col col-md-2">    
-                            EM CONSTRUÇÃO
-                        </section>                       
+                        <section class="col col-md-6">     
+                            <label class="label label-black">Categoria</label><br />                
+                            <select multiple style="width: 100%" name="cd_categoria_despesa_cad[]" class="select2 categoria_despesa_multple" data-placeholder="Selecione uma categoria">   
+                                <option></option>                            
+                                @foreach($categorias as $cat)
+                                    <option value="{{ $cat->cd_categoria_despesa_cad }}" {{ (!empty(\Session::get('categoria') and in_array($cat->cd_categoria_despesa_cad,\Session::get('categoria'))) ? 'selected' : '') }} >{{ $cat->nm_categoria_despesa_cad }}</option>
+                                @endforeach
+                            </select>
+                        </section>
+                    </div>
+                    <div class=" row">
+                        <section class="col col-md-10">
+                            <label class="label label-black">Tipo de Despesa<span id='span-tipo-despesa' class="text-danger"></span></label><br />
+                            <select multiple style="width: 100%" name="cd_tipo_despesa_tds[]" class="select2 tipo_despesa" data-placeholder="Selecione um tipo de despesa" >
+                                @foreach($tiposDespesa as $despesa)
+                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" {{ (!empty(\Session::get('tipoDespesa') and in_array($despesa->cd_tipo_despesa_tds,\Session::get('tipoDespesa'))) ? 'selected' : '') }} data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
+                                @endforeach
+
+                            </select>
+                        </section>
                         <section class="col col-md-1">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar </button>
-                        </section>    
-
+                        </section>   
                     </div>
+                                    
                 </form>
             </div>
             <div style="clear: both;"></div>
@@ -91,6 +108,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        
     });
 </script>
 

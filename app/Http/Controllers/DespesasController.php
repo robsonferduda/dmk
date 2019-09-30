@@ -27,6 +27,23 @@ class DespesasController extends Controller
 
     }
 
+    public function getTiposMultiple(Request $request)
+    {
+
+        $categorias = explode(',',$request->categorias);
+
+        if(!empty($categorias[0])){
+
+            $tipos = TipoDespesa::where('cd_conta_con',$this->conta)->whereIn('cd_categoria_despesa_cad',$categorias)->orderBy('nm_tipo_despesa_tds','ASC')->get();     
+
+            return response()->json($tipos); 
+        
+        }else{
+            return null;
+
+        }
+    }
+
     public function getTipos($id)
     {
         $tipos = TipoDespesa::where('cd_conta_con',$this->conta)->where('cd_categoria_despesa_cad',$id)->orderBy('nm_tipo_despesa_tds','ASC')->get();     

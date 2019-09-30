@@ -1175,6 +1175,20 @@ class CorrespondenteController extends Controller
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
 
+        $processos = Processo::with('tipoServico')
+                                    ->where('cd_correspondente_cor',$this->conta)
+                                    ->select('cd_tipo_servico_tse')
+                                    ->groupBy('cd_tipo_servico_tse')
+                                    ->get(); 
+
+        dd($processos);
+
+        if(count($processos) > 0){
+            foreach ($processos as $processo) {
+                $tiposServico[] = $processo->tipoServico;
+            }
+        } 
+
         $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
 
         return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
@@ -1236,39 +1250,36 @@ class CorrespondenteController extends Controller
 
     public function dadosCliente($cliente)
     {
+        $cliente = \Crypt::decrypt($cliente);
+
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $cliente)->where('cd_correspondente_cor',$this->conta)->first();
         return view('correspondente/dados',['correspondente' => $correspondente]);
     }
 
     public function processosCliente($cliente)
     {
-        
-        $numero   = $request->get('nu_processo_pro');
-        $tipo = $request->get('cd_tipo_processo_tpo');
-        $tipoServico = $request->get('cd_tipo_servico_tse');
-        $autor = $request->get('nm_autor_pro');
-        $reu = $request->get('nm_reu_pro');
-        $acompanhamento = $request->get('nu_acompanhamento_pro');
 
+        $cliente = \Crypt::decrypt($cliente);
+
+        if (!empty(\Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso')))
+        {
+            
+            $tiposProcesso = \Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso');
+
+        }else{
+
+            $tiposProcesso = TipoProcesso::All();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->conta,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+
+        }
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
 
-        $processos = Processo::where('cd_correspondente_cor', $this->conta);
+        $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
 
-        if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+        return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
 
-            $query->where('cd_tipo_servico_tse', $tipoServico);
-
-        });
-        if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
-        if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
-        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
-        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
-        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
-
-          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
-
-        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
     }
 
     public function dashboard($id){
