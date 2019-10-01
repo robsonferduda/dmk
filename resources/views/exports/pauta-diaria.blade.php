@@ -13,6 +13,7 @@
         <th style="background-color:#D99594;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Nº DOS AUTOS</th>
         <th style="background-color:#D99594;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">CORRESPONDENTE</th>
         <th style="background-color:#D99594;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DE PROCESSO</th>
+        <th style="background-color:#D99594;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">STATUS</th>
 
     </tr>
     </thead>
@@ -55,7 +56,11 @@
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                {{ $dado->tipoProcesso ? $dado->tipoProcesso->nm_tipo_processo_tpo : '' }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+               {{ $dado->status ? $dado->status->nm_status_processo_conta_stp : '' }}
             </td>   
+            
         </tr>
         @endforeach
    

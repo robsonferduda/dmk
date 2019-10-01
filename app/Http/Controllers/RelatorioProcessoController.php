@@ -101,7 +101,7 @@ class RelatorioProcessoController extends Controller
 
     public function pautaDiaria(Request $request){
 
-        $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta);
+        $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta)->whereNotIn('cd_status_processo_stp',[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO]);
 
         $responsavel = $request->responsavel;
 
@@ -136,7 +136,7 @@ class RelatorioProcessoController extends Controller
             }
         }
 
-        $processos = $processos->get();
+        $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
 
         return \Excel::download(new ProcessoPautaDiariaExport(['processos' => $processos]),'Pauta.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
