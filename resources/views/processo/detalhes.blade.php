@@ -67,9 +67,17 @@
                                                 <li>
                                                     <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
+                                                @role('administrator|colaborador')
+                                                <li>
+                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                </li>   
+                                                <li>
+                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
+                                                </li>                                                 
                                                 <li>
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : 'Não informado' }}
                                                 </li>
+                                                @endrole 
                                                 @role('administrator|colaborador')
                                                     <li>
                                                         <strong>Responsável: </strong>
@@ -93,16 +101,9 @@
                                                 @role('administrator|colaborador')
                                                     <li>
                                                         <strong>Correspondente: </strong> 
-                                                        @if(!empty($processo->correspondente->contaCorrespondente)))
+                                                        @if(!empty($processo->correspondente->contaCorrespondente))
                                                             <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
                                                         @endif
-                                                    </li>                                                    
-                                                
-                                                    <li>
-                                                        <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
-                                                    </li>     
-                                                    <li>
-                                                        <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
                                                     </li> 
                                                 @endrole    
                                                 <li>
@@ -112,7 +113,7 @@
                                                     <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : 'Não informado' }}
                                                 </li>   
                                             </ul>
-                                        </p> 
+                                        </p>  
                                     </div>
                                 </fieldset>
                             </div>
