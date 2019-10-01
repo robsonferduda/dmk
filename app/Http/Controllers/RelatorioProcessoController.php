@@ -101,7 +101,7 @@ class RelatorioProcessoController extends Controller
 
     public function pautaDiaria(Request $request){
 
-        $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta);
+        $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta)->whereNotIn('cd_status_processo_stp',[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO]);
 
         $responsavel = $request->responsavel;
 
