@@ -206,7 +206,7 @@
         Ao clicar em "Continuar" uma cópia do processo será realizada.
     </p>
 </div>
-  <div class="modal fade in modal_top_alto" id="modal_pauta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade in modal_top_alto" id="modal_pauta" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -218,21 +218,27 @@
                             <fieldset>
                                 <div class="row">
                                     <section class="col col-4">
-                                        <label>Data da Pauta</label>
+                                        <label>Data prazo fatal início</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
-                                            <input type="text" name="dt_pauta" id="dt_pauta" placeholder="__/__/____" class="mascara_data" required="required">
+                                            <input type="text" name="dt_inicio" id="dt_inicio" placeholder="___/___/____" class="mascara_data">
                                         </label>
                                     </section>
-                                    <section class="col col-8">
+                                     <section class="col col-4">
+                                        <label>Data prazo fatal fim</label>
+                                        <label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input type="text" name="dt_fim" id="dt_fim" placeholder="___/___/____" class="mascara_data" >
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row">
+                                    <section class="col col-md-12">
                                         <label>Responsável</label>
-                                        <label class="select">
-                                            <select name="responsavel" required="required">
-                                                <option value="">Selecione um responsável</option>
-                                                <option value="0">Todos</option>
-                                                @foreach($responsaveis as $user)
-                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                                @endforeach
-                                            </select> <i></i> </label>
+                                        <select style="width: 100%"  class="select2" name="responsavel" >
+                                            <option value="">Todos</option>
+                                            @foreach($responsaveis as $user)
+                                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </section>
                                 </div>
                             </fieldset>
@@ -250,6 +256,10 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        $('select').on('select2:open', function(e){
+             $('.custom-dropdown').parent().css('z-index', 99999);
+        });
 
         $('#modal_pauta').on('shown.bs.modal', function () {
           $('#dt_pauta').trigger('focus');

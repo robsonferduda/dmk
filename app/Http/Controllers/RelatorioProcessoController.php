@@ -12,6 +12,7 @@ use App\Cliente;
 use App\Processo;
 use App\TipoDespesa;
 use App\Exports\ProcessoParaClienteExport;
+use App\Exports\ProcessoPautaDiariaExport;
 
 class RelatorioProcessoController extends Controller
 {
@@ -100,26 +101,44 @@ class RelatorioProcessoController extends Controller
 
     public function pautaDiaria(Request $request){
 
-        if(\Helper::validaData($request->dt_pauta)){
+        $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta);
 
-            $dt_pauta = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_pauta)));
-            $responsavel = $request->responsavel;
+        $responsavel = $request->responsavel;
 
-            if($responsavel){
+        if(!empty($responsavel)){
 
-                dd("Relatório individual");
+            $processos = $processos->where('cd_responsavel_pro',$responsavel);
+        }
+        
+        if(!empty($request->dt_inicio) && !empty($request->dt_fim) && \Helper::validaData($request->dt_inicio) && \Helper::validaData($request->dt_fim)){
 
-            }else{
+            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_inicio)));
+            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_fim)));
 
-                dd("Relatório de todos");
-            }
-
+            $processos = $processos->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
         }else{
 
-            Flash::error('Data da pauta inválida');
-            return \Redirect::back()->withInput();
+            if(!empty($request->dt_inicio) && \Helper::validaData($request->dt_inicio)){
+
+                $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_inicio)));
+               
+                $processos = $processos->where('dt_prazo_fatal_pro',$dtInicio);
+            
+            }else{
+                if(!empty($request->dt_fim) && \Helper::validaData($request->dt_fim)){
+
+                    $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dt_fim)));
+               
+                    $processos = $processos->where('dt_prazo_fatal_pro',$dtFim);
+            
+                }
+
+            }
         }
 
+        $processos = $processos->get();
+
+        return \Excel::download(new ProcessoPautaDiariaExport(['processos' => $processos]),'Pauta.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function getFiles(){
