@@ -29,18 +29,8 @@
                     <div class="input-group">
                         <span class="input-group-addon">Nº Processo</span>
                         <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
-                    </div>                    
-                    
-                    <div style="width: 30%" class="form-group">
-                        <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
-                            <option value="">Tipos de Serviço</option>
-                            @foreach($tiposServico as $tipo)
-                                <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
-                            @endforeach
-                        </select>
-                    </div>                
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    
+                    </div>            
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>                    
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -56,7 +46,6 @@
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
                                     <th>Cidade</th>                                                  
-                                    <th>Tipo de Serviço</th>
                                     <th>Cliente</th>
                                     <th>Parte Adversa</th>
                                     <th>Status</th>
@@ -78,9 +67,6 @@
                                         <td>
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
                                         </td>
-                                                                   
-                                       
-                                         <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
                                         <td>
                                             {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}                                           
                                         </td>
@@ -89,7 +75,7 @@
                                         <td class="center">
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
-                                                    <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                                    <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                           
                                                     <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
                                                     

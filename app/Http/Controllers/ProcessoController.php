@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use App\Entidade;
 use App\Vara;
@@ -550,9 +551,20 @@ class ProcessoController extends Controller
 
     public function detalhes($id){
 
+        //Traz os detalhes de processo para a conta e para os correspondentes
+
         $id = \Crypt::decrypt($id); 
 
-        $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+        switch (Auth::user()->role()->first()->slug) {
+
+            case 'correspondente':
+                $processo = Processo::where('cd_processo_pro',$id)->where('cd_correspondente_cor',$this->cdContaCon)->first();
+                break;
+                
+            default:
+                $processo = Processo::where('cd_processo_pro',$id)->where('cd_conta_con',$this->cdContaCon)->first();
+                break;
+        }
     
         return view('processo/detalhes',['processo' => $processo]);
     }

@@ -1160,38 +1160,10 @@ class CorrespondenteController extends Controller
 
     public function processos(){
 
-        if (!empty(\Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso')))
-        {
-            
-            $tiposProcesso = \Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso');
-
-        }else{
-
-            $tiposProcesso = TipoProcesso::All();
-            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
-           \Cache::tags($this->conta,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
-
-        }
-
-        $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
-
-        $processos = Processo::with('tipoServico')
-                                    ->where('cd_correspondente_cor',$this->conta)
-                                    ->select('cd_tipo_servico_tse')
-                                    ->groupBy('cd_tipo_servico_tse')
-                                    ->get(); 
-
-        dd($processos);
-
-        if(count($processos) > 0){
-            foreach ($processos as $processo) {
-                $tiposServico[] = $processo->tipoServico;
-            }
-        } 
 
         $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
 
-        return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+        return view('correspondente/processos',['processos' => $processos]);
 
     }
 
