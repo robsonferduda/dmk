@@ -58,7 +58,7 @@
                {{ $dado->tipoProcesso ? $dado->tipoProcesso->nm_tipo_processo_tpo : '' }}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
-               {{ $dado->status ? $dado->status->nm_status_processo_stp : '' }}
+               {{ $dado->status ? $dado->status->nm_status_processo_conta_stp : '' }}
             </td>   
             
         </tr>
