@@ -236,21 +236,7 @@ class ClienteController extends Controller
             }
         } 
 
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-
-                if(!in_array($honorario->cidade, $cidades_tabela))
-                    $cidades_tabela[] = $honorario->cidade;
-            }
-        } 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico)
-                    if(!in_array($honorario->tipoServico, $lista_servicos_tabela))
-                        $lista_servicos_tabela[] = $honorario->tipoServico;
-            }
-        } 
+   
 
         //Carrega as cidades
         $honorarios = TaxaHonorario::with('cidade')
