@@ -65,7 +65,7 @@
                                     </section> 
                                     <section class="col col-md-2">
                                         <label class="label">Buscar</label>
-                                        <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                        <button class="btn btn-primary" style="width: 100%" type="submit" data-toggle="modal" data-target="#processamento"><i class="fa fa-search"></i> Buscar</button>
                                     </section>
                                     <section class="col col-md-2">
                                         <label class="label">Mostrar Todos</label>
