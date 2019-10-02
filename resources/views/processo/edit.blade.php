@@ -390,6 +390,10 @@
         $( "#correspondente_auto_complete" ).focusout(function(){
            if($("input[name='cd_correspondente_cor']").val() == ''){
                 $("#correspondente_auto_complete").val('');
+           }else{
+                if($( "#correspondente_auto_complete" ).val().trim() == ''){
+                    $("input[name='cd_correspondente_cor']").val('');
+                }
            }
         });
 
