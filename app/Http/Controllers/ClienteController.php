@@ -227,7 +227,7 @@ class ClienteController extends Controller
                     ->orderBy('nm_cidade_cde')
                     ->get(['cidade_cde.cd_cidade_cde','nm_cidade_cde']);        
 
-        //Carrega os serviços
+        //Carrega os serviços para busca
         $lista_servicos = DB::table('taxa_honorario_entidade_the')                                
                             ->join('tipo_servico_tse', 'tipo_servico_tse.cd_tipo_servico_tse','=','taxa_honorario_entidade_the.cd_tipo_servico_tse')
                             ->where('taxa_honorario_entidade_the.cd_conta_con',$cliente->cd_conta_con)
@@ -268,6 +268,11 @@ class ClienteController extends Controller
         //Limpa dados da sessão
         \Session::forget('lista_cidades');
 
+        //Conta os valores de honorarios do cliente
+        $total = TaxaHonorario::where('cd_conta_con',$this->conta)
+                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                                    ->count();
+
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
                                     ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
@@ -286,73 +291,55 @@ class ClienteController extends Controller
             }
         } 
 
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
+        //Carrega as cidades para tabela
+        $cidades_tabela = DB::table('taxa_honorario_entidade_the')                                
+                    ->join('cidade_cde', 'cidade_cde.cd_cidade_cde','=','taxa_honorario_entidade_the.cd_cidade_cde')
+                    ->where('cd_conta_con',$cliente->cd_conta_con)
+                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                    ->whereNull('taxa_honorario_entidade_the.deleted_at')
+                    ->when($request->cd_cidade_cde, function($query) use($request){
+                        return $query->where('cidade_cde.cd_cidade_cde', $request->cd_cidade_cde);
+                    })
+                    ->groupBy('cidade_cde.cd_cidade_cde','nm_cidade_cde')
+                    ->orderBy('nm_cidade_cde')
+                    ->get(['cidade_cde.cd_cidade_cde','nm_cidade_cde']);        
 
-                if(!in_array($honorario->cidade, $cidades_tabela))
-                    $cidades_tabela[] = $honorario->cidade;
-            }
-        } 
+        //Carrega os serviços para tabela
+        $lista_servicos_tabela = DB::table('taxa_honorario_entidade_the')                                
+                            ->join('tipo_servico_tse', 'tipo_servico_tse.cd_tipo_servico_tse','=','taxa_honorario_entidade_the.cd_tipo_servico_tse')
+                            ->where('taxa_honorario_entidade_the.cd_conta_con',$cliente->cd_conta_con)
+                            ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                            ->whereNull('taxa_honorario_entidade_the.deleted_at')
+                            ->when($request->servico, function($query) use($request){
 
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico)
-                    if(!in_array($honorario->tipoServico, $lista_servicos_tabela))
-                        $lista_servicos_tabela[] = $honorario->tipoServico;
-            }
-        } 
+                                return $query->whereIn('taxa_honorario_entidade_the.cd_tipo_servico_tse', $request->servico);
+                            })
+                            ->groupBy('tipo_servico_tse.cd_tipo_servico_tse','nm_tipo_servico_tse')
+                            ->orderBy('nm_tipo_servico_tse')
+                            ->get(['tipo_servico_tse.cd_tipo_servico_tse','nm_tipo_servico_tse']);
 
-        //Carrega as cidades
-        $honorarios = TaxaHonorario::with('cidade')
-                                    ->where('cd_conta_con',$cliente->cd_conta_con)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
-                                    ->select('cd_cidade_cde')
-                                    ->groupBy('cd_cidade_cde')
-                                    ->get(); 
 
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $cidades[] = $honorario->cidade;
-            }
-        } 
+        //Carrega as cidades para busca
+        $cidades = DB::table('taxa_honorario_entidade_the')                                
+                    ->join('cidade_cde', 'cidade_cde.cd_cidade_cde','=','taxa_honorario_entidade_the.cd_cidade_cde')
+                    ->where('cd_conta_con',$cliente->cd_conta_con)
+                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                    ->whereNull('taxa_honorario_entidade_the.deleted_at')
+                    ->groupBy('cidade_cde.cd_cidade_cde','nm_cidade_cde')
+                    ->orderBy('nm_cidade_cde')
+                    ->get(['cidade_cde.cd_cidade_cde','nm_cidade_cde']);        
 
-        //Ordena a lista de cidades
-        usort($cidades,
-            function($a, $b) {
+        //Carrega os serviços para busca
+        $lista_servicos = DB::table('taxa_honorario_entidade_the')                                
+                            ->join('tipo_servico_tse', 'tipo_servico_tse.cd_tipo_servico_tse','=','taxa_honorario_entidade_the.cd_tipo_servico_tse')
+                            ->where('taxa_honorario_entidade_the.cd_conta_con',$cliente->cd_conta_con)
+                            ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
+                            ->whereNull('taxa_honorario_entidade_the.deleted_at')
+                            ->groupBy('tipo_servico_tse.cd_tipo_servico_tse','nm_tipo_servico_tse')
+                            ->orderBy('nm_tipo_servico_tse')
+                            ->get(['tipo_servico_tse.cd_tipo_servico_tse','nm_tipo_servico_tse']);
 
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
-
-        //Carrega os serviços
-        $honorarios = TaxaHonorario::with('tipoServico')
-                                    ->where('cd_conta_con',$cliente->cd_conta_con)
-                                    ->where('cd_entidade_ete',$cliente->entidade->cd_entidade_ete)
-                                    ->select('cd_tipo_servico_tse')
-                                    ->groupBy('cd_tipo_servico_tse')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico)
-                    $lista_servicos[] = $honorario->tipoServico;
-            }
-        } 
-
-        usort($lista_servicos,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
+        $msg = 'Você possui '.$total.' registros de honorários cadastrados em '.count($cidades).' cidades diferentes para '.count($lista_servicos).' tipos de serviço. Para listar todos os registros, selecione a opção "<strong>Mostrar Todos</strong>", senão busque por uma cidade/serviço específico.';
         
         //Envia dados e renderiza tela
         return view('cliente/honorarios',['cidades' => $cidades,
@@ -361,6 +348,7 @@ class ClienteController extends Controller
                                           'servicos' => $servicos, 
                                           'valores' => $valores,
                                           'organizar' => $organizar,
+                                          'msg' => $msg,
                                           'lista_servicos' => $lista_servicos,
                                           'lista_servicos_tabela' => $lista_servicos_tabela                                           
                                           ]);
