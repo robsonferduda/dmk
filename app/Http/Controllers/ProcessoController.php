@@ -595,22 +595,72 @@ class ProcessoController extends Controller
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
 
-        $processos = Processo::where('cd_conta_con', $this->cdContaCon);
+        if(!empty($request->acompanhamento)){
 
-        if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+            $processos = Processo::with(array('correspondente' => function($query){
+              $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
+              $query->with(array('contaCorrespondente' => function($query){
+                    $query->where('cd_conta_con', $this->cdContaCon);
+              }));
+            }))->with(array('cidade' => function($query){
+                  $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
+                  $query->with(array('estado' => function($query){
+                      $query->select('sg_estado_est','cd_estado_est');
+            }));
+            }))->with(array('honorario' => function($query){
+                  $query->select('cd_processo_pro','cd_tipo_servico_tse');
+                  $query->with(array('tipoServico' => function($query){
+                      $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
+            }));
+            }))->with(array('cliente' => function($query){
+                  $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
+            }))->with('status')
+            ->where('cd_conta_con', $this->cdContaCon)
+            ->when(!empty($tipoServico), function($query) use($tipoServico){
+                    $query->whereHas('honorario', function($query) use ($tipoServico) {
 
-            $query->where('cd_tipo_servico_tse', $tipoServico);
+                        $query->where('cd_tipo_servico_tse', $tipoServico);
 
-        });
-        if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
-        if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
-        if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
-        if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
-        if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+                    });
+            })
+            ->when(!empty($tipo), function($query) use($tipo){
+                    
+                $query->where('cd_tipo_processo_tpo',$tipo);
+            })
+            ->when(!empty($numero), function($query) use($numero){
+                    
+                $query->where('nu_processo_pro','like',"%$numero%");
+            })
+            ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();  
 
-          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
+        }else{
+
+            $processos = Processo::where('cd_conta_con', $this->cdContaCon);
+
+            if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
+
+                $query->where('cd_tipo_servico_tse', $tipoServico);
+
+            });
+            if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
+            if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
+            if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
+            if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
+            if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
+
+            $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+
+        }
+
+        if(!empty($request->acompanhamento)){
+
+            $responsaveis = User::where('cd_conta_con',$this->cdContaCon)->orderBy('name')->get();
+
+            return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico]);
+        }else{
+            return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
+        }
     }
 
     public function novo(){

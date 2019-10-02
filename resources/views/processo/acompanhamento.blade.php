@@ -73,6 +73,7 @@
             <div class="well">
                 <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
+                    <input type="hidden" name="acompanhamento" value="S">
                     <div class="input-group">
                         <span class="input-group-addon">Nº Processo</span>
                         <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
