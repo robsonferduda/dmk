@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Clientes <span>> Honorários por Tipo de Serviço </span>
+                <i class="fa-fw fa fa-group"></i> Clientes <span>> Honorários por Tipo de Serviço </span> <span> > {{ $cliente->nm_razao_social_cli }} </span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -27,6 +27,15 @@
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="col-sm-12">
+                    @if(isset($msg))
+                    <div class="alert alert-info fade in">
+                                <button class="close" data-dismiss="alert">
+                                    ×
+                                </button>
+                                <i class="fa-fw fa fa-info"></i>
+                                <strong>Informação!</strong> {!! $msg !!}
+                            </div>
+                    @endif
                     <div class="well">
                         <form action="{{ url('cliente/honorarios/buscar/'.$cliente->cd_cliente_cli) }}" class="smart-form'" method="GET" role="search">
                             <input type="hidden" name="cd_cliente" id="cd_cliente" value="{{ $cliente->cd_cliente_cli }}">
@@ -45,8 +54,8 @@
                                             @endforeach
                                         </select> 
                                     </section> 
-                                    <section class="col col-md-6">
-                                        <label class="label label-black" >Tipos de Serviço</label><span class="text-info">(Selecione um ou mais Tipos de Serviço)</span>       
+                                    <section class="col col-md-4">
+                                        <label class="label label-black" >Tipos de Serviço</label>     
                                         <select multiple name="servico[]" id="servico_grupo" class="select2">
                                             <option value="">Selecione um servico</option>
                                                 @foreach($lista_servicos as $servico)
@@ -57,6 +66,10 @@
                                     <section class="col col-md-2">
                                         <label class="label">Buscar</label>
                                         <button class="btn btn-primary" style="width: 100%" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                    </section>
+                                    <section class="col col-md-2">
+                                        <label class="label">Mostrar Todos</label>
+                                        <button class="btn btn-default" style="width: 100%" type="submit" name="mostrar_todos" data-toggle="modal" data-target="#processamento"><i class="fa fa-list-ul"></i> Mostrar Todos</button>
                                     </section>
                                 </div>
                             </fieldset>
@@ -90,7 +103,7 @@
                                                         </ul>
                                                 </div>
                                             </div> 
-                                            @if(count($cidades_tabela) > 0)                                            
+                                            @if(!empty($cidades_tabela))                                            
                                                 @if($organizar == 1)
                                                     <div class="tabelah">
                                                         <table class="table table-bordered">
