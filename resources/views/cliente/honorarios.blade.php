@@ -90,7 +90,7 @@
                                                         </ul>
                                                 </div>
                                             </div> 
-                                            @if(count($cidades) > 0)                                            
+                                            @if(count($cidades_tabela) > 0)                                            
                                                 @if($organizar == 1)
                                                     <div class="tabelah">
                                                         <table class="table table-bordered">

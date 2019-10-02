@@ -16,13 +16,17 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
 
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
-            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-            <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            
-           
+            @role('administrator|colaborador') 
+                <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
+                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
+                <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+                <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+            @endrole
+
+            @role('correspondente') 
+                <a data-toggle="modal" href="{{ url('correspondente/processos') }}" class="btn btn-default pull-right header-btn" style="margin-right: 15px;"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+            @endrole
         </div>
     </div>
     <div class="row">
@@ -46,33 +50,47 @@
                                     <div class="row" style="margin-left: 5px;">
                                         <p>
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
-                                           
-                                                <li>
-                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
-                                                </li>
-                                                <li>
-                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : ' ' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : ' ' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Responsável: </strong>
-                                                    @if(!empty($processo->responsavel))
-                                                     <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
-                                                    @else
-                                                        <span>Não Alocado</span>
-                                                    @endif
-                                                </li>
                                                 <li>
                                                     <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
                                                 </li>
-                                                                                       
+                                                @role('administrator|colaborador') 
+                                                    <li>
+                                                        <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
+                                                    </li>
+                                                @endrole
+                                                <li>
+                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
+                                                </li>
                                                 <li>
                                                     <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : ' ' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Autor: </strong> {{ $processo->nm_autor_pro }}
+                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                </li> 
+                                                @role('administrator|colaborador')
+                                                <li>
+                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                </li>   
+                                                <li>
+                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
+                                                </li>                                                 
+                                                <li>
+                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : 'Não informado' }}
+                                                </li>
+                                                @endrole 
+                                                @role('administrator|colaborador')
+                                                    <li>
+                                                        <strong>Responsável: </strong>
+                                                        @if(!empty($processo->responsavel))
+                                                         <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
+                                                        @else
+                                                            <span>Não Alocado</span>
+                                                        @endif
+                                                    </li>
+                                                @endrole                                         
+                                                                                    
+                                                <li>
+                                                    <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : ' ' }}
@@ -80,35 +98,22 @@
                                                 <li>
                                                     <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
                                                 </li>
+                                                @role('administrator|colaborador')
+                                                    <li>
+                                                        <strong>Correspondente: </strong> 
+                                                        @if(!empty($processo->correspondente->contaCorrespondente))
+                                                            <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
+                                                        @endif
+                                                    </li> 
+                                                @endrole    
                                                 <li>
-                                                    <strong>Correspondente: </strong> 
-                                                    @if(!empty($processo->correspondente->contaCorrespondente)))
-                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
-                                                    @endif
-                                                </li>      
-                                                <li>
-                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : 'Não informado' }}
                                                 </li> 
                                                 <li>
-                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
-                                                </li>     
-                                                <li>
-                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
-                                                </li>    
-                                                <li>
-                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' ' }}
-                                                </li> 
-                                                <li>
-                                                    <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : ' ' }}
+                                                    <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : 'Não informado' }}
                                                 </li>   
-                                                <li>
-                                                    <strong>Processo Criado em: </strong> {{ date('d/m/Y H:i', strtotime($processo->created_at))  }} 
-                                                </li>
-                                                <li>
-                                                    <strong>Processo Criado por: </strong>  {{ !empty($processo->audits()->where('event','created')->with('user')->get()->last()->user->name) ?  $processo->audits()->where('event','created')->with('user')->get()->last()->user->name : ' ' }} 
-                                                </li>
                                             </ul>
-                                        </p> 
+                                        </p>  
                                     </div>
                                 </fieldset>
                             </div>
@@ -124,23 +129,23 @@
                                                     <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}
-                                                </li>
-                                                <li>
                                                     <strong>Data Prazo Fatal: </strong> {{ !empty($processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' ' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Réu: </strong> {{ $processo->nm_reu_pro }}
+                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}
+                                                </li>                                                
+                                                <li>
+                                                    <strong>Réu: </strong> {{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : ' ' }}
+                                                    <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li>
-                                                <legend><i class="fa">Audiência com:</i> </legend>
+                                                <h6 style="font-weight: 400;">Audiência com: </h6>
                                                 <li>
-                                                    <strong>Preposto: </strong> {{ $processo->nm_preposto_pro }}
+                                                    <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Advogado: </strong> {{ $processo->nm_advogado_pro }}
+                                                    <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
                                                 </li>
 
                                             </ul>
