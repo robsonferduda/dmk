@@ -33,7 +33,7 @@ class EnvioDocumentosProcessoNotification extends Notification
             ->markdown('email.convite')
             ->line(Lang::getFromJson('Envio de documentos do processo '.$this->processo->nu_processo_pro.' finalizado.'))
             ->line(Lang::getFromJson('Confirma o recebimento dos documentos e a realização do ato contratado?'))
-            ->action(Lang::getFromJson('Confirmar Recebimento'), url(config('app.url').route('processos.detalhes', ['token' => $notifiable->token], false)))
+            ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.acompanhar', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
             ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
     }
 
