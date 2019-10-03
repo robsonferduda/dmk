@@ -114,6 +114,11 @@ class Processo extends Model implements AuditableContract
         return $this->hasOne('App\StatusProcesso','cd_status_processo_stp', 'cd_status_processo_stp');
     }
 
+    public function notificarEnvioDocumentos($processo)
+    {
+        $this->notify(new EnvioDocumentosProcessoNotification($processo));
+    }
+
     public function notificarCorrespondente($processo)
     {
         $this->notify(new CorrespondenteProcessoNotification($processo));

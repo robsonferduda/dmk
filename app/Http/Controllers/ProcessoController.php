@@ -934,7 +934,8 @@ class ProcessoController extends Controller
             else
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
 
-            $processo->save();
+            if($processo->save())
+                $processo->notificarEnvioDocumentos($processo);
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         }else{
