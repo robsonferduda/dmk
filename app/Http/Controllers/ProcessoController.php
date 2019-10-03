@@ -927,10 +927,15 @@ class ProcessoController extends Controller
 
         $processo->fl_envio_anexos_pro = $flag;
         
-        if($processo->save())
+        if($processo->save()){
+
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
+            $processo->save();
+
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
-        else
+        }else{
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+        }
     }
 
     public function atualizaAnexosRecebidos($id)
@@ -943,10 +948,15 @@ class ProcessoController extends Controller
 
         $processo->fl_recebimento_anexos_pro = $flag;
         
-        if($processo->save())
+        if($processo->save()){
+
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ANDAMENTO;
+            $processo->save();
+            
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
-        else
+        }else{
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+        }
 
     }
 

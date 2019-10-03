@@ -604,7 +604,7 @@
                 },
                 success: function(response)
                 {                    
-                    location.reload();
+                    //location.reload();
                 },
                 error: function(response)
                 {
