@@ -10,6 +10,7 @@ use App\Notifications\CorrespondenteProcessoNotification;
 use App\Notifications\ContaProcessoNotification;
 use App\Notifications\MensagemProcessoNotification;
 use App\Notifications\ClienteProcessoNotification;
+use App\Notifications\EnvioDocumentosProcessoNotification;
 
 
 class Processo extends Model implements AuditableContract
