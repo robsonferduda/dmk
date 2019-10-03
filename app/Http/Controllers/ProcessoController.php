@@ -929,7 +929,11 @@ class ProcessoController extends Controller
         
         if($processo->save()){
 
-            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
+            if($flag == 'S')
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
+            else
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
+
             $processo->save();
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
@@ -950,9 +954,13 @@ class ProcessoController extends Controller
         
         if($processo->save()){
 
-            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ANDAMENTO;
-            $processo->save();
+            if($flag == 'S')
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ANDAMENTO;
+            else
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
             
+            $processo->save();
+
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         }else{
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
