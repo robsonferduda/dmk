@@ -138,7 +138,7 @@ class RelatorioProcessoController extends Controller
 
         $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
 
-        return \Excel::download(new ProcessoPautaDiariaExport(['processos' => $processos]),'Pauta.xlsx',\Maatwebsite\Excel\Excel::XLSX);
+        return \Excel::download(new ProcessoPautaDiariaExport(['processos' => $processos]),'Pauta.pdf',\Maatwebsite\Excel\Excel::DOMPDF);
     }
 
     private function getFiles(){
