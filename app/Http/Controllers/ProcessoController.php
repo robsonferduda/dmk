@@ -937,7 +937,7 @@ class ProcessoController extends Controller
 
             if($processo->save()){
 
-                if($flag == 'S')
+                if($flag == 'S'){
                     $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
                     if(count($emails) == 0){
