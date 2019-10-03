@@ -207,32 +207,34 @@
                                         
                                     @endforeach
                                 </fieldset>
-                                <section>                          
-                                    <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
-                                        <span class="onoffswitch">
-                                            <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
-                                            <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
-                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                <span class="onoffswitch-switch"></span>
-                                            </label> 
-                                        </span> 
-                                    </div>
-                                </section>
-
-                                <section>                          
-                                    <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Confirmo o recebimento dos documentos e a realização do ato contratado?</span> 
-                                        <span class="onoffswitch">
-                                            <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                            <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                <span class="onoffswitch-switch"></span>
-                                            </label> 
-                                        </span> 
-                                    </div>
-                                </section>
-
+                                @role('administrator')
+                                    <section>                          
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
+                                                <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    </section>
+                                @endrole
+                                @role('correspondente') 
+                                    <section>                          
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Confirmo o recebimento dos documentos e a realização do ato contratado?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                                <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    </section>
+                                @endrole
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
                                         
