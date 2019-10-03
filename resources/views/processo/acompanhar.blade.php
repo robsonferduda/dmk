@@ -209,7 +209,7 @@
                                 </fieldset>
                                 <section>                          
                                     <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Todos os documentos referentes ao processo foram anexados?</span> 
+                                        <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
                                         <span class="onoffswitch">
                                             <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
                                             <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
@@ -222,7 +222,7 @@
 
                                 <section>                          
                                     <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Recebi todos os documentos referentes ao processo?</span> 
+                                        <span class="onoffswitch-title">Confirmo o recebimento dos documentos e a realização do ato contratado?</span> 
                                         <span class="onoffswitch">
                                             <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
                                             <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
