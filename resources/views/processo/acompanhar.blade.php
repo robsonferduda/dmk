@@ -232,6 +232,12 @@
                                         </span> 
                                     </div>
                                 </section>
+
+                                <section> 
+                                    <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
+                                        
+                                    </div>
+                                </section>
                             </div>
                         </div>             
                 </div>
@@ -503,6 +509,19 @@
     </div>
 </div>
 
+<div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+                     </div>
+                    <div class="modal-body center">
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, atualizando status do processo...</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -601,14 +620,17 @@
                 beforeSend: function()
                 {
                     $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
                 },
                 success: function(response)
                 {                    
-                    //location.reload();
+                    $("#atualiza_status").modal('show');
+                    location.reload();
                 },
                 error: function(response)
                 {
                     $('.box-loader').loader('hide');
+                    $('.erro_atualiza_status').html('<span>Houve um erro ao atualizar o status do processo</span>');
                 }
             });
 
@@ -626,6 +648,7 @@
                 beforeSend: function()
                 {
                     $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
                 },
                 success: function(response)
                 {                    
@@ -634,6 +657,7 @@
                 error: function(response)
                 {
                     $('.box-loader').loader('hide');
+                    $('.erro_atualiza_status').html('<span>Houve um erro ao atualizar o status do processo</span>');
                 }
             });
 
