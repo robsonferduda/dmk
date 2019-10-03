@@ -922,6 +922,7 @@ class ProcessoController extends Controller
     {
         $flag = 'N';
         $processo = Processo::findOrFail($id);
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
 
         if($processo->fl_envio_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
 
@@ -934,8 +935,30 @@ class ProcessoController extends Controller
             else
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
 
-            if($processo->save())
-                $processo->notificarEnvioDocumentos($processo);
+            if($processo->save()){
+
+                if($flag == 'S')
+                    $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+                    if(count($emails) == 0){
+
+                        Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+
+                    }else{
+
+                        $lista = '';
+
+                        foreach ($emails as $email) {
+
+                            $processo->email =  $email->dc_endereco_eletronico_ede;
+                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                            $processo->notificarEnvioDocumentos($processo);
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                        }
+
+                    }
+                }
+            }
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         }else{
