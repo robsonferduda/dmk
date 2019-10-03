@@ -124,7 +124,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
-	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento');
+	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento')->name('processo.correspondente');;
 	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
 	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');

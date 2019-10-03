@@ -50,7 +50,7 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite']]);
+        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','acompanhamento']]);
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
