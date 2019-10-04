@@ -29,12 +29,12 @@
                     <div class="row">
                         <section class="col col-md-2">
                             <label class="label label-black">Data prazo fatal inicial</label><br />
-                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : $dtInicio}}" >
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="!empty($dtInicio) ? $dtInicio : ''}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
                             <label class="label label-black">Data prazo fatal final</label><br />
-                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : $dtFim }}"  >                            
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
                         </section>
                          <section class="col col-md-4">                            
                             <label class="label label-black">Nº Processo</label><br />
