@@ -12,7 +12,8 @@ use App\Cliente;
 use App\Processo;
 use App\TipoDespesa;
 use App\Exports\ProcessoParaClienteExport;
-use App\Exports\ProcessoPautaDiariaExport;
+use App\Exports\ProcessoPautaDiariaExportPDF;
+use App\Exports\ProcessoPautaDiariaExportExcel;
 
 class RelatorioProcessoController extends Controller
 {
@@ -138,7 +139,13 @@ class RelatorioProcessoController extends Controller
 
         $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
 
-        return \Excel::download(new ProcessoPautaDiariaExport(['processos' => $processos]),'Pauta.pdf',\Maatwebsite\Excel\Excel::DOMPDF);
+        if($request->tipo == 'pdf'){
+            return \Excel::download(new ProcessoPautaDiariaExportPDF(['processos' => $processos]),'Pauta.pdf',\Maatwebsite\Excel\Excel::DOMPDF);
+        }else{
+            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]),'Pauta.xlsx',\Maatwebsite\Excel\Excel::XLS);    
+        }
+
+        
     }
 
     private function getFiles(){
