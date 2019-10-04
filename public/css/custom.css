@@ -224,6 +224,7 @@ span.tags
   resize: none;
   margin-bottom: 10px;
   padding: 5px 10px;
+  text-align: justify;
 }
 
 .messaging { padding: 0 0 50px 0;}
