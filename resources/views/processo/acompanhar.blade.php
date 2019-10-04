@@ -318,7 +318,7 @@
 
                                     <div class="type_msg">
                                         <div class="input_msg_write">
-                                            <input type="text" id="texto_mensagem" class="write_msg" placeholder="Escrever mensagem" />
+                                            <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>                                         
                                             <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                         </div>
                                     </div>
@@ -326,8 +326,6 @@
                             </div>                            
                         </div>
                     </div>
-
-
                     
                     @if(Session::get('SESSION_NIVEL') != 3)
                         <div class="col-sm-12 col-md-6">
@@ -391,7 +389,7 @@
                                         </div>
                                         <div class="type_msg">
                                             <div class="input_msg_write">
-                                                <input type="text" id="texto_mensagem_interno" class="write_msg" placeholder="Escrever mensagem" />
+                                                <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
                                             <button class="msg_send_btn msg_send_interno" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                             </div>
                                         </div>

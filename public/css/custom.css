@@ -217,6 +217,15 @@ span.tags
   top: 11px;
   width: 33px;
 }
+
+.write_msg{
+  width: 94%;
+  border: none;
+  resize: none;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+
 .messaging { padding: 0 0 50px 0;}
 .msg_history {
   height: 516px;
