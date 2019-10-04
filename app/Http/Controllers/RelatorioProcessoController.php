@@ -142,7 +142,7 @@ class RelatorioProcessoController extends Controller
         if($request->tipo == 'pdf'){
             return \Excel::download(new ProcessoPautaDiariaExportPDF(['processos' => $processos]),'Pauta.pdf',\Maatwebsite\Excel\Excel::DOMPDF);
         }else{
-            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]),'Pauta.xlsx',\Maatwebsite\Excel\Excel::XLS);    
+            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]),'Pauta.xls',\Maatwebsite\Excel\Excel::XLS);    
         }
 
         
