@@ -29,7 +29,7 @@
                     <div class="row">
                         <section class="col col-md-2">
                             <label class="label label-black">Data prazo fatal inicial</label><br />
-                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="!empty($dtInicio) ? $dtInicio : ''}}" >
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
