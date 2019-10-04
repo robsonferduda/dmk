@@ -27,21 +27,30 @@
                 <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-4">                            
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data prazo fatal inicial</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
+                            
+                        </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data prazo fatal final</label><br />
+                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
+                        </section>
+                         <section class="col col-md-4">                            
                             <label class="label label-black">Nº Processo</label><br />
                             <input style="width: 100%" size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="" value="{{ !empty($numero) ? $numero : '' }}" >                            
                         </section>               
                         <section class="col col-md-4">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
-                        </section>                  
+                        </section>       
+                    </div>
+                    <div class="row">                                  
                         <section class="col col-md-4">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
-                        </section>                           
-                    </div>  
-                    <div class="row"> 
-                        <section class="col col-md-3">
+                        </section>  
+                         <section class="col col-md-3">
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
                                 <option value="">Tipos de Processo</option>
@@ -58,7 +67,9 @@
                                     <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
                                 @endforeach
                             </select>
-                        </section>   
+                        </section>                            
+                    </div>  
+                    <div class="row"> 
                         <section class="col col-md-2">
                             <label class="label label-black">Nº Externo</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
@@ -79,6 +90,7 @@
                     </div>  
                 </form>
             </div>
+            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 100 processos cadastrados. Utilize as opções de busca para personalizar o resultado.</label>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>

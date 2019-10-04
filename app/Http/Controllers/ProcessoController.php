@@ -78,7 +78,7 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
 
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
@@ -578,7 +578,14 @@ class ProcessoController extends Controller
         $autor = $request->get('nm_autor_pro');
         $reu = $request->get('nm_reu_pro');
         $acompanhamento = $request->get('nu_acompanhamento_pro');
+        $dtInicio =  $request->get('dtInicio');
+        $dtFim =  $request->get('dtFim');
 
+        if(!empty($dtInicio))
+            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));       
+
+        if(!empty($dtFim))
+            $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim))); 
 
         if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
         {
@@ -649,9 +656,27 @@ class ProcessoController extends Controller
             if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
             if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
 
+            if(!empty($dtInicio) && !empty($dtFim)){
+                $processos = $processos->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
+            }else{
+                if(!empty($dtInicio)){
+                    $processos = $processos->where('dt_prazo_fatal_pro',$dtInicio);
+                }else{
+                    if(!empty($dtFim)){
+                        $processos = $processos->where('dt_prazo_fatal_pro',$dtFim);
+                    }
+                }
+            }
+
             $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
         }
+
+        if(!empty($dtInicio))
+            $dtInicio = date('d/m/Y', strtotime($dtInicio));       
+
+        if(!empty($dtFim))
+            $dtFim = date('d/m/Y', strtotime($dtFim)); 
 
         if(!empty($request->acompanhamento)){
 
@@ -659,7 +684,7 @@ class ProcessoController extends Controller
 
             return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico]);
         }else{
-            return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
+            return view('processo/processos',['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'dtInicio' => $dtInicio,'dtFim' => $dtFim]);
         }
     }
 

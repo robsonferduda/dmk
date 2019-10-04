@@ -230,6 +230,16 @@
                                             <input type="text" name="dt_fim" id="dt_fim" placeholder="___/___/____" class="mascara_data" >
                                         </label>
                                     </section>
+                                    <section class="col col-2">
+                                        <br />              
+                                        <input type="radio"  required name="tipo" id="tipo" value="excel" >  
+                                        <label>Excel</label> 
+                                    </section> 
+                                     <section class="col col-2">
+                                        <br />              
+                                        <input type="radio" required name="tipo" id="tipo" value="pdf" >  
+                                        <label>PDF</label> 
+                                    </section> 
                                 </div>
                                 <div class="row">
                                     <section class="col col-md-12">
