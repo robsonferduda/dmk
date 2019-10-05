@@ -24,8 +24,7 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="well">
-                z
+            <div class="well">                
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
