@@ -147,6 +147,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/atuacao/excluir/{id}','CorrespondenteController@excluirAtuacao');
 	Route::post('correspondente/atuacao/adicionar','CorrespondenteController@adicionarAtuacao');
 	Route::put('correspondente/editar','CorrespondenteController@editar');
+	Route::get('correspondente/getdata', 'CorrespondenteController@getdata')->name('correspondente.getdata');
 
 	Route::get('despesas/balanco','DespesasController@balanco');
 	Route::get('despesas/novo','DespesasController@novo');

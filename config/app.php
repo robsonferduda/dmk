@@ -166,6 +166,7 @@ return [
         OwenIt\Auditing\AuditingServiceProvider::class,
         'Devfactory\Minify\MinifyServiceProvider',
         Spatie\GoogleCalendar\GoogleCalendarServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
 
     ],
@@ -228,6 +229,7 @@ return [
         'Minify'        => 'Devfactory\Minify\Facades\MinifyFacade',
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

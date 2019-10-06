@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use App\RelatorioJasper;
+use DataTables;
 
 class CorrespondenteController extends Controller
 {
@@ -182,6 +183,89 @@ class CorrespondenteController extends Controller
 
         return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
 
+    }
+
+    public function getData(){
+
+        $correspondentes = ContaCorrespondente::with('entidade')
+                                              ->with('correspondente')
+                                              ->with(['entidade.identificacao' => function($query){
+                                                    $query->where('cd_tipo_identificacao_tpi',1);
+                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
+
+                                              }])
+                                              ->with('correspondente.entidade.usuario')
+                                              ->with(['entidade.atuacao' => function($query){
+                                                    $query->where('fl_origem_cat','S');
+                                                    $query->with('cidade');
+                                                }])
+                                              ->where('cd_conta_con', $this->conta)
+                                              ->orderBy('nm_conta_correspondente_ccr')
+                                              ->get(); 
+
+
+
+        return Datatables::of($correspondentes)
+                ->addColumn('categoria', function ($correspondentes) {
+
+                    if(!empty($correspondentes->categoria)){
+                        return '<span class="label label-primary" style="background-color:'.$correspondentes->categoria->color_cac.'">'.$correspondentes->categoria->dc_categoria_correspondente_cac.'</span>';                                                            
+                    }else{
+                        return '<span class="label label-default">Não informado</span>';
+                    }
+                })
+                ->addColumn('atuacao', function($correspondentes){
+                    if(!empty($correspondentes->entidade->atuacao)){
+
+                        return $correspondentes->entidade->atuacao->cidade->nm_cidade_cde; 
+                    }else{
+                        return '<span class="text-danger">Não informado</span>';
+                    }
+
+                }) 
+                ->addColumn('identificacao', function($correspondentes){
+
+                    if(!empty($correspondentes->entidade->identificacao)){
+                        return $correspondentes->entidade->identificacao->nu_identificacao_ide;
+                    }else{
+                        return '<span class="text-danger">Não informado</span>';   
+                    }
+
+                })
+                ->addColumn('nome',function($correspondentes){
+                    return $correspondentes->nm_conta_correspondente_ccr;
+                })
+                ->addColumn('email', function($correspondentes){
+                    if(!empty($correspondentes->correspondente->entidade->usuario)){
+                        return $correspondentes->correspondente->entidade->usuario->email;
+                    }else{
+                        return '<span class="text-danger">Não informado</span>';
+                    }                   
+                })
+                ->addColumn('acoes',function($correspondentes){
+
+                    return '<div>
+                                <a title="Detalhes" class="btn btn-default btn-xs" href='.url("correspondente/detalhes/".$correspondentes->cd_correspondente_cor).'><i class="fa fa-file-text-o"></i>
+                                </a>
+                                <a title="Editar" class="btn btn-primary btn-xs" href='.url("correspondente/ficha/".$correspondentes->cd_correspondente_cor) .'><i class="fa fa-edit"></i> 
+                                </a>
+                                <div class="dropdown" style="display: inline;">
+                                    <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a title="Despesas" class="" href='.url('correspondente/despesas/'.$correspondentes->cd_correspondente_cor).'><i class="fa fa-dollar"></i> Despesas</a>
+                                        </li>
+                                        <li><a title="Honorários" class=""  href='.url('correspondente/honorarios/'.$correspondentes->cd_correspondente_cor).'><i class="fa fa-money"></i> Honorários</a>
+                                        </li>
+                                        <li><a title="Excluir" class="remover_registro" data-url='.url('correspondente/excluir/'.$correspondentes->cd_conta_correspondente_ccr).' data-id='.$correspondentes->cd_conta_correspondente_ccr.'><i class="fa fa-trash"></i> Excluir</a> 
+                                        </li>
+                                    </ul>
+                                </div>  
+                            </div>';
+
+                })
+                ->rawColumns(['categoria','atuacao','identificacao','email','acoes'])
+                ->make(true);
     }
 
     public function novo()

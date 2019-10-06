@@ -487,7 +487,7 @@ $(document).ready(function() {
 		$("#modal_confirma_correspondente").modal('show');
 	});
 
-	$(".remover_registro").click(function(){
+	$(document).on('click','.remover_registro',function(){
 
 		var id  = $(this).data('id');
 

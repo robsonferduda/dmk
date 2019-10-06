@@ -80,7 +80,7 @@
                 <div>
                     <div class="widget-body no-padding">
                         @if(isset($correspondetes))
-                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="dt_correspondentes" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>   
                                     <th style="">Categoria</th> 
@@ -92,7 +92,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($correspondetes as $correspondente)
+                            {{--   @foreach($correspondetes as $correspondente)
                                     <tr>
                                         <td>
                                             @if($correspondente->categoria)
@@ -122,7 +122,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach                                                           
+                                @endforeach --}}                                                      
                             </tbody>
                         </table>
                         @else
@@ -276,6 +276,72 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function() {
+
+                var responsiveHelper_dt_correspondentes = undefined;
+                var responsiveHelper_datatable_fixed_column = undefined;
+                var responsiveHelper_datatable_col_reorder = undefined;
+                var responsiveHelper_datatable_tabletools = undefined;
+                
+                var breakpointDefinition = {
+                    tablet : 1024,
+                    phone : 480
+                };
+    
+                $('#dt_correspondentes').dataTable({
+                    "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+                        "t"+
+                        "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                    "autoWidth" : true,
+                    "ordering": true,
+                    "aaSorting": [],
+                    "oLanguage": {
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sEmptyTable": "Nenhum registro encontrado",
+                        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ".",
+                        "sLengthMenu": "_MENU_ resultados por página",
+                        "sLoadingRecords": "Carregando...",
+                        "sProcessing": "Processando...",
+                        "sZeroRecords": "Nenhum registro encontrado",
+                        
+                        "oPaginate": {
+                            "sNext": "Próximo",
+                            "sPrevious": "Anterior",
+                            "sFirst": "Primeiro",
+                            "sLast": "Último"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": Ordenar colunas de forma ascendente",
+                            "sSortDescending": ": Ordenar colunas de forma descendente"
+                        },
+                    },
+                    "preDrawCallback" : function() {
+                        // Initialize the responsive datatables helper once.
+                        if (!responsiveHelper_dt_correspondentes) {
+                            responsiveHelper_dt_correspondentes = new ResponsiveDatatablesHelper($('#dt_correspondentes'), breakpointDefinition);
+                        }
+                    },
+                    "rowCallback" : function(nRow) {
+                        responsiveHelper_dt_correspondentes.createExpandIcon(nRow);
+                    },
+                    "drawCallback" : function(oSettings) {
+                        responsiveHelper_dt_correspondentes.respond();
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": "{{ route('correspondente.getdata') }}",
+                    "columns":[
+                        { "data": "categoria" },
+                        { "data": "atuacao" },
+                        { "data": "identificacao"},
+                        { "data": "nome"},
+                        { "data": "email"},
+                        { "data": "acoes"}
+                    ]
+        });
 
         $('.modal_dados_correspondente').click(function () {
             
