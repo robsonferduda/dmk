@@ -6,7 +6,7 @@
 @if ($level == 'error')
 # @lang('Ops...!')
 @else
-# @lang('Olá!')
+# @lang('Bem-vindo ao Easyjuris!')
 @endif
 @endif
 

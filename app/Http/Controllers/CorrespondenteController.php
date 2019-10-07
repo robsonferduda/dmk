@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use Mail;
 use Hash;
+use App\Utils;
 use App\Enums\Nivel;
 use App\Enums\Roles;
 use App\Enums\TipoEnderecoEletronico;
@@ -711,12 +712,14 @@ class CorrespondenteController extends Controller
             $input = $request->all();
             $email = $input['email']; 
             $nome  = $input['nm_razao_social_con'];
+            $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
 
             //Primeiro passo é verificar se existe um usuário do tipo correspondente com o email informado
             $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
             $conta_logada = Conta::where('cd_conta_con',$this->conta)->first();
             $correspondente_cadastro = new Correspondente();
             $correspondente_cadastro->email = $email;
+            $correspondente_cadastro->senha = $senha_aleatoria;
 
             //Se ainda não existe correspondente, cria e vincula ele à conta
             if(empty($unique)){
@@ -748,7 +751,8 @@ class CorrespondenteController extends Controller
                         $user->cd_nivel_niv = Nivel::CORRESPONDENTE;
                         $user->name = $nome;
                         $user->email = $email;
-                        $user->password = Hash::make("correspondente");
+
+                        $user->password = Hash::make($senha_aleatoria);
                         $user->save();
 
                         if($user->id){
@@ -844,7 +848,8 @@ class CorrespondenteController extends Controller
 
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
-                        $correspondente->save();
+                        if($correspondente->save())
+                            $correspondente_cadastro->notificacaoFiliacao($conta_logada);
 
                         Flash::success('Correspondente adicionado com sucesso');
                         return $correspondente->cd_correspondente_cor;
@@ -1281,5 +1286,12 @@ class CorrespondenteController extends Controller
         return response()->json($results);
             
     } 
+
+    public function notificacao($id)
+    {
+        $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con',$id)->first(); 
+        $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
+        dd($senha_aleatoria);
+    }
 
 }

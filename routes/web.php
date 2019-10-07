@@ -17,7 +17,7 @@ Route::get('home', 'HomeController@index');
 Route::get('msg-filiacao', function(){ return view('errors/msg_filiacao'); })->name('msg-filiacao');
 Route::get('correspondente', function(){ return view('correspondente/cadastro'); })->name('correspondente');
 Route::resource('contas','ContaController');
-Route::get('correspondente/login', function(){ return view('auth/correspondente'); });
+Route::get('correspondente/login', function(){ return view('auth/correspondente'); })->name('autenticacao.correspondente');;
 Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
 
@@ -118,6 +118,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/todos/buscar','CorrespondenteController@buscarTodos');
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
+	Route::get('correspondente/notificacao/{id}','CorrespondenteController@notificacao');
 	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
 	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');

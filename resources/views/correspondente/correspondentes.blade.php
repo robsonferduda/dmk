@@ -116,6 +116,7 @@
                                                     <ul class="dropdown-menu">
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
                                                         <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                        <li><a title="Enviar Notificação" class=""  href="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
                                                         <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
                                                     </ul>
                                                 </div>
@@ -165,7 +166,7 @@
                                         <b class="tooltip tooltip-bottom-right">Email do Correspondente</b> </label>
                                     </section>
                                     <section class="center"> 
-                                        <p>O sistema gera a senha automaticamente e todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
+                                        <p>O sistema gera uma senha aleatória e envia automaticamente para os correspondentes</p>
                                     </section>
                                 </fieldset>
                                 <footer>

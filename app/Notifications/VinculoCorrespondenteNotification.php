@@ -14,57 +14,35 @@ class VinculoCorrespondenteNotification extends Notification
 
     public $conta;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
     public function __construct($conta)
     {
         $this->conta = $conta;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function via($notifiable)
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
     public function toMail($notifiable)
     {
         
-            return (new MailMessage)
-                ->subject(Lang::getFromJson('Novo Correspondente'))
-                ->markdown('email.convite')
-                ->line(Lang::getFromJson('Você foi adicionado como corresponde por '.$this->conta->nm_razao_social_con.'. Clique no botão abaixo para acessar:'))
-                ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao')))
-                ->line(Lang::getFromJson('Após acessar, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
-                ->line(Lang::getFromJson('Aguardamos seu cadastro para darmos início a parceria.'));
-
+        return (new MailMessage)
+            ->subject(Lang::getFromJson('Bem-vindo Correspondente'))
+            ->markdown('email.convite')
+            ->line(Lang::getFromJson('Você foi adicionado como corresponde pelo escritório '.$this->conta->nm_razao_social_con.'. Seus dados de acesso são:'))
+            ->line(Lang::getFromJson('Usuário: '.$notifiable->email))
+            ->line(Lang::getFromJson('Senha: '.$notifiable->senha))
+            ->line(Lang::getFromJson('Clique no botão abaixo para acessar:'))
+            ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao.correspondente')))
+            ->line(Lang::getFromJson('Após seu primeiro acesso recomendamos que altere a senha que foi gerada automaticamente pelo sistema, para sua segurança. Também confira seus dados e altere as informações necessárias para manter seus dados atualizados.'));
 
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
         return [
-            //
+            
         ];
     }
 }
