@@ -821,6 +821,7 @@ class CorrespondenteController extends Controller
                                 Flash::success('Correspondente adicionado com sucesso');
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
+                            
                             return $unique->cd_conta_con;
 
                         }else{
@@ -1289,9 +1290,27 @@ class CorrespondenteController extends Controller
 
     public function notificacao($id)
     {
+        $correspondente_conta = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();
+        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
+
         $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con',$id)->first(); 
         $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
-        dd($senha_aleatoria);
+
+        $user->password = Hash::make($senha_aleatoria);
+        if($user->save()){
+
+            $correspondente->email = $user->email;
+            $correspondente->senha = $senha_aleatoria;
+
+            $correspondente->notificacaoFiliacao($correspondente);
+
+            Flash::success('Correspondente notificado com sucesso');
+
+        }else{
+            Flash::error('Erro ao notificar correspondente');
+        }
+
+        return redirect('correspondentes');
     }
 
 }
