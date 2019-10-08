@@ -116,7 +116,7 @@
                                                     <ul class="dropdown-menu">
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
                                                         <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
-                                                        <li><a title="Enviar Notificação" class=""  href="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
+                                                        <li><a title="Enviar Notificação" href="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
                                                         <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
                                                     </ul>
                                                 </div>

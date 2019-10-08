@@ -373,7 +373,7 @@ class CorrespondenteController extends Controller
                 }
             }
         }
-        return redirect('correspondente/despesas/'.$request->conta);
+        return redirect('correspondente/detalhes/'.$request->conta);
     }
 
     public function honorarios($id)
