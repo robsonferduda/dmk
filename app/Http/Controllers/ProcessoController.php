@@ -78,7 +78,7 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('created_at','DESC')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
 
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
