@@ -67,7 +67,7 @@
                             <div class="col-sm-12" style="display: table-row;">
                                 <div class="col-xs-12 col-sm-6 col-md-4 text-center">
                                     <figure>
-                                        @if(file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
+                                        @if(!empty($correspondente->entidade) && file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
                                             <img src="{{ asset('img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
                                         @else
                                             <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
