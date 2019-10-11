@@ -162,8 +162,8 @@
                         <li class="">
                             <a href="{{ url('contatos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent">Agenda</span></a>
                         </li>              
-                    @endrole
-                     @role('administrator|colaborador')    
+                    @endcan
+                    @role('administrator|colaborador')    
                         <li class="">
                             <a href="{{ url('calendario') }}" title="blank_"><i class="fa fa-lg fa-fw  fa-calendar"></i> <span class="menu-item-parent">Calendário</span></a>
                         </li>              
