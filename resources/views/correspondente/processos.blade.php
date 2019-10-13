@@ -57,7 +57,6 @@
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
                                     <th>Cidade</th>                                                  
-                                    <th>Cliente</th>
                                     <th>Parte Adversa</th>
                                     <th>Status</th>
                                     <th class="center" style="min-width: 85px"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -97,11 +96,8 @@
                                         <td>
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
                                         </td>
-                                        <td>
-                                            {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}                                           
-                                        </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
+                                        <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Sem status' }}</td>
                                         <td class="center">
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">

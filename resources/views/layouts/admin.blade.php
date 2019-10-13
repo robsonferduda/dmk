@@ -59,7 +59,7 @@
                                                         {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
                                                 <i class="icon-paperclip"></i></span>
                                                 <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
-                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
+                                                <span class="subject">Processo {{ ($mensagem->processo) ? $mensagem->processo->nu_processo_pro : '' }}</span>
                                                 <span class="msg-body">
                                                     {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
                                                 </span>

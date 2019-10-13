@@ -81,7 +81,7 @@
                                             <img src="{{ asset('img/users/user.png') }}" style="width: 50px;" alt="" class="img-circle img-responsive"/>
                                         @endif 
                                         <div class="message-text">
-                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="username txt-color-blueDark">Processo {{ $mensagem->processo->nu_processo_pro }}</a> 
+                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="username txt-color-blueDark">Processo {{ ($mensagem->processo) ? $mensagem->processo->nu_processo_pro : '' }}</a> 
                                             <span class="font-xs">
                                                 Mensagem enviada por {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
                                             </span>
