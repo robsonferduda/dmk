@@ -69,6 +69,8 @@ $(document).ready(function() {
 			{
 				config.toolbar = 'MyToolbar';
 
+				config.extraPlugins = 'font';
+
 				config.toolbar_MyToolbar =
 				[
 					{ name: 'document', items : [ 'NewPage','Preview' ] },
@@ -81,7 +83,7 @@ $(document).ready(function() {
 														{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
 														{ name: 'insert', items : [ 'Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
 												                '/',
-														{ name: 'styles', items : [ 'Styles','Format' ] },
+														{ name: 'styles', items : [ 'Styles','Format','Font', 'FontSize' ] },
 														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike' ] },
 														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] }
 													], height: '200px', startupFocus : true} );
