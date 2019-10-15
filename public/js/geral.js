@@ -496,6 +496,17 @@ $(document).ready(function() {
 		$("#modal_cancela_correspondente").modal('show');
 	});
 
+	$(".remover_honorarios").click(function(){
+
+		var id  = $(this).data('id');
+		var correspondente = $("#cd_correspondente").val();
+
+		$("#modal_excluir_honorarios #url").val(url);
+		$("#modal_excluir_honorarios #entidade_correspondente_excluir").val(id);
+		$("#modal_excluir_honorarios #cd_correspondente_excluir").val(correspondente);
+		$("#modal_excluir_honorarios").modal('show');
+	});
+
 	$(".remover_cliente").click(function(){
 
 		var id  = $(this).data('id');

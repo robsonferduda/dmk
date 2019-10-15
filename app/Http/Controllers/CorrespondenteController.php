@@ -1288,6 +1288,25 @@ class CorrespondenteController extends Controller
             
     } 
 
+    public function excluirTodosHonorarios(Request $request)
+    {
+        if(TaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$request->entidade_correspondente_excluir)->count()){
+        
+            $retorno = TaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$request->entidade_correspondente_excluir)->delete();
+
+            if($retorno){
+                Flash::success('Honorários excluídos com sucesso');
+            }else{
+                Flash::error('Erro ao excluir honorários');
+            }
+
+        }else{
+            Flash::warning('Não existem honorários salvos para esse correspondente');
+        }
+
+        return redirect('correspondente/honorarios/'.$request->cd_correspondente_excluir);        
+    }
+
     public function notificacao($id)
     {
         $correspondente_conta = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();

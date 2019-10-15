@@ -103,7 +103,9 @@
                                             </div>
                                             <div class="col-md-6"> 
 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
+                                                <a class="btn btn-danger pull-right header-btn remover_honorarios" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>
+
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
 
                                                 <div class="btn-group pull-right header-btn">
                                                     <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
@@ -192,6 +194,38 @@
         </div>
     </div>
 </div>
+<div class="modal fade modal_top_alto" id="modal_excluir_honorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-times"></i> <strong> Excluir Honorários</strong></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 center">
+                                {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/honorarios/remover', 'class' => 'form-inline']) !!}
+                                    <p style="font-size: 14px;">
+                                        Essa operação irá remover todos os valores de honorários cadastrados para esse correspondente.
+                                    </p>
+                                    <h6>Confirma a remoção de todos os valores?</h6>
+                                    <input type="hidden" name="entidade_correspondente_excluir" id="entidade_correspondente_excluir">
+                                    <input type="hidden" name="cd_correspondente_excluir" id="cd_correspondente_excluir">
+                                    
+                                    <input type="hidden" name="url" id="url">
+                                    <div class="msg_retorno"></div>
+
+                                    <div class="center marginTop20">
+                                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</button>
+                                    </div>
+                                {!! Form::close() !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection
 @section('script')
 <script type="text/javascript">
