@@ -30,7 +30,18 @@
                         <span class="input-group-addon">Nº Processo</span>
                         <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                     </div>            
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>                    
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>   
+                    <div style="display: block;margin-top: 10px">
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Dentro do Prazo
+                       </span>
+                       <span style="display: inline-block;">
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
+                       </span>
+                       <span style="display: inline-block;">
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
+                       </span>
+                    </div>                   
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -46,7 +57,6 @@
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
                                     <th>Cidade</th>                                                  
-                                    <th>Cliente</th>
                                     <th>Parte Adversa</th>
                                     <th>Status</th>
                                     <th class="center" style="min-width: 85px"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -55,7 +65,26 @@
                             <tbody style="font-size: 12px">
                                 @foreach($processos as $processo)
 
-                                    <tr>        
+                                    @php $cor = ''; 
+
+                                        if(!empty($processo->dt_prazo_fatal_pro)){
+
+                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
+                                                $cor = "#f2cf59";   
+
+                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
+                                                $cor = "#8ec9bb";
+
+                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
+                                                $cor = "#fb8e7e";                                         
+                                            
+                                        }else{
+                                            $cor = "#ffffff"; 
+                                        }
+                                        
+                                    @endphp
+
+                                    <tr style="background-color: {{ $cor }};">        
                                         <td>
                                             @if(!empty($processo->dt_prazo_fatal_pro))
                                                 {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
@@ -67,11 +96,8 @@
                                         <td>
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
                                         </td>
-                                        <td>
-                                            {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}                                           
-                                        </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
+                                        <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Sem status' }}</td>
                                         <td class="center">
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">

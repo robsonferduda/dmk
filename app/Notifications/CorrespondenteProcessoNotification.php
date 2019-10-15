@@ -72,7 +72,7 @@ class CorrespondenteProcessoNotification extends Notification
             ->line(Lang::getFromJson('Parte Ré: '.$this->processo->nm_reu_pro))
             ->line(Lang::getFromJson('Solicitante: '.$advogado ))
             ->line(Lang::getFromJson('Tipo: '.$this->processo->honorario->tipoServico->nm_tipo_servico_tse))
-            ->line(Lang::getFromJson('Vara: '.$this->processo->vara->nm_vara_var))
+            ->line(Lang::getFromJson('Vara: '.( !empty($this->processo->vara->nm_vara_var) ? $this->processo->vara->nm_vara_var : '' )))
             ->line(Lang::getFromJson('Cidade/UF: '.$this->processo->cidade->nm_cidade_cde.'/'.$this->processo->cidade->estado->nm_estado_est))
             ->line(Lang::getFromJson('Código do Cliente: '.$cod_cli))
             ->line(Lang::getFromJson('------------------------------------------------'))

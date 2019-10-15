@@ -59,7 +59,7 @@
                                                         {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
                                                 <i class="icon-paperclip"></i></span>
                                                 <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
-                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
+                                                <span class="subject">Processo {{ ($mensagem->processo) ? $mensagem->processo->nu_processo_pro : '' }}</span>
                                                 <span class="msg-body">
                                                     {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
                                                 </span>
@@ -162,8 +162,8 @@
                         <li class="">
                             <a href="{{ url('contatos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent">Agenda</span></a>
                         </li>              
-                    @endrole
-                     @role('administrator|colaborador')    
+                    @endcan
+                    @role('administrator|colaborador')    
                         <li class="">
                             <a href="{{ url('calendario') }}" title="blank_"><i class="fa fa-lg fa-fw  fa-calendar"></i> <span class="menu-item-parent">Calendário</span></a>
                         </li>              
