@@ -72,4 +72,5 @@ class Correspondente extends Model implements AuditableContract
         else
             return false;
     }
+
 }

@@ -817,6 +817,7 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome; //Insere mesmo nome do usuário já utilizado
                             
                         if($correspondente->save()){
+
                             if($correspondente_cadastro->notificacaoFiliacao($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso');
                             else
@@ -850,7 +851,7 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
                         if($correspondente->save())
-                            $correspondente_cadastro->notificacaoFiliacao($conta_logada);
+                            //$correspondente_cadastro->notificacaoFiliacao($conta_logada);
 
                         Flash::success('Correspondente adicionado com sucesso');
                         return $correspondente->cd_correspondente_cor;
@@ -897,9 +898,12 @@ class CorrespondenteController extends Controller
     public function remover(Request $request){
 
         $correspondente = ContaCorrespondente::where('cd_conta_correspondente_ccr',$request->id)->first();
-        if(!empty($correspondente) && $correspondente->delete())
+        
+        if(!empty($correspondente) && $correspondente->delete()){
+
             Flash::success('Correspondente removido com sucesso');
-        else{
+
+        }else{
             Flash::error('Erro ao remover correspondente');
         }    
         return redirect('correspondentes');    

@@ -81,7 +81,7 @@ class Entidade extends Model
 
     public function atuacao()
     {
-        return $this->hasOne('App\CidadeAtuacao','cd_entidade_ete', 'cd_entidade_ete');
+        return $this->hasMany('App\CidadeAtuacao','cd_entidade_ete', 'cd_entidade_ete');
     }
 
     public function origem()

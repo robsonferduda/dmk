@@ -51,4 +51,18 @@ class ContaCorrespondente extends Model implements AuditableContract
         return $this->hasOne('App\CategoriaCorrespondente','cd_categoria_correspondente_cac','cd_categoria_correspondente_cac');
     }
 
+    public static function boot(){
+
+        parent::boot();
+
+        static::deleting(function($cliente)
+        {
+            //limpa todas as cidades de atuação, se houver
+            $cliente->entidade->atuacao()->delete();
+
+
+        });
+
+    }
+
 }
