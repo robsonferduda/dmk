@@ -21,7 +21,7 @@ class PermissaoController extends Controller
         $this->middleware('auth');
         $this->user = Auth::user();
         $this->conta = \Session::get('SESSION_CD_CONTA');
-        $this->conta = \Session::get('SESSION_CD_ENTIDADE');
+        $this->entidade = \Session::get('SESSION_CD_ENTIDADE');
     }
 
     public function index()
@@ -31,7 +31,7 @@ class PermissaoController extends Controller
 
     public function users()
     {  
-        return view('permissoes/users',['users' => User::with('roles')->get()]);
+        return view('permissoes/users',['users' => User::with('roles')->where('cd_conta_con', $this->conta)->get()]);
     }
 
     public function atribuirRole(){
