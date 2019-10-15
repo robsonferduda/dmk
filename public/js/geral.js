@@ -69,6 +69,12 @@ $(document).ready(function() {
 			{
 				config.toolbar = 'MyToolbar';
 
+				config.extraPlugins = 'font';
+
+				config.font_names =  'Hoefler Text/Hoefler Text;'+config.font_names;
+
+
+
 				config.toolbar_MyToolbar =
 				[
 					{ name: 'document', items : [ 'NewPage','Preview' ] },
@@ -81,10 +87,17 @@ $(document).ready(function() {
 														{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
 														{ name: 'insert', items : [ 'Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
 												                '/',
-														{ name: 'styles', items : [ 'Styles','Format' ] },
+														{ name: 'styles', items : [ 'Styles','Format','Font', 'FontSize' ] },
 														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike' ] },
 														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] }
-													], height: '200px', startupFocus : true} );
+													], height: '200px', startupFocus : true,
+													font_names: 'Arial/Arial, Helvetica, sans-serif;' +
+																'Comic Sans MS/Comic Sans MS, cursive;' +
+																'Courier New/Courier New, Courier, monospace;' +
+																'Georgia/Georgia, serif;' +
+																'Times New Roman/Times New Roman, Times, serif;' +
+																'Calibri/Calibri, sans-serif;'+
+																'Verdana'} );
 
 	}
 
