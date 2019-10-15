@@ -101,7 +101,7 @@
                                                 <span class="label label-default">Não informado</span>
                                             @endif
                                         </td>
-                                        <td>{!! ($correspondente->entidade->origem) ? $correspondente->entidade->atuacao->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->entidade->origem) ? $correspondente->entidade->origem->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>
                                             {{ $correspondente->nm_conta_correspondente_ccr }}
