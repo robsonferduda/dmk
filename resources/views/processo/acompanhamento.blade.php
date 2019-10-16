@@ -252,6 +252,17 @@
                                         </select>
                                     </section>
                                 </div>
+                                <div class="row">
+                                    <section class="col col-md-12">
+                                        <label>Tipos de Processo</label>
+                                        <select style="width: 100%"  class="select2" name="tipoProcesso" >
+                                            <option value="">Todos</option>
+                                            @foreach($tiposProcesso as $tipo)
+                                                 <option value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                            @endforeach
+                                        </select>
+                                    </section>
+                                </div>
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> Gerar Pauta</button>
