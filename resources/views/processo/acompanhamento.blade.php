@@ -293,19 +293,24 @@
         $( "#correspondente_auto_complete_pauta" ).autocomplete({
           source: pathCorrespondente,
           minLength: 3,
+          beforeSend: function(){
+           
+          },
           search: function(event, ui){
-            $('.ui-autocomplete').attr('style', 'z-index: 99999 !important');
-             $("input[name='cdCorrespondente']").val('');
+            
+            $("input[name='cdCorrespondente']").val('');
           },
           select: function(event, ui) {
 
             $("input[name='cdCorrespondente']").val(ui.item.id);
-            $('.ui-autocomplete').attr('style', 'z-index: 905 !important');
+            
 
           },
           open: function(event, ui){
             
-          }
+          },
+          appendTo: "#modal_pauta",
+          
         });
 
         $( "#correspondente_auto_complete_pauta" ).focusout(function(){
