@@ -406,6 +406,14 @@
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
 
+        //Carregar advogados já cadstrados
+
+        var cliente = $("input[name='cd_cliente_cli']").val();
+        
+        if(cliente){
+            buscaAdvogado();
+        }
+
         $('#novoAdvogado').on('shown.bs.modal', function () {
 
             if($("#cd_cliente_cli").val()){
