@@ -220,6 +220,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('role/{role}/usuario/delete/{user}','RoleController@deleteRoleUser');
 	Route::post('role/usuario/adicionar','RoleController@adicionarRole');
 
+	Route::get('permissoes/usuario/{id}','PermissaoController@permissaoUsuario');
 	Route::get('permissoes/adicionar','PermissaoController@adicionar');
 	Route::get('permissoes/role/adicionar','PermissaoController@atribuirRole');
 	Route::get('permissoes/todas/adicionar','PermissaoController@atribuirPermissao');
