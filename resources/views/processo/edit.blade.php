@@ -406,14 +406,6 @@
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
 
-        //Carregar advogados já cadstrados
-
-        var cliente = $("input[name='cd_cliente_cli']").val();
-        
-        if(cliente){
-            buscaAdvogado();
-        }
-
         $('#novoAdvogado').on('shown.bs.modal', function () {
 
             if($("#cd_cliente_cli").val()){
@@ -469,44 +461,6 @@
             }
 
         });
-
-        var buscaAdvogado = function(){
-
-            var cliente = $("input[name='cd_cliente_cli']").val();
-
-            $.ajax({
-                    url: '../../advogados-por-cliente/'+cliente,
-                    type: 'GET',
-                    dataType: "JSON",
-                    beforeSend: function(){
-                        // $('#cidade').empty();
-                        // $('#cidade').append('<option selected value="">Carregando...</option>');
-                        // $('#cidade').prop( "disabled", true );
-
-                    },
-                    success: function(response)
-                    {                   
-                        
-                        $('#cd_contato_cot').empty();
-                        $('#cd_contato_cot').append('<option value="">Selecione um Advogado Solicitante</option>');
-                        $.each(response,function(index,element){
-
-                            if($("#contatoAux").val() != element.cd_contato_cot){
-                                $('#cd_contato_cot').append('<option value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');                            
-                            }else{
-                                $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');      
-                            }
-                                
-                            });       
-                           
-                        },
-                        error: function(response)
-                        {
-                            //console.log(response);
-                    }
-            });
-
-        }
 
         $( "#correspondente_auto_complete" ).autocomplete({
           source: pathCorrespondente,
