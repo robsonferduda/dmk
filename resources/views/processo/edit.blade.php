@@ -436,7 +436,7 @@
                 $.ajax(
                 {
                     type: "POST",
-                    url: "../cliente/advogado",
+                    url: "../../cliente/advogado",
                     data: {
                         "_token": $('meta[name="token"]').attr('content'),
                         "cliente": cliente,
