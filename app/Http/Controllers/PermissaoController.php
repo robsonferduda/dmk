@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Kodeine\Acl\Models\Eloquent\User;
@@ -32,6 +33,23 @@ class PermissaoController extends Controller
     public function users()
     {  
         return view('permissoes/users',['users' => User::with('roles')->where('cd_conta_con', $this->conta)->get()]);
+    }
+
+    public function permissaoUsuario($id)
+    {
+
+        $user = User::where('id',$id)->first();
+
+        $user->addPermission('index.agenda', true);
+        $user->addPermission('index.calendario', true);
+        $user->addPermission('index.cliente', true);
+        $user->addPermission('index.correspondente', true);
+        $user->addPermission('index.processo', true);
+
+        Flash::success('Permissões atualizadas com sucesso');
+
+        return redirect('users')->withInput();
+
     }
 
     public function atribuirRole(){
