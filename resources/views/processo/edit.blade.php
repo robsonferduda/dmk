@@ -75,7 +75,7 @@
                                     <div class="row">
                         
                                         <section class="col col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli" value="{{old('cd_cliente_cli') ? old('cd_cliente_cli') : $processo->cd_cliente_cli}}" >
+                                            <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli" value="{{old('cd_cliente_cli') ? old('cd_cliente_cli') : $processo->cd_cliente_cli}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
                                                 <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli') ? old('nm_cliente_cli') : $nome }}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
@@ -83,14 +83,16 @@
                                         </section>
                                     </div> 
                                     <div class="row">
+
                                         <section class="col col-4">
                                             <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
                                                 <input class="form-control" value="{{old('nu_acompanhamento_pro') ? old('nu_acompanhamento_pro') : $processo->nu_acompanhamento_pro }}"" type="text" name="nu_acompanhamento_pro" maxlength="50">
                                             </label>
                                         </section> 
+
                                         <section class="col col-8">                                       
-                                            <label class="label" >Advogado Solicitante</label> 
+                                            <label class="label" >Advogado Solicitante <a href="#" data-toggle="modal" data-target="#novoAdvogado" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Novo </a></label>  
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{ old('cd_contato_cot') ? old('cd_contato_cot') : $processo->cd_contato_cot }}">
                                                 <select  id="cd_contato_cot" name="cd_contato_cot" >
@@ -98,6 +100,7 @@
                                                 </select><i></i>  
                                             </label>         
                                         </section>
+
                                     </div>
                                     <div class="row">
                                          <section class="col col-6">
@@ -353,6 +356,43 @@
         </div>
     </div>
 </div>
+<div class="modal fade modal_top_alto" id="novoAdvogado" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-legal"></i> Adicionar Advogado Solicitante
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row box-cadastro">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label><strong>Nome Completo</strong></label>
+                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante">
+                            <div id="msg_error_advogado" class="text-danger"></div>
+                        </div>    
+                    </div>
+                    <div style="padding: 5px 15px;">
+                        <p>Complete o cadastro com demais dados pessoais e informações de contato acessando a opção Agenda > Editar Contato.</p>
+                    </div>
+                </div>
+                <div class="row box-erro-cadastro" style="display: none">
+                    <div class="col-md-12 center">
+                        <p class="text-danger">Obrigatório selecionar o cliente para habilitar o cadastro de Advogado Solicitante.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
 
@@ -365,6 +405,62 @@
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
+
+        $('#novoAdvogado').on('shown.bs.modal', function () {
+
+            if($("#cd_cliente_cli").val()){
+
+                $(".box-cadastro").css('display','block');
+                $(".box-erro-cadastro").css('display','none');
+                
+            }else{
+                $(".box-erro-cadastro").css('display','block');
+                $(".box-cadastro").css('display','none');
+            }
+
+            $("#msg_error_advogado").html("");
+            $("#nome_advogado_solicitante").trigger('focus');
+        });
+
+        $("#btnSalvarAdvogadoSolicitante").click(function(){
+
+            var nome = $("#nome_advogado_solicitante").val();
+            var cliente = $("#cd_cliente_cli").val();
+
+            if(nome == ""){
+                $("#msg_error_advogado").html("<span>Campo nome completo é obrigatório.</span>");
+                $("#nome_advogado_solicitante").trigger('focus');
+            }else{
+                $("#msg_error_advogado span").remove();
+            
+                $.ajax(
+                {
+                    type: "POST",
+                    url: "../../cliente/advogado",
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "cliente": cliente,
+                        "nome_advogado_solicitante": nome
+                    },
+                    beforeSend: function()
+                    {
+                        //$("#processamento").modal('show');
+                    },
+                    success: function(response)
+                    {
+                        buscaAdvogado(); 
+                        $("#cd_contato_cot").val(response.id);
+                        $("#novoAdvogado").modal('hide');
+                    },
+                    error: function(response)
+                    {
+                        
+                        //location.reload();
+                    }
+                });
+            }
+
+        });
 
         $( "#correspondente_auto_complete" ).autocomplete({
           source: pathCorrespondente,

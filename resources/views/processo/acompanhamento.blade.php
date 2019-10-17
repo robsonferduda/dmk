@@ -252,6 +252,26 @@
                                         </select>
                                     </section>
                                 </div>
+                                <div class="row">
+                                    <section class="col col-md-12">
+                                        <label>Tipos de Processo</label>
+                                        <select style="width: 100%"  class="select2" name="tipoProcesso" >
+                                            <option value="">Todos</option>
+                                            @foreach($tiposProcesso as $tipo)
+                                                 <option value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                            @endforeach
+                                        </select>
+                                    </section>
+                                </div>
+                                <div class="row">    
+                                    <input type="hidden" name="cdCorrespondente" value="">           
+                                    <section class="col col-sm-12">
+                                        <label class="label">Correspondente</label>
+                                        <label class="input">
+                                            <input class="form-control" name="nmCorrespondente" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete_pauta" value="">
+                                        </label>
+                                    </section>
+                                </div> 
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> Gerar Pauta</button>
@@ -268,6 +288,39 @@
 
     $(document).ready(function() {
 
+        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+
+        $( "#correspondente_auto_complete_pauta" ).autocomplete({
+          source: pathCorrespondente,
+          minLength: 3,
+          beforeSend: function(){
+           
+          },
+          search: function(event, ui){
+            
+            $("input[name='cdCorrespondente']").val('');
+          },
+          select: function(event, ui) {
+
+            $("input[name='cdCorrespondente']").val(ui.item.id);
+            
+
+          },
+          open: function(event, ui){
+            
+          },
+          appendTo: "#modal_pauta",
+          
+        });
+
+        $( "#correspondente_auto_complete_pauta" ).focusout(function(){
+           if($("input[name='cdCorrespondente']").val() == ''){
+                $("#correspondente_auto_complete_pauta").val('');
+                $('.ui-autocomplete').attr('style', 'z-index: 905 !important');
+
+           }
+        });
+
         $('select').on('select2:open', function(e){
              $('.custom-dropdown').parent().css('z-index', 99999);
         });
@@ -276,6 +329,7 @@
           $('#dt_pauta').trigger('focus');
         });
 
+       
     });
 
 </script>

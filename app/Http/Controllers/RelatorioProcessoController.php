@@ -105,6 +105,8 @@ class RelatorioProcessoController extends Controller
         $processos = Processo::with('cidade')->where('cd_conta_con',$this->conta)->whereNotIn('cd_status_processo_stp',[\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO]);
 
         $responsavel = $request->responsavel;
+        $tipoProcesso = $request->tipoProcesso;
+        $correspondente = $request->cdCorrespondente;
 
         if(!empty($responsavel)){
 
@@ -135,6 +137,14 @@ class RelatorioProcessoController extends Controller
                 }
 
             }
+        }
+
+        if(!empty($tipoProcesso)){
+            $processos = $processos->where('cd_tipo_processo_tpo',$tipoProcesso);
+        }
+
+        if(!empty($correspondente)){
+            $processos = $processos->where('cd_correspondente_cor',$correspondente);
         }
 
         $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();

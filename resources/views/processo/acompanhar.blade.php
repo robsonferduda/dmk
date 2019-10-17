@@ -635,7 +635,8 @@
                 error: function(response)
                 {
                     $('.box-loader').loader('hide');
-                    $('.erro_atualiza_status').html('<span>Houve um erro ao atualizar o status do processo</span>');
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
+                                        
                 }
             });
 

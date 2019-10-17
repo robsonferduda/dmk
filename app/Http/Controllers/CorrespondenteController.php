@@ -204,7 +204,7 @@ class CorrespondenteController extends Controller
         DB::transaction(function() use ($request){
 
             $input = $request->all();
-            $email = $input['email']; 
+            $email = trim($input['email']); 
             $nome  = $input['nm_razao_social_con'];
             $senha = $input['password'];
             $flag_convite = false;
@@ -710,7 +710,7 @@ class CorrespondenteController extends Controller
         $id = DB::transaction(function() use ($request){
 
             $input = $request->all();
-            $email = $input['email']; 
+            $email = trim($input['email']); 
             $nome  = $input['nm_razao_social_con'];
             $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
 
@@ -1055,7 +1055,7 @@ class CorrespondenteController extends Controller
                         'cd_entidade_ete'                 => $request->entidade,
                         'cd_conta_con'                    => $this->conta, 
                         'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
-                        'dc_endereco_eletronico_ede'      => $emails[$i]->email
+                        'dc_endereco_eletronico_ede'      => trim($emails[$i]->email)
                     ]);
 
                 }

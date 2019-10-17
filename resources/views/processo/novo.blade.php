@@ -355,7 +355,7 @@
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    <i class="icon-append fa fa-legal"></i> Adcionar Advogado Solicitante
+                    <i class="icon-append fa fa-legal"></i> Adicionar Advogado Solicitante
                 </h4>
             </div>
             <div class="modal-body">
