@@ -982,8 +982,12 @@ class ProcessoController extends Controller
 
                                 $processo->email =  $email->dc_endereco_eletronico_ede;
                                 $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                                try{
+                                    $processo->notificarEnvioDocumentos($processo);
+                                } catch (Exception $e) {
+                                    return Response::json(array('message' => 'O status foi atualizado, porém houve um erro ao notificar o correspondente'), 500);
+                                }
                                 
-                                $processo->notificarEnvioDocumentos($processo);
                                 $lista .= $email->dc_endereco_eletronico_ede.', ';
                             }
 
