@@ -972,7 +972,7 @@ class ProcessoController extends Controller
 
                         if(count($emails) == 0){
 
-                            Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+                            Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi nitificado.');
 
                         }else{
 
