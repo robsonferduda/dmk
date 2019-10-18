@@ -21,7 +21,7 @@
                     <small class="text-danger slideInRight fast animated"><strong><i class="fa-fw fa fa-warning"></i> Ocorreu um erro ao processar sua requisição</strong></small>
                 </h1>
                 <h4>Entre em contato com nosso suporte para resolver seu problema</h4>
-                <h5><strong>Endereço da requisição: </strong>{{ $request->url() }}</h5>
+                <h5><strong>Endereço da requisição: </strong>{{ ($request->url()) ? $request->url() : 'URL Não identificada' }}</h5>
                 @if($erro->errorInfo)
                     <h5><strong>Código do erro: </strong>{{ $erro->errorInfo[0] }}</h5>
                 @endif                        

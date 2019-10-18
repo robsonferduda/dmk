@@ -952,45 +952,57 @@ class ProcessoController extends Controller
         $processo = Processo::findOrFail($id);
         $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
 
-        if($processo->fl_envio_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
+        if($vinculo){
 
-        $processo->fl_envio_anexos_pro = $flag;
-        
-        if($processo->save()){
+            if($processo->fl_envio_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
 
-            if($flag == 'S')
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
-            else
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
-
+            $processo->fl_envio_anexos_pro = $flag;
+            
             if($processo->save()){
 
-                if($flag == 'S'){
-                    $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+                if($flag == 'S')
+                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
+                else
+                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
 
-                    if(count($emails) == 0){
+                if($processo->save()){
 
-                        Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+                    if($flag == 'S'){
+                        $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-                    }else{
+                        if(count($emails) == 0){
 
-                        $lista = '';
+                            Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi nitificado.');
 
-                        foreach ($emails as $email) {
+                        }else{
 
-                            $processo->email =  $email->dc_endereco_eletronico_ede;
-                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                            $processo->notificarEnvioDocumentos($processo);
-                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                            $lista = '';
+
+                            foreach ($emails as $email) {
+
+                                $processo->email =  $email->dc_endereco_eletronico_ede;
+                                $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                                try{
+                                    $processo->notificarEnvioDocumentos($processo);
+                                } catch (Exception $e) {
+                                    return Response::json(array('message' => 'O status foi atualizado, porém houve um erro ao notificar o correspondente'), 500);
+                                }
+                                
+                                $lista .= $email->dc_endereco_eletronico_ede.', ';
+                            }
+
                         }
-
                     }
                 }
+
+                return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+
+            }else{
+                return Response::json(array('message' => 'Houve um erro ao atualizar o status do processo'), 500);
             }
 
-            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         }else{
-            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+            return Response::json(array('message' => 'Informe um correspondente para atualizar o valor do campo'), 500);
         }
     }
 
