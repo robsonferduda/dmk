@@ -169,7 +169,11 @@
 
                                          </td>
                                         <td>
-                                            <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>                                            
+                                            @if($processo->cliente)
+                                                <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>
+                                            @else
+                                                <span>Nenhum recurso informado</span>
+                                            @endif                                            
                                         </td>
                                         <td>
                                             @if($processo->correspondente)
