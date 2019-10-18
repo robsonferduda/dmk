@@ -343,17 +343,17 @@
                     @endpermission
 
 
-                    @permission('correspondente')    
+                    @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         </li>              
-                    @endpermission
+                    @endrole
 
-                    @permission('correspondente')    
+                    @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/processos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         </li>              
-                    @endpermission
+                    @endrole
                     
                     <li class="">
                         <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>
