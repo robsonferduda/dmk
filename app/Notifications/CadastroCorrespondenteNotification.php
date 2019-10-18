@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CadastroCorrespondenteNotification extends Notification, VerificaEnvio
+class CadastroCorrespondenteNotification extends Notification
 {
     use Queueable, VerifyNotification;
 
