@@ -938,14 +938,22 @@ class ProcessoController extends Controller
         }
 
         $lista = '';
-        foreach ($emails as $email) {
 
-            $processo->email = $email;
-            $processo->token = $token;
-            $processo->parecer = $resposta;
-            $processo->correspondente = $processo->correspondente->nm_razao_social_con;
-            $processo->notificarConta($processo);
-            $lista .= $email->dc_endereco_eletronico_ede.', ';
+        if(count($emails) == 0){
+
+                Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+
+        }else{
+            
+            foreach ($emails as $email) {
+
+                $processo->email = $email;
+                $processo->token = $token;
+                $processo->parecer = $resposta;
+                $processo->correspondente = $processo->correspondente->nm_razao_social_con;
+                $processo->notificarConta($processo);
+                $lista .= $email->dc_endereco_eletronico_ede.', ';
+            }
         }
 
 
