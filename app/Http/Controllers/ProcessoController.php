@@ -273,12 +273,21 @@ class ProcessoController extends Controller
         $id = \Crypt::decrypt($id);
         
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        
+        $entidade = Entidade::create([
+            'cd_conta_con'         => $this->cdContaCon,
+            'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
+        ]);
+
+        $processo->cd_entidade_ete = $entidade->cd_entidade_ete;
+
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
 
         (new CalendarioController)->adicionarPorProcesso($novoProcesso);
 
         Flash::success('Processo clonado com sucesso');
+        Flash::error('Atenção! É preciso preencher os honorários para finalizar o cadastro.');
         DB::commit(); 
 
         return redirect('processos/editar/'.\Crypt::encrypt($novoProcesso->cd_processo_pro));  
