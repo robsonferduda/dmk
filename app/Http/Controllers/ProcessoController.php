@@ -877,7 +877,7 @@ class ProcessoController extends Controller
     public function notificarCorrespondente($id_processo){
 
         $id = \Crypt::decrypt($id_processo);
-        $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
+        $processo = Processo::with('cliente')->with('conta')->where('cd_processo_pro',$id)->first();
         $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
 
         if(empty($processo->cd_correspondente_cor) or is_null($vinculo)){

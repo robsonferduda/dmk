@@ -53,14 +53,13 @@ class CorrespondenteProcessoNotification extends Notification
                                'text_not' => "Recusar Diligência"
                         );
 
-
         $advogado = ($this->processo->advogadoSolicitante) ? $this->processo->advogadoSolicitante->nm_contato_cot : 'Não informado';
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Solicitação de Diligência'))
+            ->subject(Lang::getFromJson('Solicitação de Diligência - Processo '.$this->processo->nu_processo_pro))
             ->markdown('email.resposta',$this->options)
             ->line(Lang::getFromJson('Olá '.$notifiable->correspondente.','))
-            ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$notifiable->conta.'.'))
+            ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$this->processo->conta->nm_razao_social_con.'.'))
 
             ->line(Lang::getFromJson(''))
             ->line(Lang::getFromJson('Dados da Solicitação'))

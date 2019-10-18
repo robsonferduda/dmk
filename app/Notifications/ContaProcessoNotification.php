@@ -31,8 +31,8 @@ class ContaProcessoNotification extends Notification
         $decisao = ($notifiable->parecer == 'S') ? 'ACEITOU' : 'RECUSOU' ;
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Resposta de Solicitação'))
-            ->markdown('email.convite')
+            ->subject(Lang::getFromJson('Resposta a Solicitação '.$this->processo->nu_processo_pro))
+            ->markdown('email.aceite_processo')
             ->line(Lang::getFromJson('A sua solicitação referente ao processo '.$this->processo->nu_processo_pro.' foi respondida por '.$notifiable->correspondente.' e ele '.$decisao.' sua proposta. Clique no botão abaixo para mais informações:'))
             ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processos.detalhes', ['token' => $notifiable->token], false)))
             ->line(Lang::getFromJson('Você já pode dar andamento ao processo. Bom trabalho!'));
