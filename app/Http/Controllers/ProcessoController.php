@@ -924,6 +924,8 @@ class ProcessoController extends Controller
 
         $email = User::where('cd_conta_con',$processo->cd_conta_con)->where('cd_nivel_niv',1)->first()->email;
 
+        $emails = EnderecoEletronico::where('cd_conta_con',$processo->cd_conta_con)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
         if($resposta == 'S'){
 
             $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
@@ -935,11 +937,23 @@ class ProcessoController extends Controller
             $processo->save();
         }
 
+        $lista = '';
+        foreach ($emails as $email) {
+
+            $processo->email = $email;
+            $processo->token = $token;
+            $processo->parecer = $resposta;
+            $processo->correspondente = $processo->correspondente->nm_razao_social_con;
+            $processo->notificarConta($processo);
+            $lista .= $email->dc_endereco_eletronico_ede.', ';
+        }
+
+
         $processo->email = $email;
         $processo->token = $token;
         $processo->parecer = $resposta;
         $processo->correspondente = $processo->correspondente->nm_razao_social_con;
-        $processo->notificarConta($processo);
+        //$processo->notificarConta($processo);
 
         \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida e o interessado notificado sobre a decisão.'));
         return Redirect::route('msg-filiacao');
