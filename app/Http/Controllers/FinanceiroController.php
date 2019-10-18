@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use App\ProcessoTaxaHonorario;
 use App\Balanco;
 use App\CategoriaDespesa;
+use App\Conta;
 use App\TipoDespesa;
+use App\Processo;
+use App\Exports\BalancoDetalhadoExport;
+use App\Despesa;
 
 class FinanceiroController extends Controller
 {
@@ -389,6 +393,34 @@ class FinanceiroController extends Controller
         }
 
         echo json_encode(true);
+    }
+
+    public function relatorioBalancoDetalhado(){
+
+        $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
+
+        $entradas = Processo::whereHas('honorario')
+                             ->with('cliente')                            
+                             ->with('tiposDespesa')
+                             ->where('cd_conta_con',$this->conta)
+                             ->take(10)
+                             ->get();
+
+        $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
+                            ->whereHas('correspondente')                            
+                            ->with('tiposDespesa')
+                            ->where('cd_conta_con',$this->conta)
+                            ->take(10)
+                            ->get();
+
+        $despesas = Despesa::where('cd_conta_con',$this->conta)->get();
+
+        dd($despesas);
+
+        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas);    
+
+        return \Excel::download(new BalancoDetalhadoExport($dados),'teste.xlsx');
+
     }
 
 }

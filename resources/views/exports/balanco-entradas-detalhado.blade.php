@@ -1,0 +1,62 @@
+<table>
+    <thead>
+        <tr>
+            <td colspan="9" style="text-align: center; vertical-align: center; height:50px;">{{ $dados['conta']->nm_razao_social_con }}</td>
+        </tr>
+	    <tr>
+            <td style="font-weight: bold;">Data da Baixa</td>
+	     	<td style="font-weight: bold;">Cliente</td>
+            <td style="font-weight: bold;">Processo</td>
+            <td style="font-weight: bold;">Prazo Fatal</td>
+            <td style="font-weight: bold;">Tipo de Serviço</td>
+            <td style="font-weight: bold;" >Honorários</td>
+            <td style="font-weight: bold;">Despesas</td>
+            <td style="font-weight: bold;">Nota Fiscal</td>
+            <td style="font-weight: bold;">Total</td>
+
+	    </tr>
+    </thead>
+    <tbody>
+        @php
+            $total = 0;
+        @endphp
+      
+        @foreach($dados['entradas'] as $dado)
+        <tr>
+            <td> {{ !empty($dado->honorario->dt_baixa_cliente_pth) ? date('d/m/Y', strtotime($dado->honorario->dt_baixa_cliente_pth)) : '' }}</td>
+        	<td>{{ $dado->cliente->nm_razao_social_cli }}</td>
+            <td>{{ $dado->nu_processo_pro }}</td>   
+            <td>{{ date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) }}</td>     
+            <td>{{ $dado->honorario ? $dado->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}</td>
+            <td>{{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : 'R$ '.number_format(0, 2,',',' ') }}</td>
+             @php
+                $totalDespesas = 0;
+                foreach($dado->tiposDespesa as $despesa){
+                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                        $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                    }
+                }
+
+             @endphp
+            <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+            <td>{{ !empty($dado->honorario->vl_taxa_cliente_pth) ? $dado->honorario->vl_taxa_cliente_pth.'%' : ' ' }}</td>
+
+            @php
+                $totalLinha = 0;
+                if(!empty($dado->honorario)){
+                    $totalLinha = ($dado->honorario->vl_taxa_honorario_cliente_pth+$totalDespesas)-
+                                    ((($dado->honorario->vl_taxa_honorario_cliente_pth+$totalDespesas)*$dado->honorario->vl_taxa_cliente_pth)/100);
+                }
+                $total +=  $totalLinha;
+            @endphp
+
+            <td>{{ 'R$ '.number_format($totalLinha,2,',',' ') }}</td>
+        </tr>
+        @endforeach
+        <tr>
+            <td colspan="8" style="font-weight: bold;">TOTAL</td>
+            <td style="font-weight: bold;">{{ 'R$ '.number_format($total,2,',',' ')  }} </td>      
+        </tr>
+     
+    </tbody>
+</table>
