@@ -13,6 +13,7 @@ use App\Conta;
 use App\TipoDespesa;
 use App\Processo;
 use App\Exports\BalancoDetalhadoExport;
+use App\Exports\BalancoSumarizadoExport;
 use App\Despesa;
 
 class FinanceiroController extends Controller
@@ -169,14 +170,14 @@ class FinanceiroController extends Controller
     public function saidaIndex(){   
 
         if(!session('flBuscar')){
-            \Session::put('dtInicio',null);
-            \Session::put('dtFim',null);
+            \Session::put('dtInicio',date('d/m/Y',strtotime(date("Y-m-01"))));
+            \Session::put('dtFim',date('d/m/Y',strtotime(date("Y-m-t"))));
             \Session::put('correspondente',null);
             \Session::put('nmCorrespondente',null);
             \Session::put('todas',null);
 
-            $dtInicio = '';
-            $dtFim = '';
+            $dtInicio = date('d/m/Y',strtotime(date("Y-m-01")));
+            $dtFim = date('d/m/Y',strtotime(date("Y-m-t")));
             $correspondente = '';
             $nmCorrespondente = '';
             $todas = '';
@@ -194,7 +195,7 @@ class FinanceiroController extends Controller
         }))->whereHas('processo' , function($query){
             $query->has('correspondente');
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');            
-        });
+        })->whereNotNull('cd_tipo_servico_correspondente_tse');
 
         if(!empty($dtInicio) && !empty($dtFim)){
 
@@ -220,6 +221,7 @@ class FinanceiroController extends Controller
         //dd($saidas);
         \Session::put('flBuscar',false);
         //dd($saidas[0]->processo->processoDespesa);
+
         return view('financeiro/saida',['saidas' => $saidas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim,'correspondente' => $correspondente, 'nmCorrespondente' => $nmCorrespondente]);
     }
 
@@ -395,6 +397,104 @@ class FinanceiroController extends Controller
         echo json_encode(true);
     }
 
+    public function relatorioBalancoSumarizado(){
+
+        $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
+
+        $entradasVetor = [];
+
+        $entradas = Processo::whereHas('honorario')
+                             ->with('cliente')                            
+                             ->with('tiposDespesa')
+                             ->where('cd_conta_con',$this->conta)
+                             ->get()->sortBy('cliente.nm_razao_social_cli');
+
+        foreach ($entradas as $entrada) {
+
+            $totalDespesas = 0;
+            $total = 0;
+
+            foreach($entrada->tiposDespesa as $despesa){
+                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                        $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                    }
+            }
+
+            $entrada->honorario->vl_taxa_honorario_cliente_pth = $entrada->honorario->vl_taxa_honorario_cliente_pth - (($entrada->honorario->vl_taxa_honorario_cliente_pth * $entrada->honorario->vl_taxa_cliente_pth)/100);
+
+            if(array_key_exists($entrada->cliente->cd_cliente_cli, $entradasVetor)){
+                   $entrada->honorario->vl_taxa_honorario_cliente_pth += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);
+                   $totalDespesas += $entradasVetor[$entrada->cliente->cd_cliente_cli]['despesa'];
+            }
+
+            $total = $entrada->honorario->vl_taxa_honorario_cliente_pth + $totalDespesas;
+
+            $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $entrada->honorario->vl_taxa_honorario_cliente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+        }
+
+        $saidasVetor = [];
+
+        $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
+                            ->whereHas('correspondente')                            
+                            ->with('tiposDespesa')
+                            ->where('cd_conta_con',$this->conta)
+                            ->get()
+                            ->sort(function($a, $b){
+                                $lengthA = strlen($a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
+                                $lengthB = strlen($b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
+                                $valueA = $a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
+                                $valueB = $b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
+
+                                if($lengthA == $lengthB){
+                                    if($valueA == $valueB) return 0;
+                                    return $valueA > $valueB ? 1 : -1;
+                                }
+                                return $lengthA > $lengthB ? 1 : -1;
+                            });
+
+        foreach ($saidas as $saida) {
+
+            $totalDespesas = 0;
+            $total = 0;
+
+            foreach($saida->tiposDespesa as $despesa){
+                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                        $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                    }
+            }
+
+            if(array_key_exists($saida->correspondente->cd_conta_con, $saidasVetor)){
+                   $saida->honorario->vl_taxa_honorario_correspondente_pth += round($saidasVetor[$saida->correspondente->cd_conta_con]['valor'],2);
+                   $totalDespesas += $saidasVetor[$saida->correspondente->cd_conta_con]['despesa'];
+            }
+
+            $total = $saida->honorario->vl_taxa_honorario_correspondente_pth + $totalDespesas;
+
+            $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+        }
+
+        $despesas = Despesa::where('cd_conta_con',$this->conta)->get()->sortBy('tipo.categoriaDespesa.nm_categoria_despesa_cad');;
+
+        $despesasVetor = [];
+
+        foreach ($despesas as $despesa) {
+            
+            if(array_key_exists($despesa->tipo->categoriaDespesa->cd_categoria_despesa_cad, $despesasVetor)){
+
+                $despesa->vl_valor_des += $despesasVetor[$despesa->tipo->categoriaDespesa->cd_categoria_despesa_cad]['valor'];
+
+            }
+
+            $despesasVetor[$despesa->tipo->categoriaDespesa->cd_categoria_despesa_cad] = array('despesa' => $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad, 'valor' => $despesa->vl_valor_des);
+
+        }
+
+        $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor);    
+
+        return \Excel::download(new BalancoSumarizadoExport($dados),'teste.xlsx');
+
+    }
+
     public function relatorioBalancoDetalhado(){
 
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
@@ -402,22 +502,18 @@ class FinanceiroController extends Controller
         $entradas = Processo::whereHas('honorario')
                              ->with('cliente')                            
                              ->with('tiposDespesa')
-                             ->where('cd_conta_con',$this->conta)
-                             ->take(10)
+                             ->where('cd_conta_con',$this->conta)                             
                              ->get();
 
         $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                             ->whereHas('correspondente')                            
                             ->with('tiposDespesa')
                             ->where('cd_conta_con',$this->conta)
-                            ->take(10)
                             ->get();
 
         $despesas = Despesa::where('cd_conta_con',$this->conta)->get();
 
-        dd($despesas);
-
-        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas);    
+        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas);    
 
         return \Excel::download(new BalancoDetalhadoExport($dados),'teste.xlsx');
 

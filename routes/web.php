@@ -256,6 +256,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('financeiro/balanco','FinanceiroController@balancoIndex');
 	Route::post('financeiro/balanco/buscar','FinanceiroController@balancoBuscar');
 	Route::get('financeiro/relatorio/balanco/detalhado','FinanceiroController@relatorioBalancoDetalhado');
+	Route::get('financeiro/relatorio/balanco/sumarizado','FinanceiroController@relatorioBalancoSumarizado');
 	
 
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');

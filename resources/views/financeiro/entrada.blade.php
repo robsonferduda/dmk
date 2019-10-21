@@ -102,8 +102,8 @@
                                     @endphp
                                     <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
                                     <td>{{ (!empty($entrada->vl_taxa_cliente_pth) ? $entrada->vl_taxa_cliente_pth.'%' : ' ') }}</td>
-                                    <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)-
-                                    ((($entrada->vl_taxa_honorario_cliente_pth+$totalDespesas)*$entrada->vl_taxa_cliente_pth)/100),2,',',' ') }}</td>
+                                    <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth-
+                                    ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',',' ') }}</td>
                                     <td style="text-align: center;">
                                         <input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 

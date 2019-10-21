@@ -27,17 +27,17 @@
             <td>{{ $dado->nu_processo_pro }}</td>   
             <td>{{ date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) }}</td>     
             <td>{{ !empty($dado->honorario->tipoServicoCorrespondente) ? $dado->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' ' }}</td>
-            <td>{{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_correspondente_pth, 2,',',' ') : 'R$ '.number_format(0, 2,',',' ') }}</td>
+            <td>{{ $dado->honorario ? number_format($dado->honorario->vl_taxa_honorario_correspondente_pth, 2,',',' ') : number_format(0, 2,',',' ') }}</td>
              @php
                 $totalDespesas = 0;
                 foreach($dado->tiposDespesa as $despesa){
-                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRRESPONDENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
                         $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
                     }
                 }
 
              @endphp
-            <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+            <td>{{ number_format($totalDespesas,2,',',' ') }}</td>
         
             @php
                 $totalLinha = 0;
@@ -47,7 +47,7 @@
                 $total +=  $totalLinha;
             @endphp
 
-            <td>{{ 'R$ '.number_format($totalLinha,2,',',' ') }}</td>
+            <td>{{ number_format($totalLinha,2,',',' ') }}</td>
         </tr>
         @endforeach
         <tr>

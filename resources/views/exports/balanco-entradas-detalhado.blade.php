@@ -28,7 +28,7 @@
             <td>{{ $dado->nu_processo_pro }}</td>   
             <td>{{ date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) }}</td>     
             <td>{{ $dado->honorario ? $dado->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}</td>
-            <td>{{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : 'R$ '.number_format(0, 2,',',' ') }}</td>
+            <td>{{ $dado->honorario ? number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : number_format(0, 2,',',' ') }}</td>
              @php
                 $totalDespesas = 0;
                 foreach($dado->tiposDespesa as $despesa){
@@ -38,19 +38,19 @@
                 }
 
              @endphp
-            <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+            <td>{{ number_format($totalDespesas,2,',',' ') }}</td>
             <td>{{ !empty($dado->honorario->vl_taxa_cliente_pth) ? $dado->honorario->vl_taxa_cliente_pth.'%' : ' ' }}</td>
 
             @php
                 $totalLinha = 0;
                 if(!empty($dado->honorario)){
-                    $totalLinha = ($dado->honorario->vl_taxa_honorario_cliente_pth+$totalDespesas)-
-                                    ((($dado->honorario->vl_taxa_honorario_cliente_pth+$totalDespesas)*$dado->honorario->vl_taxa_cliente_pth)/100);
+                    $totalLinha = (($dado->honorario->vl_taxa_honorario_cliente_pth)-
+                                    ((($dado->honorario->vl_taxa_honorario_cliente_pth)*$dado->honorario->vl_taxa_cliente_pth)/100))+$totalDespesas;
                 }
                 $total +=  $totalLinha;
             @endphp
 
-            <td>{{ 'R$ '.number_format($totalLinha,2,',',' ') }}</td>
+            <td>{{ number_format($totalLinha,2,',',' ') }}</td>
         </tr>
         @endforeach
         <tr>

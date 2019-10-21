@@ -5,7 +5,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class BalancoDetalhadoExport implements WithMultipleSheets
+class BalancoSumarizadoExport implements WithMultipleSheets
 {
     use Exportable;
 
@@ -23,10 +23,10 @@ class BalancoDetalhadoExport implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[0] = new BalancoTotalDetalhadoExport($this->dados);
-        $sheets[1] = new BalancoEntradasDetalhadoExport($this->dados);
-        $sheets[2] = new BalancoSaidasDetalhadoExport($this->dados);
-        $sheets[3] = new BalancoDespesasDetalhadoExport($this->dados);
+        $sheets[0] = new BalancoTotalSumarizadoExport($this->dados);
+        $sheets[1] = new BalancoEntradasSumarizadoExport($this->dados);
+        $sheets[2] = new BalancoSaidasSumarizadoExport($this->dados);
+        $sheets[3] = new BalancoDespesasSumarizadoExport($this->dados);
         
         return $sheets;
     }
