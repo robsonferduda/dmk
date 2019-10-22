@@ -933,8 +933,6 @@ class ProcessoController extends Controller
 
         $email = User::where('cd_conta_con',$processo->cd_conta_con)->where('cd_nivel_niv',1)->first()->email;
 
-        dd($email);
-
         $emails = EnderecoEletronico::where('cd_conta_con',$processo->cd_conta_con)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
         if($resposta == 'S'){
