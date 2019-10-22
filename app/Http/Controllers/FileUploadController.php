@@ -30,7 +30,7 @@ class FileUploadController extends Controller
         if($request->file('file'))
             foreach($request->file('file') as $file){
 
-                $fileName = time().'.'.$file->getClientOriginalExtension();
+                $fileName = $file->getClientOriginalName();
         
                 if($file->move(storage_path($destino), $fileName)){
 
