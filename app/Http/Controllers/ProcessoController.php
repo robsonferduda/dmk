@@ -991,12 +991,19 @@ class ProcessoController extends Controller
 
                             foreach ($emails as $email) {
 
-                                $processo->email =  $email->dc_endereco_eletronico_ede;
+                                $processo->email = $email->dc_endereco_eletronico_ede;
                                 $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+
                                 try{
                                     $processo->notificarEnvioDocumentos($processo);
-                                } catch (Exception $e) {
-                                    return Response::json(array('message' => 'O status foi atualizado, porém houve um erro ao notificar o correspondente'), 500);
+                                } catch (\Swift_RfcComplianceException $e) {
+
+                                    //Retorna o status anterior
+                                    $processo = Processo::findOrFail($id);
+                                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
+                                    $processo->save();
+
+                                    return Response::json(array('message' => 'Houve um erro ao atualizar o status, pois o email "<strong>'.$email->dc_endereco_eletronico_ede.'</strong>" possui problemas em sua formatação. Verifique o email e tente novamente.'), 500);
                                 }
                                 
                                 $lista .= $email->dc_endereco_eletronico_ede.', ';

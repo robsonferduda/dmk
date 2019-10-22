@@ -425,7 +425,7 @@
                                 <input type="text" name="arquivo" id="arquivo" class="form-control" placeholder="Nome do arquivo" required="">
                             </div>
                             <div class="form-group">
-                                <input name="file" id="poster" type="file" class="form-control"><br/>
+                                <input name="file[]" id="poster" type="file" multiple class="form-control"><br/>
                                 <div class="progress progress-striped active">
                                     <div class="progress-bar bg-color-darken" role="progressbar" style="width: 0%"><span class="percent"></span></div>
                                 </div>
@@ -635,6 +635,7 @@
                 error: function(response)
                 {
                     $('.box-loader').loader('hide');
+                    $("#fl_envio_anexos_pro").prop('checked', false);
                     $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
                                         
                 }
@@ -815,6 +816,7 @@
     });
 
     function validate(formData, jqForm, options) {
+
         var form = jqForm[0];
         var fileExtension = ['exe', 'rar', 'php', 'js', 'zip'];
 
@@ -836,7 +838,7 @@
     var status = $('#status');
  
     $('#frm-anexo').ajaxForm({
-        beforeSubmit: validate,
+        //beforeSubmit: validate,
         beforeSend: function(){
             $(".upload-msg").empty();
             status.empty();
@@ -857,7 +859,7 @@
             bar.width(0)
             percent.html("");
             $(".upload-msg").html('<span class="text-success">Arquivo enviado com sucesso, atualizando dados...</span>');
-            location.reload();
+            //location.reload();
         },
         error: function(response){
 

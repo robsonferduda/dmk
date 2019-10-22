@@ -23,27 +23,32 @@ class FileUploadController extends Controller
 
         $destino = "processos/$request->id_processo/";
  
-        $fileName = time().'.'.request()->file->getClientOriginalExtension();
 
         if(!is_dir($destino)){
             @mkdir(storage_path($destino), 0775);
         }
- 
-        if(request()->file->move(storage_path($destino), $fileName)){
 
-            $anexo = AnexoProcesso::create([
-                'cd_conta_con'                => $this->conta, 
-                'cd_entidade_ete'             => $this->entidade,
-                'cd_processo_pro'             => $request->id_processo,
-                'nm_anexo_processo_apr'       => $request->arquivo,
-                'nm_local_anexo_processo_apr' => $destino.$fileName     
-            ]);
+        foreach($request->file('file') as $file){
 
-            return response()->json(['success'=>'Arquivo enviado com sucesso']);
+            $fileName = time().'.'.$file->getClientOriginalExtension();
+    
+            if($file->move(storage_path($destino), $fileName)){
 
-        }else{
-            return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
-        }      
+                $anexo = AnexoProcesso::create([
+                    'cd_conta_con'                => $this->conta, 
+                    'cd_entidade_ete'             => $this->entidade,
+                    'cd_processo_pro'             => $request->id_processo,
+                    'nm_anexo_processo_apr'       => $request->arquivo,
+                    'nm_local_anexo_processo_apr' => $destino.$fileName     
+                ]);
+
+                //return response()->json(['success'=>'Arquivo enviado com sucesso']);
+
+            }else{
+                //return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
+            }  
+
+        }   
  
     }
 
