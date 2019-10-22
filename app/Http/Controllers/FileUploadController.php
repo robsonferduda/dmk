@@ -23,32 +23,36 @@ class FileUploadController extends Controller
 
         $destino = "processos/$request->id_processo/";
  
-
         if(!is_dir($destino)){
             @mkdir(storage_path($destino), 0775);
         }
 
-        foreach($request->file('file') as $file){
+        if($request->file('file'))
+            foreach($request->file('file') as $file){
 
-            $fileName = time().'.'.$file->getClientOriginalExtension();
-    
-            if($file->move(storage_path($destino), $fileName)){
+                $fileName = time().'.'.$file->getClientOriginalExtension();
+        
+                if($file->move(storage_path($destino), $fileName)){
 
-                $anexo = AnexoProcesso::create([
-                    'cd_conta_con'                => $this->conta, 
-                    'cd_entidade_ete'             => $this->entidade,
-                    'cd_processo_pro'             => $request->id_processo,
-                    'nm_anexo_processo_apr'       => $request->arquivo,
-                    'nm_local_anexo_processo_apr' => $destino.$fileName     
-                ]);
+                    $anexo = AnexoProcesso::create([
+                        'cd_conta_con'                => $this->conta, 
+                        'cd_entidade_ete'             => $this->entidade,
+                        'cd_processo_pro'             => $request->id_processo,
+                        'nm_anexo_processo_apr'       => $file->getClientOriginalName(),
+                        'nm_local_anexo_processo_apr' => $destino.$file->getClientOriginalName()     
+                    ]);
 
-                //return response()->json(['success'=>'Arquivo enviado com sucesso']);
+                    //return response()->json(['success'=>'Arquivo enviado com sucesso']);
 
-            }else{
-                //return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
-            }  
+                }else{
+                    //return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
+                }  
 
-        }   
+            }
+        else
+            return Response::json(array('message' => 'Nenhum arquivo selecionado para envio'), 500);
+
+        return response()->json(['success'=>'Arquivo enviado com sucesso']);   
  
     }
 

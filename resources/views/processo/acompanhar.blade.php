@@ -405,7 +405,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade modal_top_alto" id="modalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade modal_top_alto" id="modalUpload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
@@ -421,9 +421,15 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">
-                            <div class="form-group">
-                                <input type="text" name="arquivo" id="arquivo" class="form-control" placeholder="Nome do arquivo" required="">
-                            </div>
+                            <div class="well" style="padding: 5px;">
+                            <p>
+                                <h5 class="center" style="margin-bottom: 5px;"><strong class="text-info">Instruções sobre os arquivos</strong></h5>
+                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Quantidade de arquivos</strong>: Você pode enviar quantos arquivos desejar, basta clicar em "Escolher arquivos" e selecionar os arquvos que deseja.</h4>
+                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Tamanho dos arquivos</strong>: O sistema limita o envio em 40MB por arquivo.</h4>
+                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Formato dos arquivos</strong>: São permitidos arquivos de imagens (png, jpg, jpeg), mídias (mp3), textos (doc, docx, pdf, txt) e planilhas (xls, xlsx, csv).</h4>
+                                <h5 class="center"><strong class="text-danger">O tamanho e quantidade dos arquivos interfere diretamente no tempo de envio dos mesmos.</strong></h5>
+                            </p>
+                        </div>
                             <div class="form-group">
                                 <input name="file[]" id="poster" type="file" multiple class="form-control"><br/>
                                 <div class="progress progress-striped active">
@@ -859,7 +865,7 @@
             bar.width(0)
             percent.html("");
             $(".upload-msg").html('<span class="text-success">Arquivo enviado com sucesso, atualizando dados...</span>');
-            //location.reload();
+            location.reload();
         },
         error: function(response){
 
@@ -871,10 +877,10 @@
                     $(".upload-msg").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
                 break;
                 case 500:
-                    $(".upload-msg").html('<span class="text-danger">Envio cancelado, o arquvio enviado causou erro do servidor</span>');
+                    $(".upload-msg").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
                 break;
                 default:
-                    $(".upload-msg").html('<span class="text-danger">Erro na gravação do arquivo. Código do erro: '+response.status+' </span>');
+                    $(".upload-msg").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
             }
         },
         complete: function(xhr) {
