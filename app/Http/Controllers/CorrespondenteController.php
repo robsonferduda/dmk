@@ -1276,6 +1276,24 @@ class CorrespondenteController extends Controller
 
     }
 
+    public function searchConta(Request $request){
+
+        $search = $request->get('term');
+      
+        $resultados = ContaCorrespondente::whereHas('conta', function($query) use ($search){
+            $query->where('nm_razao_social_con', 'ilike', '%'. $search. '%');
+
+        })->where('cd_correspondente_cor',$this->conta)->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+           $results[] = [ 'id' => $ret->cd_conta_con, 'value' => $ret->conta->nm_razao_social_con ];
+        }
+ 
+        return response()->json($results);
+    }
+
     public function search(Request $request)
     {
         $search = $request->get('term');
