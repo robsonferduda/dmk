@@ -42,7 +42,6 @@
 	
 		<header id="header" style="text-align: right; padding-top: 20px;">
 			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default"><i class="fa fa-legal"></i> CADASTRO CORRESPONDENTES</a> </span>
-			<span id="btn_correspondentes"><a href="{{ url('/correspondente/login') }}" class="btn btn-warning"><i class="fa fa-sign-in"></i> ACESSO CORRESPONDENTES</a> </span>
 			<span id="btn_login"><a href="{{ url('login') }}" class="btn btn-danger"><i class="fa fa-sign-in"></i> ACESSAR O SISTEMA</a> </span>
 		</header>
 
