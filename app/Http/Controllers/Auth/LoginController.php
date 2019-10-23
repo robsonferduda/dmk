@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
+use App\User;
 use App\Entidade;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -52,20 +53,49 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::ADMIN]) or Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::COLABORADOR])) {
+        //Conta o total de contas do usuário
+        $users = User::where('email',$request->email)->get();
 
-            Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
-            Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+        if(count($users) == 1 and $users[0]->cd_nivel_niv == \Nivel::CORRESPONDENTE){
 
-            Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+            if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::CORRESPONDENTE ])){
+
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+                
+                return redirect()->intended('home');
+            }
+
+        }elseif(count($users) == 1 and $users[0]->cd_nivel_niv == \Nivel::COLABORADOR){
+
+            if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::COLABORADOR ])){
+
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+                
+                return redirect()->intended('home');
+            }
             
-            return redirect()->intended('home');
+        }else{
+
+             if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => \Nivel::ADMIN])) {
+
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+                
+                return redirect()->intended('home');
+            }
+
         }
 
         $this->incrementLoginAttempts($request);
         return $this->sendFailedLoginResponse($request);
     }
 
+    /*
     public function loginCorrespondente(Request $request)
     {
 
@@ -89,4 +119,5 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
         return $this->sendFailedLoginResponse($request);
     }
+    */
 }
