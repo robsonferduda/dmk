@@ -40,6 +40,9 @@ class RelatorioPainelCorrespondenteController extends Controller
                                     ->when(!empty($request->cd_conta_con), function ($query) use ($cliente) {
                                         return $query->where('cd_conta_con',$cliente);
                                     })
+                                    ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
+                                    ->orderBy('dt_prazo_fatal_pro','asc')
+                                    ->orderBy('hr_audiencia_pro')
                                     ->get();
 
             if(!empty($cliente)){
@@ -50,10 +53,14 @@ class RelatorioPainelCorrespondenteController extends Controller
                 $fileName = '_Relação Processos_Todos';
             }
 
-             $dados = array('processos' => $processos, 'cliente' => $cliente);    
+            $dados = array('processos' => $processos, 'cliente' => $conta);    
 
-            return \Excel::download(new RelacaoProcessosExport($dados),time().$fileName.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
-            
+            if(!$processos->isEmpty()){
+                \Excel::store(new RelacaoProcessosExport($dados),"/correspondente/{$this->conta}/".time().$fileName.'.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
+            }else{
+                Flash::error('Não há dados para os parâmetros informados!');
+
+            }
         
         }else{
 
@@ -71,14 +78,35 @@ class RelatorioPainelCorrespondenteController extends Controller
     }
 
     private function getFiles(){
-        return [];
+
+        \File::makeDirectory(storage_path().'/reports/correspondente/'.$this->conta, $mode = 0744, true, true);
+
+        $arquivos = array();
+
+        $files = collect(\File::allFiles(storage_path()."/reports/correspondente/".$this->conta))
+                 ->sortByDesc(function ($file) {
+                    return $file->getCTime();
+                });
+        
+        foreach($files as $file){
+            
+            $arquivos[] = array('nome' => $file->getFilename(), 'data' => date('d/m/Y H:i:s',$file->getCTime()),'tamanho' => round($file->getSize()/1024,2) );           
+        }
+
+        return $arquivos;
     }
 
-    public function excluir($nome){ 
+    public function excluir($nome){
+        dd("/correspondente/$this->conta/".$nome);
+        $teste = \Storage::disk('reports')->delete("/correspondente/$this->conta/".$nome);
+        
+        //return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
 
     }
 
     public function arquivo($nome){
+        //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
+        return response()->download(storage_path('reports/correspondente/'."$this->conta/".$nome));
 
     }
 

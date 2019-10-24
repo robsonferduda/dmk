@@ -52,13 +52,13 @@
                 {{ $dado->cidade ? $dado->cidade->nm_cidade_cde : ' '}}-{{ $dado->cidade->estado ? $dado->cidade->estado->sg_estado_est : ' '}}
             </td>
              <td style="border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->honorario->tipoServico ? $dado->honorario->tipoServico->nm_tipo_servico_tse : ' '}}
+                {{ $dado->honorario->tipoServico ? $dado->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->honorario->tipoServicoCorrespondente ? $dado->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' '}}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_correspondente_pth, 2,',',' ') : number_format(0, 2,',',' ') }}
+                {{ $dado->honorario ? number_format($dado->honorario->vl_taxa_honorario_correspondente_pth, 2,',',' ') : number_format(0, 2,',',' ') }}
             </td>
             @php
 
@@ -71,16 +71,17 @@
                 }
 
             @endphp
-            <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
+            <td>{{ number_format($totalDespesas,2,',',' ') }}</td>
             @php
                 $total += $totalDespesas+$dado->honorario->vl_taxa_honorario_correspondente_pth;
             @endphp
-            <td>{{ 'R$ '.number_format($totalDespesas+$dado->honorario->vl_taxa_honorario_correspondente_pth,2,',',' ') }}</td>
+            <td>{{ number_format($totalDespesas+$dado->honorario->vl_taxa_honorario_correspondente_pth,2,',',' ') }}</td>
         
         </tr>
         @endforeach
         <tr>
-            <td colspan="13" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total: {{ 'R$ '.number_format($total,2,',',' ') }}</td>
+            <td style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: right;vertical-align: center;font-weight:bold;font-size:12px" colspan="12">Total</td>
+            <td  style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">{{ 'R$ '.number_format($total,2,',',' ') }}</td>
             
         </tr>
    
