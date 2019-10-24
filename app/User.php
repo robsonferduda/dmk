@@ -41,6 +41,11 @@ class User extends Authenticatable implements AuditableContract
         $this->notify(new MailResetPasswordNotification($token));
     }
 
+    public function nivel()
+    {
+        return $this->hasOne('App\Nivel','cd_nivel_niv', 'cd_nivel_niv');
+    }
+
     public function entidade()
     {
         return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');

@@ -25,6 +25,10 @@ Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
 
+	Route::get('seleciona/perfil', 'UsuarioController@selecionaPerfil');
+	Route::post('selecionar-nivel', 'UsuarioController@validarSelecao')->name('selecionar-nivel');
+	Route::post('login-perfil', 'UsuarioController@loginPerfil')->name('login-perfil');
+
 	Route::get('image-crop', 'ImageController@imageCrop');
 	Route::post('image-crop', 'ImageController@imageCropPost');
     

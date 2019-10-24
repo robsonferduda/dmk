@@ -55,6 +55,41 @@ class UsuarioController extends Controller
         return view('usuario/detalhes',['usuario' => $usuario]);
     }
 
+    public function selecionaPerfil()
+    {
+
+        $users = User::where('email',Auth::user()->email)->orderBy('cd_nivel_niv')->get();
+
+        return view('usuario/selecionar',['usuarios' => $users]);
+    }
+
+    public function validarSelecao(Request $request)
+    {
+
+        $nivel = Nivel::where('cd_nivel_niv', $request->cd_nivel_niv)->first();
+
+        return view('usuario/segunda-etapa',['nivel' => $nivel]);
+    }
+
+    public function loginPerfil(Request $request)
+    {
+        
+        if(Auth::attempt(['email' => Auth::user()->email, 'password' => $request->password, 'cd_nivel_niv' => $request->cd_nivel_niv ])) {
+
+            Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+            Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+
+            return redirect()->intended('home');
+
+        }else{
+
+            Flash::error('A senha informada não é válida, tente novamente.');
+            return redirect('seleciona/perfil');
+        }
+
+    }
+
     public function buscar(Request $request)
     {
         $nome   = $request->get('nome');
@@ -65,7 +100,7 @@ class UsuarioController extends Controller
         if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
         $usuarios = $usuarios->orderBy('name')->get();
 
-         return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
+        return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
     }
 
     public function novo(){
