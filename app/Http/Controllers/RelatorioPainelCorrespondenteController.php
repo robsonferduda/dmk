@@ -8,6 +8,8 @@ use Laracasts\Flash\Flash;
 use App\RelatorioJasper;
 use Illuminate\Http\Request;
 use App\Conta;
+use App\Processo;
+use App\Exports\Correspondente\RelacaoProcessosExport;
 
 class RelatorioPainelCorrespondenteController extends Controller
 {
@@ -15,7 +17,7 @@ class RelatorioPainelCorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','acompanhamento']]);
+        $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
@@ -32,13 +34,25 @@ class RelatorioPainelCorrespondenteController extends Controller
             $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$request->dtInicio)));
             $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$request->dtFim)));
 
+            $cliente = $request->cd_conta_con;
 
+            $processos = Processo::where('cd_correspondente_cor', $this->conta)
+                                    ->when(!empty($request->cd_conta_con), function ($query) use ($cliente) {
+                                        return $query->where('cd_conta_con',$cliente);
+                                    })
+                                    ->get();
 
+            if(!empty($cliente)){
 
-            
-            $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas);    
+                $conta = Conta::where('cd_conta_con',$cliente)->first();
+                $fileName = '_Relação Processos_'.$conta->nm_razao_social_con;
+            }else{
+                $fileName = '_Relação Processos_Todos';
+            }
 
-            return \Excel::download(new BalancoDetalhadoExport($dados),'teste.xlsx');
+             $dados = array('processos' => $processos, 'cliente' => $cliente);    
+
+            return \Excel::download(new RelacaoProcessosExport($dados),time().$fileName.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
             
         
         }else{
