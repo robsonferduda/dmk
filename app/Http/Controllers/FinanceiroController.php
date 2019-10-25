@@ -519,4 +519,14 @@ class FinanceiroController extends Controller
 
     }
 
+    public function relatorios(){
+        return view('financeiro/relatorios',['arquivos' => array() ]);
+    }
+
+    public function relatorioBuscar(Request $request){
+
+        dd($request->relatorio);
+
+    }
+
 }

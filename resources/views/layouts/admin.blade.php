@@ -255,6 +255,9 @@
                             <li>
                                 <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
                             </li>
+                            {{--<li>
+                                <a href="{{ url('financeiro/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
+                            </li>--}}
                         </ul>   
                         
                     </li>
