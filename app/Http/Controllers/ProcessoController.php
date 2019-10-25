@@ -913,7 +913,7 @@ class ProcessoController extends Controller
 
                     $processo->email =  $email->dc_endereco_eletronico_ede;
                     $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                    //$processo->notificarCorrespondente($processo);
+                    $processo->notificarCorrespondente($processo);
                     $lista .= $email->dc_endereco_eletronico_ede.', ';
                 }
 
