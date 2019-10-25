@@ -83,4 +83,9 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
+    public function logout(Request $request) {
+        Auth::logout();
+        return redirect('/login');
+    }
+
 }

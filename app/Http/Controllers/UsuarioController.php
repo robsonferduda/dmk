@@ -58,7 +58,7 @@ class UsuarioController extends Controller
     public function selecionaPerfil()
     {
 
-        $users = User::where('email',Auth::user()->email)->orderBy('cd_nivel_niv')->get();
+        $users = User::where('email',Auth::user()->email)->where('cd_nivel_niv','<>',Auth::user()->cd_nivel_niv)->orderBy('cd_nivel_niv')->get();
 
         return view('usuario/selecionar',['usuarios' => $users]);
     }

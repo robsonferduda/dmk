@@ -5,7 +5,7 @@
         <header><i class="fa fa-lock"></i> Login</header>
         <fieldset style="padding-top: 8px;">  
             <div style="text-align: center; margin-bottom: 10px;">
-                <img src="img/logo.png" style="width: 25%;" alt="Sistema DMK"> 
+                <img src="{{ asset('img/users/user.png') }}" style="width: 25%;" alt="Imagem de Perfil"> 
             <div>      
             <section>
                 <label class="label">E-mail</label>
