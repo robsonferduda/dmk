@@ -36,9 +36,15 @@ class RelatorioPainelCorrespondenteController extends Controller
 
             $cliente = $request->cd_conta_con;
 
-            $processos = Processo::where('cd_correspondente_cor', $this->conta)
+            $processos = Processo::where('cd_correspondente_cor', $this->conta) 
+                                    ->whereHas('status', function($query){
+                                        $query->where('fl_visivel_correspondente_stp','S');
+                                    })
                                     ->when(!empty($request->cd_conta_con), function ($query) use ($cliente) {
                                         return $query->where('cd_conta_con',$cliente);
+                                    })
+                                    ->when(!empty($request->finalizado), function ($query){
+                                        return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
                                     })
                                     ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
                                     ->orderBy('dt_prazo_fatal_pro','asc')
@@ -51,6 +57,7 @@ class RelatorioPainelCorrespondenteController extends Controller
                 $fileName = '_Relação Processos_'.$conta->nm_razao_social_con;
             }else{
                 $fileName = '_Relação Processos_Todos';
+                $conta = '';
             }
 
             $dados = array('processos' => $processos, 'cliente' => $conta);    
@@ -79,7 +86,7 @@ class RelatorioPainelCorrespondenteController extends Controller
 
     private function getFiles(){
 
-        \File::makeDirectory(storage_path().'/reports/correspondente/'.$this->conta, $mode = 0744, true, true);
+        \File::makeDirectory(storage_path().'/reports/correspondente/'.$this->conta, $mode = 0777, true, true);
 
         $arquivos = array();
 
@@ -97,10 +104,10 @@ class RelatorioPainelCorrespondenteController extends Controller
     }
 
     public function excluir($nome){
-        dd("/correspondente/$this->conta/".$nome);
-        $teste = \Storage::disk('reports')->delete("/correspondente/$this->conta/".$nome);
+    
+       \Storage::disk('reports')->delete("/correspondente/$this->conta/".$nome);
         
-        //return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
+        return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
 
     }
 

@@ -241,8 +241,8 @@ Route::group(['middleware' => ['web']], function () {
 	});
 	
 
-	Route::delete('correspondente/reports/{nome}','RelatorioPainelCorrespondenteController@excluir');
-	Route::get('correspondente/reports/{nome}','RelatorioPainelCorrespondenteController@arquivo');
+	Route::delete('correspondente/painel/reports/{nome}','RelatorioPainelCorrespondenteController@excluir');
+	Route::get('correspondente/painel/reports/{nome}','RelatorioPainelCorrespondenteController@arquivo');
 	Route::post('correspondente/painel/relatorios/buscar', 'RelatorioPainelCorrespondenteController@buscar');
 	Route::get('correspondente/painel/relatorios', 'RelatorioPainelCorrespondenteController@index');
 	Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
