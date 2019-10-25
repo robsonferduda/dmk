@@ -356,9 +356,9 @@
                     @endrole
 
                     @role('correspondente')    
-                        <li class="">
+                        {{-- <li class="">
                             <a href="{{ url('correspondente/painel/relatorios') }}" title="blank_"><i class="fa fa-lg fa-fw fa-file-o"></i> <span class="menu-item-parent">Relatórios</span></a>
-                        </li>              
+                        </li> --}} 
                     @endrole
                     
                     <li class="">
