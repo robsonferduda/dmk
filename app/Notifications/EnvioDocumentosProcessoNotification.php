@@ -27,12 +27,13 @@ class EnvioDocumentosProcessoNotification extends Notification
 
     public function toMail($notifiable)
     {
+        $nivel_url = \Crypt::crypt(3);
 
         return (new MailMessage)
             ->subject(Lang::getFromJson('Envio de Documentos no Processo '.$this->processo->nu_processo_pro))
             ->markdown('email.documentos')
             ->line(Lang::getFromJson('Envio de documentos do processo '.$this->processo->nu_processo_pro.' finalizado.'))
-            ->line(Lang::getFromJson('Confirma o recebimento dos documentos e a realização do ato contratado?'))
+            ->line(Lang::getFromJson('Para visualizar os documentos, acesso o sistema ou clique no botão abaixo:'))
             ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.acompanhar', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
             ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
     }
