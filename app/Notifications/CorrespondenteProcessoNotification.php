@@ -63,17 +63,7 @@ class CorrespondenteProcessoNotification extends Notification
             ->subject(Lang::getFromJson('Solicitação de Diligência - Processo '.$this->processo->nu_processo_pro))
             ->markdown('email.resposta',$this->options)
             ->line(Lang::getFromJson('Olá '.$notifiable->correspondente.','))
-            ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$this->processo->conta->nm_razao_social_con.'.'))
-
-            ->line(Lang::getFromJson(''))
-            ->line(Lang::getFromJson('Dados da Solicitação'))
-            ->line(Lang::getFromJson('------------------------------------------------'))
-
-            ->line(Lang::getFromJson('Data Prazo Fatal: '.$data))
-            ->line(Lang::getFromJson('Hora da Audiência: '.$hora))
-            
-            ->line(Lang::getFromJson('Observaçoes: '.$obs))
-            ->line(Lang::getFromJson('------------------------------------------------'))
+           
 
             ->line(Lang::getFromJson('Para responder, selecione uma das opções abaixo:'))
             ->action(Lang::getFromJson('Aceitar Diligência'),null)
