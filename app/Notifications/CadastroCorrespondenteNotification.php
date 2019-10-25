@@ -46,8 +46,6 @@ class CadastroCorrespondenteNotification extends Notification
     {
         $nivel_url = \Crypt::crypt(3);
 
-        dd($nivel_url);
-
         return (new MailMessage)
             ->subject(Lang::getFromJson('Cadastro Correspondente'))
             ->markdown('email.convite')
