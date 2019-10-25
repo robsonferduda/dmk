@@ -74,6 +74,8 @@ class UsuarioController extends Controller
     public function loginPerfil(Request $request)
     {
         
+        dd($request->cd_nivel_niv);
+
         if(Auth::attempt(['email' => Auth::user()->email, 'password' => $request->password, 'cd_nivel_niv' => $request->cd_nivel_niv ])) {
 
             Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 

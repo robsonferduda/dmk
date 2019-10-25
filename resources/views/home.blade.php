@@ -23,6 +23,7 @@
             @endif   
         </div>
     </div>
+    
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect" style="min-height: 110px;">

@@ -6,7 +6,18 @@
         <fieldset style="padding-top: 8px;">  
             <div style="text-align: center; margin-bottom: 10px;">
                 <img src="{{ asset('img/users/user.png') }}" style="width: 25%;" alt="Imagem de Perfil"> 
-            <div>      
+            <div><hr style="margin: 10px 0px 10px 0px;" />
+            <section>
+                <label class="label">Selecione um perfil</label>
+                <label class="select">
+                    <select name="nivel" required="required">
+                        <option value="">Selecione um perfil</option>
+                        @foreach(\App\Nivel::all() as $nivel)
+                            <option value="{{ $nivel->cd_nivel_niv }}" {{ (old('nivel') and old('nivel') == $nivel->cd_nivel_niv) ? 'selected="selected"' : ''  }}>{{ $nivel->dc_nome_padronizado_niv }}</option>
+                        @endforeach
+                    </select><i></i>
+                </label>
+            </section>      
             <section>
                 <label class="label">E-mail</label>
                 <label class="input"> <i class="icon-append fa fa-user"></i>
