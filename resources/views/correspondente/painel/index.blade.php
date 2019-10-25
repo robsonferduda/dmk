@@ -25,16 +25,16 @@
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
-                            <label class="label label-black">Data prazo fatal inicial</label><br />
+                            <label class="label label-black">Data prazo fatal inicial<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
                             
                         </section>
                         <section class="col col-md-2">                           
-                            <label class="label label-black">Data prazo fatal final</label><br />
+                            <label class="label label-black">Data prazo fatal final<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
                         </section>
                         <section class="col col-md-4">                                                        
-                            <label class="label label-black">Relatório</label><br />
+                            <label class="label label-black">Relatório<span class="text-danger">*</span></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Selecione...</option>
                                 <option {{ (\Session::get('relatorio') == 'relacao-processos'  ? 'selected' : '') }} value="relacao-processos">Relação de processos</option>
