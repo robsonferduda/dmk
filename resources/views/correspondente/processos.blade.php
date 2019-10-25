@@ -26,10 +26,15 @@
             <div class="well">
                 <form action="{{ url('correspondente/processo/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
-                    <div class="input-group">
-                        <span class="input-group-addon">Nº Processo</span>
-                        <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
-                    </div>            
+                    <section class="col col-md-4">  
+                        <div class="input-group" style="width: 100%">
+                            <span class="input-group-addon">Nº Processo</span>
+                            <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
+                        </div>            
+                    </section>
+                    <section class="col col-md-3">  
+                        <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ ( !empty($finalizado) && $finalizado == 'S'  ? 'checked' : '') }}><label class="label label-black">Processos Finalizados</label> 
+                    </section>
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>   
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
@@ -66,20 +71,22 @@
                                 @foreach($processos as $processo)
 
                                     @php $cor = ''; 
+                                        
+                                        if($processo->cd_status_processo_stp != \StatusProcesso::FINALIZADO){
+                                            if(!empty($processo->dt_prazo_fatal_pro)){
 
-                                        if(!empty($processo->dt_prazo_fatal_pro)){
+                                                if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
+                                                    $cor = "#f2cf59";   
 
-                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#f2cf59";   
+                                                if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
+                                                    $cor = "#8ec9bb";
 
-                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#8ec9bb";
-
-                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
-                                                $cor = "#fb8e7e";                                         
-                                            
-                                        }else{
-                                            $cor = "#ffffff"; 
+                                                if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
+                                                    $cor = "#fb8e7e";                                         
+                                                
+                                            }else{
+                                                $cor = "#ffffff"; 
+                                            }
                                         }
                                         
                                     @endphp

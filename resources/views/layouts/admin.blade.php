@@ -354,6 +354,12 @@
                             <a href="{{ url('correspondente/processos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         </li>              
                     @endrole
+
+                    @role('correspondente')    
+                        {{-- <li class="">
+                            <a href="{{ url('correspondente/painel/relatorios') }}" title="blank_"><i class="fa fa-lg fa-fw fa-file-o"></i> <span class="menu-item-parent">Relatórios</span></a>
+                        </li> --}} 
+                    @endrole
                     
                     <li class="">
                         <a href="{{ url('logout') }}" title="blank_"><i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Sair</span></a>

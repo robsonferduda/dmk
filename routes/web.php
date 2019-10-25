@@ -59,6 +59,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}','ClienteController@excluirHonorarios');
 	Route::resource('clientes','ClienteController');
 
+
+	Route::get('autocompleteConta','CorrespondenteController@searchConta');
 	Route::get('autocompleteCliente','ClienteController@search');
 	Route::get('autocompleteCorrespondente', 'CorrespondenteController@search');
 	Route::get('autocompleteResponsavel', 'UsuarioController@search');
@@ -237,7 +239,12 @@ Route::group(['middleware' => ['web']], function () {
 
 		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
 	});
+	
 
+	Route::delete('correspondente/reports/{nome}','RelatorioPainelCorrespondenteController@excluir');
+	Route::get('correspondente/reports/{nome}','RelatorioPainelCorrespondenteController@arquivo');
+	Route::post('correspondente/painel/relatorios/buscar', 'RelatorioPainelCorrespondenteController@buscar');
+	Route::get('correspondente/painel/relatorios', 'RelatorioPainelCorrespondenteController@index');
 	Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
 	Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
 	Route::delete('correspondente/reports/{nome}','RelatorioCorrespondenteController@excluir');

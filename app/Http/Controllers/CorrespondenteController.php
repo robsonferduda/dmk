@@ -1172,7 +1172,13 @@ class CorrespondenteController extends Controller
     public function processos(){
 
 
-        $processos = Processo::where('cd_correspondente_cor',$this->conta)->get();
+        $processos = Processo::where('cd_correspondente_cor',$this->conta)
+                               ->whereHas('status', function($query){
+                                    $query->where('fl_visivel_correspondente_stp','S');
+                                })
+                                ->where('cd_status_processo_stp','!=',\StatusProcesso::FINALIZADO)
+                                  ->orderBy('dt_prazo_fatal_pro','asc')
+                                  ->orderBy('hr_audiencia_pro')->get();
 
         return view('correspondente/processos',['processos' => $processos]);
 
@@ -1181,23 +1187,32 @@ class CorrespondenteController extends Controller
     public function buscarProcesso(Request $request)
     {
 
-        $numero   = $request->get('nu_processo_pro');
+        $numero   = trim($request->get('nu_processo_pro'));
         $tipo = $request->get('cd_tipo_processo_tpo');
         $tipoServico = $request->get('cd_tipo_servico_tse');
         $autor = $request->get('nm_autor_pro');
         $reu = $request->get('nm_reu_pro');
         $acompanhamento = $request->get('nu_acompanhamento_pro');
-
+        $finalizado = $request->get('finalizado');
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->conta)->get();
 
-        $processos = Processo::where('cd_correspondente_cor', $this->conta);
+        $processos = Processo::where('cd_correspondente_cor', $this->conta)
+                               ->whereHas('status', function($query){
+                                    $query->where('fl_visivel_correspondente_stp','S');
+                               });
 
         if(!empty($tipoServico)) $processos->whereHas('honorario', function($query) use ($tipoServico) {
 
             $query->where('cd_tipo_servico_tse', $tipoServico);
 
         });
+
+        if(!empty($finalizado)){
+            $processos->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+        }else{
+            $processos->where('cd_status_processo_stp','!=',\StatusProcesso::FINALIZADO);
+        }
         if(!empty($numero))  $processos->where('nu_processo_pro','like',"%$numero%");
         if(!empty($tipo))   $processos->where('cd_tipo_processo_tpo',$tipo);
         if(!empty($autor)) $processos->where('nm_autor_pro', 'ilike', '%'. $autor. '%');
@@ -1206,7 +1221,7 @@ class CorrespondenteController extends Controller
 
           $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento]);
+        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'finalizado' => $finalizado]);
 
     }
 
@@ -1275,6 +1290,24 @@ class CorrespondenteController extends Controller
         
         return view('correspondente/dashboard',['correspondente' => $correspondente, 'convites' => $convites, 'total_processos' => $total_processos]);
 
+    }
+
+    public function searchConta(Request $request){
+
+        $search = $request->get('term');
+      
+        $resultados = ContaCorrespondente::whereHas('conta', function($query) use ($search){
+            $query->where('nm_razao_social_con', 'ilike', '%'. $search. '%');
+
+        })->where('cd_correspondente_cor',$this->conta)->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+           $results[] = [ 'id' => $ret->cd_conta_con, 'value' => $ret->conta->nm_razao_social_con ];
+        }
+ 
+        return response()->json($results);
     }
 
     public function search(Request $request)
