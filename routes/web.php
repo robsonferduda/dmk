@@ -14,12 +14,13 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
+Route::get('seleciona/perfil/{perfil}', 'Auth\LoginController@selecionaPerfil')->name('seleciona.perfil');
 Route::get('msg-filiacao', function(){ return view('errors/msg_filiacao'); })->name('msg-filiacao');
 Route::get('correspondente', function(){ return view('correspondente/cadastro'); })->name('correspondente');
-Route::resource('contas','ContaController');
 Route::get('correspondente/login', function(){ return view('auth/correspondente'); })->name('autenticacao.correspondente');;
 Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
+Route::resource('contas','ContaController');
 
 Auth::routes();
 

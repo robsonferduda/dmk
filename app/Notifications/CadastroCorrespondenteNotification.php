@@ -44,11 +44,13 @@ class CadastroCorrespondenteNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $nivel_url = \Crypt::crypt(3);
+
         return (new MailMessage)
             ->subject(Lang::getFromJson('Cadastro Correspondente'))
             ->markdown('email.convite')
-            ->line(Lang::getFromJson($this->conta->nm_razao_social_con.' adicionou você como correspondente no Sistema DMK. Utilize o endereço abaixo para acessar o sistema:'))
-            ->action(Lang::getFromJson('Acesse Aqui'), url(route('/')))
+            ->line(Lang::getFromJson($this->conta->nm_razao_social_con.' adicionou você como correspondente no Sistema Easyjuris. Utilize o endereço abaixo para acessar o sistema:'))
+            ->action(Lang::getFromJson('Acesse Aqui'), url(route('seleciona.perfil', ['nivel_url' => $nivel_url], false)))
             ->line(Lang::getFromJson('Após acessar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
             ->line(Lang::getFromJson('Aguardamos você para darmos início a parceria.'));
     }

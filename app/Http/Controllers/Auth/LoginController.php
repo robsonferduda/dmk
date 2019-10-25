@@ -32,6 +32,12 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function selecionaPerfil($perfil)
+    {
+        $nivel_url = \Crypt::decrypt($perfil);
+        return redirect('/login')->with('nivel_url', $nivel_url);
+    }
+
     public function login(Request $request)
     {
 
