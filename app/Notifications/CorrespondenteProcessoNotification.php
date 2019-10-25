@@ -57,13 +57,29 @@ class CorrespondenteProcessoNotification extends Notification
         $advogado = ($this->processo->advogadoSolicitante) ? $this->processo->advogadoSolicitante->nm_contato_cot : 'Não informado';
         $data = ($this->processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($this->processo->dt_prazo_fatal_pro)) : 'Não informado';
         $hora = ($this->processo->hr_audiencia_pro) ? date('H:i', strtotime($this->processo->hr_audiencia_pro)) : 'Não informado';
-        $obs = ($this->processo->$dc_observacao_pro) ? $this->processo->dc_observacao_pro : 'Nanhuma infomração adicional';
+        $obs = ($this->processo->dc_observacao_pro) ? $this->processo->dc_observacao_pro : 'Nanhuma infomração adicional';
 
         return (new MailMessage)
             ->subject(Lang::getFromJson('Solicitação de Diligência - Processo '.$this->processo->nu_processo_pro))
             ->markdown('email.resposta',$this->options)
             ->line(Lang::getFromJson('Olá '.$notifiable->correspondente.','))
-           
+            ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$this->processo->conta->nm_razao_social_con.'.'))
+
+            ->line(Lang::getFromJson('Dados da Solicitação'))
+            ->line(Lang::getFromJson('------------------------------------------------'))
+
+            ->line(Lang::getFromJson('Data Prazo Fatal: '.$data))
+            ->line(Lang::getFromJson('Hora da Audiência: '.$hora))
+            ->line(Lang::getFromJson('Número do Processo: '.$this->processo->nu_processo_pro))
+            ->line(Lang::getFromJson('Parte Autora: '.$this->processo->nm_autor_pro))
+            ->line(Lang::getFromJson('Parte Ré: '.$this->processo->nm_reu_pro))
+            ->line(Lang::getFromJson('Solicitante: '.$advogado ))
+            ->line(Lang::getFromJson('Tipo: '.$this->processo->honorario->tipoServico->nm_tipo_servico_tse))
+            ->line(Lang::getFromJson('Vara: '.( !empty($this->processo->vara->nm_vara_var) ? $this->processo->vara->nm_vara_var : '' )))
+            ->line(Lang::getFromJson('Cidade/UF: '.$this->processo->cidade->nm_cidade_cde.'/'.$this->processo->cidade->estado->nm_estado_est))
+            ->line(Lang::getFromJson('Código do Cliente: '.$cod_cli))
+            ->line(Lang::getFromJson('Observaçoes: '.$obs))
+            ->line(Lang::getFromJson('------------------------------------------------'))
 
             ->line(Lang::getFromJson('Para responder, selecione uma das opções abaixo:'))
             ->action(Lang::getFromJson('Aceitar Diligência'),null)
