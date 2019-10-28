@@ -66,7 +66,7 @@ class MensagemController extends Controller
             foreach ($emails as $email) {
 
                 $processo->email = $email->dc_endereco_eletronico_ede;
-                $processo->notificarNovaMensagem($processo);
+                //$processo->notificarNovaMensagem($processo);
                 
             }
 
