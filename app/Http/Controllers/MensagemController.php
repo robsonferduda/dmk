@@ -66,7 +66,7 @@ class MensagemController extends Controller
             foreach ($emails as $email) {
 
                 $processo->email = $email->dc_endereco_eletronico_ede;
-                //$processo->notificarNovaMensagem($processo);
+                $processo->notificarNovaMensagem($processo);
                 
             }
 
@@ -116,11 +116,24 @@ class MensagemController extends Controller
 
             event(new EventNotification(array('canal' => 'notificacao', 'conta' => $mensagem->destinatario_prm, 'total' => count($mensagens), 'mensagens' => $mensagens)));
 
-            return Response::json(array('message' => 'Registro adicionado com sucesso','objeto' => $mensagem), 200);
+            return Response::json(array('message' => 'Registro adicionado com sucesso','objeto' => $mensagem, 'id'=> \Crypt::encrypt($mensagem->cd_processo_mensagem_prm)), 200);
         }else{
             return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
         }
 
+    }
+
+    public function excluir($id)
+    {
+
+        $id = \Crypt::decrypt($id);
+        
+        $mensagem = ProcessoMensagem::findOrFail($id);
+        
+        if($mensagem->delete())
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
     }
 
 }

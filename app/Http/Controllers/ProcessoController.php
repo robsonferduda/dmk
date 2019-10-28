@@ -138,9 +138,21 @@ class ProcessoController extends Controller
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
 
-        $mensagens_externas = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
+        $mensagens_externas = ProcessoMensagem::where('cd_processo_pro',$id)
+                                                ->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)
+                                                ->with('entidadeRemetente')
+                                                ->with('entidadeDestinatario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
 
-        $mensagens_internas = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::INTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
+        $mensagens_internas = ProcessoMensagem::where('cd_processo_pro',$id)
+                                                ->where('cd_tipo_mensagem_tim',TipoMensagem::INTERNA)
+                                                ->with('entidadeRemetente')
+                                                ->with('entidadeDestinatario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
     
         return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
     }

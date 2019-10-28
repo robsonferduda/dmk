@@ -74,7 +74,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/honorarios/salvar','ProcessoController@salvarHonorarios');
 	Route::post('processo/atualizar-status','ProcessoController@atualizarStatus');
 	Route::post('processo/finalizar-processo','ProcessoController@finalizarProcesso');
-	Route::post('processo/mensagem/enviar','MensagemController@enviar');
 	Route::get('processos/buscar','ProcessoController@buscar');
 	Route::get('processos/clonar/{id}','ProcessoController@clonar');
 	Route::get('processos/notificar/{id}','ProcessoController@notificarCorrespondente');
@@ -88,6 +87,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
 	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
+
+	Route::delete('processo/mensagem/excluir/{id}','MensagemController@excluir');
+	Route::post('processo/mensagem/enviar','MensagemController@enviar');
 	
 	Route::get('configuracoes/areas','AreaController@index');
 	Route::get('configuracoes/notificacoes','NotificacaoController@preferencias');
