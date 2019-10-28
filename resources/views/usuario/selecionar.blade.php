@@ -5,7 +5,7 @@
             <h1>
                 Olá <span class="semi-bold text-primary">{{ Auth::user()->name }}</span>, você está logado com perfil <span class="semi-bold text-primary">{{ Auth::user()->nivel->dc_nome_padronizado_niv }}</span><br>
             </h1>
-            <h5>Você possui <strong>{{ count($usuarios) }}</strong> perfis de usuário no nosso sistema. Escolha abaixo com qual deseja acessar.</h5>
+            <h5>Você possui mais de um perfil de usuário cadastrado em nosso sistema. Vocẽ pode continuar navegando com o perfil já selecionado ou alterar selecionando uma opção abaixo.</h5>
             <h5>Lembramos que você pode alterar o perfil de acesso a qualquer momento, utilizando a opção "<strong>Alterar Perfil</strong>"</h5>
         </div>    
         @foreach($usuarios as $user)

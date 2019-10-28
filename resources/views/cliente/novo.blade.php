@@ -242,16 +242,18 @@
                                                     <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
                                                 </label>
                                             </section>                     
-                                            <section class="col col-4">    
-                                                <select class="select2" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
-                                                    <option value="0">Tipo</option>
-                                                    @foreach(\App\TipoFone::all() as $tipoFone)
-                                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                                    @endforeach   
-                                                </select>
+                                            <section class="col col-4"> 
+                                                <label class="select">   
+                                                    <select class="" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                        <option value="0">Tipo do telefone</option>
+                                                        @foreach(\App\TipoFone::all() as $tipoFone)
+                                                            <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                        @endforeach   
+                                                    </select><i></i>  
+                                                </label>
                                             </section> 
                                             <section class="col col-1">
-                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Novo</button>
                                             </section>
                                         </div> 
                                         <div class="row center" id="erroFone"></div>
@@ -259,7 +261,7 @@
 
                                     <div class="row" style="margin: 0; padding: 5px 13px;">
                                             
-                                            <table id="tabelaFone" class="table table-bordered">
+                                            <table id="tabelaFone" class="table table-bordered table-responsive">
                                                 <thead>
                                                     <tr>
                                                         <th class="center">Tipo</th>
@@ -295,14 +297,14 @@
                                                 </select> 
                                             </section> 
                                             <section class="col col-1">
-                                                <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Novo</button>
                                             </section>
                                         </div> 
                                         <div class="row center" id="erroEmail"></div>
                                     </fieldset>
 
                                     <div class="row" style="margin: 0; padding: 5px 13px;">
-                                        <table id="tabelaEmail" class="table table-bordered">
+                                        <table id="tabelaEmail" class="table table-bordered table-responsive">
                                             <thead>
                                                 <tr>
                                                     <th class="center">Tipo</th>
