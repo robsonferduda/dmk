@@ -363,11 +363,17 @@
                                                             
                                                             <div class="outgoing_msg">
                                                                 <div class="sent_msg">
-                                                                    <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                    <span class="time_date">
-                                                                        <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
-                                                                        {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
-                                                                    </span> 
+                                                                    @if($mensagem->deleted_at)
+                                                                        <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                            Mensagem excluída
+                                                                        </p>
+                                                                    @else
+                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                        <span class="time_date">
+                                                                            <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                                            {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                                        </span> 
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                             
@@ -382,9 +388,16 @@
                                                                         @endif
                                                                     </div>
                                                                     <div class="received_msg">
-                                                                    <div class="received_withd_msg">
-                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                        <span class="time_date"><strong>{{ $mensagem->entidadeInterna->usuario->name }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                        <div class="received_withd_msg">
+                                                                            @if($mensagem->deleted_at)
+                                                                                <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                                    Mensagem excluída
+                                                                                </p>
+                                                                            @else
+                                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                                <span class="time_date"><strong>{{ $mensagem->entidadeInterna->usuario->name }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             
