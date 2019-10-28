@@ -911,6 +911,7 @@ $(document).ready(function() {
 			$("#erroFone").empty();
 			$("#nu_fone_fon").focus();	
 			fl_edicao = false;
+			$("#btnSalvarTelefone").html('<i class="fa fa-plus"></i> Novo');
 
 			$("#telefones").val(JSON.stringify(telefones));
 		}
@@ -951,6 +952,7 @@ $(document).ready(function() {
 		
 		$("#nu_fone_fon").val(fone);
 		$("#cd_tipo_fone_tfo").val(tipo);
+		$("#btnSalvarTelefone").html('<i class="fa fa-edit"></i> Editar');
 
 	});
 
