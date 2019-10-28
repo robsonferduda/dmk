@@ -298,10 +298,16 @@
                                                             </div>
                                                             <div class="received_msg">
                                                             <div class="received_withd_msg">
-                                                                <p>
-                                                                    {{ $mensagem->texto_mensagem_prm }}
-                                                                </p>
-                                                                <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                @if($mensagem->deleted_at)
+                                                                    <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                        Mensagem excluída
+                                                                    </p>
+                                                                @else
+                                                                    <p>
+                                                                        {{ $mensagem->texto_mensagem_prm }}
+                                                                    </p>
+                                                                    <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     @endif
