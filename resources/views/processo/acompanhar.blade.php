@@ -362,9 +362,13 @@
                                                         @if($mensagem->remetente_prm == Auth::user()->cd_conta_con or $mensagem->remetente_prm == Session::get('SESSION_CD_ENTIDADE'))
                                                             
                                                             <div class="outgoing_msg">
-                                                              <div class="sent_msg">
-                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span> </div>
+                                                                <div class="sent_msg">
+                                                                    <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                    <span class="time_date">
+                                                                        <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                                        {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                                    </span> 
+                                                                </div>
                                                             </div>
                                                             
                                                         @else
@@ -833,7 +837,8 @@
                     var m = '<div class="outgoing_msg">'+
                                 '<div class="sent_msg">' +
                                     '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                                    '<span class="time_date">'+dt_msg+'</span>'+
+                                    '<span class="time_date">'+
+                                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
                                 '</div>'+
                             '</div>';
 
