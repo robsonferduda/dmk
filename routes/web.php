@@ -176,6 +176,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('fones/entidade/{id}','FoneController@fones');
 	Route::get('fones/excluir/{id}','FoneController@excluir');
+	Route::post('fones/editar','FoneController@editar');
 
 	Route::get('registro-bancario/entidade/{id}','RegistroBancarioController@registros');
 	Route::get('registro-bancario/id/{id}','RegistroBancarioController@registro');

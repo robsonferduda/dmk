@@ -31,7 +31,7 @@ class FoneController extends Controller
 
     public function fones($id)
     {   
-        return response()->json(Fone::with('tipo')->where('cd_entidade_ete',$id)->get());  
+        return response()->json(Fone::with('tipo')->where('cd_entidade_ete',$id)->orderBy('cd_fone_fon')->get());  
     }
 
     public function excluir($id)
@@ -42,5 +42,17 @@ class FoneController extends Controller
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);  
+    }
+
+    public function editar(Request $request)
+    {   
+        $fone = Fone::where('cd_fone_fon',$request->id)->findOrFail($request->id);
+        $fone->cd_tipo_fone_tfo = $request->tipo;
+        $fone->nu_fone_fon = $request->fone;
+        
+        if($fone->save())
+            return Response::json(array('message' => 'Registro editado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao editar o registro'), 500);  
     }
 }

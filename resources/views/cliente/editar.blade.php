@@ -250,16 +250,18 @@
                                                     <input type="text" class="form-control telefone" name="nu_fone_fon" id="nu_fone_fon" pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" placeholder="(99) 999999999" value="{{old('nu_fone_fon')}}">
                                                 </label>
                                             </section>                     
-                                            <section class="col col-4">    
-                                                <select class="select2" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
-                                                    <option value="0">Tipo</option>
-                                                    @foreach(\App\TipoFone::all() as $tipoFone)
-                                                        <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
-                                                    @endforeach   
-                                                </select>
+                                            <section class="col col-4">  
+                                                <label class="select">   
+                                                    <select name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                        <option value="0">Tipo</option>
+                                                        @foreach(\App\TipoFone::all() as $tipoFone)
+                                                            <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
+                                                        @endforeach   
+                                                    </select><i></i> 
+                                                </label>
                                             </section> 
                                             <section class="col col-1">
-                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                <button type="button" id="btnSalvarTelefone" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Novo</button>
                                             </section>
                                         </div> 
                                         <div class="row center" id="erroFone"></div>
@@ -276,12 +278,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($cliente->entidade->fone()->get() as $fone)
+                                                    @foreach($cliente->entidade->fone()->get()->sortBy('cd_fone_fon') as $fone)
                                                         <tr>
-                                                            <td class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
-                                                            <td>{{ $fone->nu_fone_fon }}</td>
+                                                            <td data-tipo="{{ $fone->tipo()->first()->cd_tipo_fone_tfo }}" class="center">{{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</td>
+                                                            <td data-fone="{{ $fone->nu_fone_fon }}">{{ $fone->nu_fone_fon }}</td>
                                                             <td class="center">
-                                                                <a class="excluirFoneBase" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                                <a title="Editar" class="editarFone btnFoneEditar" data-codigo="{{ $fone->cd_fone_fon }}" data-edit="S"><i class="fa fa-edit"></i> </a>
+                                                                <a title="Excluir" class="excluirFoneBase btnFoneExcluir" data-codigo="{{ $fone->cd_fone_fon }}"><i class="fa fa-trash"></i> </a>
                                                             </td>
                                                         </tr>
                                                     @endforeach

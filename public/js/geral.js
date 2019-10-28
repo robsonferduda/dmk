@@ -846,8 +846,11 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
+	/* ******************************** Gerenciamento de telefones - INÍCIO ********************************** */
 	var telefones = new Array();
 	var emails = new Array();
+	var fl_edicao = false;
+	var id_edicao = null;
 
 	$("#btnSalvarTelefone").click(function(){
 
@@ -864,42 +867,159 @@ $(document).ready(function() {
 
 			var fone = {tipo: tipo, numero: numero, descricao: ds_tipo};
 
-			telefones.push(fone);
+			//Se flag, atualiza no banco e atualiza a listagem. Senão, remove da memória e adiciona novo registro.
+			if(fl_edicao == true){
 
-			$("#tabelaFone > tbody > tr").remove();	
-			loadTelefones(entidade);
+				$.ajax({
+					url: "../../fones/editar",
+					type: 'POST',
+		            data: {
+		                "_token": $('meta[name="token"]').attr('content'),
+		                "id": id_edicao,
+		                "tipo": tipo,
+		                "fone": numero
+		            },
+					success: function(response){   
 
-			$.each(telefones, function(index, value){
-				$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-			});			
+						$("#tabelaFone > tbody > tr").remove();
+						loadTelefones(entidade);
+						loadTelefonesArray(telefones);
 
-			$('.excluirFone').on('click', function(){
+					},
+					error: function(response){
 
-				var id = $(this).data("id");
-				var entidade = $("#entidade").val()
-
-				telefones.splice(id,1); //Remove o registro do vetor que está na memória
-
-				$("#tabelaFone > tbody > tr").remove();	
-				loadTelefones(entidade);
-
-				$.each(telefones, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
+					}
 				});
 
-				$("#telefones").val(JSON.stringify(telefones));
+			}else{
 
-			});
+				if(id_edicao != null){
+					telefones.splice(id_edicao,1);
+				}
+
+				telefones.push(fone);
+
+				$("#tabelaFone > tbody > tr").remove();
+				loadTelefones(entidade);
+				loadTelefonesArray(telefones);
+
+			}			
+					
 
 			$("#nu_fone_fon").val("");
 			$("#cd_tipo_fone_tfo").prop('selectedIndex',0);
-			$("#nu_fone_fon").focus();			
+			$("#erroFone").empty();
+			$("#nu_fone_fon").focus();	
+			fl_edicao = false;
+			$("#btnSalvarTelefone").html('<i class="fa fa-plus"></i> Novo');
 
-			$('#modalFone').modal('hide');
 			$("#telefones").val(JSON.stringify(telefones));
 		}
 
 	});
+
+	$(document).on('click','.excluirFone',function(){
+
+		var id = $(this).data("id");
+		var entidade = $("#entidade").val();
+
+		telefones.splice(id,1); //Remove o registro do vetor que está na memória
+
+		$("#tabelaFone > tbody > tr").remove(); //Limpa tabela
+		loadTelefones(entidade); //Carrega telefones do banco
+		loadTelefonesArray(telefones); //Carrega telefones da memória		
+
+		$("#telefones").val(JSON.stringify(telefones));
+
+	});
+
+	$(document).on('click','.editarFone',function(){
+
+		var id = $(this).data("codigo");
+		var edit = $(this).data("edit");
+		var id = $(this).data("codigo");
+
+		if(edit == 'S'){
+			fl_edicao = true;
+		}else{
+			fl_edicao = false;
+		}
+
+		id_edicao = id;
+		
+		var tipo = $(this).closest('tr').find('td[data-tipo]').data('tipo');
+		var fone = $(this).closest('tr').find('td[data-fone]').data('fone');
+		
+		$("#nu_fone_fon").val(fone);
+		$("#cd_tipo_fone_tfo").val(tipo);
+		$("#btnSalvarTelefone").html('<i class="fa fa-edit"></i> Editar');
+
+	});
+
+	$(document).on('click','.excluirFoneBase',function(){
+
+		var id = $(this).data("codigo");
+		var entidade = $("#entidade").val();
+					
+		$.ajax({
+			url: "../../fones/excluir/"+id,
+			type: 'GET',
+			dataType: "JSON",
+			success: function(response){                    	
+			    $("#tabelaFone > tbody > tr").remove();	
+				loadTelefones(entidade);
+				loadTelefonesArray(telefones);
+			},
+			error: function(response){
+
+			}
+		});
+
+	});
+
+	function loadTelefonesArray(telefones){
+
+		$.each(telefones, function(index, value){
+			
+			$('#tabelaFone > tbody').append('<tr>'+
+					                            '<td data-tipo="'+value.tipo+'" class="center">'+value.descricao+'</td>'+
+					                            '<td data-fone="'+value.numero+'">'+value.numero+'</td>'+
+					                            '<td class="center">'+
+					                            	'<a class="editarFone btnFoneEditar" data-codigo="'+index+'" data-edit="N"><i class="fa fa-edit"></i> </a>'+
+					                            	'<a class="excluirFone btnFoneExcluir" data-id="'+index+'"><i class="fa fa-trash"></i> </a>'+
+					                            '</td>'+
+					                        '</tr>');
+		});
+	}
+
+	function loadTelefones(entidade){
+
+		$.ajax({
+            url: "../../fones/entidade/"+entidade,
+            type: 'GET',
+            dataType: "JSON",
+            success: function(response)
+            {                    	
+				$.each(response, function(index, value){
+					$('#tabelaFone > tbody').append('<tr>'+
+														'<td data-tipo="'+value.tipo.cd_tipo_fone_tfo+'" class="center">'+value.tipo.dc_tipo_fone_tfo+'</td>'+
+														'<td data-fone="'+value.nu_fone_fon+'">'+value.nu_fone_fon+'</td>'+
+														'<td class="center">'+
+															'<a class="editarFone btnFoneEditar" data-codigo="'+value.cd_fone_fon+'" data-edit="S"> <i class="fa fa-edit"></i> </a>'+
+															'<a class="excluirFoneBase btnFoneExcluir" data-codigo="'+value.cd_fone_fon+'"> <i class="fa fa-trash"></i> </a>'+															
+														'</td>'+
+													'</tr>');
+				});   
+ 
+            },
+            error: function(response){
+
+            }
+        });
+
+	}
+
+	/* ******************************** Gerenciamento de telefones - FIM ********************************** */
 
 	function loadRegistroBancario(id){
 
@@ -1124,51 +1244,6 @@ $(document).ready(function() {
 							loadEmails(entidade);
 							$.each(emails, function(index, value){
 								$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-							});
-			            },
-			            error: function(response)
-			            {
-			            }
-			        });
-
-				});   
-            },
-            error: function(response)
-            {
-            }
-        });
-
-	}
-
-	function loadTelefones(entidade){
-
-		$.ajax(
-            {
-                url: "../../fones/entidade/"+entidade,
-                type: 'GET',
-                dataType: "JSON",
-            success: function(response)
-            {                    	
-				$.each(response, function(index, value){
-					$('#tabelaFone > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_fone_tfo+'</td><td>'+value.nu_fone_fon+'</td><td class="center"><a class="excluirFoneBase" style="cursor:pointer"  data-codigo="'+value.cd_fone_fon+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
-				});   
-
-				$('.excluirFoneBase').on('click', function(){
-
-					var id = $(this).data("codigo");
-					var entidade = $("#entidade").val();
-					
-					$.ajax(
-			            {
-			                url: "../../fones/excluir/"+id,
-			                type: 'GET',
-			                dataType: "JSON",
-			            success: function(response)
-			            {                    	
-			            	$("#tabelaFone > tbody > tr").remove();	
-							loadTelefones(entidade);
-							$.each(telefones, function(index, value){
-								$('#tabelaFone > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.numero+'</td><td class="center"><a class="excluirFone"  style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 							});
 			            },
 			            error: function(response)
