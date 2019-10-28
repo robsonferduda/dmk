@@ -306,7 +306,7 @@
                                                                     <p>
                                                                         {{ $mensagem->texto_mensagem_prm }}
                                                                     </p>
-                                                                    <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                    <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
                                                                 @endif
                                                             </div>
                                                         </div>
