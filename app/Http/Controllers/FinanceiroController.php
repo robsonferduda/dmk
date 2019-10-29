@@ -573,16 +573,17 @@ class FinanceiroController extends Controller
                                     
                                     $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
                                     return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
-                             });
+                                });
+                            })
                             ->whereHas('correspondente')                            
                             ->with('tiposDespesa')
                             ->where('cd_conta_con',$this->conta)
                             ->when(!empty($cliente), function ($query) use ($cliente) {
                                     return $query->where('cd_cliente_cli',$cliente);
-                             }) 
-                             ->when(!empty($correspondente), function ($query) use ($correspondente) {
+                            }) 
+                            ->when(!empty($correspondente), function ($query) use ($correspondente) {
                                     return $query->where('cd_correspondente_cor',$correspondente);
-                             })   
+                            })   
                             ->when(!empty($finalizado), function ($query){
                                     return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
                             })  
@@ -590,16 +591,16 @@ class FinanceiroController extends Controller
                                     $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
                                     $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
                                     return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
-                             })    
-                             ->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
+                            })    
+                            ->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
                                     $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));                 
                                     return $query->where('dt_prazo_fatal_pro',$dtInicio);
-                             })    
-                             ->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
+                            })    
+                            ->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
                                     
                                     $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
                                     return $query->where('dt_prazo_fatal_pro',$dtFim);
-                             })    
+                            })    
                             ->get();
 
         $despesas = Despesa::where('cd_conta_con',$this->conta)
