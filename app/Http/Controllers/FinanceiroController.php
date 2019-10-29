@@ -505,8 +505,9 @@ class FinanceiroController extends Controller
 
         $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas);    
 
-        return \Excel::download(new BalancoSumarizadoExport($dados),'teste.xlsx');
-
+        
+        \Excel::store(new BalancoSumarizadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Sumarizado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
+        
     }
 
     public function relatorioBalancoDetalhado($request){
