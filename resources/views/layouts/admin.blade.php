@@ -247,7 +247,7 @@
                         <a href="#" title="Financeiro" class="item_pai" id="financeiro"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
                             <li>
-                                <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
+                                <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço(Em manutenção)</span></a>
                             </li>
                              <li>
                                 <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
@@ -255,9 +255,9 @@
                             <li>
                                 <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
                             </li>
-                            {{--<li>
+                            <li>
                                 <a href="{{ url('financeiro/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
-                            </li>--}}
+                            </li>
                         </ul>   
                         
                     </li>
