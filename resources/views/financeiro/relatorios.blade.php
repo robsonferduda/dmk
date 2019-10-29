@@ -33,7 +33,7 @@
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
                         <section class="col col-md-4">                                                        
-                            <label class="label label-black">Relatório</label><br />
+                            <label class="label label-black">Relatório<span class="text-danger">*</span></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Selecione...</option>
                                 <option {{ (\Session::get('relatorio') == 'relatorio-por-processo'  ? 'selected' : '') }} value="relatorio-por-processo">Relatório por processo</option>
