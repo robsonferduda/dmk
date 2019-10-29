@@ -24,10 +24,18 @@ class BalancoDetalhadoExport implements WithMultipleSheets
         $sheets = [];
 
         $sheets[0] = new BalancoTotalDetalhadoExport($this->dados);
-        $sheets[1] = new BalancoEntradasDetalhadoExport($this->dados);
-        $sheets[2] = new BalancoSaidasDetalhadoExport($this->dados);
-        $sheets[3] = new BalancoDespesasDetalhadoExport($this->dados);
+
+        if(!empty($this->dados['flagEntradas'])){
+            $sheets[1] = new BalancoEntradasDetalhadoExport($this->dados);
+        }
         
+        if(!empty($this->dados['flagSaidas'])){
+            $sheets[2] = new BalancoSaidasDetalhadoExport($this->dados);
+        }
+
+        if(!empty($this->dados['flagDespesas'])){
+            $sheets[3] = new BalancoDespesasDetalhadoExport($this->dados);
+        }
         return $sheets;
     }
 }

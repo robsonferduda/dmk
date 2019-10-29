@@ -71,18 +71,37 @@
                              <div style="clear: all;"></div>
                             <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
-                        </section>
-        
-                        <section class="col col-md-2">
+                        </section>                                                
+                    </div>
+                    <div class="row">
+                        <section class="col col-md-3">
                             <br />                                     
                             <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ (\Session::get('finalizado') == 'S'  ? 'checked' : '') }}>
                             <label class="label label-black">Processos Finalizados</label> 
 
                         </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="despesas" id="despesas" checked value="S" {{ (\Session::get('despesas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Despesas</label> 
+
+                        </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="entradas" id="entradas" checked value="S" {{ (\Session::get('entradas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Entradas</label> 
+
+                        </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="saidas" id="saidas" checked value="S" {{ (\Session::get('saidas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Saídas</label> 
+
+                        </section> 
                         <section class="col col-md-1">
                             <br />
                             <button style='float: right;' class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
-                        </section>                                   
+                        </section>          
                     </div>
                 </form>
             </div>
