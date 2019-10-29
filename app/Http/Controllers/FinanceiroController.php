@@ -511,19 +511,19 @@ class FinanceiroController extends Controller
                                 $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
                                     $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
                                     $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                    return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicioBaixa,$dtFimBaixa]);
+                                    return $query->whereBetween('dt_baixa_cliente_pth',[$dtInicioBaixa,$dtFimBaixa]);
                                 }); 
 
                                 $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
                                     
                                     $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                    return $query->where('dt_prazo_fatal_pro',$dtInicioBaixa);
+                                    return $query->where('dt_baixa_cliente_pth',$dtInicioBaixa);
                                 });
 
                                 $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
                                     
                                     $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                    return $query->where('dt_prazo_fatal_pro',$dtFimBaixa);
+                                    return $query->where('dt_baixa_cliente_pth',$dtFimBaixa);
                                 });
 
                              })
