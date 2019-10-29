@@ -762,12 +762,44 @@ class FinanceiroController extends Controller
 
     public function relatorioBuscar(Request $request){
 
-        if($request->relatorio == 'relatorio-por-processo'){
-            $this->relatorioBalancoDetalhado($request);
+        $erro = false;
+        if(!empty($request->dtInicio)){
+            if(\Helper::validaData($request->dtInicio) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
         }
 
-        if($request->relatorio == 'relatorio-sumarizado'){
-            $this->relatorioBalancoSumarizado($request);   
+        if(!empty($request->dtFim)){
+            if(\Helper::validaData($request->dtFim) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(!empty($request->dtInicioBaixa)){
+            if(\Helper::validaData($request->dtInicioBaixa) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(!empty($request->dtFimBaixa)){
+            if(\Helper::validaData($request->dtFimBaixa) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if($erro == false){
+
+            if($request->relatorio == 'relatorio-por-processo'){
+                $this->relatorioBalancoDetalhado($request);
+            }
+
+            if($request->relatorio == 'relatorio-sumarizado'){
+                $this->relatorioBalancoSumarizado($request);   
+            }
         }
 
         if(empty($request->despesas))
@@ -793,6 +825,7 @@ class FinanceiroController extends Controller
                                 ->with('despesas',$request->despesas)
                                 ->with('saidas',$request->saidas)
                                 ->with('entradas',$request->entradas);
+        
     }
 
     private function getFiles(){
