@@ -81,7 +81,7 @@
                                         <section class="col col-6">
                                             <label class="label">Razão Social <span class="text-danger">(Obrigatório)</span></label>
                                             <label class="input">
-                                                <input type="text" name="nm_razao_social_cli" placeholder="Razão Social" value=" {{ old('nm_razao_social_cli') }}">
+                                                <input type="text" name="nm_razao_social_cli" id="nm_razao_social_cli" placeholder="Razão Social" value="{{ old('nm_razao_social_cli') }}" required="required">
                                             </label>
                                         </section>                                        
                                     </div>                        
@@ -163,7 +163,7 @@
                                 </fieldset>
                             </section>
                         </div>
-                            <div class="row" style="padding: 5px 20px;">
+                        <div class="row" style="padding: 5px 20px;">
         
                                 <header>
                                     <i class="fa fa-map-marker"></i> Endereço 
@@ -230,7 +230,7 @@
                             
                         </div>
 
-                            <div class="row" style="margin-bottom: 20px;">
+                        <div class="row" style="margin-bottom: 20px;">
                                 <div class="col col-6">
                                     <header>
                                         <i class="fa fa-phone"></i> Telefones
@@ -244,7 +244,7 @@
                                             </section>                     
                                             <section class="col col-4"> 
                                                 <label class="select">   
-                                                    <select class="" name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
+                                                    <select name="cd_tipo_fone_tfo" id="cd_tipo_fone_tfo">
                                                         <option value="0">Tipo do telefone</option>
                                                         @foreach(\App\TipoFone::all() as $tipoFone)
                                                             <option {!! (old('cd_tipo_fone_tfo') == $tipoFone->cd_tipo_fone_tfo ? 'selected' : '') !!}  value="{{ $tipoFone->cd_tipo_fone_tfo }}" >{{ $tipoFone->dc_tipo_fone_tfo }}</option>
@@ -288,13 +288,15 @@
                                                     <input type="text" name="dc_endereco_eletronico_ede" id="dc_endereco_eletronico_ede" placeholder="Email" value="{{ old('dc_endereco_eletronico_ede') }}">
                                                 </label>
                                             </section>                     
-                                            <section class="col col-4">    
-                                                <select  id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" class="select2" style="float: left;">
+                                            <section class="col col-4"> 
+                                                <label class="select">   
+                                                    <select id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" style="float: left;">
                                                     <option selected value="">Selecione</option>
                                                         @foreach(\App\TipoEnderecoEletronico::all() as $tipo) 
                                                             <option value="{{$tipo->cd_tipo_endereco_eletronico_tee}}">{{ $tipo->dc_tipo_endereco_eletronico_tee}}</option>
                                                         @endforeach
-                                                </select> 
+                                                    </select><i></i>  
+                                                </label>
                                             </section> 
                                             <section class="col col-1">
                                                 <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Novo</button>
@@ -519,6 +521,6 @@
                     error.insertAfter(element.parent());
                 }
             });
-        });
+    });
 </script>
 @endsection

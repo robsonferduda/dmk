@@ -111,7 +111,7 @@
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
                                            
                                                 <li>
-                                                    <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
+                                                    <strong>Nº Processo: </strong> <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                                 </li>
                                                 @role('administrator|colaborador') 
                                                     <li>
@@ -122,17 +122,17 @@
                                                     <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : ' ' }}
+                                                    <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario->tipoServico) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
+                                                    <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario->tipoServico) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : 'Não informado' }}
                                                 </li> 
                                                 @role('administrator|colaborador')
                                                 <li>
-                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : 'Não informado' }}
                                                 </li>   
                                                 <li>
-                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
+                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : 'Não informado' }}
                                                 </li>                                                 
                                                 <li>
                                                     <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : 'Não informado' }}
@@ -153,10 +153,10 @@
                                                     <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : ' ' }}
-                                                </li> 
+                                                    <strong>Estado: </strong> {{ !empty($processo->cidade->estado->nm_estado_est) ? $processo->cidade->estado->nm_estado_est : 'Não informado' }}
+                                                </li>                                                
                                                 <li>
-                                                    <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
+                                                    <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : 'Não informada' }}
                                                 </li>
                                                 @role('administrator|colaborador')
                                                     <li>
@@ -173,13 +173,13 @@
                                                     <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : 'Não informado' }}
                                                 </li>  
                                                 <li>
-                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : ' ' }}
+                                                    <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Data Prazo Fatal: </strong> {{ !empty($processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' ' }}
+                                                    <strong>Data Prazo Fatal: </strong> {{ !empty($processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' ' }}
+                                                    <strong>Hora da Audiência: </strong> {{ !empty($processo->hr_audiencia_pro) ? date('H:i', strtotime($processo->hr_audiencia_pro)) : 'Não informado' }}
                                                 </li>                                                
                                                 <li>
                                                     <strong>Réu: </strong> {{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}
