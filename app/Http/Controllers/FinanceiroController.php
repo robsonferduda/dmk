@@ -538,10 +538,42 @@ class FinanceiroController extends Controller
                              })   
                              ->when(!empty($finalizado), function ($query){
                                     return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
-                             })                
+                             })    
+                             ->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
+                                    $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
+                                    $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+                                    return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
+                             })    
+                             ->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
+                                    $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtInicio);
+                             })    
+                             ->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
+                                    
+                                    $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtFim);
+                             })    
                              ->get();
 
         $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
+                            ->whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                                $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                    return $query->whereBetween('dt_baixa_correspondente_pth',[$dtInicioBaixa,$dtFimBaixa]);
+                                }); 
+
+                                $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                    
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                    return $query->where('dt_baixa_correspondente_pth',$dtInicioBaixa);
+                                });
+
+                                $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                    
+                                    $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                    return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
+                             });
                             ->whereHas('correspondente')                            
                             ->with('tiposDespesa')
                             ->where('cd_conta_con',$this->conta)
@@ -554,9 +586,39 @@ class FinanceiroController extends Controller
                             ->when(!empty($finalizado), function ($query){
                                     return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
                             })  
+                            ->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
+                                    $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
+                                    $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+                                    return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
+                             })    
+                             ->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
+                                    $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtInicio);
+                             })    
+                             ->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
+                                    
+                                    $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtFim);
+                             })    
                             ->get();
 
-        $despesas = Despesa::where('cd_conta_con',$this->conta)->get();
+        $despesas = Despesa::where('cd_conta_con',$this->conta)
+                             ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                    return $query->whereBetween('dt_pagamento_des',[$dtInicioBaixa,$dtFimBaixa]);
+                             }) 
+                             ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                    
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                    return $query->where('dt_pagamento_des',$dtInicioBaixa);
+                             })
+                             ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                    
+                                    $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                    return $query->where('dt_pagamento_des',$dtFimBaixa);
+                             })
+                             ->get();
 
         $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas);    
         \Excel::store(new BalancoDetalhadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
