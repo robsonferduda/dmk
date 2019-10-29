@@ -8,7 +8,7 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-o"></i> Relatórios</span>
             </h1>
@@ -20,8 +20,7 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                {{--<label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 10 clientes cadastrados. Utilize as opções de busca para personalizar o resultado.</label> --}}
-                <form action="{{ url('financeiro/relatorio/balanco/buscar') }}" class="form-inline" method="POST" role="search">
+                <form action="{{ url('financeiro/relatorios/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
@@ -38,7 +37,7 @@
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Selecione...</option>
                                 <option {{ (\Session::get('relatorio') == 'relatorio-por-processo'  ? 'selected' : '') }} value="relatorio-por-processo">Relatório por processo</option>
-                                <option {{ (\Session::get('relatorio') == 'relatorio-sumarizado'  ? 'selected' : '') }} value="relatorio-por-processo">Relatório Sumarizado</option>
+                                <option {{ (\Session::get('relatorio') == 'relatorio-sumarizado'  ? 'selected' : '') }} value="relatorio-sumarizado">Relatório Sumarizado</option>
                                 
                             </select>                            
                         </section>         
@@ -56,12 +55,12 @@
 
                          <section class="col col-md-2">
                             <label class="label label-black">Data da baixa inicial</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicioBaixa" value="{{ old('dtInicioBaixa') ? old('dtInicioBaixa') : \Session::get('dtInicioBaixa')}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
                             <label class="label label-black">Data da baixa final</label><br />
-                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}" >                            
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFimBaixa" value="{{ old('dtFimBaixa') ? old('dtFimBaixa') : \Session::get('dtFimBaixa')}}" >                            
                         </section>
 
                         <section class="col col-md-4">                           
@@ -84,9 +83,6 @@
                             <br />
                             <button style='float: right;' class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
                         </section>                                   
-                    </div>
-                    <div class="row">
-
                     </div>
                 </form>
             </div>
@@ -132,12 +128,10 @@
                 </div>
             </div>
         </article>
-
     </div>
 </div>
 @endsection
 @section('script')
-
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -198,5 +192,4 @@
     
     });
 </script>
-
 @endsection

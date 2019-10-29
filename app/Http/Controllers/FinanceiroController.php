@@ -397,7 +397,7 @@ class FinanceiroController extends Controller
         echo json_encode(true);
     }
 
-    public function relatorioBalancoSumarizado(){
+    public function relatorioBalancoSumarizado($request){
 
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
@@ -514,19 +514,55 @@ class FinanceiroController extends Controller
         $despesas = Despesa::where('cd_conta_con',$this->conta)->get();
 
         $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas);    
-
-        return \Excel::download(new BalancoDetalhadoExport($dados),'teste.xlsx');
+        \Excel::store(new BalancoDetalhadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
 
     }
 
     public function relatorios(){
-        return view('financeiro/relatorios',['arquivos' => array() ]);
+        return view('financeiro/relatorios',['arquivos' => $this->getFiles()]);
     }
 
     public function relatorioBuscar(Request $request){
 
-        dd($request->relatorio);
+        if($request->relatorio == 'relatorio-por-processo'){
+            $ret = $this->relatorioBalancoDetalhado();
+        }
 
+
+        // if($request->relatorio == 'relatorio-sumarizado'){
+        //     $this->relatorioBalancoSumarizado($request);   
+        // }
+
+        return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
+                                ->with('dtFim' ,str_replace('/','',$request->dtFim))
+                                ->with('dtInicioBaixa',str_replace('/','',$request->dtInicioBaixa))
+                                ->with('dtFimBaixa' ,str_replace('/','',$request->dtFimBaixa))
+                                ->with('relatorio',$request->relatorio)                                
+                                ->with('finalizado',$request->finalizado)
+                                ->with('cliente',$request->cd_cliente_cli)
+                                ->with('nmCliente',$request->nm_cliente_cli)
+                                ->with('correspondente',$request->cd_correspondente_cor)
+                                ->with('nmCorrespondente',$request->nm_correspondente_cor);
+
+    }
+
+    private function getFiles(){
+
+        \File::makeDirectory(storage_path().'/reports/financeiro/balanco/'.$this->conta, $mode = 0777, true, true);
+
+        $arquivos = array();
+
+        $files = collect(\File::allFiles(storage_path()."/reports/financeiro/balanco/".$this->conta))
+                 ->sortByDesc(function ($file) {
+                    return $file->getCTime();
+                });
+        
+        foreach($files as $file){
+            
+            $arquivos[] = array('nome' => $file->getFilename(), 'data' => date('d/m/Y H:i:s',$file->getCTime()),'tamanho' => round($file->getSize()/1024,2) );           
+        }
+
+        return $arquivos;
     }
 
 }

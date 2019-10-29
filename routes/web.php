@@ -270,7 +270,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/balanco/buscar','FinanceiroController@balancoBuscar');
 	Route::get('financeiro/relatorio/balanco/detalhado','FinanceiroController@relatorioBalancoDetalhado');
 	Route::get('financeiro/relatorio/balanco/sumarizado','FinanceiroController@relatorioBalancoSumarizado');
-	Route::post('financeiro/relatorios/balanco/buscar','FinanceiroController@relatorioBuscar');
+	Route::post('financeiro/relatorios/buscar','FinanceiroController@relatorioBuscar');
 	Route::get('financeiro/relatorios','FinanceiroController@relatorios');
 	
 	
