@@ -525,13 +525,12 @@ class FinanceiroController extends Controller
     public function relatorioBuscar(Request $request){
 
         if($request->relatorio == 'relatorio-por-processo'){
-            $ret = $this->relatorioBalancoDetalhado();
+            $this->relatorioBalancoDetalhado($request);
         }
 
-
-        // if($request->relatorio == 'relatorio-sumarizado'){
-        //     $this->relatorioBalancoSumarizado($request);   
-        // }
+        if($request->relatorio == 'relatorio-sumarizado'){
+            $this->relatorioBalancoSumarizado($request);   
+        }
 
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
@@ -563,6 +562,20 @@ class FinanceiroController extends Controller
         }
 
         return $arquivos;
+    }
+
+    public function excluir($nome){
+    
+       \Storage::disk('reports')->delete("/financeiro/balanco/$this->conta/".$nome);
+        
+        return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);    
+
+    }
+
+    public function arquivo($nome){
+        //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
+        return response()->download(storage_path('reports/financeiro/balanco/'."$this->conta/".$nome));
+
     }
 
 }

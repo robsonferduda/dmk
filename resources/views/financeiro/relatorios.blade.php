@@ -110,14 +110,14 @@
                                             {{ $arquivo['data'] }}
                                         </td>
                                         <td>
-                                            <a href="../../correspondente/painel/reports/{{$arquivo['nome']}}" >{{ $arquivo['nome'] }}</a>
+                                            <a href="../../financeiro/balanco/reports/{{$arquivo['nome']}}" >{{ $arquivo['nome'] }}</a>
                                         </td>
                                         <td>
                                             {{ $arquivo['tamanho'].'KB' }}
                                         </td>
                                         <td>
                                             <div style="display: block;padding: 1px 1px 1px 1px">
-                                                <button title="Excluir" data-url="../../correspondente/painel/reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                                <button title="Excluir" data-url="../../financeiro/balanco/reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                             </div>    
                                         </td>
                                     </tr>
