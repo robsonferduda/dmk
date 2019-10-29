@@ -403,11 +403,15 @@ class FinanceiroController extends Controller
 
         $entradasVetor = [];
 
-        $entradas = Processo::whereHas('honorario')
-                             ->with('cliente')                            
-                             ->with('tiposDespesa')
-                             ->where('cd_conta_con',$this->conta)
-                             ->get()->sortBy('cliente.nm_razao_social_cli');
+        if(!empty($request->entradas)){
+            $entradas = Processo::whereHas('honorario')
+                                 ->with('cliente')                            
+                                 ->with('tiposDespesa')
+                                 ->where('cd_conta_con',$this->conta)
+                                 ->get()->sortBy('cliente.nm_razao_social_cli');
+        }else{
+            $entradas = array();
+        }
 
         foreach ($entradas as $entrada) {
 
@@ -434,23 +438,27 @@ class FinanceiroController extends Controller
 
         $saidasVetor = [];
 
-        $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
-                            ->whereHas('correspondente')                            
-                            ->with('tiposDespesa')
-                            ->where('cd_conta_con',$this->conta)
-                            ->get()
-                            ->sort(function($a, $b){
-                                $lengthA = strlen($a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                $lengthB = strlen($b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                $valueA = $a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
-                                $valueB = $b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
+        if(!empty($request->saidas)){
+            $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
+                                ->whereHas('correspondente')                            
+                                ->with('tiposDespesa')
+                                ->where('cd_conta_con',$this->conta)
+                                ->get()
+                                ->sort(function($a, $b){
+                                    $lengthA = strlen($a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
+                                    $lengthB = strlen($b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
+                                    $valueA = $a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
+                                    $valueB = $b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
 
-                                if($lengthA == $lengthB){
-                                    if($valueA == $valueB) return 0;
-                                    return $valueA > $valueB ? 1 : -1;
-                                }
-                                return $lengthA > $lengthB ? 1 : -1;
-                            });
+                                    if($lengthA == $lengthB){
+                                        if($valueA == $valueB) return 0;
+                                        return $valueA > $valueB ? 1 : -1;
+                                    }
+                                    return $lengthA > $lengthB ? 1 : -1;
+                                });
+        }else{
+            $saidas = array();
+        }
 
         foreach ($saidas as $saida) {
 
@@ -473,7 +481,13 @@ class FinanceiroController extends Controller
             $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
         }
 
-        $despesas = Despesa::where('cd_conta_con',$this->conta)->get()->sortBy('tipo.categoriaDespesa.nm_categoria_despesa_cad');;
+        if(!empty($request->despesas)){
+            $despesas = Despesa::where('cd_conta_con',$this->conta)
+                                 ->get()
+                                 ->sortBy('tipo.categoriaDespesa.nm_categoria_despesa_cad');
+        }else{
+            $despesas = array();
+        }
 
         $despesasVetor = [];
 
@@ -489,7 +503,7 @@ class FinanceiroController extends Controller
 
         }
 
-        $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor);    
+        $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas);    
 
         return \Excel::download(new BalancoSumarizadoExport($dados),'teste.xlsx');
 
@@ -637,7 +651,7 @@ class FinanceiroController extends Controller
         }
 
         $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas);    
-        
+
         \Excel::store(new BalancoDetalhadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
 
     }

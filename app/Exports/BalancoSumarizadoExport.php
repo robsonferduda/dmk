@@ -24,9 +24,13 @@ class BalancoSumarizadoExport implements WithMultipleSheets
         $sheets = [];
 
         $sheets[0] = new BalancoTotalSumarizadoExport($this->dados);
-        $sheets[1] = new BalancoEntradasSumarizadoExport($this->dados);
-        $sheets[2] = new BalancoSaidasSumarizadoExport($this->dados);
-        $sheets[3] = new BalancoDespesasSumarizadoExport($this->dados);
+
+        if(!empty($this->dados['flagEntradas']))
+            $sheets[1] = new BalancoEntradasSumarizadoExport($this->dados);
+        if(!empty($this->dados['flagSaidas'])){
+            $sheets[2] = new BalancoSaidasSumarizadoExport($this->dados);
+        if(!empty($this->dados['flagDespesas'])){
+            $sheets[3] = new BalancoDespesasSumarizadoExport($this->dados);
         
         return $sheets;
     }
