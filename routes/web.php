@@ -272,11 +272,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/balanco/buscar','FinanceiroController@balancoBuscar');
 	Route::get('financeiro/relatorio/balanco/detalhado','FinanceiroController@relatorioBalancoDetalhado');
 	Route::get('financeiro/relatorio/balanco/sumarizado','FinanceiroController@relatorioBalancoSumarizado');
-	Route::get('financeiro/relatorio/balanco/buscar','FinanceiroController@relatorioBuscar');
+	Route::post('financeiro/relatorios/buscar','FinanceiroController@relatorioBuscar');
 	Route::get('financeiro/relatorios','FinanceiroController@relatorios');
+	Route::delete('financeiro/balanco/reports/{nome}','FinanceiroController@excluir');
+	Route::get('financeiro/balanco/reports/{nome}','FinanceiroController@arquivo');
 	
-	
-
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
 	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
 
