@@ -270,14 +270,25 @@
                                                         
                                                         <div class="outgoing_msg">
                                                           <div class="sent_msg">
-                                                            <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                            <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span> </div>
+                                                            @if($mensagem->deleted_at)
+                                                                <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                    Mensagem excluída
+                                                                </p>
+                                                            @else
+                                                                <p>
+                                                                    {{ $mensagem->texto_mensagem_prm }}
+                                                                </p>
+                                                                <span class="time_date">
+                                                                    <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                                    {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
                                                         </div>
                                                         
                                                     @else
                                                          <div class="incoming_msg">
-                                                            <div class="incoming_msg_img"> 
-                                                                
+                                                            <div class="incoming_msg_img">                                                                
 
                                                                 @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
                                                                     <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
@@ -286,9 +297,18 @@
                                                                 @endif
                                                             </div>
                                                             <div class="received_msg">
-                                                            <div class="received_withd_msg">
-                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                <div class="received_withd_msg">
+                                                                    @if($mensagem->deleted_at)
+                                                                        <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                            Mensagem excluída
+                                                                        </p>
+                                                                    @else
+                                                                        <p>
+                                                                            {{ $mensagem->texto_mensagem_prm }}
+                                                                        </p>
+                                                                        <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     @endif
@@ -342,9 +362,19 @@
                                                         @if($mensagem->remetente_prm == Auth::user()->cd_conta_con or $mensagem->remetente_prm == Session::get('SESSION_CD_ENTIDADE'))
                                                             
                                                             <div class="outgoing_msg">
-                                                              <div class="sent_msg">
-                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span> </div>
+                                                                <div class="sent_msg">
+                                                                    @if($mensagem->deleted_at)
+                                                                        <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                            Mensagem excluída
+                                                                        </p>
+                                                                    @else
+                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                        <span class="time_date">
+                                                                            <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                                            {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                                        </span> 
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                             
                                                         @else
@@ -358,9 +388,16 @@
                                                                         @endif
                                                                     </div>
                                                                     <div class="received_msg">
-                                                                    <div class="received_withd_msg">
-                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                        <span class="time_date"><strong>{{ $mensagem->entidadeInterna->usuario->name }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span></div>
+                                                                        <div class="received_withd_msg">
+                                                                            @if($mensagem->deleted_at)
+                                                                                <p style="background: #e8e7e7 !important; color: #686868;">
+                                                                                    Mensagem excluída
+                                                                                </p>
+                                                                            @else
+                                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                                                <span class="time_date"><strong>{{ $mensagem->entidadeInterna->usuario->name }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             
@@ -741,7 +778,8 @@
                     var m = '<div class="outgoing_msg">'+
                                 '<div class="sent_msg">' +
                                     '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                                    '<span class="time_date">'+dt_msg+'</span>'+
+                                    '<span class="time_date">'+
+                                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
                                 '</div>'+
                             '</div>';
 
@@ -762,6 +800,22 @@
                 }
             });
 
+        });
+
+
+        $(document).on('click','.excluir_registro',function(){
+
+            $(".msg_extra").html("");
+            var id  = $(this).closest('tr').find('td[data-id]').data('id');
+            var url = $(this).data('url');
+
+            if(!id){
+                id = $(this).data('id');
+            }
+
+            $("#modal_exclusao #url").val(url);
+            $("#modal_exclusao #id_exclusao").val(id);
+            $("#modal_exclusao").modal('show');
         });
 
         $('.msg_send_interno').click(function(){
@@ -796,7 +850,8 @@
                     var m = '<div class="outgoing_msg">'+
                                 '<div class="sent_msg">' +
                                     '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                                    '<span class="time_date">'+dt_msg+'</span>'+
+                                    '<span class="time_date">'+
+                                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
                                 '</div>'+
                             '</div>';
 

@@ -1233,7 +1233,12 @@ class CorrespondenteController extends Controller
 
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_correspondente_cor',$this->conta)->first();
         
-        $mensagens = ProcessoMensagem::where('cd_processo_pro',$id)->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)->with('entidadeRemetente')->with('entidadeDestinatario')->orderBy('created_at', 'ASC')->get();
+        $mensagens = ProcessoMensagem::where('cd_processo_pro',$id)
+                                     ->where('cd_tipo_mensagem_tim',TipoMensagem::EXTERNA)
+                                     ->with('entidadeRemetente')
+                                     ->with('entidadeDestinatario')
+                                     ->withTrashed()
+                                     ->orderBy('created_at', 'ASC')->get();
 
     
         return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens]);
