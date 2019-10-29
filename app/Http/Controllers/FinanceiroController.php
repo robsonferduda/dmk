@@ -495,20 +495,65 @@ class FinanceiroController extends Controller
 
     }
 
-    public function relatorioBalancoDetalhado(){
+    public function relatorioBalancoDetalhado($request){
+
+        $dtInicio       = $request->dtInicio;
+        $dtFim          = $request->dtFim;
+        $dtInicioBaixa  = $request->dtInicioBaixa;
+        $dtFimBaixa     = $request->dtFimBaixa;
+        $finalizado     = $request->finalizado;
+        $cliente        = $request->cd_cliente_cli;
+        $correspondente = $request->cd_correspondente_cor;
 
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
-        $entradas = Processo::whereHas('honorario')
+        $entradas = Processo::whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                                $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                    return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicioBaixa,$dtFimBaixa]);
+                                }); 
+
+                                $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                    
+                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtInicioBaixa);
+                                });
+
+                                $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                    
+                                    $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                    return $query->where('dt_prazo_fatal_pro',$dtFimBaixa);
+                                });
+
+                             })
                              ->with('cliente')                            
                              ->with('tiposDespesa')
-                             ->where('cd_conta_con',$this->conta)                             
+                             ->where('cd_conta_con',$this->conta)        
+                             ->when(!empty($cliente), function ($query) use ($cliente) {
+                                    return $query->where('cd_cliente_cli',$cliente);
+                             }) 
+                             ->when(!empty($correspondente), function ($query) use ($correspondente) {
+                                    return $query->where('cd_correspondente_cor',$correspondente);
+                             })   
+                             ->when(!empty($finalizado), function ($query){
+                                    return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+                             })                
                              ->get();
 
         $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                             ->whereHas('correspondente')                            
                             ->with('tiposDespesa')
                             ->where('cd_conta_con',$this->conta)
+                            ->when(!empty($cliente), function ($query) use ($cliente) {
+                                    return $query->where('cd_cliente_cli',$cliente);
+                             }) 
+                             ->when(!empty($correspondente), function ($query) use ($correspondente) {
+                                    return $query->where('cd_correspondente_cor',$correspondente);
+                             })   
+                            ->when(!empty($finalizado), function ($query){
+                                    return $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+                            })  
                             ->get();
 
         $despesas = Despesa::where('cd_conta_con',$this->conta)->get();
