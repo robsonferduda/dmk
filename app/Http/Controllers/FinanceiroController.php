@@ -399,6 +399,14 @@ class FinanceiroController extends Controller
 
     public function relatorioBalancoSumarizado($request){
 
+        $dtInicio       = $request->dtInicio;
+        $dtFim          = $request->dtFim;
+        $dtInicioBaixa  = $request->dtInicioBaixa;
+        $dtFimBaixa     = $request->dtFimBaixa;
+        $finalizado     = $request->finalizado;
+        $cliente        = $request->cd_cliente_cli;
+        $correspondente = $request->cd_correspondente_cor;
+
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
         $entradasVetor = [];
