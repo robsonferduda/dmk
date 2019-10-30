@@ -39,6 +39,7 @@
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
                                 <option {{ (\Session::get('relatorio') == 'para-cliente'  ? 'selected' : '') }} value="para-cliente">Para o cliente</option>
+                                <option {{ (\Session::get('relatorio') == 'para-todos-clientes'  ? 'selected' : '') }} value="para-todos-clientes">Todos clientes</option>
                             </select>                            
                         </section>     
                         <section class="col col-md-3">                           
@@ -59,7 +60,7 @@
                         </section> 
                         <section class="col col-md-1">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
                         </section> 
                                                            
                     </div>
@@ -122,7 +123,7 @@
                 $("input[name='nm_cliente_cli']").attr('required','required');
             }else{
                 $('.label-cliente-danger').text(' ');
-                $("input[name='nm_cliente_cli']").attr('required','');
+                $("input[name='nm_cliente_cli']").prop('required',false);
             }
         });
 

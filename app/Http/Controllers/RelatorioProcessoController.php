@@ -14,6 +14,7 @@ use App\TipoDespesa;
 use App\Exports\ProcessoParaClienteExport;
 use App\Exports\ProcessoPautaDiariaExportPDF;
 use App\Exports\ProcessoPautaDiariaExportExcel;
+use App\Exports\ProcessoParaTodosClientesExport;
 
 class RelatorioProcessoController extends Controller
 {
@@ -84,6 +85,32 @@ class RelatorioProcessoController extends Controller
                     Flash::error('Campo cliente obrigatório para o tipo de relatório informado!');
                 }
 
+            }else{
+
+                $processos = Processo::with('advogadoSolicitante')
+                                    ->with('cliente')
+                                    ->with('vara')
+                                    ->with('cidade')                                
+                                    ->with('honorario')
+                                    ->with(['tiposDespesa' => function($query){
+                                        $query->wherePivot('cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE);
+                                        $query->wherePivot('fl_despesa_reembolsavel_pde','S');
+                                    }])                                    
+                                    ->where('cd_conta_con',$this->conta)
+                                    ->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim])
+                                    ->when(!empty($request->finalizado), function($query){
+                                        $query->where('cd_status_processo_stp',\StatusProcesso::FINALIZADO);
+                                    })                                    
+                                    ->get()->sortBy('cliente.nm_razao_social_cli');
+
+                $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim);
+                   
+                if(!$processos->isEmpty()){
+                    \Excel::store(new ProcessoParaTodosClientesExport($dados),"/processo/{$this->conta}/".time() . "_Todos_Clientes.xlsx",'reports',\Maatwebsite\Excel\Excel::XLSX);
+                }else{
+                    Flash::error('Não há dados para os parâmetros informados!');
+
+                }
             }            
         
         }else{
