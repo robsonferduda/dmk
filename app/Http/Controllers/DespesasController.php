@@ -153,7 +153,7 @@ class DespesasController extends Controller
                                 })
                                 //Fim das operações com data
                                 ->when(!empty($despesa), function($sql) use($despesa){
-                                    $sql->where('cd_tipo_despesa_tds',$despesa);
+                                    $sql->where('despesa_des.cd_tipo_despesa_tds',$despesa);
                                 })
                                 ->when(!empty($situacao), function($sql) use($situacao){
 
