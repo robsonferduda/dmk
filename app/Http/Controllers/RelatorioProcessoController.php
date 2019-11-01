@@ -64,13 +64,11 @@ class RelatorioProcessoController extends Controller
                                     })
                                     ->get();
 
-                    $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa', function ($query) use ($cliente,$conta) {
-                        $query->whereHas('cliente', function ($query) use ($cliente,$conta) {
-                               
-                            $query->where('cd_cliente_cli',$cliente)->where('cd_conta_con',$conta);
-                                
-                        });
-                     })->get()->sortBy('nm_tipo_despesa_tds');
+                    $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa')
+                            ->where('cd_conta_con',$this->conta)
+                            ->where('fl_reembolso_tds','S')
+                            ->get()->sortBy('nm_tipo_despesa_tds');
+                     
 
                     $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
                    

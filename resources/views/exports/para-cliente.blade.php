@@ -65,15 +65,16 @@
             </td>
             @php
                 $totalDespesas = 0;
+                $despesaValor = 0;
             @endphp
             @foreach($dados['despesas'] as $despesa)
                 <td style="border: 1px hair #000000;vertical-align: center" >
-                @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->isEmpty())
+                @if($dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->first())
                     @php
-                        $despesa = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde;
-                        $totalDespesas += $totalDespesas+$despesa;
+                        $despesaValor = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->first()->pivot->vl_processo_despesa_pde;
+                        $totalDespesas += $despesaValor;
                     @endphp
-                    {{ 'R$ '.number_format($totalDespesas, 2,',',' ') }}
+                    {{ 'R$ '.number_format($despesaValor, 2,',',' ') }}
 
                 @else
                     {{ 'R$ '.number_format(0, 2,',',' ') }}

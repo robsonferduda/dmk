@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">Todos Clientes ({{ $dados['dtInicio']}} - {{ $dados['dtFim']}})</th>
-        <th colspan="11" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align: center;font-weight:bold;font-size:16px"></th>
+        <th colspan="{{count($dados['despesas'])+10}}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align: center;font-weight:bold;font-size:16px"></th>
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">CLIENTE</th>
@@ -69,26 +69,26 @@
             </td>
             @php
                 $totalDespesas = 0;
+                $despesaValor = 0;
             @endphp
             @foreach($dados['despesas'] as $despesa)
                 <td style="border: 1px hair #000000;vertical-align: center" >
-                @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->isEmpty())
+                @if($dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->first())
                     @php                       
 
-                        if(!empty($dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0])){ 
-                            $despesa = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde;
-                            $totalDespesas += $totalDespesas+$despesa;
-                        }else{
-                            //dd($dado->nu_processo_pro);
-                        }
+                        $despesaValor = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->first()->pivot->vl_processo_despesa_pde;
+
+                        $totalDespesas += $despesaValor;
+                       
                     @endphp
-                    {{ 'R$ '.number_format($totalDespesas, 2,',',' ') }}
+                    {{ 'R$ '.number_format($despesaValor, 2,',',' ') }}
 
                 @else
                     {{ 'R$ '.number_format(0, 2,',',' ') }}
                 @endif
                 </td>
             @endforeach
+           
             <td style="border: 1px hair #000000;vertical-align: center" >
                 @php
                     $taxaHonorario = 0;
@@ -104,7 +104,7 @@
         @endforeach
         <tr>
             <td colspan="3" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">Total: {{ 'R$ '.number_format($total,2,',',' ') }}</td>
-            <td colspan="11" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;vertical-align: center;font-weight:bold;font-size:12px"></td>
+            <td colspan="{{count($dados['despesas'])+10}}" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;vertical-align: center;font-weight:bold;font-size:12px"></td>
         </tr>
    
     </tbody>
