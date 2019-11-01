@@ -103,7 +103,12 @@ class RelatorioProcessoController extends Controller
                                     })                                    
                                     ->get()->sortBy('cliente.nm_razao_social_cli');
 
-                $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim);
+                $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa')
+                            ->where('cd_conta_con',$this->conta)
+                            ->where('fl_reembolso_tds','S')
+                            ->get()->sortBy('nm_tipo_despesa_tds');
+
+                $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
                    
                 if(!$processos->isEmpty()){
                     \Excel::store(new ProcessoParaTodosClientesExport($dados),"/processo/{$this->conta}/".time() . "_Todos_Clientes.xlsx",'reports',\Maatwebsite\Excel\Excel::XLSX);

@@ -17,7 +17,9 @@
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DO SERVIÇO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">Nº EXTERNO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">HONORÁRIOS</th>       
-        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DESPESAS</th>        
+        @foreach($dados['despesas'] as $despesa)
+            <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">{{ strtoupper($despesa->nm_tipo_despesa_tds) }}</th>
+        @endforeach      
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">TOTAL</th>
 
     </tr>
@@ -67,14 +69,26 @@
             </td>
             @php
                 $totalDespesas = 0;
-                foreach($dado->tiposDespesa as $despesa){
-                    $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
-                }
-            @endphp            
-            
-            <td style="border: 1px hair #000000;vertical-align: center" >
-                {{ 'R$ '.number_format($totalDespesas, 2,',',' ') }}
-            </td>
+            @endphp
+            @foreach($dados['despesas'] as $despesa)
+                <td style="border: 1px hair #000000;vertical-align: center" >
+                @if(!$dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->isEmpty())
+                    @php                       
+
+                        if(!empty($dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0])){ 
+                            $despesa = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)[0]->pivot->vl_processo_despesa_pde;
+                            $totalDespesas += $totalDespesas+$despesa;
+                        }else{
+                            //dd($dado->nu_processo_pro);
+                        }
+                    @endphp
+                    {{ 'R$ '.number_format($totalDespesas, 2,',',' ') }}
+
+                @else
+                    {{ 'R$ '.number_format(0, 2,',',' ') }}
+                @endif
+                </td>
+            @endforeach
             <td style="border: 1px hair #000000;vertical-align: center" >
                 @php
                     $taxaHonorario = 0;
