@@ -612,7 +612,13 @@ $(document).ready(function() {
 	$(".alterar_senha").click(function(){
 
 		var id = $(this).closest('tr').find('td[data-id]').data('id');
-		var action    = "usuarios/alterar-senha/"+id;
+		var action = "usuarios/alterar-senha/"+id;
+
+		//Aproveitamento do métido para conta
+		if(!id){
+			var id = $(this).data('id');
+			var action = "../../usuarios/alterar-senha/"+id;
+		}
 
 		$('#frm-alterar-senha #id').val(id);
 		$('#frm-alterar-senha').attr('action', action);	

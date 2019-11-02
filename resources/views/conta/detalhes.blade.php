@@ -34,6 +34,7 @@
                             @endif
                         </div>
                         <h4 class="center" style="margin-top: 15px;"><strong>{{ $conta->nm_razao_social_con }}</strong></h4>
+                        <h6><a href="#" class="alterar_senha" data-id="{{ \Crypt::encrypt(Auth::user()->id) }}"><i class="fa fa-lock"></i> Alterar Senha</a></h6>
                     </div>
                     <div class="col-md-9">
                         <div class="col-md-6">
@@ -172,6 +173,45 @@
              </div>                 
             </div>
         </div>                 
+    </div>
+</div>
+<div class="modal fade modal_top_alto" id="alterarSenha" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-edit"></i> Alterar Senha
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-alterar-senha', 'method' => 'PUT', 'url' => 'usuarios/alterar-senha', 'class' => 'smart-form']) !!}
+                     <fieldset>
+                       <section class="col col-6">
+                            <input type="hidden" name="fl_conta" value="S">
+                            <label class="label">Senha<span class="text-danger">*</span></label>
+                            <label class="input">
+                                 <input type="password" name="password" id="password" placeholder="Senha" required>
+                            </label>
+                            </section>  
+                            <section class="col col-6">
+                                <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Senha" required>
+                                </label>
+                            </section>     
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-alterar-senha"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -651,6 +651,7 @@ class UsuarioController extends Controller
 
         DB::beginTransaction();
 
+        $id_criptado = $id;
         $id = \Crypt::decrypt($id);
         
         $usuario  = User::where('cd_conta_con',$this->cdContaCon)->findOrFail($id);
@@ -662,16 +663,18 @@ class UsuarioController extends Controller
         
             DB::commit();
             Flash::success('Senha alterada com sucesso');
-            return redirect('usuarios');
         
         }else{
             
             DB::rollBack();
             Flash::error('Erro ao alterar senha');
-            return redirect('usuarios');
             
         }
 
+        if($request->fl_conta)
+            return redirect('conta/detalhes/'.$id_criptado);
+        else
+            return redirect('usuarios');
 
     }
 
