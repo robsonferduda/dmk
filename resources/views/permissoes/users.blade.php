@@ -51,7 +51,7 @@
                                         </td>
                                         <td class="center">
                                             <button title="Perfil" data-id="{{ $user->id }}" class="btn btn-default btn-xs roleOption"><i class="fa fa-group"></i> </button>
-                                            <a title="Permissões" href="{{ url('permissoes/usuario/'.$user->id) }}" class="btn btn-warning btn-xs"><i class="fa fa-lock"></i> </a>
+                                            <a title="Permissões" href="{{ url('permissoes/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-warning btn-xs"><i class="fa fa-lock"></i> </a>
                                             <button title="Editar" class="btn btn-primary btn-xs editar_area" href=""><i class="fa fa-edit"></i> </button>
                                             <button title="Excluir" data-url="../roles/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> </button>
                                         </td>

@@ -22,7 +22,7 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-z">
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>

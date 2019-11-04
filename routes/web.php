@@ -234,6 +234,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('permissoes/adicionar','PermissaoController@adicionar');
 	Route::get('permissoes/role/adicionar','PermissaoController@atribuirRole');
 	Route::get('permissoes/todas/adicionar','PermissaoController@atribuirPermissao');
+	Route::get('permissoes/adicionar/{permissao}/usuario/{usuario}','PermissaoController@atribuirPermissao');
+	Route::get('permissoes/remover/{permissao}/usuario/{usuario}','PermissaoController@revogarPermissao');
 
 
 	Route::post('varas/importar','VaraController@importar');

@@ -76,6 +76,22 @@ class User extends Authenticatable implements AuditableContract
         return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Role','role_user','user_id', 'role_id');
     }
 
+    public function permissao()
+    {
+        return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Permission','permission_user','user_id', 'permission_id');
+    }
+
+    public function getPermissao($permissao)
+    {
+        $ids = array();
+        foreach ($this->permissao()->get() as $key => $value) {
+            $ids[] = $value->id;
+        }
+            
+        return in_array($permissao, $ids);
+
+    }
+
     public static function boot(){
 
         parent::boot();

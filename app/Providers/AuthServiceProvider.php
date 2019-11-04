@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Kodeine\Acl\Models\Eloquent\Permission;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,93 +16,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //Inicialmente as permissões serão por nível
-        Gate::define('menu-agenda', function ($user) {
+        foreach (Permission::all() as $key => $value) {
 
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
+            $slug = array_keys($value->slug)[0];
+            $name = $value->name;
 
-        Gate::define('menu-calendario', function ($user) {
+            $perm = $name.'.'.$slug;
 
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
+            Gate::define($perm, function ($user) use ($value) {
 
-        Gate::define('menu-cliente', function ($user) {
+                return $user->getPermissao($value->id);
 
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
+            });
+           
+        };
 
-        Gate::define('menu-correspondente', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-usuario', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-processos', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-financeiro', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-despesas', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-agenda', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-configuracoes', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
-
-        Gate::define('menu-permissoes', function ($user) {
-
-            if($user->role()->first()->slug == 'administrator')
-                return true;
-            else
-                return false;
-        });
     }
 }
