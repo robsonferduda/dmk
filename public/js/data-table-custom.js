@@ -55,13 +55,12 @@ $(document).ready(function() {
                     }
                 });
 
-                $('#dt_no_paginate').dataTable({
+                $('#tabela_2').dataTable({
                     "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
                         "t"+
                         "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
                     "autoWidth" : true,
                     "ordering": true,
-                    "paginate": false,
                     "aaSorting": [],
                     "oLanguage": {
                         "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
@@ -101,6 +100,4 @@ $(document).ready(function() {
                     }
                 });
 
-    
-            /* END BASIC */
 });

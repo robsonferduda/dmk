@@ -39,7 +39,6 @@
                         </select>
                     </div>  --}}          
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <a href="{{ url('usuarios') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
@@ -52,11 +51,10 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                    
+                                    <th style="width: 50%;">Nome</th>
                                     <th style="width: 25%;">Usuário</th>
-                                    <th style="">E-mail</th>
-                                    {{--<th style="width: 15%;">Nível</th>--}}
-                                   
-                                    <th style="width: 100px;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 15%;">Perfil</th>
+                                    <th style="width: 100px;"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,10 +62,16 @@
                                     <tr>                                    
                                         <td data-id="{{ \Crypt::encrypt($usuario->id) }}" data-nome="{{ $usuario->name }}">{{ $usuario->name }}</td>
                                         <td data-email="{{ $usuario->email }}">{{ $usuario->email }}</td>
-                                      {{--  <td data-perfil="{{ $usuario->tipoPerfil->cd_nivel_niv }}">{{ $usuario->tipoPerfil->dc_nivel_niv }}</td> --}}
+                                        <td>
+                                            @foreach($usuario->roles as $role)
+                                                {{ $role->name }}
+                                            @endforeach
+                                        </td>
                                         <td>
                                             <a class="btn btn-default btn-xs" title="Detalhes" href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a class="btn btn-primary btn-xs editar_vara" title="Editar" href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-edit"></i></a>
+                                            <button title="Perfil" data-id="{{ $usuario->id }}" class="btn btn-default btn-xs roleOption"><i class="fa fa-group"></i> </button>
+                                            <a title="Permissões" href="{{ url('permissoes/usuario/'.\Crypt::encrypt($usuario->id)) }}" class="btn btn-warning btn-xs"><i class="fa fa-lock"></i> </a>
                                             <div class="dropdown" style="display: inline;">
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
@@ -124,4 +128,51 @@
         </div>
     </div>
 </div>
+ <div class="modal fade in modal_top_alto" id="modal_roles" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-group"></i> Gerenciar Perfis</h4>
+                     </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 msg-selecao-role" style="margin-bottom: 5px;">
+                            </div>
+                            <div class="col-md-10">
+                                <input type="hidden" name="user" id="user">
+                                <div class="form-group">
+                                    <select class="form-control" name="role" id="role">
+                                        <option value="0">Selecione um perfil</option>
+                                        @foreach(\Kodeine\Acl\Models\Eloquent\Role::all() as $role)
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-left">
+                                <div class="form-group">
+                                    <button type="button" id="btnAddRole" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Adicionar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="table-user-role" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:85%">Perfil</th>
+                                    <th style="width:15%">Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            </tbody>
+                        </table>
+                        <div id="role_msg"></div>
+                        <div id="role_msg_sistema"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection

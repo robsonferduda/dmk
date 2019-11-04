@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="#addArea" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="{{ url('usuarios/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
@@ -23,6 +23,19 @@
             @include('layouts/messages')
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+             <div class="well">
+                <form action="{{ url('usuarios/buscar') }}" class="form-inline" method="GET" role="search">
+                    {{ csrf_field() }}
+
+                    <div class="input-group">
+                        <span class="input-group-addon">Nome</span>
+                        <input size="30" type="text" name="nome" class="form-control" id="Nome" placeholder="Nome" >
+                    </div>                    
+                         
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                </form>
+            </div>
+
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -33,8 +46,8 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
+                                    <th style="width: 25%;">Nome</th>
                                     <th style="width: 25%;">Usuário</th>
-                                    <th style="width: 25%;">Email</th>
                                     <th style="width: 38%;">Perfil</th>
                                     <th style="width: 12%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>

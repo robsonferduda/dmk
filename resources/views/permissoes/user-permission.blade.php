@@ -29,8 +29,8 @@
                     <h2>Permissões Disponíveis</h2>
                 </header>
                 <div>
-                    <div class="widget-body no-padding">
-                        <table id="" class="table table-striped table-bordered table-hover" width="100%">
+                    <div class="widget-body">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
                                     <th style="width: 25%;">Permissão</th>
@@ -59,8 +59,8 @@
                     <h2>Permissões do Usuário</h2>
                 </header>
                 <div>
-                    <div class="widget-body no-padding">
-                        <table id="" class="table table-striped table-bordered table-hover" width="100%">
+                    <div class="widget-body">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
                                     <th style="width: 25%;">Permissão</th>

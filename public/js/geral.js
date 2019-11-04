@@ -259,7 +259,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: pathname+"/role/usuario/"+id,
+                url: host+"/role/usuario/"+id,
                 type: 'GET',
                 dataType: "JSON",
             beforeSend: function()

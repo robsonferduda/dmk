@@ -192,7 +192,7 @@ class UsuarioController extends Controller
 
             DB::rollBack();
             Flash::error('E-mail já existente em nossa base de dados');
-            return redirect('usuarios');
+            return redirect('usuarios/novo')->withInput();
         }
 
         $entidade = Entidade::create([
@@ -372,7 +372,7 @@ class UsuarioController extends Controller
 
                 DB::rollBack();
                 Flash::error('E-mail já existente em nossa base de dados');
-                return redirect('usuarios');
+                return redirect('usuarios/novo')->withInput();
             }
         }
 
