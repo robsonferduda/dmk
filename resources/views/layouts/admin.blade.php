@@ -152,12 +152,10 @@
                 </span>
             </div>
             <nav>
-                <ul>
-                    @role('administrator|colaborador|correspondente')    
-                        <li class="">
-                            <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
-                        </li>              
-                    @endrole
+                <ul>   
+                    <li class="">
+                        <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
+                    </li>              
 
                     @can('agenda.index')    
                         <li class="">
@@ -171,7 +169,7 @@
                         </li>              
                     @endcan
 
-                    @permission('novo.cliente') 
+                    @can('cliente.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'cliente') ? 'open' : '' }}">
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'cliente') ? 'display: block;' : 'display: none;' }}">
@@ -183,9 +181,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.correspondente') 
+                    @can('correspondente.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'correspondente') ? 'open' : '' }}">
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
@@ -206,9 +204,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.usuario') 
+                    @can('usuario.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'usuarios') ? 'open' : '' }}">
                         <a href="#" title="Usuários" class="item_pai" id="usuarios"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'usuarios') ? 'display: block;' : 'display: none;' }}">
@@ -220,9 +218,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.processo') 
+                    @can('processo.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
@@ -240,9 +238,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.financeiro') 
+                    @can('financeiro.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'financeiro') ? 'open' : '' }}">
                         <a href="#" title="Financeiro" class="item_pai" id="financeiro"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
@@ -261,9 +259,9 @@
                         </ul>   
                         
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.despesas') 
+                    @can('despesas.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'despesas') ? 'open' : '' }}">
                         <a href="#" title="Despesas"  class="item_pai" id="despesas"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'despesas') ? 'display: block;' : 'display: none;' }}">
@@ -275,9 +273,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.configuracoes') 
+                    @can('configuracoes.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'configuracao') ? 'open' : '' }}">
                         <a href="#" title="Dashboard" class="item_pai" id="configuracao" ><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'configuracao') ? 'display: block;' : 'display: none;' }}">
@@ -326,9 +324,9 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
+                    @endcan
 
-                    @permission('index.permissoes') 
+                    @can('permissoes.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
                         <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'permissoes') ? 'display: block;' : 'display: none;' }}">
@@ -343,22 +341,15 @@
                             </li>
                         </ul>   
                     </li>
-                    @endpermission
-
+                    @endcan
 
                     @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
-                        </li>              
-                    @endrole
-
-                    @role('correspondente')    
+                        </li>                
                         <li class="">
                             <a href="{{ url('correspondente/processos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
-                        </li>              
-                    @endrole
-
-                    @role('correspondente')    
+                        </li>                 
                         <li class="">
                             <a href="{{ url('correspondente/painel/relatorios') }}" title="blank_"><i class="fa fa-lg fa-fw fa-file-o"></i> <span class="menu-item-parent">Relatórios</span></a>
                         </li> 
