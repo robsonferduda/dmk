@@ -18,6 +18,9 @@ use App\TipoConta;
 use App\RegistroBancario;
 use App\Departamento;
 use App\Cargo;
+use App\Role as RoleSistema;
+use App\Enums\Roles;
+use Kodeine\Acl\Models\Eloquent\Role;
 use App\Http\Requests\UsuarioRequest;
 use App\Http\Requests\UsuarioSenhaRequest;
 use Illuminate\Http\Request;
@@ -41,8 +44,9 @@ class UsuarioController extends Controller
     {        
 
         $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','!=',1)->orderBy('name')->get();
+        $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
 
-        return view('usuario/usuarios',['usuarios' => $usuarios]);
+        return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
     }
 
     public function detalhes($id)

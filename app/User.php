@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Role;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,7 +74,7 @@ class User extends Authenticatable implements AuditableContract
 
     public function role()
     {
-        return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Role','role_user','user_id', 'role_id');
+        return $this->belongsToMany('Role','role_user','user_id', 'role_id');
     }
 
     public function permissao()

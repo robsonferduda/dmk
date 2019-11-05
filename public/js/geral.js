@@ -340,17 +340,23 @@ $(document).ready(function() {
 									$.each(response, function(index, value){
 										$('#table-user-role > tbody').append('<tr><td>'+value.name+'</td><td class="center"><a class="excluirUserRole" data-id="'+value.id+'" data-user="'+id+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 									});
+
 									$(".excluirUserRole").on("click", function(){ 
 									    var user = $(this).data('user');
 									    var role = $(this).data('id'); 
 									    deleteUserRole(user, role);
 									});
+
+									$("#role_msg h3").remove();
+									$("#role_msg_sistema h3").remove();
+
+									location.reload();
+
 								}else{
 									$("#role_msg").html('<h3 class="center">Usuário não possui perfis associados</h3>');
 								}
 
-								$("#role_msg h3").remove();
-								$("#role_msg_sistema h3").remove();
+								
 				            },
 				            error: function(response)
 				            {

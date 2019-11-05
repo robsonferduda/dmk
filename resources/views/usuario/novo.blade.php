@@ -9,10 +9,13 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Usuários <span>> Novo</span>
             </h1>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <a href="{{ url('usuarios') }}" data-toggle="modal" href="#addPermissao" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Usuários</a>
         </div>
     </div>
     <div class="row">

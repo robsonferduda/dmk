@@ -70,11 +70,11 @@
                                         <td>
                                             <a class="btn btn-default btn-xs" title="Detalhes" href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a class="btn btn-primary btn-xs editar_vara" title="Editar" href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-edit"></i></a>
-                                            <button title="Perfil" data-id="{{ $usuario->id }}" class="btn btn-default btn-xs roleOption"><i class="fa fa-group"></i> </button>
-                                            <a title="Permissões" href="{{ url('permissoes/usuario/'.\Crypt::encrypt($usuario->id)) }}" class="btn btn-warning btn-xs"><i class="fa fa-lock"></i> </a>
                                             <div class="dropdown" style="display: inline;">
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
+                                                    <li><a class="roleOption" title="Alterar Senha" href="#" data-id="{{ $usuario->id }}"><i class="fa fa-group"></i> Perfil</a></li>
+                                                    <li><a title="Permissões" href="{{ url('permissoes/usuario/'.\Crypt::encrypt($usuario->id)) }}"><i class="fa fa-lock"></i> Permissões</a></li>
                                                     <li><a data-toggle="modal" class="alterar_senha" title="Alterar Senha" href="#"}}"><i class="fa fa-key"></i> Alterar Senha</a></li>
                                                     <li><a data-url="usuarios/"  title="Excluir" class="excluir_registro"  href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
@@ -143,7 +143,7 @@
                                 <div class="form-group">
                                     <select class="form-control" name="role" id="role">
                                         <option value="0">Selecione um perfil</option>
-                                        @foreach(\Kodeine\Acl\Models\Eloquent\Role::all() as $role)
+                                        @foreach($roles as $role)
                                             <option value="{{ $role->id }}">{{ $role->name }}</option>
                                         @endforeach
                                     </select>

@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('users') }}" data-toggle="modal" href="#addPermissao" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Usuários</a>
+            <a href="{{ url('usuarios') }}" data-toggle="modal" href="#addPermissao" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Usuários</a>
         </div>
     </div>
     <div class="row">

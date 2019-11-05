@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Conta;
+use App\Role as RoleSistema;
 use Illuminate\Http\Request;
 use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Support\Facades\Session;
@@ -33,14 +34,35 @@ class RoleController extends Controller
     {  
 
     	$user = User::find($request->id);
-    	$role = Role::find($request->role);
+    	$role = RoleSistema::find($request->role);
 
-    	if($user->assignRole($role))
+        //Remove roles anteriores
+        $rolesUser = User::find($request->id)->roles;
+
+        if($user->assignRole($role)){
+
+            foreach ($user->permissao()->get() as $p) {
+                $user->permissao()->detach($p);
+            }
+
+            //Adicona permissoes do perfil
+            $perms = $role->permissao()->get();
+            foreach ($perms as $p) {
+                $user->permissao()->attach($p);
+            }
+
+            foreach($rolesUser as $r){
+
+                $user->revokeRole($role);
+            }
+
     		$msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
+        }
     	else
     		$msg = array('status' => false, 'msg' => 'Erro ao adicionar perfil');
 
     	return Response::json($msg);
+        
     }
 
     public function deleteRoleUser($role,$user)
