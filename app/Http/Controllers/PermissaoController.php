@@ -54,11 +54,27 @@ class PermissaoController extends Controller
 
     public function atribuirRole(){
 
-        $user = User::where('id',$this->user->id)->first();
-
+        //Role administrador
+        /*
         $role = Role::find(1);
+        foreach (Permission::all() as $p) {
+            
+            $role->assignPermission($p);
 
-        $user->assignRole($role);
+        }
+        */
+
+        //Role Colaborador
+        $role = Role::find(2);
+
+        $array_permissoes = array(26,27,28,29,30,31,32,33,34,35,36,40,41,42,43,44,52);
+
+        foreach (Permission::whereIn('id',$array_permissoes)->get() as $p) {
+            
+            $role->assignPermission($p);
+
+        }
+        
 
     }
 

@@ -360,6 +360,7 @@ $(document).ready(function() {
 				            },
 				            error: function(response)
 				            {
+				            	$("#role_msg").html('<h3 class="center text-danger">'+response.msg+'</h3>');
 				            }
 				        });
 

@@ -36,30 +36,34 @@ class RoleController extends Controller
     	$user = User::find($request->id);
     	$role = RoleSistema::find($request->role);
 
-        //Remove roles anteriores
+        //Guarda roles existentes para remover
         $rolesUser = User::find($request->id)->roles;
 
-        if($user->assignRole($role)){
+        //Se conseguir adicionar role nova
+        if($user->assignRole($role))
+        {
 
+            //Remove role antiga
+            foreach($rolesUser as $r){
+                $user->revokeRole($r);
+            }
+
+            //Remove permissões antigas
             foreach ($user->permissao()->get() as $p) {
                 $user->permissao()->detach($p);
             }
 
-            //Adicona permissoes do perfil
+            //Adicona novas permissoes do perfil
             $perms = $role->permissao()->get();
             foreach ($perms as $p) {
                 $user->permissao()->attach($p);
             }
 
-            foreach($rolesUser as $r){
-
-                $user->revokeRole($role);
-            }
-
     		$msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
-        }
-    	else
+
+        }else{
     		$msg = array('status' => false, 'msg' => 'Erro ao adicionar perfil');
+        }
 
     	return Response::json($msg);
         
@@ -72,23 +76,21 @@ class RoleController extends Controller
     	$role = Role::find($role);
 
     	if($user->revokeRole($role))
-    		$msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
-    	else
+        {
+    		
+            //Remove permissões antigas
+            foreach ($user->permissao()->get() as $p) {
+                $user->permissao()->detach($p);
+            }
+
+            $msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
+
+        }else{
     		$msg = array('status' => false, 'msg' => 'Erro ao adicionar perfil');
+        }
 
     	return Response::json($msg);
 
     }
 
-    public function novo()
-    {  
-    	/*
-        $roleAdmin = new Role();
-		$roleAdmin->name = 'Super Usuário';
-		$roleAdmin->slug = 'super-user';
-		$roleAdmin->description = 'Gerencia todas os opções do sistema';
-		$roleAdmin->save();
-		*/
-
-    }
 }

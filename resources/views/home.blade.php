@@ -37,12 +37,13 @@
                 <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
                     <h4><span>Olá <b>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}</b>!</span></h4>
                     <h5>
-                        @role('colaborador')
+                        @if(Auth::user()->cd_nivel_niv == 2)
                             <a href="{{ url("usuarios/".Auth::user()->id) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
-                        @endrole
-                        @role('administrator') 
+                        @endif
+
+                        @if(Auth::user()->cd_nivel_niv == 1) 
                             <a href="{{ url("conta/detalhes/".\Crypt::encrypt(Auth::user()->cd_conta_con)) }}"> Minha Conta</a>  
-                        @endrole
+                        @endif
                     </h5>
                 </div>
                 <div style="clear: both;"></div>

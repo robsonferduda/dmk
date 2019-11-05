@@ -74,7 +74,7 @@ class User extends Authenticatable implements AuditableContract
 
     public function role()
     {
-        return $this->belongsToMany('Role','role_user','user_id', 'role_id');
+        return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Role','role_user','user_id', 'role_id');
     }
 
     public function permissao()

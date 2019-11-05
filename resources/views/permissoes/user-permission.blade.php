@@ -33,8 +33,8 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
-                                    <th style="width: 25%;">Permissão</th>
-                                    <th style="width: 12%;" class="center">Ações</th>
+                                    <th style="width: 90%;">Permissão</th>
+                                    <th style="width: 10%;" class="center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,7 +42,7 @@
                                     <tr>
                                         <td data-id="{{ $user->id }}" data-descricao="{{ $user->name }}">{{ $p->description }}</td>
                                         <td class="center">
-                                            <a title="Adicionar" href="{{ url('permissoes/adicionar/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-primary btn-xs" href=""><i class="fa fa-plus"></i> </a>
+                                            <a title="Adicionar Permissão" href="{{ url('permissoes/adicionar/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-primary btn-xs" href=""><i class="fa fa-plus"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -63,8 +63,8 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
-                                    <th style="width: 25%;">Permissão</th>
-                                    <th style="width: 12%;" class="center">Ações</th>
+                                    <th style="width: 90%;">Permissão</th>
+                                    <th style="width: 10%;" class="center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,7 +72,7 @@
                                     <tr>
                                         <td data-id="{{ $user->id }}" data-descricao="{{ $user->name }}">{{ $p->description }}</td>
                                         <td class="center">
-                                            <a title="Adicionar" href="{{ url('permissoes/remover/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-danger btn-xs" href=""><i class="fa fa-trash"></i> </a>
+                                            <a title="Remover Permissão" href="{{ url('permissoes/remover/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-danger btn-xs" href=""><i class="fa fa-trash"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach
