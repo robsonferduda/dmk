@@ -65,7 +65,7 @@
             </td>
 
             <td style="border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->honorario ? 'R$ '.number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : '0'}}
+                {{ $dado->honorario ? number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : '0'}}
             </td>
             @php
                 $totalDespesas = 0;
@@ -81,10 +81,10 @@
                         $totalDespesas += $despesaValor;
                        
                     @endphp
-                    {{ 'R$ '.number_format($despesaValor, 2,',',' ') }}
+                    {{ number_format($despesaValor, 2,',',' ') }}
 
                 @else
-                    {{ 'R$ '.number_format(0, 2,',',' ') }}
+                    {{ number_format(0, 2,',',' ') }}
                 @endif
                 </td>
             @endforeach
@@ -98,7 +98,7 @@
                     $total += (float)$totalDespesas+(float)$taxaHonorario;
                 @endphp
 
-                {{ 'R$ '.number_format($totalDespesas+$taxaHonorario, 2,',',' ') }}
+                {{ number_format($totalDespesas+$taxaHonorario, 2,',',' ') }}
             </td>
         </tr>
         @endforeach
