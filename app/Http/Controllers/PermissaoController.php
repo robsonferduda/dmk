@@ -55,18 +55,18 @@ class PermissaoController extends Controller
     public function atribuirRole(){
 
         //Role administrador
+        /*
         $role = Role::find(1);
         foreach (Permission::all() as $p) {
             
             $role->assignPermission($p);
 
         }
+        */
 
         //Role Colaborador
         $role = Role::find(2);
         $array_permissoes = array(31,32,33,34,35,36,37,38,39,40,41,45,46,47,48,49,57);
-
-        dd(Permission::whereIn('id',$array_permissoes)->get());
 
         foreach (Permission::whereIn('id',$array_permissoes)->get() as $p) {
             
