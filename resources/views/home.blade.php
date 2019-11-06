@@ -6,6 +6,7 @@
     </ol>
 </div>
 <div id="content">
+
     <div class="row">
         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
@@ -13,18 +14,9 @@
             </h1>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            @if($conta->cd_tipo_pessoa_tpp == null)
-                <div class="alert alert-warning fade in">
-                    <button class="close" data-dismiss="alert">×</button>
-                    <i class="fa-fw fa fa-warning"></i><strong> Atenção!</strong> Seu cadastro está incompleto, <a href="{{ url('conta/atualizar/'.\Crypt::encrypt($conta->cd_conta_con)) }}">clique aqui</a> para atualizar seus dados!
-                </div>
-            @endif   
-        </div>
-    </div>
     
     <div class="row">
+
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
@@ -49,6 +41,7 @@
                 <div style="clear: both;"></div>
             </div>
         </div>  
+
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
@@ -69,6 +62,7 @@
                 <div style="clear: both;"></div>
             </div>
         </div> 
+
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
@@ -80,7 +74,8 @@
                 </div>
                 <div style="clear: both;"></div>
             </div>
-        </div>       
+        </div>
+               
     </div>
 </div>
 @endsection
