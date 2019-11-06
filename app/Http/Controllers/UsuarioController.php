@@ -105,8 +105,9 @@ class UsuarioController extends Controller
         if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
         if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
         $usuarios = $usuarios->orderBy('name')->get();
+        $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
 
-        return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
+        return view('usuario/usuarios',['usuarios' => $usuarios,'roles' => $roles, 'nome' => $nome, 'perfil' => $perfil]);
     }
 
     public function novo(){
