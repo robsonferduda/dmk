@@ -30,7 +30,7 @@
                     <h4><span>Olá <b>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}</b>!</span></h4>
                     <h5>
                         @if(Auth::user()->cd_nivel_niv == 2)
-                            <a href="{{ url("usuarios/".Auth::user()->id) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
+                            <a href="{{ url("usuarios/".\Crypt::encrypt(Auth::user()->id)) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
                         @endif
 
                         @if(Auth::user()->cd_nivel_niv == 1) 
@@ -75,7 +75,7 @@
                 <div style="clear: both;"></div>
             </div>
         </div>
-               
+
     </div>
 </div>
 @endsection

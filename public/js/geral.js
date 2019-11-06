@@ -292,6 +292,15 @@ $(document).ready(function() {
 		$("#modal_roles").modal('show');
 	});
 
+	$(".add_role_permission").click(function(){
+
+		var id = $(this).data('id');
+
+		$("#frmRolePermissao #id_permissao").val(id);
+		$("#modal_roles").modal('show');
+
+	});
+
 	$('#modal_roles').on('show.bs.modal', function (e) {
 		$(".msg-selecao-role").html("");
 	});
@@ -378,6 +387,7 @@ $(document).ready(function() {
 
 		}else{
 			$(".msg-selecao-role").html('<span class="text-danger">Selecione um perfil para adicionar</span>');
+			return false;
 		}		
 
 	});

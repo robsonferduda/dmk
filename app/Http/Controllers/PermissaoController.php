@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\User;
+use App\Permissao;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -27,7 +28,8 @@ class PermissaoController extends Controller
 
     public function index()
     {  
-        return view('permissoes/permissoes',['permissoes' => Permission::all()]);
+        $flag = false;
+        return view('permissoes/permissoes',['permissoes' => Permissao::all(), 'flag' => $flag, 'role' => false ]);
     }
 
     public function users()
@@ -52,28 +54,38 @@ class PermissaoController extends Controller
         return view('permissoes/user-permission',['user' => $user, 'permissoes' => $permissoes, 'permissoes_disponiveis' => $permissoes_disponiveis]);
     }
 
-    public function atribuirRole(){
+    public function create(Request $request){
 
-        //Role administrador
-        /*
-        $role = Role::find(1);
-        foreach (Permission::all() as $p) {
-            
-            $role->assignPermission($p);
+        $perm = Permission::create([ 
+            'name'        => $request->name,
+            'slug'        => [          
+                $request->slug     => true
+            ],
+            'description' => $request->description
+        ]); 
 
+        if($perm){
+            Flash::success('Erro ao adicionar permissão');
+        }else{
+            Flash::error('Erro ao adicionar permissão');
         }
-        */
 
-        //Role Colaborador
-        $role = Role::find(2);
-        $array_permissoes = array(31,32,33,34,35,36,37,38,39,40,41,45,46,47,48,49,57);
+        return redirect('permissoes');
 
-        foreach (Permission::whereIn('id',$array_permissoes)->get() as $p) {
-            
-            $role->assignPermission($p);
+    }
 
-        }
-        
+    public function atribuirRole(Request $request){
+
+        $role = Role::find($request->role);
+        $permissao = Permission::find($request->id_permissao);
+
+        if($role->assignPermission($permissao)){
+            Flash::success('Permissão adicionada com sucesso ao perfil '.$role->name);
+            return redirect('roles/'.\Crypt::encrypt($request->role).'/permissoes'); 
+        }else{
+            Flash::error('Erro ao adicionar permissão');
+            return redirect('permissoes');
+        }       
 
     }
 
@@ -115,25 +127,25 @@ class PermissaoController extends Controller
         
     }
 
+    public function removerPermissaoRole($permissao, $role)
+    {
+        $id_permissao = \Crypt::decrypt($permissao);
+        $id_role = \Crypt::decrypt($role);
+
+        $role = Role::find($id_role);
+        $permissao = Permission::find($id_permissao);
+
+        if($role->revokePermission($permissao))
+            Flash::success('Permissão removida com sucesso');
+        else
+            Flash::error('Erro ao remover permissão');
+
+        return redirect('roles/'.\Crypt::encrypt($id_role).'/permissoes');
+
+    }
+
     public function adicionar()
     {     
-
-        /*
-            select * from public.permissions
-
-            delete from public.permissions
-
-            truncate table public.permissions
-
-            select * from public.permission_user
-
-            truncate table public.permission_user
-
-            select * from public.permission_role
-
-            truncate table  public.permission_role
-
-        */
 
         $permPost = Permission::create([ 
             'name'        => 'agenda',

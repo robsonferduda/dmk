@@ -42,18 +42,43 @@ class UsuarioController extends Controller
 
     public function index()
     {        
+        //Verificação de variáveis de busca
+        if(!session('fl_buscar_usuario')){
+            \Session::put('buscar_usuario_nome',null);
+            $nome = null;
+        }else{
+            $nome = session('buscar_usuario_nome');
+        }
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','>=',1)->orderBy('name')->get();
+       //Carregamento de dados da view 
         $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
 
+        //Busca de usuários
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)
+                                            ->where('cd_nivel_niv','>=',1)
+                                            ->when($nome, function($sql) use($nome){
+                                                $sql->where('name','ilike',"%$nome%");
+                                            })
+                                            ->orderBy('name')
+                                            ->get();
+
         return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
+    }
+
+    public function buscar(Request $request)
+    {
+
+        $nome = trim($request->get('nome'));
+        \Session::put('fl_buscar_usuario',true);
+        \Session::put('buscar_usuario_nome',$nome);
+
+        return redirect('usuarios');
     }
 
     public function detalhes($id)
     {
 
         $id = \Crypt::decrypt($id);
-
         $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
 
         return view('usuario/detalhes',['usuario' => $usuario]);
@@ -75,6 +100,14 @@ class UsuarioController extends Controller
         return view('usuario/segunda-etapa',['nivel' => $nivel]);
     }
 
+    public function show($id)
+    {
+        $id = \Crypt::decrypt($id);
+        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
+        
+        return view('usuario/detalhes', ['usuario' => $usuario]);  
+    }
+
     public function loginPerfil(Request $request)
     {
         
@@ -94,20 +127,6 @@ class UsuarioController extends Controller
             return redirect('seleciona/perfil');
         }
 
-    }
-
-    public function buscar(Request $request)
-    {
-        $nome   = $request->get('nome');
-        $perfil = $request->get('perfil');
-
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','>=',1);
-        if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
-        if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
-        $usuarios = $usuarios->orderBy('name')->get();
-        $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
-
-        return view('usuario/usuarios',['usuarios' => $usuarios,'roles' => $roles, 'nome' => $nome, 'perfil' => $perfil]);
     }
 
     public function novo(){
@@ -177,13 +196,6 @@ class UsuarioController extends Controller
 
         return view('usuario/edit',['niveis' => $niveis,'estadoCivis' => $estadoCivis,'tiposFone' => $tiposFone,'estados' => $estados,'bancos' => $bancos,'tiposConta' => $tiposConta, "usuario" => $usuario,'departamentos' => $departamentos, 'cargos' => $cargos]);
 
-    }
-
-    public function show($id)
-    {
-        
-        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
-        return view('usuario/detalhes', ['usuario' => $usuario]);  
     }
 
     public function store(UsuarioRequest $request)

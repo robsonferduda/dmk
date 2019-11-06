@@ -30,6 +30,17 @@ class RoleController extends Controller
         
     }
 
+    public function permissoes($id)
+    {  
+        $id = \Crypt::decrypt($id);
+        $flag = true;
+
+        $role = RoleSistema::find($id);
+        $permissoes = $role->permissao()->get();
+
+        return view('permissoes/permissoes',['permissoes' => $permissoes, 'flag' => $flag, 'role' => $role]);        
+    }
+
     public function adicionarRole(Request $request)
     {  
 

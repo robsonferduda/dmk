@@ -414,7 +414,7 @@
         <div class="page-footer">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <span class="txt-color-white">Nome do Sistema <span class="hidden-xs"> - Slogan</span> © 2019</span>
+                    <span class="txt-color-white">Easyjuris <span class="hidden-xs"> </span> © 2019</span>
                 </div>
             </div>
         </div>    

@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('role/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+           <a href="{{ url('permissoes') }}" data-toggle="modal" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Permissões</a>
         </div>
     </div>
     <div class="row">
@@ -46,8 +46,7 @@
                                         <td data-slug="{{ $role->slug }}">{{ $role->slug }}</td>
                                         <td data-slug="{{ $role->description }}">{{ $role->description }}</td>
                                         <td class="center">
-                                            <button title="Editar" class="btn btn-primary btn-xs editar_area" href=""><i class="fa fa-edit"></i> </button>
-                                            <button title="Excluir" data-url="../roles/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> </button>
+                                            <a title="Permissões de {{ $role->name }}" href="{{ url('roles/'.\Crypt::encrypt($role->id).'/permissoes') }}" class="btn btn-warning btn-xs" href=""><i class="fa fa-group"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach
