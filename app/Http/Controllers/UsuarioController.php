@@ -43,7 +43,7 @@ class UsuarioController extends Controller
     public function index()
     {        
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','!=',1)->orderBy('name')->get();
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','>=',1)->orderBy('name')->get();
         $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
 
         return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
@@ -101,7 +101,7 @@ class UsuarioController extends Controller
         $nome   = $request->get('nome');
         $perfil = $request->get('perfil');
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon);
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','>=',1);
         if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
         if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
         $usuarios = $usuarios->orderBy('name')->get();
