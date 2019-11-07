@@ -89,7 +89,7 @@
                                         <section class="col col-6">
                                             <label class="label label-tipo-pessoa">Nome Fantasia</label>
                                             <label class="input">
-                                                <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : "" }}" placeholder="Nome Fantasia">
+                                                <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : $cliente->nm_fantasia_cli }}" placeholder="Nome Fantasia">
                                             </label>
                                         </section> 
                                         <section class="col col-6">
