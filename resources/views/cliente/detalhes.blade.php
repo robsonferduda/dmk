@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Clientes <span>> Detalhes </span> <span>> {{ $cliente->nm_fantasia_cli }}</span>
+                <i class="fa-fw fa fa-group"></i> Clientes <span>> Detalhes </span> <span>> {{ $cliente->nm_razao_social_cli }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
@@ -45,10 +45,10 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Razão Social: </strong> {{ $cliente->nm_razao_social_cli }}
+                                                    <strong>Razão Social: </strong> {{ ($cliente->nm_razao_social_cli) ? $cliente->nm_razao_social_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Nome Fantasia: </strong> {{ $cliente->nm_fantasia_cli }}
+                                                    <strong>Nome Fantasia: </strong> {{ ($cliente->nm_fantasia_cli) ? $cliente->nm_fantasia_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($cliente->tipoPessoa()->first()) ? $cliente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não Informado' }}
@@ -67,12 +67,15 @@
                                                     <li>
                                                         <strong>Data de Fundação: </strong> {{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : 'Não informado' }}
                                                     </li>    
-                                                @endif                                            
+                                                @endif  
                                                 <li>
-                                                    <strong>Inscrição Municipal: </strong> {{ $cliente->inscricao_municipal_cli }}
+                                                    <strong>Número da OAB: </strong> {{ ($cliente->entidade->oab()->first()) ? $cliente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                </li>                                          
+                                                <li>
+                                                    <strong>Inscrição Municipal: </strong> {{ ($cliente->inscricao_municipal_cli) ? $cliente->inscricao_municipal_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
-                                                    <strong>Inscrição Estadual: </strong> {{ $cliente->inscricao_estadual_cli }}
+                                                    <strong>Inscrição Estadual: </strong> {{ ($cliente->inscricao_estadual_cli) ? $cliente->inscricao_estadual_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Site: </strong> {{ ($cliente->ds_site_cli) ? $cliente->ds_site_cli : 'Não informado' }}
