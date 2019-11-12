@@ -18,7 +18,7 @@ $(document).ready(function() {
                     "ordering": true,
                     "aaSorting": [],
                     "oLanguage": {
-                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>',
                         "sEmptyTable": "Nenhum registro encontrado",
                         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                         "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
@@ -63,7 +63,7 @@ $(document).ready(function() {
                     "ordering": true,
                     "aaSorting": [],
                     "oLanguage": {
-                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>',
                         "sEmptyTable": "Nenhum registro encontrado",
                         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                         "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
