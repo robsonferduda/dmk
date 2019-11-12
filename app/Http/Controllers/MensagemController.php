@@ -46,9 +46,10 @@ class MensagemController extends Controller
 
         if($tipo == TipoMensagem::EXTERNA){
 
-            if($this->nivel == Nivel::ADMIN) $destinatario = $processo->cd_correspondente_cor;
-            if($this->nivel == Nivel::COLABORADOR) $destinatario = $processo->cd_correspondente_cor;
-            if($this->nivel == Nivel::CORRESPONDENTE) $destinatario = $processo->cd_conta_con; 
+            if($this->nivel == Nivel::CORRESPONDENTE) 
+                $destinatario = $processo->cd_conta_con; 
+            else
+                $destinatario = $processo->cd_correspondente_cor;
         }
 
 		$mensagem = new ProcessoMensagem();
