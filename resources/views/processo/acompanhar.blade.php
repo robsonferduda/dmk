@@ -560,6 +560,22 @@
     </div>
 </div>
 
+<div class="modal fade in modal_top_alto" id="erro_envio_mensagem" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+            </div>
+            <div class="modal-body center">
+                <h2>Erro durante envio de mensagem.</h2>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+             </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -799,7 +815,7 @@
                 error: function(response)
                 {
                     $('.msg_history_externo').loader('hide');
-                    //location.reload();
+                    $("#erro_envio_mensagem").modal('show');
                 }
             });
 
