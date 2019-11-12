@@ -47,6 +47,7 @@ class MensagemController extends Controller
         if($tipo == TipoMensagem::EXTERNA){
 
             if($this->nivel == Nivel::ADMIN) $destinatario = $processo->cd_correspondente_cor;
+            if($this->nivel == Nivel::COLABORADOR) $destinatario = $processo->cd_correspondente_cor;
             if($this->nivel == Nivel::CORRESPONDENTE) $destinatario = $processo->cd_conta_con; 
         }
 
@@ -113,11 +114,7 @@ class MensagemController extends Controller
                 }
             }
 
-            try{
-                //event(new EventNotification(array('canal' => 'notificacao', 'conta' => $mensagem->destinatario_prm, 'total' => count($mensagens), 'mensagens' => $mensagens)));
-            } catch (Exception $e) {
-                return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
-            }           
+            //event(new EventNotification(array('canal' => 'notificacao', 'conta' => $mensagem->destinatario_prm, 'total' => count($mensagens), 'mensagens' => $mensagens)));          
 
             return Response::json(array('message' => 'Registro adicionado com sucesso','objeto' => $mensagem, 'id'=> \Crypt::encrypt($mensagem->cd_processo_mensagem_prm)), 200);
         }else{
