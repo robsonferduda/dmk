@@ -33,7 +33,7 @@
                                 <label class="label label-black" >Estado</label>          
                                 <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
                                     <option selected value="">Estado</option>
-                                    @foreach(App\Estado::all() as $estado) 
+                                    @foreach(\App\Estado::loadEstados() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                     @endforeach
                                 </select>
@@ -52,7 +52,7 @@
                                 <label class="label label-black" >Categoria</label>
                                 <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
                                     <option selected value="">Selecione</option>
-                                    @foreach(App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->get() as $categoria) 
+                                    @foreach(\App\CategoriaCorrespondente::loadCategorias() as $categoria) 
                                         <option value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
                                     @endforeach
                                 </select> 
