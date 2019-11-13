@@ -46,8 +46,10 @@ class MensagemController extends Controller
 
         if($tipo == TipoMensagem::EXTERNA){
 
-            if($this->nivel == Nivel::ADMIN) $destinatario = $processo->cd_correspondente_cor;
-            if($this->nivel == Nivel::CORRESPONDENTE) $destinatario = $processo->cd_conta_con; 
+            if($this->nivel == Nivel::CORRESPONDENTE) 
+                $destinatario = $processo->cd_conta_con; 
+            else
+                $destinatario = $processo->cd_correspondente_cor;
         }
 
 		$mensagem = new ProcessoMensagem();
@@ -57,7 +59,6 @@ class MensagemController extends Controller
         $mensagem->cd_tipo_mensagem_tim = $tipo;    	
     	$mensagem->cd_processo_pro = $request->processo;
         $mensagem->texto_mensagem_prm = $request->msg;
-
 
     	if($mensagem->save()){
 
@@ -73,6 +74,7 @@ class MensagemController extends Controller
             $mensagens_tmp = (new \App\ProcessoMensagem)->getMensagensPendentesDestinatario($mensagem->destinatario_prm);
 
             $mensagens = array();
+
             foreach($mensagens_tmp as $m){
 
                 if($m->cd_tipo_mensagem_tim == TipoMensagem::EXTERNA){
@@ -113,8 +115,7 @@ class MensagemController extends Controller
                 }
             }
 
-
-            event(new EventNotification(array('canal' => 'notificacao', 'conta' => $mensagem->destinatario_prm, 'total' => count($mensagens), 'mensagens' => $mensagens)));
+            //event(new EventNotification(array('canal' => 'notificacao', 'conta' => $mensagem->destinatario_prm, 'total' => count($mensagens), 'mensagens' => $mensagens)));          
 
             return Response::json(array('message' => 'Registro adicionado com sucesso','objeto' => $mensagem, 'id'=> \Crypt::encrypt($mensagem->cd_processo_mensagem_prm)), 200);
         }else{
