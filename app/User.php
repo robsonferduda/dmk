@@ -32,7 +32,6 @@ class User extends Authenticatable implements AuditableContract
         'observacao'
     ];
 
-    
     protected $hidden = [
         'password', 'remember_token',
     ];
@@ -82,15 +81,13 @@ class User extends Authenticatable implements AuditableContract
         return $this->belongsToMany('Kodeine\Acl\Models\Eloquent\Permission','permission_user','user_id', 'permission_id');
     }
 
-    public function getPermissao($permissao)
+    public function getArrayOfIdPermissao()
     {
         $ids = array();
         foreach ($this->permissao()->get() as $key => $value) {
             $ids[] = $value->id;
         }
-            
-        return in_array($permissao, $ids);
-
+        return $ids;
     }
 
     public static function boot(){
