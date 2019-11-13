@@ -19,7 +19,7 @@
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
             <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-            <a data-toggle="modal" href="{{ url('processos/detalhes/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Processo</a>          
+            <a data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-archive fa-lg"></i> Acompanhamento</a>          
             <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   
         </div>
     </div>

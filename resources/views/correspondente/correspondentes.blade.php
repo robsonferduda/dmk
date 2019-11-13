@@ -66,7 +66,7 @@
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
                             <section class="col col-md-1">
-                                <label class="label" >Buscar</label>
+                                <label class="label" style="display: block;">Buscar</label>
                                 <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
                             </section>
                         </div>
@@ -345,14 +345,13 @@
                         dataType: "JSON",
                         beforeSend: function(){
                             $('.'+target).empty();
-                            $('.'+target).append('<option selected value="">Carregando...</option>');
+                            $('.'+target).append('<option selected value="">Carregando cidades... </option>');
                             $('.'+target).prop( "disabled", true );
-
                         },
                         success: function(response)
                         {                    
                             $('.'+target).empty();
-                            $('.'+target).append('<option selected value="">Selecione</option>');
+                            $('.'+target).append('<option selected value="">Selecione uma cidade</option>');
                             $.each(response,function(index,element){
 
                                 if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
