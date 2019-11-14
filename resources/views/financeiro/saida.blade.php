@@ -44,10 +44,17 @@
                             <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
                         </section>
-                         <section class="col col-md-3" style="width:20%">
+                    </div>
+                    <div class="row">
+                         <section class="col col-md-3" style="width:25%">
                             <br />                                        
                             <label class="label label-black">Incluir saídas verificadas?</label>  
                             <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
+                        </section> 
+                        <section class="col col-md-3" style="width:25%">
+                            <br />                                        
+                            <label class="label label-black">Somente saídas verificadas?</label>  
+                            <input type="checkbox" name="verificadas" id="verificadas"  {{ (!empty(\Session::get('verificadas')) ? 'checked' : '') }} > 
                         </section> 
                         <section class="col col-md-1">
                             <br />
