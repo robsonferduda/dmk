@@ -35,6 +35,17 @@
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
 
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data da baixa inicial</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicioBaixa" value="{{ old('dtInicioBaixa') ? old('dtInicioBaixa') : \Session::get('dtInicioBaixa')}}" >
+                            
+                        </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data da baixa final</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFimBaixa" value="{{ old('dtFimBaixa') ? old('dtFimBaixa') : \Session::get('dtFimBaixa')}}" >                            
+                        </section>
+
+
                          <section class="col col-md-4">                           
                             <label class="label label-black">Correspondente</label><br />
                             <div class="input-group" style="width: 100%">

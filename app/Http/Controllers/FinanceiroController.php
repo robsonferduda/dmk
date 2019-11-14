@@ -55,6 +55,8 @@ class FinanceiroController extends Controller
         if(!session('flBuscar')){
             \Session::put('dtInicio',date('d/m/Y',strtotime(date("Y-m-01"))));
             \Session::put('dtFim',date('d/m/Y',strtotime(date("Y-m-t"))));
+            \Session::put('dtInicioBaixa',null);
+            \Session::put('dtFimBaixa',null);
             \Session::put('cliente',null);
             \Session::put('nmCliente',null);
             \Session::put('todas',null);
@@ -62,6 +64,8 @@ class FinanceiroController extends Controller
 
             $dtInicio = date('d/m/Y',strtotime(date("Y-m-01")));
             $dtFim = date('d/m/Y',strtotime(date("Y-m-t")));
+            $dtInicioBaixa = '';
+            $dtFimBaixa = '';
             $cliente = '';
             $nmCliente = '';
             $todas = '';
@@ -70,6 +74,8 @@ class FinanceiroController extends Controller
         }else{
             $dtInicio = session('dtInicio');
             $dtFim = session('dtFim');
+            $dtInicioBaixa = session('dtInicioBaixa');
+            $dtFimBaixa = session('dtFimBaixa');
             $cliente = session('cliente');
             $nmCliente = session('nmCliente');
             $todas = session('todas');
@@ -95,17 +101,40 @@ class FinanceiroController extends Controller
                 $query->wherePivot('fl_despesa_reembolsavel_pde','S');
 
             }));
-        }))->has('processo');
+        }))->has('processo')
+        ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                        return $query->whereBetween('dt_baixa_cliente_pth',[$dtInicioBaixa,$dtFimBaixa]);
+                                    })
+        ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                        
+                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                        return $query->where('dt_baixa_cliente_pth',$dtInicioBaixa);
+                                    })
 
-        if(!empty($dtInicio) && !empty($dtFim)){
-
-            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
-            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
-
-            $entradas = $entradas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
-                    $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
-            });
-        }
+        ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                        
+                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                        return $query->where('dt_baixa_cliente_pth',$dtFimBaixa);
+        });
+        
+        $entradas = $entradas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
+                    $query->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
+                                        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
+                                        $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+                                        return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
+                                });    
+                    $query->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
+                                        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));                 
+                                        return $query->where('dt_prazo_fatal_pro',$dtInicio);
+                                });    
+                    $query->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
+                                        
+                                        $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
+                                        return $query->where('dt_prazo_fatal_pro',$dtFim);
+                                });   
+        });
 
         if(!empty($cliente)){
             $entradas = $entradas->whereHas('processo', function($query) use ($cliente) {
@@ -113,11 +142,11 @@ class FinanceiroController extends Controller
             });
         }
 
-        if(empty($todas) && empty($verificadas)){
+        if(empty($todas) && empty($verificadas) && empty($dtInicioBaixa) && empty($dtFimBaixa)){
             $entradas = $entradas->where('fl_pago_cliente_pth','N');
         }
 
-        if(!empty($verificadas)){
+        if(!empty($verificadas) || !empty($dtInicioBaixa) || !empty($dtFimBaixa)){
             $entradas = $entradas->where('fl_pago_cliente_pth', 'S');
         }
 
@@ -134,6 +163,8 @@ class FinanceiroController extends Controller
         if(!session('flBuscar')){
             \Session::put('dtInicio',date('d/m/Y',strtotime(date("Y-m-01"))));
             \Session::put('dtFim',date('d/m/Y',strtotime(date("Y-m-t"))));
+            \Session::put('dtInicioBaixa',null);
+            \Session::put('dtFimBaixa',null);
             \Session::put('correspondente',null);
             \Session::put('nmCorrespondente',null);
             \Session::put('todas',null);
@@ -141,6 +172,8 @@ class FinanceiroController extends Controller
 
             $dtInicio = date('d/m/Y',strtotime(date("Y-m-01")));
             $dtFim = date('d/m/Y',strtotime(date("Y-m-t")));
+            $dtInicioBaixa = '';
+            $dtFimBaixa = '';
             $correspondente = '';
             $nmCorrespondente = '';
             $todas = '';
@@ -149,6 +182,8 @@ class FinanceiroController extends Controller
         }else{
             $dtInicio = session('dtInicio');
             $dtFim = session('dtFim');
+            $dtInicioBaixa = session('dtInicioBaixa');
+            $dtFimBaixa = session('dtFimBaixa');
             $correspondente = session('correspondente');
             $nmCorrespondente = session('nmCorrespondente');
             $todas = session('todas');
@@ -160,17 +195,42 @@ class FinanceiroController extends Controller
         }))->whereHas('processo' , function($query){
             $query->has('correspondente');
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');            
-        })->whereNotNull('cd_tipo_servico_correspondente_tse');
+        })->whereNotNull('cd_tipo_servico_correspondente_tse')
+        ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                        return $query->whereBetween('dt_baixa_correspondente_pth',[$dtInicioBaixa,$dtFimBaixa]);
+                                    })
+        ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                        
+                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                        return $query->where('dt_baixa_correspondente_pth',$dtInicioBaixa);
+                                    })
 
-        if(!empty($dtInicio) && !empty($dtFim)){
+        ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                        
+                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                        return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
+        });
 
-            $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
-            $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+        
 
-            $saidas = $saidas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
-                    $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
-            });
-        }
+        $saidas = $saidas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
+                    $query->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
+                                        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
+                                        $dtFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));
+                                        return $query->whereBetween('dt_prazo_fatal_pro',[$dtInicio,$dtFim]);
+                                });    
+                    $query->when(!empty($dtInicio) && empty($dtFim), function ($query) use ($dtInicio) {                                  
+                                        $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));                 
+                                        return $query->where('dt_prazo_fatal_pro',$dtInicio);
+                                });    
+                    $query->when(empty($dtInicio) && !empty($dtFim), function ($query) use ($dtFim) {
+                                        
+                                        $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
+                                        return $query->where('dt_prazo_fatal_pro',$dtFim);
+                                });   
+        });
 
         if(!empty($correspondente)){
             $saidas = $saidas->whereHas('processo', function($query) use ($correspondente) {
@@ -178,11 +238,11 @@ class FinanceiroController extends Controller
             });
         }
 
-        if(empty($todas) && empty($verificadas)){
+        if(empty($todas) && empty($verificadas) && empty($dtInicioBaixa) && empty($dtFimBaixa)){
             $saidas = $saidas->where('fl_pago_correspondente_pth','N');
         }
 
-        if(!empty($verificadas)){
+        if(!empty($verificadas) || !empty($dtInicioBaixa) || !empty($dtFimBaixa)){
             $saidas = $saidas->where('fl_pago_correspondente_pth', 'S');
         }
 
@@ -467,29 +527,31 @@ class FinanceiroController extends Controller
             \Session::put('verificadas',null);
         }    
 
-        if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
-        
-            Flash::error('É preciso preencher a data de início e fim.');
-        
-        }else{
 
-            if((!empty($request->dtInicio) && !empty($request->dtFim))){
-                
-                if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
+        \Session::put('dtInicio',$request->dtInicio);
+        \Session::put('dtFim',$request->dtFim);
+        \Session::put('dtInicioBaixa',$request->dtInicioBaixa);
+        \Session::put('dtFimBaixa',$request->dtFimBaixa);
 
-                   \Session::put('dtInicio',$request->dtInicio);
-                   \Session::put('dtFim',$request->dtFim);
-                   
 
-                }else{
-
-                    Flash::error('Data(s) inválida(s) !');
-                }
-            }
+        if(!empty($request->dtInicio) && !\Helper::validaData($request->dtInicio)){
+            Flash::error('Data prazo falta inicial inválida!');
         }
 
+        if(!empty($request->dtFim) && !\Helper::validaData($request->dtFim)){
+            Flash::error('Data prazo falta final inválida!');
+        }
 
-        return redirect('financeiro/entradas');
+        if(!empty($request->dtInicioBaixat) && !\Helper::validaData($request->dtInicioBaixa)){
+            Flash::error('Data da baixa inicial inválida!');
+        }
+
+        if(!empty($request->dtFimBaixa) && !\Helper::validaData($request->dtFimBaixa)){
+            Flash::error('Data da baixa final inválida!');
+        }
+
+        
+        return redirect('financeiro/entradas');        
 
     }
 
@@ -513,25 +575,27 @@ class FinanceiroController extends Controller
             \Session::put('verificadas',null);
         }   
         
-        if((!empty($request->dtInicio) && empty($request->dtFim)) || (empty($request->dtInicio) && !empty($request->dtFim))){
         
-            Flash::error('É preciso preencher a data de início e fim.');
-                
-        }else{
+        \Session::put('dtInicio',$request->dtInicio);
+        \Session::put('dtFim',$request->dtFim);
+        \Session::put('dtInicioBaixa',$request->dtInicioBaixa);
+        \Session::put('dtFimBaixa',$request->dtFimBaixa);
 
-             if((!empty($request->dtInicio) && !empty($request->dtFim))){
-                
-                if(\Helper::validaData($request->dtInicio) && \Helper::validaData($request->dtFim) && strtotime(str_replace('/','-',$request->dtInicio)) <= strtotime(str_replace('/','-',$request->dtFim))){
 
-                   \Session::put('dtInicio',$request->dtInicio);
-                   \Session::put('dtFim',$request->dtFim);
-                   
+        if(!empty($request->dtInicio) && !\Helper::validaData($request->dtInicio)){
+            Flash::error('Data prazo falta inicial inválida!');
+        }
 
-                }else{
+        if(!empty($request->dtFim) && !\Helper::validaData($request->dtFim)){
+            Flash::error('Data prazo falta final inválida!');
+        }
 
-                    Flash::error('Data(s) inválida(s) !');
-                }
-            }
+        if(!empty($request->dtInicioBaixat) && !\Helper::validaData($request->dtInicioBaixa)){
+            Flash::error('Data da baixa inicial inválida!');
+        }
+
+        if(!empty($request->dtFimBaixa) && !\Helper::validaData($request->dtFimBaixa)){
+            Flash::error('Data da baixa final inválida!');
         }
 
         return redirect('financeiro/saidas');
