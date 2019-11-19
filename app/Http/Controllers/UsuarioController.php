@@ -18,6 +18,9 @@ use App\TipoConta;
 use App\RegistroBancario;
 use App\Departamento;
 use App\Cargo;
+use App\Role as RoleSistema;
+use App\Enums\Roles;
+use Kodeine\Acl\Models\Eloquent\Role;
 use App\Http\Requests\UsuarioRequest;
 use App\Http\Requests\UsuarioSenhaRequest;
 use Illuminate\Http\Request;
@@ -39,17 +42,43 @@ class UsuarioController extends Controller
 
     public function index()
     {        
+        //Verificação de variáveis de busca
+        if(!session('fl_buscar_usuario')){
+            \Session::put('buscar_usuario_nome',null);
+            $nome = null;
+        }else{
+            $nome = session('buscar_usuario_nome');
+        }
 
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)->where('cd_nivel_niv','!=',1)->orderBy('name')->get();
+       //Carregamento de dados da view 
+        $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
 
-        return view('usuario/usuarios',['usuarios' => $usuarios]);
+        //Busca de usuários
+        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)
+                                            ->where('cd_nivel_niv','>=',1)
+                                            ->when($nome, function($sql) use($nome){
+                                                $sql->where('name','ilike',"%$nome%");
+                                            })
+                                            ->orderBy('name')
+                                            ->get();
+
+        return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
+    }
+
+    public function buscar(Request $request)
+    {
+
+        $nome = trim($request->get('nome'));
+        \Session::put('fl_buscar_usuario',true);
+        \Session::put('buscar_usuario_nome',$nome);
+
+        return redirect('usuarios');
     }
 
     public function detalhes($id)
     {
 
         $id = \Crypt::decrypt($id);
-
         $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
 
         return view('usuario/detalhes',['usuario' => $usuario]);
@@ -71,6 +100,14 @@ class UsuarioController extends Controller
         return view('usuario/segunda-etapa',['nivel' => $nivel]);
     }
 
+    public function show($id)
+    {
+        $id = \Crypt::decrypt($id);
+        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
+        
+        return view('usuario/detalhes', ['usuario' => $usuario]);  
+    }
+
     public function loginPerfil(Request $request)
     {
         
@@ -90,19 +127,6 @@ class UsuarioController extends Controller
             return redirect('seleciona/perfil');
         }
 
-    }
-
-    public function buscar(Request $request)
-    {
-        $nome   = $request->get('nome');
-        $perfil = $request->get('perfil');
-
-        $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon);
-        if(!empty($nome))   $usuarios->where('name','ilike',"%$nome%");
-        if(!empty($perfil)) $usuarios->where('cd_nivel_niv',$perfil);
-        $usuarios = $usuarios->orderBy('name')->get();
-
-        return view('usuario/usuarios',['usuarios' => $usuarios,'nome' => $nome, 'perfil' => $perfil]);
     }
 
     public function novo(){
@@ -174,13 +198,6 @@ class UsuarioController extends Controller
 
     }
 
-    public function show($id)
-    {
-        
-        $usuario = User::where('cd_conta_con', $this->cdContaCon)->where('id',$id)->first();
-        return view('usuario/detalhes', ['usuario' => $usuario]);  
-    }
-
     public function store(UsuarioRequest $request)
     {
 
@@ -192,7 +209,7 @@ class UsuarioController extends Controller
 
             DB::rollBack();
             Flash::error('E-mail já existente em nossa base de dados');
-            return redirect('usuarios');
+            return redirect('usuarios/novo')->withInput();
         }
 
         $entidade = Entidade::create([
@@ -372,7 +389,7 @@ class UsuarioController extends Controller
 
                 DB::rollBack();
                 Flash::error('E-mail já existente em nossa base de dados');
-                return redirect('usuarios');
+                return redirect('usuarios/novo')->withInput();
             }
         }
 

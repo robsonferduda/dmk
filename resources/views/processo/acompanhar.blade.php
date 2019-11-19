@@ -15,11 +15,14 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            @role('administrator')
+
+            @role('administrator|colaborador')
+
                 <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamentos </a> 
                 <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
                 <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
                 <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
+           
             @endrole
 
             @role('correspondente')
@@ -53,7 +56,7 @@
                         <strong>Processo Cancelado!</strong> O processo está cancelado.
                     </div>
                 @endif
-                @role('administrator')
+                @role('administrator|colaborador')
                 <div class="well">
                     <div style="float: left; margin-right: 10px;">
                         <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
@@ -212,7 +215,7 @@
                                         
                                     @endforeach
                                 </fieldset>
-                                @role('administrator')
+                                @role('administrator|colaborador')
                                     <section>                          
                                         <div class="onoffswitch-container">
                                             <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
@@ -557,6 +560,22 @@
     </div>
 </div>
 
+<div class="modal fade in modal_top_alto" id="erro_envio_mensagem" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+            </div>
+            <div class="modal-body center">
+                <h2>Erro durante envio de mensagem.</h2>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+             </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -796,7 +815,7 @@
                 error: function(response)
                 {
                     $('.msg_history_externo').loader('hide');
-                    //location.reload();
+                    $("#erro_envio_mensagem").modal('show');
                 }
             });
 

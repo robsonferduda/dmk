@@ -2,18 +2,22 @@
 
 namespace App\Providers;
 
+use App\User;
+use App\Permissao;
 use Illuminate\Support\Facades\Gate;
 use Kodeine\Acl\Models\Eloquent\Permission;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
+
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     public function boot()
     {
+       
         $this->registerPolicies();
 
         foreach (Permission::all() as $key => $value) {
@@ -25,7 +29,13 @@ class AuthServiceProvider extends ServiceProvider
 
             Gate::define($perm, function ($user) use ($value) {
 
-                return $user->getPermissao($value->id);
+                if(empty(\Session::get('lista_perm_user_'.$user->id))){
+                    \Session::put('lista_perm_user_'.$user->id, User::where('id',$user->id)->first()->getArrayOfIdPermissao());
+                }
+                    
+                $permissoes_usuario = \Session::get('lista_perm_user_'.$user->id);
+              
+                return in_array($value->id, $permissoes_usuario);
 
             });
            

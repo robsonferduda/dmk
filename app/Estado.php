@@ -19,4 +19,20 @@ class Estado extends Model
 
     public $timestamps = true;
 
+    public static function loadEstados()
+    {
+        $estados = array();
+
+        if (empty(\Cache::tags('dmk_estados','listaEstados')->get('estados')))
+        {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+            \Cache::tags('dmk_estados','listaEstados')->put('estados', $estados, $expiresAt);
+
+        }
+
+        return $estados = \Cache::tags('dmk_estados','listaEstados')->get('estados');
+
+    }
+
 }

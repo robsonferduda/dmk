@@ -18,7 +18,7 @@ $(document).ready(function() {
                     "ordering": true,
                     "aaSorting": [],
                     "oLanguage": {
-                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>',
                         "sEmptyTable": "Nenhum registro encontrado",
                         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                         "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
@@ -55,16 +55,15 @@ $(document).ready(function() {
                     }
                 });
 
-                $('#dt_no_paginate').dataTable({
+                $('#tabela_2').dataTable({
                     "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
                         "t"+
                         "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
                     "autoWidth" : true,
                     "ordering": true,
-                    "paginate": false,
                     "aaSorting": [],
                     "oLanguage": {
-                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+                        "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>',
                         "sEmptyTable": "Nenhum registro encontrado",
                         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                         "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
@@ -101,6 +100,4 @@ $(document).ready(function() {
                     }
                 });
 
-    
-            /* END BASIC */
 });

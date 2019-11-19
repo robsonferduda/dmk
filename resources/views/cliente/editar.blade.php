@@ -85,37 +85,43 @@
                                             <label class="input">
                                                 <input type="text" name="nm_razao_social_cli" placeholder="Razão Social" value="{{ old('nm_razao_social_con') ? old('nm_razao_social_con') : $cliente->nm_razao_social_cli }}"> 
                                             </label>
-                                        </section>                                        
-                                    </div>                        
-                                    
-                                    <div class="row box-pessoa-juridica">
+                                        </section>   
                                         <section class="col col-6">
                                             <label class="label label-tipo-pessoa">Nome Fantasia</label>
                                             <label class="input">
                                                 <input type="text" name="nm_fantasia_cli" id="nm_fantasia_cli" value="{{ old('nm_fantasia_cli') ? old('nm_fantasia_cli') : $cliente->nm_fantasia_cli }}" placeholder="Nome Fantasia">
                                             </label>
-                                        </section>
-                                        <section class="col col-3">
-                                            <label class="label">Inscrição Municipal</label>
-                                            <label class="input">
-                                                <input type="text" name="inscricao_municipal_cli" placeholder="Inscrição Municipal">
-                                            </label>
-                                        </section>
-                                        <section class="col col-3">
-                                            <label class="label">Inscrição Estadual</label>
-                                            <label class="input">
-                                                <input type="text" name="inscricao_estadual_cli" placeholder="Inscrição Estadual" value="{{ old('inscricao_estadual_cli') ? old('inscricao_estadual_cli') : $cliente->inscricao_estadual_cli }}">
-                                            </label>
-                                        </section>
-                                    </div>  
-
-                                    <div class="row">
+                                        </section> 
                                         <section class="col col-6">
                                             <label class="label">Site (Digite a URL)</label>
                                             <label class="input">
                                                 <input type="text" name="ds_site_cli" id="ds_site_cli" value="{{ ($cliente->ds_site_cli) ? $cliente->ds_site_cli : old('ds_site_cli') }}">
                                             </label>
-                                        </section>
+                                        </section>                                  
+                                    </div>                        
+                                    <div class="row">
+
+                                        <section class="col col-3">
+                                            <label class="label">N º OAB</label>
+                                            <label class="input">
+                                                <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($cliente->entidade->oab) ? $cliente->entidade->oab->nu_identificacao_ide : ''}}">
+                                                </label>
+                                        </section> 
+
+                                        <div class="box-pessoa-juridica">
+                                            <section class="col col-3">
+                                                <label class="label">Inscrição Municipal</label>
+                                                <label class="input">
+                                                    <input type="text" name="inscricao_municipal_cli" placeholder="Inscrição Municipal">
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">Inscrição Estadual</label>
+                                                <label class="input">
+                                                    <input type="text" name="inscricao_estadual_cli" placeholder="Inscrição Estadual" value="{{ old('inscricao_estadual_cli') ? old('inscricao_estadual_cli') : $cliente->inscricao_estadual_cli }}">
+                                                </label>
+                                            </section>
+                                        </div>              
                                     </div>
 
                                     <section>

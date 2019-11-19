@@ -11,11 +11,15 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-lock"></i>Permissões <span> > Listar</span>
+                <i class="fa-fw fa fa-lock"></i>Permissões <span> > {{ ($flag) ? "Permissões de ".$role->name : 'Todas'}} </span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="#addArea" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            @if($flag)
+                <a href="{{ url('permissoes') }}" data-toggle="modal" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Todas</a>
+            @endif
+            <a href="{{ url('roles') }}" style="margin-right: 5px;" data-toggle="modal" class="btn btn-info pull-right header-btn"><i class="fa fa-check"></i> Perfis</a>
+            <button style="margin-right: 5px;" data-toggle="modal" data-target="#modalAddPermissao" data-toggle="modal" class="btn btn-success pull-right header-btn"><i class="fa fa-lock"></i> Nova Permissão</button>
         </div>
     </div>
     <div class="row">
@@ -34,7 +38,7 @@
                             <thead>                         
                                 <tr>                                 
                                     <th style="width: 20%;">Permissão</th>
-                                    <th style="width: 20%;">Tag</th>
+                                    <th style="width: 20%;">Slug</th>
                                     <th style="width: 50%;">Descrição</th>
                                     <th style="width: 10%;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
@@ -44,14 +48,15 @@
                                     <tr>
                                         <td data-id="{{ $permissao->id }}" data-descricao="{{ $permissao->name }}">{{ $permissao->name }}</td>
                                         <td>
-                                            @foreach($permissao->slug as $chave => $slug)
-                                                {{ $chave }} {{ $slug }}<br/>
-                                            @endforeach
+                                            {{ $permissao->slug }}
                                         </td>
                                         <td>{{ $permissao->description }}</td>
                                         <td class="center">
-                                            <button title="Editar" class="btn btn-primary btn-xs editar_area" href=""><i class="fa fa-edit"></i> </button>
-                                            <button title="Excluir" data-url="../roles/" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i> </button>
+                                            @if($flag)
+                                                <a title="Remover do Perfil" href="{{ url('permissoes/'.\Crypt::encrypt($permissao->id).'/role/'.\Crypt::encrypt($permissao->pivot->role_id)) }}" class="btn btn-warning btn-xs" href=""><i class="fa fa-ban"></i> </a>
+                                            @else
+                                                <a title="Alterar Senha" data-id="{{ $permissao->id }}" class="btn btn-warning btn-xs add_role_permission" href="#"}}"><i class="fa fa-group"></i></a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -63,74 +68,74 @@
         </article>
     </div>
 </div>
-
-<div class="modal fade modal_top_alto" id="addArea" data-backdrop="static" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title">
-                    <i class="icon-append fa fa-plus"></i> Nova Área de Direito
-                </h4>
-            </div>
-            <div class="modal-body no-padding">
-                {!! Form::open(['id' => 'frm-add-area', 'url' => 'areas', 'class' => 'smart-form']) !!}
-                    <input type="hidden" name="id_area" id="id_area">
-                    <fieldset>
-                        <section>
-                            <div>
-                                <label class="label">Descrição</label>
-                                <label class="input"> <i class="icon-append fa fa-font"></i>
-                                    <input type="text" name="dc_area_direito_ado" id="dc_area_direito_ado">
-                                </label>
+    <div class="modal fade in modal_top_alto" id="modal_roles" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-group"></i> Gerenciar Perfis</h4>
+                    </div>
+                    {!! Form::open(['id' => 'frmRolePermissao', 'method' => 'POST', 'url' => 'permissoes/role/adicionar']) !!}
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12 msg-selecao-role" style="margin-bottom: 5px;">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="hidden" name="id_permissao" id="id_permissao">
+                                    <div class="form-group">
+                                        <select class="form-control" name="role" id="role" required="required">
+                                            <option value="">Selecione um perfil</option>
+                                            @foreach(\App\Role::all() as $role)
+                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 box-left">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Adicionar</button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                                    </div>
+                                </div>
                             </div>
-                        </section>
-                        <div class="msg_retorno"></div>
-                    </fieldset>
-                    <footer>
-                        <button type="submit" class="btn btn-success btn-save-area"><i class="fa fa-save"></i> Salvar</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    </footer>
-                {!! Form::close() !!}                    
+                        </div>
+                    {!! Form::close() !!}
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="modal fade modal_top_alto" id="editArea" data-backdrop="static" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title">
-                    <i class="icon-append fa fa-plus"></i> Editar Área de Direito
-                </h4>
-            </div>
-            <div class="modal-body no-padding">
-                {!! Form::open(['id' => 'frm-edit-area', 'method' => 'PUT', 'url' => 'areas', 'class' => 'smart-form']) !!}
-                    <input type="hidden" name="id_area" id="id_area">
-                    <fieldset>
-                        <section>
-                            <div>
-                                <label class="label">Descrição</label>
-                                <label class="input"> <i class="icon-append fa fa-font"></i>
-                                    <input type="text" name="dc_area_direito_ado" id="dc_area_direito_ado">
-                                </label>
+        <div class="modal fade in modal_top_alto" id="modalAddPermissao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-lock"></i> Nova Permissão</h4>
+                    </div>
+                    {!! Form::open(['id' => 'frmAddPermissao', 'method' => 'POST', 'url' => 'permissoes/novo']) !!}
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Permissão <span class="text-primary" style="margin-bottom: 5px;"> Valores em minúsculo</span></label>
+                                        <input type="text" name="name" class="form-control" placeholder="Permissão" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Slug <span class="text-primary" style="margin-bottom: 5px;"> Valores em minúsculo</span></label>
+                                        <input type="text" name="slug" class="form-control" placeholder="Slug" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descrição <span class="text-primary" style="margin-bottom: 5px;"> Separar palavras compostas com ">"</span></label>
+                                        <input type="text" name="description" class="form-control" placeholder="Descrição" required="required">
+                                    </div>
+                                        
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group center">
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                                    </div>
+                                </div>
                             </div>
-                        </section>
-                        <div class="msg_retorno"></div>
-                    </fieldset>
-                    <footer>
-                        <button type="submit" class="btn btn-success btn-edit-area"><i class="fa fa-save"></i> Salvar</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    </footer>
-                {!! Form::close() !!}                    
+                        </div>
+                    {!! Form::close() !!}
+                </div>
             </div>
         </div>
-    </div>
-</div>
 @endsection

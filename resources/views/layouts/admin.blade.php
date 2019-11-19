@@ -173,12 +173,16 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'cliente') ? 'open' : '' }}">
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'cliente') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('cliente/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
-                            </li>
+                            @can('cliente.novo')
+                                <li>
+                                    <a href="{{ url('cliente/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                            @endcan
+                            @can('cliente.listar')
+                                <li>
+                                    <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -187,21 +191,31 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'correspondente') ? 'open' : '' }}">
                         <a href="#" title="Correspondentes" class="item_pai" id="correspondente"><i class="fa fa-lg fa-fw fa-legal"></i> <span class="menu-item-parent">Correspondentes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'correspondente') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('correspondente/categorias') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('correspondente/todos') }}" title="Buscar Correspondentes"><span class="menu-item-parent">Buscar</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('correspondente/novo') }}" title="Novo Correspondente"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('correspondentes') }}" title="Meus Correspondentes"><span class="menu-item-parent">Meus Correspondentes</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
-                            </li>
+                            @can('correspondente.categorias')
+                                <li>
+                                    <a href="{{ url('correspondente/categorias') }}" title="Categorias"><span class="menu-item-parent">Categorias</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.buscar')
+                                <li>
+                                    <a href="{{ url('correspondente/todos') }}" title="Buscar Correspondentes"><span class="menu-item-parent">Buscar</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.novo')
+                                <li>
+                                    <a href="{{ url('correspondente/novo') }}" title="Novo Correspondente"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.meus-correspondentes')
+                                <li>
+                                    <a href="{{ url('correspondentes') }}" title="Meus Correspondentes"><span class="menu-item-parent">Meus Correspondentes</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.relatorios')
+                                <li>
+                                    <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -210,12 +224,16 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'usuarios') ? 'open' : '' }}">
                         <a href="#" title="Usuários" class="item_pai" id="usuarios"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Usuários</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'usuarios') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('usuarios/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('usuarios') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
-                            </li>
+                            @can('usuario.novo')
+                                <li>
+                                    <a href="{{ url('usuarios/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                            @endcan
+                            @can('usuario.listar')
+                                <li>
+                                    <a href="{{ url('usuarios') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -224,18 +242,26 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
-                            </li>
+                            @can('processo.novo')   
+                                <li>
+                                    <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                            @endcan
+                            @can('processo.listar')
+                                <li>
+                                    <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
+                                </li>
+                            @endcan
+                            @can('processo.acompanhamento')
+                                <li>
+                                    <a href="{{ url('processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
+                                </li>
+                            @endcan
+                            @can('processo.relatorios')
+                                <li>
+                                    <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -244,18 +270,26 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'financeiro') ? 'open' : '' }}">
                         <a href="#" title="Financeiro" class="item_pai" id="financeiro"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço(Em manutenção)</span></a>
-                            </li>
-                             <li>
-                                <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('financeiro/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
-                            </li>
+                            @can('financeiro.balanco')     
+                                <li>
+                                    <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço(Em manutenção)</span></a>
+                                </li>
+                            @endcan
+                            @can('financeiro.entradas')     
+                                 <li>
+                                    <a href="{{ url('financeiro/entradas') }}" title="Entradas"><span class="menu-item-parent">Entradas</span></a>
+                                </li>
+                            @endcan
+                            @can('financeiro.saidas') 
+                                <li>
+                                    <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
+                                </li>
+                            @endcan
+                            @can('financeiro.relatorios') 
+                                <li>
+                                    <a href="{{ url('financeiro/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                         
                     </li>
@@ -265,12 +299,16 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'despesas') ? 'open' : '' }}">
                         <a href="#" title="Despesas"  class="item_pai" id="despesas"><i class="fa fa-lg fa-fw fa-usd"></i> <span class="menu-item-parent">Despesas</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'despesas') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('despesas/novo') }}" title="Cadastrar"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                             <li>
-                                <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
-                            </li>
+                            @can('despesas.novo')
+                                <li>
+                                    <a href="{{ url('despesas/novo') }}" title="Cadastrar"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                            @endcan
+                            @can('despesas.lancamentos')
+                                <li>
+                                    <a href="{{ url('despesas/lancamentos') }}" title="Despesas"><span class="menu-item-parent">Lançamentos</span></a>
+                                </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -326,22 +364,22 @@
                     </li>
                     @endcan
 
-                    @can('permissoes.index') 
-                    <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
-                        <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
-                        <ul style="{{ (Session::get('menu_pai') == 'permissoes') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('roles') }}" title="Perfis"><span class="menu-item-parent">Perfis</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('permissoes') }}" title="Perfis"><span class="menu-item-parent">Permissões</span></a>
-                            </li>
-                            <li>
-                                <a href="{{ url('users') }}" title="Perfis"><span class="menu-item-parent">Usuários</span></a>
-                            </li>
-                        </ul>   
-                    </li>
-                    @endcan
+                    @role('super-user')
+                        <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
+                            <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
+                            <ul style="{{ (Session::get('menu_pai') == 'permissoes') ? 'display: block;' : 'display: none;' }}">
+                                <li>
+                                    <a href="{{ url('roles') }}" title="Perfis"><span class="menu-item-parent">Perfis</span></a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('permissoes') }}" title="Perfis"><span class="menu-item-parent">Permissões</span></a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('users') }}" title="Perfis"><span class="menu-item-parent">Usuários</span></a>
+                                </li>
+                            </ul>   
+                        </li>
+                    @endrole
 
                     @role('correspondente')    
                         <li class="">
@@ -376,7 +414,7 @@
         <div class="page-footer">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <span class="txt-color-white">Nome do Sistema <span class="hidden-xs"> - Slogan</span> © 2019</span>
+                    <span class="txt-color-white">Easyjuris <span class="hidden-xs"> </span> © 2019</span>
                 </div>
             </div>
         </div>    

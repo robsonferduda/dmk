@@ -58,6 +58,7 @@ class CorrespondenteController extends Controller
 
     public function index()
     {
+
         $correspondentes = ContaCorrespondente::with('entidade')
                                               ->with('correspondente')
                                               ->with(['entidade.identificacao' => function($query){

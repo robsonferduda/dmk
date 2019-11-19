@@ -223,28 +223,28 @@ Route::group(['middleware' => ['web']], function () {
 
 	//Rotas de permissão
 	Route::get('roles','RoleController@index');
+	Route::get('roles/{id}/permissoes','RoleController@permissoes');
 	Route::get('role/usuario/{id}','RoleController@roleUser');
 	Route::get('role/novo','RoleController@novo');
-	Route::get('permissoes','PermissaoController@index');
-	Route::get('users','PermissaoController@users');
 	Route::get('role/{role}/usuario/delete/{user}','RoleController@deleteRoleUser');
 	Route::post('role/usuario/adicionar','RoleController@adicionarRole');
 
+	Route::get('permissoes','PermissaoController@index');
 	Route::get('permissoes/usuario/{id}','PermissaoController@permissaoUsuario');
 	Route::get('permissoes/adicionar','PermissaoController@adicionar');
-	Route::get('permissoes/role/adicionar','PermissaoController@atribuirRole');
+	Route::get('permissoes/{permissao}/role/{role}','PermissaoController@removerPermissaoRole');
 	Route::get('permissoes/todas/adicionar','PermissaoController@atribuirPermissao');
 	Route::get('permissoes/adicionar/{permissao}/usuario/{usuario}','PermissaoController@atribuirPermissao');
 	Route::get('permissoes/remover/{permissao}/usuario/{usuario}','PermissaoController@revogarPermissao');
-
+	Route::post('permissoes/novo','PermissaoController@create');
+	Route::post('permissoes/role/adicionar','PermissaoController@atribuirRole');
 
 	Route::post('varas/importar','VaraController@importar');
 
 	Route::get('layouts/varas-importar', function(){
 
 		 return response()->download( public_path().'/resources/layouts/varas_importar.xlsx');
-	});
-	
+	});	
 
 	Route::delete('correspondente/painel/reports/{nome}','RelatorioPainelCorrespondenteController@excluir');
 	Route::get('correspondente/painel/reports/{nome}','RelatorioPainelCorrespondenteController@arquivo');

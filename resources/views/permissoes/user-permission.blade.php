@@ -15,7 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('users') }}" data-toggle="modal" href="#addPermissao" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Usuários</a>
+            <a href="{{ url('usuarios') }}" data-toggle="modal" href="#addPermissao" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Usuários</a>
         </div>
     </div>
     <div class="row">
@@ -29,12 +29,12 @@
                     <h2>Permissões Disponíveis</h2>
                 </header>
                 <div>
-                    <div class="widget-body no-padding">
-                        <table id="" class="table table-striped table-bordered table-hover" width="100%">
+                    <div class="widget-body">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
-                                    <th style="width: 25%;">Permissão</th>
-                                    <th style="width: 12%;" class="center">Ações</th>
+                                    <th style="width: 90%;">Permissão</th>
+                                    <th style="width: 10%;" class="center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,7 +42,7 @@
                                     <tr>
                                         <td data-id="{{ $user->id }}" data-descricao="{{ $user->name }}">{{ $p->description }}</td>
                                         <td class="center">
-                                            <a title="Adicionar" href="{{ url('permissoes/adicionar/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-primary btn-xs" href=""><i class="fa fa-plus"></i> </a>
+                                            <a title="Adicionar Permissão" href="{{ url('permissoes/adicionar/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-primary btn-xs" href=""><i class="fa fa-plus"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -59,12 +59,12 @@
                     <h2>Permissões do Usuário</h2>
                 </header>
                 <div>
-                    <div class="widget-body no-padding">
-                        <table id="" class="table table-striped table-bordered table-hover" width="100%">
+                    <div class="widget-body">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>                                 
-                                    <th style="width: 25%;">Permissão</th>
-                                    <th style="width: 12%;" class="center">Ações</th>
+                                    <th style="width: 90%;">Permissão</th>
+                                    <th style="width: 10%;" class="center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,7 +72,7 @@
                                     <tr>
                                         <td data-id="{{ $user->id }}" data-descricao="{{ $user->name }}">{{ $p->description }}</td>
                                         <td class="center">
-                                            <a title="Adicionar" href="{{ url('permissoes/remover/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-danger btn-xs" href=""><i class="fa fa-trash"></i> </a>
+                                            <a title="Remover Permissão" href="{{ url('permissoes/remover/'.\Crypt::encrypt($p->id).'/usuario/'.\Crypt::encrypt($user->id)) }}" class="btn btn-danger btn-xs" href=""><i class="fa fa-trash"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach

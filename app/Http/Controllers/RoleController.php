@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Conta;
+use App\Role as RoleSistema;
 use Illuminate\Http\Request;
 use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Support\Facades\Session;
@@ -29,18 +30,54 @@ class RoleController extends Controller
         
     }
 
+    public function permissoes($id)
+    {  
+        $id = \Crypt::decrypt($id);
+        $flag = true;
+
+        $role = RoleSistema::find($id);
+        $permissoes = $role->permissao()->get();
+
+        return view('permissoes/permissoes',['permissoes' => $permissoes, 'flag' => $flag, 'role' => $role]);        
+    }
+
     public function adicionarRole(Request $request)
     {  
 
     	$user = User::find($request->id);
-    	$role = Role::find($request->role);
+    	$role = RoleSistema::find($request->role);
 
-    	if($user->assignRole($role))
+        //Guarda roles existentes para remover
+        $rolesUser = User::find($request->id)->roles;
+
+        //Se conseguir adicionar role nova
+        if($user->assignRole($role))
+        {
+
+            //Remove role antiga
+            foreach($rolesUser as $r){
+                $user->revokeRole($r);
+            }
+
+            //Remove permissões antigas
+            foreach ($user->permissao()->get() as $p) {
+                $user->permissao()->detach($p);
+            }
+
+            //Adicona novas permissoes do perfil
+            $perms = $role->permissao()->get();
+            foreach ($perms as $p) {
+                $user->permissao()->attach($p);
+            }
+
     		$msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
-    	else
+
+        }else{
     		$msg = array('status' => false, 'msg' => 'Erro ao adicionar perfil');
+        }
 
     	return Response::json($msg);
+        
     }
 
     public function deleteRoleUser($role,$user)
@@ -50,23 +87,21 @@ class RoleController extends Controller
     	$role = Role::find($role);
 
     	if($user->revokeRole($role))
-    		$msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
-    	else
+        {
+    		
+            //Remove permissões antigas
+            foreach ($user->permissao()->get() as $p) {
+                $user->permissao()->detach($p);
+            }
+
+            $msg = array('status' => true, 'msg' => 'Perfil adicionado com sucesso');
+
+        }else{
     		$msg = array('status' => false, 'msg' => 'Erro ao adicionar perfil');
+        }
 
     	return Response::json($msg);
 
     }
 
-    public function novo()
-    {  
-    	/*
-        $roleAdmin = new Role();
-		$roleAdmin->name = 'Super Usuário';
-		$roleAdmin->slug = 'super-user';
-		$roleAdmin->description = 'Gerencia todas os opções do sistema';
-		$roleAdmin->save();
-		*/
-
-    }
 }

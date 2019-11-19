@@ -622,6 +622,16 @@ class ClienteController extends Controller
 
             }
 
+            if(!empty($request->oab)){
+
+                $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $cd_conta_con, 
+                    'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
+                    'nu_identificacao_ide'      => $request->oab
+                ]);                  
+            }
+
             Flash::success('Dados inseridos com sucesso');
             return redirect('cliente/detalhes/'.$cliente->cd_cliente_cli);
         }
@@ -738,6 +748,29 @@ class ClienteController extends Controller
                     ]);
 
                 }
+            }
+
+              //Identificação para OAB
+            if(!empty($request->oab)){
+
+                $identificacao = Identificacao::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::OAB)->first();
+
+                if($identificacao){
+                    
+                    $request->merge(['nu_identificacao_ide' => $request->oab]);
+                    $identificacao->fill($request->all());
+                    $identificacao->saveOrFail();
+                             
+                }else{
+
+                    $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $cd_conta_con, 
+                    'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
+                    'nu_identificacao_ide'      => $request->oab
+                    ]);   
+
+                }              
             }
 
             $identificacao = (Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_conta_con',$cliente->cd_conta_con)->where('cd_entidade_ete',$cliente->cd_entidade_ete)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ)->first();

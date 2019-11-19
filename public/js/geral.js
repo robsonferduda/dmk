@@ -259,7 +259,7 @@ $(document).ready(function() {
 
 		$.ajax(
             {
-                url: pathname+"/role/usuario/"+id,
+                url: host+"/role/usuario/"+id,
                 type: 'GET',
                 dataType: "JSON",
             beforeSend: function()
@@ -290,6 +290,15 @@ $(document).ready(function() {
         });
 
 		$("#modal_roles").modal('show');
+	});
+
+	$(".add_role_permission").click(function(){
+
+		var id = $(this).data('id');
+
+		$("#frmRolePermissao #id_permissao").val(id);
+		$("#modal_roles").modal('show');
+
 	});
 
 	$('#modal_roles').on('show.bs.modal', function (e) {
@@ -340,20 +349,27 @@ $(document).ready(function() {
 									$.each(response, function(index, value){
 										$('#table-user-role > tbody').append('<tr><td>'+value.name+'</td><td class="center"><a class="excluirUserRole" data-id="'+value.id+'" data-user="'+id+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
 									});
+
 									$(".excluirUserRole").on("click", function(){ 
 									    var user = $(this).data('user');
 									    var role = $(this).data('id'); 
 									    deleteUserRole(user, role);
 									});
+
+									$("#role_msg h3").remove();
+									$("#role_msg_sistema h3").remove();
+
+									location.reload();
+
 								}else{
 									$("#role_msg").html('<h3 class="center">Usuário não possui perfis associados</h3>');
 								}
 
-								$("#role_msg h3").remove();
-								$("#role_msg_sistema h3").remove();
+								
 				            },
 				            error: function(response)
 				            {
+				            	$("#role_msg").html('<h3 class="center text-danger">'+response.msg+'</h3>');
 				            }
 				        });
 
@@ -371,6 +387,7 @@ $(document).ready(function() {
 
 		}else{
 			$(".msg-selecao-role").html('<span class="text-danger">Selecione um perfil para adicionar</span>');
+			return false;
 		}		
 
 	});

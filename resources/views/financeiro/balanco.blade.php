@@ -25,38 +25,84 @@
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
-                            <label class="label label-black">Data de Início</label><br />
+                            <label class="label label-black">Data prazo fatal inicial</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" >
                             
                         </section>
                         <section class="col col-md-2">                           
-                            <label class="label label-black">Data Fim</label><br />
+                            <label class="label label-black">Data prazo fatal final</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
-                        <section class="col col-md-6">     
-                            <label class="label label-black">Categoria</label><br />                
-                            <select multiple style="width: 100%" name="cd_categoria_despesa_cad[]" class="select2 categoria_despesa_multple" data-placeholder="Selecione uma categoria">   
-                                <option></option>                            
-                                @foreach($categorias as $cat)
-                                    <option value="{{ $cat->cd_categoria_despesa_cad }}" {{ (!empty(\Session::get('categoria') and in_array($cat->cd_categoria_despesa_cad,\Session::get('categoria'))) ? 'selected' : '') }} >{{ $cat->nm_categoria_despesa_cad }}</option>
-                                @endforeach
-                            </select>
-                        </section>
+                        <section class="col col-md-4">                                                        
+                            <label class="label label-black">Relatório<span class="text-danger">*</span></label><br />
+                            <select style="width: 100%" name="relatorio" class="form-control" required>
+                                <option value="">Selecione...</option>
+                                <option {{ (\Session::get('relatorio') == 'relatorio-por-processo'  ? 'selected' : '') }} value="relatorio-por-processo">Relatório por processo</option>
+                                <option {{ (\Session::get('relatorio') == 'relatorio-sumarizado'  ? 'selected' : '') }} value="relatorio-sumarizado">Relatório Sumarizado</option>
+                                
+                            </select>                            
+                        </section>         
+                        <section class="col col-md-4">                           
+                            <label class="label label-black">Cliente</label><br />
+                            <div class="input-group" style="width: 100%">
+                            <input type="hidden" name="cd_cliente_cli" value="{{(old('cd_cliente_cli') ? old('cd_cliente_cli') : (\Session::get('cliente') ? \Session::get('cliente') : '')) }}">
+                            <input style="width: 100%" class="form-control" name="nm_cliente_cli" placeholder="Digite 3 caracteres para busca" type="text" id="cliente_auto_complete" value="{{(old('nm_cliente_cli') ? old('nm_cliente_cli') : (\Session::get('nmCliente') ? \Session::get('nmCliente') : '')) }}"> 
+                             <div style="clear: all;"></div>
+                            <span id="limpar-cliente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
+                            </div>                        
+                        </section>                                          
                     </div>
-                    <div class=" row">
-                        <section class="col col-md-10">
-                            <label class="label label-black">Tipo de Despesa<span id='span-tipo-despesa' class="text-danger"></span></label><br />
-                            <select multiple style="width: 100%" name="cd_tipo_despesa_tds[]" class="select2 tipo_despesa" data-placeholder="Selecione um tipo de despesa" >
-                                @foreach($tiposDespesa as $despesa)
-                                    <option value="{{ $despesa->cd_tipo_despesa_tds }}" {{ (!empty(\Session::get('tipoDespesa') and in_array($despesa->cd_tipo_despesa_tds,\Session::get('tipoDespesa'))) ? 'selected' : '') }} data-categoria="{{ $despesa->cd_categoria_despesa_cad }}">{{ $despesa->nm_tipo_despesa_tds }}</option>
-                                @endforeach
+                    <div class="row">
 
-                            </select>
+                         <section class="col col-md-2">
+                            <label class="label label-black">Data da baixa inicial</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicioBaixa" value="{{ old('dtInicioBaixa') ? old('dtInicioBaixa') : \Session::get('dtInicioBaixa')}}" >
+                            
                         </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data da baixa final</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFimBaixa" value="{{ old('dtFimBaixa') ? old('dtFimBaixa') : \Session::get('dtFimBaixa')}}" >                            
+                        </section>
+
+                        <section class="col col-md-4">                           
+                            <label class="label label-black">Correspondente</label><br />
+                            <div class="input-group" style="width: 100%">
+                            <input type="hidden" name="cd_correspondente_cor" value="{{(old('cd_correspondente_cor') ? old('cd_correspondente_cor') : (\Session::get('correspondente') ? \Session::get('correspondente') : '')) }}">
+                            <input style="width: 100%" class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{(old('nm_correspondente_cor') ? old('nm_correspondente_cor') : (\Session::get('nmCorrespondente') ? \Session::get('nmCorrespondente') : '')) }}"> 
+                             <div style="clear: all;"></div>
+                            <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
+                            </div>                        
+                        </section>                                                
+                    </div>
+                    <div class="row">
+                        <section class="col col-md-3">
+                            <br />                                     
+                            <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ (\Session::get('finalizado') == 'S'  ? 'checked' : '') }}>
+                            <label class="label label-black">Processos Finalizados</label> 
+
+                        </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="despesas" id="despesas" value="S" {{ (\Session::get('despesas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Despesas</label> 
+
+                        </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="entradas" id="entradas" value="S" {{ (\Session::get('entradas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Entradas</label> 
+
+                        </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="checkbox" name="saidas" id="saidas" value="S" {{ (\Session::get('saidas') == 'N'  ? '' : 'checked') }}>
+                            <label class="label label-black">Saídas</label> 
+
+                        </section> 
                         <section class="col col-md-1">
                             <br />
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar </button>
-                        </section>   
+                            <button style='float: right;' class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
+                        </section>          
                     </div>
                                     
                 </form>
@@ -79,19 +125,19 @@
                             <tbody>                               
                                 <tr>                                    
                                     <td style="font-weight: bold">Despesas</td>
-                                    <td>{{ 'R$ '.number_format($despesas,2,',','') }}</td>
+                                    <td>{{ 'R$ '.number_format(\Session::get('despesaTotal'),2,',','') }}</td>
                                 </tr>   
                                 <tr>                                    
                                     <td style="font-weight: bold">Saídas</td>
-                                    <td>{{ 'R$ '.number_format($saidas,2,',','') }}</td>
+                                    <td>{{ 'R$ '.number_format(\Session::get('saidaTotal'),2,',','') }}</td>
                                 </tr>   
                                 <tr>                                    
                                     <td style="font-weight: bold">Entradas</td>
-                                    <td>{{ 'R$ '.number_format($entradas,2,',','') }}</td>
+                                    <td>{{ 'R$ '.number_format(\Session::get('entradaTotal'),2,',','') }}</td>
                                 </tr> 
                                 <tr>                                    
                                     <td style="font-weight: bold">Saldo</td>
-                                    <td>{{ 'R$ '.number_format($saldo,2,',','') }}</td>
+                                    <td>{{ 'R$ '.number_format(\Session::get('total'),2,',','') }}</td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -105,11 +151,64 @@
 </div>
 @endsection
 @section('script')
-
 <script type="text/javascript">
     $(document).ready(function() {
-        
+
+        $( "#cliente_auto_complete" ).focusout(function(){
+           if($("input[name='cd_cliente_cli']").val() == ''){
+                $("#cliente_auto_complete").val('');
+           }
+        });
+
+        var pathCliente = "{{ url('autocompleteCliente') }}";
+
+        $( "#cliente_auto_complete" ).autocomplete({
+          source: pathCliente,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_cliente_cli']").val(ui.item.id);
+
+          },
+          open: function(event, ui){
+            
+          }
+        });
+
+        $('#limpar-cliente').click(function(){
+            $("input[name='cd_cliente_cli']").val('');
+            $("input[name='nm_cliente_cli']").val('');
+
+        });
+
+        $( "#correspondente_auto_complete" ).focusout(function(){
+           if($("input[name='cd_correspondente_cor']").val() == ''){
+                $("#correspondente_auto_complete").val('');
+           }
+        });
+
+        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+
+        $( "#correspondente_auto_complete" ).autocomplete({
+          source: pathCorrespondente,
+          minLength: 3,
+          select: function(event, ui) {
+
+            $("input[name='cd_correspondente_cor']").val(ui.item.id);
+
+          },
+          open: function(event, ui){
+            
+          }
+        });
+
+        $('#limpar-correspondente').click(function(){
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='nm_correspondente_cor']").val('');
+
+        });
+
+    
     });
 </script>
-
 @endsection

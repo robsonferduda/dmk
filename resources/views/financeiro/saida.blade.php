@@ -35,6 +35,17 @@
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
 
+                        <section class="col col-md-2">
+                            <label class="label label-black">Data da baixa inicial</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicioBaixa" value="{{ old('dtInicioBaixa') ? old('dtInicioBaixa') : \Session::get('dtInicioBaixa')}}" >
+                            
+                        </section>
+                        <section class="col col-md-2">                           
+                            <label class="label label-black">Data da baixa final</label><br />
+                            <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFimBaixa" value="{{ old('dtFimBaixa') ? old('dtFimBaixa') : \Session::get('dtFimBaixa')}}" >                            
+                        </section>
+
+
                          <section class="col col-md-4">                           
                             <label class="label label-black">Correspondente</label><br />
                             <div class="input-group" style="width: 100%">
@@ -44,10 +55,17 @@
                             <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
                         </section>
-                         <section class="col col-md-3" style="width:20%">
+                    </div>
+                    <div class="row">
+                         <section class="col col-md-3" style="width:25%">
                             <br />                                        
                             <label class="label label-black">Incluir saídas verificadas?</label>  
                             <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
+                        </section> 
+                        <section class="col col-md-3" style="width:25%">
+                            <br />                                        
+                            <label class="label label-black">Somente saídas verificadas?</label>  
+                            <input type="checkbox" name="verificadas" id="verificadas"  {{ (!empty(\Session::get('verificadas')) ? 'checked' : '') }} > 
                         </section> 
                         <section class="col col-md-1">
                             <br />
