@@ -35,9 +35,13 @@ class ProcessoMensagem extends Model
         return $this->hasOne('App\Entidade','cd_entidade_ete', 'remetente_prm');
     }
 
+    public function entidadeRemetenteColaborador()
+    {
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'remetente_prm');
+    }
+
     public function entidadeRemetente()
     {
-
         return $this->hasOne('App\Conta','cd_conta_con', 'remetente_prm');
     }
 

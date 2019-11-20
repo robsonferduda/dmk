@@ -256,11 +256,13 @@
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
                     <div class="col-sm-12 col-md-6">
+
                         @if(Session::get('SESSION_NIVEL') != 3)
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
                         @else
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens</h4>
                         @endif
+
                         <div class="messaging">
                             <div class="inbox_msg">
                                 <div class="mesgs">
@@ -309,7 +311,17 @@
                                                                         <p>
                                                                             {{ $mensagem->texto_mensagem_prm }}
                                                                         </p>
-                                                                        <span class="time_date"><strong>{{ $mensagem->entidadeRemetente->nm_razao_social_con }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                                        <span class="time_date">
+                                                                            <strong>
+                                                                                @if($mensagem->entidadeRemetenteColaborador)
+                                                                                    {{ $mensagem->entidadeRemetenteColaborador->usuario->name }}
+                                                                                @else
+                                                                                    {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                                                @endif                                                                               
+                                                                            </strong>
+                                                                            disse em 
+                                                                            {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                                        </span>
                                                                     @endif
                                                                 </div>
                                                             </div>
