@@ -316,7 +316,7 @@
                                                                                 @if($mensagem->entidadeRemetenteColaborador)
                                                                                     {{ $mensagem->entidadeRemetenteColaborador->usuario->name }}
                                                                                 @else
-                                                                                    {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                                                    {{ ($mensagem->entidadeRemetente) ? $mensagem->entidadeRemetente->nm_razao_social_con : 'Remetente desconhecido' }}
                                                                                 @endif                                                                               
                                                                             </strong>
                                                                             disse em 
