@@ -295,11 +295,7 @@
                                                          <div class="incoming_msg">
                                                             <div class="incoming_msg_img">                                                                
 
-                                                                @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
-                                                                    <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
-                                                                @else
-                                                                    <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
-                                                                @endif
+                                                               
                                                             </div>
                                                             <div class="received_msg">
                                                                 <div class="received_withd_msg">
@@ -313,7 +309,11 @@
                                                                         </p>
                                                                         <span class="time_date">
                                                                             <strong>
-                                                                                                                                                             
+                                                                                @if($mensagem->entidadeRemetenteColaborador)
+                                                                                    {{ $mensagem->entidadeRemetenteColaborador->usuario->name }}
+                                                                                @else
+                                                                                    {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                                                @endif                                                                               
                                                                             </strong>
                                                                             disse em 
                                                                             {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
