@@ -313,11 +313,7 @@
                                                                         </p>
                                                                         <span class="time_date">
                                                                             <strong>
-                                                                                @if($mensagem->entidadeRemetenteColaborador)
-                                                                                    {{ $mensagem->entidadeRemetenteColaborador->usuario->name }}
-                                                                                @else
-                                                                                    {{ ($mensagem->entidadeRemetente) ? $mensagem->entidadeRemetente->nm_razao_social_con : 'Remetente desconhecido' }}
-                                                                                @endif                                                                               
+                                                                                                                                                             
                                                                             </strong>
                                                                             disse em 
                                                                             {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
