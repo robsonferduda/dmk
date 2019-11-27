@@ -33,15 +33,7 @@
                             <label class="label label-black">Data prazo fatal final</label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  >                            
                         </section>
-                        <section class="col col-md-4">                                                        
-                            <label class="label label-black">Relatório<span class="text-danger">*</span></label><br />
-                            <select style="width: 100%" name="relatorio" class="form-control" required>
-                                <option value="">Selecione...</option>
-                                <option {{ (\Session::get('relatorio') == 'relatorio-por-processo'  ? 'selected' : '') }} value="relatorio-por-processo">Relatório por processo</option>
-                                <option {{ (\Session::get('relatorio') == 'relatorio-sumarizado'  ? 'selected' : '') }} value="relatorio-sumarizado">Relatório Sumarizado</option>
-                                
-                            </select>                            
-                        </section>         
+                        
                         <section class="col col-md-4">                           
                             <label class="label label-black">Cliente</label><br />
                             <div class="input-group" style="width: 100%">

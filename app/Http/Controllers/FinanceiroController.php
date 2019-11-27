@@ -28,25 +28,24 @@ class FinanceiroController extends Controller
 
     public function balancoIndex(){
 
-        \Session::put('dtInicio',null);
-        \Session::put('dtFim',null);
-        \Session::put('dtInicioBaixa',null);
-        \Session::put('dtFimBaixa',null);
-        \Session::put('relatorio',null);
-        \Session::put('finalizado',null);
-        \Session::put('cliente',null);
-        \Session::put('nmCliente',null);
-        \Session::put('correspondente',null);
-        \Session::put('nmCorrespondente',null);
-        \Session::put('despesas',null);
-        \Session::put('saidas',null);
-        \Session::put('entradas',null);
-        \Session::put('entradaTotal',0);
-        \Session::put('saidaTotal',0);
-        \Session::put('despesaTotal',0);
-        \Session::put('total',0);
+        // \Session::put('dtInicio',null);
+        // \Session::put('dtFim',null);
+        // \Session::put('dtInicioBaixa',null);
+        // \Session::put('dtFimBaixa',null);
+        // \Session::put('relatorio',null);
+        // \Session::put('finalizado',null);
+        // \Session::put('cliente',null);
+        // \Session::put('nmCliente',null);
+        // \Session::put('correspondente',null);
+        // \Session::put('nmCorrespondente',null);
+        // \Session::put('despesas',null);
+        // \Session::put('saidas',null);
+        // \Session::put('entradas',null);
+        // \Session::put('entradaTotal',0);
+        // \Session::put('saidaTotal',0);
+        // \Session::put('despesaTotal',0);
+        // \Session::put('total',0);
 
-        exit;
         return view('financeiro/balanco');
     }
 
@@ -313,7 +312,7 @@ class FinanceiroController extends Controller
                                         $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
                                         return $query->where('dt_prazo_fatal_pro',$dtFim);
                                  })    
-                                 ->get()->sortBy('cliente.nm_razao_social_cli');
+                                 ->get();
         }else{
             $entradas = array();
         }
@@ -390,19 +389,7 @@ class FinanceiroController extends Controller
                                         $dtFim = date('Y-m-d', strtotime(str_replace('/','-',$dtFim)));                 
                                         return $query->where('dt_prazo_fatal_pro',$dtFim);
                                 })   
-                                ->get()
-                                ->sort(function($a, $b){
-                                    $lengthA = strlen($a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                    $lengthB = strlen($b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                    $valueA = $a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
-                                    $valueB = $b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
-
-                                    if($lengthA == $lengthB){
-                                        if($valueA == $valueB) return 0;
-                                        return $valueA > $valueB ? 1 : -1;
-                                    }
-                                    return $lengthA > $lengthB ? 1 : -1;
-                                });
+                                ->get();
         }else{
             $saidas = array();
         }
@@ -445,8 +432,7 @@ class FinanceiroController extends Controller
                                         $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
                                         return $query->where('dt_pagamento_des',$dtFimBaixa);
                                  })
-                                 ->get()
-                                 ->sortBy('tipo.categoriaDespesa.nm_categoria_despesa_cad');
+                                 ->get();
         }else{
             $despesas = array();
         }
@@ -489,11 +475,19 @@ class FinanceiroController extends Controller
        
         $total = $entradaTotal - ($despesaTotal+$saidaTotal);
 
+        if(empty($request->despesas))
+            $request->despesas = 'N';
+
+        if(empty($request->saidas))
+            $request->saidas = 'N';
+
+        if(empty($request->entradas ))
+            $request->entradas = 'N';
+
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
                                 ->with('dtInicioBaixa',str_replace('/','',$request->dtInicioBaixa))
-                                ->with('dtFimBaixa' ,str_replace('/','',$request->dtFimBaixa))
-                                ->with('relatorio',$request->relatorio)                               
+                                ->with('dtFimBaixa' ,str_replace('/','',$request->dtFimBaixa))                                                
                                 ->with('finalizado',$request->finalizado)
                                 ->with('cliente',$request->cd_cliente_cli)
                                 ->with('nmCliente',$request->nm_cliente_cli)
