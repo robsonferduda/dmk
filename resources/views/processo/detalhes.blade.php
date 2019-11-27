@@ -102,7 +102,7 @@
                                                     <li>
                                                         <strong>Correspondente: </strong> 
                                                         @if(!empty($processo->correspondente->contaCorrespondente))
-                                                            <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
+                                                            <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
                                                         @endif
                                                     </li> 
                                                 @endrole    

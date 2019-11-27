@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use URL;
 use DB;
 use Auth;
 use Mail;
@@ -85,6 +86,9 @@ class CorrespondenteController extends Controller
 
     public function detalhes($id)
     {
+
+        $id = \Crypt::decrypt($id);
+
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();   
         return view('correspondente/detalhes',['correspondente' => $correspondente]);
     }
@@ -375,7 +379,7 @@ class CorrespondenteController extends Controller
                 }
             }
         }
-        return redirect('correspondente/detalhes/'.$request->conta);
+        return redirect('correspondente/detalhes/'.\Crypt::encrypt($request->conta));
     }
 
     public function honorarios($id)
@@ -719,6 +723,7 @@ class CorrespondenteController extends Controller
             //Primeiro passo é verificar se existe um usuário do tipo correspondente com o email informado
             $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
             $conta_logada = Conta::where('cd_conta_con',$this->conta)->first();
+
             $correspondente_cadastro = new Correspondente();
             $correspondente_cadastro->email = $email;
             $correspondente_cadastro->senha = $senha_aleatoria;
@@ -792,7 +797,7 @@ class CorrespondenteController extends Controller
 
             }else{
 
-                //Verifica se o correspondente já está presente na conta
+                //Verifica se o correspondente já está presente na conta, mesmo que tenha sido excluído
                 $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$unique->cd_conta_con)->withTrashed()->get();
 
                 if($conta_correspondente->isEmpty()){
@@ -845,7 +850,7 @@ class CorrespondenteController extends Controller
 
                     if(is_null($correspondente->deleted_at)){
 
-                        Flash::warning('Correspondente já faz parte da sua lista');
+                        Flash::warning('Correspondente já faz parte da sua lista. <a href="'.URL::to('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)).'">Clique aqui</a> para acessar seu cadastro.');
                         return false;
 
                     }else{
@@ -867,7 +872,7 @@ class CorrespondenteController extends Controller
         });
 
         if($id)
-            return redirect('correspondente/detalhes/'.$id);
+            return redirect('correspondente/detalhes/'.\Crypt::encrypt($id));
         else
             return redirect('correspondentes');
     }
@@ -1152,7 +1157,7 @@ class CorrespondenteController extends Controller
 
         }       
 
-        return redirect('correspondente/detalhes/'.$conta_correspondente->correspondente->cd_conta_con);
+        return redirect('correspondente/detalhes/'.\Crypt::encrypt($conta_correspondente->correspondente->cd_conta_con));
     }
 
     public function clientes(){

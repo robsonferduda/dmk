@@ -57,7 +57,7 @@
                                                 <li>
                                                     <strong>Correspondente: </strong>  
                                                     @if(!empty($processo->correspondente))
-                                                        <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">
+                                                        <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">
                                                         {{ ($processo->correspondente->nm_fantasia_con) ? $processo->correspondente->nm_fantasia_con : $processo->correspondente->nm_razao_social_con }}</a>
                                                     @endif
                                                 </li> 
