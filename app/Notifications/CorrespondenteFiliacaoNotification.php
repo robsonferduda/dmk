@@ -28,9 +28,9 @@ class CorrespondenteFiliacaoNotification extends Notification
     {
         
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Bem-vindo Correspondente'))
+            ->subject(Lang::getFromJson('Filiação de Correspondente'))
             ->markdown('email.convite')
-            ->line(Lang::getFromJson('Você foi cadastrado como correspondente do '.$this->conta->nm_razao_social_con))
+            ->line(Lang::getFromJson('Você foi cadastrado como correspondente do escritório '.$this->conta->nm_razao_social_con))
             ->line(Lang::getFromJson('Seus dados de acesso são:'))
             ->line(Lang::getFromJson('Usuário: '.$notifiable->email))
             ->line(Lang::getFromJson('Senha: '.$notifiable->senha))

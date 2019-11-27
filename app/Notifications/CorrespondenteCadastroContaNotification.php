@@ -9,39 +9,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CadastroCorrespondenteNotification extends Notification
+class CorrespondenteCadastroContaNotification extends Notification
 {
     use Queueable, VerifyNotification;
 
     public $conta;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
     public function __construct($conta)
     {
         $this->conta = $conta;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function via($notifiable)
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
     public function toMail($notifiable)
     {
         $nivel_url = \Crypt::encrypt(3);
@@ -49,22 +32,16 @@ class CadastroCorrespondenteNotification extends Notification
         return (new MailMessage)
             ->subject(Lang::getFromJson('Cadastro Correspondente'))
             ->markdown('email.convite')
-            ->line(Lang::getFromJson($this->conta->nm_razao_social_con.' adicionou você como correspondente no Sistema Easyjuris. Utilize o endereço abaixo para acessar o sistema:'))
+            ->line(Lang::getFromJson('O escritório '.$this->conta->nm_razao_social_con.' adicionou você como correspondente no Sistema Easyjuris. Utilize o endereço abaixo para acessar o sistema, confirmar seu cadastro e criar a senha de acesso:'))
             ->action(Lang::getFromJson('Acesse Aqui'), url(route('seleciona.perfil', ['nivel_url' => $nivel_url], false)))
-            ->line(Lang::getFromJson('Após acessar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
+            ->line(Lang::getFromJson('Após confirmar seu cadastro, você terá ao seu alcance uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
             ->line(Lang::getFromJson('Aguardamos você para darmos início a parceria.'));
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
         return [
-            //
+            
         ];
     }
 }
