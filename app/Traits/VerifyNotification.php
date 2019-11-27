@@ -19,4 +19,10 @@ trait VerifyNotification
         return $conta->fl_envio_notificacao_con;
     }
 
+    public function getFlagEnvioCorrespondente()
+    {
+    	$conta = Conta::where('cd_conta_con',\Session::get('SESSION_CD_CONTA'))->first();
+        return $conta->fl_notificacao_correspondente_con;
+    }
+
 }

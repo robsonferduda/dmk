@@ -783,6 +783,7 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
                         if($correspondente->save()){
+                            
                             if($conta->notificacaoCadastro($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso');
                             else
@@ -825,7 +826,7 @@ class CorrespondenteController extends Controller
                             
                         if($correspondente->save()){
 
-                            if($correspondente_cadastro->notificacaoFiliacao($conta_logada))
+                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso');
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
@@ -841,7 +842,6 @@ class CorrespondenteController extends Controller
                         Flash::error('Erro ao adicionar correspondente');
                         return false;
                     }        
-                    
 
                 }else{
 
@@ -858,7 +858,7 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
                         if($correspondente->save())
-                            //$correspondente_cadastro->notificacaoFiliacao($conta_logada);
+                            $correspondente_cadastro->notificarFiliacaoConta($conta_logada);
 
                         Flash::success('Correspondente adicionado com sucesso');
                         return $correspondente->cd_correspondente_cor;
@@ -1370,7 +1370,7 @@ class CorrespondenteController extends Controller
             $correspondente->email = $user->email;
             $correspondente->senha = $senha_aleatoria;
 
-            $correspondente->notificacaoFiliacao($correspondente);
+            $correspondente->notificarFiliacaoConta($correspondente);
 
             Flash::success('Correspondente notificado com sucesso');
 

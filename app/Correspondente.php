@@ -9,7 +9,7 @@ use OwenIt\Auditing\Auditable;
 use App\Traits\VerifyNotification;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CadastroCorrespondenteNotification;
-use App\Notifications\VinculoCorrespondenteNotification;
+use App\Notifications\CorrespondenteFiliacaoNotification;
 use App\Notifications\CorrespondenteNotification;
 
 class Correspondente extends Model implements AuditableContract
@@ -65,10 +65,10 @@ class Correspondente extends Model implements AuditableContract
             return false;
     }
 
-    public function notificacaoFiliacao($conta)
+    public function notificarFiliacaoConta($conta)
     {
-        if($this->getFlagEnvio() == 'S')
-            $this->notify(new VinculoCorrespondenteNotification($conta));
+        if($this->getFlagEnvioCorrespondente() == 'S')
+            $this->notify(new CorrespondenteFiliacaoNotification($conta));
         else
             return false;
     }

@@ -44,7 +44,7 @@ class CadastroCorrespondenteNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $nivel_url = \Crypt::crypt(3);
+        $nivel_url = \Crypt::encrypt(3);
 
         return (new MailMessage)
             ->subject(Lang::getFromJson('Cadastro Correspondente'))
