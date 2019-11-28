@@ -1363,24 +1363,16 @@ class CorrespondenteController extends Controller
 
     public function notificacao($id)
     {
-        $correspondente_conta = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();
-        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
-
+        //Notifica o correspondente sobre o cadastro realizado, informando o acesso do site
         $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con',$id)->first(); 
-        $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
 
-        $user->password = Hash::make($senha_aleatoria);
-        if($user->save()){
+        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
+        $correspondente->email = $user->email;
 
-            $correspondente->email = $user->email;
-            $correspondente->senha = $senha_aleatoria;
-
-            $correspondente->notificarFiliacaoConta($correspondente);
-
-            Flash::success('Correspondente notificado com sucesso');
-
+        if($correspondente->notificarFiliacaoConta($correspondente)){
+            Flash::success('Correspondente notificado com sucesso. O correspondente foi notificado no email '.$correspondente->email);
         }else{
-            Flash::error('Erro ao notificar correspondente');
+            Flash::error('Erro ao notificar correspondente. Verifique as configurações de notificação e tente novamente.');
         }
 
         return redirect('correspondentes');
