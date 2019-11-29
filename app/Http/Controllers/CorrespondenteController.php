@@ -783,7 +783,7 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
                         if($correspondente->save()){
-                            
+
                             if($conta->notificacaoCadastro($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso');
                             else
@@ -857,8 +857,13 @@ class CorrespondenteController extends Controller
 
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
-                        if($correspondente->save())
-                            $correspondente_cadastro->notificarFiliacaoConta($conta_logada);
+                        if($correspondente->save()){
+                            
+                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
+                                Flash::success('Correspondente adicionado com sucesso');
+                            else
+                                Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
+                        }
 
                         Flash::success('Correspondente adicionado com sucesso');
                         return $correspondente->cd_correspondente_cor;
