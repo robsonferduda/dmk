@@ -17,6 +17,6 @@ return [
     'reset' => 'Sua senha foi atualizada!',
     'sent' => 'Enviamos um e-mail com instruções para a criação de uma nova senha para o email informado.',
     'token' => 'O token de alteração de senha é inválido.',
-    'user' => "Não conseguimos encontrar um usuário com esse endereço de e-mail.",
+    'user' => "Não conseguimos encontrar um usuário com esse endereço de e-mail. Verifique o email digitado e tente novamente.",
 
 ];

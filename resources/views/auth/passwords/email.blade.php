@@ -11,10 +11,10 @@
                         <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Email informado no momento do cadastro</b> </label>
 
                         @if ($errors->has('email'))
-                            <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>
+                            <span class="help-block" style="padding: 5px 8px;"><strong>{{ $errors->first('email') }}</strong></span>
                         @endif
 
-                    <div class="note" style="text-align: center;"><a href="{{ url('login') }}">Acessar o sistema</a></div>
+                    <div class="note" style="text-align: center;"><a href="{{ url('login') }}">Voltar para o sistema</a></div>
                 </section>
             </fieldset>
 

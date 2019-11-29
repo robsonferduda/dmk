@@ -34,7 +34,14 @@ class NotificacaoController extends Controller
             $request->merge(['fl_envio_notificacao_con' => 'N']);
         }
 
+        if(isset($request->fl_notificacao_correspondente_con)){
+            $request->merge(['fl_notificacao_correspondente_con' => 'S']);
+        }else{
+            $request->merge(['fl_notificacao_correspondente_con' => 'N']);
+        }
+
         $conta->fl_envio_notificacao_con = $request->fl_envio_notificacao_con;
+        $conta->fl_notificacao_correspondente_con = $request->fl_notificacao_correspondente_con;
 
         if($conta->saveOrFail())
             Flash::success('Preferências de notificações atualizadas com sucesso');

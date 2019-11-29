@@ -29,12 +29,26 @@
                     <div class="col-sm-12">
                         <div class="well">
                             {!! Form::open(['id' => 'frm-notificacoes', 'url' => 'configuracoes/notificacoes/salvar', 'class' => 'smart-form','method' => 'PUT']) !!}
+                                <section>
+                                    <label class="text-warning" style="margin-bottom: 5px;"><i class="fa fa-warning"></i> Você deve confirmar a alteração dos valores clicando em "Salvar"</label>
+                                </section>
                                 <section>                          
                                     <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Enviar notificações via email nas ações de correspondentes (Novo/Convite)?</span> 
+                                        <span class="onoffswitch-title">Enviar notificações via email nas ações de processo?</span> 
                                         <span class="onoffswitch">
                                             <input type="checkbox" {{ ($conta->fl_envio_notificacao_con == 'S') ? 'checked' : '' }} name="fl_envio_notificacao_con" class="onoffswitch-checkbox" id="fl_envio_notificacao_con">
                                             <label class="onoffswitch-label" for="fl_envio_notificacao_con"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
+                                    <br/>
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Enviar notificações via email nas ações de correspondentes?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" {{ ($conta->fl_notificacao_correspondente_con == 'S') ? 'checked' : '' }} name="fl_notificacao_correspondente_con" class="onoffswitch-checkbox" id="fl_notificacao_correspondente_con">
+                                            <label class="onoffswitch-label" for="fl_notificacao_correspondente_con"> 
                                                 <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                 <span class="onoffswitch-switch"></span>
                                             </label> 

@@ -177,7 +177,7 @@
                                         </td>
                                         <td>
                                             @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.$processo->correspondente->cd_conta_con) }}">{{ ($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr : '' }}</a>
+                                                <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{ ($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr : '' }}</a>
                                             @endif
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>

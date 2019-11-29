@@ -40,8 +40,8 @@
                         <div class="well" style="margin: 0px 15px; padding: 5px;">
                             <p>
                                 <strong class="text-danger">Atenção!</strong><br/>
-                                Ao realizar o cadastro, o correpondente é cadastrado e inserido automaticamente na sua lista de correspondentes.
-                                O email informado recebe uma mensagem com as informações de cadastro e o endereço para acessar o sistema atualizar seus dados pessoais.
+                                Ao realizar o cadastro, o correpondente é inserido na sua lista de correspondentes e recebe uma mensagem no email informado para confirmar seu cadastro e ter acesso ao sistema. Nesse acesso, além de confirmar 
+                                o cadastro ele também cria a senha de acesso ao sistema.
                             </p>
                         </div>
                             <fieldset>
@@ -56,12 +56,9 @@
                                         <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}">
                                         <b class="tooltip tooltip-bottom-right">Email do Correspondente</b> </label>
                                     </section>
-                                    <section class="center"> 
-                                        <p>O sistema gera a senha automaticamente e todos os correspondentes são cadastrados com a senha padrão <strong class="text-primary">correspondente</strong></p>
-                                    </section>
                                 </fieldset>
                                 <footer>
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Cadastrar</button>                                 
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i> Adicionar</button>                                 
                                 </footer>
                         {!! Form::close() !!} 
                     </div>
