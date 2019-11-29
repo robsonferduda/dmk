@@ -61,7 +61,7 @@
             </td>
 
             <td style="border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->honorario ? number_format($dado->honorario->vl_taxa_honorario_cliente_pth, 2,',',' ') : '0'}}
+                {{ $dado->honorario ? $dado->honorario->vl_taxa_honorario_cliente_pth : 0}}
             </td>
             @php
                 $totalDespesas = 0;
@@ -74,10 +74,10 @@
                         $despesaValor = $dado->tiposDespesa->where('cd_tipo_despesa_tds',$despesa->cd_tipo_despesa_tds)->first()->pivot->vl_processo_despesa_pde;
                         $totalDespesas += $despesaValor;
                     @endphp
-                    {{ number_format($despesaValor, 2,',',' ') }}
+                    {{ $despesaValor }}
 
                 @else
-                    {{ number_format(0, 2,',',' ') }}
+                    {{ 0 }}
                 @endif
                 </td>
             @endforeach
@@ -90,7 +90,7 @@
                     $total += (float)$totalDespesas+(float)$taxaHonorario;
                 @endphp
 
-                {{ number_format($totalDespesas+$taxaHonorario, 2,',',' ') }}
+                {{ $totalDespesas+$taxaHonorario }}
             </td>
         </tr>
         @endforeach
