@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use App\Traits\VerifyNotification;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
-use App\Notifications\CadastroCorrespondenteNotification;
+use App\Notifications\CorrespondenteCadastroContaNotification;
 use App\Notifications\CorrespondenteFiliacaoNotification;
 use App\Notifications\CorrespondenteNotification;
 
@@ -57,10 +57,11 @@ class Correspondente extends Model implements AuditableContract
         $this->notify(new CorrespondenteNotification($correspondente));
     }
 
-    public function notificacaoCadastro($conta)
+    //Mensagem enviado no momento do cadastro de um novo correspondente, ainda sem conta, por um escritório interessado
+    public function notificarCadastroConta($conta)
     {
         if($this->getFlagEnvio() == 'S')
-            $this->notify(new CadastroCorrespondenteNotification($conta));
+            $this->notify(new CorrespondenteCadastroContaNotification($conta));
         else
             return false;
     }

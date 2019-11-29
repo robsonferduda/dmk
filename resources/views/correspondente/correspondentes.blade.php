@@ -168,7 +168,7 @@
                                     </section>
                                 </fieldset>
                                 <footer>
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Cadastrar</button>
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i> Adicionar</button>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa-fw fa fa-times"></i>  Cancelar</button>                                    
                                 </footer>
                         {!! Form::close() !!} 

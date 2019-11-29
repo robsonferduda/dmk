@@ -58,7 +58,7 @@
                                     </section>
                                 </fieldset>
                                 <footer>
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Cadastrar</button>                                 
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i> Adicionar</button>                                 
                                 </footer>
                         {!! Form::close() !!} 
                     </div>
