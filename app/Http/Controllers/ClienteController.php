@@ -512,10 +512,12 @@ class ClienteController extends Controller
                                 if(!empty($tipo)) $join->where('cliente_cli.cd_tipo_pessoa_tpp','=',$tipo);
                                 if(!empty($situacao)) $join->where('fl_ativo_cli','=',$situacao);
 
-                            })->leftJoin('identificacao_ide', function($join) use ($identificacao){
-                                $join->on('cliente_cli.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                if(!empty($identificacao)) $join->where('nu_identificacao_ide','=',$identificacao);
-                            })
+                            })->when(!empty($identificacao), function($query) use ($identificacao){
+                                $query->join('identificacao_ide', function($join) use ($identificacao){
+                                    $join->on('cliente_cli.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
+                                    $join->where('nu_identificacao_ide','=',$identificacao);
+                                });
+                             })
                             ->where('cliente_cli.cd_conta_con',$this->conta)
                             ->orderBy('cliente_cli.created_at','DESC')
                             ->get();
