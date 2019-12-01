@@ -789,6 +789,7 @@ class CorrespondenteController extends Controller
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
+
                             return $conta->cd_conta_con;
 
                         }else{
@@ -860,7 +861,6 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
                         if($correspondente->save()){
-
 
                             if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
@@ -1368,10 +1368,11 @@ class CorrespondenteController extends Controller
         //Notifica o correspondente sobre o cadastro realizado, informando o acesso do site
         $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con',$id)->first(); 
 
+        $conta_logada = Conta::where('cd_conta_con', $this->conta)->first();
         $correspondente = Correspondente::where('cd_conta_con', $id)->first();
         $correspondente->email = $user->email;
 
-        if($correspondente->notificarFiliacaoConta($correspondente)){
+        if($correspondente->notificarFiliacaoConta($conta_logada)){
             Flash::success('Correspondente notificado com sucesso. O correspondente foi notificado no email '.$correspondente->email);
         }else{
             Flash::error('Erro ao notificar correspondente. Verifique as configurações de notificação e tente novamente.');

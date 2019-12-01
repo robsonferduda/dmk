@@ -117,7 +117,7 @@
                                                     <ul class="dropdown-menu">
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
                                                         <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
-                                                        <li><a title="Enviar Notificação" href="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
+                                                        <li><a title="Enviar Notificação" class="notificar_correspondente" data-url="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}" data-email="{{ ($correspondente->correspondente->entidade->usuario) ? $correspondente->correspondente->entidade->usuario->email : 'nulo' }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
                                                         <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
                                                     </ul>
                                                 </div>
@@ -209,6 +209,28 @@
             </div>
         </div>
     </div>
+</div>
+
+ <div class="modal fade modal_top_alto" id="modal_notificar_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-send"></i> <strong> Notificar Correspondente</strong></h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h4 class="msg_extra text-danger"></h4>
+                        <h4>Essa operação irá notificar o correspondente sobre o cadastro realizado no email <strong id="email_notificacao_correspondente"></strong>.</h4>
+                        <h4>Deseja continuar?</h4>
+                        <input type="hidden" name="url" id="url">
+                        <div class="msg_retorno"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" href="" id="btn_confirma_notificacao" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
 </div>
 
 <div class="modal fade modal_top_alto" id="modal_confirma_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">

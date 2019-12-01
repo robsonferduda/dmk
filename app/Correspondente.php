@@ -60,18 +60,22 @@ class Correspondente extends Model implements AuditableContract
     //Mensagem enviado no momento do cadastro de um novo correspondente, ainda sem conta, por um escritório interessado
     public function notificarCadastroConta($conta)
     {
-        if($this->getFlagEnvio() == 'S')
+        if($this->getFlagEnvio() == 'S'){
             $this->notify(new CorrespondenteCadastroContaNotification($conta));
-        else
+            return true;
+        }else{
             return false;
+        }
     }
 
     public function notificarFiliacaoConta($conta)
     {
-        if($this->getFlagEnvioCorrespondente() == 'S')
+        if($this->getFlagEnvioCorrespondente() == 'S'){
             $this->notify(new CorrespondenteFiliacaoNotification($conta));
-        else
+            return true;
+        }else{
             return false;
+        }
     }
 
 }

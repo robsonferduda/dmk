@@ -517,6 +517,16 @@ $(document).ready(function() {
 		$("#modal_confirma_correspondente").modal('show');
 	});
 
+	$(".notificar_correspondente").click(function(){
+
+		var email  = $(this).data('email');
+		var url = $(this).data('url');
+
+		$("#modal_notificar_correspondente #btn_confirma_notificacao").attr('href',url);
+		$("#modal_notificar_correspondente #email_notificacao_correspondente").html(email);
+		$("#modal_notificar_correspondente").modal('show');
+	});
+
 	$(".remover_registro").click(function(){
 
 		var id  = $(this).data('id');
