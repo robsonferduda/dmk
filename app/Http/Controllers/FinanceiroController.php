@@ -15,6 +15,9 @@ use App\Processo;
 use App\Exports\BalancoDetalhadoExport;
 use App\Exports\BalancoSumarizadoExport;
 use App\Despesa;
+use App\AnexoFinanceiro;
+use App\BaixaHonorario;
+use Illuminate\Support\Facades\Response;
 
 class FinanceiroController extends Controller
 {
@@ -596,38 +599,40 @@ class FinanceiroController extends Controller
 
     }
 
+    public function buscarBaixaEntrada($id){
+
+        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->orderBy('cd_baixa_honorario_bho')->get();
+
+        echo json_encode($baixaHonorario);
+    }
+
+
     public function baixaCliente(Request $request){
 
-        $processosTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->whereIn('cd_processo_taxa_honorario_pth',$request->ids)->get();
-            
-        $response = false;
-        foreach($processosTaxaHonorario as $processoTaxaHonorario){
-            
-            $processoTaxaHonorario->fl_pago_cliente_pth = $request->checked;
-            
-            if(!empty($request->data)){
-                $processoTaxaHonorario->dt_baixa_cliente_pth = date('Y-m-d',strtotime(str_replace('/','-',$request->data)));
-            }else{
-                $processoTaxaHonorario->dt_baixa_cliente_pth = null;
-            }
+        $baixaHonorario = new BaixaHonorario();
 
-            if(!empty($request->nota)){
-                $processoTaxaHonorario->nu_cliente_nota_fiscal_pth = $request->nota;
-            }else{
-                $processoTaxaHonorario->nu_cliente_nota_fiscal_pth = null;   
-            }
-
-
-            $response = $processoTaxaHonorario->saveOrFail();
-
-            if(!$response){
-                echo json_encode(false);
-                break;
-            }
-
+        if(empty($request->dtBaixa)){
+            $baixaHonorario->dt_baixa_honorario_bho = NULL;
+        }else{
+            $baixaHonorario->dt_baixa_honorario_bho = date('Y-m-d',strtotime(str_replace('/','-',$request->dtBaixa)));
         }
 
-        echo json_encode(true);
+        if(empty($request->notaFiscal)){
+            $baixaHonorario->nu_nota_fiscal_bho = NULL;
+        }else{
+            $baixaHonorario->nu_nota_fiscal_bho = $request->notaFiscal;
+        }
+
+        $baixaHonorario->cd_processo_taxa_honorario_pth =  $request->cdBaixaFinanceiro;
+        $baixaHonorario->vl_baixa_honorario_bho         =  str_replace(',', '.', $request->valor);
+        $baixaHonorario->cd_tipo_financeiro_tfn         = \TipoFinanceiro::ENTRADA;
+        $baixaHonorario->cd_conta_con                   = $this->conta;
+
+        $response = $baixaHonorario->saveOrFail();
+
+        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->orderBy('cd_baixa_honorario_bho')->get();
+
+        echo json_encode($baixaHonorario);
         
     }
 
@@ -649,13 +654,13 @@ class FinanceiroController extends Controller
             $response = $processoTaxaHonorario->saveOrFail();
 
             if(!$response){
-                echo json_encode(false);
+                echo json_encode($response);
                 break;
             }
 
         }
 
-        echo json_encode(true);
+        echo json_encode($response);
     }
 
     public function relatorioBalancoSumarizado($request){
@@ -1127,6 +1132,21 @@ class FinanceiroController extends Controller
     public function arquivo($nome){
         //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
         return response()->download(storage_path('reports/financeiro/balanco/'."$this->conta/".$nome));
+
+    }
+
+    public function excluirBaixa($id){
+
+        $baixaProcesso = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_baixa_honorario_bho',$id)->first();
+
+        BaixaHonorario::where('cd_conta_con',$this->conta)                                                                        
+                                    ->where('cd_baixa_honorario_bho',$id)
+                                    ->delete();
+
+
+        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->orderBy('cd_baixa_honorario_bho')->get();
+
+        echo json_encode($baixaHonorario);
 
     }
 

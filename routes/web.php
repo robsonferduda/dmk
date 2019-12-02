@@ -279,6 +279,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('financeiro/relatorios','FinanceiroController@relatorios');
 	Route::delete('financeiro/balanco/reports/{nome}','FinanceiroController@excluir');
 	Route::get('financeiro/balanco/reports/{nome}','FinanceiroController@arquivo');
+	Route::get('financeiro/cliente/baixa/entrada/{id}','FinanceiroController@buscarBaixaEntrada');
+	Route::delete('financeiro/cliente/baixa/entrada/excluir/{id}','FinanceiroController@excluirBaixa');
+
+	
 	
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
 	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');

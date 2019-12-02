@@ -125,10 +125,10 @@
                                     <td style="text-align: center;">
                                         <input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 
-                                        @if(!empty($entrada->dt_baixa_cliente_pth))
+                                        @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
 
                                          <a href="#" rel="popover-hover" data-placement="top" data-content="Nota Fiscal: {{ $entrada->nu_cliente_nota_fiscal_pth }}"
-                                         data-original-title="Data de pagamento: {{ date('d/m/Y', strtotime($entrada->dt_baixa_cliente_pth)) }}"><i class="fa fa-question-circle text-primary"></i></a>
+                                         data-original-title="Data de pagamento: {{ $entrada->dt_baixa_cliente_pth ? date('d/m/Y', strtotime($entrada->dt_baixa_cliente_pth)) : '' }}"><i class="fa fa-question-circle text-primary"></i></a>
                                         
                                         @endif
 
@@ -144,42 +144,97 @@
         </article>
 
     </div>
-    <div id="dialog_simple" title="">
-        <h5>
-            Essa ação irá alterar todos os itens em tela.
-        </h5>
-        <h5 id="valor_total_operacao" ></h5>
-        <form id="baixa">
-            <div class="row">
-                <section class="col col-md-3">
-                       <label class="label label-black">Data de recebimento</label><br />
-                       <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
-                       <span style="display: none" ></span>
-                </section>
-                <section class="col col-md-4">
-                       <label class="label label-black">Nota Fiscal</label><br />
-                       <input type="text" id='notaFiscal' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" >        
-                </section>
+    
+</div>
+<div class="modal fade modal_top_alto" id="addBaixa" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> XXXXXXXXXXXXXX
+                </h4>
             </div>
-        </form>
-    </div>
-    <div id="dialog_simple_single" title="">
-        <h5>
-            Essa ação irá o item selecionado.
-        </h5>
-        <form id="baixa_single">
-            <div class="row">
-                <section class="col col-md-3">
-                       <label class="label label-black">Data de recebimento</label><br />
-                       <input type="text" id='dtBaixaCliente_single' class='form-control dt_solicitacao_pro' name="dt_baixa_cliente_pth" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
-                       <span style="display: none" ></span>
-                </section>
-                <section class="col col-md-4">
-                       <label class="label label-black">Nota Fiscal</label><br />
-                       <input type="text" id='notaFiscal_single' class='form-control' name="nu_cliente_nota_fiscal_pth" placeholder="" >        
-                </section>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-baixa', 'url' => '', 'class' => 'smart-form']) !!}
+                    <input type="hidden" name="cdBaixaFinanceiro" id="cdBaixaFinanceiro" >
+                     <fieldset>
+                        <section>
+                            <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa fa-arrow-circle-o-down"></i> Registro de Baixa
+                                    </header>
+                                    <fieldset style="padding: 10px 14px 5px;">
+                                        <div class="row">    
+                                            <section class="col col-3">
+                                                <label class="label">Data</label>
+                                                <label class="input">
+                                                     <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dtBaixa" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                                                </label>
+                                            </section>                     
+                                         
+                                             <section class="col col-3">
+                                                <label class="label">Valor</label>
+                                                <label class="input">
+                                                    <input type="text" class="form-control taxa-honorario" name="valor" id="valor" >
+                                                </label>
+                                            </section>    
+
+                                            <section class="col col-6">
+                                                <label class="label">Nota</label>
+                                                <label class="input">
+                                                   <input type="text" id='notaFiscal' class='form-control' name="notaFiscal" placeholder="" >                                                         
+                                                </label>
+                                            </section>    
+                                            
+                                        </div>
+                                        <div class="row"> 
+                                             <section class="col col-10">
+                                                <label class="label">Arquivo</label>
+                                                <label class="input"> 
+                                                   <input name="file" type="file" id="file" class="form-control">
+                                                </label>
+                                            </section>    
+                                            <section class="col col-1">
+                                                <label class="label">&nbsp</label>
+                                                <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
+                                            </section>
+                                        </div> 
+                                        <div class="row center" id="erroFone"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            
+                                            <table id="tabelaRegistro" class="table table-bordered table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Data</th>
+                                                        <th class="center">Valor</th>
+                                                        <th class="center">Nota</th>
+                                                        <th class="center">Arquivo</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>                                       
+                                            
+                                    </div>
+                                </div>
+                        </section>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-save-departamento"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
             </div>
-        </form>
+        </div>
     </div>
 </div>
 @endsection
@@ -244,6 +299,35 @@
                     "drawCallback" : function(oSettings) {
                         responsiveHelper_dt_basic_financeiro.respond();
                     }
+        });
+
+        $("#frm-add-baixa").on('submit',function(event){
+
+            event.preventDefault();
+            $.ajax({
+                url: "{{ url('/financeiro/cliente/baixa') }}",
+                method: "POST",
+                data: new FormData(this),
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(registros){
+                    $('#tabelaRegistro > tbody').html('');
+                    $.each(registros, function(index, value){                        
+                        $('#tabelaRegistro > tbody').append('<tr>'+
+                                                            '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.nu_nota_fiscal_bho+'</td>'+
+                                                            '<td ></td>'+
+                                                            '<td class="center">'+                                                                
+                                                                '<a class="btnRegistroExcluir"  style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
+                                                            '</td>'+
+                                                        '</tr>');
+                     });
+                }
+            });
+
         });
 
      
@@ -354,17 +438,81 @@
             
         });
 
+        
+
+
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
            
+
+            var id = $(this).data('id');
             $("#dtBaixaCliente").val('');
             $("#notaFiscal").val('');
+            $('#tabelaRegistro > tbody').html('');
+            $("#cdBaixaFinanceiro").val(id);            
+
+             $.ajax({
+                type:'GET',
+                url: "{{ url('financeiro/cliente/baixa/entrada') }}/"+id,
+                success:function(data){
+                    var registros = JSON.parse(data);   
+                    $('#tabelaRegistro > tbody').html('');
+                    $.each(registros, function(index, value){                        
+                        $('#tabelaRegistro > tbody').append('<tr>'+
+                                                            '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.nu_nota_fiscal_bho+'</td>'+
+                                                            '<td ></td>'+
+                                                            '<td class="center">'+                                                                
+                                                                '<a class="btnRegistroExcluir"   style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
+                                                            '</td>'+
+                                                        '</tr>');
+                     });      
+                    
+                    
+                }
+            });
+
+
             if ($(this).is(':checked') ) {             
-                $('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
+                //$('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
+                $("#addBaixa").modal('show');
+
             }else {
                 verifica($(this));
             }
-           
+
         });
+
+       $('body').on('click','.btnRegistroExcluir', function(){
+
+                        var id = $(this).data("id");
+                    
+                        $.ajax(
+                            {
+                                url: "{{ url('financeiro/cliente/baixa/entrada/excluir') }}/"+id,
+                                type: 'DELETE',
+                                dataType: "JSON",
+                                success: function(data)
+                                {                       
+                                    console.log(data);
+                                    var registros = data;   
+                                    $('#tabelaRegistro > tbody').html('');
+
+                                    $.each(registros, function(index, value){                        
+                                        $('#tabelaRegistro > tbody').append('<tr>'+
+                                                                            '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
+                                                                            '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                                            '<td >'+value.nu_nota_fiscal_bho+'</td>'+
+                                                                            '<td ></td>'+
+                                                                            '<td class="center">'+                                                                
+                                                                                '<a class="btnRegistroExcluir" style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
+                                                                            '</td>'+
+                                                                        '</tr>');
+                                    });      
+                                }
+                        });
+
+        });                        
 
         $( "#cliente_auto_complete" ).focusout(function(){
            if($("input[name='cd_cliente_cli']").val() == ''){
@@ -462,6 +610,10 @@
 
         $.validator.addMethod("dateFormat",
                 function(value, element) {
+
+                    if(value == '')
+                        return true;
+
                     return value.match(/^(?:(?:31(\/)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)\d{2})$/);
                 },
                 "Data inválida.");
@@ -470,7 +622,7 @@
 
             rules : {
                     dt_baixa_cliente_pth : {
-                        required: true,
+                        //required: true,
                         dateFormat: true,
                     }, 
                },
@@ -491,7 +643,7 @@
 
             rules : {
                     dt_baixa_cliente_pth : {
-                        required: true,
+                        //required: true,
                         dateFormat: true,
                     }, 
                },
