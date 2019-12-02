@@ -21,6 +21,7 @@ Route::get('correspondente', function(){ return view('correspondente/cadastro');
 Route::get('correspondente/login', function(){ return view('auth/correspondente'); })->name('autenticacao.correspondente');;
 Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
+Route::get('correspondente/senha/{correspondente}', 'CorrespondenteController@cadastrarSenha')->name('cadastrar.senha');
 Route::resource('contas','ContaController');
 
 Auth::routes();
