@@ -73,6 +73,8 @@ class RelatorioProcessoController extends Controller
                     $dados = array('processos' => $processos, 'dtInicio' => $request->dtInicio, 'dtFim' => $request->dtFim, 'despesas' => $despesas);
                    
                     if(!$processos->isEmpty()){
+
+                        $request->nm_cliente_cli = str_replace('/','', $request->nm_cliente_cli);
                         \Excel::store(new ProcessoParaClienteExport($dados),"/processo/{$this->conta}/".time() . "_".$request->nm_cliente_cli.'.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
                     }else{
                         Flash::error('Não há dados para os parâmetros informados!');
