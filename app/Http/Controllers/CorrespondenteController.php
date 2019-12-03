@@ -864,11 +864,12 @@ class CorrespondenteController extends Controller
 
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         $correspondente->deleted_at = null;
+
                         if($correspondente->save()){
 
-                            $conta->email = $email;
+                            $correspondente_cadastro->email = $email;
 
-                            if($conta->notificarFiliacaoConta($conta_logada))
+                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
