@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use URL;
 use DB;
 use Auth;
@@ -52,7 +53,7 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','acompanhamento']]);
+        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','acompanhamento','cadastrarSenha','novaSenha']]);
         
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
@@ -783,8 +784,10 @@ class CorrespondenteController extends Controller
                         $correspondente->nm_conta_correspondente_ccr = $nome;
                         
                         if($correspondente->save()){
+
+                            $conta->email = $email;
                             
-                            if($correspondente_cadastro->notificarCadastroConta($conta_logada))
+                            if($conta->notificarCadastroConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
@@ -828,7 +831,9 @@ class CorrespondenteController extends Controller
                             
                         if($correspondente->save()){
 
-                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
+                            $conta->email = $email;
+
+                            if($conta->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
@@ -861,7 +866,9 @@ class CorrespondenteController extends Controller
                         $correspondente->deleted_at = null;
                         if($correspondente->save()){
 
-                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
+                            $conta->email = $email;
+
+                            if($conta->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
@@ -1378,6 +1385,32 @@ class CorrespondenteController extends Controller
         }
 
         return redirect('correspondentes');
+    }
+
+    public function cadastrarSenha($id)
+    {
+        $id = \Crypt::decrypt($id);
+        
+        $user = User::where('cd_conta_con', $id)->where('cd_nivel_niv',3)->first();
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+
+        return view('auth.passwords.create')->with(
+            ['token' => $user->remember_token, 'email' => $user->email]
+        );
+
+    }
+
+    public function novaSenha(Request $request)
+    {
+        $nivel_url = \Crypt::encrypt(3);
+
+        $user = User::where('remember_token', $request->token)->where('cd_nivel_niv',3)->first();
+        $user->password = Hash::make($request->password_confirmation);
+        $user->save();
+
+        return redirect(route('seleciona.perfil', ['nivel_url' => $nivel_url]));
+
     }
 
 }

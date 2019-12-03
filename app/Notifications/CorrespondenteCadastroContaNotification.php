@@ -27,6 +27,7 @@ class CorrespondenteCadastroContaNotification extends Notification
 
     public function toMail($notifiable)
     {
+
         $correspondente = \Crypt::encrypt($notifiable->cd_conta_con);
 
         return (new MailMessage)
