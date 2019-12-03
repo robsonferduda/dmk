@@ -886,7 +886,8 @@ class ClienteController extends Controller
         {
 
             if(!empty($ret->nm_fantasia_cli)){
-                $nome =  $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
+                //$nome =  $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli.' ('.$ret->nm_fantasia_cli.')';
+                $nome =  $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }else{
                 $nome = $ret->nu_cliente_cli.' - '.$ret->nm_razao_social_cli;
             }
