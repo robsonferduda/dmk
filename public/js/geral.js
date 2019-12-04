@@ -884,6 +884,8 @@ $(document).ready(function() {
 	var emails = new Array();
 	var fl_edicao = false;
 	var id_edicao = null;
+	var fl_edicao_email = false;
+	var id_edicao_telefone = null;
 
 	$("#btnSalvarTelefone").click(function(){
 
@@ -970,8 +972,7 @@ $(document).ready(function() {
 
 		var id = $(this).data("codigo");
 		var edit = $(this).data("edit");
-		var id = $(this).data("codigo");
-
+		
 		if(edit == 'S'){
 			fl_edicao = true;
 		}else{
@@ -1053,6 +1054,180 @@ $(document).ready(function() {
 	}
 
 	/* ******************************** Gerenciamento de telefones - FIM ********************************** */
+
+	/* ******************************** Gerenciamento de emails - INÍCIO ********************************** */
+
+	$("#btnSalvarEmail").click(function(){
+
+		var flag = true;
+		var tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").val();
+		var ds_tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").text();
+		var ds_email = $("#dc_endereco_eletronico_ede").val();
+		var entidade = $("#entidade").val();
+
+		if(tipo == 0){ flag = false; $("#erroEmail").html("Campo tipo obrigatório"); }
+		if(email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
+
+		if(flag){
+
+			var email = {tipo: tipo, email: ds_email, descricao: ds_tipo};
+
+			if(fl_edicao_email == true){
+
+				$.ajax({
+					url: "../../email/editar",
+					type: 'POST',
+		            data: {
+		                "_token": $('meta[name="token"]').attr('content'),
+		                "id": id_edicao_telefone,
+		                "tipo": tipo,
+		                "email": ds_email
+		            },
+					success: function(response){   
+
+						$("#tabelaFone > tbody > tr").remove();
+						loadTelefones(entidade);
+						loadTelefonesArray(telefones);
+
+					},
+					error: function(response){
+
+					}
+				});
+
+			}else{
+
+				if(id_edicao_telefone != null){
+					emails.splice(id_edicao_telefone,1);
+				}
+
+				emails.push(email);
+
+				$("#tabelaEmail > tbody > tr").remove();	
+				loadEmails(entidade);
+				loadEmailsArray(emails);
+
+
+			}		
+
+			//Inicialização de variáveis
+			$("#dc_endereco_eletronico_ede").val("");
+			$("#cd_tipo_endereco_eletronico_tee").prop('selectedIndex',0);
+			$("#erroEmail").empty();
+			$("#dc_endereco_eletronico_ede").focus();			
+			fl_edicao_email = false;
+			$("#btnSalvarEmail").html('<i class="fa fa-plus"></i> Novo');
+			$("#emails").val(JSON.stringify(emails));
+		}
+
+	});
+
+	$(document).on('click','.editarEmail',function(){
+
+		var id = $(this).data("codigo");
+		var edit = $(this).data("edit");
+
+		if(edit == 'S'){
+			fl_edicao_email = true;
+		}else{
+			fl_edicao_email = false;
+		}
+
+		id_edicao_telefone = id;
+		
+		var tipo = $(this).closest('tr').find('td[data-tipo]').data('tipo');
+		var email = $(this).closest('tr').find('td[data-email]').data('email');
+		
+		$("#dc_endereco_eletronico_ede").val(email);
+		$("#cd_tipo_endereco_eletronico_tee").val(tipo);
+		$("#btnSalvarEmail").html('<i class="fa fa-edit"></i> Editar');
+
+	});
+
+
+	$(document).on('click','.excluirEmail',function(){
+
+		var id = $(this).data("id");
+		var entidade = $("#entidade").val()
+
+		emails.splice(id,1); //Remove o registro do vetor que está na memória
+
+		$("#tabelaEmail > tbody > tr").remove();
+		loadEmails(entidade);
+		loadEmailsArray(emails);		
+
+		$("#emails").val(JSON.stringify(emails));
+
+	});
+
+	$('.excluirEmailBase').on('click', function(){
+
+		var id = $(this).data("codigo");
+		var entidade = $("#entidade").val();
+					
+		$.ajax({
+			url: "../../email/excluir/"+id,
+			type: 'GET',
+			dataType: "JSON",
+			success: function(response){
+
+			    $("#tabelaEmail > tbody > tr").remove();	
+				loadEmails(entidade);
+				loadEmailsArray(emails);
+							
+			},
+			error: function(response){
+
+			}
+		});
+
+	}); 
+
+	function loadEmailsArray(telefones){
+
+		$.each(emails, function(index, value){
+			
+			$('#tabelaEmail > tbody').append('<tr>'+
+													'<td data-tipo="'+value.tipo+'" class="center">'+value.descricao+'</td>' +
+													'<td data-email="'+value.email+'">'+value.email+'</td>'+
+													'<td class="center">'+
+														'<a title="Editar Email" class="editarEmail btnEmailEditar" data-codigo="'+index+'" data-edit="N"><i class="fa fa-edit"></i> </a>'+
+														'<a title="Excluir Email" class="excluirEmail btnEmailExcluir" data-codigo="'+index+'"> <i class="fa fa-trash"></i> </a>' +
+													'</td>'+
+												'</tr>')
+		});
+	}  
+
+	function loadEmails(entidade){
+
+		$.ajax(
+            {
+                url: "../../email/entidade/"+entidade,
+                type: 'GET',
+                dataType: "JSON",
+            success: function(response)
+            {                    	
+				$.each(response, function(index, value){
+					$('#tabelaEmail > tbody').append('<tr>'+
+														'<td data-tipo="'+value.tipo.cd_tipo_endereco_eletronico_tee+'" class="center">'+value.tipo.dc_tipo_endereco_eletronico_tee+'</td>' +
+														'<td data-email="'+value.dc_endereco_eletronico_ede+'">'+value.dc_endereco_eletronico_ede+'</td>'+
+														'<td class="center">'+
+															'<a title="Editar Email" class="editarEmail btnEmailEditar" data-codigo="'+value.cd_endereco_eletronico_ele+'" data-edit="S"><i class="fa fa-edit"></i> </a>'+
+															'<a title="Excluir Email" class="excluirEmailBase btnEmailExcluir" data-codigo="'+value.cd_endereco_eletronico_ele+'"> <i class="fa fa-trash"></i> </a>' +
+														'</td>'+
+													'</tr>');
+				});   
+
+            },
+            error: function(response)
+            {
+            	alert("Houve um erro ao carregar emails, atualize a página e tente novamente");
+            }
+        });
+
+	}
+
+	/* ******************************** Gerenciamento de emails - FIM ********************************** */
 
 	function loadRegistroBancario(id){
 
@@ -1195,103 +1370,6 @@ $(document).ready(function() {
 				$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
 
 	});
-
-
-	$("#btnSalvarEmail").click(function(){
-
-		var flag = true;
-		var tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").val();
-		var ds_tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").text();
-		var email = $("#dc_endereco_eletronico_ede").val();
-		var entidade = $("#entidade").val();
-
-		if(tipo == 0){ flag = false; $("#erroEmail").html("Campo tipo obrigatório"); }
-		if(email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
-
-		if(flag){
-
-			var email = {tipo: tipo, email: email, descricao: ds_tipo};
-
-			emails.push(email);
-
-			$("#tabelaEmail > tbody > tr").remove();	
-			loadEmails(entidade);
-
-			$.each(emails, function(index, value){
-				$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirEmail" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-			});			
-
-			$('.excluirEmail').on('click', function(){
-
-				var id = $(this).data("id");
-				var entidade = $("#entidade").val()
-
-				emails.splice(id,1); //Remove o registro do vetor que está na memória
-
-				$("#tabelaEmail > tbody > tr").remove();	
-				loadEmails(entidade);
-
-				$.each(emails, function(index, value){
-					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirEmail" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-				});
-
-				$("#emails").val(JSON.stringify(emails));
-
-			});
-
-			$("#dc_endereco_eletronico_ede").val("");
-			$("#cd_tipo_endereco_eletronico_tee").prop('selectedIndex',0);
-			$("#dc_endereco_eletronico_ede").focus();			
-
-			$("#emails").val(JSON.stringify(emails));
-		}
-
-	});
-
-	function loadEmails(entidade){
-
-		$.ajax(
-            {
-                url: "../../email/entidade/"+entidade,
-                type: 'GET',
-                dataType: "JSON",
-            success: function(response)
-            {                    	
-				$.each(response, function(index, value){
-					$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.tipo.dc_tipo_endereco_eletronico_tee+'</td><td>'+value.dc_endereco_eletronico_ede+'</td><td class="center"><a class="excluirEmailBase" data-codigo="'+value.cd_endereco_eletronico_ele+'"> <i class="fa fa-trash"></i> Excluir</a></td></tr>');
-				});   
-
-				$('.excluirEmailBase').on('click', function(){
-
-					var id = $(this).data("codigo");
-					var entidade = $("#entidade").val();
-					
-					$.ajax(
-			            {
-			                url: "../../email/excluir/"+id,
-			                type: 'GET',
-			                dataType: "JSON",
-			            success: function(response)
-			            {                    	
-			            	$("#tabelaEmail > tbody > tr").remove();	
-							loadEmails(entidade);
-							$.each(emails, function(index, value){
-								$('#tabelaEmail > tbody').append('<tr><td class="center">'+value.descricao+'</td><td>'+value.email+'</td><td class="center"><a class="excluirFone" style="cursor:pointer" data-id="'+index+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-							});
-			            },
-			            error: function(response)
-			            {
-			            }
-			        });
-
-				});   
-            },
-            error: function(response)
-            {
-            }
-        });
-
-	}
 
 	function loadRegistrosBancarios(entidade){
 

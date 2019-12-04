@@ -39,6 +39,9 @@
 .btnFoneEditar{ cursor: pointer; margin-right: 8px;}
 .btnFoneExcluir{ cursor: pointer; margin-left: 8px; }
 
+.btnEmailEditar{ cursor: pointer; margin-right: 8px;}
+.btnEmailExcluir{ cursor: pointer; margin-left: 8px; }
+
 .profile 
 {
     min-height: 355px;

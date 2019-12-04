@@ -175,6 +175,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('email/entidade/{id}','EnderecoEletronicoController@email');
 	Route::get('email/excluir/{id}','EnderecoEletronicoController@excluir');
+	Route::post('email/editar','EnderecoEletronicoController@editar');
 
 	Route::resource('files','FileUploadController');
 	Route::post('file-upload', 'FileUploadController@upload')->name('file-upload');

@@ -36,11 +36,23 @@ class EnderecoEletronicoController extends Controller
 
     public function excluir($id)
     {   
-        $fone = EnderecoEletronico::where('cd_endereco_eletronico_ele',$id)->findOrFail($id);
+        $email = EnderecoEletronico::where('cd_endereco_eletronico_ele',$id)->findOrFail($id);
         
-        if($fone->delete())
+        if($email->delete())
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         else
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);  
+    }
+
+    public function editar(Request $request)
+    {   
+        $email = EnderecoEletronico::where('cd_endereco_eletronico_ele',$request->id)->findOrFail($request->id);
+        $email->cd_tipo_endereco_eletronico_tee = $request->tipo;
+        $email->dc_endereco_eletronico_ede = $request->email;
+        
+        if($email->save())
+            return Response::json(array('message' => 'Registro editado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao editar o registro'), 500);  
     }
 }
