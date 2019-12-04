@@ -1086,8 +1086,8 @@ $(document).ready(function() {
 					success: function(response){   
 
 						$("#tabelaEmail > tbody > tr").remove();
-						loadTelefones(entidade);
-						loadTelefonesArray(telefones);
+						loadEmails(entidade);
+						loadEmailsArray(telefones);
 
 					},
 					error: function(response){
