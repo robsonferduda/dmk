@@ -1066,7 +1066,7 @@ $(document).ready(function() {
 		var entidade = $("#entidade").val();
 
 		if(tipo == 0){ flag = false; $("#erroEmail").html("Campo tipo obrigatório"); }
-		if(email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
+		if(ds_email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
 
 		if(flag){
 
@@ -1085,7 +1085,7 @@ $(document).ready(function() {
 		            },
 					success: function(response){   
 
-						$("#tabelaFone > tbody > tr").remove();
+						$("#tabelaEmail > tbody > tr").remove();
 						loadTelefones(entidade);
 						loadTelefonesArray(telefones);
 
