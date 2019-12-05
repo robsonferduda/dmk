@@ -110,7 +110,7 @@
                                     </fieldset>
                                 </div>
                             <footer>
-                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
+                                <button type="submit" class="btn btn-success" id="btnSaveDespesas"><i class="fa fa-save"></i> Salvar</button>
                                 <button type="button" class="btn btn-danger" onclick="window.history.back();"><i class="fa fa-times"></i> Cancelar</button>
                             </footer>
                         {!! Form::close() !!}                  
@@ -135,6 +135,7 @@
         });
 
         $("#frm_add_despesas").validate({
+
             rules : {
                 cd_tipo_despesa_tds : {
                     required : true
@@ -168,6 +169,14 @@
             if(flag_controle == false){
 
                 flag_controle = true;
+
+                if($("#frm_add_despesas").valid()){
+
+                    $("#btnSaveDespesas").on('click', function(event){
+                        return false;
+                    });
+                }
+
                 return true;
 
             }else{
@@ -177,6 +186,8 @@
             }
 
         });
+
+        
 
     });
 
