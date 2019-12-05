@@ -48,43 +48,38 @@
                                                 <fieldset>
                                                     <div class="row"> 
 
-                                                        <section class="col col-md-2">                                       
+                                                        <section class="col col-md-4">                                       
                                                             <label class="label label-black" >Estado</label>          
                                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                                 <option selected value="">Estado</option>
                                                                 @foreach(App\Estado::all() as $estado) 
                                                                     <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                                 @endforeach
-
                                                             </select> 
                                                         </section>
 
-                                                        <section class="col col-md-4">
+                                                        <section class="col col-md-8">
                                                            <label class="label label-black" >Cidades de Atuação</label>          
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
                                                                <option selected value="">Selecione uma cidade</option>
                                                                <option value="0">Todas</option>
                                                             </select> 
                                                         </section> 
-
-                                                        <section class="col col-md-4">
-                                                           <label class="label label-black" >Serviços</label>          
-                                                            <select name="servico" class="form-control">
-                                                                <option value="">Selecione um serviço</option>
-                                                                <option value="0">Todos</option>
+                                                        <hr/>
+                                                        <section class="col col-md-12">
+                                                            <select  multiple size="8" id="lista_servicos" name="lista_servicos[]" >
                                                                 @foreach($servicos as $servico)
                                                                     <option value="{{ $servico->cd_tipo_servico_tse }}">{{ $servico->nm_tipo_servico_tse }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </section>  
+                                                                @endforeach                              
+                                                            </select>    
+                                                        </section> 
 
                                                         <section class="col col-md-1">
                                                             <label class="label">Adicionar</label>          
                                                             <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> Adicionar</button>
                                                         </section> 
                                                     </div>
-                                                </fieldset>                                                                                           
-                                                
+                                                </fieldset>                                                                       
                                             </form>
                                         </div>
                                     </div>
@@ -229,7 +224,22 @@
 @endsection
 @section('script')
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function(){
+
+        var duallistbox = $('select[name="lista_servicos[]"]').bootstrapDualListbox({
+            nonSelectedListLabel: 'Serviços Disponíveis',
+            selectedListLabel: 'Serviços Selecionados',
+            infoText: 'Mostrando {0} registros',
+            filterTextClear: 'Mostrar Todos',
+            infoTextFiltered: '<span class="label label-warning">Filtrados</span> {0} de {1}',
+            infoTextEmpty: 'Não há registros',
+            filterPlaceHolder: 'Filtrar',
+            moveSelectedLabel: 'Mover Serviços Selecionados',
+            moveAllLabel: 'Mover Todos',
+            removeSelectedLabel: 'Remover Selecionados',
+            removeAllLabel: 'Remover Todos',
+            moveOnSelect: false
+        });
 
         $('.valor_honorario').editable({
             validate: function (value) {

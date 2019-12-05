@@ -450,7 +450,7 @@ class CorrespondenteController extends Controller
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first(); 
         
         $cidade = $request->cd_cidade_cde;
-        $servico = $request->servico;
+        $servico = $request->lista_servicos;
         $valores = null;
 
         $lista_cidades = array();
@@ -486,12 +486,7 @@ class CorrespondenteController extends Controller
             }
         }
 
-        //Carrega lista de serviços da tabela
-        if($servico == 0){
-            $lista_servicos = $servicos;
-        }else{
-            $lista_servicos[] = TipoServico::where('cd_tipo_servico_tse',$servico)->first();
-        }
+        $lista_servicos = TipoServico::whereIn('cd_tipo_servico_tse',$servico)->get();
 
         $lista_temp = array();
         foreach ($lista_servicos as $servico) {
