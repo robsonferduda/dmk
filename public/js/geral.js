@@ -1246,7 +1246,6 @@ $(document).ready(function() {
             success: function(response)
             {              
             	  	
-				
             	var tamanho = response[0].nu_cpf_cnpj_dba.length;
 
 			    if(tamanho <= 11){
@@ -1263,13 +1262,10 @@ $(document).ready(function() {
 
 				$('#idRegistroBancario').val(response[0].cd_dados_bancarios_dba);
 
-				//$.each(response, function(index, value){
-					//$('#tabelaRegistroBancario > tbody').append('<tr><td>'+value.nm_titular_dba+'</td><td>'+value.nu_cpf_cnpj_dba+'</td><td>'+value.nm_banco_ban+'</td><td>'+value.nm_tipo_conta_tcb+'</td><td>'+value.nu_agencia_dba+'</td><td>'+value.nu_conta_dba+'</td><td class="center"><a class="excluirDadosBancariosBase" style="cursor:pointer" data-codigo="'+value.cd_dados_bancarios_dba+'"><i class="fa fa-trash"></i> Excluir</a></td></tr>');
-				//});   
-
             },
             error: function(response)
             {
+            	
             }
         });
 
@@ -1303,7 +1299,7 @@ $(document).ready(function() {
 	function loadRegistroBancarioArray(registrosBancarios){
 
 		$.each(registrosBancarios, function(index, value){
-			$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='N' data-id='"+index+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-id='"+index+"'><i class='fa fa-trash'></i> </a></td></tr>");
+			$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='N' data-codigo='"+index+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-codigo='"+index+"'><i class='fa fa-trash'></i> </a></td></tr>");
 		});	
 	} 
 
@@ -1367,7 +1363,6 @@ $(document).ready(function() {
 				}	
 				loadRegistroBancarioArray(registrosBancarios);	
 
-
 			}		
 
 			$("#nm_titular_dba").val('');
@@ -1425,20 +1420,18 @@ $(document).ready(function() {
 
 	$(document).on('click','.excluiRegistroBancario',function(){
 
-				var id = $(this).data("id");
-				//var entidade = $("#entidade").val()
+		var id = $(this).data("codigo");
 
-				registrosBancarios.splice(id,1); //Remove o registro do vetor que está na memória
+		registrosBancarios.splice(id,1); //Remove o registro do vetor que está na memória
 
-				$("#tabelaRegistroBancario > tbody > tr").remove();	
-				//loadTelefones(entidade);
+		$("#tabelaRegistroBancario > tbody > tr").remove();	
 
-				loadRegistroBancarioArray(registrosBancarios);
-				if($('#entidade').val() != ''){
-					loadRegistrosBancarios($('#entidade').val());
-				}
+		loadRegistroBancarioArray(registrosBancarios);
+		if($('#entidade').val() != ''){
+			loadRegistrosBancarios($('#entidade').val());
+		}
 
-				$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
+		$("#registrosBancarios").val(JSON.stringify(registrosBancarios));
 
 	});
 
