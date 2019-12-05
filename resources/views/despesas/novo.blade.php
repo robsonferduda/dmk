@@ -124,7 +124,9 @@
 @section('script')
 <script type="text/javascript">
 
-     $(function() {
+    var flag_controle = false;
+
+    $(function() {
 
         $('#dt_vencimento_des').datepicker({
             dateFormat : 'dd/mm/yy',
@@ -160,6 +162,22 @@
                 error.insertAfter(element.parent());
             }
         });
+
+        $("#frm_add_despesas").on('submit',function(event){
+
+            if(flag_controle == false){
+
+                flag_controle = true;
+                return true;
+
+            }else{
+
+                window.location.href = "../despesas/lancamentos";
+
+            }
+
+        });
+
     });
 
 </script>
