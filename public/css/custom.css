@@ -42,6 +42,9 @@
 .btnEmailEditar{ cursor: pointer; margin-right: 8px;}
 .btnEmailExcluir{ cursor: pointer; margin-left: 8px; }
 
+.btnContaEditar{ cursor: pointer; margin-right: 8px;}
+.btnContaExcluir{ cursor: pointer; margin-left: 8px; }
+
 .profile 
 {
     min-height: 355px;

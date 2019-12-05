@@ -187,6 +187,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('registro-bancario/entidade/{id}','RegistroBancarioController@registros');
 	Route::get('registro-bancario/id/{id}','RegistroBancarioController@registro');
 	Route::get('registro-bancario/excluir/{id}','RegistroBancarioController@excluir');
+	Route::post('registro-bancario/editar','RegistroBancarioController@editar');
 
 	Route::get('usuarios','UsuarioController@index');
 	Route::get('usuarios/buscar','UsuarioController@buscar');

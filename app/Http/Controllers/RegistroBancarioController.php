@@ -57,4 +57,14 @@ class RegistroBancarioController extends Controller
       
     }
 
+     public function editar(Request $request)
+    {   
+        $rb = RegistroBancario::where('cd_dados_bancarios_dba',$request->id)->findOrFail($request->id);
+        
+        if($rb->save())
+            return Response::json(array('message' => 'Registro editado com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao editar o registro'), 500);  
+    }
+
 }
