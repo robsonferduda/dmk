@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Honorários por Tipo de Serviço </span>
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Honorários por Tipo de Serviço </span> <span>> {{ $cliente->nm_razao_social_con }}</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -25,14 +25,6 @@
                 @include('layouts/messages')
             </div>
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                <div class="jarviswidget jarviswidget-sortable">
-                    <header role="heading" class="ui-sortable-handle">
-                        <span class="widget-icon"> <i class="fa fa-money"></i> </span>
-                        <h2>Honorários por Tipo de Serviço</h2>             
-                    </header>
-                    <div class="col-sm-12">
-                        <h5><strong>Correspondente: </strong>{{ $cliente->nm_razao_social_con }}</h5>
-                        <span class="text-primary"><i class="fa fa-info-circle"></i> Selecione cidades e os serviços para adicionar valores aos honorários</span>
                         <div class="well">
                             <div class="row">
 
@@ -76,7 +68,7 @@
 
                                                         <section class="col col-md-1">
                                                             <label class="label">Adicionar</label>          
-                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> Adicionar</button>
+                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                       
@@ -183,8 +175,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    
             </article>
         </div>
     </div>
