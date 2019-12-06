@@ -123,6 +123,8 @@
                                     <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth-
                                     ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',',' ') }}</td>
                                     <td style="text-align: center;">
+                                        <a title="Detalhes"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)"><i class="fa fa-money"></i></a>
+
                                         <input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 
                                         @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
@@ -150,11 +152,11 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close fechar" data-dismiss="modal" aria-hidden="true">
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    <i class="icon-append fa fa-plus"></i> XXXXXXXXXXXXXX
+                    <i class="icon-append fa fa-money"></i>
                 </h4>
             </div>
             <div class="modal-body no-padding">
@@ -176,9 +178,9 @@
                                             </section>                     
                                          
                                              <section class="col col-3">
-                                                <label class="label">Valor</label>
+                                                <label class="label">Valor<span class="text-danger">*</label>
                                                 <label class="input">
-                                                    <input type="text" class="form-control taxa-honorario" name="valor" id="valor" >
+                                                    <input type="text" class="form-control taxa-honorario" name="valor" id="valor" required>
                                                 </label>
                                             </section>    
 
@@ -229,8 +231,8 @@
                         <div class="msg_retorno"></div>
                     </fieldset>
                     <footer>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                        <button type="submit" class="btn btn-success btn-save-departamento"><i class="fa fa-save"></i> Salvar</button>
+                        <button type="button" class="btn btn-primary fechar" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                       
                     </footer>
                 {!! Form::close() !!}                    
             </div>
@@ -242,6 +244,49 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        
+        var addBaixado = function(id,valorTotalPago){
+
+            $(".check-pagamento-cliente").each(function(index,element){
+                if($(this).data('id') == id){
+
+                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));   
+
+                    if(valorTotalPago >= total){
+                        $(this).closest('tr').css('background-color','#8ec9bb');
+                    }else{
+                        $(this).closest('tr').css('background-color','#f2cf59');
+                    }
+                }
+            }); 
+        }
+
+        var delBaixado = function(id,valorTotalPago){
+
+            $(".check-pagamento-cliente").each(function(index,element){
+
+                 alert($(this).data('id'));
+                  alert(id);
+                if($(this).data('id') == id){
+
+                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));   
+
+
+                    if(valorTotalPago <= 0){
+                        $(this).closest('tr').css('background-color','#fb8e7e');
+                    }else{
+                        if(valorTotalPago > 0 && valorTotalPago <= total){
+                            $(this).closest('tr').css('background-color','#f2cf59');
+                        }
+                    }
+                }
+            }); 
+        }
+
+        $(".fechar").click(function(){
+           // alert('teste');
+        });
+
         var responsiveHelper_dt_basic_financeiro = undefined;
         var responsiveHelper_datatable_fixed_column = undefined;
         var responsiveHelper_datatable_col_reorder = undefined;
@@ -314,109 +359,33 @@
                 processData: false,
                 success: function(registros){
                     $('#tabelaRegistro > tbody').html('');
-                    $.each(registros, function(index, value){                        
+
+                    var valorTotal = 0;
+                    $.each(registros, function(index, value){   
+
+                        if(value.anexo_financeiro == null){
+                            value.anexo_financeiro = {"cd_anexo_financeiro_afn":"","nm_anexo_financeiro_afn":""};
+                           // value.anexo_financeiro.nm_anexo_financeiro_afn = '';
+                        }                
+
+
+                        valorTotal += parseFloat(value.vl_baixa_honorario_bho);
+
                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
-                                                            '<td ></td>'+
+                                                            '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                             '<td class="center">'+                                                                
                                                                 '<a class="btnRegistroExcluir"  style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
                                                             '</td>'+
                                                         '</tr>');
                      });
+                    
+                    addBaixado($("#cdBaixaFinanceiro").val(),valorTotal);
                 }
             });
 
-        });
-
-     
-
-         $('#dialog_simple').dialog({
-                autoOpen : false,
-                width : 600,
-                resizable : false,
-                closeOnEscape: false,
-                modal : true,
-                title : "Você deseja continuar essa operação?",
-                beforeClose: function() {
-
-                    if ($(".seleciona-todos").is(':checked') ) {                
-                        $(".seleciona-todos").prop('checked',false);
-                    }else {
-                        $(".seleciona-todos").prop('checked',true);
-                    }
-                },
-                buttons : [{
-                    html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
-                    "class" : "btn btn-success",
-                    click : function() {
-
-                        if($("#baixa").valid()){
-
-                            var ids = Array();
-                            if ($(".seleciona-todos").is(':checked') ) {                
-                                var checked = 'S';                
-                                $(".check-pagamento-cliente").each(function(index,element){
-                                    ids[index] = $(this).data('id');            
-                                });   
-                                   
-                            }else {
-                                var checked = 'N';   
-                                $(".check-pagamento-cliente").each(function(index,element){
-                                     ids[index] = $(this).data('id');    
-                                });
-                            }
-
-                            if(ids.length > 0 ){
-                                verificaTodos(ids,checked); 
-                            }
-                            $(this).dialog("close");
-                        }
-                    }
-                }, {
-                    html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
-                    "class" : "btn btn-danger",
-                    click : function() {
-                        $(this).dialog("close");
-                    }
-                }]
-        });
-
-        $('#dialog_simple_single').dialog({
-                autoOpen : false,
-                width : 600,
-                resizable : false,
-                closeOnEscape: false,
-                modal : true,
-                title : "Você deseja continuar essa operação?",
-                beforeClose: function() {
-
-                    if ($(this).data('checkbox').is(':checked') ) {                
-                        $(this).data('checkbox').prop('checked',false);
-                    }else {
-                        $(this).data('checkbox').prop('checked',true);
-                    }
-                },
-                buttons : [{
-                    html : "<i class='fa fa-exchange'></i>&nbsp; Continuar",
-                    "class" : "btn btn-success",
-                    click : function() {
-
-                        if($("#baixa_single").valid()){
-                            
-                            verifica($(this).data('checkbox')); 
-                            
-                            $(this).dialog("close");
-                        }
-                    }
-                }, {
-                    html : "<i class='fa fa-times'></i>&nbsp; Cancelar",
-                    "class" : "btn btn-danger",
-                    click : function() {
-                        $(this).dialog("close");
-                    }
-                }]
         });
 
         $(".seleciona-todos").click(function(){
@@ -437,18 +406,18 @@
             $('#dialog_simple').dialog('open');
             
         });
-
         
-
-
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
-           
 
             var id = $(this).data('id');
             $("#dtBaixaCliente").val('');
             $("#notaFiscal").val('');
             $('#tabelaRegistro > tbody').html('');
-            $("#cdBaixaFinanceiro").val(id);            
+            $("#cdBaixaFinanceiro").val(id);       
+            $("#valor").val($(this).parent().parent().children().eq(7).text().replace('R$ ',''));
+
+            $(".modal-title").html('<i class="icon-append fa fa-money"></i>');
+            $(".modal-title").append(' '+$(this).parent().parent().children().eq(0).text()+' - '+$(this).parent().parent().children().eq(3).text()+'('+$(this).parent().parent().children().eq(2).text()+')');
 
              $.ajax({
                 type:'GET',
@@ -456,12 +425,18 @@
                 success:function(data){
                     var registros = JSON.parse(data);   
                     $('#tabelaRegistro > tbody').html('');
-                    $.each(registros, function(index, value){                        
+                    $.each(registros, function(index, value){         
+
+                        if(value.anexo_financeiro == null){
+                            value.anexo_financeiro = {"cd_anexo_financeiro_afn":"","nm_anexo_financeiro_afn":""};
+                           // value.anexo_financeiro.nm_anexo_financeiro_afn = '';
+                        }
+
                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
-                                                            '<td ></td>'+
+                                                            '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                             '<td class="center">'+                                                                
                                                                 '<a class="btnRegistroExcluir"   style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
                                                             '</td>'+
@@ -471,16 +446,9 @@
                     
                 }
             });
-
-
-            if ($(this).is(':checked') ) {             
-                //$('#dialog_simple_single').data('checkbox', $(this)).dialog('open');         
-                $("#addBaixa").modal('show');
-
-            }else {
-                verifica($(this));
-            }
-
+ 
+            $("#addBaixa").modal('show');
+        
         });
 
        $('body').on('click','.btnRegistroExcluir', function(){
@@ -494,21 +462,30 @@
                                 dataType: "JSON",
                                 success: function(data)
                                 {                       
-                                    console.log(data);
                                     var registros = data;   
-                                    $('#tabelaRegistro > tbody').html('');
+                                    $('#tabelaRegistro > tbody').html('');                                                            
 
-                                    $.each(registros, function(index, value){                        
+                                    var valorTotal = 0;
+                                    $.each(registros, function(index, value){      
+
+                                        valorTotal += parseFloat(value.vl_baixa_honorario_bho);
+
+                                        if(value.anexo_financeiro == null){
+                                            value.anexo_financeiro = {"cd_anexo_financeiro_afn":"","nm_anexo_financeiro_afn":""};
+                                            // value.anexo_financeiro.nm_anexo_financeiro_afn = '';
+                                        }                  
                                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
                                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
-                                                                            '<td ></td>'+
+                                                                            '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                                             '<td class="center">'+                                                                
                                                                                 '<a class="btnRegistroExcluir" style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
                                                                             '</td>'+
                                                                         '</tr>');
                                     });      
+
+                                    delBaixado(id,valorTotal);
                                 }
                         });
 
@@ -540,6 +517,8 @@
             $("input[name='nm_cliente_cli']").val('');
 
         });
+
+        
 
         var verificaTodos = function(ids,checked){
 

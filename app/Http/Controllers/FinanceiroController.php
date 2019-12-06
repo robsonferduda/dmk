@@ -601,7 +601,7 @@ class FinanceiroController extends Controller
 
     public function buscarBaixaEntrada($id){
 
-        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->orderBy('cd_baixa_honorario_bho')->get();
 
         echo json_encode($baixaHonorario);
     }
@@ -630,9 +630,40 @@ class FinanceiroController extends Controller
 
         $response = $baixaHonorario->saveOrFail();
 
-        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->orderBy('cd_baixa_honorario_bho')->get();
+        $destino = "entradas/$baixaHonorario->cd_processo_taxa_honorario_pth/$baixaHonorario->cd_baixa_honorario_bho/";
+ 
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
 
-        echo json_encode($baixaHonorario);
+        if($request->file('file')){
+
+                $file = $request->file('file');                
+
+                $fileName = $file->getClientOriginalName();
+        
+                if($file->move(storage_path($destino), $fileName)){
+
+                    $anexo = AnexoFinanceiro::create([
+                        'cd_conta_con'                  => $this->conta, 
+                        'cd_baixa_honorario_bho'        => $baixaHonorario->cd_baixa_honorario_bho,                   
+                        'nm_anexo_financeiro_afn'       => $file->getClientOriginalName(),
+                        'nm_local_anexo_financeiro_afn' => $destino.$file->getClientOriginalName(),
+                        'cd_tipo_financeiro_tfn'        => \TipoFinanceiro::ENTRADA
+                    ]);
+
+                    //return response()->json(['success'=>'Arquivo enviado com sucesso']);
+
+                }else{
+                    //return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
+                }  
+
+            
+        }
+
+        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->orderBy('cd_baixa_honorario_bho')->get();
+
+        echo json_encode($baixaHonorarioList);
         
     }
 
@@ -1137,16 +1168,45 @@ class FinanceiroController extends Controller
 
     public function excluirBaixa($id){
 
-        $baixaProcesso = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_baixa_honorario_bho',$id)->first();
+        $baixaProcesso = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_baixa_honorario_bho',$id)->first();
 
         BaixaHonorario::where('cd_conta_con',$this->conta)                                                                        
                                     ->where('cd_baixa_honorario_bho',$id)
                                     ->delete();
 
 
-        $baixaHonorario = BaixaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->orderBy('cd_baixa_honorario_bho')->get();
+
+
+        if(!empty($baixaProcesso->anexoFinanceiro))
+            $this->entradaFileExcluir($baixaProcesso->anexoFinanceiro->cd_anexo_financeiro_afn);
 
         echo json_encode($baixaHonorario);
+
+    }
+
+    public function entradaFile($id){
+        $anexo = AnexoFinanceiro::where('cd_anexo_financeiro_afn',$id)->where('cd_conta_con',$this->conta)->first();
+
+      //  dd($anexo);
+        return response()->download(storage_path($anexo->nm_local_anexo_financeiro_afn));
+    }
+
+    private function entradaFileExcluir($id){
+
+        $anexo = AnexoFinanceiro::where('cd_anexo_financeiro_afn',$id)->first();
+
+        if($anexo->delete()){
+
+            //Após excluir o registro, exclui o arquivo também
+            if(file_exists(storage_path($anexo->nm_local_anexo_financeiro_afn)))
+                unlink(storage_path($anexo->nm_local_anexo_financeiro_afn));
+
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        
+        }else{
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        }
 
     }
 

@@ -27,6 +27,11 @@ class BaixaHonorario extends Model implements AuditableContract
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
+    public function anexoFinanceiro()
+    {
+        return $this->hasOne('App\AnexoFinanceiro','cd_baixa_honorario_bho', 'cd_baixa_honorario_bho');
+    }
+
     public function tipoFinanceiro()
     {
         return $this->hasOne('App\TipoFinanceiro','cd_tipo_financeiro_tfn', 'cd_tipo_financeiro_tfn');
