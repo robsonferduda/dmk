@@ -99,7 +99,7 @@
                             </thead>
                             <tbody style="font-size: 12px">
                             @foreach($entradas as $entrada)
-                                <tr {{ ($entrada->fl_pago_cliente_pth == 'N') ? 'style=background-color:#fb8e7e' : 'style=background-color:#8ec9bb' }} >
+                                <tr {{ ($entrada->baixaHonorario->sum('vl_baixa_honorario_bho') <= 0) ? 'style=background-color:#fb8e7e' : 'style=background-color:#8ec9bb' }} >
                                     <td>{{ $entrada->processo->nu_processo_pro }}</td>
                                     <td>
                                         @if(!empty($entrada->processo->dt_prazo_fatal_pro))
@@ -125,7 +125,7 @@
                                     <td style="text-align: center;">
                                         <a title="Detalhes"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)"><i class="fa fa-money"></i></a>
 
-                                        <input type="checkbox" class="check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
+                                        <input type="checkbox" class="" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 
                                         @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
 
@@ -261,21 +261,19 @@
             }); 
         }
 
-        var delBaixado = function(id,valorTotalPago){
+        var delBaixado = function(id,valorTotalPago,cdBaixaFinanceiro){
 
             $(".check-pagamento-cliente").each(function(index,element){
 
-                 alert($(this).data('id'));
-                  alert(id);
-                if($(this).data('id') == id){
+                if($(this).data('id') == cdBaixaFinanceiro){
 
+                    alert(valorTotalPago);
                     var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));   
-
 
                     if(valorTotalPago <= 0){
                         $(this).closest('tr').css('background-color','#fb8e7e');
                     }else{
-                        if(valorTotalPago > 0 && valorTotalPago <= total){
+                        if(valorTotalPago > 0 && valorTotalPago < total){
                             $(this).closest('tr').css('background-color','#f2cf59');
                         }
                     }
@@ -454,6 +452,7 @@
        $('body').on('click','.btnRegistroExcluir', function(){
 
                         var id = $(this).data("id");
+                        var cdBaixaFinanceiro = $("#cdBaixaFinanceiro").val();
                     
                         $.ajax(
                             {
@@ -485,7 +484,7 @@
                                                                         '</tr>');
                                     });      
 
-                                    delBaixado(id,valorTotal);
+                                    delBaixado(id,valorTotal,cdBaixaFinanceiro);
                                 }
                         });
 

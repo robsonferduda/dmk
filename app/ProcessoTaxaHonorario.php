@@ -45,4 +45,9 @@ class ProcessoTaxaHonorario extends Model implements AuditableContract
         return $this->hasOne('App\Processo','cd_processo_pro', 'cd_processo_pro');
     }
 
+    public function baixaHonorario()
+    {
+        return $this->hasMany('App\BaixaHonorario','cd_processo_taxa_honorario_pth', 'cd_processo_taxa_honorario_pth');
+    }
+
 }
