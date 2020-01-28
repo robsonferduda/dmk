@@ -73,6 +73,17 @@
                         </section>    
 
                     </div>
+                    <div style="display: block;margin-top: 10px">
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Pago
+                       </span>
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59; float: left; margin-right: 2px"></div>Parcialmente Pago 
+                       </span>
+                       <span style="display: inline-block;">
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Nenhum pagamento
+                       </span>                       
+                    </div>  
                 </form>
             </div>
             <div style="clear: both;"></div>
@@ -99,7 +110,19 @@
                             </thead>
                             <tbody style="font-size: 12px">
                             @foreach($entradas as $entrada)
-                                <tr {{ ($entrada->baixaHonorario->sum('vl_baixa_honorario_bho') <= 0) ? 'style=background-color:#fb8e7e' : 'style=background-color:#8ec9bb' }} >
+
+                                @php
+                                    $totalDespesas = $entrada->processo->tiposDespesa->sum('pivot.vl_processo_despesa_pde');
+                                    $totalBaixaHonorario = $entrada->baixaHonorario->sum('vl_baixa_honorario_bho');
+
+                                   // dd($entrada);
+                                @endphp
+
+                                <tr {{ ($totalBaixaHonorario <= 0 
+                                                    ? 'style=background-color:#fb8e7e' : 
+                                                            ($totalBaixaHonorario < ($totalDespesas+$entrada->vl_taxa_honorario_cliente_pth) && $totalBaixaHonorario > 0
+                                                                ? 'style=background-color:#f2cf59' : 
+                                                                    'style=background-color:#8ec9bb')) }} >
                                     <td>{{ $entrada->processo->nu_processo_pro }}</td>
                                     <td>
                                         @if(!empty($entrada->processo->dt_prazo_fatal_pro))
@@ -110,22 +133,15 @@
                                     <td>{{ $entrada->processo->cliente->nm_razao_social_cli }}</td>
                                     <td>{{ 'R$ '.number_format($entrada->vl_taxa_honorario_cliente_pth,2,',',' ') }}</td>
 
-                                    @php
-
-                                        $totalDespesas = 0;
-                                        foreach($entrada->processo->tiposDespesa as $despesa){
-                                            $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
-                                        }
-
-                                    @endphp
+                        
                                     <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
                                     <td>{{ (!empty($entrada->vl_taxa_cliente_pth) ? $entrada->vl_taxa_cliente_pth.'%' : ' ') }}</td>
                                     <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth-
                                     ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',',' ') }}</td>
                                     <td style="text-align: center;">
-                                        <a title="Detalhes"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)"><i class="fa fa-money"></i></a>
+                                        <a title="Pagamentos"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)"><i class="fa fa-money"></i></a>
 
-                                        <input type="checkbox" class="" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
+                                        <input type="checkbox" class="checkbox-check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 
                                         @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
 
@@ -250,7 +266,9 @@
             $(".check-pagamento-cliente").each(function(index,element){
                 if($(this).data('id') == id){
 
-                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));   
+                    var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+
+                    //alert(total);
 
                     if(valorTotalPago >= total){
                         $(this).closest('tr').css('background-color','#8ec9bb');
@@ -267,8 +285,9 @@
 
                 if($(this).data('id') == cdBaixaFinanceiro){
 
-                    alert(valorTotalPago);
-                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));   
+                    var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));    
+
+                    //alert(total);
 
                     if(valorTotalPago <= 0){
                         $(this).closest('tr').css('background-color','#fb8e7e');
@@ -346,6 +365,8 @@
 
         $("#frm-add-baixa").on('submit',function(event){
 
+            $('.modal-body').loader('show');
+
             event.preventDefault();
             $.ajax({
                 url: "{{ url('/financeiro/cliente/baixa') }}",
@@ -381,6 +402,8 @@
                      });
                     
                     addBaixado($("#cdBaixaFinanceiro").val(),valorTotal);
+
+                    $('.modal-body').loader('hide');
                 }
             });
 
@@ -390,12 +413,15 @@
 
             if ($(".seleciona-todos").is(':checked') ) {                
                 
-                total = 0;            
-                $(".check-pagamento-cliente").each(function(index,element){
-                    total += parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));       
+                var total = 0;            
+                $(".checkbox-check-pagamento-cliente").each(function(index,element){
+                    total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+                    alert(total);
 
                 }); 
-                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));  
+                
+                alert(total);
+                //$('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));  
                 
             }
 
@@ -406,6 +432,8 @@
         });
         
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
+
+            $('.modal-body').loader('show');
 
             var id = $(this).data('id');
             $("#dtBaixaCliente").val('');
@@ -439,8 +467,9 @@
                                                                 '<a class="btnRegistroExcluir"   style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
                                                             '</td>'+
                                                         '</tr>');
-                     });      
+                    });      
                     
+                    $('.modal-body').loader('hide');
                     
                 }
             });
@@ -450,6 +479,8 @@
         });
 
        $('body').on('click','.btnRegistroExcluir', function(){
+
+                        $('.modal-body').loader('show');
 
                         var id = $(this).data("id");
                         var cdBaixaFinanceiro = $("#cdBaixaFinanceiro").val();
@@ -485,6 +516,8 @@
                                     });      
 
                                     delBaixado(id,valorTotal,cdBaixaFinanceiro);
+
+                                    $('.modal-body').loader('hide');
                                 }
                         });
 
@@ -587,7 +620,7 @@
         }
 
         $.validator.addMethod("dateFormat",
-                function(value, element) {
+                function(value, element) { 
 
                     if(value == '')
                         return true;
