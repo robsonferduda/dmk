@@ -61,7 +61,7 @@ class CorrespondenteController extends Controller
 
     public function index()
     {
-
+        /*
         $correspondentes = ContaCorrespondente::with('entidade')
                                               ->with('correspondente')
                                               ->with(['entidade.identificacao' => function($query){
@@ -77,6 +77,8 @@ class CorrespondenteController extends Controller
                                               ->where('cd_conta_con', $this->conta)
                                               ->orderBy('nm_conta_correspondente_ccr','DESC')
                                               ->get(); 
+        */
+        $correspondentes = null;
 
         return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
     }

@@ -129,7 +129,7 @@
                             </tbody>
                         </table>
                         @else
-                            <h5 class="center marginTop20"><i class="fa fa-info-circle"></i> Selecione os termos da sua busca e clique em <strong>Buscar</strong></h5>
+                            <h5 class="center marginTop20 marginBottom50"><i class="fa fa-info-circle"></i> Selecione os termos da sua busca e clique em <strong>Pesquisar</strong></h5>
                         @endif
                     </div>
                 </div>
