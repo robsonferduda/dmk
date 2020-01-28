@@ -306,18 +306,20 @@
 
                                     <fieldset>
                                         <div class="row">    
-                                            <section class="col col-5">
+                                           <section class="col col-5">
                                                 <label class="input">
                                                     <input type="text" name="dc_endereco_eletronico_ede" id="dc_endereco_eletronico_ede" placeholder="Email" value="{{ old('dc_endereco_eletronico_ede') }}">
                                                 </label>
                                             </section>                     
-                                            <section class="col col-4">    
-                                                <select  id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" class="select2" style="float: left;">
-                                                    <option selected value="">Selecione</option>
-                                                        @foreach(\App\TipoEnderecoEletronico::all() as $tipo) 
-                                                            <option value="{{$tipo->cd_tipo_endereco_eletronico_tee}}">{{ $tipo->dc_tipo_endereco_eletronico_tee}}</option>
-                                                        @endforeach
-                                                </select> 
+                                            <section class="col col-4">  
+                                                <label class="select">  
+                                                    <select  id="cd_tipo_endereco_eletronico_tee" name="cd_tipo_endereco_eletronico_tee" style="float: left;">
+                                                        <option selected value="">Selecione</option>
+                                                            @foreach(\App\TipoEnderecoEletronico::all() as $tipo) 
+                                                                <option value="{{$tipo->cd_tipo_endereco_eletronico_tee}}">{{ $tipo->dc_tipo_endereco_eletronico_tee}}</option>
+                                                            @endforeach
+                                                    </select> 
+                                                <i></i> </label>
                                             </section> 
                                             <section class="col col-1">
                                                 <button type="button" id="btnSalvarEmail" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</button>
@@ -341,7 +343,8 @@
                                                         <td class="center">{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</td>
                                                         <td>{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
                                                         <td class="center">
-                                                            <a class="excluirEmailBase" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> Excluir</a>
+                                                            <a title="Editar Email" class="editarEmail btnEmailEditar" data-codigo="{{ $email->cd_endereco_eletronico_ele }}" data-edit="S"><i class="fa fa-edit"></i> </a>
+                                                            <a title="Excluir Email" class="excluirEmailBase btnEmailExcluir" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> </a>
                                                         </td>
                                                     </tr>                                                  
                                                 @endforeach  

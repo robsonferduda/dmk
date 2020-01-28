@@ -346,7 +346,6 @@
                                                         <td data-email="{{ $email->dc_endereco_eletronico_ede }}">{{ $email->dc_endereco_eletronico_ede }} </td>                                                        
                                                         <td class="center">
                                                             <a title="Editar Email" class="editarEmail btnEmailEditar" data-codigo="{{ $email->cd_endereco_eletronico_ele }}" data-edit="S"><i class="fa fa-edit"></i> </a>
-
                                                             <a title="Excluir Email" class="excluirEmailBase btnEmailExcluir" data-codigo="{{ $email->cd_endereco_eletronico_ele }}"><i class="fa fa-trash"></i> </a>
                                                         </td>
                                                     </tr>                                                  

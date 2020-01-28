@@ -151,19 +151,19 @@
                                                         <strong>CEP: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->nu_cep_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Logradouro: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->dc_logradouro_ede : '' }}
+                                                        <strong>Logradouro: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->dc_logradouro_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Número: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->nu_numero_ede : '' }}
+                                                        <strong>Número: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->nu_numero_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Complemento: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->dc_complemento_ede : ''}}
+                                                        <strong>Complemento: </strong> {{ ($correspondente->entidade->endereco()->first()->dc_complemento_ede) ? $correspondente->entidade->endereco()->first()->dc_complemento_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Bairro: </strong> {{ ($correspondente->entidade->endereco()->first()) ? $correspondente->entidade->endereco()->first()->nm_bairro_ede : '' }}
+                                                        <strong>Bairro: </strong> {{ ($correspondente->entidade->endereco()->first()->nm_bairro_ede) ? $correspondente->entidade->endereco()->first()->nm_bairro_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Cidade/Estado: </strong> {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade()->first()) ? $correspondente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $correspondente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
+                                                        <strong>Cidade/Estado: </strong> {{ ($correspondente->entidade->endereco and $correspondente->entidade->endereco->cidade()->first()) ? $correspondente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $correspondente->entidade->endereco()->first()->cidade->estado->nm_estado_est : 'Não informado' }}
                                                     </li>
                                                 </ul>
                                             </p> 

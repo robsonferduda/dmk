@@ -14,8 +14,9 @@
                 <i class="fa-fw fa fa-cog"></i>Processos <span> > Lista</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a class="btn btn-default pull-right" title="Relatórios" href="{{ url('processos/relatorios') }}"><i class="fa fa-file-pdf-o"></i> Relatórios</a>
+            <a class="btn btn-success pull-right" title="Novo Processo" href="{{ url('processos/novo') }}"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
@@ -160,9 +161,9 @@
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
                                                     <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
-                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i> Acompanhamento</a><li>
+                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
                                                     <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
-                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-pdf-o"></i> Relatório</a></li>
+                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i> Relatório Financeiro</a></li>
                                                     <li><a title="Excluir" data-url="processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div>                                    

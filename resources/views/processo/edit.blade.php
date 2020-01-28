@@ -15,8 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 boxBtnTopo">
-            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório</a>
-             <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
+            <a title="Relatório" class="btn btn-default pull-right header-btn btnMargin" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
+            <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i>Despesas</a>
             <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
             <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>               
             <a data-toggle="modal" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Detalhes</a>     
@@ -27,23 +27,8 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-              <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-            
-            <!-- Widget ID (each widget will need unique ID)-->
+            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
             <div class="jarviswidget jarviswidget-sortable" id="wid-id-4" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
-                <!-- widget options:
-                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                    
-                    data-widget-colorbutton="false" 
-                    data-widget-editbutton="false"
-                    data-widget-togglebutton="false"
-                    data-widget-deletebutton="false"
-                    data-widget-fullscreenbutton="false"
-                    data-widget-custombutton="false"
-                    data-widget-collapsed="true" 
-                    data-widget-sortable="false"
-                    
-                -->
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
                     <h2>Cadastro de Processo </h2>             

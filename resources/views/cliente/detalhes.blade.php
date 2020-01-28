@@ -118,26 +118,25 @@
                                     <legend><i class="fa fa-map-marker fa-fw"></i> <strong>Endereço</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         @if($cliente->entidade->endereco()->first() and !is_null($cliente->entidade->endereco()->first()->dc_logradouro_ede))
-                                        @php $endereco = $cliente->entidade->endereco()->first() @endphp
                                             <p>
                                                 <ul class="list-unstyled">
                                                     <li>
-                                                        <strong>CEP: </strong> {{ ($endereco) ? $endereco->nu_cep_ede : 'Não informado' }}
+                                                        <strong>CEP: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nu_cep_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Logradouro: </strong> {{ ($endereco) ? $endereco->dc_logradouro_ede : '' }}
+                                                        <strong>Logradouro: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->dc_logradouro_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Número: </strong> {{ ($endereco) ? $endereco->nu_numero_ede : '' }}
+                                                        <strong>Número: </strong> {{ ($cliente->entidade->endereco()->first()) ? $cliente->entidade->endereco()->first()->nu_numero_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Complemento: </strong> {{ ($endereco) ? $endereco->dc_complemento_ede : ''}}
+                                                        <strong>Complemento: </strong> {{ ($cliente->entidade->endereco()->first()->dc_complemento_ede) ? $cliente->entidade->endereco()->first()->dc_complemento_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Bairro: </strong> {{ ($endereco) ? $endereco->nm_bairro_ede : '' }}
+                                                        <strong>Bairro: </strong> {{ ($cliente->entidade->endereco()->first()->nm_bairro_ede) ? $cliente->entidade->endereco()->first()->nm_bairro_ede : 'Não informado' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Cidade/Estado: </strong> {{ ($endereco and $endereco->cidade()->first()) ? $endereco->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : '' }}
+                                                        <strong>Cidade/Estado: </strong> {{ ($cliente->entidade->endereco and $cliente->entidade->endereco->cidade()->first()) ? $cliente->entidade->endereco()->first()->cidade->nm_cidade_cde .'/'. $cliente->entidade->endereco()->first()->cidade->estado->nm_estado_est : 'Não informado' }}
                                                     </li>
                                                 </ul>
                                             </p> 
