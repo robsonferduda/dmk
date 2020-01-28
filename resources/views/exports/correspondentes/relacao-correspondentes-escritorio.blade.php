@@ -1,0 +1,48 @@
+<table>
+    <thead>
+    <tr>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center" colspan="6">LISTA DE CORRESPONDENTES</th>
+    </tr>
+    <tr>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">CATEGORIA</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">COMARCA DE ORIGEM</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">CPF/CNPJ</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">NOME</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">EMAIL</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">TELEFONE</th>
+    </tr>
+    </thead>
+    <tbody>
+        @php
+            $total = 0;
+        @endphp
+        @foreach($dados['correspondentes'] as $correspondente)
+        <tr>       
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ ($correspondente->categoria) ? $correspondente->categoria->dc_categoria_correspondente_cac : 'Não informada' }}
+            </td>     
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ ($correspondente->entidade->origem) ? $correspondente->entidade->origem->cidade->nm_cidade_cde : 'Não informado' }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : 'Não informado' }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ $correspondente->nm_conta_correspondente_ccr }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ ($correspondente->correspondente->entidade) ? $correspondente->correspondente->entidade->usuario->email : 'Não informado' }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                @if(count($correspondente->entidade->fone()->get()) > 0)
+                    @foreach($correspondente->entidade->fone()->get() as $fone)
+                        {{ $fone->nu_fone_fon }} - {{ $fone->tipo->dc_tipo_fone_tfo }} <br/>
+                    @endforeach   
+                @else
+                    Nenhum telefone informado
+                @endif
+            </td>        
+        </tr>
+        @endforeach   
+    </tbody>
+</table>

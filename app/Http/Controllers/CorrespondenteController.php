@@ -12,6 +12,7 @@ use App\Utils;
 use App\Enums\Nivel;
 use App\Enums\Roles;
 use App\Enums\TipoEnderecoEletronico;
+use App\Exports\Correspondente\RelacaoCorrespondentesEscritorioExport;
 use App\Fone;
 use App\User;
 use App\Conta;
@@ -106,6 +107,7 @@ class CorrespondenteController extends Controller
 
     public function buscar(Request $request){
 
+        //realiza a consulta e popula os dados
         $estado = $request->get('cd_estado_est');
         $cidade = $request->get('cd_cidade_cde');
         $nome = $request->get('nome');
@@ -188,7 +190,19 @@ class CorrespondenteController extends Controller
         if(is_null($correspondentes))
             Flash::warning('Não existem correspondentes que correspondam aos valores pesquisados');
 
-        return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
+
+        switch (Utils::get_post_action('pesquisar', 'exportar')) {
+            
+            case 'pesquisar':
+                return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
+                break;
+
+            case 'exportar':
+                $dados = array('correspondentes' => $correspondentes);
+                return \Excel::download(new RelacaoCorrespondentesEscritorioExport($dados),'correspondentes.xls',\Maatwebsite\Excel\Excel::XLSX);
+                break;
+
+        }        
 
     }
 

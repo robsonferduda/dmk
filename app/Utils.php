@@ -47,4 +47,16 @@ class Utils
 	    // retorna a senha embaralhada com "str_shuffle" com o tamanho definido pela variável tamanho
 	    return substr(str_shuffle($senha),0,$tamanho);
 	}
+
+	static function get_post_action($name)
+	{
+	    $params = func_get_args();
+
+	    foreach ($params as $name) {
+	        if (isset($_GET[$name])) {
+	            return $name;
+	        }
+	    }
+	}
+
 }

@@ -61,15 +61,16 @@
                                 <label class="label label-black">CPF/CNPJ</label>
                                 <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
                             </section>
-                            <section class="col col-md-2">
+                            <section class="col col-md-3">
                                 <label class="label label-black" >Nome</label><br>
                                 <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
                             </section>
-                            <section class="col col-md-1">
-                                <label class="label" style="display: block;">Buscar</label>
-                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
-                            </section>
-                        </div>
+                        </div><hr/>
+                        <div class="row"> 
+                            <section class="center">
+                                <button type="submit" name="pesquisar" class="btn btn-primary"><i class="fa fa-search"></i> Pesquisar</button>
+                                <button type="submit" name="exportar"  class="btn btn-success"><i class="fa fa-file-excel-o fa-lg"></i> Exportar Dados</button>
+                            </div>
                     </fieldset>
                 </form>
             </div>

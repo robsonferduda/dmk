@@ -184,7 +184,7 @@
                                                 <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
                                             @endforeach   
                                         @else
-                                            <span>Nenhum telefone infomado</span>
+                                            <span>Nenhum telefone informado</span>
                                         @endif
                                     </div>
                                 </fieldset>
