@@ -12,6 +12,7 @@ class Endereco extends Model
 
     protected $table = 'endereco_ede';
     protected $primaryKey = 'cd_endereco_ede';
+    protected $nu_cep_ede;
     protected $dates = ['deleted_at'];
     protected $fillable = [
     						'dc_logradouro_ede',
@@ -25,6 +26,10 @@ class Endereco extends Model
     					  ];
 
     public $timestamps = true;
+
+    public function getNuCepEdeAttribute($value){
+        return  str_pad($value,8, '0', STR_PAD_LEFT);
+    }
 
     public function cidade()
     {
