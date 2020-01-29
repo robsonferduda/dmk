@@ -105,7 +105,8 @@
                                     <th style="min-width:8%">Despesa</th>
                                     <th style="min-width:8%">Nota F. %</th>
                                     <th style="min-width:8%">Total</th>  
-                                    <th class="no-sort"><input type="checkbox" class="seleciona-todos" ></th> 
+                                    <th class="no-sort"><a title="Pagamentos em Lote" class="btn btn-warning btn-xs check-pagamento-cliente-lote"  href="javascript:void(0)"><i class="fa fa-money"></i></a><input type="checkbox" class="seleciona-todos" ></th> 
+
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
@@ -232,6 +233,81 @@
                                                         <th class="center">Valor</th>
                                                         <th class="center">Nota</th>
                                                         <th class="center">Arquivo</th>
+                                                        <th class="center">Opções</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>                                       
+                                            
+                                    </div>
+                                </div>
+                        </section>
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-primary fechar" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
+                       
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="addBaixaLote" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close fechar" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-money"></i> Registro de Baixa em Lote
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-baixa-lote', 'url' => '', 'class' => 'smart-form']) !!}
+                    
+                     <fieldset>
+                        <section>
+                            <div class="col col-sm-12">
+                                    <header>
+                                        <i class="fa fa-arrow-circle-o-down"></i> Registro de Baixa<br /><h5 id="valor_total_operacao"></h5>
+                                    </header>
+                                    <fieldset style="padding: 10px 14px 5px;">
+                                        <div class="row">    
+                                            <section class="col col-3">
+                                                <label class="label">Data</label>
+                                                <label class="input">
+                                                     <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dtBaixa" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
+                                                </label>
+                                            </section>                     
+                                         
+                                             <section class="col col-3">
+                                                <label class="label">Valor<span class="text-danger">*</label>
+                                                <label class="input">
+                                                    <input type="text" class="form-control taxa-honorario" name="valor" id="valor" required>
+                                                </label>
+                                            </section>   
+                                            <section class="col col-1">
+                                                <label class="label">&nbsp</label>
+                                                <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
+                                            </section>
+                                        </div>
+                                    
+                                        <div class="row center" id="erroFone"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            
+                                            <table id="tabelaRegistro" class="table table-bordered table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Data</th>
+                                                        <th class="center">Valor</th>                                                        
                                                         <th class="center">Opções</th>
                                                     </tr>
                                                 </thead>
@@ -409,28 +485,121 @@
 
         });
 
+        $("#frm-add-baixa-lote").on('submit',function(event){
+
+            //$('.modal-body').loader('show');
+            
+            event.preventDefault();
+            var form = this;
+
+            $(".checkbox-check-pagamento-cliente").each(function(index,element){
+                    
+                if ($(this).is(':checked') ) {  
+
+                    $('.modal-body').loader('show');
+                   
+                    var formData = new FormData(form);
+                    var id =  $(this).data('id');
+                    formData.append('cdBaixaFinanceiro',id);    
+                    for(var pair of formData.entries()) {
+                       console.log(pair[0]+ ', '+ pair[1]); 
+                    }
+           
+                    $.ajax({
+                        url: "{{ url('/financeiro/cliente/baixa') }}",
+                        method: "POST",
+                        data: formData,
+                        dataType: 'JSON',
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success: function(registros){
+                            $('#tabelaRegistro > tbody').html('');
+
+                            var valorTotal = 0;
+                            $.each(registros, function(index, value){   
+                                        
+                                valorTotal += parseFloat(value.vl_baixa_honorario_bho);
+
+                                $('#tabelaRegistro > tbody').append('<tr>'+
+                                                                    '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
+                                                                    '<td >'+value.vl_baixa_honorario_bho+'</td>'+                                                                  
+                                                                    '<td class="center">'+                                                                
+                                                                        '<a class="btnRegistroExcluir"  style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
+                                                                    '</td>'+
+                                                                '</tr>');
+                            });
+                            
+                            addBaixado(id,valorTotal);
+
+                            $('.modal-body').loader('hide');
+                        }
+                    });
+
+                     formData = null;
+                }
+            }); 
+
+        });
+
         $(".seleciona-todos").click(function(){
 
             if ($(".seleciona-todos").is(':checked') ) {                
                 
-                var total = 0;            
+                //var total = 0;            
                 $(".checkbox-check-pagamento-cliente").each(function(index,element){
-                    total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
-                    alert(total);
+                    
+                    $(this).prop('checked',true);
+                    //total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+                    //alert(total);
 
                 }); 
                 
-                alert(total);
+               //$("#addBaixa").modal('show');   
                 //$('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));  
                 
-            }
+            }else{
 
-            $("#dtBaixaCliente").val('');
-            $("#notaFiscal").val('');
-            $('#dialog_simple').dialog('open');
+                $(".checkbox-check-pagamento-cliente").each(function(index,element){
+                    
+                    $(this).prop('checked',false);
+                   
+                }); 
+                
+            }
             
         });
         
+        $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente-lote", function(){
+
+            var total = 0;        
+            var controle = false;    
+
+            $(".modal-title").html('<i class="icon-append fa fa-money"></i> Registro de Baixa em Lote');
+
+            $('#dtBaixaCliente').val();
+            $('#valor').val();
+            $('#tabelaRegistro > tbody').html('');
+
+
+            $(".checkbox-check-pagamento-cliente").each(function(index,element){
+
+                if ($(this).is(':checked') ) {         
+                
+                    total += parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+                    
+                    controle = true;
+
+                }
+
+            }); 
+
+            if(controle == true){
+                $("#addBaixaLote").modal('show');
+                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));
+            }
+        });
+
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente", function(){
 
             $('.modal-body').loader('show');
