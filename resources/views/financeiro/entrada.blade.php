@@ -57,15 +57,23 @@
                         </section>
                     </div> 
                     <div class="row">
-                        <section style="width:25%" class="col col-md-3">
+
+                        <section style="width:18%" class="col col-md-3">
                             <br />                                        
-                            <label class="label label-black">Incluir entradas verificadas?</label>  
-                            <input type="checkbox" name="todas" id="todas"  {{ (!empty(\Session::get('todas')) ? 'checked' : '') }} > 
+                            <label class="label label-black">Pago</label>  
+                            <input type="checkbox" name="pago" id="pago"  {{ (!empty(\Session::get('pago')) ? 'checked' : '') }} > 
                         </section> 
-                         <section style="width:25%" class="col col-md-3">
+
+                        <section style="width:18%" class="col col-md-3">
                             <br />                                        
-                            <label class="label label-black">Somente entradas verificadas?</label>  
-                            <input type="checkbox" name="verificadas" id="verificadas"  {{ (!empty(\Session::get('verificadas')) ? 'checked' : '') }} > 
+                            <label class="label label-black">Parcialmente Pago</label>  
+                            <input type="checkbox" name="parcialmente" id="parcialmente"  {{ (!empty(\Session::get('parcialmente')) ? 'checked' : '') }} > 
+                        </section> 
+                        
+                         <section style="width:18%" class="col col-md-3">
+                            <br />                                        
+                            <label class="label label-black">Nenhum Pagamento</label>  
+                            <input type="checkbox" name="nenhum" id="nenhum"  {{ (!empty(\Session::get('nenhum')) ? 'checked' : '') }} > 
                         </section> 
                         <section class="col col-md-1">
                             <br />
@@ -105,7 +113,10 @@
                                     <th style="min-width:8%">Despesa</th>
                                     <th style="min-width:8%">Nota F. %</th>
                                     <th style="min-width:8%">Total</th>  
-                                    <th class="no-sort"><a title="Pagamentos em Lote" class="btn btn-warning btn-xs check-pagamento-cliente-lote"  href="javascript:void(0)"><i class="fa fa-money"></i></a><input type="checkbox" class="seleciona-todos" ></th> 
+                                    <th style="text-align: center;" class="no-sort">
+                                            <a title="Pagamentos em Lote" class="btn btn-warning btn-xs check-pagamento-cliente-lote"  href="javascript:void(0)" ><i class="fa fa-arrow-down" ></i></a>
+                                            <input type="checkbox" class="seleciona-todos" >
+                                    </th> 
 
                                 </tr>
                             </thead>
@@ -140,9 +151,9 @@
                                     <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth-
                                     ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',',' ') }}</td>
                                     <td style="text-align: center;">
-                                        <a title="Pagamentos"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)"><i class="fa fa-money"></i></a>
+                                        <a title="Pagamentos"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)" ><i class="fa fa-money"></i></a>
 
-                                        <input type="checkbox" class="checkbox-check-pagamento-cliente" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
+                                        <input type="checkbox" class="checkbox-check-pagamento-cliente" style="width: 100%" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
 
                                         @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
 
@@ -308,7 +319,7 @@
                                                     <tr>
                                                         <th class="center">Data</th>
                                                         <th class="center">Valor</th>                                                        
-                                                        <th class="center">Opções</th>
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -523,10 +534,7 @@
 
                                 $('#tabelaRegistro > tbody').append('<tr>'+
                                                                     '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
-                                                                    '<td >'+value.vl_baixa_honorario_bho+'</td>'+                                                                  
-                                                                    '<td class="center">'+                                                                
-                                                                        '<a class="btnRegistroExcluir"  style="cursor:pointer" data-id="'+value.cd_baixa_honorario_bho+'"><i class="fa fa-trash"></i> </a>'+
-                                                                    '</td>'+
+                                                                    '<td >'+value.vl_baixa_honorario_bho+'</td>'+                                                                                                                                      
                                                                 '</tr>');
                             });
                             
@@ -609,7 +617,7 @@
             $("#notaFiscal").val('');
             $('#tabelaRegistro > tbody').html('');
             $("#cdBaixaFinanceiro").val(id);       
-            $("#valor").val($(this).parent().parent().children().eq(7).text().replace('R$ ',''));
+            $("#valor").val( String(parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'))).replace('.',','));
 
             $(".modal-title").html('<i class="icon-append fa fa-money"></i>');
             $(".modal-title").append(' '+$(this).parent().parent().children().eq(0).text()+' - '+$(this).parent().parent().children().eq(3).text()+'('+$(this).parent().parent().children().eq(2).text()+')');
