@@ -298,7 +298,7 @@
                                                                 @if($mensagem->entidadeRemetenteColaborador)
                                                                     <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
                                                                 @else
-                                                                    @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
+                                                                    @if($mensagem->entidadeRemetente and file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
                                                                         <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
                                                                     @else
                                                                         <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
@@ -400,7 +400,7 @@
                                                            
                                                                  <div class="incoming_msg">
                                                                     <div class="incoming_msg_img">                                                            
-                                                                        @if(file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png')) 
+                                                                        @if($mensagem->entidadeRemetente and file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png')) 
                                                                             <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="user_profile"> 
                                                                         @else
                                                                             <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
