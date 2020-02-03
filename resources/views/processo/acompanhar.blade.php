@@ -318,7 +318,7 @@
                                                                         <span class="time_date">
                                                                             <strong>
                                                                                 @if($mensagem->entidadeRemetenteColaborador)
-                                                                                    {{ $mensagem->entidadeRemetenteColaborador->usuario->name }}
+                                                                                    {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
                                                                                 @else
                                                                                     {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
                                                                                 @endif                                                                               
@@ -414,7 +414,7 @@
                                                                                 </p>
                                                                             @else
                                                                                 <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                                <span class="time_date"><strong>{{ ($mensagem->entidadeInterna->usuario) ? $mensagem->entidadeInterna->usuario->name : 'Não definido' }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                                                <span class="time_date"><strong>{{ ($mensagem->entidadeInterna and $mensagem->entidadeInterna->usuario) ? $mensagem->entidadeInterna->usuario->name : 'Não definido' }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
                                                                             @endif
                                                                         </div>
                                                                     </div>
