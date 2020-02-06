@@ -6,7 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
-        <meta name="conta" content="{{ session::get('SESSION_CD_CONTA') }}">
+        <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
@@ -19,6 +19,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/filepicker.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
@@ -31,7 +32,7 @@
                 <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>
 
                 @php
-                    $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(session::get('SESSION_CD_CONTA'));
+                    $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(Session::get('SESSION_CD_CONTA'));
                 @endphp
 
                 <span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i><b class="badge badge-count">{{ count($mensagens_pendentes) }}</b></span>
@@ -585,6 +586,12 @@
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
         <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
+
+        <script src="{{ asset('js/filepicker.js') }}"></script>
+        <script src="{{ asset('js/filepicker-ui.js') }}"></script>
+        <script src="{{ asset('js/filepicker-drop.js') }}"></script>
+        <script src="{{ asset('js/filepicker-crop.js') }}"></script>
+        <script src="{{ asset('js/filepicker-camera.js') }}"></script>
         
         @yield('script')
         <script type="text/javascript">
@@ -669,6 +676,7 @@
             }
             reader.readAsDataURL(this.files[0]);
         });
+
         
         $(document).ready(function() {
             

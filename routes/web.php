@@ -29,6 +29,10 @@ Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
 
+	Route::any('filepicker', 'FilepickerController@handle');
+
+	Route::any('upload/index', 'FilepickerController@index');
+
 	Route::get('seleciona/perfil', 'UsuarioController@selecionaPerfil');
 	Route::post('selecionar-nivel', 'UsuarioController@validarSelecao')->name('selecionar-nivel');
 	Route::post('login-perfil', 'UsuarioController@loginPerfil')->name('login-perfil');

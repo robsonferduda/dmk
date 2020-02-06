@@ -46,6 +46,8 @@
 .btnContaEditar{ cursor: pointer; margin-right: 8px;}
 .btnContaExcluir{ cursor: pointer; margin-left: 8px; }
 
+.files { padding-left: 20px; margin-top: 20px; }
+
 .profile 
 {
     min-height: 355px;

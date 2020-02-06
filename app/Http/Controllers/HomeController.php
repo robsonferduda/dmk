@@ -21,6 +21,7 @@ class HomeController extends Controller
 
     public function index()
     {
+
         if(!Auth::guest()){
 
             $role = Auth::user()->role()->first();
