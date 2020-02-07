@@ -125,9 +125,8 @@
 
                                 @php
                                     $totalDespesas = $entrada->processo->tiposDespesa->sum('pivot.vl_processo_despesa_pde');
-                                    $totalBaixaHonorario = $entrada->baixaHonorario->sum('vl_baixa_honorario_bho');
+                                    $totalBaixaHonorario = $entrada->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho');
 
-                                   // dd($entrada);
                                 @endphp
 
                                 <tr {{ ($totalBaixaHonorario <= 0 
@@ -153,15 +152,7 @@
                                     <td style="text-align: center;">
                                         <a title="Pagamentos"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)" ><i class="fa fa-money"></i></a>
 
-                                        <input type="checkbox" class="checkbox-check-pagamento-cliente" style="width: 100%" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >
-
-                                        @if(!empty($entrada->dt_baixa_cliente_pth) || !empty($entrada->nu_cliente_nota_fiscal_pth))
-
-                                         <a href="#" rel="popover-hover" data-placement="top" data-content="Nota Fiscal: {{ $entrada->nu_cliente_nota_fiscal_pth }}"
-                                         data-original-title="Data de pagamento: {{ $entrada->dt_baixa_cliente_pth ? date('d/m/Y', strtotime($entrada->dt_baixa_cliente_pth)) : '' }}"><i class="fa fa-question-circle text-primary"></i></a>
-                                        
-                                        @endif
-
+                                        <input type="checkbox" class="checkbox-check-pagamento-cliente" style="width: 100%" data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}' {{ ($entrada->fl_pago_cliente_pth == 'N') ? '' : 'checked' }}  >                                
 
                                     </td>                              
                                 </tr>
@@ -314,18 +305,7 @@
 
                                     <div class="row" style="margin: 0; padding: 5px 13px;">
                                             
-                                            <table id="tabelaRegistro" class="table table-bordered table-responsive">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="center">Data</th>
-                                                        <th class="center">Valor</th>                                                        
-                                                        
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    
-                                                </tbody>
-                                            </table>                                       
+                                        <h2 class="retornoLote"></h2>                               
                                             
                                     </div>
                                 </div>
@@ -502,19 +482,19 @@
             
             event.preventDefault();
             var form = this;
+            var contadorEntradas = 0;            
 
             $(".checkbox-check-pagamento-cliente").each(function(index,element){
                     
                 if ($(this).is(':checked') ) {  
 
                     $('.modal-body').loader('show');
+
+                    $('.retornoLote').text('');                    
                    
                     var formData = new FormData(form);
                     var id =  $(this).data('id');
                     formData.append('cdBaixaFinanceiro',id);    
-                    for(var pair of formData.entries()) {
-                       console.log(pair[0]+ ', '+ pair[1]); 
-                    }
            
                     $.ajax({
                         url: "{{ url('/financeiro/cliente/baixa') }}",
@@ -523,30 +503,28 @@
                         dataType: 'JSON',
                         contentType: false,
                         cache: false,
-                        processData: false,
+                        processData: false,                        
                         success: function(registros){
-                            $('#tabelaRegistro > tbody').html('');
-
+                            
                             var valorTotal = 0;
+                            contadorEntradas++;
+                            $('.retornoLote').text("O valor R$"+$('#frm-add-baixa-lote .taxa-honorario').val()+" foi adicionando ao total de "+contadorEntradas+" entrada(s).");
+
                             $.each(registros, function(index, value){   
                                         
-                                valorTotal += parseFloat(value.vl_baixa_honorario_bho);
-
-                                $('#tabelaRegistro > tbody').append('<tr>'+
-                                                                    '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
-                                                                    '<td >'+value.vl_baixa_honorario_bho+'</td>'+                                                                                                                                      
-                                                                '</tr>');
+                                valorTotal += parseFloat(value.vl_baixa_honorario_bho);                                
+                                
                             });
                             
-                            addBaixado(id,valorTotal);
+                            addBaixado(id,valorTotal);     
 
-                            $('.modal-body').loader('hide');
+                            $('.modal-body').loader('hide');                      
                         }
                     });
 
-                     formData = null;
+                    formData = null;
                 }
-            }); 
+            });            
 
         });
 
@@ -584,6 +562,7 @@
             var controle = false;    
 
             $(".modal-title").html('<i class="icon-append fa fa-money"></i> Registro de Baixa em Lote');
+            $(".retornoLote").text('');
 
             $('#dtBaixaCliente').val();
             $('#valor').val();
@@ -726,75 +705,6 @@
             $("input[name='nm_cliente_cli']").val('');
 
         });
-
-        
-
-        var verificaTodos = function(ids,checked){
-
-            var data = $("#dtBaixaCliente").val();
-            var nota = $("#notaFiscal").val();
-
-            $.ajax({
-                type:'POST',
-                url: "{{ url('financeiro/cliente/baixa') }}",
-                data:{ids:ids,checked:checked,data:data,nota:nota},
-                success:function(data){
-                    ret = JSON.parse(data);        
-                    
-                    if(ret === true){
-                        if(checked == 'S'){
-                            $(".check-pagamento-cliente").each(function(index,element){
-                                $(this).closest('tr').css('background-color','#8ec9bb');   
-                                $(this).prop('checked',true);       
-                            }); 
-                            
-                        }else{
-                            $(".check-pagamento-cliente").each(function(index,element){
-                                $(this).closest('tr').css('background-color','#fb8e7e');         
-                                $(this).prop('checked',false);      
-                            }); 
-                            
-                        }
-                    }                                               
-                }
-            });
-        }
-    
-        var verifica = function(checkbox){
-
-            var data = $("#dtBaixaCliente_single").val();
-            var nota = $("#notaFiscal_single").val();
-
-            var input = checkbox;
-            var id = checkbox.data('id');
-            if (checkbox.is(':checked') ) {
-                var checked = 'S';            
-            }else {
-                var checked = 'N';
-            }
-
-            $.ajax({
-                type:'POST',
-                url: "{{ url('financeiro/cliente/baixa') }}",
-                data:{ids:[id],checked:checked,data:data,nota:nota},
-                success:function(data){
-                    ret = JSON.parse(data);        
-                    
-                    if(ret === true){
-                        if(checked == 'S'){
-                            input.closest('tr').css('background-color','#8ec9bb');
-                            input.prop('checked',true);
-                        }else{
-                            input.closest('tr').css('background-color','#fb8e7e');
-                            input.next().remove();
-                        }
-                    }                                               
-                }
-            });
-
-            var data = $("#dtBaixaCliente_single").val('');
-            var nota = $("#notaFiscal_single").val('');
-        }
 
         $.validator.addMethod("dateFormat",
                 function(value, element) { 

@@ -113,9 +113,7 @@ class FinanceiroController extends Controller
 
             }));
         }))->has('processo');
-        
-        
-        
+                        
         $entradas = $entradas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
                     $query->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
                                         $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
@@ -197,6 +195,9 @@ class FinanceiroController extends Controller
             \Session::put('nmCorrespondente',null);
             \Session::put('todas',null);
             \Session::put('verificadas',null);
+            \Session::put('parcialmente',null);
+            \Session::put('pago',null);
+            \Session::put('nenhum',null);
 
             $dtInicio = date('d/m/Y',strtotime(date("Y-m-01")));
             $dtFim = date('d/m/Y',strtotime(date("Y-m-t")));
@@ -206,6 +207,9 @@ class FinanceiroController extends Controller
             $nmCorrespondente = '';
             $todas = '';
             $verificadas = '';
+            $parcialmente = '';
+            $pago = '';
+            $nenhum = '';
 
         }else{
             $dtInicio = session('dtInicio');
@@ -216,6 +220,9 @@ class FinanceiroController extends Controller
             $nmCorrespondente = session('nmCorrespondente');
             $todas = session('todas');
             $verificadas = session('verificadas');
+            $parcialmente = session('parcialmente');
+            $pago = session('pago');
+            $nenhum = session('nenhum');
         }
 
         $saidas = ProcessoTaxaHonorario::with(array('tipoServicoCorrespondente' => function($query){
@@ -223,26 +230,8 @@ class FinanceiroController extends Controller
         }))->whereHas('processo' , function($query){
             $query->has('correspondente');
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');            
-        })->whereNotNull('cd_tipo_servico_correspondente_tse')
-        ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_baixa_correspondente_pth',[$dtInicioBaixa,$dtFimBaixa]);
-                                    })
-        ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
-                                        
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtInicioBaixa);
-                                    })
-
-        ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
-                                        
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
-        });
-
+        })->whereNotNull('cd_tipo_servico_correspondente_tse');
         
-
         $saidas = $saidas->whereHas('processo', function($query) use ($dtInicio, $dtFim) {
                     $query->when(!empty($dtInicio) && !empty($dtFim), function ($query) use ($dtInicio,$dtFim) {
                                         $dtInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtInicio)));
@@ -260,19 +249,53 @@ class FinanceiroController extends Controller
                                 });   
         });
 
+        if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
+            $saidas = $saidas->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                        return $query->whereBetween('dt_baixa_honorario_bho',[$dtInicioBaixa,$dtFimBaixa]);
+                                    })
+                ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                                
+                                                $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                                return $query->where('dt_baixa_honorario_bho',$dtInicioBaixa);
+                                            })
+
+                ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                                
+                                                $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                                return $query->where('dt_baixa_honorario_bho',$dtFimBaixa);
+                });
+
+            });
+        }else{
+            $saidas = $saidas->with('baixaHonorario');
+        }
+
         if(!empty($correspondente)){
             $saidas = $saidas->whereHas('processo', function($query) use ($correspondente) {
                     $query->where('cd_correspondente_cor',$correspondente);
             });
         }
 
-        if(empty($todas) && empty($verificadas) && empty($dtInicioBaixa) && empty($dtFimBaixa)){
-            $saidas = $saidas->where('fl_pago_correspondente_pth','N');
+        $opcoes = array();
+
+        if(!empty($parcialmente))
+            $opcoes[]  = 'P';
+
+        if(!empty($pago))
+            $opcoes[]  = 'S';
+
+        if(!empty($nenhum))
+            $opcoes[]  = 'N';
+
+        if(empty($opcoes)){
+            $saidas = $saidas->whereIn('fl_pago_correspondente_pth',['N','P']);
+        }else{
+            $saidas = $saidas->whereIn('fl_pago_correspondente_pth',$opcoes);
         }
 
-        if(!empty($verificadas) || !empty($dtInicioBaixa) || !empty($dtFimBaixa)){
-            $saidas = $saidas->where('fl_pago_correspondente_pth', 'S');
-        }
 
         $saidas = $saidas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_correspondente_tse','fl_pago_correspondente_pth','dt_baixa_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
         //dd($saidas);
@@ -291,6 +314,7 @@ class FinanceiroController extends Controller
         $finalizado     = $request->finalizado;
         $cliente        = $request->cd_cliente_cli;
         $correspondente = $request->cd_correspondente_cor;
+        $tipo           = $request->tipo; 
        
         $entradasVetor = [];
 
@@ -355,28 +379,39 @@ class FinanceiroController extends Controller
 
             $totalDespesas = 0;
             $total = 0;
+          
+            if($tipo == 'P'){
 
-            print_r($entrada->honorario->vl_taxa_honorario_cliente_pth);
+                foreach($entrada->tiposDespesa as $despesa){
+                        if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                            $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                        }
+                }
 
-            foreach($entrada->tiposDespesa as $despesa){
-                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CLIENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
-                        $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
-                    }
+                $entrada->honorario->vl_taxa_honorario_cliente_pth = $entrada->honorario->vl_taxa_honorario_cliente_pth - (($entrada->honorario->vl_taxa_honorario_cliente_pth * $entrada->honorario->vl_taxa_cliente_pth)/100);
+
+                if(array_key_exists($entrada->cliente->cd_cliente_cli, $entradasVetor)){
+                       $entrada->honorario->vl_taxa_honorario_cliente_pth += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);
+                       $totalDespesas += $entradasVetor[$entrada->cliente->cd_cliente_cli]['despesa'];
+                }
+
+                $total = $entrada->honorario->vl_taxa_honorario_cliente_pth + $totalDespesas;
+
+                $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $entrada->honorario->vl_taxa_honorario_cliente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+            }else{
+
+                $total = $entrada->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho');
+
+                if(array_key_exists($entrada->cliente->cd_cliente_cli, $entradasVetor)){
+                       $total += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);                       
+                }
+
+                $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $total, 'despesa' => 0, 'total' => 0);
+
             }
-
-            $entrada->honorario->vl_taxa_honorario_cliente_pth = $entrada->honorario->vl_taxa_honorario_cliente_pth - (($entrada->honorario->vl_taxa_honorario_cliente_pth * $entrada->honorario->vl_taxa_cliente_pth)/100);
-
-            if(array_key_exists($entrada->cliente->cd_cliente_cli, $entradasVetor)){
-                   $entrada->honorario->vl_taxa_honorario_cliente_pth += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);
-                   $totalDespesas += $entradasVetor[$entrada->cliente->cd_cliente_cli]['despesa'];
-            }
-
-            $total = $entrada->honorario->vl_taxa_honorario_cliente_pth + $totalDespesas;
-
-            $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $entrada->honorario->vl_taxa_honorario_cliente_pth, 'despesa' => $totalDespesas, 'total' => $total);
         }
 
-        exit;
+       // exit;
 
         $saidasVetor = [];
 
@@ -537,7 +572,8 @@ class FinanceiroController extends Controller
                                 ->with('entradaTotal',$entradaTotal)
                                 ->with('saidaTotal',$saidaTotal)
                                 ->with('despesaTotal',$despesaTotal)
-                                ->with('total',$total);
+                                ->with('total',$total)
+                                ->with('tipo',$tipo);
     }
 
     public function entradaBuscar(Request $request){
@@ -600,16 +636,22 @@ class FinanceiroController extends Controller
         \Session::put('correspondente',$request->cd_correspondente_cor);
         \Session::put('nmCorrespondente',$request->nm_correspondente_cor);
 
-        if(!empty($request->todas)){
-            \Session::put('todas','S');
+        if(!empty($request->parcialmente)){
+            \Session::put('parcialmente','S');
         }else{
-            \Session::put('todas',null);
-        }
+            \Session::put('parcialmente',null);
+        }    
 
-        if(!empty($request->verificadas)){
-            \Session::put('verificadas','S');
+        if(!empty($request->pago)){
+            \Session::put('pago','S');
         }else{
-            \Session::put('verificadas',null);
+            \Session::put('pago',null);
+        }   
+
+        if(!empty($request->nenhum)){
+            \Session::put('nenhum','S');
+        }else{
+            \Session::put('nenhum',null);
         }   
         
         
@@ -641,7 +683,14 @@ class FinanceiroController extends Controller
 
     public function buscarBaixaEntrada($id){
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
+
+        echo json_encode($baixaHonorario);
+    }
+
+    public function buscarBaixaSaida($id){
+
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
 
         echo json_encode($baixaHonorario);
     }
@@ -700,11 +749,11 @@ class FinanceiroController extends Controller
             
         }
 
-        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
 
-        if($baixaHonorarioList->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_cliente_pth){
+        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_cliente_pth){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'S';
         }else{
             $processoTaxaHonorario->fl_pago_cliente_pth = 'P';
@@ -718,29 +767,70 @@ class FinanceiroController extends Controller
 
     public function baixaCorrespondente(Request $request){
 
-        $processosTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->whereIn('cd_processo_taxa_honorario_pth',$request->ids)->get();
-            
-        $response = false;
-        foreach($processosTaxaHonorario as $processoTaxaHonorario){
-            
-            $processoTaxaHonorario->fl_pago_correspondente_pth = $request->checked;
+         $baixaHonorario = new BaixaHonorario();
 
-             if(!empty($request->data)){
-                $processoTaxaHonorario->dt_baixa_correspondente_pth = date('Y-m-d',strtotime(str_replace('/','-',$request->data)));
-            }else{
-                $processoTaxaHonorario->dt_baixa_correspondente_pth = null;
-            }
-
-            $response = $processoTaxaHonorario->saveOrFail();
-
-            if(!$response){
-                echo json_encode($response);
-                break;
-            }
-
+        if(empty($request->dtBaixa)){
+            $baixaHonorario->dt_baixa_honorario_bho = NULL;
+        }else{
+            $baixaHonorario->dt_baixa_honorario_bho = date('Y-m-d',strtotime(str_replace('/','-',$request->dtBaixa)));
         }
 
-        echo json_encode($response);
+        if(empty($request->notaFiscal)){
+            $baixaHonorario->nu_nota_fiscal_bho = NULL;
+        }else{
+            $baixaHonorario->nu_nota_fiscal_bho = $request->notaFiscal;
+        }
+
+        $baixaHonorario->cd_processo_taxa_honorario_pth =  $request->cdBaixaFinanceiro;
+        $baixaHonorario->vl_baixa_honorario_bho         =  str_replace(',', '.', $request->valor);
+        $baixaHonorario->cd_tipo_financeiro_tfn         = \TipoFinanceiro::SAIDA;
+        $baixaHonorario->cd_conta_con                   = $this->conta;
+
+        $response = $baixaHonorario->saveOrFail();
+
+        $destino = "saidas/$baixaHonorario->cd_processo_taxa_honorario_pth/$baixaHonorario->cd_baixa_honorario_bho/";
+ 
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+
+        if($request->file('file')){
+
+                $file = $request->file('file');                
+
+                $fileName = $file->getClientOriginalName();
+        
+                if($file->move(storage_path($destino), $fileName)){
+
+                    $anexo = AnexoFinanceiro::create([
+                        'cd_conta_con'                  => $this->conta, 
+                        'cd_baixa_honorario_bho'        => $baixaHonorario->cd_baixa_honorario_bho,                   
+                        'nm_anexo_financeiro_afn'       => $file->getClientOriginalName(),
+                        'nm_local_anexo_financeiro_afn' => $destino.$file->getClientOriginalName(),
+                        'cd_tipo_financeiro_tfn'        => \TipoFinanceiro::SAIDA
+                    ]);
+
+                    //return response()->json(['success'=>'Arquivo enviado com sucesso']);
+
+                }else{
+                    //return Response::json(array('message' => 'Erro ao inserir arquivo'), 500);
+                }  
+            
+        }
+
+        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
+
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
+
+        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth){
+            $processoTaxaHonorario->fl_pago_correspondente_pth = 'S';
+        }else{
+            $processoTaxaHonorario->fl_pago_correspondente_pth = 'P';
+        }
+
+        $processoTaxaHonorario->saveOrFail();
+
+        echo json_encode($baixaHonorarioList);
     }
 
     public function relatorioBalancoSumarizado($request){
@@ -1226,26 +1316,61 @@ class FinanceiroController extends Controller
                                     ->delete();
 
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
 
         if(!empty($baixaProcesso->anexoFinanceiro))
             $this->entradaFileExcluir($baixaProcesso->anexoFinanceiro->cd_anexo_financeiro_afn);
 
 
-        $baixaProcessoDepois = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->get();
+        $baixaProcessoDepois = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->get();
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$processoTaxa)->first();
 
-        if($baixaProcessoDepois->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_cliente_pth && $baixaProcessoDepois->sum('vl_baixa_honorario_bho') > 0){
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_cliente_pth && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') > 0){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'P';
         }
 
-        if($baixaProcessoDepois->sum('vl_baixa_honorario_bho') <= 0){
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') <= 0){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'N';
         }
 
         $processoTaxaHonorario->saveOrFail();
 
+
+        echo json_encode($baixaHonorario);
+
+    }
+
+    public function excluirBaixaSaida($id){
+
+        $baixaProcesso = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_baixa_honorario_bho',$id)->first();
+
+        $processoTaxa = $baixaProcesso->cd_processo_taxa_honorario_pth;
+
+        BaixaHonorario::where('cd_conta_con',$this->conta)                                                                        
+                                    ->where('cd_baixa_honorario_bho',$id)
+                                    ->delete();
+
+
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
+
+        if(!empty($baixaProcesso->anexoFinanceiro))
+            $this->entradaFileExcluir($baixaProcesso->anexoFinanceiro->cd_anexo_financeiro_afn);
+
+
+        $baixaProcessoDepois = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->get();
+
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$processoTaxa)->first();
+
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') > 0){
+            $processoTaxaHonorario->fl_pago_correspondente_pth = 'P';
+        }
+
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') <= 0){
+            $processoTaxaHonorario->fl_pago_correspondente_pth = 'N';
+        }
+
+        $processoTaxaHonorario->saveOrFail();
 
         echo json_encode($baixaHonorario);
 
