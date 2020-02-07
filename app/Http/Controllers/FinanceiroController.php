@@ -418,23 +418,29 @@ class FinanceiroController extends Controller
         if(!empty($request->saidas)){
             $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                                 ->whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
-                                    $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_baixa_correspondente_pth',[$dtInicioBaixa,$dtFimBaixa]);
-                                    }); 
+                                    if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
+                                        $query->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                                            $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                                                    return $query->whereBetween('dt_baixa_honorario_bho',[$dtInicioBaixa,$dtFimBaixa]);
+                                                                })
+                                            ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                                                            
+                                                                            $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtInicioBaixa);
+                                                                        })
 
-                                    $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
-                                        
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtInicioBaixa);
-                                    });
+                                            ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                                                            
+                                                                            $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtFimBaixa);
+                                            });
 
-                                    $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
-                                        
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
-                                    });
+                                        });
+                                    }else{
+                                        $query->with('baixaHonorario');
+                                    }    
                                 })
                                 ->whereHas('correspondente')                            
                                 ->with('tiposDespesa')
@@ -472,20 +478,33 @@ class FinanceiroController extends Controller
             $totalDespesas = 0;
             $total = 0;
 
-            foreach($saida->tiposDespesa as $despesa){
-                    if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
-                        $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
-                    }
+            if($tipo == 'P'){
+
+                foreach($saida->tiposDespesa as $despesa){
+                        if($despesa->pivot->cd_tipo_entidade_tpe == \TipoEntidade::CORRESPONDENTE && $despesa->pivot->fl_despesa_reembolsavel_pde == 'S'){
+                            $totalDespesas += $despesa->pivot->vl_processo_despesa_pde;
+                        }
+                }
+
+                if(array_key_exists($saida->correspondente->cd_conta_con, $saidasVetor)){
+                       $saida->honorario->vl_taxa_honorario_correspondente_pth += round($saidasVetor[$saida->correspondente->cd_conta_con]['valor'],2);
+                       $totalDespesas += $saidasVetor[$saida->correspondente->cd_conta_con]['despesa'];
+                }
+
+                $total = $saida->honorario->vl_taxa_honorario_correspondente_pth + $totalDespesas;
+
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+            }else{
+
+                $total = $saida->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho');
+
+                if(array_key_exists($saida->correspondente->cd_conta_con, $saidasVetor)){
+                       $total += round($saidasVetor[$saida->correspondente->cd_conta_con]['valor'],2);                       
+                }
+
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $total, 'despesa' => 0, 'total' => 0);
+
             }
-
-            if(array_key_exists($saida->correspondente->cd_conta_con, $saidasVetor)){
-                   $saida->honorario->vl_taxa_honorario_correspondente_pth += round($saidasVetor[$saida->correspondente->cd_conta_con]['valor'],2);
-                   $totalDespesas += $saidasVetor[$saida->correspondente->cd_conta_con]['despesa'];
-            }
-
-            $total = $saida->honorario->vl_taxa_honorario_correspondente_pth + $totalDespesas;
-
-            $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
         }
 
         if(!empty($request->despesas)){
@@ -1067,23 +1086,29 @@ class FinanceiroController extends Controller
 
         if(!empty($request->entradas)){
             $entradas = Processo::whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
-                                    $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_baixa_cliente_pth',[$dtInicioBaixa,$dtFimBaixa]);
-                                    }); 
+                                    if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
+                                        $query->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                                            $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                                                    return $query->whereBetween('dt_baixa_honorario_bho',[$dtInicioBaixa,$dtFimBaixa]);
+                                                                })
+                                            ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                                                            
+                                                                            $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtInicioBaixa);
+                                                                        })
 
-                                    $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
-                                        
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_baixa_cliente_pth',$dtInicioBaixa);
-                                    });
+                                            ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                                                            
+                                                                            $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtFimBaixa);
+                                            });
 
-                                    $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
-                                        
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_baixa_cliente_pth',$dtFimBaixa);
-                                    });
+                                        });
+                                    }else{
+                                        $query->with('baixaHonorario');
+                                    }    
 
                                  })
                                  ->with('cliente')                            
@@ -1121,23 +1146,29 @@ class FinanceiroController extends Controller
         if(!empty($request->saidas)){
             $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                                 ->whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
-                                    $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_baixa_correspondente_pth',[$dtInicioBaixa,$dtFimBaixa]);
-                                    }); 
+                                    if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
+                                        $query->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
+                                            $query->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
+                                                                    $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
+                                                                    $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
+                                                                    return $query->whereBetween('dt_baixa_honorario_bho',[$dtInicioBaixa,$dtFimBaixa]);
+                                                                })
+                                            ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                                                            
+                                                                            $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtInicioBaixa);
+                                                                        })
 
-                                    $query->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
-                                        
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtInicioBaixa);
-                                    });
+                                            ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                                                            
+                                                                            $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
+                                                                            return $query->where('dt_baixa_honorario_bho',$dtFimBaixa);
+                                            });
 
-                                    $query->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
-                                        
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_baixa_correspondente_pth',$dtFimBaixa);
-                                    });
+                                        });
+                                    }else{
+                                        $query->with('baixaHonorario');
+                                    }    
                                 })
                                 ->whereHas('correspondente')                            
                                 ->with('tiposDespesa')

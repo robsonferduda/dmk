@@ -97,11 +97,26 @@
                             <input type="checkbox" name="saidas" id="saidas" value="S" {{ (\Session::get('saidas') == 'N'  ? '' : 'checked') }}>
                             <label class="label label-black">Saídas</label> 
 
+                        </section>                             
+                    </div>
+                    <div class="row">
+
+                        <section class="col col-md-3">
+                            <br />                                     
+                            <input type="radio" name="tipo"  value="P" checked {{ (\Session::get('tipo') == 'P'  ? 'checked' : '') }}>
+                            <label class="label label-black">Previsto</label> 
+
                         </section> 
+                        <section class="col col-md-2">
+                            <br />                                     
+                            <input type="radio" name="tipo"  value="R" {{ (\Session::get('tipo') == 'R'  ? 'checked' : '' ) }}>
+                            <label class="label label-black">Realizado</label> 
+
+                        </section>      
                         <section class="col col-md-1">
                             <br />
                             <button style='float: right;' class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
-                        </section>          
+                        </section>    
                     </div>
                 </form>
             </div>
