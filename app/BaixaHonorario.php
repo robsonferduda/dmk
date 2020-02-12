@@ -37,6 +37,11 @@ class BaixaHonorario extends Model implements AuditableContract
         return $this->hasOne('App\TipoFinanceiro','cd_tipo_financeiro_tfn', 'cd_tipo_financeiro_tfn');
     }
 
+    public function tipoBaixaHonorario()
+    {
+        return $this->hasOne('App\TipoBaixaHonorario','cd_tipo_baixa_honorario_bho', 'cd_tipo_baixa_honorario_bho');
+    }
+
     public function getDtBaixaHonorarioBhoAttribute($value){
 
         if(!empty($value)){

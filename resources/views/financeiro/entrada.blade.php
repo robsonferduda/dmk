@@ -189,21 +189,33 @@
                                     </header>
                                     <fieldset style="padding: 10px 14px 5px;">
                                         <div class="row">    
-                                            <section class="col col-3">
+                                            <section class="col col-2">
                                                 <label class="label">Data</label>
                                                 <label class="input">
                                                      <input type="text" id='dtBaixaCliente' class='form-control dt_solicitacao_pro' name="dtBaixa" placeholder="___ /___ /___" pattern="\d{1,2}/\d{1,2}/\d{4}" >
                                                 </label>
                                             </section>                     
                                          
-                                             <section class="col col-3">
-                                                <label class="label">Valor<span class="text-danger">*</label>
+                                            <section class="col col-3">
+                                                <label class="label">Valor<span class="text-danger">*</span></label>
                                                 <label class="input">
                                                     <input type="text" class="form-control taxa-honorario" name="valor" id="valor" required>
                                                 </label>
                                             </section>    
 
-                                            <section class="col col-6">
+                                            <section class="col col-3">
+                                                <label class="label" >Tipo<span class="text-danger">*</span></label>          
+                                                <label class="select">
+                                                <select  id="tipo" name="tipo" class='form-control' required>
+                                                    <option selected value="">Selecione um tipo</option>
+                                                    @foreach(\App\TipoBaixaHonorario::get() as $tipo)
+                                                    <option value="{{$tipo->cd_tipo_baixa_honorario_bho}}">{{$tipo->nm_tipo_baixa_honorario_bho}}</option>                                                    
+                                                    @endforeach
+                                                </select> <i></i>
+                                                </label>
+                                            </section>    
+
+                                            <section class="col col-4">
                                                 <label class="label">Nota</label>
                                                 <label class="input">
                                                    <input type="text" id='notaFiscal' class='form-control' name="notaFiscal" placeholder="" >                                                         
@@ -233,6 +245,7 @@
                                                     <tr>
                                                         <th class="center">Data</th>
                                                         <th class="center">Valor</th>
+                                                        <th class="center">Tipo</th>
                                                         <th class="center">Nota</th>
                                                         <th class="center">Arquivo</th>
                                                         <th class="center">Opções</th>
@@ -292,6 +305,17 @@
                                                 <label class="label">Valor<span class="text-danger">*</label>
                                                 <label class="input">
                                                     <input type="text" class="form-control taxa-honorario" name="valor" id="valor" required>
+                                                </label>
+                                            </section>   
+                                            <section class="col col-3">
+                                                <label class="label" >Tipo<span class="text-danger">*</span></label>          
+                                                <label class="select">
+                                                <select  id="tipo" name="tipo" class='form-control' required>
+                                                    <option selected value="">Selecione um tipo</option>
+                                                    @foreach(\App\TipoBaixaHonorario::get() as $tipo)
+                                                    <option value="{{$tipo->cd_tipo_baixa_honorario_bho}}">{{$tipo->nm_tipo_baixa_honorario_bho}}</option>                                                    
+                                                    @endforeach
+                                                </select> <i></i>
                                                 </label>
                                             </section>   
                                             <section class="col col-1">
@@ -455,11 +479,12 @@
                         }                
 
 
-                        valorTotal += parseFloat(value.vl_baixa_honorario_bho);
+                        valorTotal += parseFloat(value.vl_baixa_honorario_bho);                        
 
                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.tipo_baixa_honorario.nm_tipo_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
                                                             '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                             '<td class="center">'+                                                                
@@ -594,6 +619,7 @@
             var id = $(this).data('id');
             $("#dtBaixaCliente").val('');
             $("#notaFiscal").val('');
+            $("#tipo").val('');
             $('#tabelaRegistro > tbody').html('');
             $("#cdBaixaFinanceiro").val(id);       
             $("#valor").val( String(parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'))).replace('.',','));
@@ -617,6 +643,7 @@
                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                            '<td >'+value.tipo_baixa_honorario.nm_tipo_baixa_honorario_bho+'</td>'+
                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
                                                             '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                             '<td class="center">'+                                                                
@@ -663,6 +690,7 @@
                                         $('#tabelaRegistro > tbody').append('<tr>'+
                                                                             '<td class="center">'+value.dt_baixa_honorario_bho+'</td>'+
                                                                             '<td >'+value.vl_baixa_honorario_bho+'</td>'+
+                                                                            '<td >'+value.tipo_baixa_honorario.nm_tipo_baixa_honorario_bho+'</td>'+
                                                                             '<td >'+value.nu_nota_fiscal_bho+'</td>'+
                                                                             '<td >'+"<a href='{{ url('financeiro/entrada/file') }}/"+value.anexo_financeiro.cd_anexo_financeiro_afn+"' >"+value.anexo_financeiro.nm_anexo_financeiro_afn+"</a></td>"+
                                                                             '<td class="center">'+                                                                

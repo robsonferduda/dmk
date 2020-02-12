@@ -178,7 +178,6 @@ class FinanceiroController extends Controller
             $entradas = $entradas->whereIn('fl_pago_cliente_pth',$opcoes);
         }
 
-
         $entradas = $entradas->where('cd_conta_con',$this->conta)->select('cd_processo_taxa_honorario_pth','vl_taxa_honorario_cliente_pth','vl_taxa_honorario_correspondente_pth','cd_processo_pro','cd_tipo_servico_tse','fl_pago_cliente_pth','vl_taxa_cliente_pth','dt_baixa_cliente_pth','nu_cliente_nota_fiscal_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');        
 
         return view('financeiro/entrada',['entradas' => $entradas])->with(['dtInicio' => $dtInicio,'dtFim' => $dtFim,'cliente' => $cliente, 'nmCliente' => $nmCliente]);
@@ -702,14 +701,14 @@ class FinanceiroController extends Controller
 
     public function buscarBaixaEntrada($id){
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
 
         echo json_encode($baixaHonorario);
     }
 
     public function buscarBaixaSaida($id){
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$id)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
 
         echo json_encode($baixaHonorario);
     }
@@ -735,6 +734,7 @@ class FinanceiroController extends Controller
         $baixaHonorario->vl_baixa_honorario_bho         =  str_replace(',', '.', $request->valor);
         $baixaHonorario->cd_tipo_financeiro_tfn         = \TipoFinanceiro::ENTRADA;
         $baixaHonorario->cd_conta_con                   = $this->conta;
+        $baixaHonorario->cd_tipo_baixa_honorario_bho    = $request->tipo;
 
         $response = $baixaHonorario->saveOrFail();
 
@@ -768,7 +768,7 @@ class FinanceiroController extends Controller
             
         }
 
-        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
 
@@ -804,6 +804,7 @@ class FinanceiroController extends Controller
         $baixaHonorario->vl_baixa_honorario_bho         =  str_replace(',', '.', $request->valor);
         $baixaHonorario->cd_tipo_financeiro_tfn         = \TipoFinanceiro::SAIDA;
         $baixaHonorario->cd_conta_con                   = $this->conta;
+        $baixaHonorario->cd_tipo_baixa_honorario_bho    = $request->tipo;
 
         $response = $baixaHonorario->saveOrFail();
 
@@ -837,7 +838,7 @@ class FinanceiroController extends Controller
             
         }
 
-        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorarioList = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
 
@@ -1225,7 +1226,7 @@ class FinanceiroController extends Controller
             $despesas = array();
         }
 
-        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas);    
+        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'tipo' => $request->tipo);    
 
         \Excel::store(new BalancoDetalhadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
 
@@ -1299,7 +1300,8 @@ class FinanceiroController extends Controller
                                 ->with('nmCorrespondente',$request->nm_correspondente_cor)
                                 ->with('despesas',$request->despesas)
                                 ->with('saidas',$request->saidas)
-                                ->with('entradas',$request->entradas);
+                                ->with('entradas',$request->entradas)
+                                ->with('tipo',$request->tipo);
         
     }
 
@@ -1347,7 +1349,7 @@ class FinanceiroController extends Controller
                                     ->delete();
 
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->orderBy('cd_baixa_honorario_bho')->get();
 
         if(!empty($baixaProcesso->anexoFinanceiro))
             $this->entradaFileExcluir($baixaProcesso->anexoFinanceiro->cd_anexo_financeiro_afn);
@@ -1383,7 +1385,7 @@ class FinanceiroController extends Controller
                                     ->delete();
 
 
-        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
+        $baixaHonorario = BaixaHonorario::with('anexoFinanceiro')->with('tipoBaixaHonorario')->where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$baixaProcesso->cd_processo_taxa_honorario_pth)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->orderBy('cd_baixa_honorario_bho')->get();
 
         if(!empty($baixaProcesso->anexoFinanceiro))
             $this->entradaFileExcluir($baixaProcesso->anexoFinanceiro->cd_anexo_financeiro_afn);

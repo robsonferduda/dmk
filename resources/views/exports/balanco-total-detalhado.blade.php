@@ -23,10 +23,21 @@
             @endphp
             @php
                 $totalLinha = 0;
-                if(!empty($dado->honorario)){
-                    $totalLinha = (($dado->honorario->vl_taxa_honorario_cliente_pth)-
-                                    ((($dado->honorario->vl_taxa_honorario_cliente_pth)*$dado->honorario->vl_taxa_cliente_pth)/100))+$totalDespesas;
+
+                if($dado->tipo == 'P'){
+
+                    if(!empty($dado->honorario)){
+                        $totalLinha = (($dado->honorario->vl_taxa_honorario_cliente_pth)-
+                                        ((($dado->honorario->vl_taxa_honorario_cliente_pth)*$dado->honorario->vl_taxa_cliente_pth)/100))+$totalDespesas;
+                    }
+
+                }else{
+                    if(!empty($dado->honorario->baixaHonorario)){
+                        $totalLinha = (($dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho'))-
+                                        ((($dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho'))*$dado->honorario->vl_taxa_cliente_pth)/100));
+                    }
                 }
+
                 $entradaTotal +=  $totalLinha;
             @endphp
         @endforeach
