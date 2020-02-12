@@ -9,6 +9,7 @@
             $entradaTotal = 0;
             $saidaTotal = 0;
             $despesaTotal = 0;
+            $tipo = $dados['tipo'];
         @endphp
       
         @foreach($dados['entradas'] as $dado)
@@ -24,7 +25,7 @@
             @php
                 $totalLinha = 0;
 
-                if($dado->tipo == 'P'){
+                if($tipo == 'P'){                    
 
                     if(!empty($dado->honorario)){
                         $totalLinha = (($dado->honorario->vl_taxa_honorario_cliente_pth)-
@@ -32,9 +33,13 @@
                     }
 
                 }else{
+
                     if(!empty($dado->honorario->baixaHonorario)){
-                        $totalLinha = (($dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho'))-
-                                        ((($dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho'))*$dado->honorario->vl_taxa_cliente_pth)/100));
+
+                        $totalHonorario = $dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::HONORARIO)->sum('vl_baixa_honorario_bho');
+
+                        $totalLinha = (($totalHonorario)-
+                                        ((($totalHonorario)*$dado->honorario->vl_taxa_cliente_pth)/100))+$dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::DESPESA)->sum('vl_baixa_honorario_bho');
                     }
                 }
 
@@ -55,8 +60,18 @@
            
             @php
                 $totalLinha = 0;
-                if(!empty($dado->honorario)){
-                    $totalLinha = $dado->honorario->vl_taxa_honorario_correspondente_pth+$totalDespesas;
+
+                if($tipo == 'P'){       
+                    if(!empty($dado->honorario)){
+                        $totalLinha = $dado->honorario->vl_taxa_honorario_correspondente_pth+$totalDespesas;
+                    }
+                }else{
+
+                    if(!empty($dado->honorario->baixaHonorario)){
+
+                        $totalLinha = $dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho');
+                       
+                    }
                 }
                 $saidaTotal +=  $totalLinha;
             @endphp

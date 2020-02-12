@@ -399,13 +399,21 @@ class FinanceiroController extends Controller
                 $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $entrada->honorario->vl_taxa_honorario_cliente_pth, 'despesa' => $totalDespesas, 'total' => $total);
             }else{
 
-                $total = $entrada->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho');
+                $total = $entrada->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::HONORARIO)->sum('vl_baixa_honorario_bho');
+
+                if(!empty($total))
+                    $total = $total - (($total * $entrada->honorario->vl_taxa_cliente_pth)/100);
+
+
+                $totalDespesas = $entrada->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::DESPESA)->sum('vl_baixa_honorario_bho');
+
 
                 if(array_key_exists($entrada->cliente->cd_cliente_cli, $entradasVetor)){
-                       $total += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);                       
+                       $total += round($entradasVetor[$entrada->cliente->cd_cliente_cli]['valor'],2);   
+                       $totalDespesas += $entradasVetor[$entrada->cliente->cd_cliente_cli]['despesa'];                    
                 }
 
-                $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $total, 'despesa' => 0, 'total' => 0);
+                $entradasVetor[$entrada->cliente->cd_cliente_cli] = array('cliente' => $entrada->cliente->nm_razao_social_cli, 'valor' => $total, 'despesa' => $totalDespesas, 'total' => 0);
 
             }
         }

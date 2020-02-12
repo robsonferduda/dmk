@@ -229,6 +229,7 @@ return [
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
         'TipoFinanceiro' => App\Enums\TipoFinanceiro::class,
+        'TipoBaixaHonorario' => App\Enums\TipoBaixaHonorario::class,
     ],
 
 ];
