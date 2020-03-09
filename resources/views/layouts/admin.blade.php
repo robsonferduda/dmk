@@ -26,7 +26,7 @@
         @yield('stylesheet')
     </head>
 
-    <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}">
+    <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}" id='body-principal'>
         <header id="header">
             <div id="logo-group">
                 <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>

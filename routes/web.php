@@ -278,7 +278,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');
 	Route::post('financeiro/saida/buscar','FinanceiroController@saidaBuscar');
 	Route::post('financeiro/cliente/baixa','FinanceiroController@baixaCliente');
-	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
 	Route::get('financeiro/balanco','FinanceiroController@balancoIndex');
 	Route::post('financeiro/balanco/buscar','FinanceiroController@balancoBuscar');
 	Route::get('financeiro/relatorio/balanco/detalhado','FinanceiroController@relatorioBalancoDetalhado');
@@ -287,6 +286,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('financeiro/relatorios','FinanceiroController@relatorios');
 	Route::delete('financeiro/balanco/reports/{nome}','FinanceiroController@excluir');
 	Route::get('financeiro/balanco/reports/{nome}','FinanceiroController@arquivo');
+	Route::get('financeiro/cliente/baixa/entrada/{id}','FinanceiroController@buscarBaixaEntrada');
+	Route::delete('financeiro/cliente/baixa/entrada/excluir/{id}','FinanceiroController@excluirBaixa');
+	Route::get('financeiro/entrada/file/{id}','FinanceiroController@entradaFile');
+
+	Route::post('financeiro/correspondente/baixa','FinanceiroController@baixaCorrespondente');
+	Route::delete('financeiro/correspondente/baixa/saida/excluir/{id}','FinanceiroController@excluirBaixaSaida');
+	Route::get('financeiro/correspondente/baixa/saida/{id}','FinanceiroController@buscarBaixaSaida');
+
 	
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
 	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');

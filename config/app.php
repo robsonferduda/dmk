@@ -228,6 +228,8 @@ return [
         'Minify'        => 'Devfactory\Minify\Facades\MinifyFacade',
         'GoogleCalendar' => Spatie\GoogleCalendar\GoogleCalendarFacade::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
+        'TipoFinanceiro' => App\Enums\TipoFinanceiro::class,
+        'TipoBaixaHonorario' => App\Enums\TipoBaixaHonorario::class,
     ],
 
 ];
