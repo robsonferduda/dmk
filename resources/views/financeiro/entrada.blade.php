@@ -129,7 +129,7 @@
 
                                 @endphp
 
-                                <tr {{ ( empty($entrada->baixaHonorario) 
+                                <tr {{ ($entrada->baixaHonorario $totalBaixaHonorario <= 0 && $totalDespesas+$entrada->vl_taxa_honorario_cliente_pth > 0
                                                     ? 'style=background-color:#fb8e7e' : 
                                                             ($totalBaixaHonorario < ($totalDespesas+$entrada->vl_taxa_honorario_cliente_pth) && $totalBaixaHonorario > 0
                                                                 ? 'style=background-color:#f2cf59' : 
