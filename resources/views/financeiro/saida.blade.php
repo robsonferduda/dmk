@@ -130,7 +130,7 @@
                                    // dd($saida);
                                 @endphp
 
-                                <tr {{ ($totalBaixaHonorario <= 0 
+                                <tr {{ ($totalBaixaHonorario <= 0 && $totalDespesas+$saida->vl_taxa_honorario_correspondente_pth > 0
                                                     ? 'style=background-color:#fb8e7e' : 
                                                             ($totalBaixaHonorario < ($totalDespesas+$saida->vl_taxa_honorario_correspondente_pth) && $totalBaixaHonorario > 0
                                                                 ? 'style=background-color:#f2cf59' : 
