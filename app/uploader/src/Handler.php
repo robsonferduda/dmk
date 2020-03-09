@@ -11,7 +11,39 @@
 
 namespace Hazzard\Filepicker;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Handler extends BaseHandler
 {
-    // See BaseHandler.php
+    
+	public function postAction(Request $request)
+    {
+    	$files = $request->files->get(
+            $this->getParamName(),
+            $request->files->get($this->getSingularParamName(), array())
+        );
+
+        if (! is_array($files)) {
+            $files = array($files);
+        }
+
+        $response = array();
+
+        foreach ($files as $file) {
+            try {
+
+                $file = $this->upload($file, $request);
+                $file->id = $request->id_despesa;
+                
+            } catch (AbortException $e) {
+                $file->errorMessage = $e->getMessage() ?: $this->uploader->getErrorMessage('abort');
+            }
+
+            $response[] = $this->fileToArray($file);
+        }
+
+        return $this->json($response, 201);
+    }
+    
 }

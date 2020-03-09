@@ -64,6 +64,7 @@ class DespesasController extends Controller
 
     public function novo()
     {   
+        
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 
@@ -76,7 +77,7 @@ class DespesasController extends Controller
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 
-        return view('despesas/editar', ['despesa' => $despesa, 'despesas' => $despesas, 'categorias' => $categorias ]); 
+        return view('despesas/novo', ['despesa' => $despesa, 'despesas' => $despesas, 'categorias' => $categorias ]); 
     }
 
     public function buscar(Request $request)
@@ -184,23 +185,12 @@ class DespesasController extends Controller
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
-            if($request->file){
-                //Parte responsável pelo upload
-                $destino = "despesas/$this->conta/";
-     
-                $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-                if(!is_dir($destino)){
-                    @mkdir(storage_path($destino), 0775);
-                }
-         
-                if(request()->file->move(storage_path($destino), $fileName)){
-                    $request->merge(['anexo_des' => $fileName]);
-                }
-                //Fim do upload
+            if($request->id_despesa){
+                $despesa = Despesa::findOrFail($request->id_despesa);
+            }else{
+                $despesa = new Despesa();    
             }
-
-            $despesa = new Despesa();
+            
             $despesa->fill($request->all());
 
             if($despesa->save()){
@@ -227,22 +217,6 @@ class DespesasController extends Controller
         if(!empty($request->dt_pagamento_des)) $request->merge(['dt_pagamento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))]);
         $request->merge(['vl_valor_des' => $request->vl_valor_des]);
         $request->merge(['cd_conta_con' => $this->conta]);
-
-        if($request->file){
-            //Parte responsável pelo upload
-            $destino = "despesas/$this->conta/";
-     
-            $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-            if(!is_dir($destino)){
-                @mkdir(storage_path($destino), 0775);
-            }
-         
-            if(request()->file->move(storage_path($destino), $fileName)){
-                $request->merge(['anexo_des' => $fileName]);
-            }
-            //Fim do upload
-        }
 
         $despesa = Despesa::findOrFail($id);
         $despesa->fill($request->all());
@@ -285,4 +259,6 @@ class DespesasController extends Controller
         $despesa = Despesa::findOrFail($id);
         return response()->download(storage_path('despesas/'.$conta.'/'.$despesa->anexo_des));
     }
+
+    //Mapear cliques btn-upload-plugin, start
 }

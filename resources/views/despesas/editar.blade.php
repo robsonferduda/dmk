@@ -32,7 +32,7 @@
 
                 <div role="content">
                     <div class="widget-body no-padding">
-                        {!! Form::open(['id' => 'frm_add_despesas', 'url' => ['despesas',$despesa->cd_despesa_des], 'class' => 'smart-form', 'method' => 'PUT','files' => true]) !!}
+                        {!! Form::open(['id' => 'frm_add_despesas', 'url' => ($despesa) ? ['despesas',$despesa->cd_despesa_des] : 'despesas', 'class' => 'smart-form', ($despesa) ? 'method' => 'PUT' : '','files' => true]) !!}
                             <header>Dados da Despesa <small style="font-size: 12px;"><span class="text-danger">* Campos obrigatórios</span></small></header>
                             <fieldset>
 

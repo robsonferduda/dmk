@@ -363,6 +363,8 @@ abstract class BaseHandler
             $data['data'] = $file->data;
         }
 
+        $data['id'] = $file->id;
+
         return $data;
     }
 
