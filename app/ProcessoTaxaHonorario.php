@@ -22,9 +22,7 @@ class ProcessoTaxaHonorario extends Model implements AuditableContract
                             'cd_conta_con',
                             'cd_tipo_servico_tse',
                             'cd_tipo_servico_correspondente_tse',
-                            'vl_taxa_cliente_pth',
-                            'dt_baixa_correspondente_pth',
-                            'dt_baixa_cliente_pth',
+                            'vl_taxa_cliente_pth',                            
                             'nu_cliente_nota_fiscal_pth'
                                                
     					  ];

@@ -3,8 +3,7 @@
         <tr>
             <td colspan="8" style="text-align: center; vertical-align: center; height:50px;">{{ $dados['conta']->nm_razao_social_con }}</td>
         </tr>
-	    <tr>
-            <td style="font-weight: bold;">Data da Baixa</td>
+	    <tr>            
 	     	<td style="font-weight: bold;">Correspondente</td>
             <td style="font-weight: bold;">Processo</td>
             <td style="font-weight: bold;">Prazo Fatal</td>
@@ -30,8 +29,7 @@
                      $totalHonorarioSaida = $dado->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::HONORARIO)->sum('vl_baixa_honorario_bho');
             }
         @endphp
-        <tr>
-            <td> {{ !empty($dado->honorario->dt_baixa_correspondente_pth) ? date('d/m/Y', strtotime($dado->honorario->dt_baixa_correspondente_pth)) : '' }}</td>
+        <tr>            
         	<td>{{ $dado->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  }}</td>
             <td>{{ $dado->nu_processo_pro }}</td>   
             <td>{{ date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) }}</td>     
@@ -81,7 +79,7 @@
         </tr>
         @endforeach
         <tr>
-            <td colspan="7" style="font-weight: bold;">TOTAL</td>
+            <td colspan="6" style="font-weight: bold;">TOTAL</td>
             <td style="font-weight: bold;">{{ 'R$ '.number_format($total,2,',',' ')  }} </td>      
         </tr>
      
