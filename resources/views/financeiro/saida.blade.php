@@ -306,12 +306,7 @@
                                                 </label>
                                             </section>                     
                                          
-                                             <section class="col col-3">
-                                                <label class="label">Valor<span class="text-danger">*</label>
-                                                <label class="input">
-                                                    <input type="text" class="form-control taxa-honorario" name="valor" id="valor" required>
-                                                </label>
-                                            </section>  
+                                            
                                             <section class="col col-3">
                                                 <label class="label" >Tipo<span class="text-danger">*</span></label>          
                                                 <label class="select">
@@ -509,6 +504,7 @@
             event.preventDefault();
             var form = this;
             var contadorEntradas = 0;  
+            var valorTotalLabel = 0;
 
             $(".checkbox-check-pagamento-correspondente").each(function(index,element){
                     
@@ -519,10 +515,17 @@
                    
                     var formData = new FormData(form);
                     var id =  $(this).data('id');
-                    formData.append('cdBaixaFinanceiro',id);    
-                    for(var pair of formData.entries()) {
-                       console.log(pair[0]+ ', '+ pair[1]); 
+
+                    
+                    if(formData.get('tipo') == 1){
+                        var valor = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.'));
+                    }else{
+                        var valor = parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));
                     }
+
+                    formData.append('valor',valor);   
+                    formData.append('cdBaixaFinanceiro',id);    
+                    
            
                     $.ajax({
                         url: "{{ url('/financeiro/correspondente/baixa') }}",
@@ -537,7 +540,9 @@
 
                             var valorTotal = 0;
                             contadorEntradas++;
-                            $('.retornoLote').text("O valor R$"+$('#frm-add-baixa-lote .taxa-honorario').val()+" foi adicionando ao total de "+contadorEntradas+" entrada(s).");
+                            valorTotalLabel += valor;
+
+                            $('.retornoLote').text("Valor total da operação: R$"+valorTotalLabel+" / Total de saída(s): "+contadorEntradas);
 
                             $.each(registros, function(index, value){   
                                         
