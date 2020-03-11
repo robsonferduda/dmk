@@ -78,6 +78,7 @@
                             </div>
                         </fieldset>
                     </div>
+                    {{ dd($despesa->anexos()->first()) }}
             </div>
         </article>
     </div>

@@ -21,9 +21,4 @@ class AnexoDespesa extends Model
 
     public $timestamps = true;
 
-    public function entidade()
-    {
-        return $this->hasOne('App\Entidade','cd_entidade_ete', 'cd_entidade_ete');
-    }
-
 }

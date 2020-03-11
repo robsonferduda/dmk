@@ -77,7 +77,7 @@ class DespesasController extends Controller
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 
-        return view('despesas/novo', ['despesa' => $despesa, 'despesas' => $despesas, 'categorias' => $categorias ]); 
+        return view('despesas/editar', ['despesa' => $despesa, 'despesas' => $despesas, 'categorias' => $categorias ]); 
     }
 
     public function buscar(Request $request)
@@ -185,25 +185,18 @@ class DespesasController extends Controller
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
-            if($request->id_despesa){
-                $despesa = Despesa::findOrFail($request->id_despesa);
-            }else{
-                $despesa = new Despesa();    
-            }
+            $despesa = new Despesa();           
             
             $despesa->fill($request->all());
 
-            if($despesa->save()){
-                Flash::success('Despesa cadastrada com sucesso');
-                return redirect('despesas/lancamentos');
-            }else{
-                Flash::error('Erro ao cadastrar despesa. Verifique os dados e tente novamente');
-                return redirect()->back();
-            }
+            if($despesa->save())
+                return Response::json(array('id' => $despesa->cd_despesa_des, 'message' => 'Registro adicionado com sucesso'), 200);
+            else
+                return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
             
         }catch (Exception $e) {
             
-
+            return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
 
         }
 
@@ -259,6 +252,4 @@ class DespesasController extends Controller
         $despesa = Despesa::findOrFail($id);
         return response()->download(storage_path('despesas/'.$conta.'/'.$despesa->anexo_des));
     }
-
-    //Mapear cliques btn-upload-plugin, start
 }

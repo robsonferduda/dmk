@@ -35,18 +35,6 @@ class FilepickerController extends Controller
             new Uploader($config = new Config, new ImageManager)
         );
         
-        //Nesse ponto, ele verifica se existe despesa cadastrada. Se existir, ele atribui o id, caso contrário, ele cria uma despesa e atribui o id para ela
-        if($id_despesa == null){
-
-            $despesa = new Despesa();
-            $despesa->cd_conta_con = $this->conta;
-            $despesa->cd_tipo_despesa_tds = 12;
-            $despesa->save();
-
-            $id_despesa = $despesa->cd_despesa_des;
-            \Session::put('id_despesa_folder',$id_despesa);
-        }
-
         $destino = "despesas/$this->conta/$id_despesa";        
 
         //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
@@ -54,10 +42,9 @@ class FilepickerController extends Controller
             @mkdir(storage_path($destino), 0775);
         }
 
-        $config['upload_dir'] =  storage_path($destino);
+        $config['debug'] = true;
+        $config['upload_dir'] = storage_path($destino);
         $config['upload_url'] = storage_path($destino);
-
-        return $id_despesa;
 
     }
 
@@ -70,23 +57,9 @@ class FilepickerController extends Controller
     public function handle(Request $request)
     {
 
-        $method = $request->get('_method', $request->getMethod());
-        $id_despesa = $this->inicializaPastaDestino($request->id_despesa);
-        $request->merge(['id_despesa' => $id_despesa]);
+        $this->inicializaPastaDestino($request->id_despesa);
 
         //Ação de enviar arquivo
-        if($method == 'POST'){
-
-            try {
-                return $this->handler->postAction($request);
-            } catch (UploadException $e) {
-                echo 'Upload error: ' . $e->getMessage();
-            }
-
-        }else{
-
-            return $this->handler->handle($request);
-
-        }
+        return $this->handler->handle($request);
     }
 }

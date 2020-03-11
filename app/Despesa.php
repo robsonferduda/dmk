@@ -30,4 +30,9 @@ class Despesa extends Model
     {
         return $this->hasOne('App\TipoDespesa','cd_tipo_despesa_tds', 'cd_tipo_despesa_tds');
     }
+
+    public function anexos()
+    {
+        return $this->hasMany('App\AnexoDespesa','cd_despesa_des', 'cd_despesa_des');
+    }
 }
