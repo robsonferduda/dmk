@@ -32,7 +32,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::any('filepicker', 'FilepickerController@handle');
 
 	Route::post('anexo-despesa-add', 'AnexoDespesaController@create');
-	Route::post('anexo-despesa-add', 'AnexoDespesaController@create');
+	Route::delete('anexo-despesa-delete', 'AnexoDespesaController@destroy');
 
 	Route::any('upload/index', 'FilepickerController@index');
 

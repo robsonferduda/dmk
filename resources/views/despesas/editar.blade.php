@@ -235,11 +235,28 @@
             });
 
         })
-        .on('delete.filepicker', function (e, data) {
+        .on('deletedone.filepicker', function (e, data) {
+      
+            $.ajax({
+                url: '../../anexo-despesa-delete',
+                type: 'POST',
+                dataType: "JSON",
+                data: {
+                    "_method": 'DELETE',
+                    "id": $("#id_despesa").val(),                    
+                    "nome_arquivo": data.filename,
+                    "_token": $('meta[name="token"]').attr('content'),
+                },
+                success: function(response)
+                {
+                    $(".msg_retorno").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Os dados serão atualizados!</strong></h4>')
+                },
+                error: function(response)
+                {
+                    $(".msg_retorno").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
+                }
+            });
             
-            //Implementar exclusão do banco
-            alert("Exclusão do banco");
-
         });
 
         $('#dt_vencimento_des').datepicker({

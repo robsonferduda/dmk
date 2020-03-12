@@ -49,7 +49,7 @@
                                             <strong>Tipo de Despesa: </strong> {{ $despesa->tipo->nm_tipo_despesa_tds }}
                                         </li>
                                         <li>
-                                            <strong>Valor: </strong> {{ $despesa->vl_valor_des }}
+                                            <strong>Valor: </strong> R$ {{ ($despesa->vl_valor_des) ? $despesa->vl_valor_des : '--' }}
                                         </li>
                                         <li>
                                             <strong>Data de Vencimento: </strong> {{ date('d/m/Y', strtotime($despesa->dt_vencimento_des)) }}
@@ -71,7 +71,7 @@
                         </fieldset>
 
                         <fieldset style="margin-bottom: 15px;">
-                            <legend><i class="fa fa-file-o"></i> <strong>Anexos</strong></legend>
+                            <legend><i class="fa fa-file-o"></i> <strong>Anexos</strong> {{ (count($despesa->anexos) > 0) ? (count($despesa->anexos) == 1) ? '1 arquivo anexado' : count($despesa->anexos).' arquivos anexados' : '' }}</legend>
                             <div class="row" style="margin-left: 5px;">
                                 @forelse($despesa->anexos as $anexo)
                                     <div>

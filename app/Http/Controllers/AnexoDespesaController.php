@@ -33,16 +33,12 @@ class AnexoDespesaController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
 
-        $anexo = AnexoDespesa::where('cd_anexo_despesa_des',$id)->first();
+        $anexo = AnexoDespesa::where('cd_despesa_des',$request->id)->where('nm_anexo_despesa_des',$request->nome_arquivo)->first();
 
         if($anexo->delete()){
-
-            //Após excluir o registro, exclui o arquivo também
-            if(file_exists(storage_path($anexo->nm_local_anexo_processo_apr)))
-                unlink(storage_path($anexo->nm_local_anexo_processo_apr));
 
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         
