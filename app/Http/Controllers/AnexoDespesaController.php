@@ -22,10 +22,53 @@ class AnexoDespesaController extends Controller
 
     public function create(Request $request)
     {
+
+        $local = "despesas/$this->conta/$request->id_despesa/$request->nome_arquivo";
+
         AnexoDespesa::create([
-            'cd_conta_con'   => $this->cdContaCon,
-            'cd_despesa_des' => $request->id_despesa
+            'cd_conta_con'   => $this->conta,
+            'cd_despesa_des' => $request->id_despesa,
+            'nm_anexo_despesa_des' => $request->nome_arquivo,
+            'nm_local_anexo_despesa_des' => $local
         ]);
+    }
+
+    public function destroy($id)
+    {
+
+        $anexo = AnexoDespesa::where('cd_anexo_despesa_des',$id)->first();
+
+        if($anexo->delete()){
+
+            //Após excluir o registro, exclui o arquivo também
+            if(file_exists(storage_path($anexo->nm_local_anexo_processo_apr)))
+                unlink(storage_path($anexo->nm_local_anexo_processo_apr));
+
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        
+        }else{
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        }
+        
+    }
+
+     public function destroyAndRemoveFile($id)
+    {
+
+        $anexo = AnexoDespesa::where('cd_anexo_despesa_des',$id)->first();
+
+        if($anexo->delete()){
+
+            //Após excluir o registro, exclui o arquivo também
+            if(file_exists(storage_path($anexo->nm_local_anexo_processo_apr)))
+                unlink(storage_path($anexo->nm_local_anexo_processo_apr));
+
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+        
+        }else{
+            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        }
+        
     }
 
 }

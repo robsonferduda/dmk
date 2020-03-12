@@ -16,7 +16,7 @@ class AnexoDespesa extends Model
     protected $fillable = [
     						'cd_despesa_des',
     						'nm_anexo_despesa_des',
-    						'arquivo_anexo_despesa_des'
+    						'nm_local_anexo_despesa_des'
     					  ];
 
     public $timestamps = true;

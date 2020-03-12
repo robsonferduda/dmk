@@ -24,7 +24,6 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
@@ -41,13 +40,13 @@
                                 <p>
                                     <ul class="list-unstyled">
                                         <li>
+                                            <strong>Despesa: </strong> {{ $despesa->dc_descricao_des }}
+                                        </li>
+                                        <li>
                                             <strong>Categoria: </strong> {{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informada'}}
                                         </li>
                                         <li>
                                             <strong>Tipo de Despesa: </strong> {{ $despesa->tipo->nm_tipo_despesa_tds }}
-                                        </li>
-                                        <li>
-                                            <strong>Despesa: </strong> {{ $despesa->dc_descricao_des }}
                                         </li>
                                         <li>
                                             <strong>Valor: </strong> {{ $despesa->vl_valor_des }}
@@ -72,15 +71,33 @@
                         </fieldset>
 
                         <fieldset style="margin-bottom: 15px;">
-                            <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
+                            <legend><i class="fa fa-file-o"></i> <strong>Anexos</strong></legend>
                             <div class="row" style="margin-left: 5px;">
-                                {!! $despesa->obs_des !!}
+                                @forelse($despesa->anexos as $anexo)
+                                    <div>
+                                        <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}">
+                                            <i class="fa fa-file"></i> {{ $anexo->nm_anexo_despesa_des }}
+                                        </a> 
+                                    </div>       
+                                @empty
+                                    <span>Nenhum anexo disponível</span>
+                                @endforelse
                             </div>
                         </fieldset>
+
+
+                        <fieldset style="margin-bottom: 15px;">
+                            <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
+                            <div class="row" style="margin-left: 5px;">
+                                {!! ($despesa->obs_des) ? $despesa->obs_des : 'Não existem observações' !!}
+                            </div>
+                        </fieldset>
+
+
                     </div>
-                    {{ dd($despesa->anexos()->first()) }}
             </div>
         </article>
     </div>
+</div>
 </div>
 @endsection

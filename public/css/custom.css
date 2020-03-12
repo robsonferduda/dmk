@@ -33,6 +33,7 @@
     width: 100%;
     overflow-x: scroll;
 }
+.none{ display: none; }
 .btn-upload{ padding: 1px 8px; padding: 1px 8px; color: #3276b1; cursor: pointer; }
 .btn-atuacao{ margin-right: 3px; margin-top: 3px;  }
 

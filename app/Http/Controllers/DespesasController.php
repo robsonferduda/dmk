@@ -73,7 +73,7 @@ class DespesasController extends Controller
 
     public function editar($id)
     {   
-        $despesa = Despesa::findOrFail($id);  
+        $despesa = Despesa::where('cd_despesa_des', $id)->with('anexos')->first();  
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 

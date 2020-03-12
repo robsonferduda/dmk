@@ -20,10 +20,14 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="alert fade in none">
+                <button class="close" data-dismiss="alert">×</button>
+                <i class="fa-fw fa"></i>
+                <strong class="msg_titulo"></strong> <span class="msg_mensagem"></span>
+            </div>
             <div class="jarviswidget jarviswidget-sortable">
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -201,26 +205,32 @@
         })
         .on('done.filepicker', function (e, data) {
             
+            console.log(data.files[0].name);
+
             $.ajax({
                 url: "../../anexo-despesa-add",
                 type: 'POST',
-                data: function(){
-
-                    var _token = "{{ csrf_token() }}";
-                    var id_despesa = $("#id_despesa").val();
-
-                   return {
-                        _token: _token,
-                        id_despesa: id_despesa
-                   }
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "id_despesa": $("#id_despesa").val(),
+                    "nome_arquivo": data.files[0].name
                 },
                 success: function(response){   
 
-                    //Inserir registro no banco de dados
-                    alert("Inserir com sucesso");
+                    $(".fa").addClass("fa-check");
+                    $(".msg_titulo").html("Sucesso");
+                    $(".msg_mensagem").html("Arquivo anexado com sucesso");
+                    $(".alert").addClass("alert-success");
+                    $(".alert").removeClass("none");
+                    
                 },
                 error: function(response){
-                    alert("Erro");
+
+                    $(".fa").addClass("fa-times");
+                    $(".msg_titulo").html("Erro");
+                    $(".msg_mensagem").html("Erro ao enviar o arquivo");
+                    $(".alert").addClass("alert-danger");
+                    $(".alert").removeClass("none");
                 }
             });
 
@@ -284,9 +294,11 @@
             </td>
             <td style="font-size: 150%; text-align: center;">
                 {% if (!o.file.autoUpload && !o.file.error) { %}
-                    <a href="#" class="start">Upload</a>
+                    <a href="#" class="action action-primary start" title="Upload">
+                        <i class="fa fa-arrow-circle-o-up"></i>
+                    </a>
                 {% } %}
-                <a href="#" class="action action-warning cancel" title="Cancel">
+                <a href="#" class="action action-warning cancel" title="Cancelar">
                     <i class="fa fa-ban"></i>
                 </a>
             </td>
@@ -326,7 +338,7 @@
                     </a>
                 {% } %}
                 {% if (o.file.error) { %}
-                    <a href="#" class="action action-warning cancel" title="Cancel">
+                    <a href="#" class="action action-warning cancel" title="Cancelar">
                         <i class="fa fa-ban"></i>
                     </a>
                 {% } else { %}
