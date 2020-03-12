@@ -628,7 +628,7 @@
             $("#tipo").val('');
             $('#tabelaRegistro > tbody').html('');
             $("#cdBaixaFinanceiro").val(id);       
-            $("#valor").val( String(parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'))).replace('.',','));
+            $("#valor").val( $(this).parent().parent().children().eq(4).text().replace('R$ ',''));
 
             $(".modal-title").html('<i class="icon-append fa fa-money"></i>');
             $(".modal-title").append(' '+$(this).parent().parent().children().eq(0).text()+' - '+$(this).parent().parent().children().eq(3).text()+'('+$(this).parent().parent().children().eq(2).text()+')');
