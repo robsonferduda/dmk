@@ -75,7 +75,7 @@
                             <div class="row" style="margin-left: 5px;">
                                 @forelse($despesa->anexos as $anexo)
                                     <div>
-                                        <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}">
+                                        <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($anexo->cd_anexo_despesa_des)) }}">
                                             <i class="fa fa-file"></i> {{ $anexo->nm_anexo_despesa_des }}
                                         </a> 
                                     </div>       

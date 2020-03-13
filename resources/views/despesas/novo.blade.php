@@ -94,6 +94,10 @@
                                         <div class="well center dropzone">
                                             <h1 style="font-size: 70px; margin-top: 70px; "><i class="fa fa-cloud-upload"></i></h1>
                                             <h4>Arraste aqui os documentos que deseja enviar</h4>
+                                            <h4>ou</h4>
+                                            <div id="btn-upload-aux" class="btn btn-success btn-sm ">
+                                                <i class="fa fa-files-o"></i> Clique aqui
+                                            </div>
                                         </div>
                                     </section>
 
@@ -178,6 +182,10 @@
     $(document).ready(function() { 
 
             var flag_controle = false;
+
+            $(document).on("click","#btn-upload-aux", function(){             
+                $("#input-file").trigger('click');
+            });
 
             $("#btnSaveDespesas").on('click', function(event){
 

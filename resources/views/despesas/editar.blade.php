@@ -100,7 +100,12 @@
                                         <div class="well center dropzone">
                                             <h1 style="font-size: 70px; margin-top: 70px; "><i class="fa fa-cloud-upload"></i></h1>
                                             <h4>Arraste aqui os documentos que deseja enviar</h4>
+                                            <h4>ou</h4>
+                                            <div id="btn-upload-aux" class="btn btn-success btn-sm ">
+                                                <i class="fa fa-files-o"></i> Clique aqui
+                                            </div>
                                         </div>
+                                        
                                     </section>
 
                                     <section class="col col-6">
@@ -110,10 +115,10 @@
                                                 
                                                 <div class="btn btn-success btn-upload-plugin fileinput">
                                                     <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                    <input type="file" name="files[]" multiple>
+                                                    <input type="file" name="files[]" id="input-file" multiple>
                                                 </div>   
 
-                                                 <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
                                                     <i class="fa fa-upload"></i> Enviar Todos
                                                 </button>               
 
@@ -187,6 +192,10 @@
 
      $(function() {
 
+        $(document).on("click","#btn-upload-aux", function(){             
+            $("#input-file").trigger('click');
+        });
+
         $('#filepicker').filePicker({
                 url: '../../filepicker',
                 ui: {
@@ -205,32 +214,35 @@
         })
         .on('done.filepicker', function (e, data) {
 
-            $.ajax({
-                url: "../../anexo-despesa-add",
-                type: 'POST',
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "id_despesa": $("#id_despesa").val(),
-                    "nome_arquivo": data.files[0].name
-                },
-                success: function(response){   
+            if(data.files[0].size){            
 
-                    $(".fa").addClass("fa-check");
-                    $(".msg_titulo").html("Sucesso");
-                    $(".msg_mensagem").html("Arquivo anexado com sucesso");
-                    $(".alert").addClass("alert-success");
-                    $(".alert").removeClass("none");
-                    
-                },
-                error: function(response){
+                $.ajax({
+                    url: "../../anexo-despesa-add",
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "id_despesa": $("#id_despesa").val(),
+                        "nome_arquivo": data.files[0].name
+                    },
+                    success: function(response){   
 
-                    $(".fa").addClass("fa-times");
-                    $(".msg_titulo").html("Erro");
-                    $(".msg_mensagem").html("Erro ao enviar o arquivo");
-                    $(".alert").addClass("alert-danger");
-                    $(".alert").removeClass("none");
-                }
-            });
+                        $(".fa").addClass("fa-check");
+                        $(".msg_titulo").html("Sucesso");
+                        $(".msg_mensagem").html("Arquivo anexado com sucesso");
+                        $(".alert").addClass("alert-success");
+                        $(".alert").removeClass("none");
+                        
+                    },
+                    error: function(response){
+
+                        $(".fa").addClass("fa-times");
+                        $(".msg_titulo").html("Erro");
+                        $(".msg_mensagem").html("Erro ao enviar o arquivo");
+                        $(".alert").addClass("alert-danger");
+                        $(".alert").removeClass("none");
+                    }
+                });
+            }
 
         })
         .on('delete.filepicker', function (e, data) {
