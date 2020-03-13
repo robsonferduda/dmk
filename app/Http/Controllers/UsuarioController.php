@@ -643,8 +643,12 @@ class UsuarioController extends Controller
         }
 
         DB::commit();
-        Flash::success('Dados Atualizados com sucesso');
-        return redirect('usuarios');
+        Flash::success('Dados  de usuário atualizados com sucesso');
+
+        if(Auth::user()->nivel->dc_nivel_niv == "COLABORADOR")
+            return redirect('usuarios/'.\Crypt::encrypt($usuario->id));
+        else
+            return redirect('usuarios');
 
     }
 
