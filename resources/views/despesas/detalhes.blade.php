@@ -57,14 +57,6 @@
                                         <li>
                                             <strong>Data de Pagamento: </strong> {{ date('d/m/Y', strtotime($despesa->dt_pagamento_des)) }}
                                         </li>
-                                        <li>
-                                            <strong>Anexo: </strong> 
-                                            @if($despesa->anexo_des)
-                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}"><i class="fa fa-file"></i> Baixar</a>
-                                            @else
-                                                <span>Não informado</span>
-                                            @endif
-                                        </li>
                                     </ul>
                                 </p>
                             </div>
