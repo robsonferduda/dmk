@@ -204,8 +204,6 @@
                 plugins: ['ui', 'drop', 'camera', 'crop']
         })
         .on('done.filepicker', function (e, data) {
-            
-            console.log(data.files[0].name);
 
             $.ajax({
                 url: "../../anexo-despesa-add",
@@ -235,8 +233,10 @@
             });
 
         })
-        .on('deletedone.filepicker', function (e, data) {
-      
+        .on('delete.filepicker', function (e, data) {
+
+            //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+
             $.ajax({
                 url: '../../anexo-despesa-delete',
                 type: 'POST',
@@ -249,13 +249,28 @@
                 },
                 success: function(response)
                 {
-                    $(".msg_retorno").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Os dados serão atualizados!</strong></h4>')
+                    $(".fa").addClass("fa-check");
+                    $(".msg_titulo").html("Sucesso");
+                    $(".msg_mensagem").html("Arquivo excluído com sucesso");
+                    $(".alert").addClass("alert-success");
+                    $(".alert").removeClass("none");
                 },
                 error: function(response)
                 {
-                    $(".msg_retorno").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
+                    $(".fa").addClass("fa-times");
+                    $(".msg_titulo").html("Erro");
+                    $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                    $(".alert").addClass("alert-danger");
+                    $(".alert").removeClass("none");
+
+                    return false;
                 }
             });
+
+        })
+        .on('deletedone.filepicker', function (e, data) {
+      
+            console.log(data);
             
         });
 

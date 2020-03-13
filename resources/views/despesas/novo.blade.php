@@ -36,7 +36,7 @@
                             <header>Dados da Despesa <small style="font-size: 12px;"><span class="text-danger">* Campos obrigatórios</span></small></header>
                             <fieldset>
                                 <div class="row">
-                                    <input type="hidden" name="id_despesa" id="id_despesa" value="{{ (!empty($despesa)) ? $despesa->cd_despesa_des : '' }}">
+                                    <input type="hidden" name="id_despesa" id="id_despesa">
                                     <section class="col col-6">
                                         <label class="label">Categoria 
                                             <a href="#" rel="popover-hover" data-placement="top" data-html="true" data-original-title="Categoria da Despesa" data-content="Não é obrigatório preencher, utilize ele como filtro para o campo <strong>Tipo de Despesa</strong>. ">
@@ -173,9 +173,9 @@
 </div>
 @endsection
 @section('script')
- <script type="text/javascript">
+<script type="text/javascript">
 
-        $(document).ready(function() { 
+    $(document).ready(function() { 
 
             var flag_controle = false;
 
@@ -278,27 +278,56 @@
 
         });        
 
-           $('#filepicker').filePicker({
-                url: '{{ ($despesa) ? '../../filepicker' : '../filepicker' }}',
-                ui: {
-                    autoUpload: false
-                },
-                data: function(){
-                   var _token = "{{ csrf_token() }}";
-                   var id_despesa = $("#id_despesa").val();
+        $('#filepicker').filePicker({
+            url: '../filepicker',
+            ui: {
+                autoUpload: false
+            },
+            data: function(){
+                var _token = "{{ csrf_token() }}";
+                var id_despesa = $("#id_despesa").val();
 
-                   return {
-                        _token: _token,
-                        id_despesa: id_despesa
-                   }
+                return {
+                    _token: _token,
+                    id_despesa: id_despesa
+                }
+            },
+            plugins: ['ui', 'drop', 'camera', 'crop']
+        })
+        .on('done.filepicker', function (e, data) {
+
+            $.ajax({
+                url: "../../anexo-despesa-add",
+                type: 'POST',
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "id_despesa": $("#id_despesa").val(),
+                    "nome_arquivo": data.files[0].name
                 },
-                plugins: ['ui', 'drop', 'camera', 'crop']
+                success: function(response){   
+
+                    $(".fa").addClass("fa-check");
+                    $(".msg_titulo").html("Sucesso");
+                    $(".msg_mensagem").html("Arquivo anexado com sucesso");
+                    $(".alert").addClass("alert-success");
+                    $(".alert").removeClass("none");
+                    
+                },
+                error: function(response){
+
+                    $(".fa").addClass("fa-times");
+                    $(".msg_titulo").html("Erro");
+                    $(".msg_mensagem").html("Erro ao enviar o arquivo");
+                    $(".alert").addClass("alert-danger");
+                    $(".alert").removeClass("none");
+                }
             });
 
-        });        
+        });
+
+    });        
 
     </script>
-
     <script type="text/x-tmpl" id="uploadTemplate">
         <tr class="upload-template">
             <td class="column-name">
@@ -312,8 +341,12 @@
                 </div>
             </td>
             <td style="font-size: 150%; text-align: center;">
-                
-                <a href="#" class="action action-warning cancel" title="Cancel">
+                {% if (!o.file.autoUpload && !o.file.error) { %}
+                    <a href="#" class="action action-primary start" title="Upload">
+                        <i class="fa fa-arrow-circle-o-up"></i>
+                    </a>
+                {% } %}
+                <a href="#" class="action action-warning cancel" title="Cancelar">
                     <i class="fa fa-ban"></i>
                 </a>
             </td>
@@ -353,7 +386,7 @@
                     </a>
                 {% } %}
                 {% if (o.file.error) { %}
-                    <a href="#" class="action action-warning cancel" title="Cancel">
+                    <a href="#" class="action action-warning cancel" title="Cancelar">
                         <i class="fa fa-ban"></i>
                     </a>
                 {% } else { %}
@@ -364,4 +397,38 @@
             </td>
         </tr>
     </script>
+     <!-- Pagination Template -->
+    <script type="text/x-tmpl" id="paginationTemplate">
+        {% if (o.lastPage > 1) { %}
+            <ul class="pagination pagination-sm">
+                <li {% if (o.currentPage === 1) { %} class="disabled" {% } %}>
+                    <a href="#!page={%= o.prevPage %}" data-page="{%= o.prevPage %}" title="Previous">&laquo;</a>
+                </li>
+
+                {% if (o.firstAdjacentPage > 1) { %}
+                    <li><a href="#!page=1" data-page="1">1</a></li>
+                    {% if (o.firstAdjacentPage > 2) { %}
+                       <li class="disabled"><a>...</a></li>
+                    {% } %}
+                {% } %}
+
+                {% for (var i = o.firstAdjacentPage; i <= o.lastAdjacentPage; i++) { %}
+                    <li {% if (o.currentPage === i) { %} class="active" {% } %}>
+                        <a href="#!page={%= i %}" data-page="{%= i %}">{%= i %}</a>
+                    </li>
+                {% } %}
+
+                {% if (o.lastAdjacentPage < o.lastPage) { %}
+                    {% if (o.lastAdjacentPage < o.lastPage - 1) { %}
+                        <li class="disabled"><a>...</a></li>
+                    {% } %}
+                    <li><a href="#!page={%= o.lastPage %}" data-page="{%= o.lastPage %}">{%= o.lastPage %}</a></li>
+                {% } %}
+
+                <li {% if (o.currentPage === o.lastPage) { %} class="disabled" {% } %}>
+                    <a href="#!page={%= o.nextPage %}" data-page="{%= o.nextPage %}" title="Next">&raquo</a>
+                </li>
+            </ul>
+        {% } %}
+    </script><!-- end of #paginationTemplate -->
 @endsection
