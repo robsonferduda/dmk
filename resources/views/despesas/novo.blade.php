@@ -110,8 +110,12 @@
                                                 
                                                 <div class="btn btn-success btn-upload-plugin fileinput">
                                                     <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                    <input type="file" name="files[]" multiple>
-                                                </div>                  
+                                                    <input type="file" name="files[]" id="input-file" multiple>
+                                                </div>   
+
+                                                <button type="button" class="btn btn-primary start-all-validate btn-upload-plugin">
+                                                    <i class="fa fa-upload"></i> Enviar Todos
+                                                </button>                
 
                                                 <button type="button" class="btn btn-warning cancel-all btn-upload-plugin">
                                                     <i class="fa fa-ban"></i> Cancelar Todos
@@ -181,10 +185,13 @@
 
     $(document).ready(function() { 
 
-            var flag_controle = false;
 
             $(document).on("click","#btn-upload-aux", function(){             
                 $("#input-file").trigger('click');
+            });
+
+            $(document).on("click",".start-all-validate", function(){             
+                $("#btnSaveDespesas").trigger('click');
             });
 
             $("#btnSaveDespesas").on('click', function(event){
@@ -213,9 +220,11 @@
                         },
                         success: function(response){   
 
+                            //Caso tenha inserido com sucesso, ele dispara o upload de arquivos
                             $('#id_despesa').val(response.id);
-                            $(".start-all").trigger('click');
-                            window.location.href = "../despesas/"+response.id;
+                            $(".start-all").trigger('click');    
+
+                            location.reload();
 
                         },
                         error: function(response){
@@ -224,7 +233,57 @@
                     });
                 }
             
-            });   
+            }); 
+
+        $('#filepicker').filePicker({
+            url: '../filepicker',
+            ui: {
+                autoUpload: false
+            },
+            data: function(){
+                var _token = "{{ csrf_token() }}";
+                var id_despesa = $("#id_despesa").val();
+
+                return {
+                    _token: _token,
+                    id_despesa: id_despesa
+                }
+            },
+            plugins: ['ui', 'drop', 'camera', 'crop']
+        })
+        .on('done.filepicker', function (e, data) {
+
+            if(data.files[0].size){
+
+                $.ajax({
+                    url: "../../anexo-despesa-add",
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "id_despesa": $("#id_despesa").val(),
+                        "nome_arquivo": data.files[0].name
+                    },
+                    success: function(response){   
+
+                        $(".fa").addClass("fa-check");
+                        $(".msg_titulo").html("Sucesso");
+                        $(".msg_mensagem").html("Arquivo anexado com sucesso");
+                        $(".alert").addClass("alert-success");
+                        $(".alert").removeClass("none");
+                        
+                    },
+                    error: function(response){
+
+                        $(".fa").addClass("fa-times");
+                        $(".msg_titulo").html("Erro");
+                        $(".msg_mensagem").html("Erro ao enviar o arquivo");
+                        $(".alert").addClass("alert-danger");
+                        $(".alert").removeClass("none");
+                    }
+                });
+            }
+
+        });  
 
 
         $('#dt_vencimento_des').datepicker({
@@ -261,77 +320,7 @@
             errorPlacement : function(error, element) {
                 error.insertAfter(element.parent());
             }
-        });
-
-        $("#frm_add_despesas").on('submit',function(event){
-
-            if(flag_controle == false){
-
-                flag_controle = true;
-
-                if($("#frm_add_despesas").valid()){
-
-                    $("#btnSaveDespesas").on('click', function(event){
-                        return false;
-                    });
-                }
-
-                return true;
-
-            }else{
-
-                window.location.href = "../despesas/lancamentos";
-
-            }
-
-        });        
-
-        $('#filepicker').filePicker({
-            url: '../filepicker',
-            ui: {
-                autoUpload: false
-            },
-            data: function(){
-                var _token = "{{ csrf_token() }}";
-                var id_despesa = $("#id_despesa").val();
-
-                return {
-                    _token: _token,
-                    id_despesa: id_despesa
-                }
-            },
-            plugins: ['ui', 'drop', 'camera', 'crop']
-        })
-        .on('done.filepicker', function (e, data) {
-
-            $.ajax({
-                url: "../../anexo-despesa-add",
-                type: 'POST',
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "id_despesa": $("#id_despesa").val(),
-                    "nome_arquivo": data.files[0].name
-                },
-                success: function(response){   
-
-                    $(".fa").addClass("fa-check");
-                    $(".msg_titulo").html("Sucesso");
-                    $(".msg_mensagem").html("Arquivo anexado com sucesso");
-                    $(".alert").addClass("alert-success");
-                    $(".alert").removeClass("none");
-                    
-                },
-                error: function(response){
-
-                    $(".fa").addClass("fa-times");
-                    $(".msg_titulo").html("Erro");
-                    $(".msg_mensagem").html("Erro ao enviar o arquivo");
-                    $(".alert").addClass("alert-danger");
-                    $(".alert").removeClass("none");
-                }
-            });
-
-        });
+        });      
 
     });        
 
@@ -350,7 +339,7 @@
             </td>
             <td style="font-size: 150%; text-align: center;">
                 {% if (!o.file.autoUpload && !o.file.error) { %}
-                    <a href="#" class="action action-primary start" title="Upload">
+                    <a href="#" class="action action-primary start none" title="Upload">
                         <i class="fa fa-arrow-circle-o-up"></i>
                     </a>
                 {% } %}

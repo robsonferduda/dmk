@@ -191,8 +191,10 @@ class DespesasController extends Controller
             
             $despesa->fill($request->all());
 
-            if($despesa->save())
+            if($despesa->save()){
+                Flash::success('Despesa cadastrada com sucesso');
                 return Response::json(array('id' => $despesa->cd_despesa_des, 'message' => 'Registro adicionado com sucesso'), 200);
+            }
             else
                 return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
             
