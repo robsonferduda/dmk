@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-group"></i> Usuários <span>> Detalhes </span> <span>> {{ $usuario->name }}</span>
+                <i class="fa-fw fa fa-user"></i> Meu Perfil</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -27,69 +27,89 @@
             <div class="col-md-12">
                 @include('layouts/messages')
             </div>
-            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                <div class="jarviswidget jarviswidget-sortable">
-                    <header role="heading" class="ui-sortable-handle">
-                        <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                        <h2>Dados do Usuário </h2>             
-                    </header>
-                
-                    <div class="col-sm-12">
-
-                        <div class="col-md-6">
-                            <div class="col-md-12">
-                                <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-group fa-fw"></i> <strong>Dados Básicos</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        <p>
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <strong>Nome: </strong> {{ $usuario->name }}
-                                                </li>
-                                                <li>
-                                                    <strong>Perfil: </strong> {{ !empty($usuario->role()->first()) ? $usuario->role()->first()->name : 'Não definido' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Data Nascimento: </strong> {{ !empty($usuario->data_nascimento) ? date('d/m/Y', strtotime($usuario->data_nascimento)) : 'Não informado' }}
-                                                </li>
-                                                <hr style="margin-top: 5px; margin-bottom: 5px;" />
-                                                <li>
-                                                    <strong>CPF: </strong> {{ !empty($usuario->entidade->cpf->nu_identificacao_ide) ? $usuario->entidade->cpf->nu_identificacao_ide : 'Não informado' }}
-                                                </li>
-                                                <li>
-                                                    <strong>N º OAB: </strong> {{ !empty($usuario->entidade->oab->nu_identificacao_ide) ? $usuario->entidade->oab->nu_identificacao_ide : 'Não informado' }}
-                                                </li>                                                
-                                                <li>
-                                                    <strong>RG: </strong> {{ !empty($usuario->entidade->rg->nu_identificacao_ide) ? $usuario->entidade->rg->nu_identificacao_ide : 'Não informado' }}
-                                                </li>
-                                                <hr style="margin-top: 5px; margin-bottom: 5px;" />
-                                                <li>
-                                                    <strong>Data de Admissão: </strong> {{ !empty($usuario->data_admissao) ? date('d/m/Y', strtotime($usuario->data_admissao)) : 'Não informado' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Estado Civil: </strong> {{ !empty($usuario->estadoCivil->nm_estado_civil_esc) ? $usuario->estadoCivil->nm_estado_civil_esc : 'Não informado' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Departamento: </strong> {{ !empty($usuario->departamento->nm_departamento_dep) ? $usuario->departamento->nm_departamento_dep : 'Não informado' }}
-                                                </li>                                                
-                                                <li>
-                                                    <strong>Cargo: </strong> {{ !empty($usuario->cargo->nm_cargo_car) ? $usuario->cargo->nm_cargo_car : 'Não informado' }}
-                                                </li>   
-                                                <li>
-                                                    <strong>Email: </strong> {{ $usuario->email }}
-                                                </li>                                                                                            
-                                            </ul>
-                                        </p> 
-                                    </div>
-                                </fieldset>
-                            </div>
+            <div class="col-md-12 col-lg-12">
+             <div class="well profile">
+                <div class="col-md-12">
+                    <div class="col-md-3 text-center">
+                        <div>
+                            @if(file_exists('public/img/users/ent'.$usuario->entidade->cd_entidade_ete.'.png')) 
+                                <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.$conta->entidade->cd_entidade_ete.'.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                            @else
+                                <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 70%; margin: 0 auto;" class="img-circle img-responsive"></a>
+                            @endif
                         </div>
-
+                        <h4 class="center" style="margin-top: 15px;"><strong>{{ $usuario->name }}</strong></h4>
+                        <h6><a href="#" class="alterar_senha" data-id="{{ \Crypt::encrypt(Auth::user()->id) }}"><i class="fa fa-lock"></i> Alterar Senha</a></h6>
+                    </div>
+                    <div class="col-md-9">
                         <div class="col-md-6">
-                            <fieldset style="margin-bottom: 15px;">
-                                <legend><i class="fa fa-building"></i> <strong>Endereço</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        <p>    
+                            <h2 style="margin-bottom: 5px;">{{ $usuario->name  }} <a href="{{ url('usuarios/editar/'.\Crypt::encrypt($usuario->id)) }}"><span class="fa fa-edit"></span></a></h2>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <p class="text-muted">
+                                            <i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:$usuario->email">{{ ($usuario->email) ? $usuario->email : 'Não informado' }}</a>
+                                        </p>
+                                    </li>                                
+                                    @if($usuario->entidade->cpf)
+                                        <li>
+                                            <p class="text-muted">
+                                                <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>CPF </strong>: {{ !empty($usuario->entidade->cpf->nu_identificacao_ide) ? $usuario->entidade->cpf->nu_identificacao_ide : 'Não informado' }} </span>
+                                            <p>
+                                        </li>
+                                    @endif   
+                                    <li>
+                                        <p class="text-muted">
+                                            <i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="txt-color-darken"><strong>OAB</strong>:  {{ !empty($usuario->entidade->oab->nu_identificacao_ide) ? $usuario->entidade->oab->nu_identificacao_ide : 'Não informado' }}</span>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <strong>RG: </strong> {{ !empty($usuario->entidade->rg->nu_identificacao_ide) ? $usuario->entidade->rg->nu_identificacao_ide : 'Não informado' }}
+                                    </li>
+                                    <li>
+                                        <strong>Data de Admissão: </strong> {{ !empty($usuario->data_admissao) ? date('d/m/Y', strtotime($usuario->data_admissao)) : 'Não informado' }}
+                                    </li>
+                                    <li>
+                                        <strong>Estado Civil: </strong> {{ !empty($usuario->estadoCivil->nm_estado_civil_esc) ? $usuario->estadoCivil->nm_estado_civil_esc : 'Não informado' }}
+                                    </li>
+                                    <li>
+                                        <strong>Departamento: </strong> {{ !empty($usuario->departamento->nm_departamento_dep) ? $usuario->departamento->nm_departamento_dep : 'Não informado' }}
+                                    </li>                                                
+                                    <li>
+                                        <strong>Cargo: </strong> {{ !empty($usuario->cargo->nm_cargo_car) ? $usuario->cargo->nm_cargo_car : 'Não informado' }}
+                                    </li>   
+                                </ul>
+
+                            <h4 style="margin-top: 25px;">
+                                <i class="fa fa-phone"></i> Telefones
+                            </h4>
+                             <div class="row" style="margin-left: 5px;">
+                                            @if(count($usuario->entidade->fone()->get()) > 0)
+                                                @foreach($usuario->entidade->fone()->get() as $fone)
+                                                    <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
+                                                @endforeach   
+                                            @else
+                                                <span>Nenhum telefone infomado</span>
+                                            @endif
+                                        </div>
+
+                            <h4 style="margin-top: 25px;">
+                                <i class="fa fa-envelope"></i> Emails Alternativos
+                            </h4>
+                            <div class="row" style="margin-left: 5px;">
+                                            @if(count($usuario->entidade->fone()->get()) > 0)
+                                                @foreach($usuario->entidade->fone()->get() as $fone)
+                                                    <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
+                                                @endforeach   
+                                            @else
+                                                <span>Nenhum email alternativo infomado</span>
+                                            @endif
+                                        </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 style="margin-top: 25px;">
+                                <i class="fa fa-map-marker"></i> Endereço 
+                            </h4>
+                            <p>    
                                             <ul class="list-unstyled">
                                                 <li>
                                                     <strong>CEP: </strong> {{ !empty($usuario->entidade->endereco->nu_cep_ede) ? $usuario->entidade->endereco->nu_cep_ede : 'Não informado' }}
@@ -114,32 +134,11 @@
                                                 </li>                                              
                                             </ul>
                                         </p> 
-                                    </div>
-                            </fieldset>
-                         </div>
-                         
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <div class="col-md-12">
-                                    <fieldset style="margin-bottom: 15px;">
-                                        <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
-                                        <div class="row" style="margin-left: 5px;">
-                                            @if(count($usuario->entidade->fone()->get()) > 0)
-                                                @foreach($usuario->entidade->fone()->get() as $fone)
-                                                    <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
-                                                @endforeach   
-                                            @else
-                                                <span>Nenhum telefone infomado</span>
-                                            @endif
-                                        </div>
-                                    </fieldset>
-                                </div>           
-                            </div> 
-                            <div class="col-md-6">
-                                <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-bank"></i> <strong>Dados Bancários</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        <p>    
+
+                            <h4 style="margin-top: 25px;">
+                                <i class="fa fa-bank"></i> Dados Bancários 
+                            </h4>
+                                <p>    
                                             @if(count($usuario->entidade->banco()->get()) > 0)
                                                 @foreach($usuario->entidade->banco()->get() as $banco)
                                                 <ul class="list-unstyled">
@@ -166,32 +165,52 @@
                                             @else
                                                 <span>Nenhum dados bancário infomado</span>
                                             @endif
-                                        </p> 
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-fw"></i> <strong></strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        <p>    
-                                            <ul class="list-unstyled">
-                                                <li style="display: inline-block;max-width: 100%;word-break:break-all;">
-                                                    <strong>Observações </strong><br/> 
-                                                    {!! ($usuario->observacao) ? $usuario->observacao : 'Nenhuma obervação cadastrada' !!} 
-                                                </li>
-                                            </ul>
-                                        </p> 
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>                    
-                    </div>
-                </div>
-            </article>
+                                    </p> 
+                                </div>
+                            </div>             
+                        </div>   
+                    <div style="clear: both;"></div>    
+                </div>                 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modal_top_alto" id="alterarSenha" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-edit"></i> Alterar Senha
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-alterar-senha', 'method' => 'PUT', 'url' => 'usuarios/alterar-senha', 'class' => 'smart-form']) !!}
+                     <fieldset>
+                       <section class="col col-6">
+                            <input type="hidden" name="fl_conta" value="N">
+                            <label class="label">Senha<span class="text-danger">*</span></label>
+                            <label class="input">
+                                 <input type="password" name="password" id="password" placeholder="Senha" required>
+                            </label>
+                            </section>  
+                            <section class="col col-6">
+                                <label class="label">Confirmar Senha<span class="text-danger">*</span></label>
+                                <label class="input">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Senha" required>
+                                </label>
+                            </section>     
+                     
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-alterar-senha"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
         </div>
     </div>
 </div>

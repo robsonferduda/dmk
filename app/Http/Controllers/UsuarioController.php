@@ -688,8 +688,13 @@ class UsuarioController extends Controller
             
         }
 
-        if($request->fl_conta)
-            return redirect('conta/detalhes/'.$id_criptado);
+        if($request->fl_conta){
+
+            if($request->fl_conta == 'S')
+                return redirect('conta/detalhes/'.$id_criptado);
+            else
+                return redirect('usuarios/'.$id_criptado);
+        }
         else
             return redirect('usuarios');
 
