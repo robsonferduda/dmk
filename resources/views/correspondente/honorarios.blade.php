@@ -4,14 +4,14 @@
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
         <li><a href="{{ url('correspondentes') }}">Correspondentes</a></li>
-        <li>Honorários por Tipo de Serviço</li>
+        <li>Honorários</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Honorários por Tipo de Serviço </span> <span>> {{ $cliente->nm_razao_social_con }}</span>
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Honorários </span> <span>> <strong>{{ $cliente->nm_conta_correspondente_ccr }}</strong></span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -27,9 +27,7 @@
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                         <div class="well">
                             <div class="row">
-
-                                <div class="col-sm-12">
-                                    
+                                <div class="col-sm-12">                                    
                                     <div class="row">
                                         <div class="col-md-12">  
                                             <form action="{{ url('correspondente/buscar-honorarios/'.$cliente->cd_conta_con) }}" class="smart-form'" method="GET" role="search">
@@ -44,19 +42,27 @@
                                                             <label class="label label-black" >Estado</label>          
                                                             <select  id="estado" name="cd_estado_est" class="select2">
                                                                 <option selected value="">Estado</option>
-                                                                @foreach(App\Estado::all() as $estado) 
+                                                                @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                                                     <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                                 @endforeach
                                                             </select> 
                                                         </section>
 
                                                         <section class="col col-md-8">
-                                                           <label class="label label-black" >Cidades de Atuação</label>          
+                                                           <label class="label label-black">
+                                                                <a href="#" rel="popover-hover" data-placement="top" data-html="true" data-original-title="Cidades de Atuação" data-content="São listadas somente as comercas onde o correpondente atua. Para cadastrar uma cidade de atuação">
+                                                                    <i class="fa fa-question-circle text-primary"></i>
+                                                                </a>
+                                                                Comarca de Atuação
+                                                           </label>  
+                                                            <a href="{{ url('correspondente/ficha/'.\Crypt::encrypt($cliente->cd_correspondente_cor)) }}" target="_blank" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Cadastrar Comarca de Atuação </a>        
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
-                                                               <option selected value="">Selecione uma cidade</option>
-                                                               <option value="0">Todas</option>
+                                                               <option selected value="">Selecione uma comarca</option>
                                                             </select> 
-                                                        </section> 
+                                                        </section>
+
+                                                        <div class="col-sm-12" id="msg_busca_cidade_honorario" style="margin-top: 5px;"></div>
+
                                                         <hr/>
                                                         <section class="col col-md-12">
                                                             <select  multiple size="8" id="lista_servicos" name="lista_servicos[]" >
@@ -65,10 +71,11 @@
                                                                 @endforeach                              
                                                             </select>    
                                                         </section> 
-
-                                                        <section class="col col-md-1">
-                                                            <label class="label">Adicionar</label>          
-                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12" id="msg_valida_busca" style="margin: 5px 0px;"></div> 
+                                                        <section class="col col-md-12"> 
+                                                            <button class="btn btn-primary btn-buscar-honorarios" type="submit"><i class="fa fa-search"></i> Buscar</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                       
@@ -83,31 +90,33 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row">
+                                        <div class="col-md-6"> 
+                                            <h5>Valores de Honorários por Serviços</h5> 
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="btn-group pull-right header-btn marginLeft5">
+                                                <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
+                                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a href="{{ url('correspondente/honorarios/organizar/2') }}">Comarca</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ url('correspondente/honorarios/organizar/1') }}">Serviços</a>
+                                                    </li>
+                                                </ul>
+                                            </div> 
+
+                                            <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-list-ul fa-lg"></i> Mostrar Todos os Valores</button>
+
+                                            <button class="btn btn-success pull-right header-btn marginLeft5" id="btnSalvarHonorariosCorrespondente"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
+
+                                            <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>
+                                            
+                                        </div>
                                         <div class="col-md-12">   
                                         @if(count($cidades) > 0)
-                                            <div class="col-md-6"> 
-                                                <h5>Honorários por Tipo de Serviço</h5> 
-                                            </div>
-                                            <div class="col-md-6"> 
 
-                                                <a class="btn btn-danger pull-right header-btn remover_honorarios" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}" style="margin-right: -12px; margin-left: 5px;"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>
-
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarHonorariosCorrespondente" style="margin-left: 5px;"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
-
-                                                <div class="btn-group pull-right header-btn">
-                                                    <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
-                                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a href="{{ url('correspondente/honorarios/organizar/2') }}">Cidades</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="{{ url('correspondente/honorarios/organizar/1') }}">Serviços</a>
-                                                            </li>
-                                                        </ul>
-                                                </div>
-
-                                            </div> 
                                             
                                                 @if(Session::get('organizar') == 1)
                                                     <div class="tabelah">
@@ -143,7 +152,7 @@
                                                         <table class="table table-bordered" style="margin-bottom: 150px;">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>Cidade</th>
+                                                                    <th>Comarca</th>
                                                                     @foreach($lista_servicos as $servico)
                                                                         <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
                                                                     @endforeach
@@ -190,11 +199,11 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12 center">
-                                {!! Form::open(['id' => 'frm_envio_convite', 'url' => 'correspondente/honorarios/remover', 'class' => 'form-inline']) !!}
+                                {!! Form::open(['id' => 'frm_excluir_honorarios_correspondente', 'url' => 'correspondente/honorarios/remover', 'class' => 'form-inline']) !!}
                                     <p style="font-size: 14px;">
-                                        Essa operação irá remover todos os valores de honorários cadastrados para esse correspondente.
+                                        Essa operação irá excluir todos os valores de honorários por serviço para todas as comarcas cadastradas para esse correspondente.
                                     </p>
-                                    <h6>Confirma a remoção de todos os valores?</h6>
+                                    <h6>Confirma a exclusão de todos os valores?</h6>
                                     <input type="hidden" name="entidade_correspondente_excluir" id="entidade_correspondente_excluir">
                                     <input type="hidden" name="cd_correspondente_excluir" id="cd_correspondente_excluir">
                                     
@@ -241,6 +250,22 @@
             success: function(){
                 $(this).attr("data-edit","S");
             }
+        });
+
+        $('.btn-buscar-honorarios').on('click', function (e, editable) {
+
+            cidade = $("#cidade").val();
+
+            if(!cidade){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione uma ou mais cidades para continuar</span>');
+                return false;
+            }
+
+            if($("#lista_servicos").val() === null){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione um ou mais serviços para continuar</span>');
+                return false;
+            }
+
         });
 
         $('.valor_honorario').on('shown', function (e, editable) {
@@ -319,10 +344,22 @@
                         {                    
                             $('#cidade').empty();
                             $('#cidade').append('<option selected value="">Selecione uma cidade</option>');
-                            $('#cidade').append('<option selected value="0">Todas</option>');
+
+                            if(response.length > 0)
+                            {
+                                $('#cidade').append('<option selected value="0">Todas</option>');
+                                if(response.length == 1)
+                                    $("#msg_busca_cidade_honorario").html('<span class="text-primary"> '+response.length+' comarca encontrada</span>');
+                                else
+                                    $("#msg_busca_cidade_honorario").html('<span class="text-primary"> '+response.length+' comarcas encontradas</span>');
+
+                            }else{
+                                $("#msg_busca_cidade_honorario").html('<span class="text-danger">Nenhuma comarca encontrada. Cadastre as comarcas que deseja para vincular os honorários</span>');
+                            }
+
                             $.each(response,function(index,element){
 
-                                $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
                                 
                             });       
                             $('#cidade').trigger('change');     

@@ -406,6 +406,7 @@ class CorrespondenteController extends Controller
         $lista_servicos = array();
         $cidades = array();
         $valores = array();
+        $id = \Crypt::decrypt($id);
         
         $this->inicializaOrdem();
 
@@ -454,6 +455,8 @@ class CorrespondenteController extends Controller
                     $lista_servicos[] = $honorario->tipoServico;
             }
         } 
+
+        $valores = array();
 
         return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'lista_servicos' => $lista_servicos]);
 
@@ -573,7 +576,6 @@ class CorrespondenteController extends Controller
             foreach ($honorarios as $honorario) {
                 $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
             }
-            Flash::success('Dados inseridos com sucesso na visualização');
         }  
         
         //Envia dados e renderiza tela
@@ -1194,6 +1196,8 @@ class CorrespondenteController extends Controller
     }
 
     public function ficha($id){
+
+        $id = \Crypt::decrypt($id);
 
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();
         return view('correspondente/ficha',['correspondente' => $correspondente]);

@@ -25,6 +25,7 @@ class CidadeController extends Controller
 
     public function buscaCidadePorEstado($estados)
     {
+        $cidades = array();
 
         if (empty(\Cache::tags(['estados', $estados])->get('cidades'))) {
             
@@ -43,27 +44,16 @@ class CidadeController extends Controller
 
     public function buscaCidadePorEstadoCorrespondente($entidade,$estado)
     {
-        $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$entidade)->first();
-            $atuacao = $correspondente->entidade->atuacao()->get();
+        $cidades = array();
 
-            foreach ($atuacao as $a) {
-                $cidades[] = $a->cidade;
-            }
-
-            /*
-        $cidades = DB::table('public.cidade_atuacao_cat')
-                       ->select('public.cidade_cde.cd_cidade_cde','nm_cidade_cde','public.cidade_cde.cd_estado_est')
-                       ->join('public.cidade_cde', function($join) use ($estado){
-
-                        $join->on('public.cidade_atuacao_cat.cd_cidade_cde','=','public.cidade_cde.cd_cidade_cde');
-                        $join->where('cd_estado_est','=',$estado);
-
-                       })
-                       ->join('public.estado_est','public.cidade_cde.cd_estado_est','=','public.estado_est.cd_estado_est')
-                       ->where('cd_entidade_ete',$entidade)
-                       ->get();
-                       */
-
+        $cidades = DB::table('cidade_atuacao_cat')
+                    ->select('cidade_cde.cd_cidade_cde','nm_cidade_cde')
+                    ->join('cidade_cde', 'cidade_atuacao_cat.cd_cidade_cde', '=', 'cidade_cde.cd_cidade_cde')
+                    ->join('estado_est', 'estado_est.cd_estado_est', '=', 'cidade_cde.cd_estado_est')
+                    ->where('cd_entidade_ete',$entidade)
+                    ->where('estado_est.cd_estado_est',$estado)
+                    ->get();
+                             
         echo json_encode($cidades);
     }
 

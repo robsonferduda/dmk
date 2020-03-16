@@ -112,12 +112,12 @@
                                         <td class="center">
                                             <div>
                                                 <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-file-text-o"></i> </a>
-                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-edit"></i> </a>
+                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('correspondente/ficha/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-edit"></i> </a>
                                                 <div class="dropdown" style="display: inline;">
                                                     <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                     <ul class="dropdown-menu">
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
-                                                        <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                        <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-money"></i> Honorários</a></li>
                                                         <li><a title="Enviar Notificação" class="notificar_correspondente" data-url="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}" data-email="{{ ($correspondente->correspondente->entidade) ? $correspondente->correspondente->entidade->usuario->email : 'nulo' }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
                                                         <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
                                                     </ul>
