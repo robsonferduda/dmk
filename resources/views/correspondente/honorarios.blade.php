@@ -91,7 +91,7 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-6"> 
-                                            <h5>Valores de Honorários por Serviços</h5> 
+                                            <h4><strong>Valores de Honorários por Serviços</strong></h4> 
                                         </div>
                                         <div class="col-md-6">
                                             <div class="btn-group pull-right header-btn marginLeft5">
@@ -114,9 +114,9 @@
                                             <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>
                                             
                                         </div>
-                                        <div class="col-md-12">   
+                                        <div class="col-md-12">
+                                            <div class="col-md-12 box-loader-honorarios"></div>   
                                         @if(count($cidades) > 0)
-
                                             
                                                 @if(Session::get('organizar') == 1)
                                                     <div class="tabelah">
@@ -177,7 +177,7 @@
                                                     </div>
                                                 @endif
                                             @else
-                                                <h6>Nenhum honorário cadastrado</h6>
+                                                <h4>Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
                                             @endif
                                         </div>
                                     </div>
@@ -240,6 +240,8 @@
             removeAllLabel: 'Remover Todos',
             moveOnSelect: false
         });
+
+        $('.box-loader-honorarios').loader('show');
 
         $('.valor_honorario').editable({
             validate: function (value) {

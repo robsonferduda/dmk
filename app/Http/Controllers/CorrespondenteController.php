@@ -425,7 +425,7 @@ class CorrespondenteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
+                //$valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
             }
         } 
 
@@ -438,7 +438,7 @@ class CorrespondenteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                $cidades[] = $honorario->cidade;
+                //$cidades[] = $honorario->cidade;
             }
         } 
 
@@ -451,12 +451,11 @@ class CorrespondenteController extends Controller
 
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico)
-                    $lista_servicos[] = $honorario->tipoServico;
+                if($honorario->tipoServico){
+                    //$lista_servicos[] = $honorario->tipoServico;
+                }
             }
         } 
-
-        $valores = array();
 
         return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'lista_servicos' => $lista_servicos]);
 
