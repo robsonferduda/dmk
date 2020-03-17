@@ -58,12 +58,14 @@ class DespesasController extends Controller
 
     public function show($id)
     {   
+        $id = \Crypt::decrypt($id);
         $despesa = Despesa::findOrFail($id);   
         return view('despesas/detalhes', ['despesa' => $despesa ]);
     }
 
     public function novo()
     {   
+        
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 
@@ -72,7 +74,8 @@ class DespesasController extends Controller
 
     public function editar($id)
     {   
-        $despesa = Despesa::findOrFail($id);  
+        $id = \Crypt::decrypt($id);
+        $despesa = Despesa::where('cd_despesa_des', $id)->with('anexos')->first();  
         $categorias = CategoriaDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_categoria_despesa_cad','ASC')->get();
         $despesas = TipoDespesa::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_despesa_tds','ASC')->get();
 
@@ -184,36 +187,20 @@ class DespesasController extends Controller
             $request->merge(['vl_valor_des' => $request->vl_valor_des]);
             $request->merge(['cd_conta_con' => $this->conta]);
 
-            if($request->file){
-                //Parte responsável pelo upload
-                $destino = "despesas/$this->conta/";
-     
-                $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-                if(!is_dir($destino)){
-                    @mkdir(storage_path($destino), 0775);
-                }
-         
-                if(request()->file->move(storage_path($destino), $fileName)){
-                    $request->merge(['anexo_des' => $fileName]);
-                }
-                //Fim do upload
-            }
-
-            $despesa = new Despesa();
+            $despesa = new Despesa();           
+            
             $despesa->fill($request->all());
 
             if($despesa->save()){
                 Flash::success('Despesa cadastrada com sucesso');
-                return redirect('despesas/lancamentos');
-            }else{
-                Flash::error('Erro ao cadastrar despesa. Verifique os dados e tente novamente');
-                return redirect()->back();
+                return Response::json(array('id' => $despesa->cd_despesa_des, 'message' => 'Registro adicionado com sucesso'), 200);
             }
+            else
+                return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
             
         }catch (Exception $e) {
             
-
+            return Response::json(array('message' => 'Erro ao adicionar registro'), 500);
 
         }
 
@@ -227,22 +214,6 @@ class DespesasController extends Controller
         if(!empty($request->dt_pagamento_des)) $request->merge(['dt_pagamento_des' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_pagamento_des)))]);
         $request->merge(['vl_valor_des' => $request->vl_valor_des]);
         $request->merge(['cd_conta_con' => $this->conta]);
-
-        if($request->file){
-            //Parte responsável pelo upload
-            $destino = "despesas/$this->conta/";
-     
-            $fileName = time().'.'.request()->file->getClientOriginalExtension();
-
-            if(!is_dir($destino)){
-                @mkdir(storage_path($destino), 0775);
-            }
-         
-            if(request()->file->move(storage_path($destino), $fileName)){
-                $request->merge(['anexo_des' => $fileName]);
-            }
-            //Fim do upload
-        }
 
         $despesa = Despesa::findOrFail($id);
         $despesa->fill($request->all());

@@ -31,6 +31,10 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::any('filepicker', 'FilepickerController@handle');
 
+	Route::get("despesas/anexos/{id}", "AnexoDespesaController@show");
+	Route::post('anexo-despesa-add', 'AnexoDespesaController@create');
+	Route::delete('anexo-despesa-delete', 'AnexoDespesaController@destroy');
+
 	Route::any('upload/index', 'FilepickerController@index');
 
 	Route::get('seleciona/perfil', 'UsuarioController@selecionaPerfil');
@@ -173,7 +177,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('despesas/categoria/tipo/{id}','DespesasController@getTipos');
 	Route::post('despesas/categorias/tipo','DespesasController@getTiposMultiple');
 	Route::get('despesas/tipo/categoria/{id}','DespesasController@getCategorias');
-	Route::get('despesas/anexos/{arquivo}','DespesasController@download');
 	Route::post('despesas/buscar','DespesasController@buscar');
 	Route::resource('despesas','DespesasController');
 

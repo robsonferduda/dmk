@@ -140,6 +140,10 @@
                 _token: "{{ csrf_token() }}"
             },
             plugins: ['ui', 'drop', 'camera', 'crop']
+
+        })
+        .on('done.filepicker', function (e, data) {
+            alert(data.files[0].name);
         });
 
         // Replace timeago strings.

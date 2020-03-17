@@ -24,7 +24,6 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
@@ -41,16 +40,16 @@
                                 <p>
                                     <ul class="list-unstyled">
                                         <li>
+                                            <strong>Despesa: </strong> {{ $despesa->dc_descricao_des }}
+                                        </li>
+                                        <li>
                                             <strong>Categoria: </strong> {{ ($despesa->tipo->categoriaDespesa) ? $despesa->tipo->categoriaDespesa->nm_categoria_despesa_cad : 'Não informada'}}
                                         </li>
                                         <li>
                                             <strong>Tipo de Despesa: </strong> {{ $despesa->tipo->nm_tipo_despesa_tds }}
                                         </li>
                                         <li>
-                                            <strong>Despesa: </strong> {{ $despesa->dc_descricao_des }}
-                                        </li>
-                                        <li>
-                                            <strong>Valor: </strong> {{ $despesa->vl_valor_des }}
+                                            <strong>Valor: </strong> R$ {{ ($despesa->vl_valor_des) ? $despesa->vl_valor_des : '--' }}
                                         </li>
                                         <li>
                                             <strong>Data de Vencimento: </strong> {{ date('d/m/Y', strtotime($despesa->dt_vencimento_des)) }}
@@ -58,28 +57,39 @@
                                         <li>
                                             <strong>Data de Pagamento: </strong> {{ date('d/m/Y', strtotime($despesa->dt_pagamento_des)) }}
                                         </li>
-                                        <li>
-                                            <strong>Anexo: </strong> 
-                                            @if($despesa->anexo_des)
-                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}"><i class="fa fa-file"></i> Baixar</a>
-                                            @else
-                                                <span>Não informado</span>
-                                            @endif
-                                        </li>
                                     </ul>
                                 </p>
                             </div>
                         </fieldset>
 
                         <fieldset style="margin-bottom: 15px;">
-                            <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
+                            <legend><i class="fa fa-file-o"></i> <strong>Anexos</strong> {{ (count($despesa->anexos) > 0) ? (count($despesa->anexos) == 1) ? '1 arquivo anexado' : count($despesa->anexos).' arquivos anexados' : '' }}</legend>
                             <div class="row" style="margin-left: 5px;">
-                                {!! $despesa->obs_des !!}
+                                @forelse($despesa->anexos as $anexo)
+                                    <div>
+                                        <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($anexo->cd_anexo_despesa_des)) }}">
+                                            <i class="fa fa-file"></i> {{ $anexo->nm_anexo_despesa_des }}
+                                        </a> 
+                                    </div>       
+                                @empty
+                                    <span>Nenhum anexo disponível</span>
+                                @endforelse
                             </div>
                         </fieldset>
+
+
+                        <fieldset style="margin-bottom: 15px;">
+                            <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
+                            <div class="row" style="margin-left: 5px;">
+                                {!! ($despesa->obs_des) ? $despesa->obs_des : 'Não existem observações' !!}
+                            </div>
+                        </fieldset>
+
+
                     </div>
             </div>
         </article>
     </div>
+</div>
 </div>
 @endsection
