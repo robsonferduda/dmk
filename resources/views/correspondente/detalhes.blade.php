@@ -18,7 +18,7 @@
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
             <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>   
             <a data-toggle="modal" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-dollar fa-lg"></i> Despesas</a>   
-            <a data-toggle="modal" href="{{ url('correspondente/honorarios/'.$correspondente->cd_correspondente_cor) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
+            <a data-toggle="modal" href="{{ url('correspondente/honorarios/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
             <a data-toggle="modal" href="{{ url('correspondente/ficha/'.$correspondente->correspondente->cd_conta_con) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar Dados</a> 
         </div>
     </div>
