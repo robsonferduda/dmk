@@ -30,7 +30,7 @@ class AnexoDespesaController extends Controller
     public function create(Request $request)
     {
 
-        $local = "despesas/$this->conta/$request->id_despesa/$request->nome_arquivo";
+        $local = "despesas/$this->conta/$request->id_despesa/";
 
         AnexoDespesa::create([
             'cd_conta_con'   => $this->conta,
