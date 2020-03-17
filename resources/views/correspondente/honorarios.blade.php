@@ -33,7 +33,7 @@
                                             <form action="{{ url('correspondente/buscar-honorarios/'.$cliente->cd_conta_con) }}" class="smart-form'" method="GET" role="search">
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_correspondente_cor }}">
-                                                <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}">
+                                                <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}" data-token="{{ \Crypt::encrypt($cliente->entidade->cd_entidade_ete) }}">
 
                                                 <fieldset>
                                                     <div class="row"> 
@@ -107,9 +107,7 @@
                                                 </ul>
                                             </div> 
 
-                                            <!--
                                             <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-list-ul fa-lg"></i> Mostrar Todos os Valores</button>
-                                            -->
 
                                             <button class="btn btn-success pull-right header-btn marginLeft5" id="btnSalvarHonorariosCorrespondente"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
 
@@ -127,19 +125,23 @@
                                                                 <tr>
                                                                     <th>Tipo de Serviço</th>
                                                                     @foreach($cidades as $cidade)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}</th>
+                                                                        <th>
+                                                                            <span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}
+                                                                        </th>
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($lista_servicos as $servico)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</td>
+                                                                        <td>
+                                                                            <div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}
+                                                                        </td>
                                                                         @foreach($cidades as $cidade)
                                                                             <td>
                                                                                 <div class="col-sm-12">
                                                                                         
-                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                        
+                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
                                                                                         
                                                                                 </div>
                                                                             </td>
@@ -163,7 +165,9 @@
                                                             <tbody>
                                                                 @foreach($cidades as $cidade)
                                                                     <tr>
-                                                                        <td><div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div></td>
+                                                                        <td>
+                                                                            <div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div>
+                                                                        </td>
                                                                         @foreach($lista_servicos as $servico)
                                                                             <td>
                                                                                 <div class="col-sm-12">
@@ -179,13 +183,26 @@
                                                     </div>
                                                 @endif
                                             @else
-                                                <!--
                                                 <h4>Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
-                                            -->
                                             @endif
                                             <div class="col-md-12 box-loader-honorarios"></div>
                                             <div class="box-loader-honorarios-error none">
                                                 <h4 class="text-danger"><i class="fa fa-times-circle"></i> Erro ao enviar requisição, tente novamente</h4>
+                                            </div>
+                                            <div class="tabelah none">
+                                                <table class="table table-bordered table-load-honorarios" style="margin-bottom: 150px;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Comarca</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -254,24 +271,48 @@
 
         $("#showAllHonorariosCorrespondente").click(function(){
 
-            alert("Clique");
+            id = $("#cd_entidade").data("token");
 
             $.ajax({
-                url: '../../correspondente/honorarios/{{ \Crypt::encrypt($cliente->cd_correspondente_cor) }}/ordem/comarca'+estado,
+                url: '../../correspondente/honorarios',
                 type: 'GET',
+                data: {"id":id, "ordem": 'comarca'},
                 dataType: "JSON",
                 beforeSend: function(){
                     
                     $('.box-loader-honorarios').loader('show');
                     $('.box-loader-honorarios').removeClass('none');
+                    $(".tabelah").addClass('none');
 
                 },
                 success: function(response)
                 {       
+                    $(".tabelah").addClass('none');
+                    $(".table-load-honorarios thead tr th").remove();
+                    $(".table-load-honorarios tbody tr td").remove();
+
+                    $(".table-load-honorarios").find("thead").find("tr").append("<th>Comarcas</th>");
+                    $.each(response.servicos,function(index,value){
+
+                        $(".table-load-honorarios").find("thead").find("tr").append("<th>"+value.nm_tipo_servico_tse+"</th>");
+                    });
+
+                    $.each(response.comarcas,function(index,value){
+
+                        $(".table-load-honorarios").find("tbody").append("<tr><td>"+value.nm_cidade_cde+"</td></tr>");
+                        $.each(response.servicos,function(index,valor){
+
+
+
+                            $(".table-load-honorarios").find("tbody").find("tr:last").append("<td>"+response.hon+"</td>");
+                        });
+
+                    });
+
                     $('.box-loader-honorarios-error').addClass('none');             
                     $('.box-loader-honorarios').addClass('none');
-                    alert("Sucesso");
-
+                    $(".tabelah").removeClass('none');
+    
                 },
                 error: function(response)
                 {   
@@ -283,6 +324,7 @@
         });
 
         $('.valor_honorario').editable({
+
             validate: function (value) {
                 if ($.trim(value) == '')
                     return 'Valor obrigatório';

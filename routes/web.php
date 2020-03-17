@@ -143,7 +143,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
 	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
 	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
-	Route::get('correspondente/honorarios/{id}/ordem/{ordem}','HonorariosCorrespondenteController@getHonorariosOrdenados');
+	Route::get('correspondente/honorarios','HonorariosCorrespondenteController@getHonorariosOrdenados');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
 	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento')->name('processo.correspondente');
