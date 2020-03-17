@@ -549,7 +549,7 @@
                 h = 12;
             }
 
-            return yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+            return dd + '/' + mm + '/' + yyyy + ' - ' + h + ':' + min + ' ' + ampm;
         };
 
         /**

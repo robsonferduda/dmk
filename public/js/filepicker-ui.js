@@ -237,6 +237,7 @@
        * @param {Object} data
        */
       start: function start(e, data) {
+
           var _this4 = this;
 
           if (e.isDefaultPrevented()) {

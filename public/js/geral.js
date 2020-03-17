@@ -747,7 +747,7 @@ $(document).ready(function() {
 
 		
 		//alert(categoria);
-		$('#frm-edit-tipo-despesa #categoriaDespesa').val(categoria).trigger('change');;
+		$('#frm-edit-tipo-despesa #categoriaDespesa').val(categoria).trigger('change');
 
 		$('#frm-edit-tipo-despesa').attr('action', action);						
 
@@ -1847,6 +1847,13 @@ $(document).ready(function() {
 			$("input[data-identificador='"+$(this).attr('name')+"']").prop( "disabled", true );
 			$("input[data-identificador='"+$(this).attr('name')+"']").val('');
 		}
+	});
+
+	$(".start").each(function(){
+		
+		alert("Teste");
+		return true;
+
 	});
 
 });

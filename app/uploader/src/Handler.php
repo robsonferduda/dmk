@@ -11,7 +11,11 @@
 
 namespace Hazzard\Filepicker;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Handler extends BaseHandler
 {
-    // See BaseHandler.php
+
+    
 }

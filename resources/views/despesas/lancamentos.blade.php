@@ -161,17 +161,19 @@
                                             {{ ($despesa->dt_pagamento_des) ? 'Pago' : 'Pendente' }}
                                         </td>
                                         <td class="center">
-                                            @if($despesa->anexo_des)
-                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}" style="color: black;"><i class="fa fa-file"></i></a>
-                                            @else
-                                                <span>Nenhum anexo</span>
-                                            @endif
+                                            @forelse($despesa->anexos as $anexo)
+                                                <a href="{{ url('despesas/anexos/'.\Crypt::encrypt($anexo->cd_anexo_despesa_des)) }}">
+                                                    <i class="fa fa-file"></i>
+                                                </a>       
+                                            @empty
+                                                <span>Nenhum anexo disponível</span>
+                                            @endforelse
                                         </td>
                                         <td class="center">
                                             <div>
-                                                <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('despesas/'.$despesa->cd_despesa_des) }}"><i class="fa fa-file-text-o"></i> </a>
+                                                <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('despesas/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}"><i class="fa fa-file-text-o"></i> </a>
 
-                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('despesa/editar/'.$despesa->cd_despesa_des) }}"><i class="fa fa-edit"></i> </a>
+                                                <a title="Editar" class="btn btn-primary btn-xs" href="{{ url('despesa/editar/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}"><i class="fa fa-edit"></i> </a>
 
                                                 <button title="Excluir" class="btn btn-danger btn-xs excluir_registro" data-url="../despesas/"><i class="fa fa-trash"></i> </button> 
                                             </div>
@@ -198,5 +200,6 @@
              
         </article>
     </div>
+</div>
 </div>
 @endsection
