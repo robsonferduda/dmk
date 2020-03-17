@@ -127,33 +127,35 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('contato/editar/{id}','ContatoController@editar');
 	Route::post('contato/salvar','ContatoController@salvar');
 
-	Route::resource('correspondentes', 'CorrespondenteController');
-	Route::get('correspondente/categorias','CategoriaCorrespondenteController@index');
-	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
+	
+	Route::get('correspondente/buscar','CorrespondenteController@buscar');
 	Route::get('correspondente/painel','CorrespondenteController@painel');
 	Route::get('correspondente/dados/{id}','CorrespondenteController@dados');
-	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
-	Route::get('correspondente/buscar','CorrespondenteController@buscar');
-	Route::get('correspondente/todos',function(){ return view('correspondente/todos'); });
-	Route::get('correspondente/todos/buscar','CorrespondenteController@buscarTodos');
-	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');
-	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
-	Route::get('correspondente/notificacao/{id}','CorrespondenteController@notificacao');
-	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
 	Route::get('correspondente/despesas/{id}','CorrespondenteController@despesas');
-	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
+	Route::get('correspondente/detalhes/{id}','CorrespondenteController@detalhes');
+	Route::get('correspondente/categorias','CategoriaCorrespondenteController@index');
+	Route::get('correspondente/todos/buscar','CorrespondenteController@buscarTodos');
+	Route::get('correspondente/todos',function(){ return view('correspondente/todos'); });
+	Route::get('correspondente/notificacao/{id}','CorrespondenteController@notificacao');	
+	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');	
+	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
+	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
+	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
+	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
+	Route::get('correspondente/honorarios/{id}/ordem/{ordem}','HonorariosCorrespondenteController@getHonorariosOrdenados');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
-	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento')->name('processo.correspondente');;
-	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
+	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento')->name('processo.correspondente');
+	Route::get('correspondente/{entidade}/cidades-por-estado/{estado}','CidadeController@buscaCidadePorEstadoCorrespondente');
 	Route::post('correspondente/adicionar','CorrespondenteController@adicionar');
-	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');
 	Route::post('correspondente/remover','CorrespondenteController@remover');
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
 	Route::post('correspondente/despesas','CorrespondenteController@adicionarDespesas');
 	Route::post('correspondente/cadastro/conta','CorrespondenteController@novoCorrespondenteConta');
+	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
 	Route::post('correspondente/honorarios/remover','CorrespondenteController@excluirTodosHonorarios');
+	Route::resource('correspondentes', 'CorrespondenteController');
 
 	//Rotas para a ROLE correspondente
 	Route::get('correspondente/clientes','CorrespondenteController@clientes');
