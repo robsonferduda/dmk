@@ -290,7 +290,9 @@
                         <section>
                             <div class="col col-sm-12">
                                     <header>
-                                        <i class="fa fa-arrow-circle-o-down"></i> Registro de Baixa<br /><h5 id="valor_total_operacao"></h5>
+                                        <i class="fa fa-arrow-circle-o-down"></i> Registro de Baixa<br />
+                                        <h5 id="valor_total_operacao"></h5>
+                                        <h5 id="valor_total_operacao_despesas"></h5>
                                     </header>
                                     <fieldset style="padding: 10px 14px 5px;">
                                         <div class="row">    
@@ -589,14 +591,15 @@
         
         $("#dt_basic_financeiro").on("click", ".check-pagamento-cliente-lote", function(){
 
-            var total = 0;        
+            var total = 0;  
+            var total_despesas = 0;      
             var controle = false;    
 
             $(".modal-title").html('<i class="icon-append fa fa-money"></i> Registro de Baixa em Lote');
             $(".retornoLote").text('');
 
             $('#dtBaixaCliente').val();
-            $('#valor').val();
+            $('#tipo').val();
             $('#tabelaRegistro > tbody').html('');
 
 
@@ -604,7 +607,8 @@
 
                 if ($(this).is(':checked') ) {         
                 
-                    total += parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+                    total += parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.'));
+                    total_despesas += parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
                     
                     controle = true;
 
@@ -614,7 +618,8 @@
 
             if(controle == true){
                 $("#addBaixaLote").modal('show');
-                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));
+                $('#valor_total_operacao').text('Valor total dessa operação para honorário(s):'+' R$ '+total.toFixed(2).toString().replace('.',','));
+                $('#valor_total_operacao_despesas').text('Valor total dessa operação para despesa(s) :'+' R$ '+total_despesas.toFixed(2).toString().replace('.',','));
             }
         });
 
