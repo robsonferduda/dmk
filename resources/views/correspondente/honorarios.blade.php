@@ -302,9 +302,11 @@
                         $(".table-load-honorarios").find("tbody").append("<tr><td>"+value.nm_cidade_cde+"</td></tr>");
                         $.each(response.servicos,function(index,valor){
 
+                            indice = "key-"+value.cd_cidade_cde+"-"+valor.cd_tipo_servico_tse;
+                            valor = "---";
+                            if(response.honorarios[indice]) valor = response.honorarios[indice];
 
-
-                            $(".table-load-honorarios").find("tbody").find("tr:last").append("<td>"+response.hon+"</td>");
+                            $(".table-load-honorarios").find("tbody").find("tr:last").append("<td>"+valor+"</td>");
                         });
 
                     });

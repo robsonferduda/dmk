@@ -66,7 +66,7 @@ class HonorariosCorrespondenteController extends Controller
         if(count($honorarios) > 0){
             foreach ($honorarios as $honorario) {
 
-            	$chave = $honorario->cd_cidade_cde."-".$honorario->cd_tipo_servico_tse;
+            	$chave = "key-".$honorario->cd_cidade_cde."-".$honorario->cd_tipo_servico_tse;
 
                 $valores[$chave] = $honorario->nu_taxa_the;
                 		
