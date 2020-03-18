@@ -107,7 +107,9 @@
                                                 </ul>
                                             </div> 
 
+                                            <!--
                                             <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-list-ul fa-lg"></i> Mostrar Todos os Valores</button>
+                                            -->
 
                                             <button class="btn btn-success pull-right header-btn marginLeft5" id="btnSalvarHonorariosCorrespondente"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
 
@@ -115,8 +117,8 @@
                                             
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="col-md-12 box-loader-honorarios"></div>   
-                                        @if(count($cidades) > 0)
+                                               
+                                            @if(count($cidades) > 0)
                                             
                                                 @if(Session::get('organizar') == 1)
                                                     <div class="tabelah">
@@ -177,8 +179,14 @@
                                                     </div>
                                                 @endif
                                             @else
+                                                <!--
                                                 <h4>Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
+                                            -->
                                             @endif
+                                            <div class="col-md-12 box-loader-honorarios"></div>
+                                            <div class="box-loader-honorarios-error none">
+                                                <h4 class="text-danger"><i class="fa fa-times-circle"></i> Erro ao enviar requisição, tente novamente</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -224,7 +232,10 @@
 @endsection
 @section('script')
 <script type="text/javascript">
+
     $(document).ready(function(){
+
+        $('.box-loader-honorarios').addClass('none');
 
         var duallistbox = $('select[name="lista_servicos[]"]').bootstrapDualListbox({
             nonSelectedListLabel: 'Serviços Disponíveis',
@@ -241,7 +252,35 @@
             moveOnSelect: false
         });
 
-        $('.box-loader-honorarios').loader('show');
+        $("#showAllHonorariosCorrespondente").click(function(){
+
+            alert("Clique");
+
+            $.ajax({
+                url: '../../correspondente/honorarios/{{ \Crypt::encrypt($cliente->cd_correspondente_cor) }}/ordem/comarca'+estado,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    
+                    $('.box-loader-honorarios').loader('show');
+                    $('.box-loader-honorarios').removeClass('none');
+
+                },
+                success: function(response)
+                {       
+                    $('.box-loader-honorarios-error').addClass('none');             
+                    $('.box-loader-honorarios').addClass('none');
+                    alert("Sucesso");
+
+                },
+                error: function(response)
+                {   
+                    $('.box-loader-honorarios-error').removeClass('none');
+                    $('.box-loader-honorarios').addClass('none');
+                }
+            });
+
+        });
 
         $('.valor_honorario').editable({
             validate: function (value) {
