@@ -291,25 +291,43 @@
                     $(".table-load-honorarios thead tr th").remove();
                     $(".table-load-honorarios tbody tr td").remove();
 
-                    $(".table-load-honorarios").find("thead").find("tr").append("<th>Comarcas</th>");
+                    $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
                     $.each(response.servicos,function(index,value){
 
-                        $(".table-load-honorarios").find("thead").find("tr").append("<th>"+value.nm_tipo_servico_tse+"</th>");
+                        $(".table-load-honorarios").find("thead").find("tr").append('<th class="center">'+value.nm_tipo_servico_tse+'</th>');
                     });
 
                     $.each(response.comarcas,function(index,value){
 
-                        $(".table-load-honorarios").find("tbody").append("<tr><td>"+value.nm_cidade_cde+"</td></tr>");
-                        $.each(response.servicos,function(index,valor){
+                        $(".table-load-honorarios").find("tbody").append('<tr><td>'+value.nm_cidade_cde+'</td></tr>');
+                        $.each(response.servicos,function(index,data){
 
-                            indice = "key-"+value.cd_cidade_cde+"-"+valor.cd_tipo_servico_tse;
-                            valor = "---";
-                            if(response.honorarios[indice]) valor = response.honorarios[indice];
+                            indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
+                            label_valor = "Adicionar";
+                            valor = null;
+                            if(response.honorarios[indice]){
+                                label_valor = response.honorarios[indice];
+                                valor = response.honorarios[indice];
+                            }
 
-                            $(".table-load-honorarios").find("tbody").find("tr:last").append("<td>"+valor+"</td>");
+                            $(".table-load-honorarios").find("tbody")
+                                                       .find("tr:last")
+                                                       .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+
                         });
 
                     });
+
+                    $('.add-valor-honorario').on('click', function (e, editable) {
+
+                                valor = $(this).data("valor");
+                                comarca = $(this).data("comarca");
+                                servico = $(this).data("servico");
+
+                                alert(valor+" - "+comarca+"-"+servico);
+
+                            });
 
                     $('.box-loader-honorarios-error').addClass('none');             
                     $('.box-loader-honorarios').addClass('none');
@@ -324,6 +342,8 @@
             });
 
         });
+
+       
 
         $('.valor_honorario').editable({
 

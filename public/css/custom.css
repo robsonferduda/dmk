@@ -30,6 +30,7 @@
 .icon-honorario{ font-size: 15px; }
 .box-loader-honorarios{ min-height: 300px; margin: 15px 0px; opacity: 0.5;}
 .btn-upload-plugin {padding: 2px 5px;}
+.add-valor-honorario { cursor: pointer; }
 .div-table{ margin-top: 10px; }
 .tabelah {
     width: 100%;
