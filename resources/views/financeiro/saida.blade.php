@@ -621,8 +621,8 @@
 
             if(controle == true){
                 $("#addBaixaLote").modal('show');
-                $('#valor_total_operacao').text('Valor total dessa operação :'+' R$ '+total.toFixed(2).toString().replace('.',','));
-                $('#valor_total_operacao_despesas').text('Valor total dessa operação :'+' R$ '+total_despesas.toFixed(2).toString().replace('.',','));
+                $('#valor_total_operacao').text('Valor total dessa operação para honorário(s) :'+' R$ '+total.toFixed(2).toString().replace('.',','));
+                $('#valor_total_operacao_despesas').text('Valor total dessa operação para despesa(s) :'+' R$ '+total_despesas.toFixed(2).toString().replace('.',','));
             }
         });
 
