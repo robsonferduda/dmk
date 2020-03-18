@@ -37,6 +37,10 @@
                         </div>
                         <div class="col-md-6">
                             <a href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Honorários</a>
+
+                            <button type="button" class="btn btn-primary pull-right header-btn" style="margin-right: 5px;" data-toggle="modal" data-target="#modalEditar">
+                                Editar
+                            </button>
                         </div>
 
                         <div class="col-md-12">
@@ -274,6 +278,50 @@
                     </div>
                     <div class="modal-footer">
                         <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="modal fade modal_top_alto" id="modalEditar" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i> <strong>Adicionar Valores de Honorários</strong></h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><strong>Comarca</strong>: Florianópolis</h4>
+                                <h4><strong>Serviço</strong>: AUDIÊNCIA VARA CÍVEL (ADVOGADO E PREPOSTO)</h4>
+                                <div class="form-group" style="margin-top: 8px;">
+                                    
+                                    <label for="tags">Digite um valor para o honorário</label>
+                                    <input type="text" class="form-control taxa-honorario" id="tags" placeholder="Valor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="">
+                                        <input type="checkbox" name="subscription" id="subscription">
+                                            <i></i>Aplicar valor à todos os serviços
+                                    </label><br/>
+                                    <label class="">
+                                        <input type="checkbox" name="terms" id="terms">
+                                            <i></i>Aplicar valor à todas as comarcas
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
                         <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
                     </div>
                 </div>
