@@ -235,7 +235,10 @@
                                                 <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
                                             </section>
                                         </div> 
-                                        <div class="row" style="margin: 0; padding: 5px 0px">
+                                        <div class="row center" id="erroFone"></div>
+                                    </fieldset>
+
+                                    <div class="row" style="margin: 0; padding: 5px 13px;">
                                             
                                             <table id="tabelaRegistro" class="table table-bordered table-responsive">
                                                 <thead>
@@ -253,56 +256,7 @@
                                                 </tbody>
                                             </table>                                       
                                             
-                                        </div>
-                                        <div class="row">
-                                            <!-- Drop área -->                                   
-
-                                        <section class="col col-sm-12">
-                                            <div id="filepicker">
-                                                <!-- Button Bar -->
-                                                <div class="button-bar">
-
-                                                    <span class="start-all"></span>
-                                                    
-                                                    <div class="btn btn-success btn-upload-plugin fileinput">
-                                                        <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                        <input type="file" name="files[]" id="input-file" multiple>
-                                                    </div>   
-                                                    
-                                                    <button type="button" class="btn btn-danger delete-all btn-upload-plugin">
-                                                        <i class="fa fa-trash-o"></i> Deletar Todos
-                                                    </button>
-                                                </div>
-
-                                                <!-- Listar Arquivos -->
-                                                <div class="table-responsive div-table">
-                                                    <table class="table table-upload">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="column-name">Nome</th>
-                                                                <th class="column-size center">Tamanho</th>
-                                                                <th class="column-date">Data Envio</th>
-                                                                <th class="center">Opções</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="files">
-                                                            
-                                                        </tbody>                        
-                                                    </table>
-                                                </div>
-
-                                                <!-- Drop Zone -->
-                                                <div class="drop-window">
-                                                    <div class="drop-window-content">
-                                                        <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <div class="row center" id="erroFone"></div>
-                                    </fieldset>
-
-                                    
+                                    </div>
                                 </div>
                         </section>
                      
@@ -392,11 +346,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
         
-        $('#filepicker').filePicker({
-            url: '../filepicker'
-        });
-
-
         var addBaixado = function(id,valorTotalPago){
 
             $(".check-pagamento-cliente").each(function(index,element){
@@ -845,109 +794,5 @@
 
     });
 </script>
-
-    <script type="text/x-tmpl" id="uploadTemplate">
-        <tr class="upload-template">
-            <td class="column-name">
-                <p class="name">{%= o.file.name %}</p>
-                <span class="text-danger error">{%= o.file.error || '' %}</span>
-            </td>
-            <td colspan="2">
-                <p>{%= o.file.sizeFormatted || '' %}</p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active"></div>
-                </div>
-            </td>
-            <td style="font-size: 150%; text-align: center;">
-                {% if (!o.file.autoUpload && !o.file.error) { %}
-                    <a href="#" class="action action-primary start none" title="Upload">
-                        <i class="fa fa-arrow-circle-o-up"></i>
-                    </a>
-                {% } %}
-                <a href="#" class="action action-warning cancel" title="Cancelar">
-                    <i class="fa fa-ban"></i>
-                </a>
-            </td>
-        </tr>
-    </script>
-
-    <!-- Download Template -->
-    <script type="text/x-tmpl" id="downloadTemplate">
-        {% o.timestamp = function (src) {
-            return (src += (src.indexOf('?') > -1 ? '&' : '?') + new Date().getTime());
-        }; %}
-        <tr class="download-template">
-            <td class="column-name">
-                <p class="name">
-                    {% if (o.file.url) { %}
-                        <a href="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
-                    {% } else { %}
-                        {%= o.file.name %}
-                    {% } %}
-                </p>
-                {% if (o.file.error) { %}
-                    <span class="text-danger">{%= o.file.error %}</span>
-                {% } %}
-            </td>
-            <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
-            <td class="column-date">
-                {% if (o.file.time) { %}
-                    <time datetime="{%= o.file.timeISOString() %}">
-                        {%= o.file.timeFormatted %}
-                    </time>
-                {% } %}
-            </td>
-            <td class="center">
-                {% if (o.file.imageFile && !o.file.error) { %}
-                    <a href="#" class="action action-primary crop" title="Crop">
-                        <i class="fa fa-crop"></i>
-                    </a>
-                {% } %}
-                {% if (o.file.error) { %}
-                    <a href="#" class="action action-warning cancel" title="Cancelar">
-                        <i class="fa fa-ban"></i>
-                    </a>
-                {% } else { %}
-                    <a href="#" class="action action-danger delete" title="Delete">
-                        <i class="fa fa-trash-o"></i>
-                    </a>
-                {% } %}
-            </td>
-        </tr>
-    </script>
-     <!-- Pagination Template -->
-    <script type="text/x-tmpl" id="paginationTemplate">
-        {% if (o.lastPage > 1) { %}
-            <ul class="pagination pagination-sm">
-                <li {% if (o.currentPage === 1) { %} class="disabled" {% } %}>
-                    <a href="#!page={%= o.prevPage %}" data-page="{%= o.prevPage %}" title="Previous">&laquo;</a>
-                </li>
-
-                {% if (o.firstAdjacentPage > 1) { %}
-                    <li><a href="#!page=1" data-page="1">1</a></li>
-                    {% if (o.firstAdjacentPage > 2) { %}
-                       <li class="disabled"><a>...</a></li>
-                    {% } %}
-                {% } %}
-
-                {% for (var i = o.firstAdjacentPage; i <= o.lastAdjacentPage; i++) { %}
-                    <li {% if (o.currentPage === i) { %} class="active" {% } %}>
-                        <a href="#!page={%= i %}" data-page="{%= i %}">{%= i %}</a>
-                    </li>
-                {% } %}
-
-                {% if (o.lastAdjacentPage < o.lastPage) { %}
-                    {% if (o.lastAdjacentPage < o.lastPage - 1) { %}
-                        <li class="disabled"><a>...</a></li>
-                    {% } %}
-                    <li><a href="#!page={%= o.lastPage %}" data-page="{%= o.lastPage %}">{%= o.lastPage %}</a></li>
-                {% } %}
-
-                <li {% if (o.currentPage === o.lastPage) { %} class="disabled" {% } %}>
-                    <a href="#!page={%= o.nextPage %}" data-page="{%= o.nextPage %}" title="Next">&raquo</a>
-                </li>
-            </ul>
-        {% } %}
-    </script><!-- end of #paginationTemplate -->
 
 @endsection
