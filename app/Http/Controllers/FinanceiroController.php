@@ -31,24 +31,6 @@ class FinanceiroController extends Controller
 
     public function balancoIndex(){
 
-        // \Session::put('dtInicio',null);
-        // \Session::put('dtFim',null);
-        // \Session::put('dtInicioBaixa',null);
-        // \Session::put('dtFimBaixa',null);
-        // \Session::put('relatorio',null);
-        // \Session::put('finalizado',null);
-        // \Session::put('cliente',null);
-        // \Session::put('nmCliente',null);
-        // \Session::put('correspondente',null);
-        // \Session::put('nmCorrespondente',null);
-        // \Session::put('despesas',null);
-        // \Session::put('saidas',null);
-        // \Session::put('entradas',null);
-        // \Session::put('entradaTotal',0);
-        // \Session::put('saidaTotal',0);
-        // \Session::put('despesaTotal',0);
-        // \Session::put('total',0);
-
         return view('financeiro/balanco');
     }
 
@@ -780,7 +762,9 @@ class FinanceiroController extends Controller
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
 
-        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_cliente_pth){
+        $totalDespesas = $processoTaxaHonorario->processo->tiposDespesa->where('pivot.fl_despesa_reembolsavel_pde','S')->where('pivot.cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->sum('pivot.vl_processo_despesa_pde');
+
+        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_cliente_pth+$totalDespesas){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'S';
         }else{
             $processoTaxaHonorario->fl_pago_cliente_pth = 'P';
@@ -850,7 +834,9 @@ class FinanceiroController extends Controller
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$request->cdBaixaFinanceiro)->first();
 
-        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth){
+        $totalDespesas = $processoTaxaHonorario->processo->tiposDespesa->where('pivot.fl_despesa_reembolsavel_pde','S')->where('pivot.cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE)->sum('pivot.vl_processo_despesa_pde');
+
+        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth+$totalDespesas){
             $processoTaxaHonorario->fl_pago_correspondente_pth = 'S';
         }else{
             $processoTaxaHonorario->fl_pago_correspondente_pth = 'P';
@@ -1424,7 +1410,9 @@ class FinanceiroController extends Controller
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$processoTaxa)->first();
 
-        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_cliente_pth && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') > 0){
+        $totalDespesas = $processoTaxaHonorario->processo->tiposDespesa->where('pivot.fl_despesa_reembolsavel_pde','S')->where('pivot.cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->sum('pivot.vl_processo_despesa_pde');
+
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_cliente_pth+$totalDespesas && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') > 0){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'P';
         }
 
@@ -1460,7 +1448,9 @@ class FinanceiroController extends Controller
 
         $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_processo_taxa_honorario_pth',$processoTaxa)->first();
 
-        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') > 0){
+        $totalDespesas = $processoTaxaHonorario->processo->tiposDespesa->where('pivot.fl_despesa_reembolsavel_pde','S')->where('pivot.cd_tipo_entidade_tpe',\TipoEntidade::CORRESPONDENTE)->sum('pivot.vl_processo_despesa_pde');
+
+        if($baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') < $processoTaxaHonorario->vl_taxa_honorario_correspondente_pth+$totalDespesas && $baixaProcessoDepois->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho') > 0){
             $processoTaxaHonorario->fl_pago_correspondente_pth = 'P';
         }
 
@@ -1497,6 +1487,14 @@ class FinanceiroController extends Controller
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         }
 
+    }
+
+    public function entradaAnexo(Request $request){
+
+        $this->inicializaPastaDestino($request->id_despesa);
+
+        //Ação de enviar arquivo
+        return $this->handler->handle($request);
     }
 
 }
