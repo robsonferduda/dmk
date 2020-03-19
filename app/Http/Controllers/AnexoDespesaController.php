@@ -24,7 +24,7 @@ class AnexoDespesaController extends Controller
     {   
         $id = \Crypt::decrypt($id);
         $anexo = AnexoDespesa::where('cd_anexo_despesa_des',$id)->first();
-        return response()->download(storage_path($anexo->nm_local_anexo_despesa_des));
+        return response()->download(storage_path($anexo->nm_local_anexo_despesa_des.$anexo->nm_anexo_despesa_des));
     }
 
     public function create(Request $request)
