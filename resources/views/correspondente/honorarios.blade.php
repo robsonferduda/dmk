@@ -34,6 +34,7 @@
                                                 {{ csrf_field() }} 
                                                 <input type="hidden" name="cd_correspondente" id="cd_correspondente" value="{{ $cliente->cd_correspondente_cor }}">
                                                 <input type="hidden" name="cd_entidade" id="cd_entidade" value="{{ $cliente->entidade->cd_entidade_ete }}" data-token="{{ \Crypt::encrypt($cliente->entidade->cd_entidade_ete) }}">
+                                                <input type="hidden" name="ordem" id="ordem" value="comarca">
 
                                                 <fieldset>
                                                     <div class="row"> 
@@ -99,10 +100,10 @@
                                                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a href="{{ url('correspondente/honorarios/organizar/2') }}">Comarca</a>
+                                                        <a href="#" id="showHonorariosComarca"><span>Comarca</span></a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ url('correspondente/honorarios/organizar/1') }}">Serviços</a>
+                                                        <a href="#" id="showHonorariosServico"><span>Serviços</span></a>
                                                     </li>
                                                 </ul>
                                             </div> 
@@ -183,7 +184,7 @@
                                                     </div>
                                                 @endif
                                             @else
-                                                <h4>Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
+                                                <h4 class="honorarios-empty">Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
                                             @endif
                                             <div class="col-md-12 box-loader-honorarios"></div>
                                             <div class="box-loader-honorarios-error none">
@@ -246,6 +247,50 @@
                 </div>
             </div>
         </div>
+
+<div class="modal fade modal_top_alto" id="modalEditarHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i> <strong>Adicionar Valores de Honorários</strong></h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><strong>Comarca</strong>: Florianópolis</h4>
+                                <h4><strong>Serviço</strong>: AUDIÊNCIA VARA CÍVEL (ADVOGADO E PREPOSTO)</h4>
+                                <div class="form-group" style="margin-top: 8px;">
+                                    
+                                    <label for="tags">Digite um valor para o honorário</label>
+                                    <input type="text" class="form-control taxa-honorario" id="tags" placeholder="Valor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="">
+                                        <input type="checkbox" name="subscription" id="subscription">
+                                            <i></i>Aplicar valor à todos os serviços
+                                    </label><br/>
+                                    <label class="">
+                                        <input type="checkbox" name="terms" id="terms">
+                                            <i></i>Aplicar valor à todas as comarcas
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -269,20 +314,36 @@
             moveOnSelect: false
         });
 
+        $("#showHonorariosComarca").click(function(){
+
+            $("#ordem").val("comarca");
+            $("#showAllHonorariosCorrespondente").trigger("click");
+
+        });
+
+        $("#showHonorariosServico").click(function(){
+
+            $("#ordem").val("servico");
+            $("#showAllHonorariosCorrespondente").trigger("click");
+
+        });
+
         $("#showAllHonorariosCorrespondente").click(function(){
 
             id = $("#cd_entidade").data("token");
+            ordem = $("#ordem").val();
 
             $.ajax({
                 url: '../../correspondente/honorarios',
                 type: 'GET',
-                data: {"id":id, "ordem": 'comarca'},
+                data: {"id":id, "ordem": ordem},
                 dataType: "JSON",
                 beforeSend: function(){
                     
                     $('.box-loader-honorarios').loader('show');
                     $('.box-loader-honorarios').removeClass('none');
                     $(".tabelah").addClass('none');
+                    $(".honorarios-empty").addClass('none');
 
                 },
                 success: function(response)
@@ -291,33 +352,41 @@
                     $(".table-load-honorarios thead tr th").remove();
                     $(".table-load-honorarios tbody tr td").remove();
 
-                    $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
-                    $.each(response.servicos,function(index,value){
+                    if(ordem == 'comarca'){
 
-                        $(".table-load-honorarios").find("thead").find("tr").append('<th class="center">'+value.nm_tipo_servico_tse+'</th>');
-                    });
+                        $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
+                        $.each(response.servicos,function(index,value){
 
-                    $.each(response.comarcas,function(index,value){
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center">'+value.nm_tipo_servico_tse+'</th>');
+                        });
 
-                        $(".table-load-honorarios").find("tbody").append('<tr><td>'+value.nm_cidade_cde+'</td></tr>');
-                        $.each(response.servicos,function(index,data){
+                        $.each(response.comarcas,function(index,value){
 
-                            indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
-                            label_valor = "Adicionar";
-                            valor = null;
-                            if(response.honorarios[indice]){
-                                label_valor = response.honorarios[indice];
-                                valor = response.honorarios[indice];
-                            }
+                            $(".table-load-honorarios").find("tbody").append('<tr><td>'+value.nm_cidade_cde+'</td></tr>');
+                            $.each(response.servicos,function(index,data){
 
-                            $(".table-load-honorarios").find("tbody")
-                                                       .find("tr:last")
-                                                       .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+                                indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
+                                label_valor = "Adicionar";
+                                valor = null;
+                                if(response.honorarios[indice]){
+                                    label_valor = response.honorarios[indice];
+                                    valor = response.honorarios[indice];
+                                }
 
+                                $(".table-load-honorarios").find("tbody")
+                                                           .find("tr:last")
+                                                           .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+
+                            });
 
                         });
 
-                    });
+                    }else if(ordem == 'servico'){
+
+                        alert("Serviço");
+
+                    }
 
                     $('.add-valor-honorario').on('click', function (e, editable) {
 
@@ -325,7 +394,9 @@
                                 comarca = $(this).data("comarca");
                                 servico = $(this).data("servico");
 
-                                alert(valor+" - "+comarca+"-"+servico);
+                                //alert(valor+" - "+comarca+"-"+servico);
+
+                                $("#modalEditarHonorarios").modal('show');
 
                             });
 

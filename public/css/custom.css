@@ -32,10 +32,7 @@
 .btn-upload-plugin {padding: 2px 5px;}
 .add-valor-honorario { cursor: pointer; }
 .div-table{ margin-top: 10px; }
-.tabelah {
-    width: 100%;
-    overflow-x: scroll;
-}
+.tabelah{ width: 100%;overflow-x: scroll; margin-top: 15px; }
 .none{ display: none; }
 .btn-upload{ padding: 1px 8px; padding: 1px 8px; color: #3276b1; cursor: pointer; }
 .btn-atuacao{ margin-right: 3px; margin-top: 3px;  }
