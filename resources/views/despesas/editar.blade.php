@@ -358,7 +358,7 @@
             <td class="column-name">
                 <p class="name">
                     {% if (o.file.url) { %}
-                        <a href="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
+                        <a href="{%= "../"+$("#id_despesa").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
                     {% } else { %}
                         {%= o.file.name %}
                     {% } %}

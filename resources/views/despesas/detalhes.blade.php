@@ -19,7 +19,7 @@
 
             <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
 
-            <a data-toggle="modal" href="{{ url('despesa/editar/'.$despesa->cd_despesa_des) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-pencil fa-lg"></i> Editar</a>
+            <a data-toggle="modal" href="{{ url('despesa/editar/'.\Crypt::encrypt($despesa->cd_despesa_des)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-pencil fa-lg"></i> Editar</a>
         </div>
     </div>
     <div class="row">

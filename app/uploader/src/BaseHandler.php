@@ -343,7 +343,7 @@ abstract class BaseHandler
         } else {
             $data = array(
                 'name' => $file->getFilename(),
-                'url' => $this->getFileUrl($file->getFilename()),
+                'url' =>  $file->getFilename(),
                 'size' => $file->getSize(),
                 'time' => $file->getMTime(),
                 'type' => $file->getMimeType(),

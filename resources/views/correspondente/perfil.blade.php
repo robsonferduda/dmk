@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="col-md-6">
-                        <h2 style="margin-bottom: 5px;">{{ $correspondente->nm_razao_social_con }} <a href="{{ url('correspondente/ficha/'.$correspondente->cd_conta_con) }}"><span class="fa fa-edit"></span></a></h2>
+                        <h2 style="margin-bottom: 5px;">{{ $correspondente->nm_razao_social_con }} <a href="{{ url('correspondente/ficha/'.\Crypt::encrypt($correspondente->cd_conta_con)) }}"><span class="fa fa-edit"></span></a></h2>
                             <ul class="list-unstyled">
                                 <li style="margin-bottom: 8px;">
                                     {!! ($correspondente->tipoPessoa()->first()) ? '<span class="label label-primary">Pessoa '.$correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp.'</span>' : '' !!}

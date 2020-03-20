@@ -27,6 +27,12 @@ class AnexoDespesaController extends Controller
         return response()->download(storage_path($anexo->nm_local_anexo_despesa_des.$anexo->nm_anexo_despesa_des));
     }
 
+    public function showPlugin($id, $file)
+    {   
+        $anexo = AnexoDespesa::where('cd_despesa_des', $id)->where('nm_anexo_despesa_des','ilike',$file)->first();
+        return response()->download(storage_path($anexo->nm_local_anexo_despesa_des.$anexo->nm_anexo_despesa_des));
+    }
+
     public function create(Request $request)
     {
 

@@ -31,6 +31,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::any('filepicker', 'FilepickerController@handle');
 
+	Route::get("despesa/{id}/anexo/{file}", "AnexoDespesaController@showPlugin");
 	Route::get("despesas/anexos/{id}", "AnexoDespesaController@show");
 	Route::post('anexo-despesa-add', 'AnexoDespesaController@create');
 	Route::delete('anexo-despesa-delete', 'AnexoDespesaController@destroy');
