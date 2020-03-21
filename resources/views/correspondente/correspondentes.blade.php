@@ -40,7 +40,7 @@
                             </section>
                             <section class="col col-md-3">
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
-                                <label class="label label-black" >Cidade de Atuação</label>
+                                <label class="label label-black label-pai_cidade_atuacao" >Cidade de Atuação</label>
                                 <a href="#" rel="popover-hover" data-placement="top" data-original-title="Cidades de Atuação" data-content="A busca considera as cidades de atuação do correspondente, independente dela ser a comarca de origem. Para ver todas as comarcas de atuação, visualize o cadastro completo.">
                                 <i class="fa fa-question-circle text-primary"></i>
                                 </a>          
@@ -358,6 +358,8 @@
 
             if(estado != ''){
 
+                $('.label-'+target).html("Cidade de Atuação");
+
                 $.ajax(
                     {
                         url: '../cidades-por-estado/'+estado,
@@ -365,7 +367,8 @@
                         dataType: "JSON",
                         beforeSend: function(){
                             $('.'+target).empty();
-                            $('.'+target).append('<option selected value="">Carregando cidades... </option>');
+                            $('.'+target).append('<option selected value="">Aguarde, carregando cidades... </option>');
+                            $('.'+target).trigger('change'); 
                             $('.'+target).prop( "disabled", true );
                         },
                         success: function(response)
@@ -386,7 +389,10 @@
                         },
                         error: function(response)
                         {
-                            //console.log(response);
+                            $('.label-'+target).append('<span class="text-danger"> Erro ao carregar cidades<span>');
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Selecione a cidade</option>');
+                            $('.'+target).trigger('change'); 
                         }
                     });
             }
