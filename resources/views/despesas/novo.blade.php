@@ -224,7 +224,7 @@
                             $('#id_despesa').val(response.id);
                             $(".start-all").trigger('click');    
 
-                            location.reload();
+                            window.location.href = '../despesas/lancamentos';
 
                         },
                         error: function(response){
