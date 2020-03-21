@@ -114,7 +114,7 @@
                                     </section>
                                     <section class="col col-6">
                                         <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label">Cidade</label>          
+                                        <label class="label label-pai_cidade_origem">Cidade</label>          
                                         <select id="cidade_origem" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
                                             <option selected value="">Selecione a cidade</option>
                                         </select> 
@@ -157,7 +157,7 @@
                                     </section>
                                     <section class="col col-6">
                                         <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label">Cidade</label>          
+                                        <label class="label label-pai_cidade_atuacao">Cidade</label>          
                                         <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
                                             <option selected value="">Selecione a cidade</option>
                                         </select> 
@@ -233,11 +233,12 @@
 
                                                 </select> 
                                             </section>
+
                                             <section class="col col-8">
-                                               <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                               <label class="label" >Cidade</label>          
-                                                <select  id="cidade" disabled name="cd_cidade_cde" class="select2 pai_cidade_endereco">
-                                                   <option selected value="">Selecione a cidade</option>
+                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                                <label class="label label-pai_cidade_endereco" >Cidade</label>          
+                                                <select  id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_endereco">
+                                                    <option value="">Selecione uma cidade</option>
                                                 </select> 
                                             </section>                               
                                         </div> 
@@ -714,6 +715,9 @@
 
             if(estado != ''){
 
+                //Limpar mensagens de erro
+                $('.label-'+target).html("Cidade");
+
                 $.ajax(
                     {
                         url: '../../cidades-por-estado/'+estado,
@@ -721,14 +725,14 @@
                         dataType: "JSON",
                         beforeSend: function(){
                             $('.'+target).empty();
-                            $('.'+target).append('<option selected value="">Carregando...</option>');
-                            $('.'+target).prop( "disabled", true );
-
+                            $('.'+target).append('<option selected value="">Aguarde, carregando cidades...</option>');
+                            $('.'+target).trigger('change'); 
+                            $('.'+target).prop( "disabled", true); 
                         },
                         success: function(response)
                         {                    
                             $('.'+target).empty();
-                            $('.'+target).append('<option selected value="">Selecione</option>');
+                            $('.'+target).append('<option selected value="">Selecione a cidade</option>');
                             $('.'+target).append('<option value="0">Todas as cidades</option>');
                             $.each(response,function(index,element){
 
@@ -743,8 +747,11 @@
                             $('.'+target).prop( "disabled", false );        
                         },
                         error: function(response)
-                        {
-                            //console.log(response);
+                        {   
+                            $('.label-'+target).append('<span class="text-danger"> Erro ao carregar lista de cidades. Atualize a página e tente novamente <span>');
+                            $('.'+target).empty();
+                            $('.'+target).append('<option selected value="">Selecione a cidade</option>');
+                            $('.'+target).trigger('change'); 
                         }
                     });
             }
