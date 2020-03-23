@@ -356,7 +356,7 @@
             <td style="font-size: 150%; text-align: center;">
                 {% if (!o.file.autoUpload && !o.file.error) { %}
                     <a href="#" class="action action-primary start" title="Upload">
-                        <i class="fa fa-arrow-circle-o-up"></i>
+                        <i class="fa fa-arrow-circle-o-up none"></i>
                     </a>
                 {% } %}
                 <a href="#" class="action action-warning cancel" title="Cancelar">
