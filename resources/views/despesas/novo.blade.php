@@ -183,6 +183,8 @@
 
     $(document).ready(function() { 
 
+        total_arquivos = 0;
+        total_controle = 0;
 
             $(document).on("click","#btn-upload-aux", function(){             
                 $("#input-file").trigger('click');
@@ -193,18 +195,17 @@
                 $("#btnSaveDespesas").trigger('click');
             });
 
-            $(document).on("click",".start-all", function(){ 
+            $(document).on("click",".start-all", function(){   
 
-                laco = 0;
-                total_arquivos = $('.start').length;
+                total_arquivos = $('.start').length;          
 
                 $('.start').each(function(index, element) { 
 
-                    $(element).fadeOut(200, function() {
-                      $(element).trigger('click');
-                    });   
+                    $(this).trigger('click');  
                         
-                }).promise().done( function(){ window.location.href = '../despesas/lancamentos'; } );
+                });
+
+                //promise().done( function(){ window.location.href = '../despesas/lancamentos'; } );
 
             });
 
@@ -280,6 +281,11 @@
                         $(".msg_mensagem").html("Arquivo anexado com sucesso");
                         $(".alert").addClass("alert-success");
                         $(".alert").removeClass("none");
+
+                        total_controle++;
+
+                        if(total_controle == total_arquivos)
+                            window.location.href = '../despesas/lancamentos';
                         
                     },
                     error: function(response){
@@ -290,7 +296,7 @@
                         $(".alert").addClass("alert-danger");
                         $(".alert").removeClass("none");
                     }
-                });
+                }); 
             }
 
         });  
