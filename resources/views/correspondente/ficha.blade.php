@@ -761,6 +761,8 @@
             buscaCidade($(this).val(),$(this).attr('id')); 
         });
 
+        $(".estado").trigger('change');
+
     });
 </script>
 @endsection
