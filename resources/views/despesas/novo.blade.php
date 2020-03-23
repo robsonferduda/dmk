@@ -15,12 +15,11 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('despesas/lancamentos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Despesas</a>
+            <a data-toggle="modal" href="{{ url('despesas/lancamentos') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Listar Despesas</a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
@@ -107,7 +106,6 @@
                                             <div class="button-bar">
 
                                                 <span class="start-all"></span>
-                                                
                                                 <div class="btn btn-success btn-upload-plugin fileinput">
                                                     <i class="fa fa-files-o"></i> Buscar Arquivos
                                                     <input type="file" name="files[]" id="input-file" multiple>
@@ -190,8 +188,24 @@
                 $("#input-file").trigger('click');
             });
 
-            $(document).on("click",".start-all-validate", function(){             
+            $(document).on("click",".start-all-validate", function(){ 
+
                 $("#btnSaveDespesas").trigger('click');
+            });
+
+            $(document).on("click",".start-all", function(){ 
+
+                laco = 0;
+                total_arquivos = $('.start').length;
+
+                $('.start').each(function(index, element) { 
+
+                    $(element).fadeOut(200, function() {
+                      $(element).trigger('click');
+                    });   
+                        
+                }).promise().done( function(){ window.location.href = '../despesas/lancamentos'; } );
+
             });
 
             $("#btnSaveDespesas").on('click', function(event){
@@ -219,13 +233,9 @@
 
                         },
                         success: function(response){   
-
                             //Caso tenha inserido com sucesso, ele dispara o upload de arquivos
                             $('#id_despesa').val(response.id);
                             $(".start-all").trigger('click');    
-
-                            window.location.href = '../despesas/lancamentos';
-
                         },
                         error: function(response){
 
@@ -339,7 +349,7 @@
             </td>
             <td style="font-size: 150%; text-align: center;">
                 {% if (!o.file.autoUpload && !o.file.error) { %}
-                    <a href="#" class="action action-primary start none" title="Upload">
+                    <a href="#" class="action action-primary start" title="Upload">
                         <i class="fa fa-arrow-circle-o-up"></i>
                     </a>
                 {% } %}

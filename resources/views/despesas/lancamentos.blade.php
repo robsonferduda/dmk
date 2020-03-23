@@ -15,12 +15,11 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn btnMargin"><i class="fa fa-plus fa-lg"></i> Novo</a>
+            <a data-toggle="modal" href="{{ url('despesas/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-12">
             @include('layouts/messages')
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
