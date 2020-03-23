@@ -195,9 +195,7 @@
                 $("#btnSaveDespesas").trigger('click');
             });
 
-            $(document).on("click",".start-all", function(){   
-
-                total_arquivos = $('.start').length;          
+            $(document).on("click",".start-all", function(){            
 
                 $('.start').each(function(index, element) { 
                     $(this).trigger('click');   
@@ -216,6 +214,8 @@
 
                 if($("#frm_add_despesas").valid()){
 
+                    total_arquivos = $('.start').length; 
+
                     $.ajax({
                         url: "../despesas",
                         type: 'POST',
@@ -228,13 +228,21 @@
                             "vl_valor_des": vl_valor_des
 
                         },
+                        beforeSend: function(response){
+
+                            $("#processamento").modal('show');
+
+                        },
                         success: function(response){   
                             //Caso tenha inserido com sucesso, ele dispara o upload de arquivos
                             $('#id_despesa').val(response.id);
-                            $(".start-all").trigger('click');    
+                            if(total_arquivos > 0)
+                                $(".start-all").trigger('click');  
+                            else
+                                window.location.href = '../despesas/lancamentos';
                         },
                         error: function(response){
-
+                            $("#processamento").modal('hide');
                         }
                     });
                 }
