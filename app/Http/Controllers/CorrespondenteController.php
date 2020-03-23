@@ -61,26 +61,7 @@ class CorrespondenteController extends Controller
 
     public function index()
     {
-        /*
-        $correspondentes = ContaCorrespondente::with('entidade')
-                                              ->with('correspondente')
-                                              ->with(['entidade.identificacao' => function($query){
-                                                    $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
-
-                                              }])
-                                              ->with('correspondente.entidade.usuario')
-                                              ->with(['entidade.atuacao' => function($query){
-                                                    $query->where('fl_origem_cat','S');
-                                                    $query->with('cidade');
-                                                }])
-                                              ->where('cd_conta_con', $this->conta)
-                                              ->orderBy('nm_conta_correspondente_ccr','DESC')
-                                              ->get(); 
-        */
-        $correspondentes = null;
-
-        return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
+        return view('correspondente/correspondentes');
     }
 
     public function painel()
@@ -109,94 +90,53 @@ class CorrespondenteController extends Controller
 
     public function buscar(Request $request){
 
-        //realiza a consulta e popula os dados
         $estado = $request->get('cd_estado_est');
         $cidade = $request->get('cd_cidade_cde');
         $nome = $request->get('nome');
         $identificacao = $request->get('identificacao');
         $categoria = $request->get('cd_categoria_correspondente_cac');
+        $condicao_cidade = null;
 
-        $correspondentes = ContaCorrespondente::with('entidade')
-                                                ->with('correspondente')
-                                                ->with(['entidade.identificacao' => function($query){
-                                                    $query->where('cd_tipo_identificacao_tpi',1);
-                                                    $query->orWhere('cd_tipo_identificacao_tpi',7);
+        $sql = "SELECT t1.cd_conta_correspondente_ccr, t1.cd_conta_con, t1.cd_correspondente_cor, t1.cd_entidade_ete, t3.nu_identificacao_ide, t1.nm_conta_correspondente_ccr, t4.dc_categoria_correspondente_cac, t5.cd_cidade_cde, t6.nm_cidade_cde, t10.email
+                FROM conta_correspondente_ccr t1
+                LEFT JOIN categoria_correspondente_cac t4 ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
+                JOIN conta_con t2 ON t1.cd_conta_con = t2.cd_conta_con AND t1.cd_conta_con = $this->conta
+                LEFT JOIN identificacao_ide t3 ON t1.cd_entidade_ete = t3.cd_entidade_ete AND t3.cd_tipo_identificacao_tpi IN(1,7) AND t3.deleted_at is null
+                LEFT JOIN cidade_atuacao_cat t5 ON t1.cd_entidade_ete = t5.cd_entidade_ete AND t5.fl_origem_cat = 'S' AND t5.deleted_at is null
+                LEFT JOIN cidade_cde t6 ON t5.cd_cidade_cde = t6.cd_cidade_cde
+                JOIN users t10 ON t1.cd_correspondente_cor = t10.cd_conta_con
+                WHERE t1.deleted_at is null ";
 
-                                                }])
-                                                ->with('correspondente.entidade.usuario')
-                                                ->with(['entidade.atuacao' => function($query){
-                                                    $query->where('fl_origem_cat','S');
-                                                    $query->with('cidade');
-                                                }])
-                                                ->where('conta_correspondente_ccr.cd_conta_con', $this->conta)
+        if(!empty($nome)) $sql .= " AND nm_conta_correspondente_ccr ilike '%$nome%' ";
 
-                                                ->when(!empty($nome), function($sql) use($nome){
-                                                    $sql->where('nm_conta_correspondente_ccr','ilike',"%$nome%");
-                                                })
+        if(!empty($categoria)) $sql .= " AND t4.cd_categoria_correspondente_cac = $categoria ";
 
-                                                ->when(!empty($categoria), function($sql) use($categoria){
-                                                    $sql->where('cd_categoria_correspondente_cac',$categoria);
-                                                })
-                                              
-                                                ->when(!empty($identificacao), function($join) use($identificacao){
+        if(!empty($identificacao)) $sql .= " AND t3.nu_identificacao_ide = '$identificacao' ";
 
-                                                    $join->join('entidade_ete AS t0', function($join) use ($identificacao){
-                                    
-                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','t0.cd_entidade_ete');
-                                                        $join->join('identificacao_ide', function($join) use ($identificacao){
-                                                            $join->on('t0.cd_entidade_ete','=','identificacao_ide.cd_entidade_ete');
-                                                            $join->where('nu_identificacao_ide','=',$identificacao);
-                                                        });
-                                                    }); 
-                                                })
+        if(!empty($cidade)) $condicao_cidade .= " AND t7.cd_cidade_cde = $cidade  ";
 
-                                                ->when(!empty($cidade), function($join) use ($cidade){
+        if(!empty($estado)) $sql .= "AND t1.cd_entidade_ete IN (SELECT t8.cd_entidade_ete 
+                                       FROM cidade_atuacao_cat t7, conta_correspondente_ccr t8, cidade_cde t9 
+                                       WHERE t7.cd_entidade_ete = t8.cd_entidade_ete 
+                                       AND t7.cd_cidade_cde = t9.cd_cidade_cde
+                                       $condicao_cidade
+                                       AND t9.cd_estado_est = $estado
+                                       AND t8.cd_conta_con = $this->conta 
+                                       AND t7.deleted_at is null)";
 
-                                                    $join->join('entidade_ete', function($join) use ($cidade){
-                                    
-                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
-                                                        $join->join('cidade_atuacao_cat', function($join) use ($cidade){
-                                                            $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
-                                                            $join->where('cd_cidade_cde','=',$cidade);
-                                                            $join->whereNull('cidade_atuacao_cat.deleted_at');
-                                                        });
-                                                    }); 
+        $sql .= " ORDER BY nm_conta_correspondente_ccr";
 
-                                                })
+        $correspondentes = DB::select($sql);
 
-                                                ->when((!empty($estado) and empty($cidade)), function($join) use ($estado){
-
-                                                    $join->join('entidade_ete', function($join) use ($estado){
-                                    
-                                                        $join->on('conta_correspondente_ccr.cd_entidade_ete','=','entidade_ete.cd_entidade_ete');
-                                                        $join->join('cidade_atuacao_cat', function($join) use ($estado){
-                                                            $join->on('entidade_ete.cd_entidade_ete','=','cidade_atuacao_cat.cd_entidade_ete');
-                                                            $join->join('cidade_cde', function($join) use ($estado){
-                                                                $join->on('cidade_cde.cd_cidade_cde','=','cidade_atuacao_cat.cd_cidade_cde');
-                                                                $join->where('fl_origem_cat','=','S');
-                                                                $join->join('estado_est', function($join) use ($estado){
-                                                                    $join->on('cidade_cde.cd_estado_est','=','estado_est.cd_estado_est');
-                                                                    $join->where('cidade_cde.cd_estado_est','=',$estado);
-                                                                });
-                                                                
-                                                            });
-                                                            $join->whereNull('cidade_atuacao_cat.deleted_at');
-                                                        });
-                                                    }); 
-
-                                                })
-
-                                                ->orderBy('nm_conta_correspondente_ccr','DESC')
-                                                ->get();
-
+        session()->flashInput($request->input());
+        
         if(is_null($correspondentes))
             Flash::warning('Não existem correspondentes que correspondam aos valores pesquisados');
-
 
         switch (Utils::get_post_action('pesquisar', 'exportar')) {
             
             case 'pesquisar':
-                return view('correspondente/correspondentes',['correspondetes' => $correspondentes]);
+                return view('correspondente/correspondentes',['correspondentes' => $correspondentes]);
                 break;
 
             case 'exportar':
