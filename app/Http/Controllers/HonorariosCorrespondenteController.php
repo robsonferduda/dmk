@@ -31,6 +31,10 @@ class HonorariosCorrespondenteController extends Controller
 
     public function getHonorariosOrdenados(Request $request)
     {
+        $valores = array();
+        $comarcas = array();
+        $servicos = array();
+        
     	$id = \Crypt::decrypt($request->id);
 
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)

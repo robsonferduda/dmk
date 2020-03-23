@@ -291,6 +291,29 @@
                 </div>
             </div>
 </div>
+
+ <div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <h4>Essa operação irá excluir todas as ocorrências <span id="txt_exclusao_honorario"></span>. Para excluir somente um valor, apague o valor numérico e pressione o botão <strong>Atualizar Valores</strong></h4>
+                <h4>Deseja continuar?</h4>
+                <input type="hidden" name="id" id="id_exclusao_honorario">
+                <input type="hidden" name="url" id="url_honorario">
+                <div class="msg_retorno_honorario"></div>
+            </div>
+            <div class="modal-footer">
+                <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -357,12 +380,12 @@
                         $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
                         $.each(response.servicos,function(index,value){
 
-                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center">'+value.nm_tipo_servico_tse+'</th>');
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</th>');
                         });
 
                         $.each(response.comarcas,function(index,value){
 
-                            $(".table-load-honorarios").find("tbody").append('<tr><td>'+value.nm_cidade_cde+'</td></tr>');
+                            $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="comarca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</td></tr>');
                             $.each(response.servicos,function(index,data){
 
                                 indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
@@ -384,7 +407,34 @@
 
                     }else if(ordem == 'servico'){
 
-                        alert("Serviço");
+                        
+                        $(".table-load-honorarios").find("thead").find("tr").append('<th>Serviços</th>');
+                        $.each(response.comarcas,function(index,value){
+
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="comerca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</th>');
+                        });
+
+                        $.each(response.servicos,function(index,value){
+
+                            $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</td></tr>');
+                            $.each(response.comarcas,function(index,data){
+
+                                indice = "key-"+data.cd_cidade_cde+"-"+value.cd_tipo_servico_tse;
+                                label_valor = "Adicionar";
+                                valor = null;
+                                if(response.honorarios[indice]){
+                                    label_valor = response.honorarios[indice];
+                                    valor = response.honorarios[indice];
+                                }
+
+                                $(".table-load-honorarios").find("tbody")
+                                                           .find("tr:last")
+                                                           .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+
+                            });
+
+                        });
 
                     }
 
@@ -414,6 +464,19 @@
 
         });
 
+        $(document).on("click", ".excluir_registro_honorario", function () {
+
+            var id = $(this).data('id');
+            var tipo = $(this).data('tipo');
+            var texto = $(this).data('texto');
+            var url = "";
+
+            $("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
+            $("#modal_exclusao_honorario #url_honorario").val(url);
+            $("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
+            $("#modal_exclusao_honorario").modal('show');
+
+        });
        
 
         $('.valor_honorario').editable({
