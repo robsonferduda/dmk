@@ -200,13 +200,8 @@
                 total_arquivos = $('.start').length;          
 
                 $('.start').each(function(index, element) { 
-
-                    $(this).trigger('click');  
-                        
+                    $(this).trigger('click');   
                 });
-
-                //promise().done( function(){ window.location.href = '../despesas/lancamentos'; } );
-
             });
 
             $("#btnSaveDespesas").on('click', function(event){
@@ -295,6 +290,11 @@
                         $(".msg_mensagem").html("Erro ao enviar o arquivo");
                         $(".alert").addClass("alert-danger");
                         $(".alert").removeClass("none");
+
+                        total_controle++;
+
+                        if(total_controle == total_arquivos)
+                            window.location.href = '../despesas/lancamentos';
                     }
                 }); 
             }
