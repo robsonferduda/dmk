@@ -233,7 +233,7 @@
                                 @role('correspondente') 
                                     <section>                          
                                         <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Confirmo o recebimento dos documentos e a realização do ato contratado?</span> 
+                                            <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
                                                 <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
