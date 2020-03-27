@@ -345,6 +345,8 @@
 
         });
 
+        $("#cd_tipo_contato_tct").trigger('change');
+
     });
 
     $(function() {
@@ -355,7 +357,8 @@
                     required : true
                 },
                 cd_tipo_contato_tct : {
-                    required : true
+                    required : true,
+                    min: function () { return $('#cd_tipo_contato_tct').val(); }
                 }
             },
 
@@ -364,7 +367,8 @@
                     required : 'Preencha o campo para continuar'
                 },
                 cd_tipo_contato_tct : {
-                    required : 'Preencha o campo para continuar'
+                    required : 'Preencha o campo para continuar',
+                    max: 'Preencha o campo tipo'
                 },
             },
             errorPlacement : function(error, element) {
