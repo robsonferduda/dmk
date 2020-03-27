@@ -587,18 +587,6 @@
             $(".status_atualiza_valores").html("");            
         });    
 
-        $('.valor_honorario').editable({
-
-            validate: function (value) {
-                if ($.trim(value) == '')
-                    return 'Valor obrigatório';
-            },
-            tpl: '<input type="text" style="width: 20px;" class="form-control taxa-honorario">',
-            success: function(){
-                $(this).attr("data-edit","S");
-            }
-        });
-
         $(document).on("click", "#btn_confirma_adicao_honorario", function () {
 
             var valor = $("#input-honorario").val();
@@ -700,7 +688,7 @@
                             $("#modalEditarHonorarios").modal('hide');
                         }, 2000);
 
-                    $("#showAllHonorariosCorrespondente").trigger("click");
+                    $(".btn-buscar-honorarios").trigger("click");
                 },
                 error: function(response)
                 {
@@ -803,113 +791,6 @@
             buscaCidade(); 
 
         });
-
-        //Início do código obsoleto
-
-        $(document).on("click", ".atualizaValores", function () {
-
-            var cidade = $(this).closest("ul").data("cidade");
-            var servico = $(this).closest("ul").data("servico");
-            var tipo = $(this).data("tipo");
-            var valor = $(".taxa-honorario").val().replace(".", ",");
-
-            
-            $(".valor_honorario").each(function(){
-
-
-                if(tipo === "servico"){
-
-                    var valor_cidade = $(this).data("cidade");
-
-                    if(valor_cidade === cidade){
-                        $(this).attr("data-edit","S");
-                        $(this).text(valor);
-                    }
-                }
-
-                if(tipo === "cidade"){
-
-                    var valor_servico = $(this).data("servico");
-
-                    if(valor_servico === servico){
-                        $(this).attr("data-edit","S");
-                        $(this).text(valor);
-                    }
-                }
-
-                if(tipo === "tabela"){
-                    $(this).attr("data-edit","S");
-                    $(this).text(valor);
-                }
-     
-            });
-
-        });
-
-
-        $('.valor_honorario').on('shown', function (e, editable) {
-
-            var cidade = $(this).data('cidade');
-            var servico = $(this).data('servico');
-            var tipo = $(this).data('tipo');
-
-            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
-
-        });
-
-        $("#btnSalvarHonorariosCorrespondente").click(function (){
-
-            var valores = new Array();
-            var entidade = $("#cd_entidade").val();
-            var correspondente = $("#cd_correspondente").val();
-            
-            $('.valor_honorario').each(function(i, obj) {
-                
-                var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
-                var servico = $(this).data("servico");
-                var cidade = $(this).data("cidade");
-                var flag = $(this).attr("data-edit");
-                    
-                if(valor != 'Adicionar' && flag == 'S'){
-
-                    var dados = {servico: servico, cidade: cidade, valor: valor};
-                    valores.push(dados);
-
-                }
-                
-            });
-            
-            $.ajax(
-            {
-                type: "POST",
-                url: "../../correspondente/honorarios/salvar",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "valores": JSON.stringify(valores),
-                    "entidade": entidade
-                },
-                beforeSend: function()
-                {
-                    $("#processamento").modal('show');
-                },
-                success: function(response)
-                {
-                    $("#processamento").modal('hide');
-                    //window.location.href = "../../correspondente/honorarios/"+correspondente;
-                },
-                error: function(response)
-                {
-                    $("#modal_erro").modal('show');
-                    //location.reload();
-                }
-            });
-            
-        }); 
-
-        //Fim do código obsoleto!
-
     });
-
-    
 </script>
 @endsection
