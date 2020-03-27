@@ -401,126 +401,6 @@ class CorrespondenteController extends Controller
 
     }
 
-    public function buscarHonorarios(Request $request)
-    {
-        $cd_correspondente = $request->cd_correspondente;
-        
-        $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first(); 
-        
-        $cidade = $request->cd_cidade_cde;
-        $servico = $request->lista_servicos;
-        $valores = null;
-
-        $lista_cidades = array();
-        $lista_cidades_selecao = array();
-        $lista_cidades_honorarios = array();
-        $lista_merge = array();
-
-        $lista_servicos = array();     
-
-        $this->inicializaOrdem();   
-
-        //Carrega dados do combo        
-        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
-
-        if(empty(session('lista_cidades'))){
-            \Session::put('lista_cidades', array());
-        }
-
-        if(empty(session('lista_servicos'))){
-            \Session::put('lista_servicos', array());
-        }
-
-        //Carrega serviços já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->correspondente->cd_entidade_ete)
-                                    ->select('cd_tipo_servico_tse')
-                                    ->groupBy('cd_tipo_servico_tse')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $lista_servicos[] = $honorario->tipoServico;
-            }
-        }
-
-        $lista_servicos = TipoServico::whereIn('cd_tipo_servico_tse',$servico)->get();
-
-        $lista_temp = array();
-        foreach ($lista_servicos as $servico) {
-            if(!in_array($servico, $lista_temp))
-                $lista_temp[] = $servico;
-        }
-        $lista_servicos = $lista_temp;
-
-        //Carrega cidade selecionada        
-        if($cidade > 0){
-            $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
-        }elseif($cidade == 0){
-
-            $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first();
-            $atuacao = $correspondente->entidade->atuacao()->get();
-
-            foreach ($atuacao as $a) {
-                $lista_cidades_honorarios[] = $a->cidade;
-            }
-
-        }
-
-        //Carrega cidades já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
-                                    ->select('cd_cidade_cde')
-                                    ->groupBy('cd_cidade_cde')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $lista_cidades_honorarios[] = $honorario->cidade;
-            }
-        }
-
-        //Junta os arrays e eleimina duplicidades
-        $lista_sessao = session('lista_cidades');
-        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_honorarios, $lista_sessao);
-
-        foreach ($lista_merge as $cidade) {
-            if(!in_array($cidade, $lista_cidades))
-                $lista_cidades[] = $cidade;
-
-        }
-
-        //Após o merge, limpa a sessão para atualizar mais tarde
-        \Session::forget('lista_cidades');
-
-        //Ordena a lista de cidades
-        usort($lista_cidades,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
- 
-        \Session::put('lista_cidades',$lista_cidades);
-
-        //Carrega os valores de honorarios para determinado grupo
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
-            }
-        }  
-        
-        //Envia dados e renderiza tela
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'lista_servicos' => $lista_servicos, 'cidades' => session('lista_cidades'), 'valores' => $valores]);
-    }
-
     public function limparSelecao($id){
         \Session::forget('lista_cidades');
         return redirect('correspondente/honorarios/'.$id);
@@ -536,41 +416,6 @@ class CorrespondenteController extends Controller
     {
         \Session::put('organizar',$ordem); 
         return redirect()->back();
-    }
-
-    public function salvarHonorarios(Request $request){
-
-        $entidade = $request->entidade;
-
-        if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
-
-            $valores = json_decode($request->valores);
-                
-            for($i = 0; $i < count($valores); $i++) {
-
-                $valor = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                      ->where('cd_entidade_ete',$entidade)
-                                      ->where('cd_cidade_cde',$valores[$i]->cidade)
-                                      ->where('cd_tipo_servico_tse',$valores[$i]->servico)->first();
-
-                if(!empty($valor)){
-
-                    $valor->nu_taxa_the = str_replace(",", ".", $valores[$i]->valor);
-                    $valor->saveOrFail();
-
-                }else{
-
-                    $taxa = TaxaHonorario::create([
-                        'cd_entidade_ete'           => $entidade,
-                        'cd_conta_con'              => $this->conta, 
-                        'cd_tipo_servico_tse'       => $valores[$i]->servico,
-                        'cd_cidade_cde'             => $valores[$i]->cidade,
-                        'nu_taxa_the'               => str_replace(",", ".", $valores[$i]->valor),
-                        'dc_observacao_the'         => "--"
-                    ]);
-                }
-            }
-        }
     }
 
     public function convidar(ConviteRequest $request){
@@ -1304,25 +1149,6 @@ class CorrespondenteController extends Controller
         return response()->json($results);
             
     } 
-
-    public function excluirTodosHonorarios(Request $request)
-    {
-        if(TaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$request->entidade_correspondente_excluir)->count()){
-        
-            $retorno = TaxaHonorario::where('cd_conta_con', $this->conta)->where('cd_entidade_ete',$request->entidade_correspondente_excluir)->delete();
-
-            if($retorno){
-                Flash::success('Honorários excluídos com sucesso');
-            }else{
-                Flash::error('Erro ao excluir honorários');
-            }
-
-        }else{
-            Flash::warning('Não existem honorários salvos para esse correspondente');
-        }
-
-        return redirect('correspondente/honorarios/'.$request->cd_correspondente_excluir);        
-    }
 
     public function notificacao($id)
     {

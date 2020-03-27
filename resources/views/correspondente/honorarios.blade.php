@@ -16,7 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
-            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a> 
+            <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>                                               
         </div>
     </div>
     <div class="row">
@@ -76,7 +77,7 @@
                                                     <div class="row">
                                                         <div class="col-sm-12" id="msg_valida_busca" style="margin: 5px 0px;"></div> 
                                                         <section class="col col-md-12"> 
-                                                            <button class="btn btn-primary btn-buscar-honorarios" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                                            <button class="btn btn-primary btn-buscar-honorarios" type="button"><i class="fa fa-search"></i> Buscar</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                       
@@ -110,88 +111,17 @@
 
                                             <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-list-ul fa-lg"></i> Mostrar Todos os Valores</button>
 
-                                            <button class="btn btn-success pull-right header-btn marginLeft5" id="btnSalvarHonorariosCorrespondente"><i class="fa fa-save fa-lg"></i> Salvar Valores</button>
-
-                                            <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>
-                                            
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-12 container-honorarios">
                                                
-                                            @if(count($cidades) > 0)
-                                            
-                                                @if(Session::get('organizar') == 1)
-                                                    <div class="tabelah">
-                                                        <table class="table table-bordered" style="margin-bottom: 150px;">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Tipo de Serviço</th>
-                                                                    @foreach($cidades as $cidade)
-                                                                        <th>
-                                                                            <span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span>  {{ $cidade->nm_cidade_cde }}
-                                                                        </th>
-                                                                    @endforeach
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($lista_servicos as $servico)
-                                                                    <tr>
-                                                                        <td>
-                                                                            <div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}
-                                                                        </td>
-                                                                        @foreach($cidades as $cidade)
-                                                                            <td>
-                                                                                <div class="col-sm-12">
-                                                                                        
-                                                                                        <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="cidade" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
-                                                                                        
-                                                                                </div>
-                                                                            </td>
-                                                                        @endforeach
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                @else
-                                                    <div class="tabelah">
-                                                        <table class="table table-bordered" style="margin-bottom: 150px;">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Comarca</th>
-                                                                    @foreach($lista_servicos as $servico)
-                                                                        <th><span style="cursor: pointer;" data-id="{{ $servico->cd_tipo_servico_tse }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/servico/excluir/" data-texto="do serviço <strong>{{ $servico->nm_tipo_servico_tse }}</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $servico->nm_tipo_servico_tse }}</th>
-                                                                    @endforeach
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($cidades as $cidade)
-                                                                    <tr>
-                                                                        <td>
-                                                                            <div style="min-width: 200px;"><span style="cursor: pointer;" data-id="{{ $cidade->cd_cidade_cde  }}" data-url="{{ $cliente->entidade->cd_entidade_ete }}/comarca/excluir/" data-texto="da comarca <strong>{{ $cidade->nm_cidade_cde  }}</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> {{ $cidade->nm_cidade_cde  }}</div>
-                                                                        </td>
-                                                                        @foreach($lista_servicos as $servico)
-                                                                            <td>
-                                                                                <div class="col-sm-12">
-
-                                                                                    <span style="border: none; cursor: pointer;" data-edit="N" data-tipo="servico" data-cidade="{{ $cidade->cd_cidade_cde }}" data-servico="{{ $servico->cd_tipo_servico_tse }}" class="valor_honorario" data-type="text" data-pk="1" data-placement="bottom" data-placeholder="Valor" data-original-title="Digite o valor do honorário" style="display: inline;">{{ (!empty($valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse])) ? $valores[$cidade->cd_cidade_cde][$servico->cd_tipo_servico_tse] : 'Adicionar' }}</span>                                                                                     
-                                                                                </div>
-                                                                            </td>
-                                                                        @endforeach
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                @endif
-                                            @else
-                                                <h4 class="honorarios-empty">Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
-                                            @endif
+                                            <h4 class="honorarios-empty">Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
+                                           
                                             <div class="col-md-12 box-loader-honorarios"></div>
                                             <div class="box-loader-honorarios-error none">
                                                 <h4 class="text-danger"><i class="fa fa-times-circle"></i> Erro ao enviar requisição, tente novamente</h4>
                                             </div>
                                             <div class="tabelah none">
-                                                <table class="table table-bordered table-load-honorarios" style="margin-bottom: 150px;">
+                                                <table class="table table-bordered table-load-honorarios">
                                                     <thead>
                                                         <tr>
                                                             <th>Comarca</th>
@@ -256,15 +186,23 @@
                         <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i> <strong>Adicionar Valores de Honorários</strong></h4>
                     </div>
                     <div class="modal-body">
-
+                        <input type="hidden" name="modal_id_comarca" id="modal_id_comarca">
+                        <input type="hidden" name="modal_id_servico" id="modal_id_servico">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4><strong>Comarca</strong>: Florianópolis</h4>
-                                <h4><strong>Serviço</strong>: AUDIÊNCIA VARA CÍVEL (ADVOGADO E PREPOSTO)</h4>
-                                <div class="form-group" style="margin-top: 8px;">
-                                    
+                                <h4><strong>Comarca</strong>: <span id="nmcomarca">Florianópolis</span></h4>
+                                <h4><strong>Serviço</strong>: <span id="nmservico">AUDIÊNCIA VARA CÍVEL (ADVOGADO E PREPOSTO)</span></h4>
+                                <p>Vocẽ pode excluir o honorário selecionado ou editar seu valor conforme opções abaixo</p>                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-top: 8px;">                                    
                                     <label for="tags">Digite um valor para o honorário</label>
-                                    <input type="text" class="form-control taxa-honorario" id="tags" placeholder="Valor">
+                                    <input type="text" class="form-control taxa-honorario" id="input-honorario" placeholder="Valor">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-top: 8px;"> 
+                                    <button id="btn_excluir_registro_honorario" class="btn btn-danger btn-sm" data-tipo="unico" data-id="" data-texto=" somente o valor do honorário selecionado" style="margin-top: 23px;"><i class="fa fa-remove"></i> Excluir Honorário</button>
                                 </div>
                             </div>
                         </div>
@@ -273,26 +211,32 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="">
-                                        <input type="checkbox" name="subscription" id="subscription">
-                                            <i></i>Aplicar valor à todos os serviços
+                                        <input type="checkbox" name="all_services" id="all_services">
+                                            <i></i>Aplicar mesmo valor para todas as ocorẽncias deste serviço 
                                     </label><br/>
                                     <label class="">
-                                        <input type="checkbox" name="terms" id="terms">
-                                            <i></i>Aplicar valor à todas as comarcas
+                                        <input type="checkbox" name="all_comarcas" id="all_comarcas">
+                                            <i></i>Aplicar mesmo valor para todas as ocorẽncias desta comerca
+                                    </label>
+                                    <label class="">
+                                        <input type="checkbox" name="all_table" id="all_table">
+                                            <i></i>Aplicar mesmo valor para todas as comarcas e todos os serviços (toda tabela)
                                     </label>
                                 </div>
+                                <h4 class="center erro_atualiza_valores text-danger"></h4>
+                                <h4 class="center status_atualiza_valores text-success"></h4>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
+                        <a type="button" id="btn_confirma_adicao_honorario" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
                         <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
                     </div>
                 </div>
             </div>
 </div>
 
- <div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+<div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -300,14 +244,16 @@
                 <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
             </div>
             <div class="modal-body" style="text-align: center;">
-                <h4>Essa operação irá excluir todas as ocorrências <span id="txt_exclusao_honorario"></span>. Para excluir somente um valor, apague o valor numérico e pressione o botão <strong>Atualizar Valores</strong></h4>
+                <h4>
+                    Essa operação irá excluir <span id="txt_exclusao_honorario"></span>. 
+                </h4>
                 <h4>Deseja continuar?</h4>
-                <input type="hidden" name="id" id="id_exclusao_honorario">
-                <input type="hidden" name="url" id="url_honorario">
+                <input type="hidden" name="id_exclusao_honorario" id="id_exclusao_honorario">
+                <input type="hidden" name="tipo_honorario" id="tipo_honorario">
                 <div class="msg_retorno_honorario"></div>
             </div>
             <div class="modal-footer">
-                <a type="button" id="btn_confirma_exclusao_honorario" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                <a type="button" id="btn_confirma_exclusao_honorario_correspondente" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
                 <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
             </div>
         </div>
@@ -321,6 +267,10 @@
     $(document).ready(function(){
 
         $('.box-loader-honorarios').addClass('none');
+
+        $(document).on("focus", ".taxa-honorario", function () {
+            $(this).mask('#####000,00', {reverse: true});
+        });
 
         var duallistbox = $('select[name="lista_servicos[]"]').bootstrapDualListbox({
             nonSelectedListLabel: 'Serviços Disponíveis',
@@ -351,6 +301,127 @@
 
         });
 
+        $('.btn-buscar-honorarios').on('click', function (e, editable) {
+
+            cidade = $("#cidade").val();
+
+            if(!cidade){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione uma ou mais cidades para continuar</span>');
+                return false;
+            }
+
+            if($("#lista_servicos").val() === null){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione um ou mais serviços para continuar</span>');
+                return false;
+            }
+
+            id = $("#cd_entidade").data("token");
+            ordem = $("#ordem").val();
+            lista_servicos = $("#lista_servicos").val();
+            lista_cidades = $("#cidade").val();
+            correspondente = $("#cd_correspondente").val();
+
+            $.ajax({
+                url: '../../correspondente/buscar-honorarios/'+id,
+                type: 'GET',
+                data: {"id":id, "ordem": ordem, "lista_servicos": lista_servicos, "lista_cidades": lista_cidades, "correspondente": correspondente },
+                dataType: "JSON",
+                beforeSend: function(){
+                    
+                    $('.box-loader-honorarios').loader('show');
+                    $('.box-loader-honorarios').removeClass('none');
+                    $(".tabelah").addClass('none');
+                    $(".honorarios-empty").addClass('none');
+
+                },
+                success: function(response)
+                {    
+
+                    $(".tabelah").addClass('none');
+                    $(".table-load-honorarios thead tr th").remove();
+                    $(".table-load-honorarios tbody tr td").remove();
+
+                    $("#msg_valida_busca").html("");
+
+                    var total_honorarios = Object.keys(response.honorarios).length;
+
+                    if(ordem == 'comarca'){
+
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
+                            $.each(response.servicos,function(index,value){
+
+                                $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto=" todas as ocorrências do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</th>');
+                            });
+
+                            $.each(response.comarcas,function(index,value){
+
+                                $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="comarca" data-id="'+value.cd_cidade_cde+'" data-texto=" todas as ocorrências da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</td></tr>');
+                                $.each(response.servicos,function(index,data){
+
+                                    indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
+                                    label_valor = "Adicionar";
+                                    valor = null;
+                                    if(response.honorarios[indice]){
+                                        label_valor = response.honorarios[indice].replace(".", ",");
+                                        valor = response.honorarios[indice].replace(".", ",");
+                                    }
+
+                                    $(".table-load-honorarios").find("tbody")
+                                                               .find("tr:last")
+                                                               .append('<td class="center"><span class="add-valor-honorario" data-edit="N" data-comarca="'+value.cd_cidade_cde+'" data-nmcomarca="'+value.nm_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-nmservico="'+data.nm_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+
+                                });
+
+                            });
+
+                    }else if(ordem == 'servico'){
+
+                            
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th>Serviços</th>');
+                            $.each(response.comarcas,function(index,value){
+
+                                $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="comerca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</th>');
+                            });
+
+                            $.each(response.servicos,function(index,value){
+
+                                $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</td></tr>');
+                                $.each(response.comarcas,function(index,data){
+
+                                    indice = "key-"+data.cd_cidade_cde+"-"+value.cd_tipo_servico_tse;
+                                    label_valor = "Adicionar";
+                                    valor = null;
+                                    if(response.honorarios[indice]){
+                                        label_valor = response.honorarios[indice].replace(".", ",");
+                                        valor = response.honorarios[indice].replace(".", ",");
+                                    }
+
+                                    $(".table-load-honorarios").find("tbody")
+                                                               .find("tr:last")
+                                                               .append('<td class="center"><span class="add-valor-honorario" data-edit="N" data-comarca="'+data.cd_cidade_cde+'" data-nmcomarca="'+data.nm_cidade_cde+'" data-servico="'+value.cd_tipo_servico_tse+'" data-nmservico="'+value.nm_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+                                });
+                            });
+                    }
+
+                    $("#modal_exclusao_honorario").modal('hide');
+                    $("#modalEditarHonorarios").modal('hide');
+
+                    $('.box-loader-honorarios-error').addClass('none');             
+                    $('.box-loader-honorarios').addClass('none');
+                    $(".tabelah").removeClass('none');
+
+                },
+                error: function(response)
+                {   
+                    $('.box-loader-honorarios-error').removeClass('none');
+                    $('.box-loader-honorarios').addClass('none');
+                }
+            });
+
+        });
+
         $("#showAllHonorariosCorrespondente").click(function(){
 
             id = $("#cd_entidade").data("token");
@@ -374,81 +445,78 @@
                     $(".tabelah").addClass('none');
                     $(".table-load-honorarios thead tr th").remove();
                     $(".table-load-honorarios tbody tr td").remove();
+                    var total_honorarios = Object.keys(response.honorarios).length;
 
-                    if(ordem == 'comarca'){
+                    if(total_honorarios > 0){
 
-                        $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
-                        $.each(response.servicos,function(index,value){
+                        if(ordem == 'comarca'){
 
-                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</th>');
-                        });
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th>Comarcas</th>');
+                            $.each(response.servicos,function(index,value){
 
-                        $.each(response.comarcas,function(index,value){
+                                $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto=" todas as ocorrências do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</th>');
+                            });
 
-                            $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="comarca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</td></tr>');
-                            $.each(response.servicos,function(index,data){
+                            $.each(response.comarcas,function(index,value){
 
-                                indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
-                                label_valor = "Adicionar";
-                                valor = null;
-                                if(response.honorarios[indice]){
-                                    label_valor = response.honorarios[indice];
-                                    valor = response.honorarios[indice];
-                                }
+                                $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="comarca" data-id="'+value.cd_cidade_cde+'" data-texto=" todas as ocorrências da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</td></tr>');
+                                $.each(response.servicos,function(index,data){
 
-                                $(".table-load-honorarios").find("tbody")
-                                                           .find("tr:last")
-                                                           .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+                                    indice = "key-"+value.cd_cidade_cde+"-"+data.cd_tipo_servico_tse;
+                                    label_valor = "Adicionar";
+                                    valor = null;
+                                    if(response.honorarios[indice]){
+                                        label_valor = response.honorarios[indice].replace(".", ",");
+                                        valor = response.honorarios[indice].replace(".", ",");
+                                    }
 
+                                    $(".table-load-honorarios").find("tbody")
+                                                               .find("tr:last")
+                                                               .append('<td class="center"><span class="add-valor-honorario" data-edit="N" data-comarca="'+value.cd_cidade_cde+'" data-nmcomarca="'+value.nm_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-nmservico="'+data.nm_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+
+                                });
 
                             });
 
-                        });
+                        }else if(ordem == 'servico'){
 
-                    }else if(ordem == 'servico'){
+                            
+                            $(".table-load-honorarios").find("thead").find("tr").append('<th>Serviços</th>');
+                            $.each(response.comarcas,function(index,value){
 
-                        
-                        $(".table-load-honorarios").find("thead").find("tr").append('<th>Serviços</th>');
-                        $.each(response.comarcas,function(index,value){
-
-                            $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="comerca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</th>');
-                        });
-
-                        $.each(response.servicos,function(index,value){
-
-                            $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</td></tr>');
-                            $.each(response.comarcas,function(index,data){
-
-                                indice = "key-"+data.cd_cidade_cde+"-"+value.cd_tipo_servico_tse;
-                                label_valor = "Adicionar";
-                                valor = null;
-                                if(response.honorarios[indice]){
-                                    label_valor = response.honorarios[indice];
-                                    valor = response.honorarios[indice];
-                                }
-
-                                $(".table-load-honorarios").find("tbody")
-                                                           .find("tr:last")
-                                                           .append('<td class="center"><span class="add-valor-honorario" data-comarca="'+value.cd_cidade_cde+'" data-servico="'+data.cd_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
-
-
+                                $(".table-load-honorarios").find("thead").find("tr").append('<th class="center"><span data-tipo="comerca" data-id="'+value.cd_cidade_cde+'" data-texto="da comarca <strong>'+value.nm_cidade_cde+'</strong> para todos os serviços"class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_cidade_cde+'</th>');
                             });
 
-                        });
+                            $.each(response.servicos,function(index,value){
+
+                                $(".table-load-honorarios").find("tbody").append('<tr><td><span data-tipo="servico" data-id="'+value.cd_tipo_servico_tse+'" data-texto="do serviço <strong>'+value.nm_tipo_servico_tse+'</strong> para todas as comarcas" class="text-danger excluir_registro_honorario"><i class="fa fa-times-circle"></i></span> '+value.nm_tipo_servico_tse+'</td></tr>');
+                                $.each(response.comarcas,function(index,data){
+
+                                    indice = "key-"+data.cd_cidade_cde+"-"+value.cd_tipo_servico_tse;
+                                    label_valor = "Adicionar";
+                                    valor = null;
+                                    if(response.honorarios[indice]){
+                                        label_valor = response.honorarios[indice].replace(".", ",");
+                                        valor = response.honorarios[indice].replace(".", ",");
+                                    }
+
+                                    $(".table-load-honorarios").find("tbody")
+                                                               .find("tr:last")
+                                                               .append('<td class="center"><span class="add-valor-honorario" data-edit="N" data-comarca="'+data.cd_cidade_cde+'" data-nmcomarca="'+data.nm_cidade_cde+'" data-servico="'+value.cd_tipo_servico_tse+'" data-nmservico="'+value.nm_tipo_servico_tse+'" data-valor="'+valor+'">'+label_valor+'</span></td>');
+
+                                });
+                            });
+                        }
+
+                    }else{
+
+                        $(".container-honorarios").html('<div class="alert alert-info fade in marginTop10"><button class="close" data-dismiss="alert">×</button><i class="fa-fw fa fa-info"></i><strong>Informação!</strong> Não existem registros de honorários cadastrados para o correspondente</div><h2 class="center"></h2>');
 
                     }
 
-                    $('.add-valor-honorario').on('click', function (e, editable) {
-
-                                valor = $(this).data("valor");
-                                comarca = $(this).data("comarca");
-                                servico = $(this).data("servico");
-
-                                //alert(valor+" - "+comarca+"-"+servico);
-
-                                $("#modalEditarHonorarios").modal('show');
-
-                            });
+                    $("#modal_exclusao_honorario").modal('hide');
+                    $("#modalEditarHonorarios").modal('hide');
 
                     $('.box-loader-honorarios-error').addClass('none');             
                     $('.box-loader-honorarios').addClass('none');
@@ -464,20 +532,60 @@
 
         });
 
+        $(document).on("click", ".add-valor-honorario", function () {
+
+            valor = $(this).data("valor");
+            comarca = $(this).data("comarca");
+            nmcomarca = $(this).data("nmcomarca");
+            servico = $(this).data("servico");
+            nmservico = $(this).data("nmservico");
+
+            $("#nmcomarca").html(nmcomarca);
+            $("#nmservico").html(nmservico);
+            $("#input-honorario").val(valor);
+            $("#btn_excluir_registro_honorario").attr('data-id', comarca+'-'+servico);
+            $("#modal_id_comarca").val(comarca);
+            $("#modal_id_servico").val(servico);
+
+            $("#modal_exclusao_honorario #id_exclusao_honorario").val(comarca+'-'+servico);
+
+            $("#modalEditarHonorarios").modal('show');
+
+        });
+
+        $(document).on("click", "#btn_excluir_registro_honorario", function () {
+
+            var tipo = $(this).data('tipo');
+            var texto = $(this).data('texto');
+
+            $("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
+            $("#modal_exclusao_honorario #tipo_honorario").val(tipo);
+            $("#modal_exclusao_honorario").modal('show');
+
+        });
+
         $(document).on("click", ".excluir_registro_honorario", function () {
 
             var id = $(this).data('id');
             var tipo = $(this).data('tipo');
             var texto = $(this).data('texto');
-            var url = "";
 
             $("#modal_exclusao_honorario #txt_exclusao_honorario").html(texto);
-            $("#modal_exclusao_honorario #url_honorario").val(url);
+            $("#modal_exclusao_honorario #tipo_honorario").val(tipo);
             $("#modal_exclusao_honorario #id_exclusao_honorario").val(id);
             $("#modal_exclusao_honorario").modal('show');
 
         });
-       
+
+        $('#modal_exclusao_honorario').on('show.bs.modal', function () {
+            $(".msg_retorno_honorario").html("");
+        });   
+
+        $('#modalEditarHonorarios').on('shown.bs.modal', function () {
+            $("#input-honorario").focus();
+            $(".erro_atualiza_valores").html("");
+            $(".status_atualiza_valores").html("");            
+        });    
 
         $('.valor_honorario').editable({
 
@@ -491,72 +599,148 @@
             }
         });
 
-        $('.btn-buscar-honorarios').on('click', function (e, editable) {
+        $(document).on("click", "#btn_confirma_adicao_honorario", function () {
 
-            cidade = $("#cidade").val();
+            var valor = $("#input-honorario").val();
+            var comarca = $("#modal_id_comarca").val();
+            var servico = $("#modal_id_servico").val();
+            var entidade = $("#cd_entidade").data("token");
+            var all_services = $('#all_services').is(":checked");
+            var all_comarcas = $('#all_comarcas').is(":checked");
+            var all_table = $('#all_table').is(":checked");
 
-            if(!cidade){
-                $("#msg_valida_busca").html('<span class="text-danger">Selecione uma ou mais cidades para continuar</span>');
-                return false;
-            }
+            //Atualiza a flag de edição para "S" 
 
-            if($("#lista_servicos").val() === null){
-                $("#msg_valida_busca").html('<span class="text-danger">Selecione um ou mais serviços para continuar</span>');
-                return false;
-            }
+            $(".add-valor-honorario").each(function(){
 
-        });
+                var this_comarca = $(this).data("comarca");
+                var this_servico = $(this).data("servico"); 
 
-        $('.valor_honorario').on('shown', function (e, editable) {
-
-            var cidade = $(this).data('cidade');
-            var servico = $(this).data('servico');
-            var tipo = $(this).data('tipo');
-
-            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
-
-        });
-
-        $(document).on("focus", ".taxa-honorario", function () {
-            $(this).mask('#####000,00', {reverse: true});
-        });
-
-        $(document).on("click", ".atualizaValores", function () {
-
-            var cidade = $(this).closest("ul").data("cidade");
-            var servico = $(this).closest("ul").data("servico");
-            var tipo = $(this).data("tipo");
-            var valor = $(".taxa-honorario").val().replace(".", ",");
-
-            
-            $(".valor_honorario").each(function(){
-
-
-                if(tipo === "servico"){
-
-                    var valor_cidade = $(this).data("cidade");
-
-                    if(valor_cidade === cidade){
-                        $(this).attr("data-edit","S");
-                        $(this).text(valor);
-                    }
-                }
-
-                if(tipo === "cidade"){
-
-                    var valor_servico = $(this).data("servico");
-
-                    if(valor_servico === servico){
-                        $(this).attr("data-edit","S");
-                        $(this).text(valor);
-                    }
-                }
-
-                if(tipo === "tabela"){
+                //Atualiza apenas o registro que foi clicado
+                if(this_servico == servico && this_comarca == comarca){
                     $(this).attr("data-edit","S");
+                    $(this).attr("data-valor",valor);
                     $(this).text(valor);
                 }
-     
+
+                //Atualiza valores da mesma comarca
+                if(all_comarcas){
+
+                    if(this_comarca == comarca){
+                        $(this).attr("data-edit","S");
+                        $(this).attr("data-valor",valor);
+                        $(this).text(valor);
+                    }
+                }
+
+                //Atualiza valores do mesmo serviço
+                if(all_services){
+
+                    if(this_servico == servico){
+                        $(this).attr("data-edit","S");
+                        $(this).attr("data-valor",valor);
+                        $(this).text(valor);
+                    }
+                }
+
+                //Atualiza valores do mesmo serviço
+                if(all_table){
+
+                    $(this).attr("data-edit","S");
+                    $(this).attr("data-valor",valor);
+                    $(this).text(valor);
+                }
+
+            });
+
+            var valores = new Array();
+            var entidade = $("#cd_entidade").val();
+            var correspondente = $("#cd_correspondente").val();
+            
+            $('.add-valor-honorario').each(function(i, obj) {               
+                
+                var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
+                var servico = $(this).data("servico");
+                var cidade = $(this).data("comarca");
+                var flag = $(this).attr("data-edit");
+                nmcomarca = $(this).data("nmcomarca");
+                nmservico = $(this).data("nmservico");
+                    
+                if(valor != 'Adicionar' && flag == 'S'){
+
+                    var dados = {servico: servico, cidade: cidade, valor: valor};
+                    valores.push(dados);
+
+                    $(".status_atualiza_valores").html('Atualizando valores de serviço '+nmservico+' para a comarca '+nmcomarca+' com valor '+valor);
+
+                }
+                
+            });
+            
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../correspondente/honorarios/salvar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "valores": JSON.stringify(valores),
+                    "entidade": entidade
+                },
+                beforeSend: function()
+                {
+                    $(".status_atualiza_valores").html('<i class="fa fa-gear fa-spin"></i> Processando requisição...');
+                },
+                success: function(response)
+                {
+                    $(".status_atualiza_valores").html('Operação realizada com sucesso! Aguarde, atualizando dados...');
+
+                    setTimeout(
+                        function() 
+                        {
+                            $("#modalEditarHonorarios").modal('hide');
+                        }, 2000);
+
+                    $("#showAllHonorariosCorrespondente").trigger("click");
+                },
+                error: function(response)
+                {
+                    $(".status_atualiza_valores").empty();
+                    $(".erro_atualiza_valores").html('Houve um erro ao processar sua requisição.');
+                }
+            });
+
+
+        });
+
+        $(document).on("click", "#btn_confirma_exclusao_honorario_correspondente", function () {
+
+            var id = $("#id_exclusao_honorario").val();
+            var tipo= $("#tipo_honorario").val();
+            var token = $("#cd_entidade").data("token");
+
+            $.ajax({
+
+                url: '../../correspondente/'+token+'/honorarios/'+tipo+'/excluir/'+id,
+                type: 'DELETE',
+                dataType: "JSON",
+                data: {
+                    "id": id,
+                    "_method": 'DELETE',
+                    "_token": $('meta[name="token"]').attr('content'),
+                },
+                beforeSend: function()
+                {
+                    $(".msg_retorno_honorario").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');
+                },
+                success: function(response)
+                {
+                    $(".msg_retorno_honorario").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Atualizando dados...</strong></h4>');
+                    $("#showAllHonorariosCorrespondente").trigger("click");
+                },
+                error: function(response)
+                {
+                    $(".msg_retorno_honorario").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro ao processar sua requisição.</strong></h4>')
+                }
             });
 
         });
@@ -619,6 +803,110 @@
             buscaCidade(); 
 
         });
+
+        //Início do código obsoleto
+
+        $(document).on("click", ".atualizaValores", function () {
+
+            var cidade = $(this).closest("ul").data("cidade");
+            var servico = $(this).closest("ul").data("servico");
+            var tipo = $(this).data("tipo");
+            var valor = $(".taxa-honorario").val().replace(".", ",");
+
+            
+            $(".valor_honorario").each(function(){
+
+
+                if(tipo === "servico"){
+
+                    var valor_cidade = $(this).data("cidade");
+
+                    if(valor_cidade === cidade){
+                        $(this).attr("data-edit","S");
+                        $(this).text(valor);
+                    }
+                }
+
+                if(tipo === "cidade"){
+
+                    var valor_servico = $(this).data("servico");
+
+                    if(valor_servico === servico){
+                        $(this).attr("data-edit","S");
+                        $(this).text(valor);
+                    }
+                }
+
+                if(tipo === "tabela"){
+                    $(this).attr("data-edit","S");
+                    $(this).text(valor);
+                }
+     
+            });
+
+        });
+
+
+        $('.valor_honorario').on('shown', function (e, editable) {
+
+            var cidade = $(this).data('cidade');
+            var servico = $(this).data('servico');
+            var tipo = $(this).data('tipo');
+
+            editable.input.$input.closest('.control-group').find('.editable-buttons').append('<div style="display: inline; margin-left: 8px;" class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1" aria-expanded="false"><span class="caret"></span></button><ul class="dropdown-menu pull-right" role="menu" data-cidade="'+cidade+'" data-servico="'+servico+'"><li><a class="atualizaValores" data-tipo="cidade">Repetir valor para todas as cidades</a></li><li><a class="atualizaValores" data-tipo="servico">Repetir valor para todos os serviços</a></li><li><a class="atualizaValores" data-tipo="tabela">Repetir valor para toda a tabela</a></li></ul></div>');
+
+        });
+
+        $("#btnSalvarHonorariosCorrespondente").click(function (){
+
+            var valores = new Array();
+            var entidade = $("#cd_entidade").val();
+            var correspondente = $("#cd_correspondente").val();
+            
+            $('.valor_honorario').each(function(i, obj) {
+                
+                var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
+                var servico = $(this).data("servico");
+                var cidade = $(this).data("cidade");
+                var flag = $(this).attr("data-edit");
+                    
+                if(valor != 'Adicionar' && flag == 'S'){
+
+                    var dados = {servico: servico, cidade: cidade, valor: valor};
+                    valores.push(dados);
+
+                }
+                
+            });
+            
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../correspondente/honorarios/salvar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "valores": JSON.stringify(valores),
+                    "entidade": entidade
+                },
+                beforeSend: function()
+                {
+                    $("#processamento").modal('show');
+                },
+                success: function(response)
+                {
+                    $("#processamento").modal('hide');
+                    //window.location.href = "../../correspondente/honorarios/"+correspondente;
+                },
+                error: function(response)
+                {
+                    $("#modal_erro").modal('show');
+                    //location.reload();
+                }
+            });
+            
+        }); 
+
+        //Fim do código obsoleto!
 
     });
 
