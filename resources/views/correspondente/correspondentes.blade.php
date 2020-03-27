@@ -39,8 +39,10 @@
                                 </select>
                             </section>
                             <section class="col col-md-3">
+                                
                                 <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                 <label class="label label-black label-pai_cidade_atuacao" >Cidade de Atuação</label>
+
                                 <a href="#" rel="popover-hover" data-placement="top" data-original-title="Cidades de Atuação" data-content="A busca considera as cidades de atuação do correspondente, independente dela ser a comarca de origem. Para ver todas as comarcas de atuação, visualize o cadastro completo.">
                                 <i class="fa fa-question-circle text-primary"></i>
                                 </a>          
@@ -53,17 +55,17 @@
                                 <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
                                     <option selected value="">Selecione</option>
                                     @foreach(\App\CategoriaCorrespondente::loadCategorias() as $categoria) 
-                                        <option value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
+                                        <option {{ (old('cd_categoria_correspondente_cac') and old('cd_categoria_correspondente_cac') == $categoria->cd_categoria_correspondente_cac ) ? 'selected' : ''  }} value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
                                     @endforeach
                                 </select> 
                             </section>
                             <section class="col col-md-2">
                                 <label class="label label-black">CPF/CNPJ</label>
-                                <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ">
+                                <input type="text" style="width: 100%;" name="identificacao" class="form-control" id="Nome" placeholder="CPF/CNPJ" value="{{ old('identificacao') }}">
                             </section>
                             <section class="col col-md-3">
                                 <label class="label label-black" >Nome</label><br>
-                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome">
+                                <input type="text" style="width: 100%;" name="nome" class="form-control" id="Nome" placeholder="Nome" value="{{ old('nome') }}">
                             </section>
                         </div><hr/>
                         <div class="row"> 
@@ -80,8 +82,9 @@
                     <h2>Correspondentes</h2>
                 </header>
                 <div>
+
                     <div class="widget-body no-padding">
-                        @if(isset($correspondetes))
+                        @if(isset($correspondentes))
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr>   
@@ -94,21 +97,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($correspondetes as $correspondente)
+                                @foreach($correspondentes as $correspondente)
+
                                     <tr>
                                         <td>
-                                            @if($correspondente->categoria)
-                                            <span class="label label-primary" style="background-color: {{ $correspondente->categoria->color_cac }}">{{ $correspondente->categoria->dc_categoria_correspondente_cac }}</span>
+                                            @if($correspondente->dc_categoria_correspondente_cac)
+                                            <span class="label label-primary" style="background-color: ">{{ $correspondente->dc_categoria_correspondente_cac }}</span>
                                             @else
                                                 <span class="label label-default">Não informado</span>
                                             @endif
                                         </td>
-                                        <td>{!! ($correspondente->entidade->origem) ? $correspondente->entidade->origem->cidade->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
-                                        <td>{!! ($correspondente->entidade->identificacao) ? $correspondente->entidade->identificacao->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->nm_cidade_cde) ? $correspondente->nm_cidade_cde : '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->nu_identificacao_ide) ? $correspondente->nu_identificacao_ide : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td>
                                             {{ $correspondente->nm_conta_correspondente_ccr }}
                                         </td>
-                                        <td>{!! ($correspondente->correspondente->entidade) ? $correspondente->correspondente->entidade->usuario->email: '<span class="text-danger">Não informado</span>' !!}</td>
+                                        <td>{!! ($correspondente->email) ? $correspondente->email : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <div>
                                                 <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-file-text-o"></i> </a>
@@ -118,7 +122,7 @@
                                                     <ul class="dropdown-menu">
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
                                                         <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-money"></i> Honorários</a></li>
-                                                        <li><a title="Enviar Notificação" class="notificar_correspondente" data-url="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}" data-email="{{ ($correspondente->correspondente->entidade) ? $correspondente->correspondente->entidade->usuario->email : 'nulo' }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
+                                                        <li><a title="Enviar Notificação" class="notificar_correspondente" data-url="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}" data-email="{{ ($correspondente->email) ? $correspondente->email : 'nulo' }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
                                                         <li><a title="Excluir" class="remover_registro" data-url="{{ url('correspondente/excluir/'.$correspondente->cd_conta_correspondente_ccr) }}" data-id="{{ $correspondente->cd_conta_correspondente_ccr }}"><i class="fa fa-trash"></i> Excluir</a> </li>
                                                     </ul>
                                                 </div>
@@ -400,7 +404,9 @@
 
         $(".estado").change(function(){
             buscaCidade($(this).val(),$(this).attr('id')); 
-        });     
+        });  
+
+        $('.estado').trigger('change');   
 
     });
 </script>
