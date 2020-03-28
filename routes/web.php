@@ -151,10 +151,6 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');	
 	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
-	Route::get('correspondente/buscar-honorarios/{id}','CorrespondenteController@buscarHonorarios');
-	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
-	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
-	Route::get('correspondente/honorarios/{id}/ordem/{ordem}','HonorariosCorrespondenteController@getHonorariosOrdenados');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
 	Route::get('correspondente/acompanhamento/{id}','CorrespondenteController@acompanhamento')->name('processo.correspondente');
@@ -164,8 +160,15 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('correspondente/convidar','CorrespondenteController@convidar');
 	Route::post('correspondente/despesas','CorrespondenteController@adicionarDespesas');
 	Route::post('correspondente/cadastro/conta','CorrespondenteController@novoCorrespondenteConta');
-	Route::post('correspondente/honorarios/salvar','CorrespondenteController@salvarHonorarios');
-	Route::post('correspondente/honorarios/remover','CorrespondenteController@excluirTodosHonorarios');
+
+	Route::get('correspondente/buscar-honorarios/{id}','HonorariosCorrespondenteController@getHonorariosInsercao');
+	Route::get('correspondente/honorarios/{id}','CorrespondenteController@honorarios');
+	Route::get('correspondente/honorarios/organizar/{ordem}','CorrespondenteController@ordenarHonorarios');
+	Route::get('correspondente/honorarios','HonorariosCorrespondenteController@getHonorariosOrdenados');
+	Route::post('correspondente/honorarios/salvar','HonorariosCorrespondenteController@salvarHonorarios');
+	Route::post('correspondente/honorarios/remover','HonorariosCorrespondenteController@excluirTodosHonorarios');
+	Route::delete('correspondente/{entidade}/honorarios/{tipo}/excluir/{id}','HonorariosCorrespondenteController@excluirHonorarios');
+
 	Route::resource('correspondentes', 'CorrespondenteController');
 
 	//Rotas para a ROLE correspondente

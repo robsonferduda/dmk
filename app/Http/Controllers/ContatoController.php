@@ -126,7 +126,7 @@ class ContatoController extends Controller
     public function editar($id)
     {
         $contato = Contato::where('cd_contato_cot',$id)->first();
-        $tipos = TipoContato::where('cd_conta_con',$this->conta)->get();
+        $tipos = TipoContato::where('cd_conta_con', $this->conta)->orderBy('nm_tipo_contato_tct')->get();
 
         $nome = '';
 

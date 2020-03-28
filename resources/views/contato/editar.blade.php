@@ -70,10 +70,10 @@
                                     <div class="row">
                                         <section class="col col-4">
                                             <label class="label" >Tipo de Contato <span class="text-danger">Campo obrigatório</span></label>          
-                                            <select  id="cd_tipo_contato_tct" name="cd_tipo_contato_tct" class="select2">
-                                                <option selected>Selecione um tipo</option>
+                                            <select  id="cd_tipo_contato_tct" name="cd_tipo_contato_tct" class="select2" required="required">
+                                                <option value="0">Selecione um tipo</option>
                                                 @foreach($tipos as $tipo) 
-                                                    <option {!! ($contato->cd_tipo_contato_tct == $tipo->cd_tipo_contato_tct) ? 'selected' : ''  !!} value="{{$tipo->cd_tipo_contato_tct}}">{{ $tipo->nm_tipo_contato_tct}}</option>
+                                                    <option {!! ($contato->cd_tipo_contato_tct == $tipo->cd_tipo_contato_tct) ? 'selected' : ''  !!} value="{{ $tipo->cd_tipo_contato_tct }}">{{ $tipo->nm_tipo_contato_tct}}</option>
                                                 @endforeach
                                             </select> 
                                         </section>
@@ -380,7 +380,8 @@
                     required : true
                 },
                 cd_tipo_contato_tct : {
-                    required : true
+                    required : true,
+                    min: function () { return $('#cd_tipo_contato_tct').val()}
                 }
             },
 
