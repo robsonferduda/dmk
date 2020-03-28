@@ -18,6 +18,12 @@ use App\Despesa;
 use App\AnexoFinanceiro;
 use App\BaixaHonorario;
 use Illuminate\Support\Facades\Response;
+use Hazzard\Filepicker\Handler;
+use Hazzard\Filepicker\Uploader;
+use Hazzard\Config\Repository as Config;
+use Intervention\Image\ImageManager;
+
+
 
 class FinanceiroController extends Controller
 {
@@ -1491,10 +1497,56 @@ class FinanceiroController extends Controller
 
     public function entradaAnexo(Request $request){
 
-        $this->inicializaPastaDestino($request->id_despesa);
+        $this->inicializaPastaDestinoEntrada($request->id_processo_baixa);
 
         //Ação de enviar arquivo
         return $this->handler->handle($request);
+    }
+
+    public function inicializaPastaDestinoEntrada($id_processo_baixa){
+
+        $this->handler = new Handler(
+            new Uploader($config = new Config, new ImageManager)
+        );
+        
+        $destino = "entradas/anexos/$this->conta/$id_processo_baixa";        
+
+        //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+
+        $config['debug'] = true;
+        $config['upload_dir'] = storage_path($destino);
+        $config['upload_url'] = storage_path($destino);
+
+    }
+
+    public function saidaAnexo(Request $request){
+
+        $this->inicializaPastaDestinoSaida($request->id_processo_baixa);
+
+        //Ação de enviar arquivo
+        return $this->handler->handle($request);
+    }
+
+    public function inicializaPastaDestinoSaida($id_processo_baixa){
+
+        $this->handler = new Handler(
+            new Uploader($config = new Config, new ImageManager)
+        );
+        
+        $destino = "saidas/anexos/$this->conta/$id_processo_baixa";        
+
+        //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+
+        $config['debug'] = true;
+        $config['upload_dir'] = storage_path($destino);
+        $config['upload_url'] = storage_path($destino);
+
     }
 
 }

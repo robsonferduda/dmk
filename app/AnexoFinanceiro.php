@@ -18,7 +18,8 @@ class AnexoFinanceiro extends Model
     						'nm_anexo_financeiro_afn',
     						'nm_local_anexo_financeiro_afn',
                             'cd_tipo_financeiro_tfn',
-                            'cd_baixa_honorario_bho'
+                            'cd_baixa_honorario_bho',
+                            'cd_processo_taxa_honorario_pth'
     					  ];
 
     public $timestamps = true;
