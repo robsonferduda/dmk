@@ -273,9 +273,7 @@
                                                             <input type="file" name="files[]" id="input-file" multiple>
                                                         </div>  
                                                        
-                                                        <button type="button" class="btn btn-danger delete-all btn-upload-plugin">
-                                                            <i class="fa fa-trash-o"></i> Deletar Todos
-                                                        </button>
+
                                                     </div>
 
                                                     <!-- Listar Arquivos -->
