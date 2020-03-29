@@ -2,16 +2,14 @@
 @section('content')
 <div id="ribbon">
     <ol class="breadcrumb">
-        <li><a href="{{ url('home') }}">Início</a></li>
-        <li>Correspondentes</li>
-        <li>Painel</li>
+        <li><a href="{{ url('home') }}">Mural</a></li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-legal"></i> Correspondentes <span> > Painel</span>
+                <i class="fa-fw fa fa-desktop"></i> Correspondentes <span> > Mural</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
@@ -23,52 +21,60 @@
             @include('layouts/messages')
         </div>
     </div>
+
     <div class="row">
-        <article class="col-xs-12 col-sm-4 sortable-grid ui-sortable">
-                            
-            <div class="jarviswidget">
-                <header role="heading">
-                    <span class="widget-icon"> <i class="fa fa-archive"></i> </span>
-                    <h2>Meus Processos</h2>                
-                </header>
-                <div role="content">
-                    <div class="widget-body">
-                        <p class="text-info"><i class="fa fa-exclamation"></i> Atenção para os prazos dos processo</p>
-                    </div>  
-                </div>
+
+        <article class="col-xs-12 col-sm-4">
+
+            <div class="well" class="well" style="min-height: 340px;">
+                <h2 style="color: #a90329; margin: 0px;"><i class="fa fa-archive"></i> Meus Processos</h2>
+                <div id="donut-graph" class="chart no-padding"></div>
+                <a class="center" style="position: absolute; bottom: 20px;" href="{{ url('correspondente/processos') }}">Ver todos</a>
             </div>
 
         </article>
 
-        <article class="col-xs-12 col-sm-4 sortable-grid ui-sortable">
-                            
-            <div class="jarviswidget">
-                <header role="heading">
-                    <span class="widget-icon"> <i class="fa fa-envelope"></i> </span>
-                    <h2>Meus Convites</h2>                
-                </header>
-                <div role="content">
-                    <div class="widget-body">
-                        <ul class="list-unstyled">
-                            @foreach($convites as $convite)
-                                <li><i class="fa fa-check-square-o"></i> {{ date('H:i:s d/m/Y', strtotime($convite->created_at)) }} - {{ $convite->conta->nm_razao_social_con }}</li>
-                            @endforeach
-                        </ul>
-                    </div>  
+        <article class="col-xs-12 col-sm-4">
+
+            <div class="well" style="min-height: 340px;">
+                <h2 style="color: #009688; margin: 0px;"><i class="fa fa-envelope"></i> Meus Convites</h2>
+                <div style="margin: 8px 0px;">
+                    <p style="margin: 0px">21/03/2020 - <span class="text-info">Escritório A</span> enviou um convite</p>
+                <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
+                    <a class="text-danger" href="javascript:void(0);"><i class="fa fa-times"></i> Recusar</a>
                 </div>
+
+                <div style="margin: 8px 0px;">
+                    <p style="margin: 0px">21/03/2020 - <span class="text-info">Escritório B</span> enviou um convite</p>
+                   <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
+                    <a class="text-danger" href="javascript:void(0);"><i class="fa fa-times"></i> Recusar</a>
+                </div>
+
+                <div style="margin: 8px 0px;">
+                    <p style="margin: 0px">21/03/2020 - <span class="text-info">Escritório F</span> enviou um convite </p>
+                    <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
+                    <a class="text-danger" href="javascript:void(0);"><i class="fa fa-times"></i> Recusar</a>
+                </div>
+
+                <div style="margin: 8px 0px;">
+                    <p style="margin: 0px">21/03/2020 - <span class="text-info">Escritório Advocacia</span> enviou um convite</p>
+                    <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
+                    <a class="text-danger" href="javascript:void(0);"><i class="fa fa-times"></i> Recusar</a>
+                </div>
+
+                <a class="center" style="position: absolute; bottom: 20px;" href="{{ url('correspondente/processos') }}">Ver todos</a>
             </div>
-            
+
         </article>
-        
-        <article class="col-xs-12 col-sm-4 sortable-grid ui-sortable">
-            <div class="jarviswidget">
-                <header role="heading">
-                    <span class="widget-icon"> <i class="fa fa-comments text-info"></i> </span>
-                    <h2>Últimas Mensagens</h2>              
-                </header>
+
+        <article class="col-xs-12 col-sm-4">
+
+            <div class="well" class="well" style="min-height: 340px;">
+                <h2 style="color: #3276b1; margin: 0px;"><i class="fa fa-comments"></i> Últimas Mensagens</h2>
+
                 <div role="content">
-                    <div class="widget-body no-padding">
-                        <div class="chat-body custom-scroll" style="">
+                    <div class="no-padding">
+                        <div class="chat-body custom-scroll" style="background: none; margin-top: 10px;">
                             <ul>
                                 @php
                                     $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(session::get('SESSION_CD_CONTA'));
@@ -96,7 +102,38 @@
                     </div>
                 </div>
             </div>
+
         </article>
+
     </div>
 </div>
+@endsection
+@section('script')
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        if ($('#donut-graph').length) {
+                    Morris.Donut({
+                        element : 'donut-graph',
+                        data : [{
+                            value : 45,
+                            label : 'No Prazo'
+                        }, {
+                            value : 35,
+                            label : 'Data Limite'
+                        }, {
+                            value : 20,
+                            label : 'Atrasado'
+                        }
+                        ],
+                        colors: ['#8ec9bb', '#f2cf59', '#fb8e7e'],
+                        formatter : function(x) {
+                            return x + "%"
+                        }
+                    });
+                }
+
+    });
+</script>
 @endsection

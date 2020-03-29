@@ -2,20 +2,20 @@
 @section('content')
 <div id="ribbon">
     <ol class="breadcrumb">
-        <li><a href="{{ url('home') }}">Início</a></li>
+        <li><a href="{{ url('home') }}">Mural</a></li>
         <li>Processos</li>
-        <li>Listar</li>
+        <li>Acompanhamento</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
-                <i class="fa-fw fa fa-cog"></i>Processos <span> > Meus Processos</span>
+                <i class="fa-fw fa fa-archive"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('correspondente/processos') }}" class="btn btn-primary pull-right header-btn" ><i class="fa fa-list"></i> Meus Processos</a>
+            <a href="{{ url('home') }}" class="btn btn-default pull-right header-btn" ><i class="fa fa-desktop"></i> Mural</a>
         </div>
     </div>
     <div class="row">
@@ -26,27 +26,24 @@
             <div class="well">
                 <form action="{{ url('correspondente/processo/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
-                    <section class="col col-md-4">  
+                    <section class="col col-md-4" style="padding-left: 0px;">  
                         <div class="input-group" style="width: 100%">
                             <span class="input-group-addon">Nº Processo</span>
                             <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                         </div>            
                     </section>
-                    <section class="col col-md-3">  
-                        <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ ( !empty($finalizado) && $finalizado == 'S'  ? 'checked' : '') }}><label class="label label-black">Processos Finalizados</label> 
-                    </section>
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>   
-                    <div style="display: block;margin-top: 10px">
-                       <span style="display: inline-block;">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>  
+                    <div style="display: block;margin-top: 15px">
+                        <span style="display: inline-block;">
                             <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Dentro do Prazo
-                       </span>
-                       <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
-                       </span>
-                       <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
-                       </span>
-                    </div>                   
+                        </span>
+                        <span style="display: inline-block;">
+                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
+                        </span>
+                        <span style="display: inline-block;">
+                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
+                        </span>
+                    </div>                 
                 </form>
             </div>
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    

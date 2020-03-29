@@ -32,7 +32,7 @@
                             <section class="col col-md-2">                                       
                                 <label class="label label-black" >Estado</label>          
                                 <select  id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
-                                    <option selected value="">Estado</option>
+                                    <option value="">Estado</option>
                                     @foreach(\App\Estado::loadEstados() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                     @endforeach
@@ -47,13 +47,13 @@
                                 <i class="fa fa-question-circle text-primary"></i>
                                 </a>          
                                 <select id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
-                                    <option selected value="">Selecione uma cidade</option>
+                                    <option value="">Selecione uma cidade</option>
                                 </select> 
                             </section> 
                             <section class="col col-md-2">
                                 <label class="label label-black" >Categoria</label>
                                 <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
-                                    <option selected value="">Selecione</option>
+                                    <option value="">Selecione</option>
                                     @foreach(\App\CategoriaCorrespondente::loadCategorias() as $categoria) 
                                         <option {{ (old('cd_categoria_correspondente_cac') and old('cd_categoria_correspondente_cac') == $categoria->cd_categoria_correspondente_cac ) ? 'selected' : ''  }} value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
                                     @endforeach
