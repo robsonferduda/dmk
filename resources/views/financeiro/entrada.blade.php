@@ -333,9 +333,16 @@
                 </h4>
             </div>
             <div class="modal-body no-padding">
+
+                <div class="well" style="margin: 15px 15px 5px 15px; padding: 5px;">
+                    <p>
+                    <strong class="text-danger">Atenção!</strong><br/>
+                    Após fechar essa tela, só será possível refazer as ações aqui feitas diretamente em cada registro de baixa selecionado.
+                    </p>
+                </div>
                 {!! Form::open(['id' => 'frm-add-baixa-lote', 'url' => '', 'class' => 'smart-form']) !!}
                     
-                     <fieldset>
+                     <fieldset style="padding-top: 0px">
                         <section>
                             <div class="col col-sm-12">
                                     <header>
@@ -369,14 +376,67 @@
                                             </section>
                                         </div>
                                     
-                                        <div class="row center" id="erroFone"></div>
+                                        <div class="row" style="margin: 0; padding: 5px 13px;">
+                                            
+                                            <h2 class="retornoLote"></h2>                               
+                                        </div>
                                     </fieldset>
+                                    <header>
+                                        <i class="fa fa-file-image-o"></i> Anexos
+                                    </header>
+                                    <fieldset>
 
-                                    <div class="row" style="margin: 0; padding: 5px 13px;">
-                                            
-                                        <h2 class="retornoLote"></h2>                               
-                                            
-                                    </div>
+                                        <div class="alert fade in none">
+                                            <button class="close" data-dismiss="alert">×</button>
+                                            <i class="fa-fw fa"></i>
+                                            <strong class="msg_titulo"></strong> <span class="msg_mensagem"></span>
+                                        </div>
+
+                                        <!-- Drop área -->    
+                                        <div class="row">                            
+                                            <section class="col col-sm-12">
+                                                <div id="filepickerLote">
+                                                    <!-- Button Bar -->
+                                                    <div class="button-bar">
+
+                                                        <span class="start-all"></span>
+                                                       
+                                                        <div class="btn btn-success btn-upload-plugin fileinput">
+                                                            <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                            <input type="file" name="files[]" id="input-file" multiple>
+                                                        </div>  
+                                                       
+
+                                                    </div>
+
+                                                    <!-- Listar Arquivos -->
+                                                    <div class="table-responsive div-table">
+                                                        <table class="table table-upload">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="column-name">Nome</th>
+                                                                    <th class="column-size center">Tamanho</th>
+                                                                    <th class="column-date">Data Envio</th>
+                                                                    <th class="center">Opções</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="files">
+                                                               
+                                                            </tbody>                        
+                                                        </table>
+                                                    </div>
+
+                                                    <!-- Drop Zone -->
+                                                    <div class="drop-window">
+                                                        <div class="drop-window-content">
+                                                            <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </fieldset>
                                 </div>
                         </section>
                      
@@ -397,11 +457,14 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+
+        localStorage.setItem("idsBaixaFinanceiro",JSON.stringify([]));
+
         $('#filepicker').filePicker({
             url: '../entrada/anexo',                
             data: function(){
                 var _token = "{{ csrf_token() }}";
-                var id_processo_baixa = $("#cdBaixaFinanceiro").val();
+                var id_processo_baixa = localStorage.getItem("idsBaixaFinanceiro");
                 return {
                     _token: _token,
                     id_processo_baixa: id_processo_baixa
@@ -416,7 +479,7 @@
                     type: 'POST',
                     data: {
                         "_token": $('meta[name="token"]').attr('content'),
-                        "id_processo_baixa": $("#cdBaixaFinanceiro").val(),
+                        "id_processo_baixa": localStorage.getItem("idsBaixaFinanceiro"),
                         "nome_arquivo": data.files[0].name
                     },
                     success: function(response){   
@@ -446,7 +509,7 @@
                 dataType: "JSON",
                 data: {
                     "_method": 'DELETE',
-                    "id": $("#cdBaixaFinanceiro").val(),                    
+                    "id": localStorage.getItem("idsBaixaFinanceiro"),                    
                     "nome_arquivo": data.filename,
                     "_token": $('meta[name="token"]').attr('content'),
                 },
@@ -471,7 +534,83 @@
             });
 
         });
-       
+
+        $('#filepickerLote').filePicker({
+            url: '../entrada/anexo',                
+            data: function(){
+                var _token = "{{ csrf_token() }}";
+                var id_processo_baixa = localStorage.getItem("idsBaixaFinanceiro");
+                return {
+                    _token: _token,
+                    id_processo_baixa: id_processo_baixa
+                }
+            },
+            plugins: ['ui']
+        })
+        .on('done.filepicker', function (e, data) {
+            if(data.files[0].size){            
+                $.ajax({
+                    url: "../../anexo-processo-baixa-add",
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "id_processo_baixa": localStorage.getItem("idsBaixaFinanceiro"),
+                        "nome_arquivo": data.files[0].name
+                    },
+                    success: function(response){   
+                        $(".fa").addClass("fa-check");
+                        $(".msg_titulo").html("Sucesso");
+                        $(".msg_mensagem").html("Arquivo anexado com sucesso");
+                        $(".alert").addClass("alert-success");
+                        $(".alert").removeClass("none");                            
+                    },
+                    error: function(response){
+                        $(".fa").addClass("fa-times");
+                        $(".msg_titulo").html("Erro");
+                        $(".msg_mensagem").html("Erro ao enviar o arquivo");
+                        $(".alert").addClass("alert-danger");
+                        $(".alert").removeClass("none");
+                    }
+                });
+            }
+        })
+        .on('delete.filepicker', function (e, data) {
+
+            //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+
+            $.ajax({
+                url: '../../anexo-processo-baixa-delete',
+                type: 'POST',
+                dataType: "JSON",
+                data: {
+                    "_method": 'DELETE',
+                    "id": localStorage.getItem("idsBaixaFinanceiro"),                    
+                    "nome_arquivo": data.filename,
+                    "_token": $('meta[name="token"]').attr('content'),
+                },
+                success: function(response)
+                {
+                    $(".fa").addClass("fa-check");
+                    $(".msg_titulo").html("Sucesso");
+                    $(".msg_mensagem").html("Arquivo excluído com sucesso");
+                    $(".alert").addClass("alert-success");
+                    $(".alert").removeClass("none");
+                    $('.table-upload > tbody').html('');
+                },
+                error: function(response)
+                {
+                    $(".fa").addClass("fa-times");
+                    $(".msg_titulo").html("Erro");
+                    $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                    $(".alert").addClass("alert-danger");
+                    $(".alert").removeClass("none");
+
+                    return false;
+                }
+            });
+
+        });
+
         var addBaixado = function(id,valorTotalPago){
 
             $(".check-pagamento-cliente").each(function(index,element){
@@ -719,8 +858,15 @@
             $('#dtBaixaCliente').val();
             $('#tipo').val();
             $('#tabelaRegistro > tbody').html('');
+            $(".msg_titulo").html('');
+            $(".msg_mensagem").html('');
+            $(".alert").addClass("none");
+            $(".alert").removeClass("alert-success");   
+            $(".alert").removeClass("alert-danger");     
 
-
+            var idsBaixaFinanceiro = [];
+            
+            
             $(".checkbox-check-pagamento-cliente").each(function(index,element){
 
                 if ($(this).is(':checked') ) {         
@@ -730,9 +876,14 @@
                     
                     controle = true;
 
+                    idsBaixaFinanceiro.push($(this).data('id'));
+
                 }
 
             }); 
+
+            localStorage.setItem("idsBaixaFinanceiro",JSON.stringify(idsBaixaFinanceiro));
+            $('.table-upload > tbody').html('');
 
             if(controle == true){
                 $("#addBaixaLote").modal('show');
@@ -758,6 +909,10 @@
             $(".alert").removeClass("alert-success");   
             $(".alert").removeClass("alert-danger");     
 
+            var idsBaixaFinanceiro = [];
+            idsBaixaFinanceiro.push(id);
+            
+            localStorage.setItem("idsBaixaFinanceiro",JSON.stringify(idsBaixaFinanceiro));
 
             $(".modal-title").html('<i class="icon-append fa fa-money"></i>');
             $(".modal-title").append(' '+$(this).parent().parent().children().eq(0).text()+' - '+$(this).parent().parent().children().eq(3).text()+'('+$(this).parent().parent().children().eq(2).text()+')');

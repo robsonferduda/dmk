@@ -1495,12 +1495,66 @@ class FinanceiroController extends Controller
 
     }
 
-    public function entradaAnexo(Request $request){
+    public function copiaArquivos($ids,$path,$retorno){
+        $name = json_decode($retorno->getContent())[0]->name;
+        $source = $path.$ids[0].'/'.$name;
 
-        $this->inicializaPastaDestinoEntrada($request->id_processo_baixa);
+        for($i=1; $i < count($ids); $i++){
 
-        //Ação de enviar arquivo
-        return $this->handler->handle($request);
+            $destino = $path.$ids[$i];
+
+            if(!is_dir($destino)){
+                @mkdir(storage_path($destino), 0775);
+            }
+            copy(storage_path($source),storage_path($destino.'/'.$name));
+
+        }
+
+    }
+
+    public function deletaArquivos($ids,$path,$request){
+
+        $name = $request->input('files')[0];
+
+        for($i=1; $i < count($ids); $i++){
+
+            $destino = $path.$ids[$i];
+
+            unlink(storage_path($destino.'/'.$name));
+
+        }
+
+    }
+
+    public function entradaAnexo(Request $request){  
+
+        $ids = json_decode($request->id_processo_baixa);
+
+        if(!empty($ids)){
+            $this->inicializaPastaDestinoEntrada($ids[0]);
+
+            //Ação de enviar arquivo
+            $retorno = $this->handler->handle($request);
+
+            if(count($ids) > 1 and $request->isMethod('post')){
+
+                $path = "entradas/anexos/$this->conta/";
+                $this->copiaArquivos($ids,$path,$retorno);
+            }
+
+            if(count($ids) > 1 and $request->isMethod('delete')){
+
+                $path = "entradas/anexos/$this->conta/";
+                $this->deletaArquivos($ids,$path,$request);
+            }
+
+            return $retorno;
+
+        }else{
+
+            return '';
+
+        }
     }
 
     public function inicializaPastaDestinoEntrada($id_processo_baixa){
@@ -1524,10 +1578,33 @@ class FinanceiroController extends Controller
 
     public function saidaAnexo(Request $request){
 
-        $this->inicializaPastaDestinoSaida($request->id_processo_baixa);
+        $ids = json_decode($request->id_processo_baixa);
 
-        //Ação de enviar arquivo
-        return $this->handler->handle($request);
+        if(!empty($ids)){
+            $this->inicializaPastaDestinoSaida($ids[0]);
+
+            //Ação de enviar arquivo
+            $retorno = $this->handler->handle($request);
+
+            if(count($ids) > 1 and $request->isMethod('post')){
+
+                $path = "saidas/anexos/$this->conta/";
+                $this->copiaArquivos($ids,$path,$retorno);
+            }
+
+            if(count($ids) > 1 and $request->isMethod('delete')){
+
+                $path = "saidas/anexos/$this->conta/";
+                $this->deletaArquivos($ids,$path,$request);
+            }
+
+            return $retorno;
+
+        }else{
+
+            return '';
+
+        }
     }
 
     public function inicializaPastaDestinoSaida($id_processo_baixa){
