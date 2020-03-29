@@ -56,14 +56,12 @@
                                                     <img src="{{ asset('img/users/user.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
                                                 @endif
                                                 
-                                                <span class="from">
+                                                <span class="txt-color-red">
                                                         {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
-                                                <i class="icon-paperclip"></i></span>
-                                                <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
-                                                <span class="subject">Processo {{ ($mensagem->processo) ? $mensagem->processo->nu_processo_pro : '' }}</span>
-                                                <span class="msg-body">
-                                                    {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
                                                 </span>
+                                                
+                                                <span class="subject">Processo {{ ($mensagem->processo) ? $mensagem->processo->nu_processo_pro : '' }}</span>
+                                                <span>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</span>
                                             </a>
                                         </span>
                                     </li>
@@ -76,15 +74,13 @@
                                                 @else
                                                     <img src="{{ asset('img/users/user.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
                                                 @endif
-                                                
-                                                <span class="from">
+                                            
+                                                <span class="txt-color-red">
                                                         {{ $mensagem->entidadeInterna->usuario->name }}
-                                                <i class="icon-paperclip"></i></span>
-                                                <time>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</time>
-                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
-                                                <span class="msg-body">
-                                                    {{ str_limit($mensagem->texto_mensagem_prm , 50) }}
                                                 </span>
+                                                
+                                                <span class="subject">Processo {{ $mensagem->processo->nu_processo_pro }}</span>
+                                                <span>{{ date('H:i:s d/m/Y', strtotime($mensagem->created_at)) }}</span>
                                             </a>
                                         </span>
                                     </li>
@@ -155,7 +151,7 @@
             <nav>
                 <ul>   
                     <li class="">
-                        <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Início</span></a>
+                        <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">Mural</span></a>
                     </li>              
 
                     @can('agenda.index')    
@@ -385,10 +381,18 @@
                     @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
-                        </li>                
-                        <li class="">
-                            <a href="{{ url('correspondente/processos') }}" title="blank_"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         </li>                 
+                        <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
+                            <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
+                            <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
+                                <li>
+                                    <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Arquivo</span></a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('correspondente/processos') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
+                                </li>
+                            </ul>   
+                        </li>              
                         <li class="">
                             <a href="{{ url('correspondente/painel/relatorios') }}" title="blank_"><i class="fa fa-lg fa-fw fa-file-o"></i> <span class="menu-item-parent">Relatórios</span></a>
                         </li> 
@@ -592,6 +596,9 @@
         <script src="{{ asset('js/filepicker-drop.js') }}"></script>
         <script src="{{ asset('js/filepicker-crop.js') }}"></script>
         <script src="{{ asset('js/filepicker-camera.js') }}"></script>
+
+        <script src="{{ asset('js/plugin/morris/raphael.min.js') }}"></script>
+        <script src="{{ asset('js/plugin/morris/morris.min.js') }}"></script>
         
         @yield('script')
         <script type="text/javascript">
