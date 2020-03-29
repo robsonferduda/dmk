@@ -30,6 +30,16 @@ Auth::routes();
 Route::group(['middleware' => ['web']], function () {
 
 	Route::any('filepicker', 'FilepickerController@handle');
+	
+	Route::any('entrada/anexo', 'FinanceiroController@entradaAnexo');
+	Route::post('anexo-processo-baixa-add', 'AnexoFinanceiroController@create');
+	Route::delete('anexo-processo-baixa-delete', 'AnexoFinanceiroController@destroy');
+	Route::get("entrada/{id}/anexo/{file}", "AnexoFinanceiroController@show");
+
+	Route::any('saida/anexo', 'FinanceiroController@saidaAnexo');
+	Route::post('anexo-processo-baixa-saida-add', 'AnexoFinanceiroController@createSaida');
+	Route::delete('anexo-processo-baixa-saida-delete', 'AnexoFinanceiroController@destroySaida');
+	Route::get("saida/{id}/anexo/{file}", "AnexoFinanceiroController@showSaida");
 
 	Route::get("despesa/{id}/anexo/{file}", "AnexoDespesaController@showPlugin");
 	Route::get("despesas/anexos/{id}", "AnexoDespesaController@show");
