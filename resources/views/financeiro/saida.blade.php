@@ -370,7 +370,7 @@
                                             </section> 
                                             <section class="col col-1">
                                                 <label class="label">&nbsp</label>
-                                                <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
+                                                <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success btnSalvarRegistroBaixaLote" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
                                             </section>
                                         </div>
                                         <div class="row" style="margin: 0; padding: 5px 0px">
@@ -775,6 +775,7 @@
             var tipo = '';
             var data = '';
             $('.modal-body').loader('show');
+            $('.btnSalvarRegistroBaixaLote').attr('disabled','disabled');
 
             $(".checkbox-check-pagamento-correspondente").each(function(index,element){
                     
@@ -832,6 +833,7 @@
             }); 
 
             $('.modal-body').loader('hide');  
+            $('.btnSalvarRegistroBaixaLote').prop('disabled',false);
             $('#tabelaRegistroLote > tbody').append('<tr>'+
                                                        '<td class="center">'+data+'</td>'+
                                                        '<td >'+valorTotalLabel+'</td>'+
