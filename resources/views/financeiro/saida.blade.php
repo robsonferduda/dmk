@@ -337,13 +337,6 @@
             </div>
             <div class="modal-body no-padding">
 
-                <div class="well" style="margin: 15px 15px 5px 15px; padding: 5px;">
-                    <p>
-                    <strong class="text-danger">Atenção!</strong><br/>
-                    Após fechar essa tela, só será possível refazer as ações aqui feitas diretamente em cada registro de baixa selecionado.
-                    </p>
-                </div>
-
                 {!! Form::open(['id' => 'frm-add-baixa-lote', 'url' => '', 'class' => 'smart-form']) !!}
                     
                      <fieldset style="padding-top: 0px">
@@ -379,6 +372,22 @@
                                                 <label class="label">&nbsp</label>
                                                 <button type="submit" id="btnSalvarRegistroBaixa" class="btn btn-success" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Registrar</button>
                                             </section>
+                                        </div>
+                                        <div class="row" style="margin: 0; padding: 5px 0px">
+                                           
+                                            <table id="tabelaRegistroLote" class="table table-bordered table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center">Data</th>
+                                                        <th class="center">Valor Total</th>
+                                                        <th class="center">Tipo</th>                                                                                
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                   
+                                                </tbody>
+                                            </table>                                      
+                                           
                                         </div>
                                         <div class="row" style="margin: 0; padding: 5px 13px;">
                                                 
@@ -624,12 +633,12 @@
 
                     var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
 
-                    //alert(total);
-
                     if(valorTotalPago >= total){
                         $(this).closest('tr').css('background-color','#8ec9bb');
                     }else{
-                        $(this).closest('tr').css('background-color','#f2cf59');
+
+                        if(valorTotalPago > 0 && total > 0)
+                            $(this).closest('tr').css('background-color','#f2cf59');
                     }
                 }
             }); 
@@ -763,18 +772,22 @@
             var form = this;
             var contadorEntradas = 0;  
             var valorTotalLabel = 0;
+            var tipo = '';
+            var data = '';
+            $('.modal-body').loader('show');
 
             $(".checkbox-check-pagamento-correspondente").each(function(index,element){
                     
                 if ($(this).is(':checked') ) {  
 
-                    $('.modal-body').loader('show');
                     $('.retornoLote').text('');
                    
                     var formData = new FormData(form);
                     var id =  $(this).data('id');
 
-                    
+                    tipo = formData.get('tipo');
+                    data = formData.get('dtBaixa');
+
                     if(formData.get('tipo') == 1){
                         var valor = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.'));
                     }else{
@@ -793,6 +806,7 @@
                         contentType: false,
                         cache: false,
                         processData: false,
+                        async:false,
                         success: function(registros){
                             $('#tabelaRegistro > tbody').html('');
 
@@ -810,13 +824,20 @@
                             
                             addBaixado(id,valorTotal);
 
-                            $('.modal-body').loader('hide');
                         }
                     });
 
                      formData = null;
                 }
             }); 
+
+            $('.modal-body').loader('hide');  
+            $('#tabelaRegistroLote > tbody').append('<tr>'+
+                                                       '<td class="center">'+data+'</td>'+
+                                                       '<td >'+valorTotalLabel+'</td>'+
+                                                       '<td >'+(tipo == 1 ? "HONORÁRIO" : "DESPESA")+'</td>'+
+                                                       
+                                                    '</tr>'); 
 
         });
 
