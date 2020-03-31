@@ -290,14 +290,36 @@
         $("#showHonorariosComarca").click(function(){
 
             $("#ordem").val("comarca");
-            $("#showAllHonorariosCorrespondente").trigger("click");
+
+            lista_servicos = $("#lista_servicos").val();
+            lista_cidades = $("#cidade").val();
+
+            if(lista_cidades && lista_servicos != null){
+
+                $(".btn-buscar-honorarios").trigger("click");
+
+            }else{
+
+                $("#showAllHonorariosCorrespondente").trigger("click");
+            }
 
         });
 
         $("#showHonorariosServico").click(function(){
 
             $("#ordem").val("servico");
-            $("#showAllHonorariosCorrespondente").trigger("click");
+            
+            lista_servicos = $("#lista_servicos").val();
+            lista_cidades = $("#cidade").val();
+
+            if(lista_cidades && lista_servicos != null){
+
+                $(".btn-buscar-honorarios").trigger("click");
+
+            }else{
+
+                $("#showAllHonorariosCorrespondente").trigger("click");
+            }
 
         });
 
