@@ -611,7 +611,7 @@ $(document).ready(function() {
 
         $.ajax(
         {
-            url: url+id,
+            url: applicationName+'/'+url+id,
             type: 'DELETE',
             dataType: "JSON",
             data: {
