@@ -27,29 +27,44 @@ class AnexoFinanceiroController extends Controller
     public function create(Request $request)
     {
 
-        $local = "entradas/anexos/$this->conta/$request->id_processo_baixa/";    
+        $ids = json_decode($request->id_processo_baixa);
 
-        AnexoFinanceiro::create([
-            'cd_conta_con'   => $this->conta,
-            'cd_processo_taxa_honorario_pth' => $request->id_processo_baixa,
-            'cd_tipo_financeiro_tfn' => \TipoFinanceiro::ENTRADA,
-            'nm_anexo_financeiro_afn' => $request->nome_arquivo,
-            'nm_local_anexo_financeiro_afn' => $local
-        ]);
+        foreach ($ids as $id) {
+
+            $local = "entradas/anexos/$this->conta/$id/";    
+
+            AnexoFinanceiro::create([
+                'cd_conta_con'   => $this->conta,
+                'cd_processo_taxa_honorario_pth' => $id,
+                'cd_tipo_financeiro_tfn' => \TipoFinanceiro::ENTRADA,
+                'nm_anexo_financeiro_afn' => $request->nome_arquivo,
+                'nm_local_anexo_financeiro_afn' => $local
+            ]);
+        }
     }
 
     public function destroy(Request $request)
     {
+        $ids = json_decode($request->id);
 
-        $anexo = AnexoFinanceiro::where('cd_processo_taxa_honorario_pth', $request->id)->where('nm_anexo_financeiro_afn',$request->nome_arquivo)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_conta_con',$this->conta)->first();
+        foreach ($ids as $id) {
 
-        if($anexo->delete()){
+            $controle = true;
+            $anexo = AnexoFinanceiro::where('cd_processo_taxa_honorario_pth', $id)->where('nm_anexo_financeiro_afn',$request->nome_arquivo)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->where('cd_conta_con',$this->conta)->first();
 
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        
+            if(!$anexo->delete()){
+
+                $controle = false;
+                
+            }
+        }
+
+        if($controle){
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);   
         }else{
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         }
+
         
     }
 
@@ -63,26 +78,42 @@ class AnexoFinanceiroController extends Controller
     public function createSaida(Request $request)
     {
 
-        $local = "saidas/anexos/$this->conta/$request->id_processo_baixa/";    
+        $ids = json_decode($request->id_processo_baixa);
 
-        AnexoFinanceiro::create([
-            'cd_conta_con'   => $this->conta,
-            'cd_processo_taxa_honorario_pth' => $request->id_processo_baixa,
-            'cd_tipo_financeiro_tfn' => \TipoFinanceiro::SAIDA,
-            'nm_anexo_financeiro_afn' => $request->nome_arquivo,
-            'nm_local_anexo_financeiro_afn' => $local
-        ]);
+        foreach ($ids as $id) {
+
+            $local = "saidas/anexos/$this->conta/$request->id_processo_baixa/";    
+
+            AnexoFinanceiro::create([
+                'cd_conta_con'   => $this->conta,
+                'cd_processo_taxa_honorario_pth' => $id,
+                'cd_tipo_financeiro_tfn' => \TipoFinanceiro::SAIDA,
+                'nm_anexo_financeiro_afn' => $request->nome_arquivo,
+                'nm_local_anexo_financeiro_afn' => $local
+            ]);
+
+        }
     }
 
     public function destroySaida(Request $request)
     {
 
-        $anexo = AnexoFinanceiro::where('cd_processo_taxa_honorario_pth', $request->id)->where('nm_anexo_financeiro_afn',$request->nome_arquivo)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->where('cd_conta_con',$this->conta)->first();
+        $ids = json_decode($request->id);
 
-        if($anexo->delete()){
+        foreach ($ids as $id) {
 
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        
+            $controle = true;
+            $anexo = AnexoFinanceiro::where('cd_processo_taxa_honorario_pth', $id)->where('nm_anexo_financeiro_afn',$request->nome_arquivo)->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->where('cd_conta_con',$this->conta)->first();
+
+            if(!$anexo->delete()){
+
+                $controle = false;
+                
+            }
+        }
+
+        if($controle){
+            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);   
         }else{
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         }
