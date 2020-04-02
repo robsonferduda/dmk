@@ -4,7 +4,7 @@
             <td colspan="6" style="text-align: center; vertical-align: center; height:50px;">{{ $dados['conta']->nm_razao_social_con }}</td>
         </tr>
 	    <tr>
-            <td style="font-weight: bold;">Data da Baixa</td>
+            <td style="font-weight: bold;">Data de Pagamento</td>
 	     	<td style="font-weight: bold;">Categoria</td>
             <td style="font-weight: bold;">Tipo</td>
             <td style="font-weight: bold;">Descrição</td>            
