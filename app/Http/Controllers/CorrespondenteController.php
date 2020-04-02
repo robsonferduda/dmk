@@ -519,7 +519,7 @@ class CorrespondenteController extends Controller
             $senha_aleatoria = Utils::gerar_senha(8, true, true, true, false);
 
             //Primeiro passo é verificar se existe um usuário do tipo correspondente com o email informado
-            $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email',$request->email)->first(); 
+            $unique = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('email','ilike',$request->email)->first(); 
             $conta_logada = Conta::where('cd_conta_con',$this->conta)->first();
 
             $correspondente_cadastro = new Correspondente();
@@ -628,9 +628,9 @@ class CorrespondenteController extends Controller
                             
                         if($correspondente->save()){
 
-                            $conta->email = $email;
+                            $correspondente_cadastro->email = $email;
 
-                            if($conta->notificarFiliacaoConta($conta_logada))
+                            if($correspondente_cadastro->notificarFiliacaoConta($conta_logada))
                                 Flash::success('Correspondente adicionado com sucesso. O correspondente foi notificado no email '.$correspondente_cadastro->email);
                             else
                                 Flash::warning('Correspondente adicionado com sucesso, porém não foi enviada notificação de cadastro. Habilite essa opção para enviar notificações.');
