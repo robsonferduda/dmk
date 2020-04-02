@@ -1123,9 +1123,7 @@ class FinanceiroController extends Controller
                                         $dtLancamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));                 
                                         return $query->where('dt_vencimento_des',$dtLancamentoFim);
                                  })
-                                 ->when($tipo == 'P',function($query){
-                                    return $query->whereNull('dt_pagamento_des');
-                                 })
+                                 
                                  ->when($tipo != 'P',function($query){
                                     return $query->whereNotNull('dt_pagamento_des');
                                  })
@@ -1326,9 +1324,7 @@ class FinanceiroController extends Controller
                                         $dtLancamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));                 
                                         return $query->where('dt_vencimento_des',$dtLancamentoFim);
                                  })
-                                 ->when($tipo == 'P',function($query){
-                                    return $query->whereNull('dt_pagamento_des');
-                                 })
+
                                  ->when($tipo != 'P',function($query){
                                     return $query->whereNotNull('dt_pagamento_des');
                                  })
