@@ -157,7 +157,13 @@
                         <br />
                         <header><h4>Gerar relatório para:</h4></header>
                         <div class="row">
-                            
+
+                            <section class="col col-md-2">
+                                <br />                                     
+                                <input type="checkbox" name="balanco" id="balanco" value="S" {{ (\Session::get('balanco') == 'N'  ? '' : 'checked') }}>
+                                <label class="label label-black">Balanço</label> 
+
+                            </section> 
                             <section class="col col-md-2">
                                 <br />                                     
                                 <input type="checkbox" name="despesas" id="despesas" value="S" {{ (\Session::get('despesas') == 'N'  ? '' : 'checked') }}>
