@@ -812,6 +812,11 @@ class ProcessoController extends Controller
             $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
 
             $processo = new Processo();
+
+            //verifica se o campo correspondente foi setado. Se sim, atualiza o status para "Em andamento", sobrescrevendo o status default "Contratar Correspondente"
+            if($request->cd_correspondente_cor)
+                $request->merge(['cd_status_processo_stp' => \StatusProcesso::ANDAMENTO]);
+
             $processo->fill($request->all());
 
             if(!$processo->saveOrFail()){
@@ -838,9 +843,10 @@ class ProcessoController extends Controller
 
         DB::commit();
 
-        (new CalendarioController)->adicionarPorProcesso($processo);
+        if(getenv('APP_ENV') == 'production')
+            (new CalendarioController)->adicionarPorProcesso($processo);
 
-        Flash::success('Dados inseridos com sucesso');
+        Flash::success('Processo cadastrado com sucesso');
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
     }
 
@@ -856,6 +862,13 @@ class ProcessoController extends Controller
             $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d',strtotime(str_replace('/','-',$request->dt_prazo_fatal_pro)))]);
     
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+
+        /* Verifica se o campo correspondente foi setado E se o status anterior era "Contratar Correspondente".
+           Se sim, atualiza o status para "Em andamento", sobrescrevendo o status default "Contratar Correspondente" */
+
+            if($request->cd_correspondente_cor and $processo->cd_status_processo_stp == \StatusProcesso::CONTRATAR_CORRESPONDENTE )
+                $request->merge(['cd_status_processo_stp' => \StatusProcesso::ANDAMENTO]);
+
         $processo->fill($request->all());
 
         if(!$processo->saveOrFail()){
@@ -876,9 +889,10 @@ class ProcessoController extends Controller
 
         DB::commit();
 
-        (new CalendarioController)->adicionarPorProcesso($processo);
+        if(getenv('APP_ENV') == 'production')
+            (new CalendarioController)->adicionarPorProcesso($processo);
 
-        Flash::success('Dados atualizados com sucesso');
+        Flash::success('Processo atualizado com sucesso');
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
         
     }
