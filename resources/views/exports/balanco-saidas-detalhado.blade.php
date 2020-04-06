@@ -30,7 +30,7 @@
             }
         @endphp
         <tr>            
-        	<td>{{ $dado->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  }}</td>
+        	<td>{{ $dado->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr  }}</td>
             <td>{{ $dado->nu_processo_pro }}</td>   
             <td>{{ date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) }}</td>     
             <td>{{ !empty($dado->honorario->tipoServicoCorrespondente) ? $dado->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : ' ' }}</td>

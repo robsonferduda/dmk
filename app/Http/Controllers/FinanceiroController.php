@@ -87,7 +87,7 @@ class FinanceiroController extends Controller
             $query->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_correspondente_cor','dt_prazo_fatal_pro');
             $query->with(array('correspondente' => function($query){
                 $query->select('cd_conta_con');
-                $query->with(array('contaCorrespondente' => function($query){
+                $query->with(array('contaCorrespondenteTrashedToo' => function($query){
                     $query->select('nm_conta_correspondente_ccr','cd_correspondente_cor');
                 }));
             }));
@@ -488,7 +488,7 @@ class FinanceiroController extends Controller
 
                 $total = $saida->honorario->vl_taxa_honorario_correspondente_pth + $totalDespesas;
 
-                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
             }else{
 
                 $total = $saida->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->sum('vl_baixa_honorario_bho');
@@ -497,7 +497,7 @@ class FinanceiroController extends Controller
                        $total += round($saidasVetor[$saida->correspondente->cd_conta_con]['valor'],2);                       
                 }
 
-                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $total, 'despesa' => 0, 'total' => 0);
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr, 'valor' => $total, 'despesa' => 0, 'total' => 0);
 
             }
         }
@@ -855,20 +855,24 @@ class FinanceiroController extends Controller
 
     public function relatorioBalancoSumarizado($request){
 
-        $dtInicio       = $request->dtInicio;
-        $dtFim          = $request->dtFim;
-        $dtInicioBaixa  = $request->dtInicioBaixa;
-        $dtFimBaixa     = $request->dtFimBaixa;
-        $finalizado     = $request->finalizado;
-        $cliente        = $request->cd_cliente_cli;
-        $correspondente = $request->cd_correspondente_cor;
-        $tipo           = $request->tipo; 
+        $dtInicio           = $request->dtInicio;
+        $dtFim              = $request->dtFim;
+        $dtInicioBaixa      = $request->dtInicioBaixa;
+        $dtFimBaixa         = $request->dtFimBaixa;
+        $dtLancamentoInicio = $request->dtLancamentoInicio;
+        $dtLancamentoFim    = $request->dtLancamentoFim;
+        $dtPagamentoInicio  = $request->dtPagamentoInicio;
+        $dtPagamentoFim     = $request->dtPagamentoFim;
+        $finalizado         = $request->finalizado;
+        $cliente            = $request->cd_cliente_cli;
+        $correspondente     = $request->cd_correspondente_cor;
+        $tipo               = $request->tipo; 
 
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
         $entradasVetor = [];
 
-        if(!empty($request->entradas)){
+        if(!empty($request->entradas) || !empty($request->balanco)){
             $entradas = Processo::whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
                                     if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
                                         $query->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
@@ -976,7 +980,7 @@ class FinanceiroController extends Controller
 
         $saidasVetor = [];
 
-        if(!empty($request->saidas)){
+        if(!empty($request->saidas) || !empty($request->balanco)){
             $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                                 ->whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
                                     if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
@@ -1003,7 +1007,7 @@ class FinanceiroController extends Controller
                                         $query->with('baixaHonorario');
                                     }    
                                 })
-                                ->whereHas('correspondente')                            
+                                ->whereHas('correspondente.contaCorrespondenteTrashedToo')
                                 ->with('tiposDespesa')
                                 ->where('cd_conta_con',$this->conta)
                                 ->when(!empty($cliente), function ($query) use ($cliente) {
@@ -1030,22 +1034,15 @@ class FinanceiroController extends Controller
                                         return $query->where('dt_prazo_fatal_pro',$dtFim);
                                 })   
                                 ->get()
-                                ->sort(function($a, $b){
-                                    $lengthA = strlen($a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                    $lengthB = strlen($b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr);
-                                    $valueA = $a->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
-                                    $valueB = $b->correspondente->contaCorrespondente->nm_conta_correspondente_ccr;
-
-                                    if($lengthA == $lengthB){
-                                        if($valueA == $valueB) return 0;
-                                        return $valueA > $valueB ? 1 : -1;
-                                    }
-                                    return $lengthA > $lengthB ? 1 : -1;
+                                ->sortBy(function($q){
+                                    return iconv('UTF-8', 'ASCII//TRANSLIT', $q->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr);
                                 });
+                               
+                            
         }else{
             $saidas = array();
         }
-
+        
         foreach ($saidas as $saida) {
 
             $totalDespesas = 0;
@@ -1067,7 +1064,7 @@ class FinanceiroController extends Controller
 
                 $total = $saida->honorario->vl_taxa_honorario_correspondente_pth + $totalDespesas;
 
-                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr, 'valor' => $saida->honorario->vl_taxa_honorario_correspondente_pth, 'despesa' => $totalDespesas, 'total' => $total);
             }else{
 
                 $saidaTotal = $saida->honorario->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::SAIDA)->where('cd_tipo_baixa_honorario_bho', \TipoBaixaHonorario::HONORARIO)->sum('vl_baixa_honorario_bho');
@@ -1081,27 +1078,47 @@ class FinanceiroController extends Controller
 
                 $total = $saidaTotal + $totalDespesas;
 
-                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondente->nm_conta_correspondente_ccr, 'valor' => $saidaTotal, 'despesa' => $totalDespesas, 'total' => $total);
+                $saidasVetor[$saida->correspondente->cd_conta_con] = array('correspondente' => $saida->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr, 'valor' => $saidaTotal, 'despesa' => $totalDespesas, 'total' => $total);
 
             }
         }
 
-        if(!empty($request->despesas)){
+        if(!empty($request->despesas) || !empty($request->balanco)){
             $despesas = Despesa::where('cd_conta_con',$this->conta)
-                                ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_pagamento_des',[$dtInicioBaixa,$dtFimBaixa]);
+                                 ->when(!empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio,$dtPagamentoFim) {
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));
+                                        $dtPagamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));
+                                        return $query->whereBetween('dt_pagamento_des',[$dtPagamentoInicio,$dtPagamentoFim]);
                                  }) 
-                                 ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                 ->when(!empty($dtPagamentoInicio) && empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio) {
                                         
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtInicioBaixa);
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoInicio);
                                  })
-                                 ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                 ->when(empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoFim) {
                                         
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtFimBaixa);
+                                        $dtPagamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoFim);
+                                 })
+
+                                ->when(!empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio,$dtLancamentoFim) {
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));
+                                        $dtLancamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));
+                                        return $query->whereBetween('dt_vencimento_des',[$dtLancamentoInicio,$dtLancamentoFim]);
+                                 }) 
+                                 ->when(!empty($dtLancamentoInicio) && empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio) {
+                                        
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoInicio);
+                                 })
+                                 ->when(empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtPagamentoFim) {
+                                        
+                                        $dtLancamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoFim);
+                                 })
+                                 
+                                 ->when($tipo != 'P',function($query){
+                                    return $query->whereNotNull('dt_pagamento_des');
                                  })
                                  ->get()
                                  ->sortBy('tipo.categoriaDespesa.nm_categoria_despesa_cad');
@@ -1123,7 +1140,7 @@ class FinanceiroController extends Controller
 
         }
 
-        $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas);    
+        $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'flagBalanco' => $request->balanco);    
 
         
         \Excel::store(new BalancoSumarizadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Sumarizado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
@@ -1132,17 +1149,24 @@ class FinanceiroController extends Controller
 
     public function relatorioBalancoDetalhado($request){
 
-        $dtInicio       = $request->dtInicio;
-        $dtFim          = $request->dtFim;
-        $dtInicioBaixa  = $request->dtInicioBaixa;
-        $dtFimBaixa     = $request->dtFimBaixa;
+        $dtInicio            = $request->dtInicio;
+        $dtFim               = $request->dtFim;
+        $dtInicioBaixa       = $request->dtInicioBaixa;
+        $dtFimBaixa          = $request->dtFimBaixa;
+        $dtLancamentoInicio  = $request->dtLancamentoInicio;
+        $dtLancamentoFim     = $request->dtLancamentoFim;
+        $dtPagamentoInicio   = $request->dtPagamentoInicio;
+        $dtPagamentoFim      = $request->dtPagamentoFim;
+
         $finalizado     = $request->finalizado;
         $cliente        = $request->cd_cliente_cli;
         $correspondente = $request->cd_correspondente_cor;
+        $tipo           = $request->tipo;
+
 
         $conta = Conta::where('cd_conta_con',$this->conta)->select('nm_razao_social_con')->first();
 
-        if(!empty($request->entradas)){
+        if(!empty($request->entradas) || !empty($request->balanco)){
             $entradas = Processo::whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
                                     if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
                                         $query->whereHas('baixaHonorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
@@ -1201,7 +1225,7 @@ class FinanceiroController extends Controller
             $entradas = array();
         }
 
-        if(!empty($request->saidas)){
+        if(!empty($request->saidas) || !empty($request->balanco)){
             $saidas = Processo::whereHas('honorario.tipoServicoCorrespondente')
                                 ->whereHas('honorario', function($query) use ($dtInicioBaixa,$dtFimBaixa){
                                     if(!empty($dtInicioBaixa) || !empty($dtFimBaixa)){
@@ -1260,22 +1284,42 @@ class FinanceiroController extends Controller
             $saidas = array();
         }
 
-        if(!empty($request->despesas)){
+        if(!empty($request->despesas) || !empty($request->balanco)){
             $despesas = Despesa::where('cd_conta_con',$this->conta)
-                                 ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_pagamento_des',[$dtInicioBaixa,$dtFimBaixa]);
+                                 ->when(!empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio,$dtPagamentoFim) {
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));
+                                        $dtPagamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));
+                                        return $query->whereBetween('dt_pagamento_des',[$dtPagamentoInicio,$dtPagamentoFim]);
                                  }) 
-                                 ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                 ->when(!empty($dtPagamentoInicio) && empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio) {
                                         
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtInicioBaixa);
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoInicio);
                                  })
-                                 ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                 ->when(empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoFim) {
                                         
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtFimBaixa);
+                                        $dtPagamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoFim);
+                                 })
+
+                                ->when(!empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio,$dtLancamentoFim) {
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));
+                                        $dtLancamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));
+                                        return $query->whereBetween('dt_vencimento_des',[$dtLancamentoInicio,$dtLancamentoFim]);
+                                 }) 
+                                 ->when(!empty($dtLancamentoInicio) && empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio) {
+                                        
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoInicio);
+                                 })
+                                 ->when(empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtPagamentoFim) {
+                                        
+                                        $dtLancamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoFim);
+                                 })
+
+                                 ->when($tipo != 'P',function($query){
+                                    return $query->whereNotNull('dt_pagamento_des');
                                  })
                                  ->orderBy('dt_vencimento_des')
                                  ->get();
@@ -1283,7 +1327,7 @@ class FinanceiroController extends Controller
             $despesas = array();
         }
 
-        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'tipo' => $request->tipo);    
+        $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'flagBalanco' => $request->balanco, 'tipo' => $request->tipo);    
 
         \Excel::store(new BalancoDetalhadoExport($dados),"/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx','reports',\Maatwebsite\Excel\Excel::XLSX);
 
@@ -1324,6 +1368,41 @@ class FinanceiroController extends Controller
             }
         }
 
+        if(!empty($request->dtLancamentoInicio)){
+            if(\Helper::validaData($request->dtLancamentoInicio) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(!empty($request->dtLancamentoFim)){
+            if(\Helper::validaData($request->dtLancamentoFim) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(!empty($request->dtPagamentoInicio)){
+            if(\Helper::validaData($request->dtPagamentoInicio) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(!empty($request->dtPagamentoFim)){
+            if(\Helper::validaData($request->dtPagamentoFim) != true){
+                $erro = true;
+                Flash::error('Data(s) inválida(s) !');
+            }
+        }
+
+        if(empty($request->despesas) && empty($request->saidas) && empty($request->entradas) && empty($request->balanco)){
+            
+            $erro = true;
+            Flash::error('É preciso gerar relatório para pelo menos um dos itens!');
+
+        }
+
         if($erro == false){
 
             if($request->relatorio == 'relatorio-por-processo'){
@@ -1343,7 +1422,10 @@ class FinanceiroController extends Controller
 
         if(empty($request->entradas ))
             $request->entradas = 'N';
-        
+
+        if(empty($request->balanco ))
+            $request->balanco = 'N';
+
 
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
@@ -1358,7 +1440,12 @@ class FinanceiroController extends Controller
                                 ->with('despesas',$request->despesas)
                                 ->with('saidas',$request->saidas)
                                 ->with('entradas',$request->entradas)
-                                ->with('tipo',$request->tipo);
+                                ->with('balanco',$request->balanco)
+                                ->with('tipo',$request->tipo)
+                                ->with('dtLancamentoInicio',str_replace('/','',$request->dtLancamentoInicio))
+                                ->with('dtLancamentoFim',str_replace('/','',$request->dtLancamentoFim))
+                                ->with('dtPagamentoInicio',str_replace('/','',$request->dtPagamentoInicio))
+                                ->with('dtPagamentoFim',str_replace('/','',$request->dtPagamentoFim));
         
     }
 
