@@ -63,7 +63,7 @@
                         <div class="row">
                             <div  class="col col-6">
                                 <header>
-                                    <i class="fa fa-file-text-o"></i> Dados do Processo
+                                    <i class="fa fa-file-text-o"></i> Dados do Processo <span class="text-danger">(*) Campos Obrigatórios</span>
                                 </header>
 
                                 <fieldset>

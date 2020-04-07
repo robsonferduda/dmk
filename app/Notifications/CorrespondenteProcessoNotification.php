@@ -56,7 +56,7 @@ class CorrespondenteProcessoNotification extends Notification
         //Tratamento de atributos nulos
         $data = ($this->processo->dt_prazo_fatal_pro) ? date('d/m/Y', strtotime($this->processo->dt_prazo_fatal_pro)) : 'Não informada';
         $hora = ($this->processo->hr_audiencia_pro) ? date('H:i', strtotime($this->processo->hr_audiencia_pro)) : 'Não informada';
-        $obs = ($this->processo->dc_observacao_pro) ? $this->processo->dc_observacao_pro : 'Nanhuma informação adicional';
+        $obs = ($this->processo->dc_observacao_pro) ? strip_tags(html_entity_decode($this->processo->dc_observacao_pro)) : 'Nanhuma informação adicional';
         $parte_autora = ($this->processo->nm_autor_pro) ? $this->processo->nm_autor_pro : 'Não informada';
         $parte_re = ($this->processo->nm_reu_pro) ? $this->processo->nm_reu_pro : 'Não informada';
         $advogado = ($this->processo->advogadoSolicitante) ? $this->processo->advogadoSolicitante->nm_contato_cot : 'Não informado';

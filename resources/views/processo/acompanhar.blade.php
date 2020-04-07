@@ -92,8 +92,10 @@
 
                     <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
 
-                    <a class="btn btn-default marginTop17" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
-                    
+                    @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
+                        <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
+                    @endif
+
                     <div style="clear: both;"></div>
                 </div>
                 @endrole
@@ -191,6 +193,13 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
+                                                <h6 style="font-weight: 400;">Audiência com: <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a></h6>
+                                                <li>
+                                                    <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
+                                                </li>
                                             </ul>
                                         </p> 
                                     </div>
@@ -366,7 +375,7 @@
                         </div>
                     </div>
                     
-                    @if(Session::get('SESSION_NIVEL') != 3)
+                    @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
                         <div class="col-sm-12 col-md-6">
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
                             <div class="messaging">
@@ -604,6 +613,43 @@
                 </div>
             </div>
         </div>
+
+<div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-pencil"></i> Informar Advogado e Preposto
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row box-cadastro">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label><strong>Advogado</strong></label>
+                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
+                            <div id="msg_error_advogado" class="text-danger"></div>
+                        </div>    
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label><strong>Preposto</strong></label>
+                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
+                            <div id="msg_error_advogado" class="text-danger"></div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('script')

@@ -1060,7 +1060,7 @@ class CorrespondenteController extends Controller
                                      ->orderBy('created_at', 'ASC')->get();
 
     
-        return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens]);
+        return view('processo/acompanhar',['processo' => $processo, 'mensagens_internas' => array(), 'mensagens_externas' => $mensagens]);
     }
 
     public function perfil($id){
