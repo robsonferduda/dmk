@@ -12,7 +12,7 @@
 
 {{-- Intro Lines --}}
 @foreach ($introLines as $line)
-    {{ $line }}
+    {!! $line !!}
 @endforeach
 
 {{-- Action Button --}}
@@ -34,7 +34,7 @@
 
 {{-- Outro Lines --}}
 @foreach ($outroLines as $line)
-{{ $line }}
+{!! $line !!}
 
 @endforeach
 

@@ -93,7 +93,7 @@
                     <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
 
                     @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                        <a title="Notificar Correspondente" class="btn btn-default marginTop17" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
+                        <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
                     @endif
 
                     <div style="clear: both;"></div>

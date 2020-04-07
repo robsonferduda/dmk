@@ -1472,6 +1472,8 @@ $(document).ready(function() {
 	  return cnpjCpf.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3/\$4-\$5");
 	}  
 
+	$('.msg_processamento').click(function(){ $("#processamento").modal('show'); });
+
 	$('.btn_sigla').click(function(){ $("#processamento").modal('show'); });
 
 	$("#btnSalvarHonorariosProcesso").click(function (){
