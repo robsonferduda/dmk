@@ -298,6 +298,11 @@ class FinanceiroController extends Controller
         $dtFim          = $request->dtFim;
         $dtInicioBaixa  = $request->dtInicioBaixa;
         $dtFimBaixa     = $request->dtFimBaixa;
+        $dtLancamentoInicio = $request->dtLancamentoInicio;
+        $dtLancamentoFim    = $request->dtLancamentoFim;
+        $dtPagamentoInicio  = $request->dtPagamentoInicio;
+        $dtPagamentoFim     = $request->dtPagamentoFim;
+
         $finalizado     = $request->finalizado;
         $cliente        = $request->cd_cliente_cli;
         $correspondente = $request->cd_correspondente_cor;
@@ -504,22 +509,42 @@ class FinanceiroController extends Controller
 
         if(!empty($request->despesas)){
             $despesas = Despesa::where('cd_conta_con',$this->conta)
-                                ->when(!empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtInicioBaixa,$dtFimBaixa) {
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));
-                                        $dtFimBaixa    = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));
-                                        return $query->whereBetween('dt_pagamento_des',[$dtInicioBaixa,$dtFimBaixa]);
-                                 }) 
-                                 ->when(!empty($dtInicioBaixa) && empty($dtFimBaixa), function ($query) use ($dtInicioBaixa) {
+                                ->when(!empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio,$dtPagamentoFim) {
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));
+                                        $dtPagamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));
+                                        return $query->whereBetween('dt_pagamento_des',[$dtPagamentoInicio,$dtPagamentoFim]);
+                                }) 
+                                ->when(!empty($dtPagamentoInicio) && empty($dtPagamentoFim), function ($query) use ($dtPagamentoInicio) {
                                         
-                                        $dtInicioBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtInicioBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtInicioBaixa);
-                                 })
-                                 ->when(empty($dtInicioBaixa) && !empty($dtFimBaixa), function ($query) use ($dtFimBaixa) {
+                                        $dtPagamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoInicio)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoInicio);
+                                })
+                                ->when(empty($dtPagamentoInicio) && !empty($dtPagamentoFim), function ($query) use ($dtPagamentoFim) {
                                         
-                                        $dtFimBaixa = date('Y-m-d', strtotime(str_replace('/','-',$dtFimBaixa)));                 
-                                        return $query->where('dt_pagamento_des',$dtFimBaixa);
-                                 })
-                                 ->get();
+                                        $dtPagamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtPagamentoFim)));                 
+                                        return $query->where('dt_pagamento_des',$dtPagamentoFim);
+                                })
+
+                                ->when(!empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio,$dtLancamentoFim) {
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));
+                                        $dtLancamentoFim    = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));
+                                        return $query->whereBetween('dt_vencimento_des',[$dtLancamentoInicio,$dtLancamentoFim]);
+                                }) 
+                                ->when(!empty($dtLancamentoInicio) && empty($dtLancamentoFim), function ($query) use ($dtLancamentoInicio) {
+                                        
+                                        $dtLancamentoInicio = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoInicio)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoInicio);
+                                })
+                                ->when(empty($dtLancamentoInicio) && !empty($dtLancamentoFim), function ($query) use ($dtPagamentoFim) {
+                                        
+                                        $dtLancamentoFim = date('Y-m-d', strtotime(str_replace('/','-',$dtLancamentoFim)));                 
+                                        return $query->where('dt_vencimento_des',$dtLancamentoFim);
+                                })
+                                
+                                ->when($tipo != 'P',function($query){
+                                    return $query->whereNotNull('dt_pagamento_des');
+                                })
+                                ->get();
         }else{
             $despesas = array();
         }
@@ -574,7 +599,11 @@ class FinanceiroController extends Controller
         return \Redirect::back()->with('dtInicio',str_replace('/','',$request->dtInicio))
                                 ->with('dtFim' ,str_replace('/','',$request->dtFim))
                                 ->with('dtInicioBaixa',str_replace('/','',$request->dtInicioBaixa))
-                                ->with('dtFimBaixa' ,str_replace('/','',$request->dtFimBaixa))                                                
+                                ->with('dtFimBaixa' ,str_replace('/','',$request->dtFimBaixa))
+                                ->with('dtLancamentoInicio' ,str_replace('/','',$request->dtLancamentoInicio))
+                                ->with('dtLancamentoFim' ,str_replace('/','',$request->dtLancamentoFim))
+                                ->with('dtPagamentoInicio' ,str_replace('/','',$request->dtPagamentoInicio))
+                                ->with('dtPagamentoFim' ,str_replace('/','',$request->dtPagamentoFim))                                                
                                 ->with('finalizado',$request->finalizado)
                                 ->with('cliente',$request->cd_cliente_cli)
                                 ->with('nmCliente',$request->nm_cliente_cli)
