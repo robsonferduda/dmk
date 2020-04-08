@@ -957,10 +957,8 @@ class ProcessoController extends Controller
         $id = \Crypt::decrypt($token);
         $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
 
-        $email = User::where('cd_conta_con',$processo->cd_conta_con)->where('cd_nivel_niv',1)->first()->email;
-
-        $emails = EnderecoEletronico::where('cd_conta_con',$processo->cd_conta_con)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
-
+    
+        //Atualiza o status do processo de acordo com a resposta do correspondente
         if($resposta == 'S'){
 
             $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
@@ -971,6 +969,9 @@ class ProcessoController extends Controller
             $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE;
             $processo->save();
         }
+
+        //Notifica o escritório sobre a decisão do correspondente
+        $email = User::where('cd_conta_con',$processo->cd_conta_con)->where('cd_nivel_niv',1)->first()->email;
 
         $processo->email = $email;
         $processo->token = $token;
