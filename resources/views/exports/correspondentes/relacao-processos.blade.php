@@ -1,14 +1,13 @@
 <table>
     <thead>
     <tr>
-        <th colspan="13" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ !empty($dados['cliente']->nm_razao_social_con) ? $dados['cliente']->nm_razao_social_con : 'Todos Clientes' }} 
+        <th colspan="12" style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:16px">{{ !empty($dados['cliente']->nm_razao_social_con) ? $dados['cliente']->nm_razao_social_con : 'Todos Clientes' }} 
         </th>       
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">STATUS</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DA SOLICITÇÃO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">DATA DO SERVIÇO REALIZADO</th>
-        <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">ADVOGADO</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">AUTOR</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">RÉU</th>
         <th style="background-color:#D99594;height:50px;border: 1px hair #000000;text-align: center;vertical-align: center">NÚMERO DO PROCESSO</th>
@@ -35,9 +34,6 @@
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) : ' '}} {{ $dado->hr_audiencia_pro ? date('H:i', strtotime($dado->hr_audiencia_pro)) : ' '}}
-            </td>
-            <td style="border: 1px hair #000000;vertical-align: center">
-                {{ ( $dado->nm_advogado_pro ? $dado->nm_advogado_pro : ' ' )  }}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->nm_autor_pro ? $dado->nm_autor_pro : ' '}} 
@@ -80,7 +76,7 @@
         </tr>
         @endforeach
         <tr>
-            <td style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: right;vertical-align: center;font-weight:bold;font-size:12px" colspan="12">Total</td>
+            <td style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: right;vertical-align: center;font-weight:bold;font-size:12px" colspan="11">Total</td>
             <td  style="background-color:#969696;height:50px;border-bottom: 1px hair #000000;text-align: center;vertical-align: center;font-weight:bold;font-size:12px">{{ 'R$ '.number_format($total,2,',',' ') }}</td>
             
         </tr>

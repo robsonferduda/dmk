@@ -141,7 +141,10 @@
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
+                                                <div class="input-group col-sm-12">
+                                                    <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
+                                                    <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
+                                                </div>
                                             </label>
                                         </section>
                                     </div> 
@@ -289,7 +292,7 @@
                                                     </table>
                                                     <table class="table table-bordered">
                                                         <thead>
-                                                            <th style="width: 50%">Tipo de Serviço do Correspondente</th>
+                                                            <th style="width: 50%" id="tipoServicoCorrespondenteLabel" >Tipo de Serviço do Correspondente</th>
                                                             <th style="">Valor Correspondente</th>            
                                                         </thead>
                                                         <tbody>  
@@ -455,6 +458,9 @@
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
             $("#taxa-honorario-correspondente").val('');
 
+            $("#correspondente_auto_complete").attr('disabled','disabled');
+            $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+
             var correspondente = $("input[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
 
@@ -463,9 +469,18 @@
             } 
 
           },
-          open: function(event, ui){
-            
+          search: function(event, ui){
+            $("input[name='cd_correspondente_cor']").val('');
+            $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
           }
+        });
+
+        $('#limpar-correspondente').click(function(){
+            $("#correspondente_auto_complete").val('');
+            $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
+            $("input[name='cd_correspondente_cor']").val() 
+            $("#correspondente_auto_complete").prop('disabled',false);
+
         });
 
         $( "#correspondente_auto_complete" ).focusout(function(){
@@ -807,6 +822,17 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 500
+                        },
+                        cd_tipo_servico_correspondente_tse : {
+                            required: function(element){    
+
+                                if($("input[name='cd_correspondente_cor']").val() == ''){
+                                    return false;
+                                }else{
+                                    return true;
+                                }
+
+                            }
                         }
                         
                     },
@@ -839,14 +865,16 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 'O Campo Preposto excedeu o número máximo de 500 caracteres'
-                        }  
-                       
+                        },
+                        cd_tipo_servico_correspondente_tse: {
+                           required : 'Campo Tipo de Serviço é Obrigatório'
+                        }                       
                         
                     },
 
                     errorPlacement: function (error, element) {
                         var elem = $(element);
-                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ) {
+                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" || element.attr("name") == "cd_tipo_servico_correspondente_tse") {
                             
                             error.appendTo( element.next("span") );
                             
