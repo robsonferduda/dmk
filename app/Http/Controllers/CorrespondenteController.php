@@ -1143,7 +1143,7 @@ class CorrespondenteController extends Controller
         $results = array();
         foreach ($resultados as $ret)
         {
-           $results[] = [ 'id' => $ret->correspondente->cd_conta_con, 'value' => $ret->nm_conta_correspondente_ccr ];
+           $results[] = [ 'id' => $ret->correspondente->cd_conta_con, 'value' => $ret->nm_conta_correspondente_ccr, 'flag' => $ret->fl_correspondente_escritorio_ccr ];
         }
  
         return response()->json($results);

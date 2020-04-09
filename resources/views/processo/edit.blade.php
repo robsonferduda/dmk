@@ -137,7 +137,8 @@
                                         </section>  
                                     </div>         
                                     <div class="row">
-                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >      
+                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >
+                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') :  !empty($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >      
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
@@ -394,6 +395,14 @@
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
 
+        if($("input[name='fl_correspondente_escritorio_ccr']").val()== 'N'){
+            $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+        }
+
+        if($("input[name='cd_correspondente_cor']").val() != ''){
+            $("#correspondente_auto_complete").attr('disabled','disabled');
+        }
+
         $('#novoAdvogado').on('shown.bs.modal', function () {
 
             if($("#cd_cliente_cli").val()){
@@ -456,11 +465,19 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
+
+            if(ui.item.flag == 'N'){
+                $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+                $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+
+            }else{
+                $("input[name='fl_correspondente_escritorio_ccr']").val('S');
+            }
+
             $("#taxa-honorario-correspondente").val('');
 
             $("#correspondente_auto_complete").attr('disabled','disabled');
-            //$('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
-
+          
             var correspondente = $("input[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
 
@@ -471,6 +488,7 @@
           },
           search: function(event, ui){
             $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
             $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
           }
         });
@@ -478,7 +496,8 @@
         $('#limpar-correspondente').click(function(){
             $("#correspondente_auto_complete").val('');
             $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
-            $("input[name='cd_correspondente_cor']").val() 
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
             $("#correspondente_auto_complete").prop('disabled',false);
 
         });
@@ -489,6 +508,7 @@
            }else{
                 if($( "#correspondente_auto_complete" ).val().trim() == ''){
                     $("input[name='cd_correspondente_cor']").val('');
+                    $("input[name='fl_correspondente_escritorio_ccr']").val('N');
                 }
            }
         });
@@ -822,18 +842,18 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 500
+                        },
+                        cd_tipo_servico_correspondente_tse : {
+                            required: function(element){    
+
+                                if($("input[name='cd_correspondente_cor']").val() == '' || $("input[name='fl_correspondente_escritorio_ccr']").val() == 'S'){
+                                    return false;
+                                }else{
+                                    return true;
+                                }
+
+                            }
                         }
-                        // cd_tipo_servico_correspondente_tse : {
-                        //     required: function(element){    
-
-                        //         if($("input[name='cd_correspondente_cor']").val() == ''){
-                        //             return false;
-                        //         }else{
-                        //             return true;
-                        //         }
-
-                        //     }
-                        // }
                         
                     },
 

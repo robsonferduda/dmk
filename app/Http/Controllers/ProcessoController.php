@@ -751,6 +751,14 @@ class ProcessoController extends Controller
             \Cache::put('estados', $estados, now()->addMinutes(1440));
         }else{
             $estados =  \Cache::get('estados');
+        
+        
+        
+        
+        
+        
+        
+        
         }
 
         $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
@@ -763,7 +771,6 @@ class ProcessoController extends Controller
         $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
 
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
-
 
         if(!empty($processo->cliente->nm_fantasia_cli)){
                 $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';

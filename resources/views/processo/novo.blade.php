@@ -144,7 +144,8 @@
                                         </section>  
                                     </div>         
                                     <div class="row">    
-                                        <input type="hidden" name="cd_correspondente_cor" value="{{ old('cd_correspondente_cor') }}">           
+                                        <input type="hidden" name="cd_correspondente_cor" value="{{ old('cd_correspondente_cor') }}"> 
+                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
                                         <section class="col col-sm-12">
                                             
                                             <label class="label">Correspondente</label>
@@ -460,9 +461,15 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
-            $("#correspondente_auto_complete").attr('disabled','disabled');
 
-            $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+            if(ui.item.flag == 'N'){
+               $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+               $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+            }else{
+               $("input[name='fl_correspondente_escritorio_ccr']").val('S');
+            }
+
+            $("#correspondente_auto_complete").attr('disabled','disabled');
 
             $("#taxa-honorario-correspondente").val('');
 
@@ -476,6 +483,7 @@
           },
           search: function(event, ui){
             $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
             $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
           }
         });
@@ -483,6 +491,7 @@
         $( "#correspondente_auto_complete" ).focusout(function(){
            if($("input[name='cd_correspondente_cor']").val() == ''){
                 $("#correspondente_auto_complete").val('');
+                $("input[name='fl_correspondente_escritorio_ccr']").val('N');
                 $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
            }
         });
@@ -490,7 +499,8 @@
         $('#limpar-correspondente').click(function(){
             $("#correspondente_auto_complete").val('');
             $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
-            $("input[name='cd_correspondente_cor']").val() 
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
             $("#correspondente_auto_complete").prop('disabled',false);
 
         });
@@ -827,7 +837,7 @@
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
 
-                                if($("input[name='cd_correspondente_cor']").val() == ''){
+                                if($("input[name='cd_correspondente_cor']").val() == '' || $("input[name='fl_correspondente_escritorio_ccr']").val() == 'S'){
                                     return false;
                                 }else{
                                     return true;
