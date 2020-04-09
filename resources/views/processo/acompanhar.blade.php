@@ -194,8 +194,8 @@
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
                                                 <h6 style="font-weight: 400;">
-                                                    Audiência com: 
-                                                    <button class="btn btn-warning btn-xs" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</button>
+                                                    DADOS DA AUDIÊNCIA: 
+                                                    <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
                                                     <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
 
                                                 </h6>
