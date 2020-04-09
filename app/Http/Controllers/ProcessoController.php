@@ -1077,4 +1077,50 @@ class ProcessoController extends Controller
 
     }
 
+    public function requisitarDados($id_processo)
+    {
+        $id_processo = \Crypt::decrypt($id_processo);
+
+        $processo = Processo::findOrFail($id_processo);
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor',$processo->cd_correspondente_cor)->first();
+        $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+        if($processo){
+
+            if(count($emails) > 0){
+
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
+
+                if($processo->save()){
+
+                    $lista = '';
+
+                    foreach ($emails as $email) {
+
+                        $processo->email =  $email->dc_endereco_eletronico_ede;
+                        $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                        $processo->notificarRequisitarDados($processo);
+                        $lista .= $email->dc_endereco_eletronico_ede.', ';
+                    }
+
+                    Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista),0,-1));
+
+
+                }else{
+
+                    Flash::error('Erro ao requisitar dados, o processo não foi atualizado.');
+
+                }
+
+            }else{
+
+                Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
+            }
+
+        }else{
+            Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
+        }
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
+    }
+
 }

@@ -193,7 +193,12 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
-                                                <h6 style="font-weight: 400;">Audiência com: <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a></h6>
+                                                <h6 style="font-weight: 400;">
+                                                    Audiência com: 
+                                                    <button class="btn btn-warning btn-xs" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</button>
+                                                    <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
+
+                                                </h6>
                                                 <li>
                                                     <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
                                                 </li>
@@ -614,6 +619,27 @@
             </div>
         </div>
 
+<div class="modal fade in modal_top_alto" id="requisitarPreposto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    <i class="icon-append fa fa-pencil"></i> Requisitar Dados de Advogado e Preposto
+                </h4>
+            </div>
+            <div class="modal-body center">
+                <h5>Esse procedimento encaminha uma mensagem para o correspondente requisitando que o mesmo atualize os dados de Advogado e Preposto.</h5>
+                <h5>Além do envio da mensagem via email, o status do processo é alterado para <strong>Aguardando Dados</strong></h5>
+                <h5>Confirma esse procedimento e o envio da mensagem?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                <a href="{{ url('processos/acompanhamento/requisitar-dados/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" id="btn_requisitar_dados" class="btn btn-success msg_processamento"><i class="fa-fw fa fa-check"></i> Confirmar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -883,6 +909,11 @@
 
         });
 
+        $("#btn_requisitar_dados").click(function(){
+
+            $("#requisitarPreposto").modal('hide');
+
+        });
 
         $(document).on('click','.excluir_registro',function(){
 

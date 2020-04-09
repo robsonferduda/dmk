@@ -17,4 +17,6 @@ final class StatusProcesso extends Enum
     const CONTRATAR_CORRESPONDENTE = 9;
     const AGUARDANDO_DOCS_CORRESPONDENTE = 10;
     const AGUARDANDO_CUMPRIMENTO = 11;
+    const AGUARDANDO_DADOS = 12;
+    const DADOS_ENVIADOS = 13;
 }
