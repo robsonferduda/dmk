@@ -284,7 +284,8 @@ class ProcessoController extends Controller
 
         $id = \Crypt::decrypt($id);
         
-        $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $processo              = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro',$id)->where('cd_conta_con', $this->cdContaCon)->first();
         
         $entidade = Entidade::create([
             'cd_conta_con'         => $this->cdContaCon,
@@ -296,10 +297,16 @@ class ProcessoController extends Controller
         $novoProcesso = $processo->replicate();
         $novoProcesso->save();
 
-        (new CalendarioController)->adicionarPorProcesso($novoProcesso);
+        $processoTaxaHonorario->cd_processo_pro = $novoProcesso->cd_processo_pro;
+        
+        $novoProcessoTaxaHonorario = $processoTaxaHonorario->replicate();
+        $novoProcessoTaxaHonorario->save();
+
+        if(getenv('APP_ENV') == 'production')
+            (new CalendarioController)->adicionarPorProcesso($novoProcesso);
 
         Flash::success('Processo clonado com sucesso');
-        Flash::error('Atenção! É preciso preencher os honorários para finalizar o cadastro.');
+        //Flash::error('Atenção! É preciso preencher os honorários para finalizar o cadastro.');
         DB::commit(); 
 
         return redirect('processos/editar/'.\Crypt::encrypt($novoProcesso->cd_processo_pro));  
@@ -744,6 +751,14 @@ class ProcessoController extends Controller
             \Cache::put('estados', $estados, now()->addMinutes(1440));
         }else{
             $estados =  \Cache::get('estados');
+        
+        
+        
+        
+        
+        
+        
+        
         }
 
         $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
@@ -756,7 +771,6 @@ class ProcessoController extends Controller
         $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
 
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro',$id)->first();
-
 
         if(!empty($processo->cliente->nm_fantasia_cli)){
                 $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';

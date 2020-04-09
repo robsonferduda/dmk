@@ -137,11 +137,15 @@
                                         </section>  
                                     </div>         
                                     <div class="row">
-                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >      
+                                        <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >
+                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') :  !empty($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >      
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente</label>
                                             <label class="input">
-                                                <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
+                                                <div class="input-group col-sm-12">
+                                                    <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
+                                                    <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
+                                                </div>
                                             </label>
                                         </section>
                                     </div> 
@@ -289,7 +293,7 @@
                                                     </table>
                                                     <table class="table table-bordered">
                                                         <thead>
-                                                            <th style="width: 50%">Tipo de Serviço do Correspondente</th>
+                                                            <th style="width: 50%" id="tipoServicoCorrespondenteLabel" >Tipo de Serviço do Correspondente</th>
                                                             <th style="">Valor Correspondente</th>            
                                                         </thead>
                                                         <tbody>  
@@ -391,6 +395,14 @@
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
         var pathResponsavel = "{{ url('autocompleteResponsavel') }}";
 
+        if($("input[name='fl_correspondente_escritorio_ccr']").val()== 'N'){
+            $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+        }
+
+        if($("input[name='cd_correspondente_cor']").val() != ''){
+            $("#correspondente_auto_complete").attr('disabled','disabled');
+        }
+
         $('#novoAdvogado').on('shown.bs.modal', function () {
 
             if($("#cd_cliente_cli").val()){
@@ -453,8 +465,19 @@
           select: function(event, ui) {
 
             $("input[name='cd_correspondente_cor']").val(ui.item.id);
+
+            if(ui.item.flag == 'N'){
+                $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+                $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+
+            }else{
+                $("input[name='fl_correspondente_escritorio_ccr']").val('S');
+            }
+
             $("#taxa-honorario-correspondente").val('');
 
+            $("#correspondente_auto_complete").attr('disabled','disabled');
+          
             var correspondente = $("input[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
 
@@ -463,9 +486,20 @@
             } 
 
           },
-          open: function(event, ui){
-            
+          search: function(event, ui){
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+            $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
           }
+        });
+
+        $('#limpar-correspondente').click(function(){
+            $("#correspondente_auto_complete").val('');
+            $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
+            $("input[name='cd_correspondente_cor']").val('');
+            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+            $("#correspondente_auto_complete").prop('disabled',false);
+
         });
 
         $( "#correspondente_auto_complete" ).focusout(function(){
@@ -474,6 +508,7 @@
            }else{
                 if($( "#correspondente_auto_complete" ).val().trim() == ''){
                     $("input[name='cd_correspondente_cor']").val('');
+                    $("input[name='fl_correspondente_escritorio_ccr']").val('N');
                 }
            }
         });
@@ -807,6 +842,17 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 500
+                        },
+                        cd_tipo_servico_correspondente_tse : {
+                            required: function(element){    
+
+                                if($("input[name='cd_correspondente_cor']").val() == '' || $("input[name='fl_correspondente_escritorio_ccr']").val() == 'S'){
+                                    return false;
+                                }else{
+                                    return true;
+                                }
+
+                            }
                         }
                         
                     },
@@ -839,14 +885,16 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 'O Campo Preposto excedeu o número máximo de 500 caracteres'
-                        }  
-                       
+                        },
+                        cd_tipo_servico_correspondente_tse: {
+                           required : 'Campo Tipo de Serviço é Obrigatório'
+                        }                       
                         
                     },
 
                     errorPlacement: function (error, element) {
                         var elem = $(element);
-                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ) {
+                        if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" || element.attr("name") == "cd_tipo_servico_correspondente_tse") {
                             
                             error.appendTo( element.next("span") );
                             
