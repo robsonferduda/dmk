@@ -459,7 +459,7 @@
             $("#taxa-honorario-correspondente").val('');
 
             $("#correspondente_auto_complete").attr('disabled','disabled');
-            $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+            //$('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
 
             var correspondente = $("input[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
@@ -822,18 +822,18 @@
                         },
                         nm_preposto_pro:{
                             maxlength: 500
-                        },
-                        cd_tipo_servico_correspondente_tse : {
-                            required: function(element){    
-
-                                if($("input[name='cd_correspondente_cor']").val() == ''){
-                                    return false;
-                                }else{
-                                    return true;
-                                }
-
-                            }
                         }
+                        // cd_tipo_servico_correspondente_tse : {
+                        //     required: function(element){    
+
+                        //         if($("input[name='cd_correspondente_cor']").val() == ''){
+                        //             return false;
+                        //         }else{
+                        //             return true;
+                        //         }
+
+                        //     }
+                        // }
                         
                     },
 
