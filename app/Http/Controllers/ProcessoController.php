@@ -1137,4 +1137,53 @@ class ProcessoController extends Controller
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
     }
 
+    public function atualizarDadosAdvogadoPreposto(Request $request)
+    {
+
+        $id_processo = \Crypt::decrypt($request->cd_processo_pro);
+        $processo = Processo::findOrFail($id_processo);
+        $conta = Conta::where('cd_conta_con',$processo->cd_conta_con)->first();
+        $emails = EnderecoEletronico::where('cd_entidade_ete',$conta->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+        if($processo){
+
+            if(count($emails) > 0){
+
+                    $processo->nm_advogado_pro = $request->dados_advogado;
+                    $processo->nm_preposto_pro = $request->dados_preposto;
+                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::DADOS_ENVIADOS;
+
+                    if($processo->save()){
+
+                        $lista = '';
+
+                        foreach ($emails as $email) {
+
+                            $processo->email =  $email->dc_endereco_eletronico_ede;
+                            $processo->notificarAtualizacaoDados($processo);
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                        }
+
+                        Flash::success('Dados atualizados com sucesso e o escritório foi notificado sobre a atualização dos dados. Mensagem enviada para '.substr(trim($lista),0,-1));
+
+                    }else{
+
+                        Flash::error('Erro ao atualizar o processo');
+
+                    }
+
+            }else{
+
+                Flash::error('Nenhum email de notificação cadastrado para o escritório, a operação foi cancelada. Requisite o cadastro de um email de notificação para o escritório e tente novamente');
+            }
+
+        }else{
+
+            Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
+
+    }
+
 }

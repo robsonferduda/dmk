@@ -111,6 +111,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
 	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
 
+	Route::post('processo/atualizar-dados','ProcessoController@atualizarDadosAdvogadoPreposto');
+
 	Route::delete('processo/mensagem/excluir/{id}','MensagemController@excluir');
 	Route::post('processo/mensagem/enviar','MensagemController@enviar');
 	

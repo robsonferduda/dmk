@@ -193,18 +193,23 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
-                                                <h6 style="font-weight: 400;">
-                                                    DADOS DA AUDIÊNCIA: 
-                                                    <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
-                                                    <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
-
-                                                </h6>
-                                                <li>
-                                                    <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
-                                                </li>
+                                                @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
+                                                    <h6 style="font-weight: 400;">
+                                                        DADOS DA AUDIÊNCIA: 
+                                                        @role('administrator|colaborador')
+                                                            <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
+                                                        @endrole
+                                                        @role('correspondente') 
+                                                            <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
+                                                        @endrole
+                                                    </h6>
+                                                    <li>
+                                                        <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
+                                                    </li>
+                                                @endif
                                             </ul>
                                         </p> 
                                     </div>
@@ -607,17 +612,17 @@
 </div>
 
 <div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
-                     </div>
-                    <div class="modal-body center">
-                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, atualizando status do processo...</h2>
-                    </div>
-                </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+            </div>
+            <div class="modal-body center">
+                <h2><i class="fa fa-gear fa-spin"></i> Aguarde, atualizando status do processo...</h2>
             </div>
         </div>
+    </div>
+</div>
 
 <div class="modal fade in modal_top_alto" id="requisitarPreposto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -643,36 +648,40 @@
 <div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title">
-                    <i class="icon-append fa fa-pencil"></i> Informar Advogado e Preposto
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div class="row box-cadastro">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label><strong>Advogado</strong></label>
-                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
-                            <div id="msg_error_advogado" class="text-danger"></div>
-                        </div>    
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label><strong>Preposto</strong></label>
-                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
-                            <div id="msg_error_advogado" class="text-danger"></div>
-                        </div>    
+            <form id="frm-anexo" action="{{ url('processo/atualizar-dados') }}" method="POST">
+            @csrf
+                <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        <i class="icon-append fa fa-pencil"></i> Informar Advogado e Preposto
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row box-cadastro">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label><strong>Advogado</strong><span class="text-info"> Informe nome completo, OAB e telefone, separados por vírgula</span></label>
+                                <input type="text" class="form-control" placeholder="Nome completo, OAB e telefone" required="required" name="dados_advogado" id="dados_advogado" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
+                                <div id="msg_error_advogado" class="text-danger"></div>
+                            </div>    
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label><strong>Preposto</strong><span class="text-info"> Informe nome completo e CPF, separados por vírgula</span></label>
+                                <input type="text" class="form-control" placeholder="Nome completo e CPF" required="required" name="dados_preposto" id="dados_preposto" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
+                                <div id="msg_error_preposto" class="text-danger"></div>
+                            </div>    
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                <button type="button" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                    <button type="submit" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

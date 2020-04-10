@@ -12,6 +12,7 @@ use App\Notifications\MensagemProcessoNotification;
 use App\Notifications\ClienteProcessoNotification;
 use App\Notifications\EnvioDocumentosProcessoNotification;
 use App\Notifications\ProcessoRequisitarDadosNotification;
+use App\Notifications\ProcessoAtualizacaoDadosNotification;
 
 class Processo extends Model implements AuditableContract
 {
@@ -143,6 +144,11 @@ class Processo extends Model implements AuditableContract
     public function notificarRequisitarDados($processo)
     {
         $this->notify(new ProcessoRequisitarDadosNotification($processo));
+    }
+
+    public function notificarAtualizacaoDados($processo)
+    {
+        $this->notify(new ProcessoAtualizacaoDadosNotification($processo));
     }
 
     public static function boot(){
