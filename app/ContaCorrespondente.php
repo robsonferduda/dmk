@@ -37,6 +37,10 @@ class ContaCorrespondente extends Model implements AuditableContract
         return $this->hasOne('App\Conta','cd_conta_con', 'cd_correspondente_cor');
     }
 
+    public function cidadeAtuacao(){
+        return $this->hasMany('App\CidadeAtuacao', 'cd_entidade_ete', 'cd_entidade_ete');
+    }
+
     public function conta()
     {
         return $this->hasOne('App\Conta','cd_conta_con', 'cd_conta_con');

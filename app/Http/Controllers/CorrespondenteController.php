@@ -1137,8 +1137,18 @@ class CorrespondenteController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('term');
-      
-        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')->where('cd_conta_con',$this->conta)->get();
+
+        $cidade  = $request->get('cidade');
+        $estado  = $request->get('estado');
+  
+        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')
+                                            ->where('cd_conta_con',$this->conta)
+                                            ->when(!empty($cidade) && !empty($estado), function($query) use ($cidade){
+                                                return $query->whereHas('cidadeAtuacao', function($query) use ($cidade){
+                                                    $query->where('cd_cidade_cde',$cidade);
+                                                });
+                                            })
+                                            ->get();
 
         $results = array();
         foreach ($resultados as $ret)
