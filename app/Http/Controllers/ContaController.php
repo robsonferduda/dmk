@@ -287,4 +287,27 @@ class ContaController extends Controller
         $conta->save();
     }
 
+    public function prazos()
+    {
+        $conta = Conta::where('cd_conta_con',$this->conta)->first();
+        return view('configuracoes/prazos',['conta' => $conta]);
+    }
+
+    public function salvarPrazos(Request $request)
+    {
+        $conta = Conta::find($this->conta);
+
+        if(isset($request->prazo_cancelamento_processo)){
+
+            $conta->prazo_cancelamento_processo = $request->prazo_cancelamento_processo;
+            if($conta->save()){
+                Flash::success('Prazos atualizados com sucesso');
+            }else{
+                Flash::error('Erro ao atualizar prazos');
+            }
+        }
+
+        return redirect('configuracoes/prazos');
+    }
+
 }

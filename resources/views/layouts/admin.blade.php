@@ -343,6 +343,9 @@
                                 <a href="{{ url('configuracoes/grupos-de-cidades') }}" title="Tipos de Serviço"><span class="menu-item-parent">Grupos de Cidades</span></a>
                             </li>
                             <li>
+                                <a href="{{ url('configuracoes/prazos') }}" title="Prazos"><span class="menu-item-parent">Prazos</span></a>
+                            </li>
+                            <li>
                                 <a href="{{ url('configuracoes/notificacoes') }}" title="Notificações"><span class="menu-item-parent">Notificações</span></a>
                             </li>
                             <li>

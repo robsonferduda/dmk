@@ -123,6 +123,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/tipos-de-contato','TipoContatoController@index');
 	Route::get('configuracoes/tipos-de-despesa','TipoDespesaController@index');
 	Route::get('configuracoes/varas','VaraController@index');
+	Route::get('configuracoes/prazos','ContaController@prazos');
 	Route::get('configuracoes/cargos','CargoController@index');
 	Route::get('configuracoes/departamentos','DepartamentoController@index');
 	Route::get('configuracoes/categorias-de-despesas','CategoriaDespesaController@index');
@@ -131,6 +132,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('configuracoes/despesas-valores','TipoDespesaController@indexValorReembolsavel');
 	Route::put('configuracoes/despesas-valores/salvar','TipoDespesaController@valorReembolsavelSalvar');
 	Route::put('configuracoes/notificacoes/salvar','NotificacaoController@salvarPreferencias');
+	Route::put('configuracoes/prazos/salvar','ContaController@salvarPrazos');
 
 	Route::resource('contatos','ContatoController');
 	Route::get('contatos','ContatoController@index');

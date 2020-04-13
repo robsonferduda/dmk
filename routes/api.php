@@ -16,3 +16,15 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('mensagem/processo/{id}', function () {
+    return response()->json(['message' => 'Jobs API', 'status' => 'Connected']);;
+});
+
+Route::get('mensagem/nao-lidas', function () {
+    return response()->json(['message' => 'Jobs API', 'status' => 'Connected']);;
+});
+
+Route::get('processo/situacao/total', function () {
+    return response()->json(['message' => 'Jobs API', 'status' => 'Connected']);;
+});

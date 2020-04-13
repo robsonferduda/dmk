@@ -13,4 +13,14 @@ class StatusProcesso extends Model
     protected $fillable = [
     						'nm_status_processo_conta_stp'
     					  ];
+
+    protected static function visivelCorrespondente($status)
+    {
+    	$status = StatusProcesso::where('cd_status_processo_stp', $status)->first();
+
+    	if($status->fl_visivel_correspondente_stp == 'S')
+    		return true;
+    	else
+    		return false;
+    }
 }

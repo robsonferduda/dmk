@@ -26,7 +26,7 @@
 
         <article class="col-xs-12 col-sm-4">
 
-            <div class="well" class="well" style="min-height: 340px;">
+            <div id="box-grafico" class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #a90329; margin: 0px;"><i class="fa fa-archive"></i> Meus Processos</h2>
                 <div id="donut-graph" class="chart no-padding"></div>
                 <a class="center" style="position: absolute; bottom: 20px;" href="{{ url('correspondente/processos') }}">Ver todos</a>
@@ -34,10 +34,20 @@
 
         </article>
 
-        <article class="col-xs-12 col-sm-4">
+        <article class="col-xs-12 col-sm-4">            
 
-            <div class="well" style="min-height: 340px;">
+            <div class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #009688; margin: 0px;"><i class="fa fa-envelope"></i> Meus Convites</h2>
+
+                
+                <div class="center">
+                    <h1 style="font-size: 60px; margin-top: 50px; color: #bbbbbb;"><i class="fa fa-frown-o"></i></h1>
+                    <h6 style="color: #bbbbbb;"><span>Você não possui convites</span></h6>
+                    <a href="javascript:void(0);"><i class="fa fa-share-square-o"></i> Aumentar Visibilidade</a>
+                </div>
+                
+               
+               <!-- 
                 <div style="margin: 8px 0px;">
                     <p style="margin: 0px">21/03/2020 - <span class="text-info">Escritório A</span> enviou um convite</p>
                 <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
@@ -61,6 +71,7 @@
                     <a href="javascript:void(0);"><i class="fa fa-check"></i> Aceitar</a>
                     <a class="text-danger" href="javascript:void(0);"><i class="fa fa-times"></i> Recusar</a>
                 </div>
+                -->
 
                 <a class="center" style="position: absolute; bottom: 20px;" href="{{ url('correspondente/processos') }}">Ver todos</a>
             </div>
@@ -69,7 +80,7 @@
 
         <article class="col-xs-12 col-sm-4">
 
-            <div class="well" class="well" style="min-height: 340px;">
+            <div class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #3276b1; margin: 0px;"><i class="fa fa-comments"></i> Últimas Mensagens</h2>
 
                 <div role="content">
@@ -113,7 +124,19 @@
 
     $(document).ready(function(){
 
-        if ($('#donut-graph').length) {
+        $.ajax({
+            url: "../../api/processo/situacao/total",
+            type: 'GET',
+            dataType: "JSON",
+            beforeSend: function()
+            {
+                $('#box-grafico').loader('show');
+            },
+            success: function(response)
+            {                  
+                $('#box-grafico').loader('hide');  
+
+                if ($('#donut-graph').length) {
                     Morris.Donut({
                         element : 'donut-graph',
                         data : [{
@@ -123,16 +146,23 @@
                             value : 35,
                             label : 'Data Limite'
                         }, {
-                            value : 20,
-                            label : 'Atrasado'
+                                value : 20,
+                                label : 'Atrasado'
                         }
                         ],
                         colors: ['#8ec9bb', '#f2cf59', '#fb8e7e'],
-                        formatter : function(x) {
-                            return x + "%"
-                        }
+                            formatter : function(x) {
+                                return x + "%"
+                            }
                     });
-                }
+                }                
+            },
+            error: function(response)
+            {
+                $('#box-grafico').loader('hide');
+                $('#donut-graph').html('<h1 class="center" style="font-size: 60px; margin-top: 50px; color: #d84e44;"><i class="fa fa-times"></i></h1><h4 class="center">Erro ao carregar dados</h4>'); 
+            }
+        });
 
     });
 </script>

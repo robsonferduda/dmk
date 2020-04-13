@@ -28,19 +28,31 @@
 
             @role('correspondente')
 
-                <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                    {{ csrf_field() }}
-                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                </form>
+                @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
-                <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                    {{ csrf_field() }}
-                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                    <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                </form>
+                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
+
+                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                            <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                        </form>
+
+                    @else
+
+                        <button title="Finalizar Processo Indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+
+                    @endif
+
+                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                        <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                    </form>
+
+                @endif
 
             @endrole
         </div>

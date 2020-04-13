@@ -107,7 +107,7 @@
                                                 <div style="display: block;padding: 1px 1px 1px 1px">
                                                     <a title="Detalhes" class="btn btn-default btn-xs" href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                           
-                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-search"></i></a>
+                                                    <a title="Acompanhamento" class="btn btn-info btn-xs" href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i></a>
                                                     
                                                 </div> 
                                             </div>                                        
