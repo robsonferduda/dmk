@@ -75,11 +75,9 @@ class CorrespondenteProcessoNotification extends Notification
             ->line(Lang::getFromJson('Hora da Audiência: '.$hora))            
             ->line(Lang::getFromJson('Parte Autora: '.$parte_autora))
             ->line(Lang::getFromJson('Parte Ré: '.$parte_re))
-            ->line(Lang::getFromJson('Solicitante: '.$advogado ))
             ->line(Lang::getFromJson('Tipo: '.$this->processo->honorario->tipoServico->nm_tipo_servico_tse)) //Não precisa de tratamento, é obrigatório
             ->line(Lang::getFromJson('Vara: '.$vara))
             ->line(Lang::getFromJson('Cidade/UF: '.$this->processo->cidade->nm_cidade_cde.'/'.$this->processo->cidade->estado->nm_estado_est)) //Não precisa de tratamento, é obrigatório
-            ->line(Lang::getFromJson('Cliente: '.$cod_cli))
             ->line(Lang::getFromJson('Observaçoes: '.$obs))
             ->line(Lang::getFromJson('------------------------------------------------'))
 
