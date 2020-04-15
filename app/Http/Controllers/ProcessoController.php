@@ -1019,6 +1019,8 @@ class ProcessoController extends Controller
 
                 if($processo->save()){
 
+                    //Após atualizar os dados do processo, notifica o correspondente por email
+
                     if($flag == 'S'){
                         $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
@@ -1070,6 +1072,7 @@ class ProcessoController extends Controller
 
         $flag = 'N';
         $processo = Processo::findOrFail($id);
+        $vinculo = Conta::where('cd_conta_con',$processo->cd_conta_con)->first();
 
         if($processo->fl_recebimento_anexos_pro == 'N') $flag = 'S'; else $flag = 'N';
 
@@ -1078,11 +1081,46 @@ class ProcessoController extends Controller
         if($processo->save()){
 
             if($flag == 'S')
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ANDAMENTO;
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO;
             else
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
-            
-            $processo->save();
+
+            if($processo->save()){
+
+                if($flag == 'S'){
+                    
+                    $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+                    if(count($emails) == 0){
+
+                        Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi nitificado.');
+
+                    }else{
+
+                        $lista = '';
+
+                        foreach ($emails as $email) {
+
+                            $processo->email = $email->dc_endereco_eletronico_ede;
+                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+
+                            try{
+                                $processo->notificarLeituraDocumentos($processo);
+                            } catch (\Swift_RfcComplianceException $e) {
+
+                                //Retorna o status anterior
+                                $processo = Processo::findOrFail($id);
+                                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
+                                $processo->save();
+
+                                return Response::json(array('message' => 'Houve um erro ao atualizar o status, pois o email "<strong>'.$email->dc_endereco_eletronico_ede.'</strong>" possui problemas em sua formatação. Verifique o email e tente novamente.'), 500);
+                            }
+                                
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                        }
+                    }
+                }
+            }
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         }else{

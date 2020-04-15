@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class EnvioDocumentosProcessoNotification extends Notification
+class ProcessoAvisoLeituraNotification extends Notification
 {
     use Queueable;
 
@@ -29,10 +29,10 @@ class EnvioDocumentosProcessoNotification extends Notification
     {
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Envio de Documentos no Processo '.$this->processo->nu_processo_pro))
+            ->subject(Lang::getFromJson('Confirmação de Leitura dos Documentos do Processo '.$this->processo->nu_processo_pro))
             ->markdown('email.documentos')
-            ->line(Lang::getFromJson('Envio de documentos do processo '.$this->processo->nu_processo_pro.' finalizado.'))
-            ->line(Lang::getFromJson('Utilize o botão abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.'))
+            ->line(Lang::getFromJson('O correspondente confirma a leitura dos documentos do processo '.$this->processo->nu_processo_pro.' conforme solicitado.'))
+            ->line(Lang::getFromJson('Clique no botão abaixo para visualizar o processo:'))
             ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.acompanhar', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
             ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
     }

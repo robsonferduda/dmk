@@ -41,16 +41,34 @@
 
                     @else
 
-                        <button title="Finalizar Processo Indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+                        <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
 
                     @endif
 
-                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                        <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                    </form>
+                    @php
+
+                        $agora = \Carbon\Carbon::now(); 
+                        $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
+
+                        $prazo_recusa = $agora->diffInHours($prazo);                     
+
+                    @endphp
+                                                                  
+
+                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
+
+                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                            <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                        </form>
+
+                    @else
+
+                        <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
+
+                    @endif
 
                 @endif
 
@@ -247,33 +265,44 @@
                                         
                                     @endforeach
                                 </fieldset>
+
                                 @role('administrator|colaborador')
-                                    <section>                          
-                                        <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
-                                                <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                        </div>
-                                    </section>
+                                    @if(count($processo->anexos) > 0)
+                                        <section>                          
+                                            <div class="onoffswitch-container">
+                                                <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
+                                                <span class="onoffswitch">
+                                                    <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
+                                                    <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
+                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label> 
+                                                </span> 
+                                            </div>
+                                        </section>
+                                    @else
+                                        <span>Nenhum arquivo anexado. Após adicionar todos os anexos do processo você deverá confirmar a operação.</span>
+                                    @endif
                                 @endrole
+
                                 @role('correspondente') 
-                                    <section>                          
-                                        <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                                <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                        </div>
-                                    </section>
+                                    @if(count($processo->anexos) > 0)
+                                        <section>                          
+                                            <div class="onoffswitch-container">
+                                                <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
+                                                <span class="onoffswitch">
+                                                    <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                                    <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label> 
+                                                </span> 
+                                            </div>
+                                        </section>
+                                    @else
+                                        <span>Nenhum arquivo anexado. Após adicionar todos os anexos do processo você deverá confirmar a operação.</span>
+                                    @endif
+
                                 @endrole
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
@@ -800,7 +829,6 @@
                 },
                 success: function(response)
                 {                    
-                    $("#atualiza_status").modal('show');
                     location.reload();
                 },
                 error: function(response)
@@ -835,7 +863,8 @@
                 error: function(response)
                 {
                     $('.box-loader').loader('hide');
-                    $('.erro_atualiza_status').html('<span>Houve um erro ao atualizar o status do processo</span>');
+                    $("#fl_recebimento_anexos_pro").prop('checked', false);
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
                 }
             });
 
