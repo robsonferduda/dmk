@@ -108,7 +108,7 @@
                                     <th>Tipo de Serviço Cliente</th>
                                     <th>Cliente</th>
                                     <th>Correspondente</th>
-                                    <th>Parte Adversa</th>
+                                    <th>Autor</th>
                                     <th>Status</th>
                                     <th style="width: 100px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>

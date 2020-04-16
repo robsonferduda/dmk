@@ -58,8 +58,10 @@
                                 <tr style="font-size: 12px">                   
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
-                                    <th>Cidade</th>                                                  
-                                    <th>Parte Adversa</th>
+                                    <th>Cidade</th>    
+                                    <th>Tipo de Serviço</th>
+                                    <th>Autor</th>
+                                    <th>Réu</th>
                                     <th>Status</th>
                                     <th class="center" style="min-width: 85px"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
@@ -98,9 +100,11 @@
                                             <a href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
                                         <td>
-                                            {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
+                                            {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : 'Não informada' }}
                                         </td>
-                                        <td>{{ $processo->nm_autor_pro }}</td>
+                                        <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : 'Não informado' }}</td>
+                                        <td>{{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}</td>
+                                        <td>{{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}</td>
                                         <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Sem status' }}</td>
                                         <td class="center">
                                             <div>

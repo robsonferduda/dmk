@@ -125,7 +125,7 @@
                                     <th style="width: 11%;">Tipo de Serviço Cliente</th>
                                     <th style="width: 15%;">Cliente</th>
                                     <th style="width: 15%;">Correspondente</th>
-                                    <th style="width: 100px;">Parte Adversa</th>
+                                    <th style="width: 100px;">Autor</th>
                                     <th>Status</th>  
                                     <th style="width: 100px;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>                                   
                                 </tr>
