@@ -140,13 +140,13 @@
                     Morris.Donut({
                         element : 'donut-graph',
                         data : [{
-                            value : 45,
+                            value : 0,
                             label : 'No Prazo'
                         }, {
-                            value : 35,
+                            value : 0,
                             label : 'Data Limite'
                         }, {
-                                value : 20,
+                                value : 0,
                                 label : 'Atrasado'
                         }
                         ],

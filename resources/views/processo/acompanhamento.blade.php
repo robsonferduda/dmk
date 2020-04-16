@@ -77,6 +77,15 @@
                     <div class="input-group">
                         <span class="input-group-addon">Nº Processo</span>
                         <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
+                    </div>
+                    <div style="width: 30%" class="form-group">
+                        <label class="label" >Cidade<span class="text-danger">*</span></label>          
+                        <select  id="cidade" name="cd_cidade_cde" class="select2" required>
+                            <option selected value="">Selecione uma Cidade</option>
+                            @foreach($tiposProcesso as $tipo)
+                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                            @endforeach
+                        </select> 
                     </div>                    
                     <div class="form-group">
                         <select name="cd_tipo_processo_tpo" class="form-control">
