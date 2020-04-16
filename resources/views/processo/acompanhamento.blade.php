@@ -118,16 +118,19 @@
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
-                                <tr style="font-size: 12px">                   
-                                    <th style="width:11%">Prazo Fatal</th>                    
-                                    <th style="width: 13%;">Nº Processo</th>
-                                    <th style="width: 12%;">Cidade</th>                                                  
-                                    <th style="width: 11%;">Tipo de Serviço Cliente</th>
-                                    <th style="width: 15%;">Cliente</th>
-                                    <th style="width: 15%;">Correspondente</th>
-                                    <th style="width: 100px;">Autor</th>
+                                <tr style="font-size: 11px">                   
+                                    <th>Prazo Fatal</th>                    
+                                    <th>Nº Processo</th>
+                                    <th>Vara/Cidade</th>                                                  
+                                    <th>Tipo de Serviço</th>
+                                    <th>Cliente</th>
+                                    <th>Correspondente/Responsável</th>
+                                    <th>Autor</th>
+                                    <th>Réu</th>
                                     <th>Status</th>  
-                                    <th style="width: 100px;" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>                                   
+                                    <th class="center">
+                                        <i class="fa fa-fw fa-cog"></i>
+                                    </th>                                   
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px" class="tbody">
@@ -161,11 +164,12 @@
                                             <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
                                         <td>
+                                            {{ ($processo->vara) ? $processo->vara->nm_vara_var : 'Não infomado' }} <br>
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
                                         </td>
                                                                    
                                        
-                                         <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
+                                        <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
 
                                          </td>
                                         <td>
@@ -178,13 +182,21 @@
                                         <td>
                                             @if($processo->correspondente)
                                                 <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{ ($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr : '' }}</a>
+                                            @else
+                                                Não informado
                                             @endif
+                                            <br>
+                                            {{ ($processo->responsavel) ? $processo->responsavel->name : 'Não informado' }}
                                         </td>
-                                        <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
                                         <td>
-                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
-                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                            {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
+                                        </td>
+                                        <td>
+                                            {{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}
+                                        </td>
+                                       
+                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
+                                        <td class="center">
                                             <div class="dropdown" style="display: inline;">
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
@@ -192,6 +204,9 @@
                                                     <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
                                                     <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
                                                     <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i> Relatório Financeiro</a></li>
+                                                    <li>
+                                                        <a title="Editar" class="editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i> Editar </a>
+                                                    </li>
                                                     <li><a title="Excluir" data-url="../processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div> 

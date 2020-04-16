@@ -102,15 +102,15 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>                         
                                 <tr style="font-size: 12px">                   
-                                    <th style="width:11%">Prazo Fatal</th>                    
+                                    <th>Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
                                     <th>Cidade</th>                                                  
-                                    <th>Tipo de Serviço Cliente</th>
+                                    <th>Tipo de Serviço</th>
                                     <th>Cliente</th>
                                     <th>Correspondente</th>
                                     <th>Autor</th>
                                     <th>Status</th>
-                                    <th style="width: 100px" data-hide="phone,tablet"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
@@ -154,7 +154,7 @@
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
                                         <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
-                                        <td>
+                                        <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
                                             <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
                                             <div class="dropdown" style="display: inline;">

@@ -63,7 +63,7 @@
                                     <th>Autor</th>
                                     <th>Réu</th>
                                     <th>Status</th>
-                                    <th class="center" style="min-width: 85px"><i class="fa fa-fw fa-cog"></i> Ações</th>
+                                    <th style="width: 100px" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
