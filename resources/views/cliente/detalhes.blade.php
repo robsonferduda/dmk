@@ -58,6 +58,9 @@
                                                         <strong>CPF: </strong> {{ ($cliente->entidade->cpf()->first()) ? $cliente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
                                                     <li>
+                                                        <strong>RG: </strong> {{ ($cliente->entidade->rg()->first()) ? $cliente->entidade->rg()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                    </li>
+                                                    <li>
                                                         <strong>Data de Nascimento: </strong> {{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : 'Não informada' }}
                                                     </li>
                                                 @else

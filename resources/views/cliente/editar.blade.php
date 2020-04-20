@@ -108,6 +108,15 @@
                                                 </label>
                                         </section> 
 
+                                        <div class="box-pessoa-fisica">
+                                            <section class="col col-3">
+                                                <label class="label">RG</label>
+                                                <label class="input">
+                                                    <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : ($cliente->entidade->rg) ? $cliente->entidade->rg->nu_identificacao_ide : ''}}">
+                                                    </label>
+                                            </section> 
+                                        </div>
+
                                         <div class="box-pessoa-juridica">
                                             <section class="col col-3">
                                                 <label class="label">Inscrição Municipal</label>

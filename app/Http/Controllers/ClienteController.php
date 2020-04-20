@@ -634,6 +634,16 @@ class ClienteController extends Controller
                 ]);                  
             }
 
+            if(!empty($request->rg)){
+
+                $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $cd_conta_con, 
+                    'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
+                    'nu_identificacao_ide'      => $request->rg
+                ]);                  
+            }
+
             Flash::success('Dados inseridos com sucesso');
             return redirect('cliente/detalhes/'.$cliente->cd_cliente_cli);
         }
@@ -766,10 +776,33 @@ class ClienteController extends Controller
                 }else{
 
                     $identificacao = Identificacao::create([
-                    'cd_entidade_ete'           => $entidade->cd_entidade_ete,
-                    'cd_conta_con'              => $cd_conta_con, 
+                    'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $cliente->cd_conta_con, 
                     'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
                     'nu_identificacao_ide'      => $request->oab
+                    ]);   
+
+                }              
+            }
+
+              //Identificação para OAB
+            if(!empty($request->rg)){
+
+                $identificacao = Identificacao::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::RG)->first();
+
+                if($identificacao){
+                    
+                    $request->merge(['nu_identificacao_ide' => $request->rg]);
+                    $identificacao->fill($request->all());
+                    $identificacao->saveOrFail();
+                             
+                }else{
+
+                    $identificacao = Identificacao::create([
+                    'cd_entidade_ete'           => $cliente->entidade->cd_entidade_ete,
+                    'cd_conta_con'              => $cliente->cd_conta_con, 
+                    'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
+                    'nu_identificacao_ide'      => $request->rg
                     ]);   
 
                 }              
