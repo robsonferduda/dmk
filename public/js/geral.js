@@ -455,7 +455,7 @@ $(document).ready(function() {
 		$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');		
 	});
 
-	$(".excluir_registro").click(function(){
+	$(document).on("click", ".excluir_registro", function () {
 
 		$(".msg_extra").html("");
 		var id  = $(this).closest('tr').find('td[data-id]').data('id');
@@ -468,6 +468,7 @@ $(document).ready(function() {
 		$("#modal_exclusao #url").val(url);
 		$("#modal_exclusao #id_exclusao").val(id);
 		$("#modal_exclusao").modal('show');
+
 	});
 
 	$(".excluir_registro_servico").click(function(){
@@ -1808,7 +1809,7 @@ $(document).ready(function() {
 
 	});
 
-	$('.dialog_clone').click(function() {
+	$(document).on("click", ".dialog_clone", function () {
 		$('#dialog_clone_text').data('url',$(this).attr('href')).dialog('open');
 		return false;
 	});

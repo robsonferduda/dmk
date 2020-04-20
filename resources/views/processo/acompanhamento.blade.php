@@ -7,52 +7,6 @@
         <li>Listar</li>
     </ol>
 </div>
-
-
-
-<style type="text/css">
-
-    /* Row in default-state */
-    .tbody td {
-      position: relative;
-      height: 50px;
-    }
-  
-
-    .tbody td > span {
-      
-      transform: translateY(-50%);
-      width: 100%;
-      padding-left: 15px;
-      padding-right: 15px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    /** Menu **/
-    div.menu {
-      transition: opacity .2s;
-      opacity: 0;
-    }
-
-    div.menu span {
-      width: auto;
-      
-      left: auto;
-      transform: none;
-      
-      
-    }
-
-    /* Row-Menu */
-    .tbody tr:hover div.menu {
-      opacity: 1;
-      transition: opacity .2s .4s ease-out;
-    }
-
-</style>
-
 <div id="content">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -74,168 +28,81 @@
                 <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
-                    <div class="input-group">
-                        <span class="input-group-addon">Nº Processo</span>
-                        <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
+                    <div class="row" style="margin-bottom: 10px;">
+                        <section class="col col-md-4">
+                            <div class="input-group" style="width: 100%;">
+                                <span class="input-group-addon">Nº Processo</span>
+                                <input type="text" name="nu_processo_pro" class="form-control" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
+                            </div>
+                        </section>
+                        <section class="col col-md-4"> 
+                            <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
+                                <option value="">Tipos de Processo</option>
+                                @foreach($tiposProcesso as $tipo)
+                                    <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                @endforeach
+                            </select>
+                        </section>  
+                        <section class="col col-md-4"> 
+                            <select name="status" id="status" class="select2">
+                                <option value="">Status do Processo</option>
+                                <option value="dentro-prazo">Dentro do Prazo</option>
+                                <option value="data-limite">Data Limite</option>
+                                <option value="atrasado">Atrasado</option>
+                            </select>
+                        </section>                    
                     </div>
-                    <div style="width: 30%" class="form-group">
-                        <label class="label" >Cidade<span class="text-danger">*</span></label>          
-                        <select  id="cidade" name="cd_cidade_cde" class="select2" required>
-                            <option selected value="">Selecione uma Cidade</option>
-                            @foreach($tiposProcesso as $tipo)
-                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
-                            @endforeach
-                        </select> 
-                    </div>                    
-                    <div class="form-group">
-                        <select name="cd_tipo_processo_tpo" class="form-control">
-                            <option value="">Tipos de Processo</option>
-                            @foreach($tiposProcesso as $tipo)
-                                <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                    <div style="width: 30%" class="form-group">
-                        <select style="width: 70%" name="cd_tipo_servico_tse" class="form-control">
-                            <option value="">Tipos de Serviço Cliente</option>
-                            @foreach($tiposServico as $tipo)
-                                <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
-                            @endforeach
-                        </select>
-                    </div>    
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                    <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
-                    <div style="display: block;margin-top: 10px">
-                       <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Dentro do Prazo
-                       </span>
-                       <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
-                       </span>
-                       <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
-                       </span>
-                    </div>  
+                    <div class="row" style="margin-bottom: 10px;">
+                        <section class="col col-md-6">       
+                            <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
+                                <option selected value="">Responsável</option>
+                                @foreach($responsaveis as $usuario)
+                                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                                @endforeach
+                            </select> 
+                        </section>
+                        <section class="col col-md-6"> 
+                            <select name="cd_tipo_servico_tse" id="cd_tipo_servico_tse" class="select2">
+                                <option value="">Tipos de Serviço</option>
+                                @foreach($tiposServico as $tipo)
+                                    <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
+                                @endforeach
+                            </select>
+                        </section>  
+                    </div>
+                    <div class="row center">
+                        <button class="btn btn-primary" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
+                    </div>
                 </form>
             </div>
-            <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                    <h2>Processos</h2>
-                </header>
-                <div>
-                    <div class="widget-body no-padding">
-                        <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead>                         
-                                <tr style="font-size: 11px">                   
-                                    <th>Prazo Fatal</th>                    
-                                    <th>Nº Processo</th>
-                                    <th>Vara/Cidade</th>                                                  
-                                    <th>Tipo de Serviço</th>
-                                    <th>Cliente</th>
-                                    <th>Correspondente/Responsável</th>
-                                    <th>Autor</th>
-                                    <th>Réu</th>
-                                    <th>Status</th>  
-                                    <th class="center">
-                                        <i class="fa fa-fw fa-cog"></i>
-                                    </th>                                   
-                                </tr>
-                            </thead>
-                            <tbody style="font-size: 12px" class="tbody">
-                                @foreach($processos as $processo)
-                                    @php $cor = ''; 
-
-                                        if(!empty($processo->dt_prazo_fatal_pro)){
-
-                                            if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#f2cf59";   
-
-                                            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
-                                                $cor = "#8ec9bb";
-
-                                            if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
-                                                $cor = "#fb8e7e";                                         
-                                            
-                                        }else{
-                                            $cor = "#ffffff"; 
-                                        }
-                                        
-                                    @endphp
-
-                                    <tr style="background-color: {{ $cor }};">        
-                                        <td>
-                                            @if(!empty($processo->dt_prazo_fatal_pro))
-                                                {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
-                                            @endif
-                                        </td>                                       
-                                        <td data-id="{{ $processo->cd_processo_pro }}" >
-                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
-                                        </td>
-                                        <td>
-                                            {{ ($processo->vara) ? $processo->vara->nm_vara_var : 'Não infomado' }} <br>
-                                            {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
-                                        </td>
-                                                                   
-                                       
-                                        <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}
-
-                                         </td>
-                                        <td>
-                                            @if($processo->cliente)
-                                                <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>
-                                            @else
-                                                <span>Nenhum cliente informado</span>
-                                            @endif                                            
-                                        </td>
-                                        <td>
-                                            @if($processo->correspondente)
-                                                <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{ ($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr : '' }}</a>
-                                            @else
-                                                Não informado
-                                            @endif
-                                            <br>
-                                            {{ ($processo->responsavel) ? $processo->responsavel->name : 'Não informado' }}
-                                        </td>
-                                        <td>
-                                            {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
-                                        </td>
-                                        <td>
-                                            {{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}
-                                        </td>
-                                       
-                                        <td>{{ $processo->status->nm_status_processo_conta_stp }}</td>
-                                        <td class="center">
-                                            <div class="dropdown" style="display: inline;">
-                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
-                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
-                                                    <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
-                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i> Relatório Financeiro</a></li>
-                                                    <li>
-                                                        <a title="Editar" class="editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i> Editar </a>
-                                                    </li>
-                                                    <li><a title="Excluir" data-url="../processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
-                                                </ul>
-                                            </div> 
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        </article>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: -15px;">
+            <div class="col-md-6" style="padding: 5px 8px;">
+                <h4 style="font-size: 13px;" id="label-total-processos"></h4>
             </div>
+            <div class="col-md-6">
+                <section class="pull-right">
+                    <select id="filtro-pagination">
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>  <label class="">Registros por página</label>
+                </section>
+            </div>
+        </article>
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 body-acompanhamento">
+
         </article>
     </div>
 </div>
 <div id="dialog_clone_text" class="ui-dialog-content ui-widget-content" style="width: auto; min-height: 0px; max-height: none; height: auto;">
-     <p>
+    <p>
         Ao clicar em "Continuar" uma cópia do processo será realizada.
     </p>
 </div>
-  <div class="modal fade in modal_top_alto" id="modal_pauta" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade in modal_top_alto" id="modal_pauta" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -309,12 +176,164 @@
                     </div>
                 </div>
             </div>
-        </div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        function formataNulo(valor){
+
+            return valor != null ? valor : "";
+        }
+
+        function formataNuloResposta(valor){
+
+            return valor != null ? valor : "Não informado";
+        }
+
+        $.ajax({
+                
+                url: '../../api/processo/andamento',
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function(){
+                    $("#label-total-processos").html("");
+                    $('.body-acompanhamento').loader('show'); 
+                    $('.pagination').empty();                      
+                },
+                success: function(response){ 
+
+                    $("#label-total-processos").html("<strong>TOTAL DE PROCESSOS</strong>: "+response.length);   
+
+                    $.each(response,function(index,data){
+
+                        $(".body-acompanhamento")
+                        .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
+                            '<h4 style="margin: 0px; font-size: 16px; ">PROCESSO '+data.nu_processo_pro+' <strong style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<div class="row box-processo">'+
+                                '<div class="col-md-6">'+
+                                    '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
+                                    '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
+                                    '<h6><strong>Tipo de Serviço</strong>: '+data.nm_tipo_servico_tse+'</h6>'+                   
+                                    '<h6><strong>Vara/Cidade</strong>: '+formataNuloResposta(data.nm_vara_var)+'/'+data.nm_cidade_cde+'-'+data.sg_estado_est+'</h6>'+    
+                                    '<h6><strong>Responsável</strong>: '+formataNuloResposta(data.name)+'</h6>'+                                             
+                                '</div>'+
+                                '<div class="col-md-6">'+
+                                    '<h6><strong>Cliente</strong>: '+formataNuloResposta(data.nm_razao_social_cli)+'  </h6>'+
+                                    '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
+                                    '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
+                                    '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
+                                '</div>'+
+                                '<div class="hidden-xs hidden-sm" style="position: absolute; bottom: 10px; right: 15px;">'+
+                                    '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
+                                    '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
+                                    '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
+                                    '<a title="Relatório" class="icone-acompanhamento" href="../processos/relatorio/'+data.hash+'"><i class="fa fa-usd"></i> Relatório Financeiro</a> '+
+                                    '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
+                                    '<a title="Excluir" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
+                                '</div>'+
+                                '<div class="hidden-md hidden-lg col-md-6">'+
+                                    '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
+                                    '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
+                                    '<a title="Clonar" class="icone-acompanhamento" class="dialog_clone" href=""><i class="fa fa-clone"></i> </a>'+
+                                    '<a title="Relatório" class="icone-acompanhamento" href=""><i class="fa fa-usd"></i> </a>'+
+                                    '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href=""><i class="fa fa-edit"></i> </a>'+
+                                    '<a title="Excluir" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> </a>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>');
+
+                    });
+
+                    $('.body-acompanhamento').loader('hide'); 
+                    $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                                                      
+                },
+                error: function(response)
+                {
+                    alert("Erro ao processar requisição");
+                    $('.body-acompanhamento').loader('hide'); 
+                }
+        });
+
+        $("#btnBuscarProcessosAndamento").click(function(){
+
+            processo = $("#nu_processo_pro").val();
+            responsavel = $("#cd_responsavel_pro").val();
+            tipo = $("#cd_tipo_processo_tpo").val();
+            servico = $("#cd_tipo_servico_tse").val();
+            status = $("#status").val();
+
+            $.ajax({
+                
+                url: '../../processos/buscar/andamento',
+                type: 'POST',
+                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status},
+                dataType: "JSON",
+                beforeSend: function(){
+                    $("#label-total-processos").html("");
+                    $('.body-acompanhamento').loader('show');  
+                    $('.pagination').empty();                     
+                },
+                success: function(response){ 
+
+                    $(".body-acompanhamento").empty();
+                    $("#label-total-processos").html("<strong>TOTAL DE PROCESSOS</strong>: "+response.length);    
+
+                    $.each(response,function(index,data){
+
+                        $(".body-acompanhamento")
+                        .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
+                            '<h4 style="margin: 0px; font-size: 16px; ">PROCESSO '+data.nu_processo_pro+' <strong style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<div class="row box-processo">'+
+                                '<div class="col-md-6">'+
+                                    '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
+                                    '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
+                                    '<h6><strong>Tipo de Serviço</strong>: '+data.nm_tipo_servico_tse+'</h6>'+                   
+                                    '<h6><strong>Vara/Cidade</strong>: '+formataNuloResposta(data.nm_vara_var)+'/'+data.nm_cidade_cde+'-'+data.sg_estado_est+'</h6>'+    
+                                    '<h6><strong>Responsável</strong>: '+formataNuloResposta(data.name)+'</h6>'+                                             
+                                '</div>'+
+                                '<div class="col-md-6">'+
+                                    '<h6><strong>Cliente</strong>: '+formataNuloResposta(data.nm_razao_social_cli)+'  </h6>'+
+                                    '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
+                                    '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
+                                    '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
+                                '</div>'+
+                                '<div class="hidden-xs hidden-sm" style="position: absolute; bottom: 10px; right: 15px;">'+
+                                    '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
+                                    '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
+                                    '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
+                                    '<a title="Relatório" class="icone-acompanhamento" href="../processos/relatorio/'+data.hash+'"><i class="fa fa-usd"></i> Relatório Financeiro</a> '+
+                                    '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
+                                    '<a title="Excluir" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
+                                '</div>'+
+                                '<div class="hidden-md hidden-lg col-md-6">'+
+                                    '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
+                                    '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
+                                    '<a title="Clonar" class="icone-acompanhamento" class="dialog_clone" href=""><i class="fa fa-clone"></i> </a>'+
+                                    '<a title="Relatório" class="icone-acompanhamento" href=""><i class="fa fa-usd"></i> </a>'+
+                                    '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href=""><i class="fa fa-edit"></i> </a>'+
+                                    '<a title="Excluir" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> </a>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>');
+
+                    });
+
+                    $('.body-acompanhamento').loader('hide'); 
+                    $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                                                      
+                },
+                error: function(response)
+                {
+                    alert("Erro ao processar requisição");
+                    $('.body-acompanhamento').loader('hide'); 
+                }
+            });
+
+        });    
 
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
 
@@ -341,7 +360,7 @@
           
         });
 
-        $( "#correspondente_auto_complete_pauta" ).focusout(function(){
+        $("#correspondente_auto_complete_pauta" ).focusout(function(){
            if($("input[name='cdCorrespondente']").val() == ''){
                 $("#correspondente_auto_complete_pauta").val('');
                 $('.ui-autocomplete').attr('style', 'z-index: 905 !important');
@@ -359,6 +378,129 @@
 
        
     });
+
+    $("#filtro-pagination").change(function(){
+        $(".body-acompanhamento").pagify($(this).val(), ".box-acompanhamento");
+    });
+
+(function($) {
+    var pagify = {
+        items: {},
+        container: null,
+        totalPages: 1,
+        perPage: 3,
+        currentPage: 0,
+        createNavigation: function() {
+            this.totalPages = Math.ceil(this.items.length / this.perPage);
+
+            $('.pagination', this.container.parent()).remove();
+            var pagination = $('<ul class="pagination"></ul>').append('<li><a class="nav prev disabled" data-next="false"><</a></li>');
+
+            for (var i = 0; i < this.totalPages; i++) {
+                var pageElClass = "page";
+                if (!i)
+                    pageElClass = "page current";
+                var pageEl = '<li><a class="' + pageElClass + '" data-page="' + (
+                i + 1) + '">' + (
+                i + 1) + "</a></li>";
+                pagination.append(pageEl);
+            }
+            pagination.append('<li><a class="nav next" data-next="true">></a></li>');
+
+            this.container.after(pagination);
+
+            var that = this;
+            $("body").off("click", ".nav");
+            this.navigator = $("body").on("click", ".nav", function() {
+                var el = $(this);
+                that.navigate(el.data("next"));
+            });
+
+            $("body").off("click", ".page");
+            this.pageNavigator = $("body").on("click", ".page", function() {
+                var el = $(this);
+                that.goToPage(el.data("page"));
+            });
+        },
+        navigate: function(next) {
+            // default perPage to 5
+            if (isNaN(next) || next === undefined) {
+                next = true;
+            }
+            $(".pagination .nav").removeClass("disabled");
+            if (next) {
+                this.currentPage++;
+                if (this.currentPage > (this.totalPages - 1))
+                    this.currentPage = (this.totalPages - 1);
+                if (this.currentPage == (this.totalPages - 1))
+                    $(".pagination .nav.next").addClass("disabled");
+                }
+            else {
+                this.currentPage--;
+                if (this.currentPage < 0)
+                    this.currentPage = 0;
+                if (this.currentPage == 0)
+                    $(".pagination .nav.prev").addClass("disabled");
+                }
+
+            this.showItems();
+        },
+        updateNavigation: function() {
+
+            var pages = $(".pagination .page");
+            pages.removeClass("current");
+            $('.pagination .page[data-page="' + (
+            this.currentPage + 1) + '"]').addClass("current");
+        },
+        goToPage: function(page) {
+
+            this.currentPage = page - 1;
+
+            $(".pagination .nav").removeClass("disabled");
+            if (this.currentPage == (this.totalPages - 1))
+                $(".pagination .nav.next").addClass("disabled");
+
+            if (this.currentPage == 0)
+                $(".pagination .nav.prev").addClass("disabled");
+            this.showItems();
+        },
+        showItems: function() {
+            this.items.hide();
+            var base = this.perPage * this.currentPage;
+            this.items.slice(base, base + this.perPage).show();
+
+            this.updateNavigation();
+        },
+        init: function(container, items, perPage) {
+            this.container = container;
+            this.currentPage = 0;
+            this.totalPages = 1;
+            this.perPage = perPage;
+            this.items = items;
+            this.createNavigation();
+            this.showItems();
+        }
+    };
+
+    // stuff it all into a jQuery method!
+    $.fn.pagify = function(perPage, itemSelector) {
+        var el = $(this);
+        var items = $(itemSelector, el);
+
+        // default perPage to 5
+        if (isNaN(perPage) || perPage === undefined) {
+            perPage = 3;
+        }
+
+        // don't fire if fewer items than perPage
+        if (items.length <= perPage) {
+            return true;
+        }
+
+        pagify.init(el, items, perPage);
+    };
+})(jQuery);
+
 
 </script>
 @endsection

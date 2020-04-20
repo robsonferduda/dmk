@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use DB;
 use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -155,6 +156,109 @@ class Processo extends Model implements AuditableContract
     public function notificarAtualizacaoDados($processo)
     {
         $this->notify(new ProcessoAtualizacaoDadosNotification($processo));
+    }
+
+    public function getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status)
+    {
+        $sql = "SELECT t1.cd_processo_pro, 
+                       t1.nu_processo_pro, 
+                       t1.dt_prazo_fatal_pro,
+                       t1.hr_audiencia_pro,
+                       t1.nm_autor_pro,
+                       t1.nm_reu_pro,
+                       t2.cd_status_processo_stp, 
+                       t2.nm_status_processo_conta_stp,
+                       t3.cd_cliente_cli,
+                       t3.nm_razao_social_cli,
+                       t4.nm_vara_var,
+                       t5.cd_correspondente_cor,
+                       t5.nm_conta_correspondente_ccr,
+                       t6.name,
+                       t7.nm_cidade_cde,
+                       t8.sg_estado_est,
+                       t10.nm_tipo_servico_tse
+                FROM processo_pro t1
+                JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+                JOIN cliente_cli t3 ON t1.cd_cliente_cli = t3.cd_cliente_cli
+                LEFT JOIN vara_var t4 ON t1.cd_vara_var = t4.cd_vara_var AND t1.cd_conta_con = t4.cd_conta_con
+                LEFT JOIN conta_correspondente_ccr t5 ON t1.cd_conta_con = t5.cd_conta_con AND t1.cd_correspondente_cor = t5.cd_correspondente_cor
+                LEFT JOIN users t6 ON t1.cd_responsavel_pro = t6.id
+                JOIN cidade_cde t7 ON t1.cd_cidade_cde = t7.cd_cidade_cde
+                JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
+                LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
+                JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+                WHERE t1.cd_status_processo_stp NOT IN(6,7)";
+
+        if($processo) $sql .= " AND t1.nu_processo_pro = '$processo' ";
+        if($responsavel) $sql .= " AND t1.cd_responsavel_pro = $responsavel ";
+        if($tipo) $sql .= " AND t1.cd_tipo_processo_tpo = $tipo ";
+        if($servico) $sql .= " AND t9.cd_tipo_servico_tse = $servico ";
+
+        if($status){
+
+            if($status == 'dentro-prazo') $sql .= " AND dt_prazo_fatal_pro > current_date  ";
+            if($status == 'data-limite') $sql .= " AND dt_prazo_fatal_pro = current_date ";
+            if($status == 'atrasado') $sql .= " AND dt_prazo_fatal_pro < current_date ";
+
+        }
+
+        $sql .= "AND t1.deleted_at is null
+                AND t1.cd_conta_con = 64
+                ORDER BY dt_prazo_fatal_pro";
+
+        $processos = DB::select($sql);
+
+        foreach ($processos as $key => $processo) {
+
+            $cor = null;
+            $situacao = null;
+            $background = null;
+
+            if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro)){  
+
+                $cor = "#356635";
+                $situacao = 'DENTRO DO PRAZO';
+                $background = "#58ab583d";
+
+            }elseif(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro)){  
+                $cor = "#f1bc0b";   
+                $situacao = 'DATA LIMITE';
+                $background = "#ffeba8";
+
+            }elseif(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro)){
+                $cor = "#c26565";  
+                $situacao = 'ATRASADO';
+                $background = "#ffc3c3";
+            }
+            
+            $processos[$key]->hash = \Crypt::encrypt($processo->cd_processo_pro); 
+            $processos[$key]->fonte = $cor;
+            $processos[$key]->background = $background;
+            $processos[$key]->situacao = $situacao;
+            $processos[$key]->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)); 
+
+        }
+
+        return $processos;
+    }
+
+    public function getStatusPrazo($nivel, $conta)
+    {
+        $visivel = ($nivel == 1) ? "" : " AND fl_visivel_correspondente_stp = 'S' ";
+        $tipo = ($nivel == 1) ? ' cd_conta_con ' : 'cd_correspondente_cor';
+        $sql = "SELECT 
+                count(cd_processo_pro) filter (where dt_prazo_fatal_pro = current_date) as hoje,
+                count(cd_processo_pro) filter (where dt_prazo_fatal_pro < current_date) as prazo,
+                count(cd_processo_pro) filter (where dt_prazo_fatal_pro > current_date) as atrasado,
+                count(cd_processo_pro) as total
+            FROM processo_pro t1, status_processo_stp t2 
+            WHERE t1.cd_status_processo_stp = t2.cd_status_processo_stp 
+            $visivel
+            AND $tipo = $conta
+            AND t1.cd_status_processo_stp NOT IN (6,7)
+            AND deleted_at is null";
+
+        return DB::select($sql);
     }
 
     public static function boot(){

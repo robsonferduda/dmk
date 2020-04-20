@@ -58,7 +58,7 @@ class ProcessoController extends Controller
 
         }
 
-        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
+        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
@@ -78,31 +78,27 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();          
+        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();        
 
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
 
     public function acompanhar()
     {
-
-       if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
-        {
-            
+        if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
+        {    
             $tiposProcesso = \Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso');
-
         }else{
 
             $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
            \Cache::tags($this->cdContaCon,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
-
         }
 
         $responsaveis = User::where('cd_conta_con',$this->cdContaCon)->orderBy('name')->get();
-
-        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->get();
+        $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
+        /*
         $processos = Processo::with(array('correspondente' => function($query){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
               $query->with(array('contaCorrespondente' => function($query){
@@ -125,9 +121,10 @@ class ProcessoController extends Controller
         ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
         ->orderBy('dt_prazo_fatal_pro')
         ->orderBy('hr_audiencia_pro')
-        ->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();        
+        ->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();   
+        */
 
-        return view('processo/acompanhamento',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis]);
+        return view('processo/acompanhamento',['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis]);
     }
 
     public function acompanhamento($id){
@@ -1224,4 +1221,33 @@ class ProcessoController extends Controller
 
     }
 
+    public function buscarProcessosAndamento(Request $request)
+    {
+        $processo = ($request->processo) ? $request->processo : null;
+        $responsavel = ($request->responsavel) ? $request->responsavel : null;
+        $tipo = ($request->tipo) ? $request->tipo : null;
+        $servico = ($request->servico) ? $request->servico : null;
+        $status = ($request->status) ? $request->status : null;
+
+        $processos = (new Processo())->getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status);
+        return response()->json($processos);
+    }
+
+    public function getProcessosAndamento()
+    {
+        $processos = (new Processo())->getProcessosAndamento(null,null,null,null,null);
+        return response()->json($processos);
+    }
+
+    public function getStatusPrazo()
+    {
+        $totais = (new Processo())->getStatusPrazo(Auth::user()->cd_nivel_niv, $this->cdContaCon);
+        $retorno = array();
+
+        $retorno[] = array('label' => 'Dentro do Prazo','value' => $totais[0]->prazo);
+        $retorno[] = array('label' => 'Data Limite','value' => $totais[0]->hoje);
+        $retorno[] = array('label' => 'Atrasado','value' => $totais[0]->atrasado);        
+
+        return response()->json($retorno);
+    }
 }

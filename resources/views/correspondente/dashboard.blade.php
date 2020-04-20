@@ -125,7 +125,7 @@
     $(document).ready(function(){
 
         $.ajax({
-            url: "../../api/processo/situacao/total",
+            url: "../../api/processo/situacao/prazo",
             type: 'GET',
             dataType: "JSON",
             beforeSend: function()
@@ -139,20 +139,10 @@
                 if ($('#donut-graph').length) {
                     Morris.Donut({
                         element : 'donut-graph',
-                        data : [{
-                            value : 0,
-                            label : 'No Prazo'
-                        }, {
-                            value : 0,
-                            label : 'Data Limite'
-                        }, {
-                                value : 0,
-                                label : 'Atrasado'
-                        }
-                        ],
+                        data : response,
                         colors: ['#8ec9bb', '#f2cf59', '#fb8e7e'],
                             formatter : function(x) {
-                                return x + "%"
+                                return x 
                             }
                     });
                 }                
@@ -163,6 +153,8 @@
                 $('#donut-graph').html('<h1 class="center" style="font-size: 60px; margin-top: 50px; color: #d84e44;"><i class="fa fa-times"></i></h1><h4 class="center">Erro ao carregar dados</h4>'); 
             }
         });
+
+
 
     });
 </script>

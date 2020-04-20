@@ -996,6 +996,7 @@ class CorrespondenteController extends Controller
                                     $query->where('fl_visivel_correspondente_stp','S');
                                 })
                                 ->where('cd_status_processo_stp','!=',\StatusProcesso::FINALIZADO)
+                                ->where('cd_status_processo_stp','!=',\StatusProcesso::CANCELADO)
                                   ->orderBy('dt_prazo_fatal_pro','asc')
                                   ->orderBy('hr_audiencia_pro')->get();
 
