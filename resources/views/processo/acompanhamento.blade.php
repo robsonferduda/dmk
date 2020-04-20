@@ -29,12 +29,25 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
                     <div class="row" style="margin-bottom: 10px;">
+                        <section class="col col-md-2">
+                            <label class="label label-black">Prazo Fatal</label><br />
+                            <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
+                        </section> 
+                        <section class="col col-md-3">
+                            <label class="label label-black">Número do Processo</label><br />
+                            <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >         
+                        </section> 
+                        <section class="col col-md-3">
+                            <label class="label label-black">Réu</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
+                        </section> 
                         <section class="col col-md-4">
-                            <div class="input-group" style="width: 100%;">
-                                <span class="input-group-addon">Nº Processo</span>
-                                <input type="text" name="nu_processo_pro" class="form-control" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
-                            </div>
+                            <label class="label label-black">Autor</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
+                                        
+                    </div>
+                    <div class="row" style="margin-bottom: 10px;">
                         <section class="col col-md-4"> 
                             <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
                                 <option value="">Tipos de Processo</option>
@@ -42,36 +55,49 @@
                                     <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
                                 @endforeach
                             </select>
-                        </section>  
+                        </section> 
                         <section class="col col-md-4"> 
-                            <select name="status" id="status" class="select2">
-                                <option value="">Status do Processo</option>
-                                <option value="dentro-prazo">Dentro do Prazo</option>
-                                <option value="data-limite">Data Limite</option>
-                                <option value="atrasado">Atrasado</option>
-                            </select>
-                        </section>                    
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-6">       
-                            <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
-                                <option selected value="">Responsável</option>
-                                @foreach($responsaveis as $usuario)
-                                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
-                                @endforeach
-                            </select> 
-                        </section>
-                        <section class="col col-md-6"> 
                             <select name="cd_tipo_servico_tse" id="cd_tipo_servico_tse" class="select2">
                                 <option value="">Tipos de Serviço</option>
                                 @foreach($tiposServico as $tipo)
                                     <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
                                 @endforeach
                             </select>
-                        </section>  
+                        </section> 
+                        <section class="col col-md-4">       
+                            <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
+                                <option selected value="">Responsável</option>
+                                @foreach($responsaveis as $usuario)
+                                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                                @endforeach
+                            </select> 
+                        </section> 
                     </div>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <section class="col col-md-3"> 
+                            <select name="status" id="status" class="select2">
+                                <option value="">Status do Processo</option>
+                                <option value="dentro-prazo">Dentro do Prazo</option>
+                                <option value="data-limite">Data Limite</option>
+                                <option value="atrasado">Atrasado</option>
+                            </select>
+                        </section> 
+                        <section class="col col-md-3">         
+                            <select  id="estado" name="cd_estado_est" class="select2">
+                                <option selected value="">Estado</option>
+                                    @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
+                                        <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                    @endforeach
+                            </select> 
+                        </section>
+                        <section class="col col-md-6">         
+                            <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
+                                <option selected value="">Comarca</option>
+                            </select> 
+                        </section>  
+                    </div><hr>
                     <div class="row center">
-                        <button class="btn btn-primary" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
                     </div>
                 </form>
             </div>
@@ -265,12 +291,16 @@
             tipo = $("#cd_tipo_processo_tpo").val();
             servico = $("#cd_tipo_servico_tse").val();
             status = $("#status").val();
+            reu = $("#reu").val();
+            autor = $("#autor").val();
+            data = $("#dt_prazo_fatal_pro").val();
+            comarca = $("#cidade").val();
 
             $.ajax({
                 
                 url: '../../processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status},
+                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
@@ -381,6 +411,51 @@
 
     $("#filtro-pagination").change(function(){
         $(".body-acompanhamento").pagify($(this).val(), ".box-acompanhamento");
+    });
+
+    var buscaCidade = function(){
+
+            estado = $("#estado").val();
+
+            if(estado != ''){
+
+                $.ajax(
+                    {
+                        url: '../cidades-por-estado/'+estado,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Carregando...</option>');
+                            $('#cidade').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                    
+                            $('#cidade').empty();
+                            $('#cidade').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){
+
+                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
+                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                }else{
+                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                }
+                                
+                            });       
+                            $('#cidade').trigger('change');     
+                            $('#cidade').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                });
+            }
+        }
+
+    $("#estado").change(function(){
+        buscaCidade(); 
     });
 
 (function($) {

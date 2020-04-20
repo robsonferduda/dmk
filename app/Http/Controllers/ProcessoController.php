@@ -1228,14 +1228,18 @@ class ProcessoController extends Controller
         $tipo = ($request->tipo) ? $request->tipo : null;
         $servico = ($request->servico) ? $request->servico : null;
         $status = ($request->status) ? $request->status : null;
+        $reu = ($request->reu) ? $request->reu : null;
+        $autor = ($request->autor) ? $request->autor : null;
+        $data = ($request->data) ? date('Y-m-d',strtotime(str_replace('/','-',$request->data))) : null;
+        $comarca = ($request->comarca) ? $request->comarca : null;
 
-        $processos = (new Processo())->getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status);
+        $processos = (new Processo())->getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca);
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento(null,null,null,null,null);
+        $processos = (new Processo())->getProcessosAndamento(null,null,null,null,null,null,null,null,null);
         return response()->json($processos);
     }
 
