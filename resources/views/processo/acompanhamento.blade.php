@@ -19,7 +19,7 @@
             <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
         </div>
     </div>
-    <div class="row">
+    <div class="row container-acompanhamento">
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
@@ -200,7 +200,7 @@
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
-                    $('.body-acompanhamento').loader('show'); 
+                    $('.container-acompanhamento').loader('show'); 
                     $('.pagination').empty();                      
                 },
                 success: function(response){ 
@@ -247,14 +247,14 @@
 
                     });
 
-                    $('.body-acompanhamento').loader('hide'); 
+                    $('.container-acompanhamento').loader('hide'); 
                     $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
                                                       
                 },
                 error: function(response)
                 {
                     alert("Erro ao processar requisição");
-                    $('.body-acompanhamento').loader('hide'); 
+                    $('.container-acompanhamento').loader('hide'); 
                 }
         });
 
@@ -274,7 +274,7 @@
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
-                    $('.body-acompanhamento').loader('show');  
+                    $('.container-acompanhamento').loader('show');  
                     $('.pagination').empty();                     
                 },
                 success: function(response){ 
@@ -322,14 +322,14 @@
 
                     });
 
-                    $('.body-acompanhamento').loader('hide'); 
+                    $('.container-acompanhamento').loader('hide'); 
                     $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
                                                       
                 },
                 error: function(response)
                 {
                     alert("Erro ao processar requisição");
-                    $('.body-acompanhamento').loader('hide'); 
+                    $('.container-acompanhamento').loader('hide'); 
                 }
             });
 
