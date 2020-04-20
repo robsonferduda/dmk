@@ -211,7 +211,7 @@
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
-                            '<h4 style="margin: 0px; font-size: 16px; ">PROCESSO '+data.nu_processo_pro+' <strong style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_tipo_servico_tse+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
                             '<div class="row box-processo">'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
@@ -226,7 +226,7 @@
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                 '</div>'+
-                                '<div class="hidden-xs hidden-sm" style="position: absolute; bottom: 10px; right: 15px;">'+
+                                '<div class="hidden-xs hidden-sm col-md-12 pull-right">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
                                     '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
@@ -286,7 +286,7 @@
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
-                            '<h4 style="margin: 0px; font-size: 16px; ">PROCESSO '+data.nu_processo_pro+' <strong style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<h4 style="margin: 0px; font-size: 16px; ">NÚMERO '+data.nu_processo_pro+' <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
                             '<div class="row box-processo">'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
