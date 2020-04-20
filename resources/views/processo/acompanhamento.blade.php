@@ -211,7 +211,7 @@
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
-                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_tipo_servico_tse+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
                             '<div class="row box-processo">'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
