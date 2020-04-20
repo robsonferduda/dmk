@@ -189,7 +189,7 @@ class Processo extends Model implements AuditableContract
                 JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
                 WHERE t1.cd_status_processo_stp NOT IN(6,7)";
 
-        if($processo) $sql .= " AND t1.nu_processo_pro = '$processo' ";
+        if($processo) $sql .= " AND t1.nu_processo_pro like '%$processo%' ";
         if($responsavel) $sql .= " AND t1.cd_responsavel_pro = $responsavel ";
         if($tipo) $sql .= " AND t1.cd_tipo_processo_tpo = $tipo ";
         if($servico) $sql .= " AND t9.cd_tipo_servico_tse = $servico ";
