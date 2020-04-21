@@ -845,6 +845,7 @@ class CorrespondenteController extends Controller
 
             $correspondente->nm_razao_social_con = $request->nm_conta_correspondente_ccr;
             $correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+            $correspondente->save();
 
         }else{
 
