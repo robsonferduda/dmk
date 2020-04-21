@@ -694,10 +694,16 @@ class UsuarioController extends Controller
 
         if($request->fl_conta){
 
-            if($request->fl_conta == 'S')
-                return redirect('conta/detalhes/'.$id_criptado);
-            else
-                return redirect('usuarios/'.$id_criptado);
+            if(Auth::user()->cd_nivel_niv == 3){
+
+                return redirect('correspondente/perfil/'.\Crypt::encrypt($usuario->cd_entidade_ete));
+
+            }else{
+                if($request->fl_conta == 'S')
+                    return redirect('conta/detalhes/'.$id_criptado);
+                else
+                    return redirect('usuarios/'.$id_criptado);
+            }
         }
         else
             return redirect('usuarios');
