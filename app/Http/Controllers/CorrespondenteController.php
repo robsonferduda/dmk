@@ -833,19 +833,32 @@ class CorrespondenteController extends Controller
 
     }
 
+    //O mesmo método de edição é utilizado pelo escritório e pelo correspondente, por isso existe a verificação de nível
     public function editar(Request $request){
-
-        $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
-        $conta_correspondente = ContaCorrespondente::where('cd_conta_con',$this->conta)->where('cd_correspondente_cor',$request->conta)->first();
 
         $request->merge(['nu_cep_ede' => ($request->nu_cep_ede) ? str_replace("-", "", $request->nu_cep_ede) : null]);
 
-        $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
-        $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
-        $conta_correspondente->cd_categoria_correspondente_cac = $request->cd_categoria_correspondente_cac;
-        $conta_correspondente->obs_ccr = $request->obs_ccr;
+        $correspondente = Correspondente::where('cd_conta_con',$request->conta)->first();
+        $vinculo = null;
+        
+        if(Auth::user()->cd_nivel_niv == 3){
 
-        if($conta_correspondente->saveOrFail()){
+            $correspondente->nm_razao_social_con = $request->nm_conta_correspondente_ccr;
+            $correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+
+        }else{
+
+            $conta_correspondente = ContaCorrespondente::where('cd_conta_con',$this->conta)->where('cd_correspondente_cor',$request->conta)->first();
+
+            $conta_correspondente->nm_conta_correspondente_ccr = $request->nm_conta_correspondente_ccr;
+            $conta_correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+            $conta_correspondente->cd_categoria_correspondente_cac = $request->cd_categoria_correspondente_cac;
+            $conta_correspondente->obs_ccr = $request->obs_ccr;
+
+            $vinculo = $conta_correspondente->saveOrFail();
+        }
+
+        if($vinculo or $correspondente){
 
             //Inserção de telefones
             if(!empty($request->telefones) && count(json_decode($request->telefones)) > 0){
@@ -855,7 +868,7 @@ class CorrespondenteController extends Controller
 
                     $fone = Fone::create([
                         'cd_entidade_ete'           => $request->entidade,
-                        'cd_conta_con'              => $this->conta, 
+                        'cd_conta_con'              => $correspondente->cd_conta_con, 
                         'cd_tipo_fone_tfo'          => $fones[$i]->tipo,
                         'nu_fone_fon'               => $fones[$i]->numero
                     ]);
@@ -871,7 +884,7 @@ class CorrespondenteController extends Controller
 
                     $email = EnderecoEletronico::create([
                         'cd_entidade_ete'                 => $request->entidade,
-                        'cd_conta_con'                    => $this->conta, 
+                        'cd_conta_con'                    => $correspondente->cd_conta_con, 
                         'cd_tipo_endereco_eletronico_tee' => $emails[$i]->tipo,
                         'dc_endereco_eletronico_ede'      => trim($emails[$i]->email)
                     ]);
@@ -879,8 +892,27 @@ class CorrespondenteController extends Controller
                 }
             }
 
+            //Atualização dos dados bancários
+            if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
+
+                    $registrosBancarios = json_decode($request->registrosBancarios);
+                    for($i = 0; $i < count($registrosBancarios); $i++) {
+
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $request->entidade,
+                            'cd_conta_con'    => $correspondente->cd_conta_con, 
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
+                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
+                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
+                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
+                    }
+            }
+
             //Identificação para tipo de pessoa
-            $identificacao = (Identificacao::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_conta_con',$this->conta)->where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ)->first();
+            $identificacao = (Identificacao::where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_entidade_ete',$request->entidade)->where('cd_tipo_identificacao_tpi',\TipoIdentificacao::CNPJ)->first();
 
             $nu_cpf_cnpj = ($request->cd_tipo_pessoa_tpp == 1) ? $request->cpf : $request->cnpj;
             
@@ -894,7 +926,7 @@ class CorrespondenteController extends Controller
 
                 $identificacao = Identificacao::create([
                     'cd_entidade_ete'           => $request->entidade,
-                    'cd_conta_con'              => $this->conta, 
+                    'cd_conta_con'              => $correspondente->cd_conta_con, 
                     'cd_tipo_identificacao_tpi' => ($request->cd_tipo_pessoa_tpp == 1) ? \TipoIdentificacao::CPF : \TipoIdentificacao::CNPJ,
                     'nu_identificacao_ide'      => (!empty($nu_cpf_cnpj)) ? $nu_cpf_cnpj : ''
                 ]);
@@ -915,7 +947,7 @@ class CorrespondenteController extends Controller
 
                     $identificacao = Identificacao::create([
                     'cd_entidade_ete'           => $request->entidade,
-                    'cd_conta_con'              => $this->conta, 
+                    'cd_conta_con'              => $correspondente->cd_conta_con, 
                     'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
                     'nu_identificacao_ide'      => $request->oab
                     ]);  
@@ -930,45 +962,31 @@ class CorrespondenteController extends Controller
 
                 if($endereco){
                         
-                        $endereco->fill($request->all());
-                        $endereco->saveOrFail();
+                    $endereco->fill($request->all());
+                    $endereco->saveOrFail();
 
                 }else{
 
-                        $endereco = new Endereco();
-                        $endereco->cd_conta_con = $this->conta;
-                        $endereco->cd_entidade_ete = $request->entidade;
-                        $endereco->fill($request->all());
-                        $endereco->saveOrFail();
+                    $endereco = new Endereco();
+                    $endereco->cd_conta_con = $correspondente->cd_conta_con;
+                    $endereco->cd_entidade_ete = $request->entidade;
+                    $endereco->fill($request->all());
+                    $endereco->saveOrFail();
                 }
                     
             }
 
-            //Atualização dos dados bancários
-            //Dados Bancários
-            if(!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0){
-
-                    $registrosBancarios = json_decode($request->registrosBancarios);
-                    for($i = 0; $i < count($registrosBancarios); $i++) {
-
-                        $registro = RegistroBancario::create([
-                            'cd_entidade_ete' => $request->entidade,
-                            'cd_conta_con'    => $this->conta, 
-                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
-                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'),'',$registrosBancarios[$i]->cpf),
-                            'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
-                            'nu_conta_dba'    => $registrosBancarios[$i]->conta,
-                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
-                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
-                        ]);
-
-
-                    }
-            }
-
         }       
 
-        return redirect('correspondente/detalhes/'.\Crypt::encrypt($conta_correspondente->correspondente->cd_conta_con));
+        if(Auth::user()->cd_nivel_niv == 3){
+
+            return redirect('correspondente/perfil/'.\Crypt::encrypt($request->entidade));
+
+        }else{
+
+            return redirect('correspondente/detalhes/'.\Crypt::encrypt($conta_correspondente->correspondente->cd_conta_con));
+
+        }
     }
 
     public function clientes(){
@@ -983,9 +1001,16 @@ class CorrespondenteController extends Controller
 
         $id = \Crypt::decrypt($id);
 
-        $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();
-        return view('correspondente/ficha',['correspondente' => $correspondente]);
+        if(Auth::user()->cd_nivel_niv == 3){
 
+            $correspondente = Conta::with('entidade')->where('cd_conta_con', $id)->first();
+            return view('correspondente/ficha-correspondente',['correspondente' => $correspondente]);
+
+        }else{
+
+            $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();
+            return view('correspondente/ficha',['correspondente' => $correspondente]);
+        }       
     }
 
     public function processos(){
@@ -1065,6 +1090,8 @@ class CorrespondenteController extends Controller
     }
 
     public function perfil($id){
+
+        $id = \Crypt::decrypt($id);
 
         $correspondente = Correspondente::where('cd_conta_con',Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
         return view('correspondente/perfil',['correspondente' => $correspondente]);

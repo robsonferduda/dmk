@@ -29,15 +29,10 @@
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
-                        @if(Auth::user()->cd_nivel_niv == 3)
+                
                         {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['correspondente/editar',$correspondente->cd_entidade_ete], 'class' => 'smart-form','method' => 'PUT']) !!}
+                            
                             <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_conta_con }}">
-
-                        @else
-                            {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['correspondente/editar',$correspondente->correspondente->cd_entidade_ete], 'class' => 'smart-form','method' => 'PUT']) !!}
-                            <input type="hidden" name="conta" id="conta" value="{{ $correspondente->correspondente->cd_conta_con }}">
-                        @endif
-
                             <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">
                             <input type="hidden" name="telefones" id="telefones">
                             <input type="hidden" name="emails" id="emails">
@@ -65,47 +60,21 @@
                                                 </label>
                                             </section>
                     
-
                                             <section class="col col-3 box-pessoa-fisica">
                                                 <label class="label">CPF</label>
                                                 <label class="input">
                                                     <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ ($correspondente->entidade->cpf) ? $correspondente->entidade->cpf->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
-
-                                            @if(Auth::user()->cd_nivel_niv == 3)
                 
-                                                <section class="col col-4">
-                                                    <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
-                                                    <label class="input">
-                                                        <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_razao_social_con }}">
-                                                    </label>
-                                                </section>
-
-                                            @else
-
-                                                <section class="col col-4">
-                                                    <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
-                                                    <label class="input">
-                                                        <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_conta_correspondente_ccr }}">
-                                                    </label>
-                                                </section>
-
-                                            @endif
-
-                                            <section class="col col-3">
-                                                <label class="select" style="margin-bottom: 7px;">Categoria</label>   
-                                                <label class="select">     
-                                                    <select name="cd_categoria_correspondente_cac" id="categoria_cac" id="cd_categoria_correspondente_cac">
-                                                        <option value="0">Selecione uma categoria</option>
-                                                        @foreach(\App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->orderBy('dc_categoria_correspondente_cac')->get() as $categoria) 
-                                                            <option value="{{$categoria->cd_categoria_correspondente_cac}}" style="color: {{ $categoria->color_cac }};" data-color="{{ $categoria->color_cac }}" {{ ($correspondente->cd_categoria_correspondente_cac and $correspondente->cd_categoria_correspondente_cac == $categoria->cd_categoria_correspondente_cac) ? 'selected' : '' }}>{{ $categoria->dc_categoria_correspondente_cac }}</option>
-                                                        @endforeach   
-                                                    </select>
-                                                <i></i> </label>       
+                                            <section class="col col-6">
+                                                <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
+                                                <label class="input">
+                                                    <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_razao_social_con }}">
+                                                </label>
                                             </section>
 
-                                            <section class="col col-2">
+                                            <section class="col col-3">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
                                                     <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : ''}}">
@@ -115,91 +84,7 @@
                                     </fieldset>
                             <hr/>
 
-                            <header>
-                                <i class="fa fa-map-marker"></i> Comarca de Origem
-                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarca de Origem" data-content="Informe a comarca de origem do correspondente. Caso deseje alterar o valor informado, clique sobre ela para excluir e adicione novamente.">
-                                <i class="fa fa-question-circle text-primary"></i>
-                                </a> 
-                            </header>
-                            <fieldset>
-                                <div class="row">                     
-                                    <section class="col col-4">
-                                        <label class="label" >Estado</label>          
-                                        <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
-                                            <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
-                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                                @endforeach
-                                        </select> 
-                                    </section>
-                                    <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label label-pai_cidade_origem">Cidade</label>          
-                                        <select id="cidade_origem" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
-                                            <option selected value="">Selecione a cidade</option>
-                                        </select> 
-                                    </section> 
-                                    <section class="col col-2">
-                                        <label class="label" style="color: white;">Adicionar</label>
-                                        <button data-atuacao="S" type="button" class="btn btn-success adicionar-origem" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
-                                    </section>
-                                </div> 
-                            </fieldset>
-                            <div class="row"> 
-                                <div class="box_btn_origem" style="margin: 5px 30px;">
-                                    @if(count($correspondente->entidade->origem()->get()) > 0)
-                                        @foreach($correspondente->entidade->origem()->get() as $atuacao) 
-                                            <button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
-                                        @endforeach
-                                    @else
-                                        <span class="text-warning erro-origem-vazia"><i class="fa fa-warning"></i> Comarca de origem não informada</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <hr/>
 
-                            <header>
-                                <i class="fa fa-check"></i> Comarcas de Atuação 
-                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarcas de Atuação" data-html="true" data-content="Para informar somente uma cidade, selecione o estado e em seguida a cidade desejada. Para inserir todas as cidades de um estado, selecione o estado e na opção Cidade selecione a opção: <strong>Todas as cidades <strong>">
-                                <i class="fa fa-question-circle text-primary"></i>
-                                </a> 
-                            </header>
-                            <fieldset>
-                                <div class="row">                     
-                                    <section class="col col-4">
-                                        <label class="label" >Estado</label>          
-                                        <select id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
-                                            <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
-                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                                @endforeach
-                                        </select> 
-                                    </section>
-                                    <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label label-pai_cidade_atuacao">Cidade</label>          
-                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
-                                            <option selected value="">Selecione a cidade</option>
-                                        </select> 
-                                    </section> 
-                                    <section class="col col-2">
-                                        <label class="label" style="color: white;">Adicionar</label>
-                                        <button data-atuacao="N" type="button" class="btn btn-success adicionar-atuacao" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
-                                    </section>
-                                </div> 
-                            </fieldset>
-                            <div class="row">
-                                <div class="box_btn_atuacao" style="margin: 5px 30px;">
-                                    @if(count($correspondente->entidade->atuacao()->get()) > 0)
-                                    <p class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Clique sobre a cidade para excluir</p>
-                                        @foreach($correspondente->entidade->atuacao()->get() as $atuacao) 
-                                            <button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
-                                        @endforeach
-                                    @else
-                                        <span class="text-warning erro-atuacao-vazia"><i class="fa fa-warning"></i> Nenhuma cidade de atuação informada</span>
-                                    @endif
-                                </div>
-                            </div>
                             <div class="row" style="padding: 5px 20px;">
                                 <header>
                                     <i class="fa fa-building"></i> Endereço 
@@ -264,7 +149,7 @@
                                         </div> 
                                     </fieldset>  
 
-                                </div>
+                            </div>
 
                             <hr style="margin-top: 20px;" />
                             <div class="row">
@@ -375,11 +260,9 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            
-                                
-                             <div class="row" style="padding: 5px 20px;">
+                            </div>                        
+                                 
+                            <div class="row" style="padding: 5px 20px;">
                                     <header>
                                         <i class="fa fa-bank"></i> Dados Bancários 
                                     </header>
@@ -479,23 +362,96 @@
                                                     </table>                                               
                                                 </div>
 
-                                </div>
+                            </div>
 
-                                <div class="row" style="padding: 5px 20px;">
-                                    <header>
-                                        <i class="fa  fa-file-text-o"></i> Observações 
-                                    </header>
-                                    <fieldset>
-                                        <div class="row"> 
-                                            <section class="col col-sm-12">
-                                            <label class="input">
-                                                <textarea class="form-control" rows="4" name="obs_ccr" id="observacao" value="{{old('obs_ccr')}}" >{{old('obs_ccr') ? old('obs_ccr') : ($correspondente->obs_ccr) ? $correspondente->obs_ccr : '' }}</textarea>
-                                            </label>
-                                            </section> 
-                                        </div>
-                                    </fieldset>
-                                </div>
+                            <header>
+                                <i class="fa fa-map-marker"></i> Comarca de Origem
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarca de Origem" data-content="Informe a comarca de origem do correspondente. Caso deseje alterar o valor informado, clique sobre ela para excluir e adicione novamente.">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
+                            </header>
+
+                            <fieldset>
+                                <div class="row">                     
+                                    <section class="col col-4">
+                                        <label class="label" >Estado</label>          
+                                        <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
+                                            <option selected value="">Selecione</option>
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
+                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                @endforeach
+                                        </select> 
+                                    </section>
+                                    <section class="col col-6">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                        <label class="label label-pai_cidade_origem">Cidade</label>          
+                                        <select id="cidade_origem" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
+                                            <option selected value="">Selecione a cidade</option>
+                                        </select> 
+                                    </section> 
+                                    <section class="col col-2">
+                                        <label class="label" style="color: white;">Adicionar</label>
+                                        <button data-atuacao="S" type="button" class="btn btn-success adicionar-origem" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
+                                    </section>
+                                </div> 
+                            </fieldset>
                             
+                            <div class="row"> 
+                                <div class="box_btn_origem" style="margin: 5px 30px;">
+                                    @if(count($correspondente->entidade->origem()->get()) > 0)
+                                        @foreach($correspondente->entidade->origem()->get() as $atuacao) 
+                                            <button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
+                                        @endforeach
+                                    @else
+                                        <span class="text-warning erro-origem-vazia"><i class="fa fa-warning"></i> Comarca de origem não informada</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr/>
+
+                            <header>
+                                <i class="fa fa-check"></i> Comarcas de Atuação 
+                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarcas de Atuação" data-html="true" data-content="Para informar somente uma cidade, selecione o estado e em seguida a cidade desejada. Para inserir todas as cidades de um estado, selecione o estado e na opção Cidade selecione a opção: <strong>Todas as cidades <strong>">
+                                <i class="fa fa-question-circle text-primary"></i>
+                                </a> 
+                            </header>
+                            <fieldset>
+                                <div class="row">                     
+                                    <section class="col col-4">
+                                        <label class="label" >Estado</label>          
+                                        <select id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
+                                            <option selected value="">Selecione</option>
+                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
+                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
+                                                @endforeach
+                                        </select> 
+                                    </section>
+                                    <section class="col col-6">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                        <label class="label label-pai_cidade_atuacao">Cidade</label>          
+                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
+                                            <option selected value="">Selecione a cidade</option>
+                                        </select> 
+                                    </section> 
+                                    <section class="col col-2">
+                                        <label class="label" style="color: white;">Adicionar</label>
+                                        <button data-atuacao="N" type="button" class="btn btn-success adicionar-atuacao" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
+                                    </section>
+                                </div> 
+                            </fieldset>
+                            <div class="row">
+                                <div class="box_btn_atuacao" style="margin: 5px 30px;">
+                                    @if(count($correspondente->entidade->atuacao()->get()) > 0)
+                                    <p class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Clique sobre a cidade para excluir</p>
+                                        @foreach($correspondente->entidade->atuacao()->get() as $atuacao) 
+                                            <button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
+                                        @endforeach
+                                    @else
+                                        <span class="text-warning erro-atuacao-vazia"><i class="fa fa-warning"></i> Nenhuma cidade de atuação informada</span>
+                                    @endif
+                                </div>
+                            </div>
+
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>
                                 <a href="{{ url('correspondente/dashboard/'.$correspondente->entidade->cd_entidade_ete) }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>

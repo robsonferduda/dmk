@@ -111,7 +111,7 @@
             <div class="login-info">
                 <span> 
                     @role('correspondente') 
-                        <a href="{{ url("correspondente/perfil/".Auth::user()->cd_entidade_ete) }}">
+                        <a href="{{ url("correspondente/perfil/".\Crypt::encrypt(Auth::user()->cd_entidade_ete)) }}">
                             @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                                 <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
                             @else
