@@ -4,25 +4,20 @@
         <meta charset="utf-8">
         <title>{{ env('APP_NAME') }}</title>
         <meta name="description" content="">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
         <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
         <link rel="shortcut icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
         
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
+       
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.0/cropper.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/filepicker.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
+       
+         
         @yield('stylesheet')
     </head>
 
@@ -471,30 +466,31 @@
             </div>
         </div>
 
-        <div class="modal fade in" id="upload-image" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade in" id="upload-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width: 800px;">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-file-image-o"></i> <strong>Atualizar Foto de Perfil</strong></h4>
-                    </div>
                     <div class="row" style="margin:0; padding: 5px;">
-                        <div class="col-md-12" style="padding: 5px 45px;">
-                            <strong>Selecione uma imagem</strong>
-                            <br/>
-                            <input type="file" id="upload" class="btn btn-default">                                  
-                        </div>
-                            <div class="col-md-6 text-center">
-                                <div id="upload-demo" style="width:350px"></div>
-                            </div>
-                            <div class="col-md-6 text-center" style="">
-                                <div id="upload-demo-i" style="background:#e1e1e1;width:350px;padding:5px;height:350px;margin-top:30px"></div>
-                            </div>
-                        <div class="col-md-12 center" style="padding-bottom: 15px;">
-                            <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-remove"></i> Fechar</a>
-                            <button class="btn btn-primary upload-result"><i class="fa fa-upload"></i> Enviar Imagem</button>
-                            <button class="btn btn-success upload-finalizar"><i class="fa fa-check"></i> Finalizar</button>
-                        </div>
+
+                                <div class="col-md-12">
+                                    <h2>Atualizar Foto de Perfil</h2>
+                                    <strong>Selecione uma imagem:</strong>
+                                    <br/>
+                                    <input type="file" id="upload">
+                                                                       
+                                </div>
+
+                                <div class="col-md-6 text-center">
+                                    <div id="upload-demo" style="width:350px"></div>
+                                </div>
+
+                                <div class="col-md-6 text-center" style="">
+                                    <div id="upload-demo-i" style="background:#e1e1e1;width:300px;padding:30px;height:300px;margin-top:30px"></div>
+                                </div>
+
+                                <div class="col-md-12 center" style="padding-bottom: 15px;">
+                                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-remove"></i> Fechar</a>
+                                    <button class="btn btn-success upload-result"><i class="fa fa-upload"></i> Enviar Imagem</button>
+                                </div>
                     </div>
                 </div>
             </div>
@@ -554,147 +550,84 @@
             </div>
         </div>
 
-        <script src="{{ asset('js/jquery.min.js') }}"></script>
-        <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-        <script src="{{ asset('js/geral.js') }}"></script>
-        {{--  Minify::javascript(asset('js/geral.js'))->withFullUrl() --}}
-        <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
-
-        <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/fullcalendar/locale-all.js') }}"></script>
-
-        <script src="{{ asset('js/app.config.js') }}"></script>
-        <script src="{{ asset('js/data-table-custom.js') }}"></script>
 
 
-        <!--[if IE 8]>
-            <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
-        <![endif]-->
+         <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.0/cropper.min.js"></script>
 
-        <script src="{{ asset('js/smartwidgets/jarvis.widget.min.js') }}"></script>
-        
-        <script src="{{ asset('js/plugin/jquery-validate/jquery.validate.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/datatables/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/datatables/dataTables.colVis.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/datatables/dataTables.tableTools.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/datatables/dataTables.bootstrap.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/datatable-responsive/datatables.responsive.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/select2/select2.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/croppie.js') }}"></script>
-        <script src="{{ asset('js/plugin/jquery.form.js') }}"></script>
-        <script src="{{ asset('js/plugin/ckeditor/ckeditor.js') }}"></script>
-        <script src="{{ asset('js/plugin/x-editable/x-editable.min.js') }}"></script>
-        <script src="{{ asset('js/socket.io-1.2.0.js') }}"></script>
-        <script src="{{ asset('js/css-loader.js') }}"></script>
-        <script src="{{ asset('js/app.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>z
-
-        <script src="{{ asset('js/filepicker.js') }}"></script>
+    <script src="{{ asset('js/filepicker.js') }}"></script>
         <script src="{{ asset('js/filepicker-ui.js') }}"></script>
         <script src="{{ asset('js/filepicker-drop.js') }}"></script>
         <script src="{{ asset('js/filepicker-crop.js') }}"></script>
         <script src="{{ asset('js/filepicker-camera.js') }}"></script>
 
-        <script src="{{ asset('js/plugin/morris/raphael.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/morris/morris.min.js') }}"></script>
-        
-        @yield('script')
-        <script type="text/javascript">
-        
-        $(document).ready(function() {
-        
-        {{--
+    <script>
+        /*global $*/
 
-            var hostname = document.location.hostname;  
+        var cropBtn = $('.crop-btn');
+        var deleteBtn = $('.delete-btn');
 
-            var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
-            socket.on("notificacao:App\\Events\\EventNotification", function(message){
-
-                cod_conta = $('meta[name="conta"]').attr('content');
-                path = window.location.protocol + "//" + window.location.host + "/dmk/";
-
-                if(message.data.canal == 'notificacao'){
-
-                    if(message.data.conta == cod_conta){
-                        
-                        $('.badge-count').html(message.data.total);
-                        $(".notification-body > li").remove();
-
-                        console.log(message.data.mensagens.length);
-
-                        for (var i = 0; i < message.data.mensagens.length; i++) {
-                            
-                            item = '<li>'+
-                                                    '<span class="unread">'+
-                                                        '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
-                                                            '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
-                                                            '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
-                                                            '<time>'+message.data.mensagens[i].data+'</time>'+
-                                                            '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
-                                                            '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
-                                                        '</a>' +
-                                                    '</span>'+
-                                                '</li>';
-                                                   
-                            $('.notification-body').append(item);
-
-                        }
-                    }
-                }
-
-            });
-
-            --}}
-
-        });
-
-        // DO NOT REMOVE : GLOBAL FUNCTIONS!
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
+        $('#filepicker').filePicker({
+            url: 'uploader/avatar.php',
+            acceptedFiles: /(\.|\/)(gif|jpe?g|png)$/i,
+            plugins: ['drop', 'camera', 'crop'],
+            crop: {
+                aspectRatio: 1, // Square
+                showBtn: cropBtn
             }
-        });
-
-
-        $uploadCrop = $('#upload-demo').croppie({
-            enableExif: true,
-            viewport: {
-                width: 340,
-                height: 340,
-                type: 'circle'
-            },
-            boundary: {
-                width: 350,
-                height: 350
-            }
-        });
-
-        $('#upload').on('change', function () { 
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $uploadCrop.croppie('bind', {
-                    url: e.target.result
-                }).then(function(){
-                    console.log('jQuery bind complete');
-                });
-            }
-            reader.readAsDataURL(this.files[0]);
-        });
-
-        
-        $(document).ready(function() {
-            
-            pageSetUp();
-
-
         })
+        .on('add.filepicker', function (e, data) {
+            var file = data.files[0];
 
-        </script>
+            if (file.error) {
+                e.preventDefault();
+                alert(file.error);
+            }
+        })
+        .on('done.filepicker', function (e, data) {
+            // Here the file has been uploaded.
+            var file = data.files[0];
+
+            if (file.error) {
+                alert(file.error);
+            } else {
+                // Show the crop modal.
+                $(this).filePicker().plugins.crop.show(file.url);
+            }
+        })
+        .on('cropsave.filepicker', function (e, file) {
+            // Here the image has been cropped.
+
+            // Update the avatar image.
+            $('.avatar').attr('src', file.versions.avatar.url +'?'+ new Date().getTime());
+
+            // Update the button fileurl.
+            cropBtn.data('fileurl', file.url).show();
+            deleteBtn.data('file', file.name).show();
+        })
+        .on('fail.filepicker', function () {
+            alert('Oops! Something went wrong.');
+        });
+
+        // When clicking on the delete button delete the file.
+        deleteBtn.on('click', function () {
+            // Delete the file.
+            $('#filepicker').filePicker().delete($(this).data('file'));
+
+            // Reset default avatar.
+            $('.avatar').attr('src', 'https://www.gravatar.com/avatar/?d=mm&s=300');
+
+            // Hide crop and delete buttons.
+            cropBtn.hide();
+            deleteBtn.hide();
+        });
+    </script>
+
+
+        
+       
 
     </body>
 </html>

@@ -57,7 +57,7 @@ class FilepickerController extends Controller
     public function handle(Request $request)
     {
 
-        $this->inicializaPastaDestino($request->id_despesa);
+        $this->inicializaPastaDestino(45);
 
         //Ação de enviar arquivo
         return $this->handler->handle($request);

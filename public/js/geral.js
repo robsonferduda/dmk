@@ -107,17 +107,24 @@ $(document).ready(function() {
                 size: 'viewport'
             }).then(function (resp) {
                 $.ajax({
-                    url: pathname+"/image-crop",
+                    url: "../../image-crop",
                     type: "POST",
                     data: {"image":resp},
                     success: function (data) {
                         html = '<img src="' + resp + '" />';
-                        $("#upload-demo-i").html(html);
-                    }
+                        $("#upload-demo-i").html(html);                        
+                    },
+	                error: function(response)
+	                {
+	                    alert("Erro ao atualizar a imagem");
+	                }
                 });
             });
-            location.reload();
-        });
+    });
+
+    $(".upload-finalizar").on('click', function (ev) {
+    	location.reload();
+    });
 
 	if($('input:radio[name=cd_tipo_pessoa_tpp]:checked').val() == 1){
 	    $(".label-tipo-pessoa").html('Nome');

@@ -28,12 +28,10 @@ class ImageController extends Controller
         list(, $data)      = explode(',', $data);
 
         $data = base64_decode($data);
-        $image_name= $id.'.png';
+        $image_name = $id.'.png';
         $path = public_path() . "/img/users/" . $image_name;
 
-
         file_put_contents($path, $data);
-
 
         return response()->json(['success'=>'done']);
     }
