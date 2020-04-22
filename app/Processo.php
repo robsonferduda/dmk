@@ -15,6 +15,7 @@ use App\Notifications\EnvioDocumentosProcessoNotification;
 use App\Notifications\ProcessoRequisitarDadosNotification;
 use App\Notifications\ProcessoAtualizacaoDadosNotification;
 use App\Notifications\ProcessoAvisoLeituraNotification;
+use App\Notifications\ProcessoCorrespondenteFinalizarNotification;
 
 class Processo extends Model implements AuditableContract
 {
@@ -156,6 +157,11 @@ class Processo extends Model implements AuditableContract
     public function notificarAtualizacaoDados($processo)
     {
         $this->notify(new ProcessoAtualizacaoDadosNotification($processo));
+    }
+
+    public function notificarFinalizacaoCorrespondente($processo)
+    {
+        $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
     public function getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca)

@@ -158,14 +158,56 @@ class ProcessoController extends Controller
     {
 
         $processo = Processo::where('cd_processo_pro',$request->processo)->first();
+        $vinculo = Conta::where('cd_conta_con',$processo->cd_conta_con)->first();
         
         if($request->status == 0){
             Flash::warning('Obrigatório selecionar uma situação');
         }else{
         
             $processo->cd_status_processo_stp = $request->status;
-            if($processo->save())
-                Flash::success('Situação atualizada com sucesso');
+
+            if($processo->save()){
+
+                if(Auth::user()->cd_nivel_niv){
+
+                    $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+                    if(count($emails) == 0){
+
+                        Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o escritório não foi notificado.');
+
+                    }else{
+
+                        $lista = '';
+
+                        foreach ($emails as $email) {
+
+                            $processo->email = $email->dc_endereco_eletronico_ede;
+                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+
+                            try{
+                                $processo->notificarFinalizacaoCorrespondente($processo);
+                            } catch (\Swift_RfcComplianceException $e) {
+
+                                //Retorna o status anterior
+                                $processo = Processo::findOrFail($request->processo);
+                                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO;
+                                $processo->save();
+
+                                Flash::success('Houve um erro ao atualizar o status, pois o email "<strong>'.$email->dc_endereco_eletronico_ede.'</strong>" possui problemas em sua formatação. Verifique o email e tente novamente');
+                            }
+                                
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                        }
+                    }
+
+                    Flash::success('O processo foi finalizado com sucesso e o escritório notificado com mensagem enviada para '.substr(trim($lista),0,-1));
+
+                }else{
+
+                    Flash::success('Situação atualizada com sucesso');
+                }
+            }
             else
                 Flash::success('Erro ao atualizar situação do processo');
         }
