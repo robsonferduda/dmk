@@ -43,7 +43,6 @@
                 <div class="center">
                     <h1 style="font-size: 60px; margin-top: 50px; color: #bbbbbb;"><i class="fa fa-frown-o"></i></h1>
                     <h6 style="color: #bbbbbb;"><span>Você não possui convites</span></h6>
-                    <a href="javascript:void(0);"><i class="fa fa-share-square-o"></i> Aumentar Visibilidade</a>
                 </div>
                 
                
@@ -73,7 +72,7 @@
                 </div>
                 -->
 
-                <a class="center" style="position: absolute; bottom: 20px;" href="{{ url('correspondente/processos') }}">Ver todos</a>
+                <a class="center" style="position: absolute; bottom: 20px;" href="#">Ver todos</a>
             </div>
 
         </article>
