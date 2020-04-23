@@ -78,7 +78,6 @@
                         <section class="col col-md-3">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                            <a href="{{ url('processos') }}" class="btn btn-primary" ><i class="fa fa-list"></i> Listar</a>
                         </section>
                     </div>
                     <div style="display: block;margin-top: 10px">
