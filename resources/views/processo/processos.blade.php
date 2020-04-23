@@ -82,10 +82,10 @@
                     </div>
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Finalizado
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #58ab583d;float: left;margin-right: 2px"></div>Finalizado
                        </span>
                        <span style="display: inline-block;">
-                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Cancelado
+                       <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #ffc3c3; float: left; margin-right: 2px"></div>Cancelado
                        </span>
                     </div>  
                 </form>
@@ -121,11 +121,11 @@
                                         $cor = "#ffffff"; 
 
                                         if($processo->status and $processo->status->cd_status_processo_stp == StatusProcesso::FINALIZADO){
-                                            $cor = "#8ec9bb";
+                                            $cor = "#58ab583d";
                                         }
                                             
                                         if($processo->status and $processo->status->cd_status_processo_stp == StatusProcesso::CANCELADO){
-                                            $cor = "#fb8e7e";
+                                            $cor = "#ffc3c3";
                                         }
                                         
                                     @endphp

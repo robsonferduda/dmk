@@ -139,7 +139,7 @@
                     Morris.Donut({
                         element : 'donut-graph',
                         data : response,
-                        colors: ['#8ec9bb', '#f2cf59', '#fb8e7e'],
+                        colors: ['#58ab583d', '#ffeba8', '#ffc3c3'],
                             formatter : function(x) {
                                 return x 
                             }

@@ -35,13 +35,13 @@
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>  
                     <div style="display: block;margin-top: 15px">
                         <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Dentro do Prazo
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #58ab583d;float: left;margin-right: 2px"></div>Dentro do Prazo
                         </span>
                         <span style="display: inline-block;">
-                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59;float: left; margin-right: 2px"></div>Data limite
+                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #ffeba8;float: left; margin-right: 2px"></div>Data limite
                         </span>
                         <span style="display: inline-block;">
-                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Atrasado
+                           <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #ffc3c3; float: left; margin-right: 2px"></div>Atrasado
                         </span>
                     </div>                 
                 </form>
@@ -75,13 +75,13 @@
                                             if(!empty($processo->dt_prazo_fatal_pro)){
 
                                                 if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($processo->dt_prazo_fatal_pro))  
-                                                    $cor = "#f2cf59";   
+                                                    $cor = "#ffeba8";   
 
                                                 if(strtotime(\Carbon\Carbon::today())  < strtotime($processo->dt_prazo_fatal_pro))  
-                                                    $cor = "#8ec9bb";
+                                                    $cor = "#58ab583d";
 
                                                 if(strtotime(\Carbon\Carbon::today())  > strtotime($processo->dt_prazo_fatal_pro))
-                                                    $cor = "#fb8e7e";                                         
+                                                    $cor = "#ffc3c3";                                         
                                                 
                                             }else{
                                                 $cor = "#ffffff"; 

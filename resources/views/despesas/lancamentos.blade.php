@@ -134,13 +134,13 @@
                                         if(empty($despesa->dt_pagamento_des)){
 
                                             if(strtotime(date(\Carbon\Carbon::today()->toDateString()))  == strtotime($despesa->dt_vencimento_des))  
-                                                $cor = "#f2cf59";   
+                                                $cor = "#ffeba8";   
 
                                             if(strtotime(\Carbon\Carbon::today())  < strtotime($despesa->dt_vencimento_des))  
-                                                $cor = "#8ec9bb";
+                                                $cor = "#58ab583d";
 
                                             if(strtotime(\Carbon\Carbon::today())  > strtotime($despesa->dt_vencimento_des))
-                                                $cor = "#fb8e7e";                                         
+                                                $cor = "#ffc3c3";                                         
                                             
                                         }else{
                                             $cor = "#ffffff"; 
