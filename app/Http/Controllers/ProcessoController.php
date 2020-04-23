@@ -42,8 +42,17 @@ class ProcessoController extends Controller
         $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
     }
 
+    //Método utilizado para escritório e correspondente
     public function index()
     {
+
+        if(Auth::user()->cd_nivel_niv == 3){
+
+
+        }else{
+
+
+        }
 
         if (!empty(\Cache::tags($this->cdContaCon,'listaTiposProcesso')->get('tiposProcesso')))
         {
@@ -78,7 +87,12 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)->take(100)->orderBy('dt_prazo_fatal_pro')->orderBy('created_at')->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();        
+        }))->where('cd_conta_con', $this->cdContaCon)
+            ->take(100)
+            ->orderBy('dt_prazo_fatal_pro')
+            ->orderBy('created_at')
+            ->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')
+            ->get();        
 
         return view('processo/processos',['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
@@ -168,7 +182,7 @@ class ProcessoController extends Controller
 
             if($processo->save()){
 
-                if(Auth::user()->cd_nivel_niv){
+                if(Auth::user()->cd_nivel_niv == 3){
 
                     $emails = EnderecoEletronico::where('cd_entidade_ete',$vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee',\App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
