@@ -25,7 +25,7 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <form action="{{ url('processos/buscar') }}" class="form-inline" method="GET" role="search">
+                <form action="{{ (Auth::user()->cd_nivel_niv == 3) ? url('correspondente/processo/buscar/arquivo') : url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-2">
@@ -90,7 +90,9 @@
                     </div>  
                 </form>
             </div>
-            <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 100 processos cadastrados. Utilize as opções de busca para personalizar o resultado.</label>
+            @role('colaborador|administrator')
+                <label class="text-primary"><i class="fa fa-info-circle"></i> Informação! Por padrão o sistema exibe os últimos 50 processos cadastrados. Utilize as opções de busca para personalizar o resultado.</label>
+            @endrole
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -155,17 +157,19 @@
                                         <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
                                         <td class="center">
                                             <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
-                                            <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
-                                            <div class="dropdown" style="display: inline;">
-                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
-                                                    <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
-                                                    <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
-                                                    <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i> Relatório Financeiro</a></li>
-                                                    <li><a title="Excluir" data-url="processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
-                                                </ul>
-                                            </div>                                    
+                                            @role('colaborador|administrator')
+                                                <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                                <div class="dropdown" style="display: inline;">
+                                                    <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
+                                                        <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
+                                                        <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
+                                                        <li><a title="Relatório" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd"></i> Relatório Financeiro</a></li>
+                                                        <li><a title="Excluir" data-url="processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
+                                                    </ul>
+                                                </div>   
+                                            @endrole                                 
                                         </td>
                                     </tr>
                                 @endforeach

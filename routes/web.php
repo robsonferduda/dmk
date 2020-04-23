@@ -155,7 +155,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/todos',function(){ return view('correspondente/todos'); });
 	Route::get('correspondente/notificacao/{id}','CorrespondenteController@notificacao');	
 	Route::get('correspondente/novo','CorrespondenteController@novo')->name('novo-correspondente');	
-	Route::get('correspondente/processo/buscar','CorrespondenteController@buscarProcesso');
+	Route::get('correspondente/processo/buscar/{tipo}','CorrespondenteController@buscarProcesso');
 	Route::get('correspondente/limpar-selecao/{id}','CorrespondenteController@limparSelecao');
 	Route::get('correspondente/convite/{token}','CorrespondenteController@aceitarConvite')->name("correspondente.convite");
 	Route::get('correspondente/filiacao/{token}','CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");

@@ -48,9 +48,11 @@ class ProcessoController extends Controller
 
         if(Auth::user()->cd_nivel_niv == 3){
 
+            $conta = 'cd_correspondente_cor';
 
         }else{
 
+            $conta = 'cd_conta_con';
 
         }
 
@@ -69,10 +71,10 @@ class ProcessoController extends Controller
 
         $tiposServico = TipoServico::where('cd_conta_con',$this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
-        $processos = Processo::with(array('correspondente' => function($query){
+        $processos = Processo::with(array('correspondente' => function($query) use($conta){
               $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
-              $query->with(array('contaCorrespondente' => function($query){
-                    $query->where('cd_conta_con', $this->cdContaCon);
+              $query->with(array('contaCorrespondente' => function($query) use($conta){
+                    $query->where($conta, $this->cdContaCon);
               }));
         }))->with(array('cidade' => function($query){
               $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
@@ -87,8 +89,8 @@ class ProcessoController extends Controller
         }))->with('status')
         ->with(array('cliente' => function($query){
               $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->where('cd_conta_con', $this->cdContaCon)
-            ->take(100)
+        }))->where($conta, $this->cdContaCon)
+            ->take(50)
             ->orderBy('dt_prazo_fatal_pro')
             ->orderBy('created_at')
             ->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')

@@ -1065,9 +1065,12 @@ class CorrespondenteController extends Controller
         if(!empty($reu)) $processos->where('nm_reu_pro', 'ilike', '%'. $reu. '%');
         if(!empty($acompanhamento)) $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
 
-          $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
+        $processos = $processos->orderBy('dt_prazo_fatal_pro')->orderBy('hr_audiencia_pro')->get();
 
-        return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'finalizado' => $finalizado]);
+        if($request->tipo == 'acompanhamento')
+            return view('correspondente/processos',['processos' => $processos,'numero' => $numero,'tiposProcesso' => array(),'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'finalizado' => $finalizado]);
+        else
+            return view('processo/processos',['processos' => $processos,'tiposProcesso' => array(),'tiposServico' => $tiposServico]);
 
     }
 

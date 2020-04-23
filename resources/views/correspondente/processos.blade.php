@@ -24,7 +24,7 @@
         </div>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
-                <form action="{{ url('correspondente/processo/buscar') }}" class="form-inline" method="GET" role="search">
+                <form action="{{ url('correspondente/processo/buscar/acompanhamento') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <section class="col col-md-4" style="padding-left: 0px;">  
                         <div class="input-group" style="width: 100%">
