@@ -1335,14 +1335,19 @@ $(document).ready(function() {
 			var registroBancario = {titular: titular, cpf: cpf, banco: banco,bancoText: bancoText,tipo: tipo,tipoText:tipoText, agencia: agencia, conta:conta};
 
 			if(fl_edicao_conta == true){
-
 				
 				$.ajax({
 					url: "../../registro-bancario/editar",
 					type: 'POST',
 		            data: {
 		                "_token": $('meta[name="token"]').attr('content'),
-		                "id": id_edicao_conta
+		                "id": id_edicao_conta,
+		                "titular": titular,
+		                "cpf": cpf,
+		                "banco": banco,
+		                "tipo": tipo,
+		                "agencia": agencia,
+		                "conta": conta
 		            },
 					success: function(response){   
 

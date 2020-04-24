@@ -60,6 +60,12 @@ class RegistroBancarioController extends Controller
      public function editar(Request $request)
     {   
         $rb = RegistroBancario::where('cd_dados_bancarios_dba',$request->id)->findOrFail($request->id);
+        $rb->nm_titular_dba = $request->titular;
+        $rb->nu_cpf_cnpj_dba = str_replace(array('.','-'),'',$request->cpf);
+        $rb->nu_agencia_dba = $request->agencia;
+        $rb->nu_conta_dba = $request->conta;
+        $rb->cd_banco_ban = $request->banco;
+        $rb->cd_tipo_conta_tcb = $request->tipo;
         
         if($rb->save())
             return Response::json(array('message' => 'Registro editado com sucesso'), 200);

@@ -177,6 +177,18 @@ class HonorariosCorrespondenteController extends Controller
                 return (($a < $b) ? -1 : 1);
             }
         );
+
+        //Ordena a lista de cidades
+        usort($lista_servicos,
+            function($a, $b) {
+
+                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
+                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
+
+                if( $a == $b ) return 0;
+                return (($a < $b) ? -1 : 1);
+            }
+        );
  
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)

@@ -438,7 +438,7 @@
 
                                                 <div class="row">
                                                     <section class="col col-sm-12">
-                                                        <button type="button" id="btnSalvarContaBancaria" class="btn btn-success" style="padding: 6px 15px;float: right;"><i class="fa fa-plus"></i> Adicionar</button>
+                                                        <button type="button" id="btnSalvarContaBancaria" class="btn btn-success" style="padding: 6px 15px;float: right;"><i class="fa fa-save"></i> Salvar</button>
                                                     </section>
                                                 </div>
                                                 <div class="row center" id="erroContaBancaria"></div>
@@ -461,7 +461,7 @@
                                                                <tr>
                                                                     <td data-nm_titular_dba="{{ $banco->nm_titular_dba }}">{{ $banco->nm_titular_dba }}</td>
                                                                     <td data-nu_cpf_cnpj_dba="{{ $banco->nu_cpf_cnpj_dba }}">{{ $banco->nu_cpf_cnpj_dba }}</td>
-                                                                    <td data-cd_banco_ban="{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT) }}">{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT).' - '.$banco->banco->nm_banco_ban }}</td>
+                                                                    <td data-cd_banco_ban="{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT) }}">{{ $banco->banco->nm_banco_ban }}</td>
                                                                     <td data-cd_tipo_conta_tcb="{{ $banco->tipoConta->cd_tipo_conta_tcb }}">{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
                                                                     <td data-nu_agencia_dba="{{ $banco->nu_agencia_dba }}">{{ $banco->nu_agencia_dba }}</td>
                                                                     <td data-nu_conta_dba="{{ $banco->nu_conta_dba }}">{{ $banco->nu_conta_dba }}</td>

@@ -341,82 +341,13 @@ class CorrespondenteController extends Controller
 
     public function honorarios($id)
     {
-
-        //Inicialização de variáveis
-        $lista_servicos = array();
-        $cidades = array();
-        $valores = array();
         $id = \Crypt::decrypt($id);
 
-        $this->inicializaOrdem();
-
-        //$correspondente = Correspondente::with('entidade')->where('cd_conta_con',$id)->first();
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$id)->first();  
-        
-        //Dados utilizados pelo combo
-        $servicos = TipoServico::where('cd_conta_con',$this->conta)->get();
+        $servicos = TipoServico::where('cd_conta_con',$this->conta)->orderBy('nm_tipo_servico_tse')->get();
 
-        //Limpa dados da sessão
-        \Session::forget('lista_cidades');
-
-        //Carrega os valores de honorarios para determinado grupo
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)->get();
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                //$valores[$honorario->cd_cidade_cde][$honorario->cd_tipo_servico_tse] = $honorario->nu_taxa_the;
-            }
-        } 
-
-        //Carrega as cidades
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
-                                    ->select('cd_cidade_cde')
-                                    ->groupBy('cd_cidade_cde')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                //$cidades[] = $honorario->cidade;
-            }
-        } 
-
-        //Carrega os serviços
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$correspondente->entidade->cd_entidade_ete)
-                                    ->select('cd_tipo_servico_tse')
-                                    ->groupBy('cd_tipo_servico_tse')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                if($honorario->tipoServico){
-                    //$lista_servicos[] = $honorario->tipoServico;
-                }
-            }
-        } 
-
-        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos, 'cidades' => $cidades, 'valores' => $valores, 'lista_servicos' => $lista_servicos]);
-
-    }
-
-    public function limparSelecao($id){
-        \Session::forget('lista_cidades');
-        return redirect('correspondente/honorarios/'.$id);
-    }
-
-    public function inicializaOrdem()
-    {
-        if(empty(session('organizar')))
-            \Session::put('organizar',2); //Ordenação por cidades
-    }
-
-    public function ordenarHonorarios($ordem)
-    {
-        \Session::put('organizar',$ordem); 
-        return redirect()->back();
-    }
+        return view('correspondente/honorarios',['cliente' => $correspondente, 'servicos' => $servicos]);
+    } 
 
     public function convidar(ConviteRequest $request){
 
