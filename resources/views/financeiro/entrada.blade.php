@@ -83,13 +83,13 @@
                     </div>
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #8ec9bb;float: left;margin-right: 2px"></div>Pago
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color:#58ab583d;float: left;margin-right: 2px"></div>Pago
                        </span>
                        <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #f2cf59; float: left; margin-right: 2px"></div>Parcialmente Pago 
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #ffeba8; float: left; margin-right: 2px"></div>Parcialmente Pago 
                        </span>
                        <span style="display: inline-block;">
-                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #fb8e7e; float: left; margin-right: 2px"></div>Nenhum pagamento
+                            <div style="width: 20px;height: 20px;border: 1px solid #ccc;background-color: #ffc3c3; float: left; margin-right: 2px"></div>Nenhum pagamento
                        </span>                       
                     </div>  
                 </form>
@@ -130,10 +130,10 @@
                                 @endphp
 
                                 <tr {{ ($totalBaixaHonorario <= 0 && $totalDespesas+$entrada->vl_taxa_honorario_cliente_pth > 0
-                                                    ? 'style=background-color:#fb8e7e' : 
+                                                    ? 'style=background-color:#ffc3c3' : 
                                                             ($totalBaixaHonorario < ($totalDespesas+$entrada->vl_taxa_honorario_cliente_pth) && $totalBaixaHonorario > 0
-                                                                ? 'style=background-color:#f2cf59' : 
-                                                                    'style=background-color:#8ec9bb')) }} >
+                                                                ? 'style=background-color:#ffeba8' : 
+                                                                    'style=background-color:#58ab583d')) }} >
                                     <td>{{ $entrada->processo->nu_processo_pro }}</td>
                                     <td>
                                         @if(!empty($entrada->processo->dt_prazo_fatal_pro))
@@ -635,10 +635,10 @@
                     //alert(total);
 
                     if(valorTotalPago >= total){
-                        $(this).closest('tr').css('background-color','#8ec9bb');
+                        $(this).closest('tr').css('background-color','"#58ab583d"');
                     }else{
                         if(valorTotalPago > 0 && total > 0)
-                            $(this).closest('tr').css('background-color','#f2cf59');
+                            $(this).closest('tr').css('background-color','#ffeba8');
                     }
                 }
             }); 
@@ -655,10 +655,10 @@
                     //alert(total);
 
                     if(valorTotalPago <= 0){
-                        $(this).closest('tr').css('background-color','#fb8e7e');
+                        $(this).closest('tr').css('background-color','#ffc3c3');
                     }else{
                         if(valorTotalPago > 0 && valorTotalPago < total){
-                            $(this).closest('tr').css('background-color','#f2cf59');
+                            $(this).closest('tr').css('background-color','#ffeba8');
                         }
                     }
                 }
