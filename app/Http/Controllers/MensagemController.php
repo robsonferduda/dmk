@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Conta;
+use App\Entidade;
 use App\Processo;
 use App\ProcessoMensagem;
 use App\EnderecoEletronico;
 use App\Enums\Nivel;
 use App\Enums\TipoMensagem;
 use App\Events\EventNotification;
+use App\Enums\TipoEntidade;
 use App\Enums\TipoEnderecoEletronico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -62,12 +64,17 @@ class MensagemController extends Controller
 
     	if($mensagem->save()){
 
-            $emails = EnderecoEletronico::where('cd_conta_con',$destinatario)->where('cd_tipo_endereco_eletronico_tee',TipoEnderecoEletronico::NOTIFICACAO)->get();
+            $entidade = Entidade::where('cd_conta_con', $destinatario)->first();
+
+            $emails = EnderecoEletronico::where('cd_conta_con',$destinatario)
+                    ->where('cd_entidade_ete', $entidade->cd_entidade_ete)
+                    ->where('cd_tipo_endereco_eletronico_tee',TipoEnderecoEletronico::NOTIFICACAO)
+                    ->get();
 
             foreach ($emails as $email) {
 
                 $processo->email = $email->dc_endereco_eletronico_ede;
-                //$processo->notificarNovaMensagem($processo);
+                $processo->notificarNovaMensagem($processo);
                 
             }
 
