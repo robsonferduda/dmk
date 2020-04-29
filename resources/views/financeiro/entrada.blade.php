@@ -126,12 +126,14 @@
                                 @php
                                     $totalDespesas = $entrada->processo->tiposDespesa->sum('pivot.vl_processo_despesa_pde');
                                     $totalBaixaHonorario = $entrada->baixaHonorario->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho');
+                                    $total = ($entrada->vl_taxa_honorario_cliente_pth-
+                                    ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas;
 
                                 @endphp
 
-                                <tr {{ ($totalBaixaHonorario <= 0 && $totalDespesas+$entrada->vl_taxa_honorario_cliente_pth > 0
+                                <tr {{ ($totalBaixaHonorario <= 0 && $total >= 0
                                                     ? 'style=background-color:#ffc3c3' : 
-                                                            ($totalBaixaHonorario < ($totalDespesas+$entrada->vl_taxa_honorario_cliente_pth) && $totalBaixaHonorario > 0
+                                                            ($totalBaixaHonorario < ($total) && $totalBaixaHonorario > 0
                                                                 ? 'style=background-color:#ffeba8' : 
                                                                     'style=background-color:#58ab583d')) }} >
                                     <td>{{ $entrada->processo->nu_processo_pro }}</td>
@@ -630,12 +632,15 @@
             $(".check-pagamento-cliente").each(function(index,element){
                 if($(this).data('id') == id){
 
-                    var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
+                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));
 
                     //alert(total);
 
                     if(valorTotalPago >= total){
-                        $(this).closest('tr').css('background-color','"#58ab583d"');
+                        $(this).closest('tr').attr('style', function() {
+                          this.style.removeProperty('background-color'); 
+                          return this.style.cssText + 'background-color:#58ab583d;'; 
+                        });                     
                     }else{
                         if(valorTotalPago > 0 && total > 0)
                             $(this).closest('tr').css('background-color','#ffeba8');
@@ -650,8 +655,7 @@
 
                 if($(this).data('id') == cdBaixaFinanceiro){
 
-                    var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));    
-
+                    var total = parseFloat($(this).parent().parent().children().eq(7).text().replace('R$ ','').replace(',','.'));
                     //alert(total);
 
                     if(valorTotalPago <= 0){
