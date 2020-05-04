@@ -130,7 +130,7 @@
                                    // dd($saida);
                                 @endphp
 
-                                <tr {{ ($totalBaixaHonorario <= 0 && $totalDespesas+$saida->vl_taxa_honorario_correspondente_pth > 0
+                                <tr {{ ($totalBaixaHonorario <= 0 && $totalDespesas+$saida->vl_taxa_honorario_correspondente_pth >= 0
                                                     ? 'style=background-color:#ffc3c3' : 
                                                             ($totalBaixaHonorario < ($totalDespesas+$saida->vl_taxa_honorario_correspondente_pth) && $totalBaixaHonorario > 0
                                                                 ? 'style=background-color:#ffeba8' : 
@@ -634,7 +634,10 @@
                     var total = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.')) + parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));   
 
                     if(valorTotalPago >= total){
-                        $(this).closest('tr').css('background-color','#58ab583d');
+                        $(this).closest('tr').attr('style', function() {
+                          this.style.removeProperty('background-color'); 
+                          return this.style.cssText + 'background-color:#58ab583d;'; 
+                        });   
                     }else{
 
                         if(valorTotalPago > 0 && total > 0)

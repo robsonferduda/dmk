@@ -799,7 +799,7 @@ class FinanceiroController extends Controller
 
         $totalDespesas = $processoTaxaHonorario->processo->tiposDespesa->where('pivot.fl_despesa_reembolsavel_pde','S')->where('pivot.cd_tipo_entidade_tpe',\TipoEntidade::CLIENTE)->sum('pivot.vl_processo_despesa_pde');
 
-        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') >= $processoTaxaHonorario->vl_taxa_honorario_cliente_pth+$totalDespesas){
+        if($baixaHonorarioList->where('cd_tipo_financeiro_tfn',\TipoFinanceiro::ENTRADA)->sum('vl_baixa_honorario_bho') >= ($processoTaxaHonorario->vl_taxa_honorario_cliente_pth-((($processoTaxaHonorario->vl_taxa_honorario_cliente_pth)*$processoTaxaHonorario->vl_taxa_cliente_pth)/100))+$totalDespesas){
             $processoTaxaHonorario->fl_pago_cliente_pth = 'S';
         }else{
             $processoTaxaHonorario->fl_pago_cliente_pth = 'P';
