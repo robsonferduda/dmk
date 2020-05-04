@@ -30,6 +30,7 @@ Auth::routes();
 Route::group(['middleware' => ['web']], function () {
 
 	Route::any('filepicker', 'FilepickerController@handle');
+	Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');
 	
 	Route::any('entrada/anexo', 'FinanceiroController@entradaAnexo');
 	Route::post('anexo-processo-baixa-add', 'AnexoFinanceiroController@create');
@@ -111,6 +112,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
 	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
+
+	Route::get("processos/{id}/anexo/{file}", "AnexoProcessoController@showPlugin");
+	Route::post('anexo-processo-add', 'AnexoProcessoController@create');
+	Route::delete('anexo-processo-delete', 'AnexoProcessoController@destroy');
 
 	Route::post('processo/atualizar-dados','ProcessoController@atualizarDadosAdvogadoPreposto');
 

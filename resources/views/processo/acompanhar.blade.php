@@ -246,24 +246,67 @@
                                 </fieldset>
                             </div>
                             <div class="col-md-6">
+                                
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong><span class="btn-upload" data-toggle="modal" data-target="#modalUpload"><i class="fa fa-plus-circle"></i> Novo </span></legend>
-                                    @foreach($processo->anexos as $anexo)
-                                        
-                                            <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; border-bottom: 1px solid #eaeaea;">
-                                                <div style="float: left; width: 8%; text-align: center;">
-                                                    <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
-                                                </div>
-                                                <div style="float: left; width: 84%">
-                                                    <h4><a href="{{ url('files/'.$anexo->cd_anexo_processo_apr) }}">{{ $anexo->nm_anexo_processo_apr }}</a></h4>
-                                                    <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
-                                                </div>
-                                                <div style="float: left; width: 8% text-align: center;">
-                                                    <label class="text-danger" style="margin-top: 8px; cursor: pointer;"><i title="Excluir" data-id="{{ $anexo->cd_anexo_processo_apr }}" data-url="../../files/" class="fa fa-trash fa-2x pull-right excluir_registro"></i></label>
-                                                </div>    
+                                    <legend><i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong></legend>
+
+                                    <div id="filepicker">
+                                            <!-- Button Bar -->
+                                            <div class="button-bar">
+
+                                                <div class="btn btn-success btn-upload-plugin fileinput">
+                                                    <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                    <input type="file" name="files[]" id="input-file" multiple>
+                                                </div>   
+
+                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                    <i class="fa fa-upload"></i> Enviar Todos
+                                                </button>                  
+
                                             </div>
+
+                                            <!-- Listar Arquivos -->
+                                            <div class="table-responsive div-table">
+                                                <table class="table table-upload">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="column-name">Nome do Arquivo</th>
+                                                            <th class="column-size center">Tamanho</th>                                                            
+                                                            <th class="center">Excluir</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="files">
+                                                        
+                                                    </tbody>                        
+                                                </table>
+                                            </div>
+
+                                            <!-- Drop Zone -->
+                                            <div class="drop-window">
+                                                <div class="drop-window-content">
+                                                    <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if(false)
+                                            @foreach($processo->anexos as $anexo)
                                         
-                                    @endforeach
+                                                <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; border-bottom: 1px solid #eaeaea;">
+                                                    <div style="float: left; width: 8%; text-align: center;">
+                                                        <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
+                                                    </div>
+                                                    <div style="float: left; width: 84%">
+                                                        <h4><a href="{{ url('files/'.$anexo->cd_anexo_processo_apr) }}">{{ $anexo->nm_anexo_processo_apr }}</a></h4>
+                                                        <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
+                                                    </div>
+                                                    <div style="float: left; width: 8% text-align: center;">
+                                                        <label class="text-danger" style="margin-top: 8px; cursor: pointer;"><i title="Excluir" data-id="{{ $anexo->cd_anexo_processo_apr }}" data-url="../../files/" class="fa fa-trash fa-2x pull-right excluir_registro"></i></label>
+                                                    </div>    
+                                                </div>
+                                        
+                                            @endforeach
+                                        @endif
                                 </fieldset>
 
                                 @role('administrator|colaborador')
@@ -733,6 +776,94 @@
 
     $(document).ready(function() {
 
+        $('#filepicker').filePicker({
+            url: '../../processos/arquivos-processo',
+            ui: {
+                autoUpload: false
+            },
+            data: function(){
+                var _token = "{{ csrf_token() }}";
+                var id_processo = $("#processo").val();
+
+                return {
+                    _token: _token,
+                    id_processo: id_processo
+                }
+            },
+            plugins: ['ui', 'drop', 'camera', 'crop']
+        })
+        .on('done.filepicker', function (e, data) {
+
+            if(data.files[0].size){            
+
+                $.ajax({
+                    url: "../../anexo-processo-add",
+                    type: 'POST',
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "id_processo": $("#processo").val(),
+                        "nome_arquivo": data.files[0].name
+                    },
+                    success: function(response){   
+
+                        location.reload();
+                        
+                    },
+                    error: function(response){
+
+                        
+                    }
+                });
+            }
+
+        })
+        .on('delete.filepicker', function (e, data) {
+
+            //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+
+            $.ajax({
+                url: '../../anexo-processo-delete',
+                type: 'POST',
+                dataType: "JSON",
+                data: {
+                    "_method": 'DELETE',
+                    "id": $("#processo").val(),                    
+                    "nome_arquivo": data.filename,
+                    "_token": $('meta[name="token"]').attr('content'),
+                },
+                success: function(response)
+                {
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    $(".fa").addClass("fa-times");
+                    $(".msg_titulo").html("Erro");
+                    $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                    $(".alert").addClass("alert-danger");
+                    $(".alert").removeClass("none");
+
+                    return false;
+                }
+            });
+
+        })
+        .on('fail.filepicker', function (e,data) {
+
+            console.log();
+            
+            switch (data.xhr.status) {
+                case 413:
+                    $(".msg_mensagem").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
+                break;
+                case 500:
+                    $(".msg_mensagem").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
+                break;
+                default:
+                    $(".msg_mensagem").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
+            }
+        });
+
         //Reset do modal
         $('#modalFinalizacao').on('shown.bs.modal', function () {
           
@@ -1107,4 +1238,119 @@
      
     })();
 </script>
+
+<script type="text/x-tmpl" id="uploadTemplate">
+        <tr class="upload-template">
+            <td class="column-name">
+                <p class="name">{%= o.file.name %}</p>
+                <span class="text-danger error">{%= o.file.error || '' %}</span>
+            </td>
+            <td>
+                <p>{%= o.file.sizeFormatted || '' %}</p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active"></div>
+                </div>
+            </td>
+            <td style="font-size: 150%; text-align: center;">
+                {% if (!o.file.autoUpload && !o.file.error) { %}
+                    <a href="#" class="action action-primary start" title="Enviar">
+                        <i class="fa fa-arrow-circle-o-up"></i>
+                    </a>
+                {% } %}
+                <a href="#" class="action action-warning cancel" title="Cancelar">
+                    <i class="fa fa-ban"></i>
+                </a>
+            </td>
+        </tr>
+    </script>
+
+    <!-- Download Template -->
+    <script type="text/x-tmpl" id="downloadTemplate">
+        {% o.timestamp = function (src) {
+            return (src += (src.indexOf('?') > -1 ? '&' : '?') + new Date().getTime());
+        }; %}
+        <tr class="download-template">
+
+            <td class="column-name">
+                <div style="float: left; width: 8%; text-align: center;">
+                    <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
+                </div>
+                <div style="float: left; width: 84%">
+                    
+                    <span>
+                        {% if (o.file.url) { %}
+                            <a href="{%= "../"+$("#processo").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
+                        {% } else { %}
+                            {%= o.file.name %}
+                        {% } %}
+                    </span>
+                    <br/>
+                    
+                        {% if (o.file.time) { %}
+                            <time datetime="{%= o.file.timeISOString() %}">
+                                {%= o.file.timeFormatted %}
+                            </time>
+                        {% } %}
+
+                        por
+
+                        {%= o.file.responsavel %}
+                    
+                    {% if (o.file.error) { %}
+                        <span class="text-danger">{%= o.file.error %}</span>
+                    {% } %}
+                </div>
+            </td>
+
+            <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
+            
+            <td class="center">
+        
+                {% if (o.file.error) { %}
+                    <a href="#" class="action action-warning cancel" title="Cancelar">
+                        <i class="fa fa-ban"></i>
+                    </a>
+                {% } else { %}
+                    <a style="color: #cc0e00;" href="#" class="action action-danger delete" title="Excluir">
+                        <i class="fa fa-trash-o"></i>
+                    </a>
+                {% } %}
+
+            </td>
+        </tr>
+    </script>
+     <!-- Pagination Template -->
+    <script type="text/x-tmpl" id="paginationTemplate">
+        {% if (o.lastPage > 1) { %}
+            <ul class="pagination pagination-sm">
+                <li {% if (o.currentPage === 1) { %} class="disabled" {% } %}>
+                    <a href="#!page={%= o.prevPage %}" data-page="{%= o.prevPage %}" title="Previous">&laquo;</a>
+                </li>
+
+                {% if (o.firstAdjacentPage > 1) { %}
+                    <li><a href="#!page=1" data-page="1">1</a></li>
+                    {% if (o.firstAdjacentPage > 2) { %}
+                       <li class="disabled"><a>...</a></li>
+                    {% } %}
+                {% } %}
+
+                {% for (var i = o.firstAdjacentPage; i <= o.lastAdjacentPage; i++) { %}
+                    <li {% if (o.currentPage === i) { %} class="active" {% } %}>
+                        <a href="#!page={%= i %}" data-page="{%= i %}">{%= i %}</a>
+                    </li>
+                {% } %}
+
+                {% if (o.lastAdjacentPage < o.lastPage) { %}
+                    {% if (o.lastAdjacentPage < o.lastPage - 1) { %}
+                        <li class="disabled"><a>...</a></li>
+                    {% } %}
+                    <li><a href="#!page={%= o.lastPage %}" data-page="{%= o.lastPage %}">{%= o.lastPage %}</a></li>
+                {% } %}
+
+                <li {% if (o.currentPage === o.lastPage) { %} class="disabled" {% } %}>
+                    <a href="#!page={%= o.nextPage %}" data-page="{%= o.nextPage %}" title="Next">&raquo</a>
+                </li>
+            </ul>
+        {% } %}
+    </script><!-- end of #paginationTemplate -->
 @endsection
