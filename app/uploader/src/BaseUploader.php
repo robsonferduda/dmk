@@ -801,17 +801,17 @@ class BaseUploader
             'sort' => static::SORT_FILEMTIME_ASC,
 
             'messages' => array(
-                'max_width' => 'Image exceeds maximum width of %d pixels.',
-                'min_width' => 'Image requires a minimum width of %d pixels.',
-                'max_height' => 'Image exceeds maximum height of %d pixels.',
-                'min_height' => 'Image requires a minimum height of %d pixels.',
-                'max_file_size' => 'The file size is too big (limit is %d KB).',
-                'min_file_size' => 'The file size is too small.',
-                'max_number_of_files' => 'Maximum number of %d files exceeded.',
-                'file_not_accepted' => 'The file type is not accepted.',
-                'abort' => 'The operation was aborted.',
-                'error' => 'Oops! Something went wrong.',
-                'not_found' => 'File not found.',
+                'max_width' => 'A imagem excede a largura máxima de %d pixels.',
+                'min_width' => 'A imagem requer uma largura mínima de %d pixels.',
+                'max_height' => 'A imagem excede a altura máxima de %d pixels.',
+                'min_height' => 'A imagem requer uma altura mínima de %d pixels.',
+                'max_file_size' => 'O tamanho do arquivo é muito grande (limite é de %d KB).',
+                'min_file_size' => 'O tamanho do arquivo é muito pequeno.',
+                'max_number_of_files' => 'Número máximo de %d arquivos excedido.',
+                'file_not_accepted' => 'O tipo de arquivo não é aceito.',
+                'abort' => 'A operação foi abortada.',
+                'error' => 'Oops! Algo deu errado.',
+                'not_found' => 'Arquivo não encontrado.',
             )
         );
 

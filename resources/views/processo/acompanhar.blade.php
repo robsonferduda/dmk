@@ -245,6 +245,7 @@
                                     </div>
                                 </fieldset>
                             </div>
+
                             <div class="col-md-6">
                                 
                                 <fieldset style="margin-bottom: 15px;">
@@ -776,6 +777,12 @@
 
     $(document).ready(function() {
 
+        $(document).on("click", ".deleteFile", function () {
+
+           
+
+        });
+
         $('#filepicker').filePicker({
             url: '../../processos/arquivos-processo',
             ui: {
@@ -833,7 +840,7 @@
                 },
                 success: function(response)
                 {
-                    location.reload();
+                    //location.reload();
                 },
                 error: function(response)
                 {
@@ -1311,7 +1318,7 @@
                         <i class="fa fa-ban"></i>
                     </a>
                 {% } else { %}
-                    <a style="color: #cc0e00;" href="#" class="action action-danger delete" title="Excluir">
+                    <a style="color: #cc0e00; font-size: 20px;" href="#" class="action action-danger delete deleteFile" title="Excluir">
                         <i class="fa fa-trash-o"></i>
                     </a>
                 {% } %}
