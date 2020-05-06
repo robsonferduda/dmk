@@ -85,6 +85,9 @@ class FilepickerController extends Controller
 
         $method = $request->get('_method', $request->getMethod());
 
+        $anexos = array();
+        $files = array();
+
         if($method == 'GET'){
 
             $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->get();
@@ -92,8 +95,12 @@ class FilepickerController extends Controller
             $files = null;
 
             foreach ($anexos as $key => $anexo) {
-                $files[$key] = new File(storage_path($anexo['nm_local_anexo_processo_apr'].$anexo['nm_anexo_processo_apr']));
-                $files[$key]->tipo = $anexo->cd_tipo_anexo_processo_tap;
+
+                $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
+                $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
+
+                $files[$key] = new File(storage_path($nome_arquivo));
+                $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
                 $files[$key]->responsavel = Conta::where('cd_conta_con', $anexo->cd_conta_con)->first()->nm_razao_social_con;
             }
 

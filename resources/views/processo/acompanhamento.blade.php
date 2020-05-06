@@ -244,7 +244,6 @@
                 regex = new RegExp(RegExp.escape(this.value), 'i')
 
                 var $found = $h4s.filter(function () {
-                    console.log("Teste");
                     return regex.test($(this).text())
                 }).closest('.box-acompanhamento').show();
 
