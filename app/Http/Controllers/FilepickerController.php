@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Conta;
 use App\Despesa;
 use App\Processo;
@@ -101,7 +102,7 @@ class FilepickerController extends Controller
 
                 $files[$key] = new File(storage_path($nome_arquivo));
                 $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
-                $files[$key]->responsavel = Conta::where('cd_conta_con', $anexo->cd_conta_con)->first()->nm_razao_social_con;
+                $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
             }
 
             foreach ($files as &$file) {
