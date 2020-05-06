@@ -91,7 +91,7 @@ class FilepickerController extends Controller
 
         if($method == 'GET'){
 
-            $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->get();
+            $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->orderBy('created_at','DESC')->get();
 
             $files = null;
 
