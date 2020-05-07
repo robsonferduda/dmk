@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\Processo;
 use App\AnexoProcesso;
 use App\Enums\TipoAnexoProcesso;
 use Illuminate\Http\Request;
@@ -32,7 +33,22 @@ class AnexoProcessoController extends Controller
     public function showPlugin($id, $file)
     {   
         $anexo = AnexoProcesso::where('cd_processo_pro', $id)->where('nm_anexo_processo_apr','ilike',$file)->first();
-        return response()->download(storage_path($anexo->nm_local_anexo_processo_apr.$anexo->nm_anexo_processo_apr));
+
+        $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
+        $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
+
+        if(file_exists(storage_path($nome_arquivo))){
+
+            return response()->download(storage_path($nome_arquivo));
+
+        }else{
+
+            $processo = Processo::where('cd_processo_pro', $anexo->cd_processo_pro)->first();
+            return view('errors/processo-file-not-found',['anexo' => $anexo, 'processo' => $processo]);
+
+        }
+
+        
     }
 
     public function create(Request $request)

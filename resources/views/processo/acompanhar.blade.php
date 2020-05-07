@@ -1286,7 +1286,7 @@
                     
                     <span>
                         {% if (o.file.url) { %}
-                            <a href="{%= "../"+$("#processo").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
+                            <a href="{%= "../../processos/"+$("#processo").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
                         {% } else { %}
                             {%= o.file.name %}
                         {% } %}
