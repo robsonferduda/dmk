@@ -303,6 +303,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
 	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
 
+	Route::get('financeiro/dashboard', function(){ return view('financeiro/dashboard'); });
 	Route::get('financeiro/entradas','FinanceiroController@entradaIndex');
 	Route::get('financeiro/saidas','FinanceiroController@saidaIndex');
 	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');

@@ -311,8 +311,8 @@
                                 </fieldset>
 
                                 @role('administrator|colaborador')
-                                    @if(count($processo->anexos) > 0)
-                                        <section>                          
+                                    
+                                        <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
                                             <div class="onoffswitch-container">
                                                 <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
                                                 <span class="onoffswitch">
@@ -324,14 +324,14 @@
                                                 </span> 
                                             </div>
                                         </section>
-                                    @else
-                                        <span>Nenhum arquivo anexado. Após adicionar todos os anexos do processo você deverá confirmar a operação.</span>
-                                    @endif
+
+                                        <h4 class="label-anexos-escritorio {{ (count($processo->anexos) > 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
+                    
                                 @endrole
 
                                 @role('correspondente') 
-                                    @if(count($processo->anexos) > 0)
-                                        <section>                          
+                                    
+                                        <section class="box-anexos-correspondente {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
                                             <div class="onoffswitch-container">
                                                 <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
                                                 <span class="onoffswitch">
@@ -343,10 +343,7 @@
                                                 </span> 
                                             </div>
                                         </section>
-                                    @else
-                                        <span>Nenhum arquivo anexado. Após adicionar todos os anexos do processo você deverá confirmar a operação.</span>
-                                    @endif
-
+                                
                                 @endrole
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
@@ -813,7 +810,9 @@
                     },
                     success: function(response){   
 
-                        location.reload();
+                        $(".box-anexos-correspondente").removeClass('none');
+                        $(".box-anexos-escritorio").removeClass('none');
+                        $(".label-anexos-escritorio").addClass('none');
                         
                     },
                     error: function(response){
@@ -840,7 +839,7 @@
                 },
                 success: function(response)
                 {
-                    //location.reload();
+                    location.reload();
                 },
                 error: function(response)
                 {
