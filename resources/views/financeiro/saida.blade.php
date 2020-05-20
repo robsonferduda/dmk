@@ -147,8 +147,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                         @if(!empty($saida->processo->correspondente->contaCorrespondente))
-                                            {{ $saida->processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr }} 
+                                         @if(!empty($saida->processo->correspondente->contaCorrespondenteTrashedToo))
+                                            {{ $saida->processo->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr }} 
                                         @endif               
                                     </td>
                                     <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth,2,',',' ') }}</td>
@@ -1046,7 +1046,7 @@
            }
         });
 
-        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+        var pathCorrespondente = "{{ url('autocompleteCorrespondenteDeletedToo') }}";
 
         $( "#correspondente_auto_complete" ).autocomplete({
           source: pathCorrespondente,
