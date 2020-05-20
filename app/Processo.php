@@ -164,7 +164,7 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
-    public function getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca)
+    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca)
     {
         $sql = "SELECT t1.cd_processo_pro, 
                        t1.nu_processo_pro, 
@@ -213,7 +213,7 @@ class Processo extends Model implements AuditableContract
         }
 
         $sql .= "AND t1.deleted_at is null
-                AND t1.cd_conta_con = 64
+                AND t1.cd_conta_con = $conta
                 ORDER BY dt_prazo_fatal_pro";
 
         $processos = DB::select($sql);

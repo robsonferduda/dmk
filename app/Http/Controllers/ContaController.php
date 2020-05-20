@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Hash;
+use App\Role as RoleSistema;
 use App\Utils;
 use App\User;
 use App\Fone;
@@ -123,8 +124,17 @@ class ContaController extends Controller
                     $user->password = Hash::make($senha);
                     $user->save();
 
-                    $role = Role::find(Roles::ADMINISTRADOR);
-                    $user->assignRole($role);
+                    //Atribuição de roles para o usuário como administrador
+                    $role = RoleSistema::find(Roles::ADMINISTRADOR);
+                    if($user->assignRole($role)){
+
+                        $perms = $role->permissao()->get();
+                        
+                        foreach ($perms as $p) {
+                            $user->permissao()->attach($p);
+                        }
+
+                    }
 
                     Session::put('SESSION_CD_CONTA', $conta->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
                     Session::put('SESSION_CD_ENTIDADE', $entidade->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 

@@ -15,7 +15,8 @@ trait BootConta
        $this->criarTipoContato($cdConta);
        $this->criarTipoServico($cdConta);
        $this->criarTipoProcesso($cdConta);
-       $this->criarCalendario($cdConta);
+       if(getenv('APP_ENV') == 'production')
+        $this->criarCalendario($cdConta);
     }
 
     private function criarCalendario($cdConta){

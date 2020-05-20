@@ -1291,13 +1291,13 @@ class ProcessoController extends Controller
         $data = ($request->data) ? date('Y-m-d',strtotime(str_replace('/','-',$request->data))) : null;
         $comarca = ($request->comarca) ? $request->comarca : null;
 
-        $processos = (new Processo())->getProcessosAndamento($processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca);
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento(null,null,null,null,null,null,null,null,null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon,null,null,null,null,null,null,null,null,null);
         return response()->json($processos);
     }
 
