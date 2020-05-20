@@ -103,10 +103,18 @@
             </div>
         </article>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: -15px;">
-            <div class="col-md-6" style="padding: 5px 8px;">
+            <div class="col-sm-12 col-md-3" style="padding: 5px 0px;">
+                <div class="input-group input-group-md">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>
+                    <div>
+                        <input type="text" class="form-control" id="filter" name="filter" class="filter"/>                                          
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
                 <h4 style="font-size: 13px;" id="label-total-processos"></h4>
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6 col-md-6" style=" margin-top: 12px;">
                 <section class="pull-right">
                     <select id="filtro-pagination">
                         <option value="10">10</option>
@@ -219,6 +227,32 @@
             return valor != null ? valor : "Não informado";
         }
 
+        if (!RegExp.escape) {
+            RegExp.escape = function (value) {
+                return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&")
+            };
+        }
+
+        var $medias = $('.box-acompanhamento'), $h4s = $medias.find('> .box-processo > .box-content > h6');
+
+        $('#filter').keyup(function () {
+            var filter = this.value,
+                regex;
+
+            if (filter && $medias) {
+
+                regex = new RegExp(RegExp.escape(this.value), 'i')
+
+                var $found = $h4s.filter(function () {
+                    return regex.test($(this).text())
+                }).closest('.box-acompanhamento').show();
+
+                $medias.not($found).hide()
+            } else {
+                $medias.show();
+            }
+        });
+
         $.ajax({
                 
                 url: '../../api/processo/andamento',
@@ -237,16 +271,17 @@
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
-                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            
                             '<div class="row box-processo">'+
-                                '<div class="col-md-6">'+
+                                '<div class="col-md-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
                                     '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
                                     '<h6><strong>Tipo de Serviço</strong>: '+data.nm_tipo_servico_tse+'</h6>'+                   
                                     '<h6><strong>Vara/Cidade</strong>: '+formataNuloResposta(data.nm_vara_var)+'/'+data.nm_cidade_cde+'-'+data.sg_estado_est+'</h6>'+    
                                     '<h6><strong>Responsável</strong>: '+formataNuloResposta(data.name)+'</h6>'+                                             
                                 '</div>'+
-                                '<div class="col-md-6">'+
+                                '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Cliente</strong>: '+formataNuloResposta(data.nm_razao_social_cli)+'  </h6>'+
                                     '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
@@ -275,6 +310,8 @@
 
                     $('.container-acompanhamento').loader('hide'); 
                     $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                    $medias = $('.box-acompanhamento');
+                    $h4s = $medias.find('> .box-processo > .box-content > h6');
                                                       
                 },
                 error: function(response)
@@ -353,7 +390,7 @@
                     });
 
                     $('.container-acompanhamento').loader('hide'); 
-                    $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                    //$(".body-acompanhamento").pagify(10, ".box-acompanhamento");
                                                       
                 },
                 error: function(response)

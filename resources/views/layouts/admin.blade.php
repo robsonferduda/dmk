@@ -269,6 +269,11 @@
                         <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
                             @can('financeiro.balanco')     
                                 <li>
+                                    <a href="{{ url('financeiro/dashboard') }}" title="Dashboard"><span class="menu-item-parent">Dashboard</span></a>
+                                </li>
+                            @endcan
+                            @can('financeiro.balanco')     
+                                <li>
                                     <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
                                 </li>
                             @endcan

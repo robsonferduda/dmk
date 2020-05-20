@@ -139,7 +139,7 @@
                     Morris.Donut({
                         element : 'donut-graph',
                         data : response,
-                        colors: ['#58ab583d', '#ffeba8', '#ffc3c3'],
+                        colors: ['#009688', '#dfb56c', '#953b39'],
                             formatter : function(x) {
                                 return x 
                             }
@@ -152,8 +152,6 @@
                 $('#donut-graph').html('<h1 class="center" style="font-size: 60px; margin-top: 50px; color: #d84e44;"><i class="fa fa-times"></i></h1><h4 class="center">Erro ao carregar dados</h4>'); 
             }
         });
-
-
 
     });
 </script>

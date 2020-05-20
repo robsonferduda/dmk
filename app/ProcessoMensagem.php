@@ -52,17 +52,22 @@ class ProcessoMensagem extends Model
 
     public function getMensagensPendentesRemetente($conta)
     {
-        return $this->where('destinatario_prm',$conta)->where('fl_leitura_prm','N')->where('remetente_prm','<>',$conta)->orderBy('created_at', 'DESC')->get();
+        return $this->where('destinatario_prm',$conta)
+                    ->where('fl_leitura_prm','<>','S')
+                    ->where('remetente_prm','<>',$conta)
+                    ->orderBy('created_at', 'DESC')->get();
     }
 
     public function getMensagensPendentesDestinatario($destinatario)
     {
-        return $this->where('destinatario_prm',$destinatario)->where('fl_leitura_prm','N')->where('remetente_prm','<>',$destinatario)->orderBy('created_at', 'DESC')->get();
+        return $this->where('destinatario_prm',$destinatario)
+                    ->where('fl_leitura_prm','<>','S')
+                    ->where('remetente_prm','<>',$destinatario)
+                    ->orderBy('created_at', 'DESC')->get();
     }
 
     public function atualizaMensagensLidas($id,$conta)
     {
-
         return DB::table('processo_mensagem_prm')
             ->where('cd_processo_pro', $id)
             ->where('destinatario_prm', $conta)

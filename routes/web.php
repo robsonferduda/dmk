@@ -30,6 +30,7 @@ Auth::routes();
 Route::group(['middleware' => ['web']], function () {
 
 	Route::any('filepicker', 'FilepickerController@handle');
+	Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');
 	
 	Route::any('entrada/anexo', 'FinanceiroController@entradaAnexo');
 	Route::post('anexo-processo-baixa-add', 'AnexoFinanceiroController@create');
@@ -114,6 +115,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');	
 	Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}','TipoServicoController@consultarClienteCidade');
 	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
+
+	Route::get("processos/{id}/anexo/{file}", "AnexoProcessoController@showPlugin");
+	Route::post('anexo-processo-add', 'AnexoProcessoController@create');
+	Route::delete('anexo-processo-delete', 'AnexoProcessoController@destroy');
 
 	Route::post('processo/atualizar-dados','ProcessoController@atualizarDadosAdvogadoPreposto');
 
@@ -259,6 +264,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('usuarios','UsuarioController');
 
 	//Rotas de permissão
+
+	Route::get('users','UsuarioController@users');
+
 	Route::get('roles','RoleController@index');
 	Route::get('roles/{id}/permissoes','RoleController@permissoes');
 	Route::get('role/usuario/{id}','RoleController@roleUser');
@@ -301,6 +309,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('calendario/evento/gerar-link','CalendarioController@gerarLink');
 	Route::get('calendario/evento/gerar-evento-processos','CalendarioController@gerarEventoProcessos');
 
+	Route::get('financeiro/dashboard', function(){ return view('financeiro/dashboard'); });
 	Route::get('financeiro/entradas','FinanceiroController@entradaIndex');
 	Route::get('financeiro/saidas','FinanceiroController@saidaIndex');
 	Route::post('financeiro/entrada/buscar','FinanceiroController@entradaBuscar');

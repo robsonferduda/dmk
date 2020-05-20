@@ -324,7 +324,7 @@ abstract class BaseHandler
      * @param  Symfony\Component\HttpFoundation\File\File $file
      * @return array
      */
-    protected function fileToArray(File $file)
+    public function fileToArray(File $file)
     {
         if ($file instanceof UploadedFile) {
             $data = array(

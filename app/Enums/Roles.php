@@ -9,5 +9,6 @@ final class Roles extends Enum
 	const ADMINISTRADOR = 1;
     const COLABORADOR = 2;    
     const CORRESPONDENTE = 4;
+    const SUPER_USER = 5;
 }
 

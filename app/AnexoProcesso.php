@@ -17,6 +17,7 @@ class AnexoProcesso extends Model
     						'cd_conta_con',
     						'cd_entidade_ete',
     						'cd_processo_pro',
+                            'cd_tipo_anexo_processo_tap',
     						'nm_anexo_processo_apr',
     						'nm_local_anexo_processo_apr'
     					  ];

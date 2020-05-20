@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Conta;
 use App\Despesa;
+use App\Processo;
+use App\AnexoProcesso;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Routing\Controller as BaseController;
 use Hazzard\Filepicker\Handler;
 use Hazzard\Filepicker\Uploader;
@@ -48,18 +53,75 @@ class FilepickerController extends Controller
 
     }
 
-    /**
-     * Handle an incoming HTTP request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
+    public function inicializaPastaProcesso($id_processo){
+
+        $this->handler = new Handler(
+            new Uploader($config = new Config, new ImageManager)
+        );
+        
+        $destino = "processos/$id_processo";        
+
+        //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+
+        $config['debug'] = true;
+        $config['upload_dir'] = storage_path($destino);
+        $config['upload_url'] = storage_path($destino);
+
+    }
+
     public function handle(Request $request)
     {
 
         $this->inicializaPastaDestino($request->id_despesa);
-
-        //Ação de enviar arquivo
         return $this->handler->handle($request);
+    }
+
+    public function arquivosProcesso(Request $request)
+    {
+
+        $this->inicializaPastaProcesso($request->id_processo);
+
+        $method = $request->get('_method', $request->getMethod());
+
+        $anexos = array();
+        $files = array();
+
+        if($method == 'GET'){
+
+            $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->orderBy('created_at','DESC')->get();
+
+            $files = null;
+
+            foreach ($anexos as $key => $anexo) {
+
+                $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
+                $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
+
+                $files[$key] = new File(storage_path($nome_arquivo));
+                $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
+                $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
+            }
+
+            foreach ($files as &$file) {
+
+                $tipo = $file->tipo;
+                $responsavel = $file->responsavel;
+                
+                $file = $this->handler->fileToArray($file);
+                $file['tipo'] = $tipo;
+                $file['responsavel'] = $responsavel;
+                
+            }
+
+            return $this->handler->json(compact('files', count($anexos)));
+
+        }else{
+
+            return $this->handler->handle($request);
+
+        }
     }
 }

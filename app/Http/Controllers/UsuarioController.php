@@ -65,6 +65,30 @@ class UsuarioController extends Controller
         return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
     }
 
+    public function users()
+    {        
+        //Verificação de variáveis de busca
+        if(!session('fl_buscar_usuario')){
+            \Session::put('buscar_usuario_nome',null);
+            $nome = null;
+        }else{
+            $nome = session('buscar_usuario_nome');
+        }
+
+       //Carregamento de dados da view 
+        $roles = Role::where('id',Roles::ADMINISTRADOR)->orWhere('id',Roles::COLABORADOR)->get();
+
+        //Busca de usuários
+        $usuarios = User::with('tipoPerfil')->where('cd_nivel_niv','>=',1)
+                                            ->when($nome, function($sql) use($nome){
+                                                $sql->where('name','ilike',"%$nome%");
+                                            })
+                                            ->orderBy('name')
+                                            ->get();
+
+        return view('usuario/usuarios',['usuarios' => $usuarios, 'roles' => $roles]);
+    }
+
     public function buscar(Request $request)
     {
 

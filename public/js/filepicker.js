@@ -166,13 +166,13 @@
         fileInput: 'input[type="file"]',
 
         messages: {
-            uploadFallback: 'The browser does not support file uploads.',
-            minFileSize: 'The file must be at least :min KB.',
-            maxFileSize: 'The file may not be greater than :max KB.',
-            postMaxSize: 'The file exceeds the post max size limit of :max MB.',
-            invalidFileType: 'The file type is not allowed.',
-            error: 'Oops! Something went wrong.',
-            abort: 'The operation was aborted.'
+            uploadFallback: 'O navegador não suporta uploads de arquivos.',
+            minFileSize: 'O arquivo deve ter pelo menos :min KB.',
+            maxFileSize: 'O arquivo não pode ser maior que :max KB.',
+            postMaxSize: 'O arquivo excede o limite de tamanho máximo da postagem de :max MB.',
+            invalidFileType: 'O tipo de arquivo não é permitido.',
+            error: 'Oops! Algo deu errado.',
+            abort: 'A operação foi abortada.'
         },
 
         /**
@@ -549,7 +549,7 @@
                 h = 12;
             }
 
-            return dd + '/' + mm + '/' + yyyy + ' - ' + h + ':' + min + ' ' + ampm;
+            return dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
         };
 
         /**
