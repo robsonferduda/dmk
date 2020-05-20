@@ -86,6 +86,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('autocompleteConta','CorrespondenteController@searchConta');
 	Route::get('autocompleteCliente','ClienteController@search');
 	Route::get('autocompleteCorrespondente', 'CorrespondenteController@search');
+	Route::get('autocompleteCorrespondenteDeletedToo', 'CorrespondenteController@searchDeletedToo');
+	
+
 	Route::get('autocompleteResponsavel', 'UsuarioController@search');
 	Route::get('processos/novo','ProcessoController@novo');
 	Route::get('processos/editar/{cdProcesso}','ProcessoController@editar');

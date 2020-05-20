@@ -1097,6 +1097,32 @@ class CorrespondenteController extends Controller
         return response()->json($results);
     }
 
+    public function searchDeletedToo(Request $request)
+    {
+        $search = $request->get('term');
+
+        $cidade  = $request->get('cidade');
+        $estado  = $request->get('estado');
+  
+        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')
+                                            ->where('cd_conta_con',$this->conta)
+                                            ->when(!empty($cidade) && !empty($estado), function($query) use ($cidade){
+                                                return $query->whereHas('cidadeAtuacao', function($query) use ($cidade){
+                                                    $query->where('cd_cidade_cde',$cidade);
+                                                });
+                                            })
+                                            ->withTrashed()->get();
+
+        $results = array();
+        foreach ($resultados as $ret)
+        {
+           $results[] = [ 'id' => $ret->correspondente->cd_conta_con, 'value' => $ret->nm_conta_correspondente_ccr, 'flag' => $ret->fl_correspondente_escritorio_ccr ];
+        }
+ 
+        return response()->json($results);
+            
+    } 
+
     public function search(Request $request)
     {
         $search = $request->get('term');
