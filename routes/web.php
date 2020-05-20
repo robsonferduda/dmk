@@ -261,6 +261,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('usuarios','UsuarioController');
 
 	//Rotas de permissão
+
+	Route::get('users','UsuarioController@users');
+
 	Route::get('roles','RoleController@index');
 	Route::get('roles/{id}/permissoes','RoleController@permissoes');
 	Route::get('role/usuario/{id}','RoleController@roleUser');
