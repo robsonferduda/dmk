@@ -54,7 +54,7 @@
                                 <label class="label label-black" >Categoria</label>
                                 <select id="cidade" name="cd_categoria_correspondente_cac" class="select2">
                                     <option value="">Selecione</option>
-                                    @foreach(\App\CategoriaCorrespondente::loadCategorias() as $categoria) 
+                                    @foreach(\App\CategoriaCorrespondente::where('cd_conta_con',Auth::user()->cd_conta_con)->orderBy('dc_categoria_correspondente_cac')->get() as $categoria) 
                                         <option {{ (old('cd_categoria_correspondente_cac') and old('cd_categoria_correspondente_cac') == $categoria->cd_categoria_correspondente_cac ) ? 'selected' : ''  }} value="{{ $categoria->cd_categoria_correspondente_cac }}">{{ $categoria->dc_categoria_correspondente_cac }}</option>
                                     @endforeach
                                 </select> 
