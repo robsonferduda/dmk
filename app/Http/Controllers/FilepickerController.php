@@ -100,9 +100,12 @@ class FilepickerController extends Controller
                 $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
                 $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
 
-                $files[$key] = new File(storage_path($nome_arquivo));
-                $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
-                $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
+                //Se o registro do arquivo existe na pasta, adicona ele na liatagem
+                if(file_exists(storage_path($nome_arquivo))){
+                    $files[$key] = new File(storage_path($nome_arquivo));
+                    $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
+                    $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
+                }
             }
 
             foreach ($files as &$file) {
@@ -124,4 +127,5 @@ class FilepickerController extends Controller
 
         }
     }
+
 }

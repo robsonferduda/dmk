@@ -7,6 +7,7 @@ use App\Processo;
 use App\AnexoProcesso;
 use App\Enums\TipoAnexoProcesso;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
@@ -86,6 +87,36 @@ class AnexoProcessoController extends Controller
     {
  
         
+    }
+
+    public function downloadAll($id_processo)
+    {
+        $id_processo = \Crypt::decrypt($id_processo);
+        $id_file = date("YmdHis");
+        $origem = "processos/$id_processo/";
+        $destino = "processos/$id_processo/$id_file/";
+        $destino_zip = "processos/$id_processo/anexos/";
+
+        if(!is_dir($destino)){
+            @mkdir(storage_path($destino), 0775);
+        }
+
+        foreach (File::allFiles(storage_path($origem)) as $file) {
+            @copy(storage_path($origem.$file->getFileName()), storage_path($destino.$file->getFileName()));
+        }
+
+        //Gerar zip
+        $zips = glob(storage_path($destino));
+        \Zipper::make(storage_path($destino_zip.$id_file.'_anexos.zip'))->add($zips)->close();
+
+        //Excluir diretorio temp
+        foreach (File::allFiles(storage_path($destino)) as $file) {
+            unlink($file->getRealPath());
+        }
+
+        rmdir(storage_path($destino));
+
+        return response()->download(storage_path($destino_zip.$id_file.'_anexos.zip'));
     }
 
 }

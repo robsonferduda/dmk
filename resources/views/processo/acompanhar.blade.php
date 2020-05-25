@@ -249,7 +249,12 @@
                             <div class="col-md-6">
                                 
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong></legend>
+                                    <legend>
+                                        <i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong>
+                                        @if(count($processo->anexos))
+                                            <a href="{{ url('processos/arquivos/download/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><span>Baixar Todos</span></a>
+                                        @endif
+                                    </legend>
 
                                     <div id="filepicker">
                                             <!-- Button Bar -->
@@ -290,24 +295,6 @@
                                             </div>
                                         </div>
 
-                                        @if(false)
-                                            @foreach($processo->anexos as $anexo)
-                                        
-                                                <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; border-bottom: 1px solid #eaeaea;">
-                                                    <div style="float: left; width: 8%; text-align: center;">
-                                                        <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
-                                                    </div>
-                                                    <div style="float: left; width: 84%">
-                                                        <h4><a href="{{ url('files/'.$anexo->cd_anexo_processo_apr) }}">{{ $anexo->nm_anexo_processo_apr }}</a></h4>
-                                                        <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
-                                                    </div>
-                                                    <div style="float: left; width: 8% text-align: center;">
-                                                        <label class="text-danger" style="margin-top: 8px; cursor: pointer;"><i title="Excluir" data-id="{{ $anexo->cd_anexo_processo_apr }}" data-url="../../files/" class="fa fa-trash fa-2x pull-right excluir_registro"></i></label>
-                                                    </div>    
-                                                </div>
-                                        
-                                            @endforeach
-                                        @endif
                                 </fieldset>
 
                                 @role('administrator|colaborador')

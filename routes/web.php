@@ -117,6 +117,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}','TipoServicoController@consultarCorrespondenteCidade');
 
 	Route::get("processos/{id}/anexo/{file}", "AnexoProcessoController@showPlugin");
+	Route::get("processos/arquivos/download/{id}", "AnexoProcessoController@downloadAll");
 	Route::post('anexo-processo-add', 'AnexoProcessoController@create');
 	Route::delete('anexo-processo-delete', 'AnexoProcessoController@destroy');
 
