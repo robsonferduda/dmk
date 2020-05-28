@@ -93,7 +93,7 @@ class FilepickerController extends Controller
 
             $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->orderBy('created_at','DESC')->get();
 
-            $files = null;
+            $files = array();
 
             foreach ($anexos as $key => $anexo) {
 
