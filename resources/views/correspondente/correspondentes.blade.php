@@ -101,7 +101,7 @@
                                     <tr>
                                         <td>
                                             @if($correspondente->dc_categoria_correspondente_cac)
-                                            <span class="label label-primary" style="background-color: {{ $correspondente->color_cac }} ">{{ $correspondente->dc_categoria_correspondente_cac }}</span>
+                                            <span class="label label-primary" style="background-color: {{ ($correspondente->color_cac) ? $correspondente->color_cac : '' }} ">{{ $correspondente->dc_categoria_correspondente_cac }}</span>
                                             @else
                                                 <span class="label label-default">Não informado</span>
                                             @endif
