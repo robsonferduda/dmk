@@ -148,8 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Kodeine\Acl\AclServiceProvider::class,
-        Chumper\Zipper\ZipperServiceProvider::class,
-       
+        Chumper\Zipper\ZipperServiceProvider::class,       
 
         /*
          * Package Service Providers...

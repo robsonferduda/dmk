@@ -97,7 +97,7 @@ class CorrespondenteController extends Controller
         $categoria = $request->get('cd_categoria_correspondente_cac');
         $condicao_cidade = null;
 
-        $sql = "SELECT t1.cd_conta_correspondente_ccr, t1.cd_conta_con, t1.cd_correspondente_cor, t1.cd_entidade_ete, t3.nu_identificacao_ide, t1.nm_conta_correspondente_ccr, t4.dc_categoria_correspondente_cac, t5.cd_cidade_cde, t6.nm_cidade_cde, t10.email
+        $sql = "SELECT t1.cd_conta_correspondente_ccr, t1.cd_conta_con, t1.cd_correspondente_cor, t1.cd_entidade_ete, t3.nu_identificacao_ide, t1.nm_conta_correspondente_ccr, t4.dc_categoria_correspondente_cac, t5.cd_cidade_cde, t6.nm_cidade_cde, t10.email, t4.color_cac
                 FROM conta_correspondente_ccr t1
                 LEFT JOIN categoria_correspondente_cac t4 ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
                 JOIN conta_con t2 ON t1.cd_conta_con = t2.cd_conta_con AND t1.cd_conta_con = $this->conta
