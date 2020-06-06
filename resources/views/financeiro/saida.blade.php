@@ -379,7 +379,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="center">Data</th>
-                                                        <th class="center">Valor Total</th>
+                                                      <!--  <th class="center">Valor Total</th>-->
                                                         <th class="center">Tipo</th>                                                                                
                                                     </tr>
                                                 </thead>
@@ -780,71 +780,73 @@
             $('.modal-body').loader('show');
             $('.btnSalvarRegistroBaixaLote').attr('disabled','disabled');
 
-            $(".checkbox-check-pagamento-correspondente").each(function(index,element){
-                    
-                if ($(this).is(':checked') ) {  
+            setTimeout(function(){
+                $(".checkbox-check-pagamento-correspondente").each(function(index,element){
+                        
+                    if ($(this).is(':checked') ) {  
 
-                    $('.retornoLote').text('');
-                   
-                    var formData = new FormData(form);
-                    var id =  $(this).data('id');
+                        $('.retornoLote').text('');
+                       
+                        var formData = new FormData(form);
+                        var id =  $(this).data('id');
 
-                    tipo = formData.get('tipo');
-                    data = formData.get('dtBaixa');
+                        tipo = formData.get('tipo');
+                        data = formData.get('dtBaixa');
 
-                    if(formData.get('tipo') == 1){
-                        var valor = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.'));
-                    }else{
-                        var valor = parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));
-                    }
-
-                    formData.append('valor',valor);   
-                    formData.append('cdBaixaFinanceiro',id);    
-                    
-           
-                    $.ajax({
-                        url: "{{ url('/financeiro/correspondente/baixa') }}",
-                        method: "POST",
-                        data: formData,
-                        dataType: 'JSON',
-                        contentType: false,
-                        cache: false,
-                        processData: false,
-                        async:false,
-                        success: function(registros){
-                            $('#tabelaRegistro > tbody').html('');
-
-                            var valorTotal = 0;
-                            contadorEntradas++;
-                            valorTotalLabel += valor;
-
-                            $('.retornoLote').text("Valor total da operação: R$"+valorTotalLabel+" / Total de saída(s): "+contadorEntradas);
-
-                            $.each(registros, function(index, value){   
-                                        
-                                valorTotal += parseFloat(value.vl_baixa_honorario_bho);
-                                
-                            });
-                            
-                            addBaixado(id,valorTotal);
-
+                        if(formData.get('tipo') == 1){
+                            var valor = parseFloat($(this).parent().parent().children().eq(4).text().replace('R$ ','').replace(',','.'));
+                        }else{
+                            var valor = parseFloat($(this).parent().parent().children().eq(5).text().replace('R$ ','').replace(',','.'));
                         }
-                    });
 
-                     formData = null;
-                }
-            }); 
+                        formData.append('valor',valor);   
+                        formData.append('cdBaixaFinanceiro',id);    
+                        
+               
+                        $.ajax({
+                            url: "{{ url('/financeiro/correspondente/baixa') }}",
+                            method: "POST",
+                            data: formData,
+                            dataType: 'JSON',
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async:false,
+                            success: function(registros){
+                                $('#tabelaRegistro > tbody').html('');
 
-            $('.modal-body').loader('hide');  
-            $('.btnSalvarRegistroBaixaLote').prop('disabled',false);
-            $('#tabelaRegistroLote > tbody').append('<tr>'+
-                                                       '<td class="center">'+data+'</td>'+
-                                                       '<td >'+valorTotalLabel+'</td>'+
-                                                       '<td >'+(tipo == 1 ? "HONORÁRIO" : "DESPESA")+'</td>'+
-                                                       
-                                                    '</tr>'); 
+                                var valorTotal = 0;
+                                contadorEntradas++;
+                                valorTotalLabel += valor;
 
+                                $('.retornoLote').text("Valor total da operação: R$"+valorTotalLabel+" / Total de saída(s): "+contadorEntradas);
+
+                                $.each(registros, function(index, value){   
+                                            
+                                    valorTotal += parseFloat(value.vl_baixa_honorario_bho);
+                                    
+                                });
+                                
+                                addBaixado(id,valorTotal);
+
+                            }
+                        });
+
+                         formData = null;
+                    }
+                }); 
+
+                $('.modal-body').loader('hide');  
+                $('.btnSalvarRegistroBaixaLote').prop('disabled',false);
+                $('#tabelaRegistroLote > tbody').append('<tr>'+
+                                                           '<td class="center">'+data+'</td>'+
+                                                           //'<td >'+valorTotalLabel+'</td>'+
+                                                           '<td >'+(tipo == 1 ? "HONORÁRIO" : "DESPESA")+'</td>'+
+                                                           
+                                                        '</tr>'); 
+            },200);
         });
+
 
         $(".seleciona-todos").click(function(){
 
