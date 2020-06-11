@@ -562,12 +562,12 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
-        <script src="{{ asset('js/geral.js') }}"></script>
-        {{--  Minify::javascript(asset('js/geral.js'))->withFullUrl() --}}
+        
+        {!!Minify::javascript(asset('js/geral.js'))->withFullUrl()!!}
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
-        
+
         <script src="{{ asset('js/app.config.js') }}"></script>
         <script src="{{ asset('js/data-table-custom.js') }}"></script>
 
@@ -594,7 +594,7 @@
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
-        <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>z
+        <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
 
         <script src="{{ asset('js/filepicker.js') }}"></script>
         <script src="{{ asset('js/filepicker-ui.js') }}"></script>
