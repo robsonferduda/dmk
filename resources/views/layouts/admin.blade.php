@@ -20,10 +20,9 @@
 
         {!! Minify::stylesheet('/css/custom.css')->withFullUrl() !!}
     
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/croppie.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/filepicker.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/css-loader.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap-colorselector.css') }}">          
+        <!--others.css é a junção dos croppie.css,filepicker.css,css-loader.css,bootstrap-colorselector.css -->
+         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/others.css') }}">
+
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('fonts/google/css.css') }}">
         @yield('stylesheet')
     </head>
