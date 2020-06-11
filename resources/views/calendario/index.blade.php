@@ -364,6 +364,8 @@
 </div>
 @endsection
 @section('script')
+    <script src="{{ asset('js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('js/plugin/fullcalendar/locale-all.js') }}"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 
