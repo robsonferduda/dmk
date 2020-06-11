@@ -14,9 +14,9 @@
         
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
+        
+        <!-- Smartadmin-all é a junção dos smartadmin-production-plugins.min.css,smartadmin-production.min.css,smartadmin-skins.min.css -->
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-all.css') }}">
 
         {!! Minify::stylesheet('/css/custom.css')->withFullUrl() !!}
     
