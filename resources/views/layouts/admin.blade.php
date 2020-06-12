@@ -591,7 +591,9 @@
         <script src="{{ asset('js/plugin/jquery.form.js') }}"></script>
         <script src="{{ asset('js/plugin/ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('js/plugin/x-editable/x-editable.min.js') }}"></script>
-        <script src="{{ asset('js/socket.io-1.2.0.js') }}"></script>
+
+        {!!Minify::javascript(asset('js/socket.io-1.2.0.js'))->withFullUrl()!!}
+        
         <script src="{{ asset('js/css-loader.js') }}"></script>
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
