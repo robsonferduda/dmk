@@ -593,18 +593,18 @@
         <script src="{{ asset('js/plugin/x-editable/x-editable.min.js') }}"></script>
 
         {!!Minify::javascript(asset('js/socket.io-1.2.0.js'))->withFullUrl()!!}
-        
-        <script src="{{ asset('js/css-loader.js') }}"></script>
+        {!!Minify::javascript(asset('js/css-loader.js'))->withFullUrl()!!}
+
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
         <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
 
-        <script src="{{ asset('js/filepicker.js') }}"></script>
-        <script src="{{ asset('js/filepicker-ui.js') }}"></script>
-        <script src="{{ asset('js/filepicker-drop.js') }}"></script>
-        <script src="{{ asset('js/filepicker-crop.js') }}"></script>
-        <script src="{{ asset('js/filepicker-camera.js') }}"></script>
-
+        {!!Minify::javascript(asset('js/filepicker.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/filepicker-ui.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/filepicker-drop.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/filepicker-crop.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/filepicker-camera.js'))->withFullUrl()!!}
+        
         <script src="{{ asset('js/plugin/morris/raphael.min.js') }}"></script>
         <script src="{{ asset('js/plugin/morris/morris.min.js') }}"></script>
         
