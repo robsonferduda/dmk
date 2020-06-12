@@ -7,7 +7,7 @@
         $('#filepicker').filePicker({
             url: '../entrada/anexo',                
             data: function(){
-                var _token = "{{ csrf_token() }}";
+                var _token = $('meta[name="token"]').attr('content');
                 var id_processo_baixa = localStorage.getItem("idsBaixaFinanceiro");
                 return {
                     _token: _token,
@@ -82,7 +82,7 @@
         $('#filepickerLote').filePicker({
             url: '../entrada/anexo',                
             data: function(){
-                var _token = "{{ csrf_token() }}";
+                var _token = $('meta[name="token"]').attr('content');
                 var id_processo_baixa = localStorage.getItem("idsBaixaFinanceiro");
                 return {
                     _token: _token,
