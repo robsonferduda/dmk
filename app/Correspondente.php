@@ -11,6 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\CorrespondenteCadastroContaNotification;
 use App\Notifications\CorrespondenteFiliacaoNotification;
 use App\Notifications\CorrespondenteNotification;
+use App\Notifications\CorrespondenteSenhaNotification;
 
 class Correspondente extends Model implements AuditableContract
 {
@@ -77,6 +78,16 @@ class Correspondente extends Model implements AuditableContract
     {
         if($this->getFlagEnvioCorrespondente() == 'S'){
             $this->notify(new CorrespondenteFiliacaoNotification($conta));
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function notificarAlteracaoSenha($conta)
+    {
+        if($this->getFlagEnvioCorrespondente() == 'S'){
+            $this->notify(new CorrespondenteSenhaNotification($conta));
             return true;
         }else{
             return false;

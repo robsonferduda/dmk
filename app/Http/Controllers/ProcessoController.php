@@ -146,7 +146,6 @@ class ProcessoController extends Controller
     public function acompanhamento($id){
 
         $id = \Crypt::decrypt($id); 
-
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->first();
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
