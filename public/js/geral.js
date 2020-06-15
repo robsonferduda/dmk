@@ -535,6 +535,29 @@ $(document).ready(function() {
 		$("#modal_notificar_correspondente").modal('show');
 	});
 
+	$(".redefinir_senha_correspondente").click(function(){
+
+		var senha = makeid();
+		var email  = $(this).data('email');
+		var url = $(this).data('url')+'/'+senha;
+
+		$("#modal_atualizar_senha_correspondente #btn_atualizar_senha_correspondente").attr('href',url);
+		$("#modal_atualizar_senha_correspondente #email_notificacao_correspondente").html(email);
+		$("#modal_atualizar_senha_correspondente #usuario_correspondente").html(email);
+		$("#modal_atualizar_senha_correspondente #senha_correspondente").html(senha);
+		$("#modal_atualizar_senha_correspondente").modal('show');
+	});
+
+	function makeid() {
+	  	var text = "";
+	  	var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+	  	for (var i = 0; i < 6; i++)
+	    	text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+	  	return text;
+	}
+
 	$(".remover_registro").click(function(){
 
 		var id  = $(this).data('id');

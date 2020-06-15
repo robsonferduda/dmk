@@ -1005,11 +1005,33 @@ class CorrespondenteController extends Controller
 
     }
 
+    /* Método usado na área do correspondente para listar o acompanhamento de processo */
     public function acompanhamento($id){
 
-        $id = \Crypt::decrypt($id); 
+        $id = \Crypt::decrypt($id);
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->conta);
+
+        //Verifica se a conta logada tem nível diferente de correspondente. Se tiver, busca o usuário do correspondente, senão, desloga.
+        if(Auth::user()->cd_nivel_niv != Nivel::CORRESPONDENTE){
+
+            $user_correspondente = User::where('email',Auth::user()->email)->where('cd_nivel_niv', Nivel::CORRESPONDENTE)->first();
+
+            if($user_correspondente){
+
+                //Loga o usuário a atualiza as variáveis de sessão
+                Auth::login($user_correspondente);
+
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+                $this->conta = Auth::user()->cd_conta_con;
+
+                Flash::success('Seu acesso foi alterado para o perfil de correspondente');
+
+            }
+
+        }    
 
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_correspondente_cor',$this->conta)->first();
         
@@ -1159,6 +1181,26 @@ class CorrespondenteController extends Controller
         $correspondente->email = $user->email;
 
         if($correspondente->notificarFiliacaoConta($conta_logada)){
+            Flash::success('Correspondente notificado com sucesso. O correspondente foi notificado no email '.$correspondente->email);
+        }else{
+            Flash::error('Erro ao notificar correspondente. Verifique as configurações de notificação e tente novamente.');
+        }
+
+        return redirect('correspondentes');
+    }
+
+    public function redefinirSenha($id, $senha)
+    {
+        $id = \Crypt::decrypt($id);
+        //Notifica o correspondente sobre o cadastro realizado, informando o acesso do site
+        $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con',$id)->first(); 
+
+        $conta_logada = Conta::where('cd_conta_con', $this->conta)->first();
+        $conta_logada->senha = $senha;
+        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
+        $correspondente->email = $user->email;
+
+        if($correspondente->notificarAlteracaoSenha($conta_logada)){
             Flash::success('Correspondente notificado com sucesso. O correspondente foi notificado no email '.$correspondente->email);
         }else{
             Flash::error('Erro ao notificar correspondente. Verifique as configurações de notificação e tente novamente.');
