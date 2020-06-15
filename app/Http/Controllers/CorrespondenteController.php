@@ -1029,6 +1029,10 @@ class CorrespondenteController extends Controller
 
                 Flash::success('Seu acesso foi alterado para o perfil de correspondente');
 
+            }else{
+
+                Auth::logout();
+                return redirect('/login');
             }
 
         }    
