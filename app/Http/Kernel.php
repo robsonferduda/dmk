@@ -21,6 +21,8 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \JacobBennett\Http2ServerPush\Middleware\AddHttp2ServerPush::class,
+        
     ];
 
     /**
