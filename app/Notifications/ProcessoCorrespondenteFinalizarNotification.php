@@ -27,7 +27,6 @@ class ProcessoCorrespondenteFinalizarNotification extends Notification
 
     public function toMail($notifiable)
     {
-
         return (new MailMessage)
             ->subject(Lang::getFromJson('Processo Finalizado - Número '.$this->processo->nu_processo_pro))
             ->markdown('email.finalizar_correspondente')
