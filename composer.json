@@ -16,6 +16,7 @@
         "fideloper/proxy": "^4.0",
         "hazzard/config": "^1.0",
         "intervention/image": "^2.5",
+        "jacobbennett/laravel-http2serverpush": "4.0.2",
         "kodeine/laravel-acl": "~1.0@dev",
         "laracasts/flash": "^3.0",
         "laravel/framework": "5.6.*",
