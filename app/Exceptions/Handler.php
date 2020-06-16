@@ -64,9 +64,5 @@ class Handler extends ExceptionHandler
     {
         return parent::render($request, $exception);
 
-        if(Config::get('app.debug'))
-            return parent::render($request, $exception);
-        else
-            return response()->view('errors/erro',['request' => $request, 'erro' => $exception]); 
     }
 }

@@ -1024,7 +1024,6 @@ class ProcessoController extends Controller
     {
         $id = \Crypt::decrypt($token);
         $processo = Processo::with('cliente')->where('cd_processo_pro',$id)->first();
-
     
         //Atualiza o status do processo de acordo com a resposta do correspondente
         if($resposta == 'S'){
