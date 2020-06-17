@@ -62,8 +62,7 @@
 				</div>
 			</div>
 		</div>
-	    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		<script> if (!window.jQuery) { document.write('<script src="js/libs/jquery-3.2.1.min.js"><\/script>');} </script>
+	    <script src="{{ asset('js/jquery.min.js') }}"></script>
 		<script src="js/app.config.js"></script>
 		<script src="js/bootstrap/bootstrap.min.js"></script>
 		<script src="js/app.min.js"></script>
