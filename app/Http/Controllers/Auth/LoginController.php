@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\User;
 use App\Entidade;
+use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -49,15 +50,25 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
+
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => $request->nivel])){
 
-            Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
-            Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
-            Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
-         
-            return redirect()->intended('home');
-        }
+            if (Auth::user() && Auth::user()->active == '1') {
 
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+             
+                return redirect()->intended('home');
+                
+            }else{
+
+                Auth::logout();
+                Flash::error('Conta não ativada. <br/> Ative sua conta clicando na opção "<strong>Primeiro Acesso</strong>"');
+                return redirect('/login');
+            }
+
+        }
 
         $this->incrementLoginAttempts($request);
         return $this->sendFailedLoginResponse($request);

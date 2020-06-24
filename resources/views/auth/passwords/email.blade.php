@@ -14,7 +14,7 @@
                             <span class="help-block" style="padding: 5px 8px;"><strong>{{ $errors->first('email') }}</strong></span>
                         @endif
 
-                    <div class="note" style="text-align: center;"><a href="{{ url('login') }}">Voltar para o sistema</a></div>
+                    <div class="note" style="text-align: center;"><a href="{{ url('login') }}">Voltar para o login</a></div>
                 </section>
             </fieldset>
 

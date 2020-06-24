@@ -29,6 +29,7 @@ class User extends Authenticatable implements AuditableContract
         'cd_estado_civil_esc',
         'cd_departamento_dep',
         'cd_cargo_car',
+        'active',
         'observacao'
     ];
 

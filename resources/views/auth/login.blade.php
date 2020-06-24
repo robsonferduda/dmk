@@ -37,8 +37,21 @@
                     @if ($errors->has('password'))
                         <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
                     @endif
+
+                <div class="note" style="font-size: 14px;">
+                    <span class="text-warning">
+                        @if(\Session::has('flash_notification'))
+                            @foreach (Session::get('flash_notification') as $message)
+                                {!! $message['message'] !!}
+                            @endforeach
+                        @endif 
+                    </span>
+                </div>
+
                 <div class="note"><a href="{{ url('password/reset') }}">Esqueceu sua senha?</a></div>
+                <div class="note"><a href="{{ url('conta/ativacao') }}">Primeiro acesso</a></div>
             </section>
+
         </fieldset>
         <footer>
             <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Entrar</button>
