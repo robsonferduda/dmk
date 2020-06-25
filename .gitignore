@@ -3,7 +3,7 @@
 /public/img/users
 /public/hot
 /public/storage
-/public/sitemap.xml
+sitemap.xml
 /storage/*.key
 /vendor
 /.idea
