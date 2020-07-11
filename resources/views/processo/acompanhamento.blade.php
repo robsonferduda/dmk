@@ -9,14 +9,16 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-titulo">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-cog"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-            <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-button" >
+            <div class="sub-box-button">
+                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
+            </div>
         </div>
     </div>
     <div class="row container-acompanhamento">
@@ -29,7 +31,7 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-2">
+                        <section class="col col-md-3">
                             <label class="label label-black">Prazo Fatal</label><br />
                             <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
@@ -41,14 +43,14 @@
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-4">
+                        <section class="col col-md-3">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
                                         
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-4"> 
+                        <section class="col col-md-4 box-select2"> 
                             <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
                                 <option value="">Tipos de Processo</option>
                                 @foreach($tiposProcesso as $tipo)
@@ -56,7 +58,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4"> 
+                        <section class="col col-md-4 box-select2"> 
                             <select name="cd_tipo_servico_tse" id="cd_tipo_servico_tse" class="select2">
                                 <option value="">Tipos de Serviço</option>
                                 @foreach($tiposServico as $tipo)
@@ -64,7 +66,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4">       
+                        <section class="col col-md-4 box-select2">       
                             <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                 <option selected value="">Responsável</option>
                                 @foreach($responsaveis as $usuario)
@@ -74,7 +76,7 @@
                         </section> 
                     </div>
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-3"> 
+                        <section class="col col-md-4 box-select2"> 
                             <select name="status" id="status" class="select2">
                                 <option value="">Status do Processo</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
@@ -82,7 +84,7 @@
                                 <option value="atrasado">Atrasado</option>
                             </select>
                         </section> 
-                        <section class="col col-md-3">         
+                        <section class="col col-md-3 box-select2">         
                             <select  id="estado" name="cd_estado_est" class="select2">
                                 <option selected value="">Estado</option>
                                     @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
@@ -90,7 +92,7 @@
                                     @endforeach
                             </select> 
                         </section>
-                        <section class="col col-md-6">         
+                        <section class="col col-md-5 box-select2">         
                             <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
                                 <option selected value="">Comarca</option>
                             </select> 
@@ -111,10 +113,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
+            <div class="col-xs-6 col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
                 <h4 style="font-size: 13px;" id="label-total-processos"></h4>
             </div>
-            <div class="col-sm-6 col-md-6" style=" margin-top: 12px;">
+            <div class="col-xs-6 col-sm-6 col-md-6" style=" margin-top: 12px;">
                 <section class="pull-right">
                     <select id="filtro-pagination">
                         <option value="10">10</option>
@@ -122,7 +124,7 @@
                         <option value="20">20</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
-                    </select>  <label class="">Registros por página</label>
+                    </select>  <label class="hidden-xs">Registros por página</label>
                 </section>
             </div>
         </article>

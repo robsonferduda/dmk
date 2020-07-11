@@ -336,3 +336,27 @@ span.tags
 .f-right {
     float: right;
 }
+
+
+@media (max-width: 992px){
+  .box-home{
+    width: 50%;
+    left: 25%;
+  }
+
+  .box-titulo{
+    text-align: center;
+  }
+
+  .box-button{
+    text-align: center;
+  }
+
+  .sub-box-button{
+    display: inline-block;
+  }
+
+  .box-select2{
+    margin-bottom: 10px;
+  }
+}
