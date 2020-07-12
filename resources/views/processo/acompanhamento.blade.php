@@ -16,7 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
             <div class="sub-box-button-xs">
-                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
+                <a  title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
                 <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i><span class="hidden-xs hidden-sm">Pauta Diária</span></button>
             </div>
            
