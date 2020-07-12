@@ -16,7 +16,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
-		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
+		{!! Minify::stylesheet('/css/custom.css')->withFullUrl() !!}
 
 		<!-- SmartAdmin RTL Support -->
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-rtl.min.css') }}"> 
@@ -40,8 +40,8 @@
 	
 	<body id="login">
 	
-		<header id="header" style="text-align: right; padding-top: 20px;">
-			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default"><i class="fa fa-legal"></i> CADASTRO CORRESPONDENTES</a> </span>
+		<header id="header" style="text-align: right; padding-top: 20px;" class="header-register">
+			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default link-cadastro-correspondente"><i class="fa fa-legal"></i> CADASTRO CORRESPONDENTES</a> </span>
 			<span id="btn_login"><a href="{{ url('login') }}" class="btn btn-danger"><i class="fa fa-sign-in"></i> ACESSAR O SISTEMA</a> </span>
 		</header>
 
