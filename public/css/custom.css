@@ -400,7 +400,15 @@ span.tags
 
   .header-register:last-of-type{
     margin-bottom: 10px !important;
+  }  
+
+  .box-button-xs{
+    text-align: center;
+    margin-bottom: 10px;
   }
-  
+
+  .sub-box-button-xs{
+    display: inline-block;
+  }
 }
 
