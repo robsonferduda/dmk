@@ -9,20 +9,19 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 box-titulo">
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Processos <span>> Despesas </span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 box-button">
-            <div class="boxBtnTopo sub-box-button">
-                <a href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-                <a title="Relatório" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
-                <a data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i> Acompanhamento</a> 
-                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-                <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>          
-                <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   
-            </div>
+        <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8 boxBtnTopo">
+          
+            <a title="Listar Processos" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Listar Processos</span></a>
+            <a title="Relatório Financeiro" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Relatório Financeiro</span></a>
+            <a title="Acompanhamento" data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Acompanhamento</span></a> 
+            <a title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Novo</span></a>     
+            <a title="Editar" data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Editar</span></a>          
+            <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   
         </div>
     </div>
     <div class="row">
@@ -47,15 +46,15 @@
                                     <div class="row">
                                         <div class="col-md-12">   
                                         
-                                            <div class="col-xs-12 col-sm-12 col-md-6 box-titulo"> 
+                                            <div class="col-xs-6 col-md-6"> 
                                                 <h5>Lista de Despesas</h5> 
                                             </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-6 box-button"> 
-                                                <div class='sub-box-button'>
-                                                    <button class="btn btn-success pull-right header-btn" id="btnSalvarDespesasProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+                                            <div class="col-xs-6 col-md-6"> 
+                                                
+                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarDespesasProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i><span class="hidden-xs hidden-sm">Salvar Alterações</span> </button>
 
-                                                    <button class="btn btn-warning pull-right header-btn" id="limparValoresDespesa" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Valores</button>
-                                                </div>
+                                                <button class="btn btn-warning pull-right header-btn" id="limparValoresDespesa" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i><span class="hidden-xs hidden-sm"> Limpar Valores</span></button>
+                                                
                                             </div>                                                                                             
                                             <div class="tabelah">
                                                 <table class="table table-bordered">
