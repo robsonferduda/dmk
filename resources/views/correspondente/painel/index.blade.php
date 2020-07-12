@@ -24,23 +24,23 @@
                 <form action="{{ url('correspondente/painel/relatorios/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-2">
+                        <section class="col col-sm-4">
                             <label class="label label-black">Data prazo fatal inicial<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
                             
                         </section>
-                        <section class="col col-md-2">                           
+                        <section class="col col-sm-4">                           
                             <label class="label label-black">Data prazo fatal final<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
                         </section>
-                        <section class="col col-md-4">                                                        
+                        <section class="col col-sm-4">                                                        
                             <label class="label label-black">Relatório<span class="text-danger">*</span></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Selecione...</option>
                                 <option {{ (\Session::get('relatorio') == 'relacao-processos'  ? 'selected' : '') }} value="relacao-processos">Relação de processos</option>
                             </select>                            
                         </section> 
-                        <section class="col col-md-4">                           
+                        <section class="col col-sm-5">                           
                             <label class="label label-black">Cliente</label><br />
                             <div class="input-group" style="width: 100%">
                             <input type="hidden" name="cd_conta_con" value="{{(old('cd_conta_con') ? old('cd_conta_con') : (\Session::get('conta') ? \Session::get('conta') : '')) }}">
@@ -48,17 +48,8 @@
                              <div style="clear: all;"></div>
                             <span id="limpar-conta" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                             </div>                        
-                        </section>                                    
-                    </div>
-                    <div class="row">
-
-                      
-                        
-                        {{--<section class="col col-md-3">
-                            <label class="label label-black">Processo</label><br />
-                            <input style="width: 100%" type="text" name="nu_processo_pro" id="nu_processo_pro" placeholder="">    
-                        </section> --}}    
-                        <section class="col col-md-9">
+                        </section>  
+                        <section class="col col-sm-4">
                             <br />           
                             {{--<input type="radio" name="extensao" id="extensao" value="pdf" {{ (\Session::get('extensao') != 'xlsx'  ? 'checked' : '') }} >  
                             <label class="label label-black">PDF</label>  
@@ -68,14 +59,12 @@
                             <label class="label label-black">Processos Finalizados</label> 
 
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-sm-3">
                             <br />
                             <button style='float: right;' class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
-                        </section>                                   
+                        </section>                                    
                     </div>
-                    <div class="row">
-
-                    </div>
+                    
                 </form>
             </div>
             <div style="clear: both;"></div>

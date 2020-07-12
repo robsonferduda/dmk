@@ -4,18 +4,20 @@
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
         <li><a href="{{ url('correspondentes') }}">Correspondentes</a></li>
-        <li>Novo</li>
+        <li>Detalhes</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-8 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Detalhes </span> <span>> {{ $correspondente->nm_conta_correspondente_ccr }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondente/clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Clientes</a>  
+        <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 box-button-xs">
+            <div class='boxBtnTopo sub-box-button-xs'>
+                <a data-toggle="modal" href="{{ url('correspondente/clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Clientes</a>  
+            </div>
         </div>
     </div>
     <div class="row">
@@ -71,7 +73,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-dollar fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
@@ -87,46 +89,22 @@
                                 </fieldset>
                             </div>
                         </div>
-
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-bank"></i> <strong>Dados Bancários</strong></legend>
+                                    <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        <p>    
-                                            @if(count($correspondente->entidade->banco()->get()) > 0)
-                                                @foreach($correspondente->entidade->banco()->get() as $banco)
-                                                <ul class="list-unstyled">
-                                                    <li>
-                                                        <strong>Titular: </strong> {{ !empty($banco->nm_titular_dba) ? $banco->nm_titular_dba: ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>CPF: </strong> {{ !empty($banco->nu_cpf_cnpj_dba) ? $banco->nu_cpf_cnpj_dba: ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Tipo de Conta </strong> {{ !empty($banco->tipoConta->nm_tipo_conta_tcb) ? $banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
-                                                    </li>
-                                                </ul>
-                                                @endforeach   
-                                            @else
-                                                <span>Nenhuma conta infomada</span>
-                                            @endif
-                                        </p>
+                                        @if(count($correspondente->entidade->fone()->get()) > 0)
+                                            @foreach($correspondente->entidade->fone()->get() as $fone)
+                                                <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
+                                            @endforeach   
+                                        @else
+                                            <span>Nenhum telefone infomado</span>
+                                        @endif
                                     </div>
                                 </fieldset>
                             </div>
                         </div>
-
-
                         <div class="col-md-12">
                         </div>
                         <div class="col-md-4">
@@ -164,18 +142,40 @@
                                 </fieldset>
                             </div>
                         </div>
+                       
                         <div class="col-md-4">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
+                                    <legend><i class="fa fa-bank"></i> <strong>Dados Bancários</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($correspondente->entidade->fone()->get()) > 0)
-                                            @foreach($correspondente->entidade->fone()->get() as $fone)
-                                                <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
-                                            @endforeach   
-                                        @else
-                                            <span>Nenhum telefone infomado</span>
-                                        @endif
+                                        <p>    
+                                            @if(count($correspondente->entidade->banco()->get()) > 0)
+                                                @foreach($correspondente->entidade->banco()->get() as $banco)
+                                                <ul class="list-unstyled">
+                                                    <li>
+                                                        <strong>Titular: </strong> {{ !empty($banco->nm_titular_dba) ? $banco->nm_titular_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>CPF: </strong> {{ !empty($banco->nu_cpf_cnpj_dba) ? $banco->nu_cpf_cnpj_dba: ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Tipo de Conta </strong> {{ !empty($banco->tipoConta->nm_tipo_conta_tcb) ? $banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
+                                                    </li>
+                                                </ul>
+                                                @endforeach   
+                                            @else
+                                                <span>Nenhuma conta infomada</span>
+                                            @endif
+                                        </p>
                                     </div>
                                 </fieldset>
                             </div>
