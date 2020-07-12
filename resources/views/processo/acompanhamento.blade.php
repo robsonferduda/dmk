@@ -31,26 +31,24 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Prazo Fatal</label><br />
                             <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Número do Processo</label><br />
                             <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
-                                        
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-4 box-select2"> 
+
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
                                 <option value="">Tipos de Processo</option>
                                 @foreach($tiposProcesso as $tipo)
@@ -58,7 +56,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4 box-select2"> 
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="cd_tipo_servico_tse" id="cd_tipo_servico_tse" class="select2">
                                 <option value="">Tipos de Serviço</option>
                                 @foreach($tiposServico as $tipo)
@@ -66,7 +64,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4 box-select2">       
+                        <section class="col col-md-4 col-lg-3 box-select2">       
                             <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                 <option selected value="">Responsável</option>
                                 @foreach($responsaveis as $usuario)
@@ -74,9 +72,8 @@
                                 @endforeach
                             </select> 
                         </section> 
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-4 box-select2"> 
+
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="status" id="status" class="select2">
                                 <option value="">Status do Processo</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
@@ -84,7 +81,7 @@
                                 <option value="atrasado">Atrasado</option>
                             </select>
                         </section> 
-                        <section class="col col-md-3 box-select2">         
+                        <section class="col col-md-4 col-lg-3 box-select2">         
                             <select  id="estado" name="cd_estado_est" class="select2">
                                 <option selected value="">Estado</option>
                                     @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
@@ -92,7 +89,7 @@
                                     @endforeach
                             </select> 
                         </section>
-                        <section class="col col-md-5 box-select2">         
+                        <section class="col col-md-4 col-lg-3 box-select2">         
                             <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
                                 <option selected value="">Comarca</option>
                             </select> 

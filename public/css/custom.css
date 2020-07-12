@@ -337,6 +337,16 @@ span.tags
     float: right;
 }
 
+.box-select2{
+    margin-top: 10px;
+}
+
+@media (max-width : 1200px) {
+  .box-select2{
+    margin-top: 20px;
+  }
+}
+
 @media (max-width: 992px){
   .box-home{
     width: 50%;
@@ -353,10 +363,6 @@ span.tags
 
   .sub-box-button{
     display: inline-block;
-  }
-
-  .box-select2{
-    margin-bottom: 10px;
   }
 }
 
