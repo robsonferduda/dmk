@@ -47,13 +47,15 @@
                                     <div class="row">
                                         <div class="col-md-12">   
                                         
-                                            <div class="col-md-6"> 
+                                            <div class="col-xs-12 col-sm-12 col-md-6 box-titulo"> 
                                                 <h5>Lista de Despesas</h5> 
                                             </div>
-                                            <div class="col-md-6"> 
-                                                <button class="btn btn-success pull-right header-btn" id="btnSalvarDespesasProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
+                                            <div class="col-xs-12 col-sm-12 col-md-6 box-button"> 
+                                                <div class='sub-box-button'>
+                                                    <button class="btn btn-success pull-right header-btn" id="btnSalvarDespesasProcesso" style="margin-right: -12px;"><i class="fa fa-save fa-lg"></i> Salvar Alterações</button>
 
-                                                <button class="btn btn-warning pull-right header-btn" id="limparValoresDespesa" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Valores</button>
+                                                    <button class="btn btn-warning pull-right header-btn" id="limparValoresDespesa" style="margin-right: 5px;"><i class="fa fa-eraser fa-lg"></i> Limpar Valores</button>
+                                                </div>
                                             </div>                                                                                             
                                             <div class="tabelah">
                                                 <table class="table table-bordered">
