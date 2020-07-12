@@ -9,14 +9,16 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-cog"></i>Processos <span> > Lista</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a class="btn btn-default pull-right" title="Relatórios" href="{{ url('processos/relatorios') }}"><i class="fa fa-file-pdf-o"></i> Relatórios</a>
-            <a class="btn btn-success pull-right" title="Novo Processo" href="{{ url('processos/novo') }}"><i class="fa fa-plus fa-lg"></i> Novo</a>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs">
+            <div class="boxBtnTopo sub-box-button-xs">
+                <a class="btn btn-default pull-right" title="Relatórios" href="{{ url('processos/relatorios') }}"><i class="fa fa-file-pdf-o"></i><span class="hidden-xs hidden-sm">Relatórios</span></a>
+                <a class="btn btn-success pull-right" title="Novo Processo" href="{{ url('processos/novo') }}"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -28,12 +30,12 @@
                 <form action="{{ (Auth::user()->cd_nivel_niv == 3) ? url('correspondente/processo/buscar/arquivo') : url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-2">
+                        <section class="col col-md-4">
                             <label class="label label-black">Data prazo fatal inicial</label><br />
                             <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
                             
                         </section>
-                        <section class="col col-md-2">                           
+                        <section class="col col-md-4">                           
                             <label class="label label-black">Data prazo fatal final</label><br />
                             <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
                         </section>
@@ -45,13 +47,11 @@
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>       
-                    </div>
-                    <div class="row">                                  
-                        <section class="col col-md-4">
+                         <section class="col col-md-4">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section>  
-                         <section class="col col-md-3">
+                         <section class="col col-md-4">
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
                                 <option value="">Tipos de Processo</option>
@@ -68,9 +68,7 @@
                                     <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
                                 @endforeach
                             </select>
-                        </section>                            
-                    </div>  
-                    <div class="row"> 
+                        </section>    
                         <section class="col col-md-2">
                             <label class="label label-black">Nº Externo</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
@@ -78,7 +76,7 @@
                         <section class="col col-md-3">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                        </section>
+                        </section>                
                     </div>
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
@@ -155,13 +153,18 @@
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
                                         <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
-                                        <td class="center">
-                                            <a title="Detalhes" class="btn btn-default btn-xs"  href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i></a>
+                                        <td class="center">                                            
                                             @role('colaborador|administrator')
-                                                <a title="Editar" class="btn btn-primary btn-xs editar_vara" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i></a>
+                                               
                                                 <div class="dropdown" style="display: inline;">
                                                     <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                     <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a title="Detalhes" href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i> Detalhes</a>
+                                                        </li>
+                                                        <li>
+                                                            <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i> Editar</a>
+                                                        </li>
                                                         <li><a title="Despesas" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money"></i> Despesas</a></li>
                                                         <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
                                                         <li><a title="Clonar" class="dialog_clone" href="{{ url('processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-clone"></i> Clonar</a></li>
