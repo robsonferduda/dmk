@@ -9,20 +9,20 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 box-titulo-acompanhamento">
+        <div class="hidden-xs col-sm-7 col-md-7 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Acompanhamento </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 boxBtnTopo box-button-acompanhamento">
-            <div class="sub-box-button-acompanhamento">
+        <div class="col-xs-12 col-sm-5 col-md-5 col-lg-7 box-button-xs">
+            <div class="boxBtnTopo sub-box-button-xs">
             @role('administrator|colaborador')
 
-                <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamentos </a> 
-                <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
-                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
-                <a href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a> 
-                <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
+                <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Acompanhamento</span> </a> 
+                <a title="Relatório Financeiro " class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Relatório Financeiro</span></a>
+                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Despesas</span></a>
+                <a title="Novo" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Novo</span></a> 
+                <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Editar</span></a> 
            
             @endrole
             </div>
@@ -90,14 +90,14 @@
                 @endif
                 @role('administrator|colaborador')
                 <div class="well">
-                    <div class="row div-status-buttons-acompanhamento">
+                    <div class="row">
 
-                        <div class="col-md-12 col-lg-5 col-xs-12 box-button-acompanhamento">
-                            <div class='sub-box-button-acompanhamento' >
+                        <div class="col-sm-7 col-md-7 col-lg-5 col-xs-12 box-button-xs">
+                            <div class='sub-box-button-xs' >
                                 <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                                     {{ csrf_field() }}
                                 
-                                            <div style="float: left; width: 350px; margin-right: 10px;">
+                                            <div style="float: left;  margin-right: 10px;" class="status-processo-acompanhamento-md">
                                                 <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
                                                 <label class="label label-black" >Selecione um Status para o Processo</label>          
                                                 <select id="status" name="status" class="select2">
@@ -107,28 +107,28 @@
                                                     @endforeach
                                                 </select> 
                                             </div> 
-                                            <div  style="float: left; ">
-                                                <div style="" >
-                                                    <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
+                                            <div class="box-button-xs"  >
+                                                <div class="sub-box-button-xs" >
+                                                    <button  title="Alterar Status" class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i><span class="hidden-xs hidden-sm hidden-md"> Alterar Status</span></button>
                                                 </div>                                     
                                             </div>                                 
                                     
                                 </form>
                             </div>
                         </div>
-                        <div class="col-md-12 col-lg-7  col-xs-12  box-button-acompanhamento">
-                            <div class='sub-box-button-acompanhamento' >
+                        <div class="col-sm-5 col-md-5 col-lg-7 col-xs-12 box-button-xs" >
+                            <div class="box-button-xs">
                                 <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
                                     {{ csrf_field() }}
                                     <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
                                     <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                                    <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+                                    <button title="Cancelar Processo" class="btn btn-danger" type="submit"><i class="fa fa-ban"></i><span class="hidden-xs hidden-sm hidden-md"> Cancelar Processo</span></button>
                                 </form>
 
-                                <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+                                <a title="Finalizar Processo" class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i><span class="hidden-xs hidden-sm hidden-md"> Finalizar Processo</span></a>
 
                                 @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                                    <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
+                                    <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i><span class="hidden-xs hidden-sm hidden-md">Notificar Correspondente</span></a>          
                                 @endif
                             </div>
                         </div>
