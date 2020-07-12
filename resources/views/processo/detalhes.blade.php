@@ -9,20 +9,22 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="hidden-xs hidden-sm col-sm-12 col-md-6 col-lg-5">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Detalhes </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            @role('administrator|colaborador') 
-                <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-                <a title="Relatório" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
-                <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i> Acompanhamento</a> 
-                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>               
-                <a href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-                <a href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>                 
-            @endrole
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-7 box-button">
+            <div class="boxBtnTopo sub-box-button">
+                @role('administrator|colaborador') 
+                    <a title="Listar Processos" data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Listar Processos</span></a>
+                    <a title="Relatório" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Relatório Financeiro</span></a>
+                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Acompanhamento</span></a> 
+                    <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Despesas</span></a>               
+                    <a title="Novo" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Novo</span></a>     
+                    <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Editar</span></a>                 
+                @endrole
+            </div>
 
             @role('correspondente') 
                 <a data-toggle="modal" href="{{ url('correspondente/processos') }}" class="btn btn-default pull-right header-btn" style="margin-right: 15px;"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
