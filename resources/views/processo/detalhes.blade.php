@@ -24,11 +24,12 @@
                     <a title="Novo" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Novo</span></a>     
                     <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Editar</span></a>                 
                 @endrole
+                @role('correspondente') 
+                    <a data-toggle="modal" href="{{ url('correspondente/processos') }}" class="btn btn-default pull-right header-btn" style="margin-right: 15px;"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+                @endrole
             </div>
 
-            @role('correspondente') 
-                <a data-toggle="modal" href="{{ url('correspondente/processos') }}" class="btn btn-default pull-right header-btn" style="margin-right: 15px;"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-            @endrole
+            
         </div>
     </div>
     <div class="row">
