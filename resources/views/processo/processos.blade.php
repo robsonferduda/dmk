@@ -151,9 +151,13 @@
                                             @endif                                            
                                         </td>
                                         <td>
-                                            @if(!empty($processo->correspondente->contaCorrespondente))
-                                                <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
+                                            @if(\Auth::user()->cd_nivel_niv != 3)
+                                                @if(!empty($processo->correspondente->contaCorrespondente))
+                                                    <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
+                                                @endif
+                                            @else                                                   {{$processo->correspondente->nm_razao_social_con}}
                                             @endif
+                                                                                                            
                                         </td>
                                         <td>{{ $processo->nm_autor_pro }}</td>
                                         <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
