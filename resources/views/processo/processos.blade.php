@@ -103,12 +103,12 @@
                                 <tr style="font-size: 12px">                   
                                     <th>Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
-                                    <th>Cidade</th>                                                  
-                                    <th>Tipo de Serviço</th>
-                                    <th>Cliente</th>
-                                    <th>Correspondente</th>
-                                    <th>Autor</th>
-                                    <th>Status</th>
+                                    <th class="hidden-xs">Cidade</th>                                                  
+                                    <th class="hidden-xs">Tipo de Serviço</th>
+                                    <th class="hidden-xs">Cliente</th>
+                                    <th class="hidden-xs">Correspondente</th>
+                                    <th class="hidden-xs">Autor</th>
+                                    <th class="hidden-xs">Status</th>
                                     <th style="width: 100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
@@ -137,20 +137,20 @@
                                         <td data-id="{{ $processo->cd_processo_pro }}" >
                                             <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
-                                        <td>
+                                        <td class="hidden-xs">
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
                                         </td>
                                                                    
                                        
-                                         <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
-                                        <td>
+                                         <td class="hidden-xs">{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : '' }}</td>
+                                        <td class="hidden-xs">
                                             @if(\Auth::user()->cd_nivel_niv != 3)
                                                 <a href="{{ url('cliente/detalhes/'.$processo->cliente->cd_cliente_cli) }}">{{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}</a>
                                             @else
                                                 {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}
                                             @endif                                            
                                         </td>
-                                        <td>
+                                        <td class="hidden-xs">
                                             @if(\Auth::user()->cd_nivel_niv != 3)
                                                 @if(!empty($processo->correspondente->contaCorrespondente))
                                                     <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
@@ -159,8 +159,8 @@
                                             @endif
                                                                                                             
                                         </td>
-                                        <td>{{ $processo->nm_autor_pro }}</td>
-                                        <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
+                                        <td class="hidden-xs">{{ $processo->nm_autor_pro }}</td>
+                                        <td class="hidden-xs">{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
                                         <td class="center">                                            
                                             @role('colaborador|administrator')
                                                
