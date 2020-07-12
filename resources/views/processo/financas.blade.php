@@ -9,18 +9,20 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 box-titulo">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-group"></i> Processos <span>> Despesas </span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-            <a href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
-            <a title="Relatório" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
-            <a data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i> Acompanhamento</a> 
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
-            <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>          
-            <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 box-button">
+            <div class="boxBtnTopo sub-box-button">
+                <a href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+                <a title="Relatório" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
+                <a data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i> Acompanhamento</a> 
+                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>     
+                <a data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a>          
+                <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   
+            </div>
         </div>
     </div>
     <div class="row">
@@ -65,13 +67,13 @@
                                                             <tr>
                                                                 <td>{{ $despesa->nm_tipo_despesa_tds }}</td>
                                                                 <td>
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-12 col-lg-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
                                                                             <input type="text" class="form-control taxa-despesa" data-entidade="cliente" data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCL{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_despesa_cliente }}" value="{{ $despesa->vl_despesa_cliente }}">
                                                                         </div>                                                                               
                                                                     </div>     
-                                                                     <div class="onoffswitch-container col-md-7">     
+                                                                     <div class="onoffswitch-container col-md-12 col-lg-7">     
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
                                                                             <input type="checkbox" {{ (!empty($despesa->vl_despesa_cliente)) ?  ($despesa->fl_reembolsavel_processo_cliente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_cliente == 'S') ? 'checked' : '' }} class="onoffswitch-checkbox" name="DCL{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCL{{$despesa->cd_tipo_despesa_tds}}" data-vreembolso='{{$conta->fl_despesa_nao_reembolsavel_con}}' >
@@ -86,13 +88,13 @@
                                                                     </div>                                                                        
                                                                 </td>
                                                                 <td> 
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-12 col-lg-4">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">$</span>
                                                                             <input type="text" class="form-control taxa-despesa" data-entidade="correspondente"  data-despesa="{{$despesa->cd_tipo_despesa_tds}}" data-identificador="DCO{{$despesa->cd_tipo_despesa_tds}}" data-oldvalue="{{ $despesa->vl_despesa_correspondente }}" value="{{ $despesa->vl_despesa_correspondente }}">
                                                                         </div>
                                                                     </div>
-                                                                     <div class="onoffswitch-container col-md-7">
+                                                                     <div class="onoffswitch-container col-md-12 col-lg-7">
                                                                         <span class="onoffswitch-title">Reembolsável</span> 
                                                                         <span class="onoffswitch">
                                                                             <input type="checkbox" {{ (!empty($despesa->vl_despesa_correspondente)) ?  ($despesa->fl_reembolsavel_processo_correspondente == 'S') ? 'checked' : ''  : ($despesa->fl_reembolsavel_correspondente == 'S') ? 'checked' : '' }}  class="onoffswitch-checkbox" name="DCO{{$despesa->cd_tipo_despesa_tds}}" value="S" id="DCO{{$despesa->cd_tipo_despesa_tds}}" data-vreembolso='{{$conta->fl_despesa_nao_reembolsavel_con}}' >
