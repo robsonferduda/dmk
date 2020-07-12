@@ -25,55 +25,56 @@
                 <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md hidden-lg">Editar</span></a> 
            
             @endrole
+                @role('correspondente')
+
+                    @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
+
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
+
+                            <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                                {{ csrf_field() }}
+                                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                                <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i><span class="hidden-sm hidden-md">Finalizar Processo</span></button>
+                            </form>
+
+                        @else
+
+                            <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i><span class="hidden-sm hidden-md">Finalizar Processo</span></button>
+
+                        @endif
+
+                        @php
+
+                            $agora = \Carbon\Carbon::now(); 
+                            $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
+
+                            $prazo_recusa = $agora->diffInHours($prazo);                     
+
+                        @endphp
+                                                                      
+
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
+
+                            <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                                {{ csrf_field() }}
+                                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                                <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i><span class="hidden-sm hidden-md">Recusar Processo</span></button>
+                            </form>
+
+                        @else
+
+                            <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i><span class="hidden-sm hidden-md">Recusar Processo</span></button>
+
+                        @endif
+
+                    @endif
+
+                @endrole
             </div>
 
-            @role('correspondente')
-
-                @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
-
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
-
-                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                            <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                        </form>
-
-                    @else
-
-                        <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
-
-                    @endif
-
-                    @php
-
-                        $agora = \Carbon\Carbon::now(); 
-                        $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
-
-                        $prazo_recusa = $agora->diffInHours($prazo);                     
-
-                    @endphp
-                                                                  
-
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
-
-                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                            <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                        </form>
-
-                    @else
-
-                        <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
-
-                    @endif
-
-                @endif
-
-            @endrole
+            
         </div>
     </div>
     <div class="row">

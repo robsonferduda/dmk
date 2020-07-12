@@ -9,13 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-archive"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('home') }}" class="btn btn-default pull-right header-btn" ><i class="fa fa-desktop"></i> Mural</a>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-button-xs">
+            <div class="sub-box-button-xs">
+                 <a href="{{ url('home') }}" class="btn btn-default pull-right header-btn" ><i class="fa fa-desktop"></i> Mural</a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -26,7 +28,7 @@
             <div class="well">
                 <form action="{{ url('correspondente/processo/buscar/acompanhamento') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
-                    <section class="col col-md-4" style="padding-left: 0px;">  
+                    <section class="col col-xs-8 col-md-4" style="padding-left: 0px;">  
                         <div class="input-group" style="width: 100%">
                             <span class="input-group-addon">Nº Processo</span>
                             <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
