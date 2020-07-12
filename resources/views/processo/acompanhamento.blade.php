@@ -4,21 +4,22 @@
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
         <li>Processos</li>
-        <li>Listar</li>
+        <li>Acompanhamento</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-titulo">
+        <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-cog"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-button" >
-            <div class="sub-box-button">
-                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
+            <div class="sub-box-button-xs">
+                <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
+                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i><span class="hidden-xs hidden-sm">Pauta Diária</span></button>
             </div>
+           
         </div>
     </div>
     <div class="row container-acompanhamento">
