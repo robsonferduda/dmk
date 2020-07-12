@@ -9,13 +9,13 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 box-titulo-acompanhamento">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Acompanhamento </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
-
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 boxBtnTopo box-button-acompanhamento">
+            <div class="sub-box-button-acompanhamento">
             @role('administrator|colaborador')
 
                 <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamentos </a> 
@@ -25,6 +25,7 @@
                 <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
            
             @endrole
+            </div>
 
             @role('correspondente')
 
@@ -89,43 +90,49 @@
                 @endif
                 @role('administrator|colaborador')
                 <div class="well">
-                    <div style="float: left; margin-right: 10px;">
-                        <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
-                            {{ csrf_field() }}
-                            
+                    <div class="row div-status-buttons-acompanhamento">
+
+                        <div class="col-md-12 col-lg-5 col-xs-12 box-button-acompanhamento">
+                            <div class='sub-box-button-acompanhamento' >
+                                <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
+                                    {{ csrf_field() }}
                                 
-                                    <div style="float: left; width: 300px; margin-right: 10px;">
-                                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
-                                        <label class="label label-black" >Selecione um Status para o Processo</label>          
-                                        <select id="status" name="status" class="select2">
-                                            <option selected value="0">Selecione uma situação</option>
-                                            @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
-                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
-                                            @endforeach
-                                        </select> 
-                                    </div> 
-                                    <div  style="float: left; ">
-                                        <div style="" >
-                                            <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
-                                        </div>                                     
-                                    </div>                                 
-                            
-                        </form>
+                                            <div style="float: left; width: 350px; margin-right: 10px;">
+                                                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                                <label class="label label-black" >Selecione um Status para o Processo</label>          
+                                                <select id="status" name="status" class="select2">
+                                                    <option selected value="0">Selecione uma situação</option>
+                                                    @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
+                                                        <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                                    @endforeach
+                                                </select> 
+                                            </div> 
+                                            <div  style="float: left; ">
+                                                <div style="" >
+                                                    <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
+                                                </div>                                     
+                                            </div>                                 
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-7  col-xs-12  box-button-acompanhamento">
+                            <div class='sub-box-button-acompanhamento' >
+                                <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                                    <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
+                                </form>
+
+                                <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+
+                                @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
+                                    <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
+                                @endif
+                            </div>
+                        </div>
                     </div>
-
-                    <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                        <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
-                    </form>
-
-                    <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
-
-                    @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                        <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
-                    @endif
-
                     <div style="clear: both;"></div>
                 </div>
                 @endrole
@@ -136,7 +143,7 @@
                         <h2>Dados do Processo </h2>             
                     </header>                
                         <div class="col-md-12 box-loader">
-                            <div class="col-md-6">
+                            <div class="col-md-12 col-lg-6">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
@@ -246,7 +253,7 @@
                                 </fieldset>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-12 col-lg-6">
                                 
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend>
@@ -344,7 +351,7 @@
             
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="well">
-                    <div class="col-sm-12 col-md-6">
+                    <div class="col-sm-12 col-md-12 col-lg-6">
 
                         @if(Session::get('SESSION_NIVEL') != 3)
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
@@ -455,7 +462,7 @@
                     </div>
                     
                     @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-12 col-lg-6">
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
                             <div class="messaging">
                                 <div class="inbox_msg">

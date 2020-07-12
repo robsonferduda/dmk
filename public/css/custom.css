@@ -341,9 +341,29 @@ span.tags
     margin-top: 10px;
 }
 
+.div-status-buttons-acompanhamento{
+  padding-left: 15px;
+}
+
+.sub-box-button-acompanhamento a{
+    margin-right: 10px;
+}
+
 @media (max-width : 1200px) {
   .box-select2{
     margin-top: 20px;
+  }
+
+  .box-titulo-acompanhamento{
+    text-align: center;
+  }
+
+  .box-button-acompanhamento{
+    text-align: center;
+  }
+
+  .sub-box-button-acompanhamento{
+    display: inline-block;
   }
 }
 
