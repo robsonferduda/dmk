@@ -16,8 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
             <div class="sub-box-button-xs">
-                <a  title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
-                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i><span class="hidden-xs hidden-sm">Pauta Diária</span></button>
+                <a  title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
             </div>
            
         </div>
@@ -273,7 +273,11 @@
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
                             '<div class="row box-processo">'+
-                                '<div class="col-md-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+
+                                '<div class="col-xs-12 col-sm-12 col-md-12 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'</h6></div>'+
+                                '<div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong>'+data.nm_status_processo_conta_stp+'</strong></h6></div>'+
+                                '<div class="col-xs-12  col-sm-4 col-md-4 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
                                 '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
                                     '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
@@ -287,7 +291,7 @@
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                 '</div>'+
-                                '<div class="hidden-xs hidden-sm col-md-12 pull-right">'+
+                                '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
                                     '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
@@ -295,7 +299,7 @@
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
                                 '</div>'+
-                                '<div class="hidden-md hidden-lg col-md-6">'+
+                                '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
                                     '<a title="Clonar" class="icone-acompanhamento" class="dialog_clone" href=""><i class="fa fa-clone"></i> </a>'+

@@ -392,6 +392,7 @@ span.tags
     display: inline-block;
     margin-bottom: 10px;
   }
+
 }
 
 @media (max-width: 768px){
@@ -416,6 +417,11 @@ span.tags
 
   .sub-box-button-xs{
     display: inline-block;
+  }
+
+  .icone-acompanhamento{ 
+    font-size: 24px;
+    margin-right: 10px;
   }
 }
 
