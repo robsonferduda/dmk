@@ -143,7 +143,7 @@
                                         <a href="javascript:void(0);" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a title="Finalizar Processo"  href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i><span class="hidden-xs hidden-sm"> Finalizar Processo</span></a>
+                                                <a title="Finalizar Processo"  href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
                                             </li>
                                             <li>
                                                 <a id="cancelarProcesso" title="Cancelar Processo" href="#"><i class="fa fa-ban"></i> Cancelar Processo</a>      
