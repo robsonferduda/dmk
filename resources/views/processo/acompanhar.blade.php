@@ -17,10 +17,9 @@
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5 box-button">
             <div class="boxBtnTopo sub-box-button">
                 @role('administrator|colaborador')
-                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento</a> 
-                    
-                    <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
-                    <div class="dropdown pull-right boxBtnTopo" style="display: inline;">
+
+
+                    <div class="dropdown pull-right boxBtnTopo" style="display: inline;margin-right: 15px;">
                         <a href="javascript:void(0);" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li>
@@ -36,7 +35,11 @@
                         </ul>
                     </div>   
 
-                    @endrole
+                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento</a> 
+                    
+                    <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
+                    
+                @endrole
                     @role('correspondente')
 
                     @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
