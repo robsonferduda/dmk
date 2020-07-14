@@ -345,6 +345,12 @@ span.tags
     float: right;
 }
 
+.nobreak {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width : 1550px) {
   
   .box-button-1520{
@@ -423,6 +429,17 @@ span.tags
     font-size: 24px;
     margin-right: 10px;
   }
+
+  .btn-responsive {
+    padding:6px 6px;
+    font-size:90%;
+    line-height: 1;
+  }
+
+  .btn-m-bottom{
+    margin-bottom: 3px;
+  }
+
 }
 
 @media (max-width: 435px){

@@ -20,7 +20,7 @@
 
 
                     <div class="dropdown pull-right boxBtnTopo" style="display: inline;margin-right: 15px;">
-                        <a href="javascript:void(0);" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                        <a href="javascript:void(0);" class="btn btn-info dropdown-toggle btn-responsive" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a title="Novo" href="{{ url('processos/novo') }}" ><i class="fa fa-plus fa-lg"></i> Novo</a> 
@@ -35,9 +35,9 @@
                         </ul>
                     </div>   
 
-                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamento</a> 
+                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn btn-responsive"><i class="fa fa-list fa-lg"></i> Acompanhamento</a> 
                     
-                    <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
+                    <a title="Despesas" class="btn btn-warning pull-right header-btn btn-responsive" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
                     
                 @endrole
                     @role('correspondente')
@@ -108,8 +108,8 @@
                     <div class="well">
                         <div class="row">
 
-                            <div class="col-sm-7 col-md-12 col-lg-7 col-xs-12 box-button-xs">
-                                <div class='sub-box-button-xs' >
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button">
+                                <div class='sub-box-button' >
                                     <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
                                         {{ csrf_field() }}
 
@@ -132,28 +132,15 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="col-sm-5 col-md-12 col-lg-5 col-xs-12 box-button-xs" >
-                                <div class="sub-box-button-xs marginTop17 sub-box-button-status-md sub-box-button-status-lg">
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button" >
+                                <div class="sub-box-button marginTop17 sub-box-button-status-md sub-box-button-status-lg">
                                    
                                     @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                                        <a title="Notificar Correspondente" class="btn btn-default  msg_processamento" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
+                                        <a title="Notificar Correspondente" class="btn btn-default  msg_processamento btn-responsive btn-m-bottom" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
                                     @endif
-
-                                        
-                                    
-                                    
-                                    <div class="dropdown" style="display: inline-block;text-align: center;">
-                                        <a href="javascript:void(0);" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a title="Finalizar Processo"  href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
-                                            </li>
-                                            <li>
-                                                <a id="cancelarProcesso" title="Cancelar Processo" href="#"><i class="fa fa-ban"></i> Cancelar Processo</a>      
-                                            </li>
-                                        </ul>
-                                    </div> 
-                                    
+                                                                        
+                                     <a title="Finalizar Processo"  class="btn btn-success btn-responsive" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+                                                               
                                 </div>
                             </div>
                         </div>
@@ -381,10 +368,10 @@
 
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                     <div class="well">
-                        <div class="col-sm-12 col-md-12 col-lg-6">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
 
                             @if(Session::get('SESSION_NIVEL') != 3)
-                            <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
+                            <h4 class="nobreak"><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
                             @else
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens</h4>
                             @endif
@@ -492,7 +479,7 @@
                         </div>
 
                         @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
-                        <div class="col-sm-12 col-md-12 col-lg-6">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
                             <div class="messaging">
                                 <div class="inbox_msg">
@@ -579,6 +566,10 @@
                                 </div>
                             </div>
                             @endif
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <a id="cancelarProcesso" title="Cancelar Processo" class="btn btn-danger pull-right btn-responsive" href="#"><i class="fa fa-ban"></i> Cancelar Processo</a>  
+
+                            </div>
                             <div style="clear: both;"></div>
                         </div>
                     </article>
