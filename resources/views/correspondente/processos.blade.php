@@ -30,7 +30,7 @@
                     {{ csrf_field() }}
                     <section class="col col-xs-8 col-md-4" style="padding-left: 0px;">  
                         <div class="input-group" style="width: 100%">
-                            <span class="input-group-addon">Nº Processo</span>
+                            <span class="input-group-addon hidden-xs">Nº Processo</span>
                             <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                         </div>            
                     </section>

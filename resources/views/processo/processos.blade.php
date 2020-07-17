@@ -16,8 +16,10 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs">
             <div class="boxBtnTopo sub-box-button-xs">
-                <a class="btn btn-default pull-right" title="Relatórios" href="{{ url('processos/relatorios') }}"><i class="fa fa-file-pdf-o"></i><span class="hidden-xs hidden-sm">Relatórios</span></a>
-                <a class="btn btn-success pull-right" title="Novo Processo" href="{{ url('processos/novo') }}"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
+                @role('colaborador|administrator')
+                    <a class="btn btn-default pull-right" title="Relatórios" href="{{ url('processos/relatorios') }}"><i class="fa fa-file-pdf-o"></i><span class="hidden-xs hidden-sm">Relatórios</span></a>
+                    <a class="btn btn-success pull-right" title="Novo Processo" href="{{ url('processos/novo') }}"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm">Novo</span></a>
+                @endrole
             </div>
         </div>
     </div>

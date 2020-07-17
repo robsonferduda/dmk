@@ -50,12 +50,12 @@
                         {{ csrf_field() }}
                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
                         <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                        <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i><span class="hidden-sm hidden-md">Finalizar Processo</span></button>
+                        <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
                     </form>
 
                     @else
 
-                    <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i><span class="hidden-sm hidden-md">Finalizar Processo</span></button>
+                    <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
 
                     @endif
 
@@ -75,12 +75,12 @@
                         {{ csrf_field() }}
                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
                         <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                        <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i><span class="hidden-sm hidden-md">Recusar Processo</span></button>
+                        <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
                     </form>
 
                     @else
 
-                    <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i><span class="hidden-sm hidden-md">Recusar Processo</span></button>
+                    <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
 
                     @endif
 
@@ -566,10 +566,12 @@
                                 </div>
                             </div>
                             @endif
+                            @role('administrator|colaborador')
                             <div class="col-sm-12 col-md-12 col-lg-12">
                                 <a id="cancelarProcesso" title="Cancelar Processo" class="btn btn-danger pull-right btn-responsive" href="#"><i class="fa fa-ban"></i> Cancelar Processo</a>  
 
                             </div>
+                            @endrole
                             <div style="clear: both;"></div>
                         </div>
                     </article>
