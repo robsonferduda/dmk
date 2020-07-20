@@ -336,3 +336,115 @@ span.tags
 .f-right {
     float: right;
 }
+
+.box-select2{
+    margin-top: 10px;
+}
+
+.sub-box-button-status-lg{
+    float: right;
+}
+
+.nobreak {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width : 1550px) {
+  
+  .box-button-1520{
+    text-align: center;
+    margin-bottom: 10px;
+    width: 100%
+  }
+
+  .sub-box-button-1520{
+    display: inline-block;
+  }
+
+}
+
+@media (max-width : 1200px) {
+  .box-select2{
+    margin-top: 20px;
+  }
+
+  .status-processo-acompanhamento-md{
+    width: 80%
+  }
+
+  .sub-box-button-status-md{
+    float: initial;
+  }
+
+}
+
+@media (max-width: 992px){
+  .box-home{
+    width: 50%;
+    left: 25%;
+  }
+
+  .box-titulo{
+    text-align: center;
+  }
+
+  .box-button{
+    text-align: center;
+  }
+
+  .sub-box-button{
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+}
+
+@media (max-width: 768px){
+  .link-cadastro-correspondente{
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .header-register{
+    text-align: center !important;
+    height: 100% !important;
+  }
+
+  .header-register:last-of-type{
+    margin-bottom: 10px !important;
+  }  
+
+  .box-button-xs{
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .sub-box-button-xs{
+    display: inline-block;
+  }
+
+  .icone-acompanhamento{ 
+    font-size: 24px;
+    margin-right: 10px;
+  }
+
+  .btn-responsive {
+    padding:6px 6px;
+    font-size:90%;
+    line-height: 1;
+  }
+
+  .btn-m-bottom{
+    margin-bottom: 3px;
+  }
+
+}
+
+@media (max-width: 435px){
+
+  .btn-m-bottom{
+    margin-bottom: 3px;
+  }
+}

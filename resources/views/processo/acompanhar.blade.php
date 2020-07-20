@@ -9,134 +9,158 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="hidden-xs hidden-sm col-md-6 col-lg-7">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o"></i> Processos <span>> Acompanhamento </span> <span>> {{ $processo->nu_processo_pro }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 boxBtnTopo">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5 box-button">
+            <div class="boxBtnTopo sub-box-button">
+                @role('administrator|colaborador')
 
-            @role('administrator|colaborador')
 
-                <a title="Listar Processos" href="{{ url('processos/acompanhamento') }}" style="margin-right: 15px;" class="btn btn-default pull-right header-btn"><i class="fa fa-list fa-lg"></i> Acompanhamentos </a> 
-                <a title="Relatório" class="btn btn-default pull-right header-btn " href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
-                <a title="Despesas" class="btn btn-warning pull-right header-btn" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>
-                <a href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a> 
-                <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar</a> 
-           
-            @endrole
+                    <div class="dropdown pull-right boxBtnTopo" style="display: inline;margin-right: 15px;">
+                        <a href="javascript:void(0);" class="btn btn-info dropdown-toggle btn-responsive" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a title="Novo" href="{{ url('processos/novo') }}" ><i class="fa fa-plus fa-lg"></i> Novo</a> 
+                            </li>
+                            <li>
+                                <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit fa-lg"></i> Editar</a>
+                            </li>
+                            <li>
+                                <a title="Relatório Financeiro" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
+                            </li>
 
-            @role('correspondente')
+                        </ul>
+                    </div>   
 
-                @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
+                    <a title="Acompanhamento" href="{{ url('processos/acompanhamento') }}" class="btn btn-default pull-right header-btn btn-responsive"><i class="fa fa-list fa-lg"></i> Acompanhamento</a> 
+                    
+                    <a title="Despesas" class="btn btn-warning pull-right header-btn btn-responsive" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
+                    
+                @endrole
+                    @role('correspondente')
+
+                    @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
                     @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
 
-                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                            <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                        </form>
+                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                        <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                    </form>
 
                     @else
 
-                        <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+                    <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
 
                     @endif
 
                     @php
 
-                        $agora = \Carbon\Carbon::now(); 
-                        $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
+                    $agora = \Carbon\Carbon::now(); 
+                    $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
 
-                        $prazo_recusa = $agora->diffInHours($prazo);                     
+                    $prazo_recusa = $agora->diffInHours($prazo);                     
 
                     @endphp
-                                                                  
+
 
                     @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
 
-                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                            <button class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                        </form>
+                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                        <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                    </form>
 
                     @else
 
-                        <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
+                    <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
 
                     @endif
 
-                @endif
+                    @endif
 
-            @endrole
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-12">
-                @include('layouts/messages')
+                    @endrole
+                </div>
+
+
             </div>
-            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::CANCELADO)
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    @include('layouts/messages')
+                </div>
+                <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::CANCELADO)
                     <div class="alert alert-danger fade in">
                         <i class="fa-fw fa fa-times"></i>
                         <strong>Processo Cancelado!</strong> O processo está cancelado.
                     </div>
-                @endif
-                @role('administrator|colaborador')
-                <div class="well">
-                    <div style="float: left; margin-right: 10px;">
-                        <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
-                            {{ csrf_field() }}
-                            
-                                
-                                    <div style="float: left; width: 300px; margin-right: 10px;">
-                                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
-                                        <label class="label label-black" >Selecione um Status para o Processo</label>          
-                                        <select id="status" name="status" class="select2">
-                                            <option selected value="0">Selecione uma situação</option>
-                                            @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
-                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
-                                            @endforeach
-                                        </select> 
-                                    </div> 
-                                    <div  style="float: left; ">
-                                        <div style="" >
-                                            <button class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i> Alterar Status</button>
-                                        </div>                                     
-                                    </div>                                 
-                            
-                        </form>
-                    </div>
-
-                    <form style="display: inline; float: left; margin-top: 17px;"  action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                        <button class="btn btn-danger" type="submit"><i class="fa fa-ban"></i> Cancelar Processo</button>
-                    </form>
-
-                    <a class="btn btn-success marginTop17" style="margin-left: 10px;" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
-
-                    @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                        <a title="Notificar Correspondente" class="btn btn-default marginTop17 msg_processamento" style="margin-left: 10px;" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>          
                     @endif
+                    @role('administrator|colaborador')
+                    <div class="well">
+                        <div class="row">
 
-                    <div style="clear: both;"></div>
-                </div>
-                @endrole
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button">
+                                <div class='sub-box-button' >
+                                    <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
+                                        {{ csrf_field() }}
 
-                <div class="jarviswidget jarviswidget-sortable">
-                    <header role="heading" class="ui-sortable-handle">
-                        <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                        <h2>Dados do Processo </h2>             
-                    </header>                
+                                        <div style="float: left;  margin-right: 10px;" class="status-processo-acompanhamento-md">
+                                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                            <label class="label label-black" >Selecione um Status para o Processo</label>          
+                                            <select id="status" name="status" class="select2">
+                                                <option selected value="0">Selecione uma situação</option>
+                                                @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
+                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                                @endforeach
+                                            </select> 
+                                        </div> 
+                                        <div class="box-button-xs"  >
+                                            <div class="sub-box-button-xs" >
+                                                <button  title="Alterar Status" class="btn btn-primary marginTop17" type="submit"><i class="fa fa-refresh"></i><span class="hidden-xs hidden-sm"> Alterar Status</span></button>
+                                            </div>                                     
+                                        </div>                                 
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button" >
+                                <div class="sub-box-button marginTop17 sub-box-button-status-md sub-box-button-status-lg">
+                                   
+                                    @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
+                                        <a title="Notificar Correspondente" class="btn btn-default  msg_processamento btn-responsive btn-m-bottom" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
+                                    @endif
+                                                                        
+                                     <a title="Finalizar Processo"  class="btn btn-success btn-responsive" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+                                                               
+                                </div>
+                            </div>
+                        </div>
+                        <form id="cancelarProcessoForm" action="{{ url('processo/atualizar-status') }}" method="POST">
+                                                    {{ csrf_field() }}
+                                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                                        
+                                    </form>  
+                        <div style="clear: both;"></div>
+                        </div>
+                    @endrole
+
+                    <div class="jarviswidget jarviswidget-sortable">
+                        <header role="heading" class="ui-sortable-handle">
+                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                            <h2>Dados do Processo </h2>             
+                        </header>                
                         <div class="col-md-12 box-loader">
-                            <div class="col-md-6">
+                            <div class="col-md-12 col-lg-6">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
@@ -145,14 +169,14 @@
                                         <input type="hidden" name="msg_correspondente" id="msg_correspondente" value="{{ $processo->cd_correspondente_cor }}">
                                         <p>
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
-                                           
+
                                                 <li>
                                                     <strong>Nº Processo: </strong> <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                                 </li>
                                                 @role('administrator|colaborador') 
-                                                    <li>
-                                                        <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
-                                                    </li>
+                                                <li>
+                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
+                                                </li>
                                                 @endrole
                                                 <li>
                                                     <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
@@ -175,16 +199,16 @@
                                                 </li>
                                                 @endrole 
                                                 @role('administrator|colaborador')
-                                                    <li>
-                                                        <strong>Responsável: </strong>
-                                                        @if(!empty($processo->responsavel))
-                                                         <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
-                                                        @else
-                                                            <span>Não Alocado</span>
-                                                        @endif
-                                                    </li>
+                                                <li>
+                                                    <strong>Responsável: </strong>
+                                                    @if(!empty($processo->responsavel))
+                                                    <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
+                                                    @else
+                                                    <span>Não Alocado</span>
+                                                    @endif
+                                                </li>
                                                 @endrole                                         
-                                                                                    
+
                                                 <li>
                                                     <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
                                                 </li>
@@ -195,12 +219,12 @@
                                                     <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : 'Não informada' }}
                                                 </li>
                                                 @role('administrator|colaborador')
-                                                    <li>
-                                                        <strong>Correspondente: </strong> 
-                                                        @if(!empty($processo->correspondente->contaCorrespondente))
-                                                            <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
-                                                        @endif
-                                                    </li> 
+                                                <li>
+                                                    <strong>Correspondente: </strong> 
+                                                    @if(!empty($processo->correspondente->contaCorrespondente))
+                                                    <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
+                                                    @endif
+                                                </li> 
                                                 @endrole    
                                                 <li>
                                                     <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : 'Não informado' }}
@@ -224,21 +248,21 @@
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
                                                 @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
-                                                    <h6 style="font-weight: 400;">
-                                                        DADOS DA AUDIÊNCIA: 
-                                                        @role('administrator|colaborador')
-                                                            <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
-                                                        @endrole
-                                                        @role('correspondente') 
-                                                            <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
-                                                        @endrole
-                                                    </h6>
-                                                    <li>
-                                                        <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
-                                                    </li>
+                                                <h6 style="font-weight: 400;">
+                                                    DADOS DA AUDIÊNCIA: 
+                                                    @role('administrator|colaborador')
+                                                    <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
+                                                    @endrole
+                                                    @role('correspondente') 
+                                                    <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
+                                                    @endrole
+                                                </h6>
+                                                <li>
+                                                    <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
+                                                </li>
+                                                <li>
+                                                    <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
+                                                </li>
                                                 @endif
                                             </ul>
                                         </p> 
@@ -246,216 +270,216 @@
                                 </fieldset>
                             </div>
 
-                            <div class="col-md-6">
-                                
+                            <div class="col-md-12 col-lg-6">
+
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend>
                                         <i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong>
                                         @if(count($processo->anexos))
-                                            <a href="{{ url('processos/arquivos/download/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><span>Baixar Todos</span></a>
+                                        <a href="{{ url('processos/arquivos/download/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><span>Baixar Todos</span></a>
                                         @endif
                                     </legend>
 
                                     <div id="filepicker">
-                                            <!-- Button Bar -->
-                                            <div class="button-bar">
+                                        <!-- Button Bar -->
+                                        <div class="button-bar">
 
-                                                <div class="btn btn-success btn-upload-plugin fileinput">
-                                                    <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                    <input type="file" name="files[]" id="input-file" multiple>
-                                                </div>   
+                                            <div class="btn btn-success btn-upload-plugin fileinput">
+                                                <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                <input type="file" name="files[]" id="input-file" multiple>
+                                            </div>   
 
-                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                    <i class="fa fa-upload"></i> Enviar Todos
-                                                </button>                  
+                                            <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                <i class="fa fa-upload"></i> Enviar Todos
+                                            </button>                  
 
-                                            </div>
+                                        </div>
 
-                                            <!-- Listar Arquivos -->
-                                            <div class="table-responsive div-table">
-                                                <table class="table table-upload">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="column-name">Nome do Arquivo</th>
-                                                            <th class="column-size center">Tamanho</th>                                                            
-                                                            <th class="center">Excluir</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="files">
-                                                        
-                                                    </tbody>                        
-                                                </table>
-                                            </div>
+                                        <!-- Listar Arquivos -->
+                                        <div class="table-responsive div-table">
+                                            <table class="table table-upload">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="column-name">Nome do Arquivo</th>
+                                                        <th class="column-size center">Tamanho</th>                                                            
+                                                        <th class="center">Excluir</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="files">
 
-                                            <!-- Drop Zone -->
-                                            <div class="drop-window">
-                                                <div class="drop-window-content">
-                                                    <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
-                                                </div>
+                                                </tbody>                        
+                                            </table>
+                                        </div>
+
+                                        <!-- Drop Zone -->
+                                        <div class="drop-window">
+                                            <div class="drop-window-content">
+                                                <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
                                             </div>
                                         </div>
+                                    </div>
 
                                 </fieldset>
 
                                 @role('administrator|colaborador')
-                                    
-                                        <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
-                                            <div class="onoffswitch-container">
-                                                <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
-                                                <span class="onoffswitch">
-                                                    <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
-                                                    <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
-                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                        <span class="onoffswitch-switch"></span>
-                                                    </label> 
-                                                </span> 
-                                            </div>
-                                        </section>
 
-                                        <h4 class="label-anexos-escritorio {{ (count($processo->anexos) > 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
-                    
+                                <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
+                                            <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
+                                </section>
+
+                                <h4 class="label-anexos-escritorio {{ (count($processo->anexos) > 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
+
                                 @endrole
 
                                 @role('correspondente') 
-                                    
-                                        <section class="box-anexos-correspondente {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
-                                            <div class="onoffswitch-container">
-                                                <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
-                                                <span class="onoffswitch">
-                                                    <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                                    <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                        <span class="onoffswitch-switch"></span>
-                                                    </label> 
-                                                </span> 
-                                            </div>
-                                        </section>
+
+                                <section class="box-anexos-correspondente {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                            <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
+                                </section>
                                 
                                 @endrole
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
-                                        
+
                                     </div>
                                 </section>
                             </div>
                         </div>             
-                </div>
-            </article>
-            
-            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                <div class="well">
-                    <div class="col-sm-12 col-md-6">
+                    </div>
+                </article>
 
-                        @if(Session::get('SESSION_NIVEL') != 3)
-                            <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
-                        @else
+                <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                    <div class="well">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            @if(Session::get('SESSION_NIVEL') != 3)
+                            <h4 class="nobreak"><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Correspondente</h4>
+                            @else
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens</h4>
-                        @endif
+                            @endif
 
-                        <div class="messaging">
-                            <div class="inbox_msg">
-                                <div class="mesgs">
-                                    <div class="msg_history msg_history_externo">
+                            <div class="messaging">
+                                <div class="inbox_msg">
+                                    <div class="mesgs">
+                                        <div class="msg_history msg_history_externo">
 
-                                        @if(count($mensagens_externas) > 0)
+                                            @if(count($mensagens_externas) > 0)
                                             @foreach($mensagens_externas as $mensagem)                                                
 
-                                                    @if($mensagem->remetente_prm == Auth::user()->cd_conta_con)
-                                                        
-                                                        <div class="outgoing_msg">
-                                                          <div class="sent_msg">
-                                                            @if($mensagem->deleted_at)
-                                                                <p style="background: #e8e7e7 !important; color: #686868;">
-                                                                    Mensagem excluída
-                                                                </p>
-                                                            @else
-                                                                <p>
-                                                                    {{ $mensagem->texto_mensagem_prm }}
-                                                                </p>
-                                                                <span class="time_date">
-                                                                    <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
-                                                                    {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
-                                                                </span>
-                                                            @endif
-                                                        </div>
-                                                        </div>
-                                                        
-                                                    @else
-                                                         <div class="incoming_msg">
-                                                            <div class="incoming_msg_img">                                                                
-                                                                @if($mensagem->entidadeRemetenteColaborador)
-                                                                    <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
-                                                                @else
-                                                                    @if($mensagem->entidadeRemetente and file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
-                                                                        <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
-                                                                    @else
-                                                                        <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
-                                                                    @endif
-                                                                @endif
-                                                            </div>
-                                                            <div class="received_msg">
-                                                                <div class="received_withd_msg">
-                                                                    @if($mensagem->deleted_at)
-                                                                        <p style="background: #e8e7e7 !important; color: #686868;">
-                                                                            Mensagem excluída
-                                                                        </p>
-                                                                    @else
-                                                                        <p>
-                                                                            {{ $mensagem->texto_mensagem_prm }}
-                                                                        </p>
-                                                                        <span class="time_date">
-                                                                            <strong>
-                                                                                @if($mensagem->entidadeRemetenteColaborador)
-                                                                                    {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
-                                                                                @else
-                                                                                    {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
-                                                                                @endif                                                                               
-                                                                            </strong>
-                                                                            disse em 
-                                                                            {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
-                                                                        </span>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-
-                                               
-                                           @endforeach
-                                        @else
+                                            @if($mensagem->remetente_prm == Auth::user()->cd_conta_con)
 
                                             <div class="outgoing_msg">
-                                                <div class="sent_msg">
+                                              <div class="sent_msg">
+                                                @if($mensagem->deleted_at)
+                                                <p style="background: #e8e7e7 !important; color: #686868;">
+                                                    Mensagem excluída
+                                                </p>
+                                                @else
+                                                <p>
+                                                    {{ $mensagem->texto_mensagem_prm }}
+                                                </p>
+                                                <span class="time_date">
+                                                    <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                    {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                </span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        @else
+                                        <div class="incoming_msg">
+                                            <div class="incoming_msg_img">                                                                
+                                                @if($mensagem->entidadeRemetenteColaborador)
+                                                <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
+                                                @else
+                                                @if($mensagem->entidadeRemetente and file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png')) 
+                                                <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="user_profile"> 
+                                                @else
+                                                <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
+                                                @endif
+                                                @endif
+                                            </div>
+                                            <div class="received_msg">
+                                                <div class="received_withd_msg">
+                                                    @if($mensagem->deleted_at)
+                                                    <p style="background: #e8e7e7 !important; color: #686868;">
+                                                        Mensagem excluída
+                                                    </p>
+                                                    @else
+                                                    <p>
+                                                        {{ $mensagem->texto_mensagem_prm }}
+                                                    </p>
+                                                    <span class="time_date">
+                                                        <strong>
+                                                            @if($mensagem->entidadeRemetenteColaborador)
+                                                            {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
+                                                            @else
+                                                            {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                            @endif                                                                               
+                                                        </strong>
+                                                        disse em 
+                                                        {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                    </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+
+
+                                        @endforeach
+                                        @else
+
+                                        <div class="outgoing_msg">
+                                            <div class="sent_msg">
                                                 <p>Nenhum histórico de mensagens</p>
                                                 <span class="time_date"></span> </div>
                                             </div>
 
-                                        @endif
+                                            @endif
 
-                                    </div>
+                                        </div>
 
-                                    <div class="checkbox">
-                                      
-                                        @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
+                                        <div class="checkbox">
+
+                                            @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
                                             <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter" id="fl_envio_enter" value="S" checked="checked">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
-                                        @else
+                                            @else
                                             <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter" id="fl_envio_enter" value="S">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
-                                        @endif
-                                    </div>
+                                            @endif
+                                        </div>
 
-                                    <div class="type_msg">
-                                        <div class="input_msg_write">
-                                            <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>                                         
-                                            <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                        <div class="type_msg">
+                                            <div class="input_msg_write">
+                                                <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>                                         
+                                                <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>                            
+                                </div>                            
+                            </div>
                         </div>
-                    </div>
-                    
-                    @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
-                        <div class="col-sm-12 col-md-6">
+
+                        @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <h4><i class="fa fa-envelope marginBottom5"></i> Histórico de Mensagens Escritório</h4>
                             <div class="messaging">
                                 <div class="inbox_msg">
@@ -463,179 +487,185 @@
                                         <div class="msg_history msg_history_interno">
 
                                             @if(count($mensagens_internas) > 0)
-                                                @foreach($mensagens_internas as $mensagem)                                                
+                                            @foreach($mensagens_internas as $mensagem)                                                
 
-                                                    
-                                                        @if($mensagem->remetente_prm == Auth::user()->cd_conta_con or $mensagem->remetente_prm == Session::get('SESSION_CD_ENTIDADE'))
-                                                            
-                                                            <div class="outgoing_msg">
-                                                                <div class="sent_msg">
-                                                                    @if($mensagem->deleted_at)
-                                                                        <p style="background: #e8e7e7 !important; color: #686868;">
-                                                                            Mensagem excluída
-                                                                        </p>
-                                                                    @else
-                                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                        <span class="time_date">
-                                                                            <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
-                                                                            {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
-                                                                        </span> 
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                            
-                                                        @else
-                                                           
-                                                                 <div class="incoming_msg">
-                                                                    <div class="incoming_msg_img">                                                            
-                                                                        @if($mensagem->entidadeInterna and file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png')) 
-                                                                            <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="user_profile"> 
-                                                                        @else
-                                                                            <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="received_msg">
-                                                                        <div class="received_withd_msg">
-                                                                            @if($mensagem->deleted_at)
-                                                                                <p style="background: #e8e7e7 !important; color: #686868;">
-                                                                                    Mensagem excluída
-                                                                                </p>
-                                                                            @else
-                                                                                <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                                                <span class="time_date"><strong>{{ ($mensagem->entidadeInterna and $mensagem->entidadeInterna->usuario) ? $mensagem->entidadeInterna->usuario->name : 'Não definido' }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            
-                                                        @endif
-                                                    
-                                                   
-                                               @endforeach
+
+                                            @if($mensagem->remetente_prm == Auth::user()->cd_conta_con or $mensagem->remetente_prm == Session::get('SESSION_CD_ENTIDADE'))
+
+                                            <div class="outgoing_msg">
+                                                <div class="sent_msg">
+                                                    @if($mensagem->deleted_at)
+                                                    <p style="background: #e8e7e7 !important; color: #686868;">
+                                                        Mensagem excluída
+                                                    </p>
+                                                    @else
+                                                    <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                    <span class="time_date">
+                                                        <a href="#" data-url="{{ url('processo/mensagem/excluir/'.\Crypt::encrypt($mensagem->cd_processo_mensagem_prm)) }}" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a>
+                                                        {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
+                                                    </span> 
+                                                    @endif
+                                                </div>
+                                            </div>
+
                                             @else
 
-                                                <div class="outgoing_msg">
-                                                    <div class="sent_msg">
+                                            <div class="incoming_msg">
+                                                <div class="incoming_msg_img">                                                            
+                                                    @if($mensagem->entidadeInterna and file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png')) 
+                                                    <img class="img_msg" src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="user_profile"> 
+                                                    @else
+                                                    <img class="img_msg" src="{{ asset('img/users/user.png') }}" alt="user_profile"> 
+                                                    @endif
+                                                </div>
+                                                <div class="received_msg">
+                                                    <div class="received_withd_msg">
+                                                        @if($mensagem->deleted_at)
+                                                        <p style="background: #e8e7e7 !important; color: #686868;">
+                                                            Mensagem excluída
+                                                        </p>
+                                                        @else
+                                                        <p>{{ $mensagem->texto_mensagem_prm }}</p>
+                                                        <span class="time_date"><strong>{{ ($mensagem->entidadeInterna and $mensagem->entidadeInterna->usuario) ? $mensagem->entidadeInterna->usuario->name : 'Não definido' }}</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @endif
+
+
+                                            @endforeach
+                                            @else
+
+                                            <div class="outgoing_msg">
+                                                <div class="sent_msg">
                                                     <p>Nenhum histórico de mensagens</p>
                                                     <span class="time_date"></span> </div>
                                                 </div>
 
-                                            @endif
-                                           
-                                        </div>
-                                        <div class="checkbox">
-                                          
-                                            @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
+                                                @endif
+
+                                            </div>
+                                            <div class="checkbox">
+
+                                                @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
                                                 <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S" checked="checked">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
-                                            @else
+                                                @else
                                                 <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
-                                            @endif
-                                        </div>
-                                        <div class="type_msg">
-                                            <div class="input_msg_write">
-                                                <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
-                                            <button class="msg_send_btn msg_send_interno" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                                @endif
+                                            </div>
+                                            <div class="type_msg">
+                                                <div class="input_msg_write">
+                                                    <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
+                                                    <button class="msg_send_btn msg_send_interno" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @endif
+                            @role('administrator|colaborador')
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <a id="cancelarProcesso" title="Cancelar Processo" class="btn btn-danger pull-right btn-responsive" href="#"><i class="fa fa-ban"></i> Cancelar Processo</a>  
+
+                            </div>
+                            @endrole
+                            <div style="clear: both;"></div>
                         </div>
-                    @endif
-                    <div style="clear: both;"></div>
+                    </article>
+
                 </div>
-            </article>
-            
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade modal_top_alto" id="modalUpload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
-            @csrf
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-files-o"></i> Adicionar Arquivos</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 upload-msg marginBottom5"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">
-                            <div class="well" style="padding: 5px;">
-                            <p>
-                                <h5 class="center" style="margin-bottom: 5px;"><strong class="text-info">Instruções sobre os arquivos</strong></h5>
-                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Quantidade de arquivos</strong>: Você pode enviar quantos arquivos desejar, basta clicar em "Escolher arquivos" e selecionar os arquvos que deseja.</h4>
-                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Tamanho dos arquivos</strong>: O sistema limita o envio em 40MB por arquivo.</h4>
-                                <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Formato dos arquivos</strong>: São permitidos arquivos de imagens (png, jpg, jpeg), mídias (mp3), textos (doc, docx, pdf, txt) e planilhas (xls, xlsx, csv).</h4>
-                                <h5 class="center"><strong class="text-danger">O tamanho e quantidade dos arquivos interfere diretamente no tempo de envio dos mesmos.</strong></h5>
-                            </p>
+        <div class="modal fade modal_top_alto" id="modalUpload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" id="frm-anexo" action="{{ url('file-upload') }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-files-o"></i> Adicionar Arquivos</h4>
                         </div>
-                            <div class="form-group">
-                                <input name="file[]" id="poster" type="file" multiple class="form-control"><br/>
-                                <div class="progress progress-striped active">
-                                    <div class="progress-bar bg-color-darken" role="progressbar" style="width: 0%"><span class="percent"></span></div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12 upload-msg marginBottom5"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">
+                                    <div class="well" style="padding: 5px;">
+                                        <p>
+                                            <h5 class="center" style="margin-bottom: 5px;"><strong class="text-info">Instruções sobre os arquivos</strong></h5>
+                                            <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Quantidade de arquivos</strong>: Você pode enviar quantos arquivos desejar, basta clicar em "Escolher arquivos" e selecionar os arquvos que deseja.</h4>
+                                            <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Tamanho dos arquivos</strong>: O sistema limita o envio em 40MB por arquivo.</h4>
+                                            <h4 style="font-size: 15px; margin-bottom: 5px;"><strong>Formato dos arquivos</strong>: São permitidos arquivos de imagens (png, jpg, jpeg), mídias (mp3), textos (doc, docx, pdf, txt) e planilhas (xls, xlsx, csv).</h4>
+                                            <h5 class="center"><strong class="text-danger">O tamanho e quantidade dos arquivos interfere diretamente no tempo de envio dos mesmos.</strong></h5>
+                                        </p>
+                                    </div>
+                                    <div class="form-group">
+                                        <input name="file[]" id="poster" type="file" multiple class="form-control"><br/>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar bg-color-darken" role="progressbar" style="width: 0%"><span class="percent"></span></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-upload"></i> Enviar Arquivo</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-upload"></i> Enviar Arquivo</button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
-<div class="modal fade modal_top_alto" id="modalFinalizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="frm-anexo" action="{{ url('processo/finalizar-processo') }}" method="POST">
-            @csrf
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-check"></i> Finalizar Processo</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 upload-msg marginBottom5"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input type="hidden" name="processo" value="{{ $processo->cd_processo_pro }}">
-                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}"> 
-                            <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> A notificação do cliente é opcional. Caso a opção não seja marcada o processo será finalizado mesmo assim.</label>    
-                            <div class="form-group">                                                    
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" class="checkbox" name="fl_envio_arquivo" id="fl_envio_arquivo">
-                                        <span>Notificar o cliente sobre a finalização do processo (Opcional)</span>
-                                    </label>
-                                </div>
+        <div class="modal fade modal_top_alto" id="modalFinalizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="frm-anexo" action="{{ url('processo/finalizar-processo') }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-check"></i> Finalizar Processo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12 upload-msg marginBottom5"></div>
                             </div>
-                            <div id="box-envio-email" style="display: none;">
-
-                                <div class="form-group">
-                                    <label><strong>Email de Envio</strong> <a href="{{'../../cliente/editar/'.$processo->cliente->cd_cliente_cli}}"><i class="fa fa-plus-circle"></i> Novo</a> </label>
-                                    <input class="form-control" disabled="disabled" placeholder="Email" type="text" value="{{ ($processo->cliente->entidade->getEmailsNotificacao()) ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
-                                </div>
-                                <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
-
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="hidden" name="processo" value="{{ $processo->cd_processo_pro }}">
+                                    <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}"> 
+                                    <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> A notificação do cliente é opcional. Caso a opção não seja marcada o processo será finalizado mesmo assim.</label>    
                                     <div class="form-group">                                                    
                                         <div class="checkbox">
                                             <label>
-                                                <input type="checkbox" class="checkbox" name="fl_enviar_todos" id="fl_enviar_todos">
-                                                <span>Enviar Todos</span>
+                                                <input type="checkbox" class="checkbox" name="fl_envio_arquivo" id="fl_envio_arquivo">
+                                                <span>Notificar o cliente sobre a finalização do processo (Opcional)</span>
                                             </label>
                                         </div>
                                     </div>
-                                    
-                                    @foreach($processo->anexos as $key => $anexo)
+                                    <div id="box-envio-email" style="display: none;">
+
+                                        <div class="form-group">
+                                            <label><strong>Email de Envio</strong> <a href="{{'../../cliente/editar/'.$processo->cliente->cd_cliente_cli}}"><i class="fa fa-plus-circle"></i> Novo</a> </label>
+                                            <input class="form-control" disabled="disabled" placeholder="Email" type="text" value="{{ ($processo->cliente->entidade->getEmailsNotificacao()) ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
+                                        </div>
+                                        <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
+
+                                        <div class="form-group">                                                    
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" class="checkbox" name="fl_enviar_todos" id="fl_enviar_todos">
+                                                    <span>Enviar Todos</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        @foreach($processo->anexos as $key => $anexo)
                                         <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
                                             <div style="float: left; width: 8%; text-align: center;">
                                                 <label class="text-default" style="margin-top: 8px;">
@@ -648,169 +678,173 @@
                                             </div> 
                                         </div>
                                         @if($key < count($processo->anexos)-1)
-                                            <hr style="margin: 0" />
+                                        <hr style="margin: 0" />
                                         @endif
-                                    @endforeach
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-check"></i> Finalizar Processo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade in modal_top_alto" id="erro_envio_mensagem" tabindex="-1" role="dialog" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+                    </div>
+                    <div class="modal-body center">
+                        <h2>Erro durante envio de mensagem.</h2>
+                    </div>
+                    <div class="modal-footer center">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    <button type="submit" class="btn btn-success btn-enviar-arquivo"><i class="fa fa-check"></i> Finalizar Processo</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade in modal_top_alto" id="erro_envio_mensagem" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
-            </div>
-            <div class="modal-body center">
-                <h2>Erro durante envio de mensagem.</h2>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Fechar</button>
-             </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
-            </div>
-            <div class="modal-body center">
-                <h2><i class="fa fa-gear fa-spin"></i> Aguarde, atualizando status do processo...</h2>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="modal fade in modal_top_alto" id="requisitarPreposto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">
-                    <i class="icon-append fa fa-pencil"></i> Requisitar Dados de Advogado e Preposto
-                </h4>
-            </div>
-            <div class="modal-body center">
-                <h5>Esse procedimento encaminha uma mensagem para o correspondente requisitando que o mesmo atualize os dados de Advogado e Preposto.</h5>
-                <h5>Além do envio da mensagem via email, o status do processo é alterado para <strong>Aguardando Dados</strong></h5>
-                <h5>Confirma esse procedimento e o envio da mensagem?</h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                <a href="{{ url('processos/acompanhamento/requisitar-dados/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" id="btn_requisitar_dados" class="btn btn-success msg_processamento"><i class="fa-fw fa fa-check"></i> Confirmar</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="frm-anexo" action="{{ url('processo/atualizar-dados') }}" method="POST">
-            @csrf
-                <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                    <h4 class="modal-title">
-                        <i class="icon-append fa fa-pencil"></i> Informar Advogado e Preposto
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row box-cadastro">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label><strong>Advogado</strong><span class="text-info"> Informe nome completo, OAB e telefone, separados por vírgula</span></label>
-                                <input type="text" class="form-control" placeholder="Nome completo, OAB e telefone" required="required" name="dados_advogado" id="dados_advogado" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
-                                <div id="msg_error_advogado" class="text-danger"></div>
-                            </div>    
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label><strong>Preposto</strong><span class="text-info"> Informe nome completo e CPF, separados por vírgula</span></label>
-                                <input type="text" class="form-control" placeholder="Nome completo e CPF" required="required" name="dados_preposto" id="dados_preposto" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
-                                <div id="msg_error_preposto" class="text-danger"></div>
-                            </div>    
-                        </div>
+        <div class="modal fade in modal_top_alto" id="atualiza_status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Mensagem do Sistema</h4>
+                    </div>
+                    <div class="modal-body center">
+                        <h2><i class="fa fa-gear fa-spin"></i> Aguarde, atualizando status do processo...</h2>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    <button type="submit" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
-@endsection
-@section('script')
-<script type="text/javascript">
+        <div class="modal fade in modal_top_alto" id="requisitarPreposto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">
+                            <i class="icon-append fa fa-pencil"></i> Requisitar Dados de Advogado e Preposto
+                        </h4>
+                    </div>
+                    <div class="modal-body center">
+                        <h5>Esse procedimento encaminha uma mensagem para o correspondente requisitando que o mesmo atualize os dados de Advogado e Preposto.</h5>
+                        <h5>Além do envio da mensagem via email, o status do processo é alterado para <strong>Aguardando Dados</strong></h5>
+                        <h5>Confirma esse procedimento e o envio da mensagem?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <a href="{{ url('processos/acompanhamento/requisitar-dados/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" id="btn_requisitar_dados" class="btn btn-success msg_processamento"><i class="fa-fw fa fa-check"></i> Confirmar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    $(document).ready(function() {
+        <div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="frm-anexo" action="{{ url('processo/atualizar-dados') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title">
+                                <i class="icon-append fa fa-pencil"></i> Informar Advogado e Preposto
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row box-cadastro">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Advogado</strong><span class="text-info"> Informe nome completo, OAB e telefone, separados por vírgula</span></label>
+                                        <input type="text" class="form-control" placeholder="Nome completo, OAB e telefone" required="required" name="dados_advogado" id="dados_advogado" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
+                                        <div id="msg_error_advogado" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Preposto</strong><span class="text-info"> Informe nome completo e CPF, separados por vírgula</span></label>
+                                        <input type="text" class="form-control" placeholder="Nome completo e CPF" required="required" name="dados_preposto" id="dados_preposto" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
+                                        <div id="msg_error_preposto" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-        $(document).on("click", ".deleteFile", function () {
+        @endsection
+        @section('script')
+        <script type="text/javascript">
 
-           
+            $(document).ready(function() {
 
-        });
-
-        $('#filepicker').filePicker({
-            url: '../../processos/arquivos-processo',
-            ui: {
-                autoUpload: false
-            },
-            data: function(){
-                var _token = "{{ csrf_token() }}";
-                var id_processo = $("#processo").val();
-
-                return {
-                    _token: _token,
-                    id_processo: id_processo
-                }
-            },
-            plugins: ['ui', 'drop', 'camera', 'crop']
-        })
-        .on('done.filepicker', function (e, data) {
-
-            if(data.files[0].size){            
-
-                $.ajax({
-                    url: "../../anexo-processo-add",
-                    type: 'POST',
-                    data: {
-                        "_token": $('meta[name="token"]').attr('content'),
-                        "id_processo": $("#processo").val(),
-                        "nome_arquivo": data.files[0].name
-                    },
-                    success: function(response){   
-
-                        $(".box-anexos-correspondente").removeClass('none');
-                        $(".box-anexos-escritorio").removeClass('none');
-                        $(".label-anexos-escritorio").addClass('none');
-                        
-                    },
-                    error: function(response){
-
-                        
-                    }
+                $("#cancelarProcesso").click(function(){
+                    $("#cancelarProcessoForm").submit();
                 });
-            }
 
-        })
-        .on('delete.filepicker', function (e, data) {
+                $(document).on("click", ".deleteFile", function () {
+
+
+
+                });
+
+                $('#filepicker').filePicker({
+                    url: '../../processos/arquivos-processo',
+                    ui: {
+                        autoUpload: false
+                    },
+                    data: function(){
+                        var _token = "{{ csrf_token() }}";
+                        var id_processo = $("#processo").val();
+
+                        return {
+                            _token: _token,
+                            id_processo: id_processo
+                        }
+                    },
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('done.filepicker', function (e, data) {
+
+                    if(data.files[0].size){            
+
+                        $.ajax({
+                            url: "../../anexo-processo-add",
+                            type: 'POST',
+                            data: {
+                                "_token": $('meta[name="token"]').attr('content'),
+                                "id_processo": $("#processo").val(),
+                                "nome_arquivo": data.files[0].name
+                            },
+                            success: function(response){   
+
+                                $(".box-anexos-correspondente").removeClass('none');
+                                $(".box-anexos-escritorio").removeClass('none');
+                                $(".label-anexos-escritorio").addClass('none');
+
+                            },
+                            error: function(response){
+
+
+                            }
+                        });
+                    }
+
+                })
+                .on('delete.filepicker', function (e, data) {
 
             //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
 
@@ -841,25 +875,25 @@
             });
 
         })
-        .on('fail.filepicker', function (e,data) {
+                .on('fail.filepicker', function (e,data) {
 
-            console.log();
-            
-            switch (data.xhr.status) {
-                case 413:
-                    $(".msg_mensagem").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
-                break;
-                case 500:
-                    $(".msg_mensagem").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
-                break;
-                default:
-                    $(".msg_mensagem").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
-            }
-        });
+                    console.log();
+
+                    switch (data.xhr.status) {
+                        case 413:
+                        $(".msg_mensagem").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
+                        break;
+                        case 500:
+                        $(".msg_mensagem").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
+                        break;
+                        default:
+                        $(".msg_mensagem").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
+                    }
+                });
 
         //Reset do modal
         $('#modalFinalizacao').on('shown.bs.modal', function () {
-          
+
             $("#box-envio-email").css( "display", 'none' );
             $("#fl_envio_arquivo").prop( "checked", false );
             $("#fl_enviar_todos").prop( "checked", false );
@@ -871,7 +905,7 @@
         });
 
         $("#fl_envio_arquivo").click( function(){
-        
+
             if( $(this).is(':checked') ){
                 $("#box-envio-email").css( "display", 'block' );
             }else{
@@ -880,7 +914,7 @@
         });
 
         $("#fl_enviar_todos").click( function(){
-        
+
             if( $(this).is(':checked') ){
                 $('.lista_arquivos').each(function () {
                     $(this).prop( "checked", true );
@@ -898,7 +932,7 @@
 
         //Verifica se a oção de envio com Enter está ativada
         var callback = function(e){
-                
+
             var text = e.type;
             var code = e.which ? e.which : e.keyCode;
             if(13 === code){
@@ -914,8 +948,8 @@
         $('#texto_mensagem').keypress(callback);     
 
          //Verifica se a oção de envio com Enter está ativada
-        var icallback = function(e){
-                
+         var icallback = function(e){
+
             var text = e.type;
             var code = e.which ? e.which : e.keyCode;
             if(13 === code){
@@ -942,10 +976,10 @@
             processo = $("#processo").val();
 
             $.ajax(
-                {
-                    url: "../../processos/atualiza/enviados/"+processo,
-                    type: 'GET',
-                    dataType: "JSON",
+            {
+                url: "../../processos/atualiza/enviados/"+processo,
+                type: 'GET',
+                dataType: "JSON",
                 beforeSend: function()
                 {
                     $('.box-loader').loader('show');
@@ -960,7 +994,7 @@
                     $('.box-loader').loader('hide');
                     $("#fl_envio_anexos_pro").prop('checked', false);
                     $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
-                                        
+
                 }
             });
 
@@ -971,10 +1005,10 @@
             processo = $("#processo").val();
 
             $.ajax(
-                {
-                    url: "../../processos/atualiza/recebidos/"+processo,
-                    type: 'GET',
-                    dataType: "JSON",
+            {
+                url: "../../processos/atualiza/recebidos/"+processo,
+                type: 'GET',
+                dataType: "JSON",
                 beforeSend: function()
                 {
                     $('.box-loader').loader('show');
@@ -1010,7 +1044,7 @@
                 },
                 beforeSend: function()
                 {
-                    
+
                 },
                 success: function(response)
                 {
@@ -1020,7 +1054,7 @@
                 },
                 error: function(response)
                 {
-                    
+
                     //location.reload();
                 }
             });
@@ -1057,12 +1091,12 @@
                     dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
 
                     var m = '<div class="outgoing_msg">'+
-                                '<div class="sent_msg">' +
-                                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                                    '<span class="time_date">'+
-                                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
-                                '</div>'+
-                            '</div>';
+                    '<div class="sent_msg">' +
+                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                    '<span class="time_date">'+
+                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
+                    '</div>'+
+                    '</div>';
 
                     $(".msg_history_externo").append(m);
 
@@ -1134,12 +1168,12 @@
                     dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
 
                     var m = '<div class="outgoing_msg">'+
-                                '<div class="sent_msg">' +
-                                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                                    '<span class="time_date">'+
-                                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
-                                '</div>'+
-                            '</div>';
+                    '<div class="sent_msg">' +
+                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                    '<span class="time_date">'+
+                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
+                    '</div>'+
+                    '</div>';
 
                     $(".msg_history_interno").append(m);
 
@@ -1162,28 +1196,28 @@
 
     });
 
-    function validate(formData, jqForm, options) {
+function validate(formData, jqForm, options) {
 
-        var form = jqForm[0];
-        var fileExtension = ['exe', 'rar', 'php', 'js', 'zip'];
+    var form = jqForm[0];
+    var fileExtension = ['exe', 'rar', 'php', 'js', 'zip'];
 
-        if(!form.file.value) {
-            $(".upload-msg").html('<span class="text-danger">Obrigatório selecionar um arquivo para envio</span>');
-            return false;
-        }
-        
-        if($.inArray(form.file.value.split('.').pop().toLowerCase(), fileExtension) != -1) {
-            $(".upload-msg").html('<span class="text-danger">Formato do arquivo não permitido</span>');
-            return false;
-        }
+    if(!form.file.value) {
+        $(".upload-msg").html('<span class="text-danger">Obrigatório selecionar um arquivo para envio</span>');
+        return false;
     }
- 
-    (function() {
- 
+
+    if($.inArray(form.file.value.split('.').pop().toLowerCase(), fileExtension) != -1) {
+        $(".upload-msg").html('<span class="text-danger">Formato do arquivo não permitido</span>');
+        return false;
+    }
+}
+
+(function() {
+
     var bar = $('.progress-bar');
     var percent = $('.percent');
     var status = $('#status');
- 
+
     $('#frm-anexo').ajaxForm({
         //beforeSubmit: validate,
         beforeSend: function(){
@@ -1215,135 +1249,135 @@
 
             switch (response.status) {
                 case 413:
-                    $(".upload-msg").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
+                $(".upload-msg").html('<span class="text-danger">O arquivo excede o tamanho máximo permitido pelo sistema</span>');
                 break;
                 case 500:
-                    $(".upload-msg").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
+                $(".upload-msg").html('<span class="text-danger">'+response.responseJSON.message+'</span>');
                 break;
                 default:
-                    $(".upload-msg").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
+                $(".upload-msg").html('<span class="text-danger">Erro ao enviar o arquivo. Verifique tua conexão e tente novamente</span>');
             }
         },
         complete: function(xhr) {
-            
+
         }
     });
-     
-    })();
+
+})();
 </script>
 
 <script type="text/x-tmpl" id="uploadTemplate">
-        <tr class="upload-template">
-            <td class="column-name">
-                <p class="name">{%= o.file.name %}</p>
-                <span class="text-danger error">{%= o.file.error || '' %}</span>
-            </td>
-            <td>
-                <p>{%= o.file.sizeFormatted || '' %}</p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active"></div>
-                </div>
-            </td>
-            <td style="font-size: 150%; text-align: center;">
-                {% if (!o.file.autoUpload && !o.file.error) { %}
-                    <a href="#" class="action action-primary start" title="Enviar">
-                        <i class="fa fa-arrow-circle-o-up"></i>
-                    </a>
-                {% } %}
-                <a href="#" class="action action-warning cancel" title="Cancelar">
-                    <i class="fa fa-ban"></i>
-                </a>
-            </td>
-        </tr>
-    </script>
+    <tr class="upload-template">
+        <td class="column-name">
+            <p class="name">{%= o.file.name %}</p>
+            <span class="text-danger error">{%= o.file.error || '' %}</span>
+        </td>
+        <td>
+            <p>{%= o.file.sizeFormatted || '' %}</p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active"></div>
+            </div>
+        </td>
+        <td style="font-size: 150%; text-align: center;">
+            {% if (!o.file.autoUpload && !o.file.error) { %}
+            <a href="#" class="action action-primary start" title="Enviar">
+                <i class="fa fa-arrow-circle-o-up"></i>
+            </a>
+            {% } %}
+            <a href="#" class="action action-warning cancel" title="Cancelar">
+                <i class="fa fa-ban"></i>
+            </a>
+        </td>
+    </tr>
+</script>
 
-    <!-- Download Template -->
-    <script type="text/x-tmpl" id="downloadTemplate">
-        {% o.timestamp = function (src) {
-            return (src += (src.indexOf('?') > -1 ? '&' : '?') + new Date().getTime());
-        }; %}
-        <tr class="download-template">
+<!-- Download Template -->
+<script type="text/x-tmpl" id="downloadTemplate">
+    {% o.timestamp = function (src) {
+        return (src += (src.indexOf('?') > -1 ? '&' : '?') + new Date().getTime());
+    }; %}
+    <tr class="download-template">
 
-            <td class="column-name">
-                <div style="float: left; width: 8%; text-align: center;">
-                    <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
-                </div>
-                <div style="float: left; width: 84%">
-                    
-                    <span>
-                        {% if (o.file.url) { %}
-                            <a href="{%= "../../processos/"+$("#processo").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
-                        {% } else { %}
-                            {%= o.file.name %}
-                        {% } %}
-                    </span>
-                    <br/>
-                    
-                        {% if (o.file.time) { %}
-                            <time datetime="{%= o.file.timeISOString() %}">
-                                {%= o.file.timeFormatted %}
-                            </time>
-                        {% } %}
+        <td class="column-name">
+            <div style="float: left; width: 8%; text-align: center;">
+                <label class="text-default" style="margin-top: 8px;"><i class="fa fa-file-text-o fa-2x"></i></label>
+            </div>
+            <div style="float: left; width: 84%">
 
-                        por
-
-                        {%= o.file.responsavel %}
-                    
-                    {% if (o.file.error) { %}
-                        <span class="text-danger">{%= o.file.error %}</span>
+                <span>
+                    {% if (o.file.url) { %}
+                    <a href="{%= "../../processos/"+$("#processo").val()+"/anexo/"+o.file.url %}" data-id="{%= o.file.url %}" target="_blank">{%= o.file.name %}</a>
+                    {% } else { %}
+                    {%= o.file.name %}
                     {% } %}
-                </div>
-            </td>
+                </span>
+                <br/>
 
-            <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
-            
-            <td class="center">
-        
+                {% if (o.file.time) { %}
+                <time datetime="{%= o.file.timeISOString() %}">
+                    {%= o.file.timeFormatted %}
+                </time>
+                {% } %}
+
+                por
+
+                {%= o.file.responsavel %}
+
                 {% if (o.file.error) { %}
-                    <a href="#" class="action action-warning cancel" title="Cancelar">
-                        <i class="fa fa-ban"></i>
-                    </a>
-                {% } else { %}
-                    <a style="color: #cc0e00; font-size: 20px;" href="#" class="action action-danger delete deleteFile" title="Excluir">
-                        <i class="fa fa-trash-o"></i>
-                    </a>
+                <span class="text-danger">{%= o.file.error %}</span>
                 {% } %}
+            </div>
+        </td>
 
-            </td>
-        </tr>
-    </script>
-     <!-- Pagination Template -->
-    <script type="text/x-tmpl" id="paginationTemplate">
-        {% if (o.lastPage > 1) { %}
-            <ul class="pagination pagination-sm">
-                <li {% if (o.currentPage === 1) { %} class="disabled" {% } %}>
-                    <a href="#!page={%= o.prevPage %}" data-page="{%= o.prevPage %}" title="Previous">&laquo;</a>
-                </li>
+        <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
 
-                {% if (o.firstAdjacentPage > 1) { %}
-                    <li><a href="#!page=1" data-page="1">1</a></li>
-                    {% if (o.firstAdjacentPage > 2) { %}
-                       <li class="disabled"><a>...</a></li>
-                    {% } %}
-                {% } %}
+        <td class="center">
 
-                {% for (var i = o.firstAdjacentPage; i <= o.lastAdjacentPage; i++) { %}
-                    <li {% if (o.currentPage === i) { %} class="active" {% } %}>
-                        <a href="#!page={%= i %}" data-page="{%= i %}">{%= i %}</a>
-                    </li>
-                {% } %}
+            {% if (o.file.error) { %}
+            <a href="#" class="action action-warning cancel" title="Cancelar">
+                <i class="fa fa-ban"></i>
+            </a>
+            {% } else { %}
+            <a style="color: #cc0e00; font-size: 20px;" href="#" class="action action-danger delete deleteFile" title="Excluir">
+                <i class="fa fa-trash-o"></i>
+            </a>
+            {% } %}
 
-                {% if (o.lastAdjacentPage < o.lastPage) { %}
-                    {% if (o.lastAdjacentPage < o.lastPage - 1) { %}
-                        <li class="disabled"><a>...</a></li>
-                    {% } %}
-                    <li><a href="#!page={%= o.lastPage %}" data-page="{%= o.lastPage %}">{%= o.lastPage %}</a></li>
-                {% } %}
+        </td>
+    </tr>
+</script>
+<!-- Pagination Template -->
+<script type="text/x-tmpl" id="paginationTemplate">
+    {% if (o.lastPage > 1) { %}
+    <ul class="pagination pagination-sm">
+        <li {% if (o.currentPage === 1) { %} class="disabled" {% } %}>
+            <a href="#!page={%= o.prevPage %}" data-page="{%= o.prevPage %}" title="Previous">&laquo;</a>
+        </li>
 
-                <li {% if (o.currentPage === o.lastPage) { %} class="disabled" {% } %}>
-                    <a href="#!page={%= o.nextPage %}" data-page="{%= o.nextPage %}" title="Next">&raquo</a>
-                </li>
-            </ul>
+        {% if (o.firstAdjacentPage > 1) { %}
+        <li><a href="#!page=1" data-page="1">1</a></li>
+        {% if (o.firstAdjacentPage > 2) { %}
+        <li class="disabled"><a>...</a></li>
         {% } %}
-    </script><!-- end of #paginationTemplate -->
+        {% } %}
+
+        {% for (var i = o.firstAdjacentPage; i <= o.lastAdjacentPage; i++) { %}
+        <li {% if (o.currentPage === i) { %} class="active" {% } %}>
+            <a href="#!page={%= i %}" data-page="{%= i %}">{%= i %}</a>
+        </li>
+        {% } %}
+
+        {% if (o.lastAdjacentPage < o.lastPage) { %}
+        {% if (o.lastAdjacentPage < o.lastPage - 1) { %}
+        <li class="disabled"><a>...</a></li>
+        {% } %}
+        <li><a href="#!page={%= o.lastPage %}" data-page="{%= o.lastPage %}">{%= o.lastPage %}</a></li>
+        {% } %}
+
+        <li {% if (o.currentPage === o.lastPage) { %} class="disabled" {% } %}>
+            <a href="#!page={%= o.nextPage %}" data-page="{%= o.nextPage %}" title="Next">&raquo</a>
+        </li>
+    </ul>
+    {% } %}
+</script><!-- end of #paginationTemplate -->
 @endsection

@@ -9,13 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-archive"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a href="{{ url('home') }}" class="btn btn-default pull-right header-btn" ><i class="fa fa-desktop"></i> Mural</a>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 box-button-xs">
+            <div class="sub-box-button-xs">
+                 <a href="{{ url('home') }}" class="btn btn-default pull-right header-btn" ><i class="fa fa-desktop"></i> Mural</a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -26,9 +28,9 @@
             <div class="well">
                 <form action="{{ url('correspondente/processo/buscar/acompanhamento') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
-                    <section class="col col-md-4" style="padding-left: 0px;">  
+                    <section class="col col-xs-8 col-md-4" style="padding-left: 0px;">  
                         <div class="input-group" style="width: 100%">
-                            <span class="input-group-addon">Nº Processo</span>
+                            <span class="input-group-addon hidden-xs">Nº Processo</span>
                             <input size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="Nº Processo" value="{{ !empty($numero) ? $numero : '' }}" >
                         </div>            
                     </section>
@@ -58,13 +60,13 @@
                                 <tr style="font-size: 12px">                   
                                     <th style="width:11%">Prazo Fatal</th>                    
                                     <th>Nº Processo</th>
-                                    <th>Cidade</th>    
-                                    <th>Tipo de Serviço</th>
-                                    <th>Autor</th>
-                                    <th>Réu</th>
-                                    <th>Status</th>
+                                    <th class="hidden-xs">Cidade</th>    
+                                    <th class="hidden-xs">Tipo de Serviço</th>
+                                    <th class="hidden-xs">Autor</th>
+                                    <th class="hidden-xs">Réu</th>
+                                    <th class="hidden-xs">Status</th>
                                     <th style="width: 100px" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
-                                </tr>
+                                </tr> 
                             </thead>
                             <tbody style="font-size: 12px">
                                 @foreach($processos as $processo)
@@ -99,13 +101,13 @@
                                         <td data-id="{{ $processo->cd_processo_pro }}" >
                                             <a href="{{ url('correspondente/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
-                                        <td>
+                                        <td class="hidden-xs">
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : 'Não informada' }}
                                         </td>
-                                        <td>{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : 'Não informado' }}</td>
-                                        <td>{{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}</td>
-                                        <td>{{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}</td>
-                                        <td>{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Sem status' }}</td>
+                                        <td class="hidden-xs">{{ (!empty($processo->honorario->tipoServico)) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : 'Não informado' }}</td>
+                                        <td class="hidden-xs">{{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}</td>
+                                        <td class="hidden-xs">{{ ($processo->nm_reu_pro) ? $processo->nm_reu_pro : 'Não informado' }}</td>
+                                        <td class="hidden-xs">{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Sem status' }}</td>
                                         <td class="center">
                                             <div>
                                                 <div style="display: block;padding: 1px 1px 1px 1px">

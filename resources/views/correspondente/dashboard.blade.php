@@ -24,7 +24,7 @@
 
     <div class="row">
 
-        <article class="col-xs-12 col-sm-4">
+        <article class="col-xs-12 col-sm-6 col-lg-4">
 
             <div id="box-grafico" class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #a90329; margin: 0px;"><i class="fa fa-archive"></i> Meus Processos</h2>
@@ -34,7 +34,7 @@
 
         </article>
 
-        <article class="col-xs-12 col-sm-4">            
+        <article class="col-xs-12 col-sm-6 col-lg-4">            
 
             <div class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #009688; margin: 0px;"><i class="fa fa-envelope"></i> Meus Convites</h2>
@@ -77,7 +77,7 @@
 
         </article>
 
-        <article class="col-xs-12 col-sm-4">
+        <article class="col-xs-12 col-sm-6 col-lg-4">
 
             <div class="well box-loader" style="min-height: 340px;">
                 <h2 style="color: #3276b1; margin: 0px;"><i class="fa fa-comments"></i> Últimas Mensagens</h2>

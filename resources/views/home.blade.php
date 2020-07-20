@@ -24,7 +24,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center connect" style="min-height: 110px;">
+            <div class="well text-center connect box-home" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
                         <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
@@ -49,7 +49,7 @@
         </div>  
 
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center" style="min-height: 110px;">
+            <div class="well text-center box-home" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     <a href="{{ url('processos') }}"><img src="{{ asset('img/processo.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
                 </div>
@@ -70,7 +70,7 @@
         </div> 
 
         <div class="col-sm-12 col-md-6 col-lg-4">                
-            <div class="well text-center" style="min-height: 110px;">
+            <div class="well text-center box-home" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
                     <a href="{{ url('processos') }}"><img src="{{ asset('img/legal.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
                 </div>

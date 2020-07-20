@@ -9,13 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-o"></i> Processos <span> > Relatórios</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs">
+            <div class="boxBtnTopo sub-box-button-xs">
+                <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class ="fa fa-list fa-lg"></i> Listar Processos</a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -28,16 +30,16 @@
                 <form action="{{ url('processo/relatorios/buscar') }}" class="form-inline" method="POST" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-2">
+                        <section class="col col-md-4">
                             <label class="label label-black">Data prazo fatal início<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ old('dtInicio') ? old('dtInicio') : \Session::get('dtInicio')}}" required >
                             
                         </section>
-                        <section class="col col-md-2">                           
+                        <section class="col col-md-4">                           
                             <label class="label label-black">Data prazo fatal fim<span class="text-danger">*</span></label><br />
                             <input style="width: 100%" class="form-control dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ old('dtFim') ? old('dtFim') : \Session::get('dtFim')}}"  required >                            
                         </section>
-                        <section class="col col-md-2">                                                        
+                        <section class="col col-md-4">                                                        
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
@@ -45,7 +47,7 @@
                                 <option {{ (\Session::get('relatorio') == 'para-todos-clientes'  ? 'selected' : '') }} value="para-todos-clientes">Todos clientes</option>
                             </select>                            
                         </section>     
-                        <section class="col col-md-3">                           
+                        <section class="col col-md-4">                           
                             <label class="label label-black">Cliente<span class="text-danger label-cliente-danger"></span></label></label><br />
                             <div class="input-group" style="width: 100%">
                             <input type="hidden" name="cd_cliente_cli" value="{{(old('cd_cliente_cli') ? old('cd_cliente_cli') : (\Session::get('cliente') ? \Session::get('cliente') : '')) }}">
@@ -55,13 +57,13 @@
                             </div>                        
                         </section>
 
-                        <section class="col col-md-2">
+                        <section class="col col-md-4">
                             <br />              
                             <input type="checkbox" name="finalizado" id="finalizado" value="S" {{ (\Session::get('finalizado') == 'S'  ? 'checked' : '') }}>  
                             <label class="label label-black">Processos Finalizados</label> 
 
                         </section> 
-                        <section class="col col-md-1">
+                        <section class="col col-md-4">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-file-pdf-o"></i> Gerar </button>
                         </section> 

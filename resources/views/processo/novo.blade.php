@@ -9,13 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-7 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-text-o la-lg"></i> Processos <span>> Novo</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+        <div class="col-xs-12 col-sm-5 col-md-6 col-lg-6 box-button-xs">
+            <div class="boxBtnTopo sub-box-button-xs">
+                <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-list fa-lg"></i> Listar Processos</a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -60,17 +62,16 @@
                     <div class="widget-body no-padding">
                         
                         {!! Form::open(['id' => 'frm-add-processo', 'url' => 'processos', 'class' => 'smart-form']) !!}
+                         <header>
+                            <i class="fa fa-file-text-o"></i> Dados do Processo <span class="text-danger">(*) Campos Obrigatórios</span>
+                        </header>
                         <div class="row">
-                            <div  class="col col-6">
-                                <header>
-                                    <i class="fa fa-file-text-o"></i> Dados do Processo <span class="text-danger">(*) Campos Obrigatórios</span>
-                                </header>
-
+                            <div  class="col col-xs-12 col-sm-6">
                                 <fieldset>
                                    
                                     <div class="row">
                         
-                                        <section class="col col-sm-12">
+                                        <section class="col col-xs-12 col-sm-12">
                                             <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli" value="{{old('cd_cliente_cli')}}" >
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
@@ -79,13 +80,13 @@
                                         </section>
                                     </div> 
                                     <div class="row">
-                                        <section class="col col-4">
+                                        <section class="col col-xs-12 col-lg-6">
                                             <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
                                                 <input class="form-control" value="{{old('nu_acompanhamento_pro')}}" type="text" name="nu_acompanhamento_pro" maxlength="50">
                                             </label>
                                         </section> 
-                                        <section class="col col-8">                                       
+                                        <section class="col col-xs-12 col-lg-6">                                       
                                             <label class="label" >Advogado Solicitante <a href="#" data-toggle="modal" data-target="#novoAdvogado" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Novo </a></label> 
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
@@ -96,13 +97,13 @@
                                         </section>
                                     </div>
                                     <div class="row">
-                                         <section class="col col-6">
+                                         <section class="col col-xs-12 col-lg-6">
                                             <label class="label">Nº Processo<span class="text-danger">*</span></label>
                                             <label class="input">
                                                 <input class="form-control" value="{{old('nu_processo_pro')}}" type="text" name="nu_processo_pro" required>
                                             </label>
                                         </section> 
-                                         <section class="col col-6" >                                       
+                                         <section class="col col-xs-12 col-lg-6" >                                       
                                             <label class="label" >Tipo de Processo<span class="text-danger">*</span></label>          
                                             <label class="select">
                                                 <select  name="cd_tipo_processo_tpo" required>
@@ -115,7 +116,7 @@
                                         </section>
                                     </div>                                                     
                                     <div class="row">
-                                        <section class="col col-sm-12">
+                                        <section class="col col-xs-12">
                                             <label class="label">Autor</label>
                                             <label class="input">
                                                 <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
@@ -124,7 +125,7 @@
                                     </div>    
                                     <div class="row">
                     
-                                        <section class="col col-6">
+                                        <section class="col col-xs-12 col-lg-6">
                                            
                                             <label class="label" >Estado</label>          
                                             <select  id="estado" name="cd_estado_est" class="select2">
@@ -135,7 +136,7 @@
 
                                             </select> 
                                         </section>
-                                        <section class="col col-6">
+                                        <section class="col col-xs-12 col-lg-6">
                                            <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{old('cd_cidade_cde')}}">
                                            <label class="label" >Cidade<span class="text-danger">*</span></label>          
                                             <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
@@ -146,7 +147,7 @@
                                     <div class="row">    
                                         <input type="hidden" name="cd_correspondente_cor" value="{{ old('cd_correspondente_cor') }}"> 
                                         <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
-                                        <section class="col col-sm-12">
+                                        <section class="col col-xs-12">
                                             
                                             <label class="label">Correspondente <a href="#" rel="popover-hover" data-placement="top" data-original-title="O correspondente é filtrado de acordo com a cidade escolhida."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
@@ -159,7 +160,7 @@
                                     </div> 
                                     <div class="row">    
                                         <input type="hidden" name="cd_responsavel_pro" value="{{ old('cd_responsavel_pro') }}">           
-                                        <section class="col col-sm-12">
+                                        <section class="col col-xs-12">
                                             <label class="label">Responsável</label>
                                             <label class="input">
                                                 <input class="form-control" name="name" placeholder="Digite 3 caracteres para busca" type="text" id="responsavel_auto_complete" value="{{ old('nm_correspondente_cor') }}">
@@ -168,26 +169,24 @@
                                     </div> 
 
                                 </fieldset>
-                        </div>
-                        <div  class="col col-6">
-                            <header>
-                                <i class="">&nbsp;</i> 
-                            </header>
+                            </div>
+                        <div  class="col col-xs-12 col-sm-6">
+                           
                             <fieldset>
                                 <div class="row">
-                                    <section class="col col-4">
+                                    <section class="col col-xs-12 col-lg-4">
                                         <label class="label">Data da Solicitação</label>
                                         <label class="input">
                                            <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
                                         </label>
                                     </section> 
-                                    <section class="col col-4">
+                                    <section class="col col-xs-12 col-lg-4">
                                         <label class="label">Data Prazo Fatal<span class="text-danger">*</span></label>
                                         <label class="input">
                                            <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}">
                                         </label>
                                     </section> 
-                                    <section class="col col-4">
+                                    <section class="col col-xs-12 col-lg-4">
                                         <label class="label">Hora da Audiência</label>
                                         <label class="input">
                                            <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{old('hr_audiencia_pro')}}" >
@@ -195,7 +194,7 @@
                                     </section> 
                                 </div>    
                                 <div class="row"> 
-                                     <section class="col col-sm-12">
+                                     <section class="col col-xs-12 col-sm-12">
                                         <label class="label">Réu</label>
                                         <label class="input">
                                            <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
@@ -203,7 +202,7 @@
                                     </section> 
                                 </div>
                                 <div class="row">
-                                    <section class="col col-sm-12">       
+                                    <section class="col col-xs-12 col-sm-12">       
                                         <label class="label" >Vara</label>          
                                         <select  name="cd_vara_var" class="select2">
                                             <option selected value="">Selecione uma vara</option>
@@ -219,7 +218,7 @@
                                 </header>
                                 <fieldset>
                                     <div class="row"> 
-                                         <section class="col col-sm-12">
+                                         <section class="col col-xs-12">
                                             <label class="label">Preposto</label>
                                             <label class="input">
                                                <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_preposto_pro" value="{{old('nm_preposto_pro')}}">
@@ -227,7 +226,7 @@
                                         </section> 
                                     </div>
                                     <div class="row"> 
-                                         <section class="col col-sm-12">
+                                         <section class="col col-xs-12">
                                             <label class="label">Advogado</label>
                                             <label class="input">
                                                <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{old('nm_advogado_pro')}}"  maxlength="500">
@@ -263,6 +262,9 @@
                                                     <strong>Informação!</strong> Ao selecionar o tipo de serviço, os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente na cidade selecionada, caso os valores existam. Sendo permitida sua mudança.                          
                                                 </div>
                                                 <div class="">
+                                                    <header class="hidden-sm" style="border-bottom: none;">
+                                                        Tipo de Serviço do Cliente
+                                                    </header>
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <th style="width: 50%">Tipo de Serviço do Cliente<span class="text-danger">*</span></th>
@@ -299,6 +301,9 @@
                                                             </tr>
                                                         </tbody>
                                                     </table>
+                                                    <header class="hidden-sm" style="border-bottom: none;">
+                                                        Tipo de Serviço do Correspondente
+                                                    </header>
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <th style="width: 50%" id="tipoServicoCorrespondenteLabel" >Tipo de Serviço do Correspondente</th>
@@ -394,6 +399,28 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+       
+
+        if ($( window ).width() <= 600){
+
+            $("table").each(function() {
+                var $this = $(this);
+                var newrows = [];
+                $this.find("tr").each(function(){
+                var i = 0;
+                $(this).find("td").each(function(){
+                    i++;
+                    if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>"); }
+                        newrows[i].append($(this));
+                    });
+                });
+                    $this.find("tr").remove();
+                    $.each(newrows, function(){
+                        $this.append(this);
+                    });
+                });
+        }
 
         var path = "{{ url('autocompleteCliente') }}";
         var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";

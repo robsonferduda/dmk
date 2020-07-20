@@ -4,19 +4,22 @@
     <ol class="breadcrumb">
         <li><a href="{{ url('home') }}">Início</a></li>
         <li>Processos</li>
-        <li>Listar</li>
+        <li>Acompanhamento</li>
     </ol>
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-cog"></i>Processos <span> > Acompanhamento</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-            <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
+            <div class="sub-box-button-xs">
+                <a  title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
+                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
+            </div>
+           
         </div>
     </div>
     <div class="row container-acompanhamento">
@@ -29,26 +32,24 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-2">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Prazo Fatal</label><br />
                             <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Número do Processo</label><br />
                             <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-3">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-4">
+                        <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
-                                        
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-4"> 
+
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
                                 <option value="">Tipos de Processo</option>
                                 @foreach($tiposProcesso as $tipo)
@@ -56,7 +57,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4"> 
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="cd_tipo_servico_tse" id="cd_tipo_servico_tse" class="select2">
                                 <option value="">Tipos de Serviço</option>
                                 @foreach($tiposServico as $tipo)
@@ -64,7 +65,7 @@
                                 @endforeach
                             </select>
                         </section> 
-                        <section class="col col-md-4">       
+                        <section class="col col-md-4 col-lg-3 box-select2">       
                             <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                 <option selected value="">Responsável</option>
                                 @foreach($responsaveis as $usuario)
@@ -72,9 +73,8 @@
                                 @endforeach
                             </select> 
                         </section> 
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-3"> 
+
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="status" id="status" class="select2">
                                 <option value="">Status do Processo</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
@@ -82,7 +82,7 @@
                                 <option value="atrasado">Atrasado</option>
                             </select>
                         </section> 
-                        <section class="col col-md-3">         
+                        <section class="col col-md-4 col-lg-3 box-select2">         
                             <select  id="estado" name="cd_estado_est" class="select2">
                                 <option selected value="">Estado</option>
                                     @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
@@ -90,7 +90,7 @@
                                     @endforeach
                             </select> 
                         </section>
-                        <section class="col col-md-6">         
+                        <section class="col col-md-4 col-lg-3 box-select2">         
                             <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
                                 <option selected value="">Comarca</option>
                             </select> 
@@ -111,10 +111,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
+            <div class="col-xs-6 col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
                 <h4 style="font-size: 13px;" id="label-total-processos"></h4>
             </div>
-            <div class="col-sm-6 col-md-6" style=" margin-top: 12px;">
+            <div class="col-xs-6 col-sm-6 col-md-6" style=" margin-top: 12px;">
                 <section class="pull-right">
                     <select id="filtro-pagination">
                         <option value="10">10</option>
@@ -122,7 +122,7 @@
                         <option value="20">20</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
-                    </select>  <label class="">Registros por página</label>
+                    </select>  <label class="hidden-xs">Registros por página</label>
                 </section>
             </div>
         </article>
@@ -273,7 +273,11 @@
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
                             '<div class="row box-processo">'+
-                                '<div class="col-md-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+
+                                '<div class="col-xs-12 col-sm-12 col-md-12 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'</h6></div>'+
+                                '<div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong>'+data.nm_status_processo_conta_stp+'</strong></h6></div>'+
+                                '<div class="col-xs-12  col-sm-4 col-md-4 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
                                 '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
                                     '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
@@ -287,7 +291,7 @@
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                 '</div>'+
-                                '<div class="hidden-xs hidden-sm col-md-12 pull-right">'+
+                                '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
                                     '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
@@ -295,7 +299,7 @@
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
                                 '</div>'+
-                                '<div class="hidden-md hidden-lg col-md-6">'+
+                                '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
                                     '<a title="Clonar" class="icone-acompanhamento" class="dialog_clone" href=""><i class="fa fa-clone"></i> </a>'+
