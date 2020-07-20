@@ -17,6 +17,12 @@
     
     <div class="row">
 
+        <div class="alert alert-warning fade in">
+            <button class="close" data-dismiss="alert">×</button>
+            <i class="fa-fw fa fa-warning"></i>
+            <strong>Atenção</strong> Sua conta não foi ativada. Acesse seu email e ative sua conta. Não recebeu o email? <a href="{{ url("/") }}">Clique aqui</a>!
+        </div>
+
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">
