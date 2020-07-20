@@ -34,6 +34,22 @@ $(document).ready(function() {
 	color = $('#categoria_cac option:selected').data('color');
 	$("#categoria_cac").css('color',color);
 
+	$.ajax({
+        url: host+"/processos/arquivo/espaco",
+        type: 'GET',
+        dataType: "JSON",
+        success: function(response)
+        {                    
+           	$('.driver_tamanho').html('<i class="fa fa-archive"></i> '+response.size);  
+            $('.driver_percentual').html('<i class="fa fa-database"></i> '+response.percentual);    
+        },
+        error: function(response)
+        {
+        	$('.driver_tamanho').html('<i class="fa fa-times"></i> Erro de leitura');  
+            $('.driver_percentual').html('<i class="fa fa-times"></i> Erro de leitura');
+        }
+    });
+
 	var CpfCnpjMaskBehavior = function (val){
 			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';
 		},
@@ -921,7 +937,7 @@ $(document).ready(function() {
 		var tipo = $("#cd_tipo_fone_tfo option:selected").val();
 		var ds_tipo = $("#cd_tipo_fone_tfo option:selected").text();
 		var numero = $("#nu_fone_fon").val();
-		var entidade = $("#entidade").val();
+		var entidade = $("#entidade").val() ? $("#entidade").val() : 0;
 
 		if(tipo == 0){ flag = false; $("#erroFone").html("Campo tipo obrigatório"); }
 		if(numero == ''){ flag = false; $("#erroFone").html("Número de telefone obrigatório"); }
@@ -1095,7 +1111,7 @@ $(document).ready(function() {
 		var tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").val();
 		var ds_tipo = $("#cd_tipo_endereco_eletronico_tee option:selected").text();
 		var ds_email = $("#dc_endereco_eletronico_ede").val();
-		var entidade = $("#entidade").val();
+		var entidade = $("#entidade").val() ? $("#entidade").val() : 0;
 
 		if(tipo == 0){ flag = false; $("#erroEmail").html("Campo tipo obrigatório"); }
 		if(ds_email == ''){ flag = false; $("#erroEmail").html("Email obrigatório"); }
