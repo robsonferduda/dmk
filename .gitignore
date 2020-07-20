@@ -16,3 +16,5 @@ yarn-error.log
 .env
 /greenmine
 /public/js/builds
+/public/css/builds
+
