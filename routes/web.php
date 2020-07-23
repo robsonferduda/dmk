@@ -333,7 +333,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::delete('financeiro/correspondente/baixa/saida/excluir/{id}','FinanceiroController@excluirBaixaSaida');
 	Route::get('financeiro/correspondente/baixa/saida/{id}','FinanceiroController@buscarBaixaSaida');
 
-	
+	Route::get('processos/arquivo/espaco','AnexoProcessoController@getSizeFolder');
 	Route::get('processos/arquivo/{nome}','RelatorioProcessoController@arquivo');
 	Route::delete('processos/reports/{nome}','RelatorioProcessoController@excluir');
 

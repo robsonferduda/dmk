@@ -35,7 +35,7 @@
                     <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b> </label>
 
                     @if ($errors->has('password'))
-                        <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
+                        <span class="help-block text-danger"><strong>{{ $errors->first('password') }}</strong></span>
                     @endif
 
                 <div class="note" style="font-size: 14px;">

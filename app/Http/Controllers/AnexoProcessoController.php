@@ -31,6 +31,40 @@ class AnexoProcessoController extends Controller
         return response()->download(storage_path($anexo->nm_local_anexo_despesa_des.$anexo->nm_anexo_despesa_des));
     }
 
+    public function getSizeFolder()
+    {
+        $destino = "processos";
+
+        $file_size = 0;
+
+        foreach( File::allFiles(storage_path($destino)) as $file)
+        {
+            $file_size += $file->getSize();
+        }
+        
+        $percentual = $this->getPercentualEspaco($file_size);
+        $size = $this->getSymbolByQuantity($file_size);
+
+        $dados = array('size' => $size, 'percentual' => $percentual);
+
+        return Response::json($dados);
+
+    }
+
+    function getSymbolByQuantity($bytes) {
+        $symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $exp = floor(log($bytes)/log(1024));
+
+        return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
+    }
+
+    function getPercentualEspaco($bytes) {
+
+        //Espeço fixo de 30GB em bytes
+        $percentual = ($bytes*100)/32212254720;
+        return sprintf('%.1f ',$percentual)."%";
+    }
+
     public function showPlugin($id, $file)
     {   
         $anexo = AnexoProcesso::where('cd_processo_pro', $id)->where('nm_anexo_processo_apr','ilike',$file)->first();

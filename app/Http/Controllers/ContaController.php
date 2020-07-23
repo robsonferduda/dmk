@@ -139,6 +139,10 @@ class ContaController extends Controller
 
                     Session::put('SESSION_CD_CONTA', $conta->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
                     Session::put('SESSION_CD_ENTIDADE', $entidade->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                    Session::put('SESSION_NIVEL', $user->cd_nivel_niv);
+
+                    $conta->email = $email;
+                    $conta->ativarConta();
 
                     Auth::login($user);
                 }

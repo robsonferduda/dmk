@@ -8,14 +8,36 @@
 <div id="content">
 
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-home"></i>Painel Administrativo 
             </h1>
         </div>
+        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 folder_settings">
+            <ul id="sparks" class="">
+                <li class="sparks-info">
+                    <h5>TAMANHO DA PASTA
+                        <span class="txt-color-purple driver_tamanho"> </span>
+                    </h5>
+                </li>
+                <li class="sparks-info">
+                    <h5>ESPAÇO EM DISCO
+                        <span class="txt-color-blue driver_percentual"> </span>
+                    </h5>
+                </li>
+            </ul>
+        </div>
     </div>
     
     <div class="row">
+
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="alert alert-warning fade in">
+                <button class="close" data-dismiss="alert">×</button>
+                <i class="fa-fw fa fa-warning"></i>
+                <strong>Atenção</strong> Sua conta não foi ativada. Acesse seu email e ative sua conta. Não recebeu o email? <a href="{{ url("/") }}">Clique aqui</a>!
+            </div>
+        </div>
 
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect box-home" style="min-height: 110px;">

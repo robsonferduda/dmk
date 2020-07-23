@@ -9,6 +9,7 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use App\Notifications\ConviteNotification as ConviteNotification;
 use App\Notifications\FiliacaoNotification as FiliacaoNotification;
+use App\Notifications\ContaAtivarNotification as ContaAtivarNotification;
 
 class Conta extends Model implements AuditableContract
 {
@@ -53,6 +54,11 @@ class Conta extends Model implements AuditableContract
     public function convite()
     {
         return $this->hasMany('App\ConviteCorrespondente','cd_conta_con','cd_conta_con');
+    }
+
+    public function ativarConta()
+    {
+        $this->notify(new ContaAtivarNotification());
     }
 
     public function enviarConvite($convite)
