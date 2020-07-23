@@ -28,7 +28,7 @@
         <!-- Smartadmin-all é a junção dos smartadmin-production-plugins.min.css,smartadmin-production.min.css,smartadmin-skins.min.css -->
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-all.css') }}">
 
-        {!! Minify::stylesheet('/css/custom.css')->withFullUrl() !!}
+        {!! Minify::stylesheet('/css/custom.css') !!}
     
         <!--others.css é a junção dos croppie.css,filepicker.css,css-loader.css,bootstrap-colorselector.css -->
          <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/others.css') }}">
@@ -574,7 +574,7 @@
         <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('js/libs/jquery.mask.min.js') }}"></script>
         
-        {!!Minify::javascript(asset('js/geral.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/geral.js'))!!}
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
         <script src="{{ asset('js/plugin/moment/moment.min.js') }}"></script>
@@ -602,18 +602,18 @@
         <script src="{{ asset('js/plugin/ckeditor/ckeditor.js') }}"></script>
         <script src="{{ asset('js/plugin/x-editable/x-editable.min.js') }}"></script>
 
-        {!!Minify::javascript(asset('js/socket.io-1.2.0.js'))->withFullUrl()!!}
-        {!!Minify::javascript(asset('js/css-loader.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/socket.io-1.2.0.js'))!!}
+        {!!Minify::javascript(asset('js/css-loader.js'))!!}
 
         <script src="{{ asset('js/app.min.js') }}"></script>
         <script src="{{ asset('js/plugin/jquery-form/jquery-form.min.js') }}"></script>
         <script src="{{ asset('js/plugin/bootstrap-colorselector.js') }}"></script>
 
-        {!!Minify::javascript(asset('js/filepicker.js'))->withFullUrl()!!}
-        {!!Minify::javascript(asset('js/filepicker-ui.js'))->withFullUrl()!!}
-        {!!Minify::javascript(asset('js/filepicker-drop.js'))->withFullUrl()!!}
-        {!!Minify::javascript(asset('js/filepicker-crop.js'))->withFullUrl()!!}
-        {!!Minify::javascript(asset('js/filepicker-camera.js'))->withFullUrl()!!}
+        {!!Minify::javascript(asset('js/filepicker.js'))!!}
+        {!!Minify::javascript(asset('js/filepicker-ui.js'))!!}
+        {!!Minify::javascript(asset('js/filepicker-drop.js'))!!}
+        {!!Minify::javascript(asset('js/filepicker-crop.js'))!!}
+        {!!Minify::javascript(asset('js/filepicker-camera.js'))!!}
         
         <script src="{{ asset('js/plugin/morris/raphael.min.js') }}"></script>
         <script src="{{ asset('js/plugin/morris/morris.min.js') }}"></script>

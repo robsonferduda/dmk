@@ -16,7 +16,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production-plugins.min.css') }}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-production.min.css') }}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-skins.min.css') }}">
-		{!! Minify::stylesheet('/css/custom.css')->withFullUrl() !!}
+		{!! Minify::stylesheet('/css/custom.css') !!}
 
 		<!-- SmartAdmin RTL Support -->
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-rtl.min.css') }}"> 
