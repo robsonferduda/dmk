@@ -15,9 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
-            <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a> 
-            <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos</a>                                               
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
+            <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos os Honorários</a>                                               
         </div>
     </div>
     <div class="row">
@@ -212,11 +211,11 @@
                                 <div class="form-group">
                                     <label class="">
                                         <input type="checkbox" name="all_services" id="all_services">
-                                            <i></i>Aplicar mesmo valor para todas as ocorẽncias deste serviço 
+                                            <i></i>Aplicar mesmo valor para todas as ocorências deste serviço 
                                     </label><br/>
                                     <label class="">
                                         <input type="checkbox" name="all_comarcas" id="all_comarcas">
-                                            <i></i>Aplicar mesmo valor para todas as ocorẽncias desta comerca
+                                            <i></i>Aplicar mesmo valor para todas as ocorências desta comerca
                                     </label>
                                     <label class="">
                                         <input type="checkbox" name="all_table" id="all_table">
@@ -255,6 +254,24 @@
             <div class="modal-footer">
                 <a type="button" id="btn_confirma_exclusao_honorario_correspondente" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
                 <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal_top_alto" id="modal_buscar_honorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <h4>O sistema está buscando os valores de honorários para <span id="total_servico_load"></span> servições em <span id="total_comarca_load"></span> comarcas.</h4>
+                <h4>Essa operação pode demorar alguns segundos, aguarde o carregamento da tela.</h4>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Ok</a>
             </div>
         </div>
     </div>
@@ -787,7 +804,7 @@
                                     $("#msg_busca_cidade_honorario").html('<span class="text-primary"> '+response.length+' comarcas encontradas</span>');
 
                             }else{
-                                $("#msg_busca_cidade_honorario").html('<span class="text-danger">Nenhuma comarca encontrada. Cadastre as comarcas que deseja para vincular os honorários</span>');
+                                $("#msg_busca_cidade_honorario").html('<span class="text-danger">Nenhuma comarca encontrada. Cadastre as comarcas de atuação para vincular os honorários</span>');
                             }
 
                             $.each(response,function(index,element){
