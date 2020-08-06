@@ -469,7 +469,7 @@
 </div>
 @endsection
 @section('script')
-    {!!Minify::javascript(asset('js/entrada.js'))->withFullUrl()!!}
+    {!!Minify::javascript(asset('js/entrada.js'))!!}
     <script type="text/x-tmpl" id="uploadTemplate">
         <tr class="upload-template">
             <td class="column-name">

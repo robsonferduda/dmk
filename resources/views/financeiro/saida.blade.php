@@ -468,7 +468,7 @@
 </div>
 @endsection
 @section('script')
-    {!!Minify::javascript(asset('js/saida.js'))->withFullUrl()!!}
+    {!!Minify::javascript(asset('js/saida.js'))!!}
     <script type="text/x-tmpl" id="uploadTemplate">
         <tr class="upload-template">
             <td class="column-name">
