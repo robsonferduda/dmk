@@ -1013,7 +1013,7 @@ class CorrespondenteController extends Controller
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->conta);
 
         //Verifica se a conta logada tem nível diferente de correspondente. Se tiver, busca o usuário do correspondente, senão, desloga.
-        if(Auth::user()->cd_nivel_niv != Nivel::CORRESPONDENTE){
+        if(Auth::user() and Auth::user()->cd_nivel_niv != Nivel::CORRESPONDENTE){
 
             $user_correspondente = User::where('email',Auth::user()->email)->where('cd_nivel_niv', Nivel::CORRESPONDENTE)->first();
 

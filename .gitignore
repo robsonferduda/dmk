@@ -17,4 +17,5 @@ yarn-error.log
 /greenmine
 /public/js/builds
 /public/css/builds
+composer.lock
 
