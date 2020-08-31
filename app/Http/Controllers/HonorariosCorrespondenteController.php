@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use App\Jobs\HonorarioCorrespondenteJob;
 
 class HonorariosCorrespondenteController extends Controller
 {
@@ -211,9 +212,14 @@ class HonorariosCorrespondenteController extends Controller
         return Response::json($dados);
     }
 
+    //Classe que realiza a inserção na tabela honorários
     public function salvarHonorarios(Request $request){
 
         $entidade = $request->entidade;
+        //dd($request->all());
+        HonorarioCorrespondenteJob::dispatch($request);
+
+        /*
 
         if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
 
@@ -244,6 +250,7 @@ class HonorariosCorrespondenteController extends Controller
                 }
             }
         }
+        */
     }
 
     public function excluirHonorarios($entidade,$tipo,$id)

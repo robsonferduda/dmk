@@ -164,7 +164,7 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
-    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca)
+    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente)
     {
         $sql = "SELECT t1.cd_processo_pro, 
                        t1.nu_processo_pro, 
@@ -180,11 +180,13 @@ class Processo extends Model implements AuditableContract
                        t5.cd_correspondente_cor,
                        t5.nm_conta_correspondente_ccr,
                        t6.name,
+                       t11.nm_razao_social_con,
                        t7.nm_cidade_cde,
                        t8.sg_estado_est,
                        t10.nm_tipo_servico_tse
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+                JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con
                 JOIN cliente_cli t3 ON t1.cd_cliente_cli = t3.cd_cliente_cli
                 LEFT JOIN vara_var t4 ON t1.cd_vara_var = t4.cd_vara_var AND t1.cd_conta_con = t4.cd_conta_con
                 LEFT JOIN conta_correspondente_ccr t5 ON t1.cd_conta_con = t5.cd_conta_con AND t1.cd_correspondente_cor = t5.cd_correspondente_cor
@@ -203,6 +205,8 @@ class Processo extends Model implements AuditableContract
         if($autor) $sql .= " AND t1.nm_autor_pro ilike '%$autor%' ";
         if($data) $sql .= " AND t1.dt_prazo_fatal_pro = '$data' ";
         if($comarca) $sql .= " AND t1.cd_cidade_cde = $comarca ";
+        if($flag_correspondente == true) $sql .= " AND t1.cd_correspondente_cor = $conta";
+        if($flag_correspondente == false) $sql .= " AND t1.cd_conta_con = $conta";
 
         if($status){
 
@@ -212,9 +216,7 @@ class Processo extends Model implements AuditableContract
 
         }
 
-        $sql .= "AND t1.deleted_at is null
-                AND t1.cd_conta_con = $conta
-                ORDER BY dt_prazo_fatal_pro";
+        $sql .= " AND t1.deleted_at is null ORDER BY dt_prazo_fatal_pro";
 
         $processos = DB::select($sql);
 

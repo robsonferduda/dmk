@@ -341,7 +341,7 @@
                 
                 url: '../../processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca },
+                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "flag": false },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");

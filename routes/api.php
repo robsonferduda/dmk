@@ -21,4 +21,5 @@ Route::get('mensagem/processo/{id}', function(){});
 Route::get('mensagem/nao-lidas', function(){});
 
 Route::get('processo/andamento', 'ProcessoController@getProcessosAndamento');
+Route::get('processo/correspondente/andamento', 'ProcessoController@getProcessosAndamentoCorrespondente');
 Route::get('processo/situacao/prazo', 'ProcessoController@getStatusPrazo');

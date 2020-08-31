@@ -1288,14 +1288,22 @@ class ProcessoController extends Controller
         $autor = ($request->autor) ? $request->autor : null;
         $data = ($request->data) ? date('Y-m-d',strtotime(str_replace('/','-',$request->data))) : null;
         $comarca = ($request->comarca) ? $request->comarca : null;
+        $flag = ($request->flag) ? $request->flag : false;
+        $cliente = ($request->cliente) ? $request->cliente : null;
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente);
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon,null,null,null,null,null,null,null,null,null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon,null,null,null,null,null,null,null,null,null,false,null);
+        return response()->json($processos);
+    }
+
+    public function getProcessosAndamentoCorrespondente()
+    {
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon,null,null,null,null,null,null,null,null,null, true, null);
         return response()->json($processos);
     }
 

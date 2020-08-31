@@ -138,12 +138,12 @@
                                     </div>         
                                     <div class="row">
                                         <input type="hidden" name="cd_correspondente_cor" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}" >
-                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') :  !empty($processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >      
+                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >      
                                         <section class="col col-sm-12">
                                             <label class="label">Correspondente <a href="#" rel="popover-hover" data-placement="top" data-original-title="O correspondente é filtrado de acordo com a cidade escolhida."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
                                                 <div class="input-group col-sm-12">
-                                                    <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
+                                                    <input class="form-control ui-autocomplete-input"  name="nm_correspondente_cor" value="{{ old('nm_correspondente_cor') ? old('nm_correspondente_cor') : $nomeCorrespondente }}" placeholder="Digite 3 caracteres para busca" id="correspondente_auto_complete" type="text" autocomplete="off">
                                                     <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
                                                 </div>
                                             </label>

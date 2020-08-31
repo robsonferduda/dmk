@@ -24,8 +24,8 @@
 .box-desconto{display: none;}
 .box-left{ padding-left: 0px }
 .excluirUserRole{ cursor: pointer; }
-.popover-title { padding: 9px 14px; !important }
-.popover-content{ padding: 9px 14px; !important }
+.popover-title { padding: 9px 14px !important; }
+.popover-content{ padding: 9px 14px !important; }
 .btn-honorario{ margin-left: 8px; padding: 3.2px 10px !important;  }
 .icon-honorario{ font-size: 15px; }
 .box-loader-honorarios{ min-height: 300px; margin: 15px 0px; opacity: 0.5;}
@@ -52,7 +52,7 @@
 
 .files { padding-left: 20px; margin-top: 20px; }
 
-.icone-acompanhamento{ font-size: 11px; color: gray; opacity: 0.7; }
+.icone-acompanhamento{ font-size: 11px; color: #3276b1; opacity: 1; }
 .icone-acompanhamento:hover { color: #064e8c; opacity: none; }
 
 .box-processo h6 { font-size: 12px; margin: 5px 0px !important; font-weight: 300 !important; font-family: "Open Sans",Arial,Helvetica,Sans-Serif !important; }
@@ -152,8 +152,7 @@ span.tags
 .srch_bar {
   display: inline-block;
   text-align: right;
-  width: 60%; padding:
-}
+  width: 60%; }
 .headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
 
 .recent_heading h4 {

@@ -947,6 +947,17 @@ class CorrespondenteController extends Controller
 
     public function processos(){
 
+        if (!empty(\Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso')))
+        {    
+            $tiposProcesso = \Cache::tags($this->conta,'listaTiposProcesso')->get('tiposProcesso');
+        }else{
+
+            $tiposProcesso = TipoProcesso::where('cd_conta_con',$this->conta)->get();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+           \Cache::tags($this->conta,'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+        }
+
+        $clientes = ContaCorrespondente::where('cd_correspondente_cor',$this->conta)->with('conta')->get();
 
         $processos = Processo::where('cd_correspondente_cor',$this->conta)
                                ->whereHas('status', function($query){
@@ -957,7 +968,7 @@ class CorrespondenteController extends Controller
                                   ->orderBy('dt_prazo_fatal_pro','asc')
                                   ->orderBy('hr_audiencia_pro')->get();
 
-        return view('correspondente/processos',['processos' => $processos]);
+        return view('correspondente/processos',['processos' => $processos, 'tiposProcesso' => $tiposProcesso, 'clientes' => $clientes ]);
 
     }
 

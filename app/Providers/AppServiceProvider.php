@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Horizon;
+use App\TaxaHonorario;
+use App\Observers\TaxaHonorarioObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        TaxaHonorario::observe(TaxaHonorarioObserver::class);
+
+        Horizon::auth(function ($request) {
+            return true;
+        });
     }
 
     /**
