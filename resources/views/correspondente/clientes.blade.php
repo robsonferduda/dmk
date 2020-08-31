@@ -45,7 +45,6 @@
                                         <td>{{ $cliente->conta->nm_razao_social_con }}</td>
                                         <td class="center">
                                             <a title="Meus Dados no Cliente" class="btn btn-default btn-xs btn-m-bottom" href="{{ url('correspondente/cliente/'.\Crypt::encrypt($cliente->cd_conta_con).'/dados') }}"><i class="fa fa-file-text-o"></i> </a>
-                                            <a title="Meus Processos" class="btn btn-info btn-xs btn-m-bottom"  href="{{ url('correspondente/cliente/'.\Crypt::encrypt($cliente->cd_conta_con).'/processos') }}"><i class="fa fa-archive"></i> </a>
                                         </td>
                                     </tr>
                                 @endforeach                                                           
