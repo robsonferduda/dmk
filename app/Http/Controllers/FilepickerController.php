@@ -18,15 +18,12 @@ use Hazzard\Config\Repository as Config;
 
 class FilepickerController extends Controller
 {
-
     protected $handler;
 
     public function __construct()
     {
-
         $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
-        
     }
 
     public function index()
@@ -34,54 +31,50 @@ class FilepickerController extends Controller
         return view('upload/index');
     }
 
-    public function inicializaPastaDestino($id_despesa){
-
+    public function inicializaPastaDestino($id_despesa)
+    {
         $this->handler = new Handler(
             new Uploader($config = new Config, new ImageManager)
         );
         
-        $destino = "despesas/$this->conta/$id_despesa";        
+        $destino = "arquivos/$this->conta/despesas/$id_despesa";
 
         //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
-        if(!is_dir($destino)){
+        if (!is_dir($destino)) {
             @mkdir(storage_path($destino), 0775);
         }
 
         $config['debug'] = true;
         $config['upload_dir'] = storage_path($destino);
         $config['upload_url'] = storage_path($destino);
-
     }
 
-    public function inicializaPastaProcesso($id_processo){
-
+    public function inicializaPastaProcesso($id_processo)
+    {
         $this->handler = new Handler(
             new Uploader($config = new Config, new ImageManager)
         );
         
-        $destino = "processos/$id_processo";        
+        $destino = "processos/$id_processo";
 
         //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
-        if(!is_dir($destino)){
+        if (!is_dir($destino)) {
             @mkdir(storage_path($destino), 0775);
         }
 
         $config['debug'] = true;
         $config['upload_dir'] = storage_path($destino);
         $config['upload_url'] = storage_path($destino);
-
     }
 
     public function handle(Request $request)
     {
-
         $this->inicializaPastaDestino($request->id_despesa);
         return $this->handler->handle($request);
     }
 
     public function arquivosProcesso(Request $request)
     {
-
         $this->inicializaPastaProcesso($request->id_processo);
 
         $method = $request->get('_method', $request->getMethod());
@@ -89,19 +82,17 @@ class FilepickerController extends Controller
         $anexos = array();
         $files = array();
 
-        if($method == 'GET'){
-
-            $anexos = AnexoProcesso::where('cd_processo_pro',$request->id_processo)->orderBy('created_at','DESC')->get();
+        if ($method == 'GET') {
+            $anexos = AnexoProcesso::where('cd_processo_pro', $request->id_processo)->orderBy('created_at', 'DESC')->get();
 
             $files = array();
 
             foreach ($anexos as $key => $anexo) {
-
                 $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
                 $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
 
                 //Se o registro do arquivo existe na pasta, adicona ele na liatagem
-                if(file_exists(storage_path($nome_arquivo))){
+                if (file_exists(storage_path($nome_arquivo))) {
                     $files[$key] = new File(storage_path($nome_arquivo));
                     $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
                     $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
@@ -109,22 +100,17 @@ class FilepickerController extends Controller
             }
 
             foreach ($files as &$file) {
-
                 $tipo = $file->tipo;
                 $responsavel = $file->responsavel;
                 
                 $file = $this->handler->fileToArray($file);
                 $file['tipo'] = $tipo;
                 $file['responsavel'] = $responsavel;
-                
             }
 
             return $this->handler->json(compact('files', count($anexos)));
-
-        }else{
-
+        } else {
             return $this->handler->handle($request);
-
         }
     }
 }
