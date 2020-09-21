@@ -144,13 +144,13 @@
                                     </td>
                                     <td>{{ $entrada->tipoServico->nm_tipo_servico_tse }}</td>
                                     <td>{{ $entrada->processo->cliente->nm_razao_social_cli }}</td>
-                                    <td>{{ 'R$ '.number_format($entrada->vl_taxa_honorario_cliente_pth,2,',',' ') }}</td>
+                                    <td>{{ 'R$ '.number_format($entrada->vl_taxa_honorario_cliente_pth,2,',','') }}</td>
 
                         
                                     <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
                                     <td>{{ (!empty($entrada->vl_taxa_cliente_pth) ? $entrada->vl_taxa_cliente_pth.'%' : ' ') }}</td>
                                     <td>{{ 'R$ '.number_format(($entrada->vl_taxa_honorario_cliente_pth-
-                                    ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',',' ') }}</td>
+                                    ((($entrada->vl_taxa_honorario_cliente_pth)*$entrada->vl_taxa_cliente_pth)/100))+$totalDespesas,2,',','') }}</td>
                                     <td style="text-align: center;">
                                         <a title="Pagamentos"  data-id='{{ $entrada->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-cliente"  href="javascript:void(0)" ><i class="fa fa-money"></i></a>
 
