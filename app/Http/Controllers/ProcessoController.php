@@ -1291,7 +1291,10 @@ class ProcessoController extends Controller
         $flag = ($request->flag) ? $request->flag : false;
         $cliente = ($request->cliente) ? $request->cliente : null;
 
+        $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
+
         $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente);
+        
         return response()->json($processos);
     }
 
