@@ -1106,7 +1106,7 @@ class FinanceiroController extends Controller
         $dados = array('entradas' => $entradasVetor,'conta' => $conta,'saidas' => $saidasVetor, 'despesas' => $despesasVetor,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'flagBalanco' => $request->balanco);
 
         
-        \Excel::store(new BalancoSumarizadoExport($dados), "/financeiro/balanco/{$this->conta}/".time().'_Relatório_Sumarizado.xlsx', 'reports', \Maatwebsite\Excel\Excel::XLSX);
+        \Excel::store(new BalancoSumarizadoExport($dados), "/{$this->conta}/reports/financeiro/balanco/".time().'_Relatório_Sumarizado.xlsx', 'arquivos', \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function relatorioBalancoDetalhado($request)
@@ -1278,7 +1278,7 @@ class FinanceiroController extends Controller
 
         $dados = array('entradas' => $entradas,'conta' => $conta,'saidas' => $saidas, 'despesas' => $despesas,'flagEntradas' => $request->entradas,'flagSaidas' => $request->saidas, 'flagDespesas' => $request->despesas, 'flagBalanco' => $request->balanco, 'tipo' => $request->tipo);
 
-        \Excel::store(new BalancoDetalhadoExport($dados), "/financeiro/balanco/{$this->conta}/".time().'_Relatório_Detalhado.xlsx', 'reports', \Maatwebsite\Excel\Excel::XLSX);
+        \Excel::store(new BalancoDetalhadoExport($dados), "/{$this->conta}/reports/financeiro/balanco/".time().'_Relatório_Detalhado.xlsx', 'arquivos', \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function relatorios()
@@ -1400,11 +1400,11 @@ class FinanceiroController extends Controller
 
     private function getFiles()
     {
-        \File::makeDirectory(storage_path().'/reports/financeiro/balanco/'.$this->conta, $mode = 0777, true, true);
+        \File::makeDirectory(storage_path()."/arquivos/{$this->conta}/reports/financeiro/balanco", $mode = 0777, true, true);
 
         $arquivos = array();
 
-        $files = collect(\File::allFiles(storage_path()."/reports/financeiro/balanco/".$this->conta))
+        $files = collect(\File::allFiles(storage_path()."/arquivos/{$this->conta}/reports/financeiro/balanco"))
                  ->sortByDesc(function ($file) {
                      return $file->getCTime();
                  });
@@ -1418,7 +1418,7 @@ class FinanceiroController extends Controller
 
     public function excluir($nome)
     {
-        \Storage::disk('reports')->delete("/financeiro/balanco/$this->conta/".$nome);
+        \Storage::disk('arquivos')->delete("{$this->conta}/reports/financeiro/balanco/{$nome}");
         
         return \Response::json(array('message' => 'Registro excluído com sucesso'), 200);
     }
@@ -1426,7 +1426,7 @@ class FinanceiroController extends Controller
     public function arquivo($nome)
     {
         //dd(\Storage::disk('reports')->get("$this->conta/".$nome));
-        return response()->download(storage_path('reports/financeiro/balanco/'."$this->conta/".$nome));
+        return response()->download(storage_path("arquivos/{$this->conta}/reports/financeiro/balanco/{$nome}"));
     }
 
     public function excluirBaixa($id)

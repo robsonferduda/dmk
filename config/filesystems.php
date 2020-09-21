@@ -47,6 +47,11 @@ return [
             'driver' => 'local',
             'root' => storage_path('reports'),
         ],
+
+        'arquivos' => [
+            'driver' => 'local',
+            'root' => storage_path('arquivos'),
+        ],
         
         'local' => [
             'driver' => 'local',
