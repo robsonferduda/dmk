@@ -217,9 +217,7 @@ class HonorariosCorrespondenteController extends Controller
 
         $entidade = $request->entidade;
         //dd($request->all());
-        HonorarioCorrespondenteJob::dispatch($request);
-
-        /*
+        //HonorarioCorrespondenteJob::dispatch($request);
 
         if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
 
@@ -250,7 +248,7 @@ class HonorariosCorrespondenteController extends Controller
                 }
             }
         }
-        */
+        
     }
 
     public function excluirHonorarios($entidade,$tipo,$id)

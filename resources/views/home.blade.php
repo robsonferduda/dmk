@@ -31,6 +31,7 @@
     
     <div class="row">
 
+        <!--
         <div class="col-sm-12 col-md-12 col-lg-12">
             <div class="alert alert-warning fade in">
                 <button class="close" data-dismiss="alert">×</button>
@@ -38,6 +39,7 @@
                 <strong>Atenção</strong> Sua conta não foi ativada. Acesse seu email e ative sua conta. Não recebeu o email? <a href="{{ url("/") }}">Clique aqui</a>!
             </div>
         </div>
+        -->
 
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect box-home" style="min-height: 110px;">
