@@ -102,7 +102,7 @@
                                         </td>
                                         <td>
                                             <div style="display: block;padding: 1px 1px 1px 1px">
-                                                <button title="Excluir" data-url="reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                                <button title="Excluir" data-url="../processos/reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                             </div>    
                                         </td>
                                     </tr>

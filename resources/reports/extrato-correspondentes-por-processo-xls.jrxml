@@ -56,7 +56,9 @@ FROM
 WHERE
     t3.deleted_at IS NULL
     and
-    t8.cd_conta_con = $P{conta}  	
+    t8.cd_conta_con = $P{conta}  
+    and
+    t3.cd_conta_con = $P{conta}  
 $P!{dataQuery}
 $P!{bancoQuery}
 $P!{correspondenteQuery}
