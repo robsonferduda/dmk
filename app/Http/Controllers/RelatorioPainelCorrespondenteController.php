@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use Laracasts\Flash\Flash;
-use App\RelatorioJasper;
 use Illuminate\Http\Request;
 use App\Conta;
 use App\Processo;

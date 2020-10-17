@@ -299,7 +299,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('correspondente/painel/relatorios', 'RelatorioPainelCorrespondenteController@index');
 	Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
 	Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
-	Route::delete('correspondente/reports/{nome}','RelatorioCorrespondenteController@excluir');
+	Route::delete('correspondente/relatorios/{nome}','RelatorioCorrespondenteController@excluir');
 	Route::get('correspondente/arquivo/{nome}','RelatorioCorrespondenteController@arquivo');
 
 	Route::get('calendario','CalendarioController@index');

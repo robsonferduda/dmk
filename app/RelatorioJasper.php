@@ -53,9 +53,9 @@ class RelatorioJasper
     public function processar($parametros = array(),$sourceName,$fileName,$download=true,$extensao='pdf')
     {
     
-        \File::makeDirectory(storage_path().'/reports/'.$this->conta, $mode = 0744, true, true);
+        \File::makeDirectory(storage_path().'/arquivos/'.$this->conta.'/reports/correspondente', $mode = 0744, true, true);
 
-        $output = storage_path().'/reports/'.$this->conta.'/'. time() . "_$fileName";
+        $output = storage_path().'/arquivos/'.$this->conta.'/reports/correspondente/'. time() . "_$fileName";
 
         $report = new PHPJasper;
 

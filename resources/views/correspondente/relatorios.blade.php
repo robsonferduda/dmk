@@ -38,7 +38,7 @@
                             <label class="label label-black"></label><br />
                             <select style="width: 100%" name="relatorio" class="form-control" required>
                                 <option value="">Relatório</option>
-                                <option {{ (\Session::get('relatorio') == 'pagamento-correspondentes-por-processo'  ? 'selected' : '') }} value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Por Processo)</option>
+                                <option {{ (\Session::get('relatorio') == 'pagamento-correspondentes-por-processo'  ? 'selected' : '') }} value="pagamento-correspondentes-por-processo">Pagamento de Correspondentes (Detalhado)</option>
                                 <option {{ (\Session::get('relatorio') == 'pagamento-correspondentes-sumarizado'  ? 'selected' : '' ) }} value="pagamento-correspondentes-sumarizado">Pagamento de Correspondentes (Sumarizado)</option>
                             </select>                            
                         </section>     
@@ -119,7 +119,7 @@
                                         </td>
                                         <td>
                                             <div style="display: block;padding: 1px 1px 1px 1px">
-                                                <button title="Excluir" data-url="reports/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
+                                                <button title="Excluir" data-url="../correspondente/relatorios/{{$arquivo['nome']}}" class="btn btn-danger btn-xs excluir_registro" href=""><i class="fa fa-trash"></i></button>
                                             </div>    
                                         </td>
                                     </tr>
