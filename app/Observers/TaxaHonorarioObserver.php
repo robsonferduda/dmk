@@ -14,7 +14,7 @@ class TaxaHonorarioObserver
      */
     public function created(TaxaHonorario $taxaHonorario)
     {
-        dd("Criou!");
+        //
     }
 
     /**

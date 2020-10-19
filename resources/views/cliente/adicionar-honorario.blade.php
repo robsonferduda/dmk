@@ -46,7 +46,7 @@
                         <div class="col-md-12">
                             <div class="widget-body">                 
                                 <ul id="Tabs" class="nav nav-tabs bordered">
-                                    <li class="{{ (Session::get('opcao_visualizacao') == 'grupo') ? 'active' : (!Session::has('opcao_visualizacao')) ? 'active' : '' }}">
+                                    <li class="{{ (Session::get('opcao_visualizacao') == 'grupo') ? 'active' : ((!Session::has('opcao_visualizacao')) ? 'active' : '') }}">
                                         <a href="#s1" data-toggle="tab">POR GRUPO</a>
                                     </li>
                                     <li class="{{ (Session::get('opcao_visualizacao') == 'cidade') ? 'active' : '' }}">

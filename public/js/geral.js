@@ -1695,6 +1695,7 @@ $(document).ready(function() {
 			}
     		
 		});
+
 		
 		$.ajax(
         {
@@ -1711,15 +1712,14 @@ $(document).ready(function() {
             },
             success: function(response)
             {
-            	
             	window.location.href = "../../cliente/honorarios/"+cliente;
             },
 		   	error: function(response)
 		   	{
-		   		
 		   		//location.reload();
 		   	}
-        });
+		});
+		
         
 	});	
 
