@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Excel;
 use App\Fone;
 use App\Cidade;
 use App\Cliente;
@@ -18,11 +19,13 @@ use App\GrupoCidade;
 use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
 use App\GrupoCidadeRelacionamento;
+use App\Imports\ClientesImport;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClienteRequest;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
+use App\Exports\Clientes\RelacaoClientesEscritorioExport;
 
 class ClienteController extends Controller
 {
@@ -43,6 +46,45 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli',$id)->first();
         return view('cliente/detalhes',['cliente' => $cliente]);
+    }
+
+    public function relatorios()
+    {
+        return view('cliente/relatorios');
+    }
+
+    public function gerarRelatorio(Request $request)
+    {
+        $params = array();
+        $labels = array();
+        $dados = array();
+        $valores = $request->campos;
+
+        if($valores){
+        
+            for ($i=0; $i < count($valores); $i++) { 
+                if($valores[$i] == 'nu_cliente_cli') $labels[] = "Código";
+                if($valores[$i] == 'nm_razao_social_cli') $labels[] = "Nome";
+                if($valores[$i] == 'fone') $labels[] = "Telefone";
+                if($valores[$i] == 'email') $labels[] = "Email";
+            }
+
+            $clientes = Cliente::where('cd_conta_con', $this->conta)->with('entidade')->get();
+
+            foreach($clientes as $cliente){
+
+                $dados[] = array('nu_cliente_cli' => $cliente->nu_cliente_cli,
+                                'nm_razao_social_cli' => $cliente->nm_razao_social_cli,
+                                'email' => (EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get()) ? EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null,
+                                'fone' => ($cliente->entidade->fone) ? Fone::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null);
+            }
+            
+            return \Excel::download(new RelacaoClientesEscritorioExport($dados,$valores,$labels),'clientes.xls',\Maatwebsite\Excel\Excel::XLSX);
+        
+        }else{
+            Flash::warning('Selecione pelo menos um campo para o relatório');
+            return redirect('cliente/relatorios');
+        }
     }
 
     public function contatos($id)

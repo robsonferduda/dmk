@@ -65,6 +65,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cliente/buscar-honorarios/{id}','ClienteController@buscarHonorarios');
 	Route::get('cliente/honorarios/buscar/{id}','ClienteController@buscarHonorariosSalvos');
 	Route::get('cliente/novo','ClienteController@novo');
+	Route::get('cliente/relatorios','ClienteController@relatorios');
 	Route::get('cliente/detalhes/{id}','ClienteController@detalhes');
 	Route::get('cliente/editar/{id}','ClienteController@editar');
 	Route::get('cliente/contatos/{id}','ClienteController@contatos');
@@ -76,6 +77,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('advogados-por-cliente/{cliente}','ClienteController@buscaAdvogados');
 	Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCliente');
 	Route::get('busca-valor-correspondente/{correspondente}/{cidade}/{tipoServico}','ProcessoController@buscaValorCorrespondente');
+
+	Route::post('cliente/relatorios','ClienteController@gerarRelatorio');
 	Route::post('cliente/advogado','ClienteController@novoAdvogado');
 	Route::post('cliente/contato/novo/{id}','ClienteController@createContato');
 	Route::post('cliente/honorarios/salvar','ClienteController@salvarHonorarios');
