@@ -53,7 +53,8 @@ class LoginController extends Controller
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'cd_nivel_niv' => $request->nivel])){
 
-            if (Auth::user() && Auth::user()->active == '1') {
+            //if (Auth::user() && Auth::user()->active == '1') {
+            if (Auth::user()) {
 
                 Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
                 Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
