@@ -352,8 +352,11 @@ class ProcessoController extends Controller
         $novoProcesso->save();
 
         $processoTaxaHonorario->cd_processo_pro = $novoProcesso->cd_processo_pro;
+        $processoTaxaHonorario->fl_pago_cliente_pth = 'N';
+        $processoTaxaHonorario->fl_pago_correspondente_pth = 'N';
         
         $novoProcessoTaxaHonorario = $processoTaxaHonorario->replicate();
+        
         $novoProcessoTaxaHonorario->save();
 
         if(getenv('APP_ENV') == 'production')
