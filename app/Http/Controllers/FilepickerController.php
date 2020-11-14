@@ -55,7 +55,9 @@ class FilepickerController extends Controller
             new Uploader($config = new Config, new ImageManager)
         );
         
-        $destino = "processos/$id_processo";
+        $conta = Processo::where('cd_processo_pro', $id_processo)->select('cd_conta_con')->first()['cd_conta_con'];
+        
+        $destino = "arquivos/$conta/processos/$id_processo";
 
         //Verificar se existe a pasta da conta, se não existir, criar a pasta com permissões de escrita
         if (!is_dir($destino)) {
@@ -88,9 +90,8 @@ class FilepickerController extends Controller
             $files = array();
 
             foreach ($anexos as $key => $anexo) {
-                $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
-                $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
-
+                $nome_arquivo = $anexo['nm_local_anexo_processo_apr'].$anexo['nm_anexo_processo_apr'];
+                
                 //Se o registro do arquivo existe na pasta, adicona ele na liatagem
                 if (file_exists(storage_path($nome_arquivo))) {
                     $files[$key] = new File(storage_path($nome_arquivo));

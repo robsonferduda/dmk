@@ -14,20 +14,17 @@ use Laracasts\Flash\Flash;
 
 class AnexoProcessoController extends Controller
 {
-
-
     public function __construct()
     {
         $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
         $this->entidade = \Session::get('SESSION_CD_ENTIDADE');
-        
     }
 
     public function show($id)
-    {   
+    {
         $id = \Crypt::decrypt($id);
-        $anexo = AnexoProcesso::where('cd_anexo_processo_apr',$id)->first();
+        $anexo = AnexoProcesso::where('cd_anexo_processo_apr', $id)->first();
         return response()->download(storage_path($anexo->nm_local_anexo_despesa_des.$anexo->nm_anexo_despesa_des));
     }
 
@@ -37,8 +34,7 @@ class AnexoProcessoController extends Controller
 
         $file_size = 0;
 
-        foreach( File::allFiles(storage_path($destino)) as $file)
-        {
+        foreach (File::allFiles(storage_path($destino)) as $file) {
             $file_size += $file->getSize();
         }
         
@@ -48,90 +44,83 @@ class AnexoProcessoController extends Controller
         $dados = array('size' => $size, 'percentual' => $percentual);
 
         return Response::json($dados);
-
     }
 
-    function getSymbolByQuantity($bytes) {
+    public function getSymbolByQuantity($bytes)
+    {
         $symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
         $exp = floor(log($bytes)/log(1024));
 
         return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
     }
 
-    function getPercentualEspaco($bytes) {
+    public function getPercentualEspaco($bytes)
+    {
 
         //Espeço fixo de 30GB em bytes
         $percentual = ($bytes*100)/32212254720;
-        return sprintf('%.1f ',$percentual)."%";
+        return sprintf('%.1f ', $percentual)."%";
     }
 
     public function showPlugin($id, $file)
-    {   
-        $anexo = AnexoProcesso::where('cd_processo_pro', $id)->where('nm_anexo_processo_apr','ilike',$file)->first();
+    {
+        $anexo = AnexoProcesso::where('cd_processo_pro', $id)->where('nm_anexo_processo_apr', 'ilike', $file)->first();
 
-        $nome = explode("/", $anexo['nm_local_anexo_processo_apr']);
-        $nome_arquivo = $nome[0].'/'.$nome[1].'/'.$anexo['nm_anexo_processo_apr'];
+        $nome_arquivo = $anexo['nm_local_anexo_processo_apr'].$anexo['nm_anexo_processo_apr'];
 
-        if(file_exists(storage_path($nome_arquivo))){
-
+        if (file_exists(storage_path($nome_arquivo))) {
             return response()->download(storage_path($nome_arquivo));
-
-        }else{
-
+        } else {
             $processo = Processo::where('cd_processo_pro', $anexo->cd_processo_pro)->first();
-            return view('errors/processo-file-not-found',['anexo' => $anexo, 'processo' => $processo]);
-
+            return view('errors/processo-file-not-found', ['anexo' => $anexo, 'processo' => $processo]);
         }
-
-        
     }
 
     public function create(Request $request)
     {
 
-        $local = "processos/$request->id_processo/";
+        $conta = Processo::where('cd_processo_pro', $request->id_processo)->select('cd_conta_con')->first()['cd_conta_con'];
+        
+        $local = "arquivos/{$conta}/processos/{$request->id_processo}/";
         $tipo = (Auth::user()->cd_nivel_niv == 3) ? TipoAnexoProcesso::CORRESPONDENTE : TipoAnexoProcesso::CONTA;
 
         AnexoProcesso::create([
-            'cd_conta_con'                => $this->conta, 
+            'cd_conta_con'                => $this->conta,
             'cd_entidade_ete'             => $this->entidade,
             'cd_tipo_anexo_processo_tap'  => $tipo,
             'cd_processo_pro'             => $request->id_processo,
             'nm_anexo_processo_apr'       => $request->nome_arquivo,
-            'nm_local_anexo_processo_apr' => $local     
+            'nm_local_anexo_processo_apr' => $local
         ]);
     }
 
     public function destroy(Request $request)
     {
+        $anexo = AnexoProcesso::where('cd_processo_pro', $request->id)->where('nm_anexo_processo_apr', $request->nome_arquivo)->first();
 
-        $anexo = AnexoProcesso::where('cd_processo_pro',$request->id)->where('nm_anexo_processo_apr',$request->nome_arquivo)->first();
-
-        if($anexo->delete()){
-
+        if ($anexo->delete()) {
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        
-        }else{
+        } else {
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
         }
-        
     }
 
     public function destroyAndRemoveFile($id)
     {
- 
-        
     }
 
     public function downloadAll($id_processo)
     {
         $id_processo = \Crypt::decrypt($id_processo);
-        $id_file = date("YmdHis");
-        $origem = "processos/$id_processo/";
-        $destino = "processos/$id_processo/$id_file/";
-        $destino_zip = "processos/$id_processo/anexos/";
 
-        if(!is_dir($destino)){
+        $conta = Processo::where('cd_processo_pro', $id_processo)->select('cd_conta_con')->first()['cd_conta_con'];
+        
+        $id_file = date("YmdHis");
+        $origem = "arquivos/$conta/processos/$id_processo/";
+        $destino = "arquivos/$conta/processos/$id_processo/$id_file/";
+        $destino_zip = "arquivos/$conta/processos/$id_processo/anexos/";
+
+        if (!is_dir($destino)) {
             @mkdir(storage_path($destino), 0775);
         }
 
@@ -152,5 +141,4 @@ class AnexoProcessoController extends Controller
 
         return response()->download(storage_path($destino_zip.$id_file.'_anexos.zip'));
     }
-
 }
