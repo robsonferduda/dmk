@@ -30,7 +30,7 @@ class AnexoProcessoController extends Controller
 
     public function getSizeFolder()
     {
-        $destino = "processos";
+        $destino = "arquivos/{$this->conta}";
 
         $file_size = 0;
 
