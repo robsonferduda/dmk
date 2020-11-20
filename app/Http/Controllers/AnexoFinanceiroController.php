@@ -66,6 +66,12 @@ class AnexoFinanceiroController extends Controller
         return response()->download(storage_path($anexo->nm_local_anexo_financeiro_afn.$anexo->nm_anexo_financeiro_afn));
     }
 
+    public function showComprovante($conta, $id, $file)
+    {
+        $anexo = AnexoFinanceiro::where('cd_processo_taxa_honorario_pth', $id)->where('nm_anexo_financeiro_afn', $file)->where('cd_tipo_financeiro_tfn', \TipoFinanceiro::SAIDA)->where('cd_conta_con', $conta)->first();
+        return response()->download(storage_path($anexo->nm_local_anexo_financeiro_afn.$anexo->nm_anexo_financeiro_afn));
+    }
+
     public function createSaida(Request $request)
     {
         $ids = json_decode($request->id_processo_baixa);

@@ -290,7 +290,7 @@
                             @endcan
                             @can('financeiro.balanco')     
                                 <li>
-                                    <a href="{{ url('financeiro/balanco') }}" title="Dashboard"><span class="menu-item-parent">Balanço</span></a>
+                                    <a href="{{ url('financeiro/balanco') }}" title="Balanço"><span class="menu-item-parent">Balanço</span></a>
                                 </li>
                             @endcan
                             @can('financeiro.entradas')     
@@ -405,7 +405,15 @@
                     @role('correspondente')    
                         <li class="">
                             <a href="{{ url('correspondente/clientes') }}" title="blank_"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
-                        </li>                 
+                        </li>       
+                        <li class="menu {{ (Session::get('menu_pai') == 'financeiro') ? 'open' : '' }}">
+                            <a href="#" title="Financeiro" class="item_pai" id="financeiro"><i class="fa fa-lg fa-fw fa-line-chart"></i> <span class="menu-item-parent">Financeiro</span></a>
+                            <ul style="{{ (Session::get('menu_pai') == 'financeiro') ? 'display: block;' : 'display: none;' }}">
+                                <li>
+                                    <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento') }}" title="Comprovantes de Pagamento"><span class="menu-item-parent">Comprovantes de Pagamento</span></a>
+                                </li>
+                            </ul>   
+                        </li>                  
                         <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
                             <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                             <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
