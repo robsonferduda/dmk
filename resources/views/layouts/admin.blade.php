@@ -642,8 +642,6 @@
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
-                alert("Teste");
-
                 cod_conta = $('meta[name="conta"]').attr('content');
                 path = window.location.protocol + "//" + window.location.host + "/dmk/";
 
