@@ -16,6 +16,7 @@ use App\Enums\TipoEnderecoEletronico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Redis;
 
 class MensagemController extends Controller
 {
@@ -31,8 +32,32 @@ class MensagemController extends Controller
 
     public function index()
     {
+
+        Redis::set('name', 'Taylor');
+        
+        $redis = Redis::connect('127.0.0.1',6379);  
+
+        Redis::set('name', 'Taylor');
+       
+        try {
+            // Call Laravel Cache facade when Redis connection is failing
+            // This will throw exception
+            Redis::connect('127.0.0.1',6379);
+
+        } catch (RedisException $exception) {
+            // In case Redis error - do custom response
+            Log::error('Redis error', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTrace()
+            ]);
+        
+            return response()->json([
+                'error' => 'your error message to client'
+            ]);
+        }
+
         event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
-        //dd("Teste");
+        dd("Teste");
     }
 
     public function enviar(Request $request)
