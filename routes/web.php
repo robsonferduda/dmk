@@ -259,6 +259,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('conta/configuracoes/flag_envio', 'ContaController@atualizarFlagEnvio');
 
     Route::get('entidade/teste', 'EntidadeController@index');
+    Route::get('mensagem/teste', 'MensagemController@index');
+
+    Route::get('/fire', function () {
+        event(new \App\Events\EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
+        return 'ok';
+    });
 
     Route::get('erro-permissao', function () {
         return view('errors/permissao');

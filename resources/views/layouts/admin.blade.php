@@ -637,19 +637,19 @@
         
         $(document).ready(function() {
         
-        {{--
-
             var hostname = document.location.hostname;  
 
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
+
+                alert("Teste");
 
                 cod_conta = $('meta[name="conta"]').attr('content');
                 path = window.location.protocol + "//" + window.location.host + "/dmk/";
 
                 if(message.data.canal == 'notificacao'){
 
-                    if(message.data.conta == cod_conta){
+                    if(message.data.conta == 999){
                         
                         $('.badge-count').html(message.data.total);
                         $(".notification-body > li").remove();
@@ -677,8 +677,6 @@
                 }
 
             });
-
-            --}}
 
         });
 

@@ -13,7 +13,7 @@ var a = https.createServer(options, function (req, res) {
 	res.setHeader('Content-Type', 'application/json');
 	res.setHeader('X-Powered-By', 'coperve');
 	res.writeHead(200);
-        res.end("hello world\n");
+        res.end("Servidor Node + Redis rodando...\n");
 });
 
 var io = require('socket.io')(a);

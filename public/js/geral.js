@@ -34,6 +34,7 @@ $(document).ready(function() {
 	color = $('#categoria_cac option:selected').data('color');
 	$("#categoria_cac").css('color',color);
 
+	/*
 	$.ajax({
         url: host+"/processos/arquivo/espaco",
         type: 'GET',
@@ -48,7 +49,8 @@ $(document).ready(function() {
         	$('.driver_tamanho').html('<i class="fa fa-times"></i> Erro de leitura');  
             $('.driver_percentual').html('<i class="fa fa-times"></i> Erro de leitura');
         }
-    });
+	});
+	*/
 
 	var CpfCnpjMaskBehavior = function (val){
 			return val.replace(/\D/g, '').length <= 11 ? '000.000.000-009' : '00.000.000/0000-00';

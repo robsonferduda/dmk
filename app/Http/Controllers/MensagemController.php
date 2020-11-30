@@ -31,7 +31,8 @@ class MensagemController extends Controller
 
     public function index()
     {
-        return view('home');
+        event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
+        //dd("Teste");
     }
 
     public function enviar(Request $request)
