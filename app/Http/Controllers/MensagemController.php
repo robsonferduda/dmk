@@ -32,17 +32,13 @@ class MensagemController extends Controller
 
     public function index()
     {
-
-        Redis::set('name', 'Taylor');
-        
-        $redis = Redis::connect('127.0.0.1',6379);  
-
-        Redis::set('name', 'Taylor');
        
         try {
             // Call Laravel Cache facade when Redis connection is failing
             // This will throw exception
             Redis::connect('127.0.0.1',6379);
+            Redis::set('name', 'Taylor');
+            $visits = Redis::incr('visits');
 
         } catch (RedisException $exception) {
             // In case Redis error - do custom response

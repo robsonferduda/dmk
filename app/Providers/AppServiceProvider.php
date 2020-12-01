@@ -17,10 +17,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         TaxaHonorario::observe(TaxaHonorarioObserver::class);
-
-        Horizon::auth(function ($request) {
-            return true;
-        });
     }
 
     /**
