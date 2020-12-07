@@ -29,6 +29,10 @@
                                 <a title="Editar" href="{{ url('processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit fa-lg"></i> Editar</a>
                             </li>
                             <li>
+                                <a title="Clonar" href="{{ url('../processos/clonar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa fa-clone fa-lg"></i> Clonar</a>
+                            </li>
+
+                            <li>
                                 <a title="Relatório Financeiro" href="{{ url('processos/relatorio/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-usd fa-lg"></i> Relatório Financeiro</a>
                             </li>
 
