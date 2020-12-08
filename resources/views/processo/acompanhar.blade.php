@@ -143,12 +143,12 @@
                                         <a title="Notificar Correspondente" class="btn btn-default  msg_processamento btn-responsive btn-m-bottom" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
                                     @endif
                                                                         
-                                     <a title="Finalizar Processo"  class="btn btn-success btn-responsive" href="#" data-toggle="modal" data-target="#modalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
+                                     <a title="Finalizar Processo"  class="btn btn-success btn-responsive" href="#" id="btnModalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
                                                                
                                 </div>
                             </div>
                         </div>
-                        <form id="cancelarProcessoForm" action="{{ url('processo/atualizar-status') }}" method="POST">
+                        <form id="cancelarProcessoForm" action="{{ url('proctesso/atualizar-status') }}" method="POST">
                                                     {{ csrf_field() }}
                                         <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
                                         <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
@@ -599,6 +599,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input type="hidden" name="id_processo" id="id_processo" value="{{ $processo->cd_processo_pro }}">
+                                    <input type="hidden" name="id_processo_encrypted" id="id_processo_encrypted" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">                                    
                                     <div class="well" style="padding: 5px;">
                                         <p>
                                             <h5 class="center" style="margin-bottom: 5px;"><strong class="text-info">Instruções sobre os arquivos</strong></h5>
@@ -643,6 +644,9 @@
                                 <div class="col-md-12">
                                     <input type="hidden" name="processo" value="{{ $processo->cd_processo_pro }}">
                                     <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO }}"> 
+
+                                    <div class="form-group" id="despesas_finalizar"></div>
+
                                     <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> A notificação do cliente é opcional. Caso a opção não seja marcada o processo será finalizado mesmo assim.</label>    
                                     <div class="form-group">                                                    
                                         <div class="checkbox">
@@ -794,6 +798,46 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
+
+                $("#btnModalFinalizacao").click(function(){
+                    var id_processo = $("#processo").val();
+                    $.ajax(
+                    {
+                        url: "../../processo/"+id_processo+"/despesas",
+                        type: 'GET',
+                        success: function(response)
+                        {                    
+                            despesas = JSON.parse(response);
+
+                            $('#despesas_finalizar').empty();
+
+                            if(despesas.length > 0) {
+                                despesas_tabela = "<a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} ><h4 style='margin-bottom:5px'>Despesas</h4></a>"; 
+                                despesas_tabela += "<table class='table'>";   
+                                despesas_tabela += "<tr><th>Despesa</th>"; 
+                                despesas_tabela += "<th>Valor</th></tr>";                             
+
+                                despesas.forEach(function(despesa){
+                                    despesas_tabela += "<tr><td>"+despesa.tipo_despesa.nm_tipo_despesa_tds+"</td>"; 
+                                    despesas_tabela += "<td>"+despesa.vl_processo_despesa_pde.replace('.',',')+"</td></tr>";
+                                });
+                                despesas_tabela += "</table>";   
+
+                                $('#despesas_finalizar').append(despesas_tabela);
+                            } else {                                
+                               $('#despesas_finalizar').append("<div class='alert alert-info' role='alert'> <i style='color: red' class='fa fa-warning'></i><strong> Alerta!</strong> Não há <a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} >despesas</a> cadastradas para o processo.</div>")
+
+                            }
+                        },
+                        error: function(response)
+                        {
+                            
+
+                        }
+                    });
+
+                    $("#modalFinalizacao").modal('show');
+                });
 
                 $("#cancelarProcesso").click(function(){
                     $("#cancelarProcessoForm").submit();

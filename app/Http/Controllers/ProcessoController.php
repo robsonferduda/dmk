@@ -146,7 +146,11 @@ class ProcessoController extends Controller
     public function acompanhamento($id){
 
         $id = \Crypt::decrypt($id); 
-        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->first();
+        $processo = Processo::with('anexos')
+        ->with('anexos.entidade.usuario')
+        ->where('cd_processo_pro',$id)
+        ->where('cd_conta_con', $this->cdContaCon)
+        ->first();
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
 
@@ -1323,5 +1327,18 @@ class ProcessoController extends Controller
         $retorno[] = array('label' => 'Atrasado','value' => $totais[0]->atrasado);        
 
         return response()->json($retorno);
+    }
+
+    public function buscaDespesas($processo)
+    {
+        $processo = Processo::where('cd_conta_con', $this->cdContaCon)
+        ->where('cd_processo_pro', $processo)
+        ->first();
+
+        if(!empty($processo->processoDespesa())){
+            echo json_encode($processo->processoDespesa()->with('tipoDespesa')->get());
+        } else {
+            echo '';
+        }
     }
 }
