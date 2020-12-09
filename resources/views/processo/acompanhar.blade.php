@@ -807,24 +807,37 @@
                         type: 'GET',
                         success: function(response)
                         {                    
+                            $('#modalFinalizacao .modal-dialog').loader('show');
+
                             despesas = JSON.parse(response);
 
                             $('#despesas_finalizar').empty();
 
                             var valor_total_despesas = 0;
                             despesas.forEach(function(despesa){
-                                valor_total_despesas += despesa.vl_processo_despesa_pde || 0 ;
+                                valor_total_despesas += parseFloat(despesa.vl_processo_despesa_pde) || 0 ;
                             });
 
                             if(despesas.length > 0 && valor_total_despesas > 0) {
                                 despesas_tabela = "<a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} ><h4 style='margin-bottom:5px'>Despesas</h4></a>"; 
                                 despesas_tabela += "<table class='table'>";   
-                                despesas_tabela += "<tr><th>Despesa</th>"; 
+                                despesas_tabela += "<tr><th></th>"; 
+                                despesas_tabela += "<th>Despesa</th>"; 
                                 despesas_tabela += "<th>Valor</th></tr>";                             
 
                                 despesas.forEach(function(despesa){
-                                    despesas_tabela += "<tr><td>"+despesa.tipo_despesa.nm_tipo_despesa_tds+"</td>"; 
-                                    despesas_tabela += "<td>"+despesa.vl_processo_despesa_pde.replace('.',',')+"</td></tr>";
+                                    
+                                    if(despesa.vl_processo_despesa_pde){
+
+                                        if(parseInt(despesa.cd_tipo_entidade_tpe) == 8)
+                                            despesas_tabela += "<tr><td>Cliente</td>"; 
+                                        
+                                        if(parseInt(despesa.cd_tipo_entidade_tpe) == 6)
+                                            despesas_tabela += "<tr><td>Correspondente</td>"; 
+
+                                        despesas_tabela += "<td>"+despesa.tipo_despesa.nm_tipo_despesa_tds+"</td>"; 
+                                        despesas_tabela += "<td>"+despesa.vl_processo_despesa_pde.replace('.',',')+"</td></tr>";
+                                    }
                                 });
                                 despesas_tabela += "</table>";   
 
@@ -838,6 +851,7 @@
                                $('#despesas_finalizar').append(despesas_aviso);
 
                             }
+                            $('#modalFinalizacao .modal-dialog').loader('hide');
                         },
                         error: function(response)
                         {
