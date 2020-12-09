@@ -630,7 +630,7 @@
         <div class="modal fade modal_top_alto" id="modalFinalizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form id="frm-anexo" action="{{ url('processo/finalizar-processo') }}" method="POST">
+                    <form id="frm-finalizar-processo" action="{{ url('processo/finalizar-processo') }}" method="POST">
                         @csrf
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -755,7 +755,7 @@
         <div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form id="frm-anexo" action="{{ url('processo/atualizar-dados') }}" method="POST">
+                    <form action="{{ url('processo/atualizar-dados') }}" method="POST">
                         @csrf
                         <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
                         <div class="modal-header">
@@ -811,7 +811,12 @@
 
                             $('#despesas_finalizar').empty();
 
-                            if(despesas.length > 0) {
+                            var valor_total_despesas = 0;
+                            despesas.forEach(function(despesa){
+                                valor_total_despesas += despesa.vl_processo_despesa_pde || 0 ;
+                            });
+
+                            if(despesas.length > 0 && valor_total_despesas > 0) {
                                 despesas_tabela = "<a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} ><h4 style='margin-bottom:5px'>Despesas</h4></a>"; 
                                 despesas_tabela += "<table class='table'>";   
                                 despesas_tabela += "<tr><th>Despesa</th>"; 
@@ -824,8 +829,13 @@
                                 despesas_tabela += "</table>";   
 
                                 $('#despesas_finalizar').append(despesas_tabela);
-                            } else {                                
-                               $('#despesas_finalizar').append("<div class='alert alert-info' role='alert'> <i style='color: red' class='fa fa-warning'></i><strong> Alerta!</strong> Não há <a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} >despesas</a> cadastradas para o processo.</div>")
+                            } else {                  
+
+                                despesas_aviso = "<div class='alert alert-info' role='alert'> <i style='color: red' class='fa fa-warning'></i><strong> Alerta!</strong> Não há <a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} >despesas</a> cadastradas para o processo.</div>";              
+                               
+                                despesas_aviso += '<div class="checkbox"><label><input type="checkbox" class="checkbox" name="sem_despesas" id="sem_despesas"><span> Finalizar processo sem despesas cadastras</span></label></div>';                               
+
+                               $('#despesas_finalizar').append(despesas_aviso);
 
                             }
                         },
@@ -1261,6 +1271,27 @@ function validate(formData, jqForm, options) {
 }
 
 (function() {
+
+    var validobj = $("#frm-finalizar-processo").validate({
+
+        rules : {
+            sem_despesas : {
+                required: true,
+            },                                       
+        },
+        messages : {
+            sem_despesas : {
+                required : 'Campo Obrigatório'
+            },                                                                   
+        },
+        errorPlacement: function (error, element) {
+            var elem = $(element);
+            if(element.attr("name") == "sem_despesas"){
+                error.appendTo( element.next("span") );
+            } 
+        },
+                  
+    });
 
     var bar = $('.progress-bar');
     var percent = $('.percent');
