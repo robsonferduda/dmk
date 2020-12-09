@@ -146,11 +146,25 @@ class ProcessoController extends Controller
     public function acompanhamento($id){
 
         $id = \Crypt::decrypt($id); 
-        $processo = Processo::with('anexos')
-        ->with('anexos.entidade.usuario')
-        ->where('cd_processo_pro',$id)
-        //->where('cd_conta_con', $this->cdContaCon)
-        ->first();
+
+        switch (Auth::user()->role()->first()->slug) {
+
+            case 'correspondente':
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro',$id)
+                ->where('cd_correspondente_cor', $this->cdContaCon)
+                ->first();
+                break;
+                
+            default:
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro',$id)
+                ->where('cd_conta_con', $this->cdContaCon)
+                ->first();
+                break;
+        }
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
 
