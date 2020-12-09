@@ -149,7 +149,7 @@ class ProcessoController extends Controller
         $processo = Processo::with('anexos')
         ->with('anexos.entidade.usuario')
         ->where('cd_processo_pro',$id)
-        ->where('cd_conta_con', $this->cdContaCon)
+        //->where('cd_conta_con', $this->cdContaCon)
         ->first();
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
@@ -169,7 +169,8 @@ class ProcessoController extends Controller
                                                 ->withTrashed()
                                                 ->orderBy('created_at', 'ASC')
                                                 ->get();
-    
+        //dd($processo);
+
         return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
     }
 
