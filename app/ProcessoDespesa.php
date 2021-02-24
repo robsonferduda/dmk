@@ -26,4 +26,8 @@ class ProcessoDespesa extends Model implements AuditableContract
 
     public $timestamps = true;
 
+    public function tipoDespesa()
+    {
+        return $this->hasOne('App\TipoDespesa','cd_tipo_despesa_tds', 'cd_tipo_despesa_tds');
+    }
 }

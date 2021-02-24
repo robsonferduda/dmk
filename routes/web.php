@@ -134,6 +134,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::delete('processo/mensagem/excluir/{id}', 'MensagemController@excluir');
     Route::post('processo/mensagem/enviar', 'MensagemController@enviar');
+
+    Route::get('processo/{processo}/despesas', 'ProcessoController@buscaDespesas');
     
     Route::get('configuracoes/areas', 'AreaController@index');
     Route::get('configuracoes/notificacoes', 'NotificacaoController@preferencias');

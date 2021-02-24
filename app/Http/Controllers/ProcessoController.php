@@ -146,7 +146,25 @@ class ProcessoController extends Controller
     public function acompanhamento($id){
 
         $id = \Crypt::decrypt($id); 
-        $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->first();
+
+        switch (Auth::user()->role()->first()->slug) {
+
+            case 'correspondente':
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro',$id)
+                ->where('cd_correspondente_cor', $this->cdContaCon)
+                ->first();
+                break;
+                
+            default:
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro',$id)
+                ->where('cd_conta_con', $this->cdContaCon)
+                ->first();
+                break;
+        }
 
         (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->cdContaCon);
 
@@ -165,7 +183,8 @@ class ProcessoController extends Controller
                                                 ->withTrashed()
                                                 ->orderBy('created_at', 'ASC')
                                                 ->get();
-    
+        //dd($processo);
+
         return view('processo/acompanhar',['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
     }
 
@@ -1323,5 +1342,18 @@ class ProcessoController extends Controller
         $retorno[] = array('label' => 'Atrasado','value' => $totais[0]->atrasado);        
 
         return response()->json($retorno);
+    }
+
+    public function buscaDespesas($processo)
+    {
+        $processo = Processo::where('cd_conta_con', $this->cdContaCon)
+        ->where('cd_processo_pro', $processo)
+        ->first();
+
+        if(!empty($processo->processoDespesa())){
+            echo json_encode($processo->processoDespesa()->with('tipoDespesa')->get());
+        } else {
+            echo '';
+        }
     }
 }
