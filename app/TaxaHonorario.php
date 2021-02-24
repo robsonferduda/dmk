@@ -38,4 +38,9 @@ class TaxaHonorario extends Model
         return $this->hasOne('App\Cidade','cd_cidade_cde', 'cd_cidade_cde');
     }
 
+    public function teste()
+    {
+        return "Teste";
+    }
+
 }

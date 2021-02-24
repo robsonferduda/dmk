@@ -53,7 +53,7 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','acompanhamento','cadastrarSenha','novaSenha']]);
+        $this->middleware('auth',['except' => ['cadastro','aceitarFiliacao','aceitarConvite','cadastrarSenha','novaSenha']]);
         
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
@@ -1020,8 +1020,6 @@ class CorrespondenteController extends Controller
 
         $id = \Crypt::decrypt($id);
 
-        (new ProcessoMensagem)->atualizaMensagensLidas($id,$this->conta);
-
         //Verifica se a conta logada tem nível diferente de correspondente. Se tiver, busca o usuário do correspondente, senão, desloga.
         if(Auth::user() and Auth::user()->cd_nivel_niv != Nivel::CORRESPONDENTE){
 
@@ -1045,7 +1043,7 @@ class CorrespondenteController extends Controller
                 return redirect('/login');
             }
 
-        }    
+        }
 
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro',$id)->where('cd_correspondente_cor',$this->conta)->first();
         

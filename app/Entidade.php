@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use App\Enums\TipoEnderecoEletronico as TipoEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -82,6 +83,21 @@ class Entidade extends Model
     public function atuacao()
     {
         return $this->hasMany('App\CidadeAtuacao','cd_entidade_ete', 'cd_entidade_ete');
+    }
+
+    public function atuacaoPorEstado($estado)
+    {
+
+        $cidades = DB::table('cidade_atuacao_cat')
+                        ->join('cidade_cde', function($join) use($estado){
+                            $join->on('cidade_atuacao_cat.cd_cidade_cde', '=', 'cidade_cde.cd_cidade_cde');
+                            $join->where('cd_estado_est', $estado);
+                        }) 
+                        ->select('cidade_cde.*')
+                        ->where('cd_entidade_ete', $this->cd_entidade_ete)
+                        ->get();
+
+        return $cidades;
     }
 
     public function origem()
