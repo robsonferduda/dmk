@@ -11,6 +11,7 @@ use App\Correspondente;
 use App\ContaCorrespondente;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -91,20 +92,20 @@ class HonorariosCorrespondenteController extends Controller
     public function getHonorariosInsercao(Request $request)
     {
 
+        $id = \Crypt::decrypt($request->id);
+        $cd_correspondente = $request->correspondente;
+
         $valores = array();
         $comarcas = array();
         $servicos = array();
-        $id = \Crypt::decrypt($request->id);
-        $cd_correspondente = $request->correspondente;
         
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$cd_correspondente)->first(); 
         
+        $estado = $request->estado;
         $cidade = $request->lista_cidades;
         $servico = $request->lista_servicos;
 
         $lista_cidades = array();
-        $lista_cidades_selecao = array();
-        $lista_cidades_honorarios = array();
         $lista_merge = array();
 
         $lista_servicos = array();      
@@ -133,63 +134,12 @@ class HonorariosCorrespondenteController extends Controller
 
         //Carrega cidade selecionada        
         if($cidade > 0){
-            $lista_cidades_selecao[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
+            $lista_cidades[] = Cidade::where('cd_cidade_cde',$cidade)->first(); 
         }elseif($cidade == 0){
 
-            $correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor',$correspondente->cd_correspondente_cor)->first();
-            $atuacao = $correspondente->entidade->atuacao()->get();
-
-            foreach ($atuacao as $a) {
-                $lista_cidades_honorarios[] = $a->cidade;
-            }
+            $lista_cidades = $correspondente->entidade->atuacaoPorEstado($estado);
 
         }
-
-        //Carrega cidades já cadastradas
-        $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                    ->where('cd_entidade_ete',$id)
-                                    ->select('cd_cidade_cde')
-                                    ->groupBy('cd_cidade_cde')
-                                    ->get(); 
-
-        if(count($honorarios) > 0){
-            foreach ($honorarios as $honorario) {
-                $lista_cidades_honorarios[] = $honorario->cidade;
-            }
-        }
-
-        //Junta os arrays e eleimina duplicidades
-        $lista_merge = array_merge($lista_cidades_selecao, $lista_cidades_honorarios);
-
-        foreach ($lista_merge as $cidade) {
-            if(!in_array($cidade, $lista_cidades))
-                $lista_cidades[] = $cidade;
-
-        }
-
-        //Ordena a lista de cidades
-        usort($lista_cidades,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_cidade_cde ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_cidade_cde ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
-
-        //Ordena a lista de cidades
-        usort($lista_servicos,
-            function($a, $b) {
-
-                $a = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $a->nm_tipo_servico_tse ) );
-                $b = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $b->nm_tipo_servico_tse ) );
-
-                if( $a == $b ) return 0;
-                return (($a < $b) ? -1 : 1);
-            }
-        );
  
         //Carrega os valores de honorarios para determinado grupo
         $honorarios = TaxaHonorario::where('cd_conta_con',$this->conta)
@@ -216,8 +166,6 @@ class HonorariosCorrespondenteController extends Controller
     public function salvarHonorarios(Request $request){
 
         $entidade = $request->entidade;
-        //dd($request->all());
-        //HonorarioCorrespondenteJob::dispatch($request);
 
         if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
 
@@ -247,8 +195,7 @@ class HonorariosCorrespondenteController extends Controller
                     ]);
                 }
             }
-        }
-        
+        }        
     }
 
     public function excluirHonorarios($entidade,$tipo,$id)

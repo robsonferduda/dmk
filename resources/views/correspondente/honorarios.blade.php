@@ -16,6 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
+            <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-table fa-lg"></i> Mostrar Todos</button>  
             <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos os Honorários</a>                                               
         </div>
     </div>
@@ -77,6 +78,7 @@
                                                         <div class="col-sm-12" id="msg_valida_busca" style="margin: 5px 0px;"></div> 
                                                         <section class="col col-md-12"> 
                                                             <button class="btn btn-primary btn-buscar-honorarios" type="button"><i class="fa fa-search"></i> Buscar</button>
+                                                            <button class="btn btn-success btn-add-honorarios" type="button"><i class="fa fa-plus"></i> Adicionar Valores</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                       
@@ -90,11 +92,20 @@
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">
+                                    <div id="status_terefa"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-6"> 
                                             <h4><strong>Valores de Honorários por Serviços</strong></h4> 
                                         </div>
                                         <div class="col-md-6">
+
                                             <div class="btn-group pull-right header-btn marginLeft5">
                                                 <a class="btn btn-default" href="javascript:void(0);"><i class="fa fa-sort-amount-asc"></i> Ordenar Por</a>
                                                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
@@ -106,14 +117,12 @@
                                                         <a href="#" id="showHonorariosServico"><span>Serviços</span></a>
                                                     </li>
                                                 </ul>
-                                            </div> 
-
-                                            <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-list-ul fa-lg"></i> Mostrar Todos os Valores</button>
+                                            </div>                                        
 
                                         </div>
                                         <div class="col-md-12 container-honorarios">
                                                
-                                            <h4 class="honorarios-empty">Faça uma busca por cidade/serviço específico ou selecione a opção <strong>"Mostrar Todos os Valores"</strong></h4>
+                                            <h4 class="honorarios-empty">Faça uma busca por <strong>Comarca de Atuação/Serviços</strong> ou selecione a opção <strong>"Mostrar Todos"</strong></h4>
                                            
                                             <div class="col-md-12 box-loader-honorarios"></div>
                                             <div class="box-loader-honorarios-error none">
@@ -177,7 +186,35 @@
             </div>
         </div>
 
-<div class="modal fade modal_top_alto" id="modalEditarHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+    <div class="modal fade modal_top_alto" id="modalAddHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i> <strong>Adicionar Valores de Honorários</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <i class="fa fa-info-circle"></i> Serão inseridos valores para as comarcas e serviços selecionados na tela.                              
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-top: 8px;">                                    
+                                <label for="tags">Digite um valor para o honorário</label>
+                                <input type="text" class="form-control taxa-honorario" id="input-honorario" placeholder="Valor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" id="btn_confirma_add_honorarios" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
+                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal_top_alto" id="modalEditarHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -233,51 +270,33 @@
                     </div>
                 </div>
             </div>
-</div>
+    </div>
 
-<div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <h4>
-                    Essa operação irá excluir <span id="txt_exclusao_honorario"></span>. 
-                </h4>
-                <h4>Deseja continuar?</h4>
-                <input type="hidden" name="id_exclusao_honorario" id="id_exclusao_honorario">
-                <input type="hidden" name="tipo_honorario" id="tipo_honorario">
-                <div class="msg_retorno_honorario"></div>
-            </div>
-            <div class="modal-footer">
-                <a type="button" id="btn_confirma_exclusao_honorario_correspondente" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
-                <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+    <div class="modal fade modal_top_alto" id="modal_exclusao_honorario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <h4>
+                        Essa operação irá excluir <span id="txt_exclusao_honorario"></span>. 
+                    </h4>
+                    <h4>Deseja continuar?</h4>
+                    <input type="hidden" name="id_exclusao_honorario" id="id_exclusao_honorario">
+                    <input type="hidden" name="tipo_honorario" id="tipo_honorario">
+                    <div class="msg_retorno_honorario"></div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" id="btn_confirma_exclusao_honorario_correspondente" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal fade modal_top_alto" id="modal_buscar_honorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <h4>O sistema está buscando os valores de honorários para <span id="total_servico_load"></span> servições em <span id="total_comarca_load"></span> comarcas.</h4>
-                <h4>Essa operação pode demorar alguns segundos, aguarde o carregamento da tela.</h4>
-            </div>
-            <div class="modal-footer">
-                <a type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Ok</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
+
 @section('script')
 <script type="text/javascript">
 
@@ -340,8 +359,101 @@
 
         });
 
+        $('.btn-add-honorarios').on('click', function (e, editable) {
+
+            //Botão de adicinar valores de honorários
+            //Validar seleção de comarca
+            //Validar seleção de serviço
+            //Inserir valores, sem atualizar a tela
+            cidades = $("#cidade").val();
+            servicos = $("#lista_servicos").val();
+
+            if(!cidade){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione uma ou mais cidades para continuar</span>');
+                return false;
+            }
+
+            if(servicos === null){
+                $("#msg_valida_busca").html('<span class="text-danger">Selecione um ou mais serviços para continuar</span>');
+                return false;
+            }
+
+            $("#msg_valida_busca").empty();
+
+            $("#modalAddHonorarios").modal('show');
+
+        });
+
+        $(document).on("click", "#btn_confirma_add_honorarios", function () {
+
+            var valor = $("#input-honorario").val();
+            var comarca = $("#modal_id_comarca").val();
+            var servico = $("#modal_id_servico").val();
+            var entidade = $("#cd_entidade").data("token");
+            var all_services = $('#all_services').is(":checked");
+            var all_comarcas = $('#all_comarcas').is(":checked");
+            var all_table = $('#all_table').is(":checked");
+
+            cidades = $("#cidade").val();
+            servicos = $("#lista_servicos").val();
+
+            var valores = new Array();
+            var entidade = $("#cd_entidade").val();
+            var correspondente = $("#cd_correspondente").val();
+
+            var valor = $.trim($("#input-honorario").val().replace(/[\t\n]+/g,' '));
+
+            for(var i=0; i< servicos.length; i++) {
+            
+                if(cidades == 0){
+
+                    $("#cidade > option").each(function(){
+
+                        if($(this).val() != "" && $(this).val() != "0"){
+                            var dados = {servico: servicos[i], cidade: $(this).val(), valor: valor};
+                            valores.push(dados);
+                        }
+
+                    });
+
+                }else{
+
+                    var dados = {servico: servicos[i], cidade: cidades, valor: valor};
+                    valores.push(dados);
+                }
+
+            }
+
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../correspondente/honorarios/salvar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "valores": JSON.stringify(valores),
+                    "entidade": entidade
+                },
+                beforeSend: function()
+                {
+                    $("#modalAddHonorarios").modal('hide');
+                    $("#status_terefa").html('<i class="fa fa-gear fa-spin"></i> Aguarde, processando requisição...');
+                },
+                success: function(response)
+                {
+                    $("#status_terefa").html('<i class="fa fa-info"></i> Operação realizada com sucesso! Utilize a opção Buscar para visualizar os valores.');
+                },
+                error: function(response)
+                {
+                    $("#status_terefa").empty();
+                    $(".erro_atualiza_valores").html('Houve um erro ao processar sua requisição.');
+                }
+            });
+
+        });
+
         $('.btn-buscar-honorarios').on('click', function (e, editable) {
 
+            estado = $("#estado").val();
             cidade = $("#cidade").val();
 
             if(!cidade){
@@ -354,16 +466,18 @@
                 return false;
             }
 
+            $("#msg_valida_busca").empty();
+
             id = $("#cd_entidade").data("token");
             ordem = $("#ordem").val();
             lista_servicos = $("#lista_servicos").val();
-            lista_cidades = $("#cidade").val();
+            cidades = $("#cidade").val();
             correspondente = $("#cd_correspondente").val();
 
             $.ajax({
                 url: '../../correspondente/buscar-honorarios/'+id,
                 type: 'GET',
-                data: {"id":id, "ordem": ordem, "lista_servicos": lista_servicos, "lista_cidades": lista_cidades, "correspondente": correspondente },
+                data: {"id":id, "ordem": ordem, "lista_servicos": lista_servicos, "estado": estado, "lista_cidades": cidades, "correspondente": correspondente },
                 dataType: "JSON",
                 beforeSend: function(){
                     
@@ -379,8 +493,6 @@
                     $(".tabelah").addClass('none');
                     $(".table-load-honorarios thead tr th").remove();
                     $(".table-load-honorarios tbody tr td").remove();
-
-                    $("#msg_valida_busca").html("");
 
                     var total_honorarios = Object.keys(response.honorarios).length;
 

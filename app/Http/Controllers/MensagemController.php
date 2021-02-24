@@ -38,6 +38,7 @@ class MensagemController extends Controller
             // This will throw exception
             Redis::connect('127.0.0.1',6379);
             Redis::set('name', 'Taylor');
+            event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
             $visits = Redis::incr('visits');
 
         } catch (RedisException $exception) {
