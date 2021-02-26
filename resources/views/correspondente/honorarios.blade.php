@@ -78,7 +78,6 @@
                                                         <div class="col-sm-12" id="msg_valida_busca" style="margin: 5px 0px;"></div> 
                                                         <section class="col col-md-12"> 
                                                             <button class="btn btn-primary btn-buscar-honorarios" type="button"><i class="fa fa-search"></i> Buscar</button>
-                                                            <button class="btn btn-success btn-add-honorarios" type="button"><i class="fa fa-plus"></i> Adicionar Valores</button>
                                                         </section> 
                                                     </div>
                                                 </fieldset>                                                                       
@@ -178,33 +177,6 @@
             </div>
         </div>
 
-    <div class="modal fade modal_top_alto" id="modalAddHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i> <strong>Adicionar Valores de Honorários</strong></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <i class="fa fa-info-circle"></i> Serão inseridos valores para as comarcas e serviços selecionados na tela.                              
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group" style="margin-top: 8px;">                                    
-                                <label for="tags">Digite um valor para o honorário</label>
-                                <input type="text" class="form-control taxa-honorario" id="input-honorario" placeholder="Valor">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a type="button" id="btn_confirma_add_honorarios" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
-                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade modal_top_alto" id="modalEditarHonorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
             <div class="modal-dialog">
@@ -232,27 +204,6 @@
                                 <div class="form-group" style="margin-top: 8px;"> 
                                     <button id="btn_excluir_registro_honorario" class="btn btn-danger btn-sm" data-tipo="unico" data-id="" data-texto=" somente o valor do honorário selecionado" style="margin-top: 23px;"><i class="fa fa-remove"></i> Excluir Honorário</button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="">
-                                        <input type="checkbox" name="all_services" id="all_services">
-                                            <i></i>Aplicar mesmo valor para todas as ocorências deste serviço 
-                                    </label><br/>
-                                    <label class="">
-                                        <input type="checkbox" name="all_comarcas" id="all_comarcas">
-                                            <i></i>Aplicar mesmo valor para todas as ocorências desta comerca
-                                    </label>
-                                    <label class="">
-                                        <input type="checkbox" name="all_table" id="all_table">
-                                            <i></i>Aplicar mesmo valor para todas as comarcas e todos os serviços (toda tabela)
-                                    </label>
-                                </div>
-                                <h4 class="center erro_atualiza_valores text-danger"></h4>
-                                <h4 class="center status_atualiza_valores text-success"></h4>
                             </div>
                         </div>
                     </div>
@@ -695,7 +646,6 @@
 
         });
 
-        /*
         $(document).on("click", ".add-valor-honorario", function () {
 
             valor = $(this).data("valor");
@@ -716,7 +666,6 @@
             $("#modalEditarHonorarios").modal('show');
 
         });
-        */
 
         $(document).on("click", "#btn_excluir_registro_honorario", function () {
 
@@ -752,85 +701,15 @@
             $(".status_atualiza_valores").html("");            
         });    
 
-        //Abria o modal antigo, mas está desabilitado, por enquanto
-        /*
         $(document).on("click", "#btn_confirma_adicao_honorario", function () {
 
-            var valor = $("#input-honorario").val();
             var comarca = $("#modal_id_comarca").val();
             var servico = $("#modal_id_servico").val();
             var entidade = $("#cd_entidade").data("token");
-            var all_services = $('#all_services').is(":checked");
-            var all_comarcas = $('#all_comarcas').is(":checked");
-            var all_table = $('#all_table').is(":checked");
-
-            //Atualiza a flag de edição para "S" 
-
-            $(".add-valor-honorario").each(function(){
-
-                var this_comarca = $(this).data("comarca");
-                var this_servico = $(this).data("servico"); 
-
-                //Atualiza apenas o registro que foi clicado
-                if(this_servico == servico && this_comarca == comarca){
-                    $(this).attr("data-edit","S");
-                    $(this).attr("data-valor",valor);
-                    $(this).text(valor);
-                }
-
-                //Atualiza valores da mesma comarca
-                if(all_comarcas){
-
-                    if(this_comarca == comarca){
-                        $(this).attr("data-edit","S");
-                        $(this).attr("data-valor",valor);
-                        $(this).text(valor);
-                    }
-                }
-
-                //Atualiza valores do mesmo serviço
-                if(all_services){
-
-                    if(this_servico == servico){
-                        $(this).attr("data-edit","S");
-                        $(this).attr("data-valor",valor);
-                        $(this).text(valor);
-                    }
-                }
-
-                //Atualiza valores do mesmo serviço
-                if(all_table){
-
-                    $(this).attr("data-edit","S");
-                    $(this).attr("data-valor",valor);
-                    $(this).text(valor);
-                }
-
-            });
-
-            var valores = new Array();
+           
             var entidade = $("#cd_entidade").val();
             var correspondente = $("#cd_correspondente").val();
-            
-            $('.add-valor-honorario').each(function(i, obj) {               
-                
-                var valor = $.trim($(this).text().replace(/[\t\n]+/g,' '));
-                var servico = $(this).data("servico");
-                var cidade = $(this).data("comarca");
-                var flag = $(this).attr("data-edit");
-                nmcomarca = $(this).data("nmcomarca");
-                nmservico = $(this).data("nmservico");
-                    
-                if(valor != 'Adicionar' && flag == 'S'){
-
-                    var dados = {servico: servico, cidade: cidade, valor: valor};
-                    valores.push(dados);
-
-                    $(".status_atualiza_valores").html('Atualizando valores de serviço '+nmservico+' para a comarca '+nmcomarca+' com valor '+valor);
-
-                }
-                
-            });
+            var valor = $.trim($("#input-honorario").val().replace(/[\t\n]+/g,' '));
             
             $.ajax(
             {
@@ -838,7 +717,9 @@
                 url: "../../correspondente/honorarios/salvar",
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
-                    "valores": JSON.stringify(valores),
+                    "valor": valor,
+                    "comarca": comarca,
+                    "servico": servico,
                     "entidade": entidade
                 },
                 beforeSend: function()
@@ -848,13 +729,6 @@
                 success: function(response)
                 {
                     $(".status_atualiza_valores").html('Operação realizada com sucesso! Aguarde, atualizando dados...');
-
-                    setTimeout(
-                        function() 
-                        {
-                            $("#modalEditarHonorarios").modal('hide');
-                        }, 2000);
-
                     $(".btn-buscar-honorarios").trigger("click");
                 },
                 error: function(response)
@@ -866,7 +740,7 @@
 
 
         });
-        */
+        
 
         $(document).on("click", "#btn_confirma_exclusao_honorario_correspondente", function () {
 

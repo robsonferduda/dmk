@@ -165,35 +165,35 @@ class HonorariosCorrespondenteController extends Controller
     //Classe que realiza a inserção na tabela honorários
     public function salvarHonorarios(Request $request){
 
-        $entidade = $request->entidade;
+        $entidade_correspondente = $request->entidade;
+        $comarca = $request->comarca;
+        $servico = $request->servico;
+        $valor = $request->valor;
 
-        if(!empty($request->valores) && count(json_decode($request->valores)) > 0){
+        if(!empty($request->valor) && !empty($comarca)){
 
-            $valores = json_decode($request->valores);
-                
-            for($i = 0; $i < count($valores); $i++) {
+            $valor = str_replace(",", ".", $valor);
 
-                $valor = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                      ->where('cd_entidade_ete',$entidade)
-                                      ->where('cd_cidade_cde',$valores[$i]->cidade)
-                                      ->where('cd_tipo_servico_tse',$valores[$i]->servico)->first();
+            $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
+                                      ->where('cd_entidade_ete',$entidade_correspondente)
+                                      ->where('cd_cidade_cde',$comarca)
+                                      ->where('cd_tipo_servico_tse',$servico)->first();
 
-                if(!empty($valor)){
+            if($honorario){
 
-                    $valor->nu_taxa_the = str_replace(",", ".", $valores[$i]->valor);
-                    $valor->saveOrFail();
+                $honorario->nu_taxa_the = $valor;
+                $honorario->saveOrFail();
 
-                }else{
+            }else{
 
-                    $taxa = TaxaHonorario::create([
-                        'cd_entidade_ete'           => $entidade,
-                        'cd_conta_con'              => $this->conta, 
-                        'cd_tipo_servico_tse'       => $valores[$i]->servico,
-                        'cd_cidade_cde'             => $valores[$i]->cidade,
-                        'nu_taxa_the'               => str_replace(",", ".", $valores[$i]->valor),
-                        'dc_observacao_the'         => "--"
-                    ]);
-                }
+                $taxa = TaxaHonorario::create([
+                    'cd_conta_con'              => $this->conta, 
+                    'cd_entidade_ete'           => $entidade_correspondente,                    
+                    'cd_tipo_servico_tse'       => $servico,
+                    'cd_cidade_cde'             => $comarca,
+                    'nu_taxa_the'               => $valor,
+                    'dc_observacao_the'         => "--"
+                ]);
             }
         }        
     }
