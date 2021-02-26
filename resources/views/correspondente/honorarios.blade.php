@@ -92,14 +92,6 @@
                         <div class="well">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div id="status_terefa"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="well">
-                            <div class="row">
-                                <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-md-6"> 
                                             <h4><strong>Valores de Honorários por Serviços</strong></h4> 
@@ -295,6 +287,24 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade modal_top_alto" id="modal_btn_confirma_add_honorarios" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Atualização de Registros</strong></h4>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <div id="status_terefa"></div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Fechar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('script')
@@ -396,6 +406,7 @@
 
             cidades = $("#cidade").val();
             servicos = $("#lista_servicos").val();
+            $("#status_terefa").html('');
 
             var valores = new Array();
             var entidade = $("#cd_entidade").val();
@@ -436,16 +447,17 @@
                 beforeSend: function()
                 {
                     $("#modalAddHonorarios").modal('hide');
+                    $("#modal_btn_confirma_add_honorarios").modal('show');
                     $("#status_terefa").html('<i class="fa fa-gear fa-spin"></i> Aguarde, processando requisição...');
                 },
                 success: function(response)
                 {
-                    $("#status_terefa").html('<i class="fa fa-info"></i> Operação realizada com sucesso! Utilize a opção Buscar para visualizar os valores.');
+                    $("#status_terefa").html('<i class="fa fa-info"></i> Operação realizada com sucesso!');
+                    //$('.btn-buscar-honorarios').trigger('click');
                 },
                 error: function(response)
                 {
-                    $("#status_terefa").empty();
-                    $(".erro_atualiza_valores").html('Houve um erro ao processar sua requisição.');
+                    $("#status_terefa").empty('<i class="fa fa-times"></i> Houve um erro ao processar sua requisição');
                 }
             });
 
@@ -683,6 +695,7 @@
 
         });
 
+        /*
         $(document).on("click", ".add-valor-honorario", function () {
 
             valor = $(this).data("valor");
@@ -703,6 +716,7 @@
             $("#modalEditarHonorarios").modal('show');
 
         });
+        */
 
         $(document).on("click", "#btn_excluir_registro_honorario", function () {
 
@@ -738,6 +752,8 @@
             $(".status_atualiza_valores").html("");            
         });    
 
+        //Abria o modal antigo, mas está desabilitado, por enquanto
+        /*
         $(document).on("click", "#btn_confirma_adicao_honorario", function () {
 
             var valor = $("#input-honorario").val();
@@ -850,6 +866,7 @@
 
 
         });
+        */
 
         $(document).on("click", "#btn_confirma_exclusao_honorario_correspondente", function () {
 
