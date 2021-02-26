@@ -194,22 +194,26 @@
                                 <h4><strong>Serviço</strong>: <span id="nmservico">AUDIÊNCIA VARA CÍVEL (ADVOGADO E PREPOSTO)</span></h4>
                                 <p>Vocẽ pode excluir o honorário selecionado ou editar seu valor conforme opções abaixo</p>                                
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group" style="margin-top: 8px;">                                    
                                     <label for="tags">Digite um valor para o honorário</label>
                                     <input type="text" class="form-control taxa-honorario" id="input-honorario" placeholder="Valor">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group" style="margin-top: 8px;"> 
-                                    <button id="btn_excluir_registro_honorario" class="btn btn-danger btn-sm" data-tipo="unico" data-id="" data-texto=" somente o valor do honorário selecionado" style="margin-top: 23px;"><i class="fa fa-remove"></i> Excluir Honorário</button>
+                            <div class="col-md-9" style="margin-left: 20px;">
+                                <div class="form-group">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="all_services" id="all_services" value="true">
+                                        <i></i>Aplicar o mesmo valor para os serviços selecionados 
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <a type="button" id="btn_confirma_adicao_honorario" class="btn btn-success"><i class="fa fa-user fa-check"></i> Aplicar Valores</a>
-                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                        <button class="btn btn-danger" id="btn_excluir_registro_honorario" data-tipo="unico" data-id="" data-texto=" somente o valor do honorário selecionado"><i class="fa fa-remove"></i> Excluir Honorário</button>
+                        <button class="btn btn-success" id="btn_confirma_adicao_honorario"><i class="fa fa-user fa-check"></i> Salvar Valores</button>
+                        <button class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -706,6 +710,8 @@
             var comarca = $("#modal_id_comarca").val();
             var servico = $("#modal_id_servico").val();
             var entidade = $("#cd_entidade").data("token");
+            var all_service = $("#all_services").is(":checked");
+            var servicos = $("#lista_servicos").val();
            
             var entidade = $("#cd_entidade").val();
             var correspondente = $("#cd_correspondente").val();
@@ -720,7 +726,9 @@
                     "valor": valor,
                     "comarca": comarca,
                     "servico": servico,
-                    "entidade": entidade
+                    "entidade": entidade,
+                    "all_service": all_service,
+                    "servicos": servicos
                 },
                 beforeSend: function()
                 {
@@ -765,7 +773,7 @@
                 success: function(response)
                 {
                     $(".msg_retorno_honorario").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Atualizando dados...</strong></h4>');
-                    $("#showAllHonorariosCorrespondente").trigger("click");
+                    $(".btn-buscar-honorarios").trigger("click");
                 },
                 error: function(response)
                 {
@@ -800,7 +808,7 @@
 
                             if(response.length > 0)
                             {
-                                $('#cidade').append('<option selected value="0">Todas</option>');
+                                //$('#cidade').append('<option selected value="0">Todas</option>');
                                 if(response.length == 1)
                                     $("#msg_busca_cidade_honorario").html('<span class="text-primary"> '+response.length+' comarca encontrada</span>');
                                 else

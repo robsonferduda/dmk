@@ -169,31 +169,64 @@ class HonorariosCorrespondenteController extends Controller
         $comarca = $request->comarca;
         $servico = $request->servico;
         $valor = $request->valor;
+        $all_service = $request->all_service;
+        $servicos = $request->servicos;
 
         if(!empty($request->valor) && !empty($comarca)){
 
             $valor = str_replace(",", ".", $valor);
 
-            $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
+            if($all_service == 'true'){
+
+                for($i = 0; $i < count($servicos); $i++){
+
+                    $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
+                    ->where('cd_entidade_ete',$entidade_correspondente)
+                    ->where('cd_cidade_cde',$comarca)
+                    ->where('cd_tipo_servico_tse',$servicos[$i])->first();
+
+                    if($honorario){
+
+                    $honorario->nu_taxa_the = $valor;
+                    $honorario->saveOrFail();
+
+                    }else{
+
+                    $taxa = TaxaHonorario::create([
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_entidade_ete'           => $entidade_correspondente,                    
+                        'cd_tipo_servico_tse'       => $servicos[$i],
+                        'cd_cidade_cde'             => $comarca,
+                        'nu_taxa_the'               => $valor,
+                        'dc_observacao_the'         => "--"
+                    ]);
+                    }
+
+                }
+
+            }else{                
+
+                $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
                                       ->where('cd_entidade_ete',$entidade_correspondente)
                                       ->where('cd_cidade_cde',$comarca)
                                       ->where('cd_tipo_servico_tse',$servico)->first();
 
-            if($honorario){
+                if($honorario){
 
-                $honorario->nu_taxa_the = $valor;
-                $honorario->saveOrFail();
+                    $honorario->nu_taxa_the = $valor;
+                    $honorario->saveOrFail();
 
-            }else{
+                }else{
 
-                $taxa = TaxaHonorario::create([
-                    'cd_conta_con'              => $this->conta, 
-                    'cd_entidade_ete'           => $entidade_correspondente,                    
-                    'cd_tipo_servico_tse'       => $servico,
-                    'cd_cidade_cde'             => $comarca,
-                    'nu_taxa_the'               => $valor,
-                    'dc_observacao_the'         => "--"
-                ]);
+                    $taxa = TaxaHonorario::create([
+                        'cd_conta_con'              => $this->conta, 
+                        'cd_entidade_ete'           => $entidade_correspondente,                    
+                        'cd_tipo_servico_tse'       => $servico,
+                        'cd_cidade_cde'             => $comarca,
+                        'nu_taxa_the'               => $valor,
+                        'dc_observacao_the'         => "--"
+                    ]);
+                }
             }
         }        
     }
