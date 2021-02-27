@@ -91,7 +91,6 @@ class HonorariosCorrespondenteController extends Controller
 
     public function getHonorariosInsercao(Request $request)
     {
-
         $id = \Crypt::decrypt($request->id);
         $cd_correspondente = $request->correspondente;
 
@@ -165,67 +164,64 @@ class HonorariosCorrespondenteController extends Controller
     //Classe que realiza a inserção na tabela honorários
     public function salvarHonorarios(Request $request){
 
+        $estado = $request->estado;
         $entidade_correspondente = $request->entidade;
         $comarca = $request->comarca;
         $servico = $request->servico;
         $valor = $request->valor;
         $all_service = $request->all_service;
+        $all_comarca = $request->all_comarca;
         $servicos = $request->servicos;
 
         if(!empty($request->valor) && !empty($comarca)){
 
             $valor = str_replace(",", ".", $valor);
 
-            if($all_service == 'true'){
+            //Sempre irá atualizar o valor de serviço da comarca selecionada
+            $honorario = TaxaHonorario::updateOrCreate(['cd_conta_con' => $this->conta,
+                                                        'cd_entidade_ete' => $entidade_correspondente,
+                                                        'cd_cidade_cde' => $comarca,
+                                                        'cd_tipo_servico_tse' => $servico],
+                                                        ['nu_taxa_the' => $valor,
+                                                        'dc_observacao_the' => '--']);
+               
+            //Se a opção de "all_service" estiver marcada, atribui o mesmo valor para todos os servicos da comarca
+            if($all_service == 'true')
+            {
 
                 for($i = 0; $i < count($servicos); $i++){
 
-                    $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
-                    ->where('cd_entidade_ete',$entidade_correspondente)
-                    ->where('cd_cidade_cde',$comarca)
-                    ->where('cd_tipo_servico_tse',$servicos[$i])->first();
-
-                    if($honorario){
-
-                    $honorario->nu_taxa_the = $valor;
-                    $honorario->saveOrFail();
-
-                    }else{
-
-                    $taxa = TaxaHonorario::create([
-                        'cd_conta_con'              => $this->conta, 
-                        'cd_entidade_ete'           => $entidade_correspondente,                    
-                        'cd_tipo_servico_tse'       => $servicos[$i],
-                        'cd_cidade_cde'             => $comarca,
-                        'nu_taxa_the'               => $valor,
-                        'dc_observacao_the'         => "--"
-                    ]);
-                    }
+                    $honorario = TaxaHonorario::updateOrCreate(['cd_conta_con' => $this->conta,
+                                                                'cd_entidade_ete' => $entidade_correspondente,
+                                                                'cd_cidade_cde' => $comarca,
+                                                                'cd_tipo_servico_tse' => $servicos[$i]],
+                                                                ['nu_taxa_the' => $valor,
+                                                                'dc_observacao_the' => '--']);
 
                 }
 
-            }else{                
+            }
 
-                $honorario = TaxaHonorario::where('cd_conta_con',$this->conta)
-                                      ->where('cd_entidade_ete',$entidade_correspondente)
-                                      ->where('cd_cidade_cde',$comarca)
-                                      ->where('cd_tipo_servico_tse',$servico)->first();
+            //Se a opção de "all_comarca" estiver marcada, atribui o mesmo valor de serviço para todas as comarcas
+            if($all_comarca == 'true')
+            {
+                //Seleciona todas as comarcas do estado selecionado que o correspondente tem atuação
+                $comarcas = DB::table('cidade_atuacao_cat')
+                            ->select('cidade_cde.cd_cidade_cde','nm_cidade_cde')
+                            ->join('cidade_cde', 'cidade_atuacao_cat.cd_cidade_cde', '=', 'cidade_cde.cd_cidade_cde')
+                            ->join('estado_est', 'estado_est.cd_estado_est', '=', 'cidade_cde.cd_estado_est')
+                            ->where('cd_entidade_ete',$entidade_correspondente)
+                            ->where('estado_est.cd_estado_est',$estado)
+                            ->get();
 
-                if($honorario){
-
-                    $honorario->nu_taxa_the = $valor;
-                    $honorario->saveOrFail();
-
-                }else{
-
-                    $taxa = TaxaHonorario::create([
-                        'cd_conta_con'              => $this->conta, 
-                        'cd_entidade_ete'           => $entidade_correspondente,                    
-                        'cd_tipo_servico_tse'       => $servico,
-                        'cd_cidade_cde'             => $comarca,
-                        'nu_taxa_the'               => $valor,
-                        'dc_observacao_the'         => "--"
-                    ]);
+                foreach ($comarcas as $comarca) {
+                    
+                    $honorario = TaxaHonorario::updateOrCreate(['cd_conta_con' => $this->conta,
+                                                                'cd_entidade_ete' => $entidade_correspondente,
+                                                                'cd_cidade_cde' => $comarca->cd_cidade_cde,
+                                                                'cd_tipo_servico_tse' => $servico],
+                                                                ['nu_taxa_the' => $valor,
+                                                                'dc_observacao_the' => '--']);
                 }
             }
         }        

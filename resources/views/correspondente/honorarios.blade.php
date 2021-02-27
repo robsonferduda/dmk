@@ -204,7 +204,13 @@
                                 <div class="form-group">
                                     <label class="checkbox">
                                         <input type="checkbox" name="all_services" id="all_services" value="true">
-                                        <i></i>Aplicar o mesmo valor para os serviços selecionados 
+                                        <i></i>Aplicar o mesmo valor para todos os serviços desta comarca 
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="all_comarcas" id="all_comarcas" value="true">
+                                        <i></i>Aplicar o mesmo valor para este serviço em todas as comarcas
                                     </label>
                                 </div>
                             </div>
@@ -707,10 +713,12 @@
 
         $(document).on("click", "#btn_confirma_adicao_honorario", function () {
 
+            var estado = $("#estado").val();
             var comarca = $("#modal_id_comarca").val();
             var servico = $("#modal_id_servico").val();
             var entidade = $("#cd_entidade").data("token");
             var all_service = $("#all_services").is(":checked");
+            var all_comarca = $("#all_comarcas").is(":checked");
             var servicos = $("#lista_servicos").val();
            
             var entidade = $("#cd_entidade").val();
@@ -724,10 +732,12 @@
                 data: {
                     "_token": $('meta[name="token"]').attr('content'),
                     "valor": valor,
+                    "estado": estado,
                     "comarca": comarca,
                     "servico": servico,
                     "entidade": entidade,
                     "all_service": all_service,
+                    "all_comarca": all_comarca,
                     "servicos": servicos
                 },
                 beforeSend: function()
@@ -808,7 +818,7 @@
 
                             if(response.length > 0)
                             {
-                                //$('#cidade').append('<option selected value="0">Todas</option>');
+                                $('#cidade').append('<option selected value="0">Todas</option>');
                                 if(response.length == 1)
                                     $("#msg_busca_cidade_honorario").html('<span class="text-primary"> '+response.length+' comarca encontrada</span>');
                                 else
