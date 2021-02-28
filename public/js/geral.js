@@ -7,7 +7,7 @@ $(document).ready(function() {
     var pathname = _location.substring(0, webFolderIndex);
     var host = document.location.origin;
 
-	import Echo from 'laravel-echo'
+	import Echo from 'laravel-echo';
 
 	window.io = require('socket.io-client');window.Echo = new Echo({
 		broadcaster: 'socket.io',
