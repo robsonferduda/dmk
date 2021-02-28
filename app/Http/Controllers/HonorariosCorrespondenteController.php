@@ -199,8 +199,9 @@ class HonorariosCorrespondenteController extends Controller
                                                                 ['nu_taxa_the' => $valor,
                                                                 'dc_observacao_the' => '--']);
 
+                    event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => $i, 'mensagens' => "")));
                 }
-                event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => $i, 'mensagens' => "")));
+                
                 sleep(1);
             }
 
