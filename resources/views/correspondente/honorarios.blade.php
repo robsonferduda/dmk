@@ -111,10 +111,12 @@
                                             </div>                                        
 
                                         </div>
+                                        <div class="col-md-12 progresso" style="display: none; margin-top: 10px;">
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-12 container-honorarios">
-                                               
-                                            <h4 class="honorarios-empty">Faça uma busca por <strong>Comarca de Atuação/Serviços</strong> ou selecione a opção <strong>"Mostrar Todos"</strong></h4>
-                                           
                                             <div class="col-md-12 box-loader-honorarios"></div>
                                             <div class="box-loader-honorarios-error none">
                                                 <h4 class="text-danger"><i class="fa fa-times-circle"></i> Erro ao enviar requisição, tente novamente</h4>
@@ -137,9 +139,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     

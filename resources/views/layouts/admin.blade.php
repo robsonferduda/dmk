@@ -649,6 +649,16 @@
 
                     if(message.data.conta == 999){
 
+                        if(message.data.visibilidade == 1){
+
+                            $(".progresso").css('display','block');
+
+                        }else{
+
+                            $(".progresso").css('display','none');
+
+                        }
+
                         $(".progress-bar").css('width',message.data.total+"%");
                         
                         /*

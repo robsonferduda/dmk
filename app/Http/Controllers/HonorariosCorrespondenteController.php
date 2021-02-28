@@ -178,6 +178,8 @@ class HonorariosCorrespondenteController extends Controller
 
             $valor = str_replace(",", ".", $valor);
 
+            event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'visibilidade' => 1)));
+
             //Sempre irá atualizar o valor de serviço da comarca selecionada
             $honorario = TaxaHonorario::updateOrCreate(['cd_conta_con' => $this->conta,
                                                         'cd_entidade_ete' => $entidade_correspondente,
@@ -202,7 +204,6 @@ class HonorariosCorrespondenteController extends Controller
                     event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => $i, 'mensagens' => "")));
                 }
                 
-                sleep(1);
             }
 
             //Se a opção de "all_comarca" estiver marcada, atribui o mesmo valor de serviço para todas as comarcas
@@ -227,6 +228,8 @@ class HonorariosCorrespondenteController extends Controller
                                                                 'dc_observacao_the' => '--']);
                 }
             }
+
+            event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'visibilidade' => 0)));
         }        
     }
 
