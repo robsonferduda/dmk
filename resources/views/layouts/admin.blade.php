@@ -649,7 +649,7 @@
 
                     if(message.data.conta == 999){
 
-                        $(".progress-bar").css('width',message.data.total);
+                        $(".progress-bar").css('width',message.data.total+"%");
                         
                         /*
                         $('.badge-count').html(message.data.total);
