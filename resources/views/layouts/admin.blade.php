@@ -635,6 +635,7 @@
         @yield('script')
         <script type="text/javascript">
         
+        /*
         $(document).ready(function() {
         
             var hostname = document.location.hostname;  
@@ -648,8 +649,6 @@
                 if(message.data.canal == 'notificacao'){
 
                     if(message.data.conta == 999){
-
-                        alert(data);
                         
                         $('.badge-count').html(message.data.total);
                         $(".notification-body > li").remove();
@@ -679,6 +678,7 @@
             });
 
         });
+        */
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 
