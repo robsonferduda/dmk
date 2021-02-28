@@ -201,6 +201,7 @@ class HonorariosCorrespondenteController extends Controller
 
                 }
                 event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => $i, 'mensagens' => "")));
+                sleep(1);
             }
 
             //Se a opção de "all_comarca" estiver marcada, atribui o mesmo valor de serviço para todas as comarcas

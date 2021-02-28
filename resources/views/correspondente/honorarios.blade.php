@@ -138,6 +138,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </div>
                     
             </article>

@@ -648,7 +648,10 @@
                 if(message.data.canal == 'notificacao'){
 
                     if(message.data.conta == 999){
+
+                        $(".progress-bar").css('width',message.data.total);
                         
+                        /*
                         $('.badge-count').html(message.data.total);
                         $(".notification-body > li").remove();
 
@@ -671,6 +674,7 @@
                             $('.notification-body').append(item);
 
                         }
+                        */
                     }
                 }
 
