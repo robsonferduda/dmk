@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use App\Events\EventNotification;
 use App\Jobs\HonorarioCorrespondenteJob;
 
 class HonorariosCorrespondenteController extends Controller
@@ -199,7 +200,7 @@ class HonorariosCorrespondenteController extends Controller
                                                                 'dc_observacao_the' => '--']);
 
                 }
-
+                event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
             }
 
             //Se a opção de "all_comarca" estiver marcada, atribui o mesmo valor de serviço para todas as comarcas
