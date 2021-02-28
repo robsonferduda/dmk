@@ -635,7 +635,6 @@
         @yield('script')
         <script type="text/javascript">
         
-        /*
         $(document).ready(function() {
         
             var hostname = document.location.hostname;  
@@ -653,7 +652,7 @@
                         $('.badge-count').html(message.data.total);
                         $(".notification-body > li").remove();
 
-                        console.log(message.data.mensagens.length);
+                        console.log(message.data.total);
 
                         for (var i = 0; i < message.data.mensagens.length; i++) {
                             
@@ -678,7 +677,6 @@
             });
 
         });
-        */
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 
