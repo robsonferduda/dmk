@@ -7,6 +7,18 @@ $(document).ready(function() {
     var pathname = _location.substring(0, webFolderIndex);
     var host = document.location.origin;
 
+	import Echo from 'laravel-echo'
+
+	window.io = require('socket.io-client');window.Echo = new Echo({
+		broadcaster: 'socket.io',
+		host: window.location.hostname + ':6001'
+	}); 
+
+	window.Echo.channel('dmk')
+    	.listen('CorrespondenteHonorarioEvent', (e) => {
+        	console.log(e);
+    });
+
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');

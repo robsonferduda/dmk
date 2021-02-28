@@ -11,6 +11,13 @@
 |
 */
 
+Route::get('broadcast', function(){
+    //broadcast(new \App\Events\CorrespondenteHonorarioEvent);
+    event(new \App\Events\CorrespondenteHonorarioEvent);
+});
+
+Route::get('teste', 'TesteController@index');
+
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');

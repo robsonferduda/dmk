@@ -635,6 +635,7 @@
         @yield('script')
         <script type="text/javascript">
         
+        /*
         $(document).ready(function() {
         
             var hostname = document.location.hostname;  
@@ -677,6 +678,7 @@
             });
 
         });
+        */
 
         // DO NOT REMOVE : GLOBAL FUNCTIONS!
 

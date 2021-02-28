@@ -24,8 +24,10 @@
   "dependencies": {
     "express": "^4.16.3",
     "ioredis": "^3.2.2",
+    "laravel-echo": "^1.10.0",
     "redis": "^2.8.0",
     "socket.io": "^2.3.0",
+    "socket.io-client": "^3.1.2",
     "vue-router": "^3.4.3",
     "vuetify": "^2.3.9"
   }

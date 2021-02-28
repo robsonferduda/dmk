@@ -18,3 +18,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 Broadcast::channel('notificacao', function ($user, $id) {
     return true;
 });
+
+Broadcast::channel('dmk', function ($user, $id) {
+    return true;
+});
