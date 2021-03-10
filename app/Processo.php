@@ -258,10 +258,11 @@ class Processo extends Model implements AuditableContract
     {
         $visivel = ($nivel == 1) ? "" : " AND fl_visivel_correspondente_stp = 'S' ";
         $tipo = ($nivel == 1) ? ' cd_conta_con ' : 'cd_correspondente_cor';
+
         $sql = "SELECT 
                 count(cd_processo_pro) filter (where dt_prazo_fatal_pro = current_date) as hoje,
-                count(cd_processo_pro) filter (where dt_prazo_fatal_pro < current_date) as prazo,
-                count(cd_processo_pro) filter (where dt_prazo_fatal_pro > current_date) as atrasado,
+                count(cd_processo_pro) filter (where dt_prazo_fatal_pro < current_date) as atrasado,
+                count(cd_processo_pro) filter (where dt_prazo_fatal_pro > current_date) as prazo,
                 count(cd_processo_pro) as total
             FROM processo_pro t1, status_processo_stp t2 
             WHERE t1.cd_status_processo_stp = t2.cd_status_processo_stp 

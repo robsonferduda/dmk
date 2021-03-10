@@ -638,7 +638,7 @@
         $(document).ready(function() {
         
             var hostname = document.location.hostname;  
-
+            /*
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
@@ -661,7 +661,7 @@
 
                         $(".progress-bar").css('width',message.data.total+"%");
                         
-                        /*
+                        
                         $('.badge-count').html(message.data.total);
                         $(".notification-body > li").remove();
 
@@ -684,11 +684,11 @@
                             $('.notification-body').append(item);
 
                         }
-                        */
+                        
                     }
                 }
 
-            });
+            });*/
 
         });
 
