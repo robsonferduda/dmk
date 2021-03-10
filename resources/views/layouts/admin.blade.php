@@ -26,7 +26,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/font-awesome.min.css') }}">
         
         <!-- Smartadmin-all é a junção dos smartadmin-production-plugins.min.css,smartadmin-production.min.css,smartadmin-skins.min.css -->
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-all.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-all.css?v='.date('His')) }}">
 
         {!! Minify::stylesheet('/css/custom.css') !!}
     
@@ -40,7 +40,7 @@
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}" id='body-principal'>
         <header id="header">
             <div id="logo-group">
-                <span id="logo"> <img src="{{ asset('img/logo.png') }}" alt="DMK"> </span>
+                <span id="logo"> <img src="{{ asset('img/logo_light.png') }}" alt="Easyjuris"> </span>
 
                 @php
                     $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(Session::get('SESSION_CD_CONTA'));
