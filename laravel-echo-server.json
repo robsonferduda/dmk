@@ -1,23 +1,15 @@
 {
 	"authHost": "http://localhost",
 	"authEndpoint": "/broadcasting/auth",
-	"clients": [
-		{
-			"appId": "9201b80ecc9e18b3",
-			"key": "f4c1d9c88851d261bcbbe1e06963b3bc"
-		}
-	],
+	"clients": [],
 	"database": "redis",
 	"databaseConfig": {
-		"redis": {
-			"port": "6379",
-			"host": "localhost"
-		},
+		"redis": {},
 		"sqlite": {
 			"databasePath": "/database/laravel-echo-server.sqlite"
 		}
 	},
-	"devMode": true,
+	"devMode": false,
 	"host": null,
 	"port": "6001",
 	"protocol": "http",

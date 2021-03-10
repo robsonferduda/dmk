@@ -1,0 +1,1 @@
+[28-Feb-2021 13:58:15 America/Sao_Paulo] PHP Fatal error:  Allowed memory size of 1610612736 bytes exhausted (tried to allocate 528384 bytes) in phar:///opt/cpanel/composer/bin/composer/src/Composer/DependencyResolver/Pool.php on line 205
