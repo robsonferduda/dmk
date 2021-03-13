@@ -93,7 +93,7 @@ class ContaController extends Controller
     //Insere a conta com o flag de ativação pendente e exige a ativação para validação da conta
     public function store(ContaRequest $request)
     {
-
+        exit;
         DB::transaction(function() use ($request){
 
             $input = $request->all();
