@@ -133,7 +133,7 @@
                                     <tr style="background-color: {{ $cor }};">        
                                         <td>
                                             @if(!empty($processo->dt_prazo_fatal_pro))
-                                                {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ date('H:i', strtotime($processo->hr_audiencia_pro)) }}
+                                                {{ date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }} {{ $processo->hr_audiencia_pro ? date('H:i', strtotime($processo->hr_audiencia_pro)) : '' }}
                                             @endif
                                         </td>                                       
                                         <td data-id="{{ $processo->cd_processo_pro }}" >

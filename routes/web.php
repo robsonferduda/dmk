@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('broadcast', function(){
+Route::get('broadcast', function () {
     //broadcast(new \App\Events\CorrespondenteHonorarioEvent);
     event(new \App\Events\CorrespondenteHonorarioEvent);
 });
@@ -129,6 +129,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/relatorios', 'RelatorioProcessoController@relatorios');
     Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
     Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');
+    Route::get('processos/importar/codigos', 'ProcessoController@codigos');
+    Route::get('processos/importar/upload', 'ProcessoController@importarUpload');
+    Route::post('processos/importar', 'ProcessoController@importar');
+
     Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}', 'TipoServicoController@consultarClienteCidade');
     Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}', 'TipoServicoController@consultarCorrespondenteCidade');
 
@@ -322,6 +326,11 @@ Route::group(['middleware' => ['web']], function () {
         return response()->download(public_path().'/resources/layouts/varas_importar.xlsx');
     });
 
+    Route::get('layouts/processos-importar', function () {
+        return response()->download(public_path().'/resources/layouts/processos_importar.xlsx');
+    });
+
+
     Route::delete('correspondente/painel/reports/{nome}', 'RelatorioPainelCorrespondenteController@excluir');
     Route::get('correspondente/painel/reports/{nome}', 'RelatorioPainelCorrespondenteController@arquivo');
     Route::post('correspondente/painel/relatorios/buscar', 'RelatorioPainelCorrespondenteController@buscar');
@@ -367,4 +376,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/arquivo/espaco', 'AnexoProcessoController@getSizeFolder');
     Route::get('processos/arquivo/{nome}', 'RelatorioProcessoController@arquivo');
     Route::delete('processos/reports/{nome}', 'RelatorioProcessoController@excluir');
+
+    Route::get('manutencao/gerar-nu-vara-var', 'ManutencaoController@gerarNuVaravar');
+    Route::get('manutencao/gerar-nu-tipo-servico-tse', 'ManutencaoController@gerarNuTipoServicotse');
+    Route::get('manutencao/gerar-nu-contato-cot', 'ManutencaoController@gerarNuContatocot');
+    Route::get('manutencao/gerar-nu-tipo-processo-tpo', 'ManutencaoController@gerarTipoProcessotpo');
 });
