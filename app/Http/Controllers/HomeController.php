@@ -16,17 +16,15 @@ class HomeController extends Controller
     
     public function __construct()
     {
-         $this->conta = \Session::get('SESSION_CD_CONTA');
+        $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
     public function index()
     {
-
-        if(!Auth::guest()){
-
+        if (!Auth::guest()) {
             $role = Auth::user()->role()->first();
 
-            $role = ($role) ? $role->slug : null; 
+            $role = ($role) ? $role->slug : null;
 
             switch ($role) {
                 case 'correspondente':
@@ -34,36 +32,35 @@ class HomeController extends Controller
                     break;
                 
                 default:
-                    $conta = Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first();
-                    $processos = Processo::where('cd_conta_con',$conta->cd_conta_con)->get();
-                    return view('home',['conta' => $conta, 'processos' => $processos]);
+                    $conta = Conta::where('cd_conta_con', Auth::user()->cd_conta_con)->first();
+                    $processos = Processo::where('cd_conta_con', $conta->cd_conta_con)->get();
+                    return view('home', ['conta' => $conta, 'processos' => $processos]);
                     break;
             }
-            
-        }else{
+        } else {
             return view('conta/novo');
         }
-            
     }
 
     public function menu(Request $request, $id)
     {
-        if(session('menu_pai') == $id)
+        if (session('menu_pai') == $id) {
             Session::put('menu_pai', "");
-        else
+        } else {
             Session::put('menu_pai', $id);
+        }
 
         return $request->url();
     }
 
     public function minify()
     {
-        if(session('menu_minify') == 'on')
+        if (session('menu_minify') == 'on') {
             Session::put('menu_minify', 'off');
-        else
+        } else {
             Session::put('menu_minify', 'on');
+        }
 
         return back();
-
     }
 }

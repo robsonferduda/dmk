@@ -275,6 +275,19 @@
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
+                            @can('processo.relatorios')
+                            <li>
+                                <a href="#" title="Importar"><span class="menu-item-parent">Importar</span></a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ url('processos/importar/codigos') }}" title="Códigos"><span class="menu-item-parent">Códigos</span></a>
+                                    </li>   
+                                    <li>
+                                        <a href="{{ url('processos/importar/upload') }}" title="Upload"><span class="menu-item-parent">Upload</span></a>
+                                    </li>                                    
+                                </ul>                                                     
+                            </li>
+                            @endcan
                         </ul>   
                     </li>
                     @endcan
@@ -649,46 +662,51 @@
 
                     if(message.data.conta == 999){
 
+<<<<<<< HEAD
                         //Coloca teu código aqui
                         /*
 
                         */
 
                         if(message.data.visibilidade == 1){
+=======
+                        // if(message.data.visibilidade == 1){
+>>>>>>> 9b10f1e2906878996bd02a84c4e920699371b84b
 
-                            $(".progresso").css('display','block');
+                        //     $(".progresso").css('display','block');
 
-                        }else{
+                        // }else{
 
-                            $(".progresso").css('display','none');
+                        //     $(".progresso").css('display','none');
 
-                        }
+                        // }
 
-                        $(".progress-bar").css('width',message.data.total+"%");
+                        $(".upload-arquivo-processo").css('display','block');
+                        $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                         
                         
-                        $('.badge-count').html(message.data.total);
-                        $(".notification-body > li").remove();
+                        // $('.badge-count').html(message.data.total);
+                        // $(".notification-body > li").remove();
 
-                        console.log(message.data.total);
+                        // console.log(message.data.total);
 
-                        for (var i = 0; i < message.data.mensagens.length; i++) {
+                        // for (var i = 0; i < message.data.mensagens.length; i++) {
                             
-                            item = '<li>'+
-                                                    '<span class="unread">'+
-                                                        '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
-                                                            '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
-                                                            '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
-                                                            '<time>'+message.data.mensagens[i].data+'</time>'+
-                                                            '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
-                                                            '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
-                                                        '</a>' +
-                                                    '</span>'+
-                                                '</li>';
+                        //     item = '<li>'+
+                        //                             '<span class="unread">'+
+                        //                                 '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
+                        //                                     '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
+                        //                                     '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
+                        //                                     '<time>'+message.data.mensagens[i].data+'</time>'+
+                        //                                     '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
+                        //                                     '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
+                        //                                 '</a>' +
+                        //                             '</span>'+
+                        //                         '</li>';
                                                    
-                            $('.notification-body').append(item);
+                        //     $('.notification-body').append(item);
 
-                        }
+                        // }
                         
                     }
                 }

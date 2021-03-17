@@ -758,8 +758,6 @@ class ClienteController extends Controller
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
         $request->merge(['cd_entidade_ete' => $cliente->entidade->cd_entidade_ete]);    
         
-        //dd($request->fl_ativo_cli);
-
         $cliente->fill($request->all());
         $cliente->fl_ativo_cli = $fl_ativo_cli;
         $cliente->fl_nota_fiscal_cli = $fl_nota_fiscal_cli;
