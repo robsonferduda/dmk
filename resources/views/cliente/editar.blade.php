@@ -135,6 +135,19 @@
 
                                     <section>
                                         <div class="onoffswitch-container" style="margin-left: 0px;">
+                                            <span class="onoffswitch-title">Cliente Ativo</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_ativo_cli" value="S" id="fl_ativo_cli" {{ ($cliente->fl_ativo_cli == 'S') ? 'checked="checked"' : '' }}>
+                                                <label class="onoffswitch-label" for="fl_ativo_cli"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>                                        
+                                    </section>
+
+                                    <section>
+                                        <div class="onoffswitch-container" style="margin-left: 0px;">
                                             <span class="onoffswitch-title">Pagamento Com Nota Fiscal</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" class="onoffswitch-checkbox" name="fl_nota_fiscal_cli" value="S" id="fl_nota_fiscal_cli" {{ ($cliente->fl_nota_fiscal_cli == 'S') ? 'checked="checked"' : '' }}>

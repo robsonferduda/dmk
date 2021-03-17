@@ -588,6 +588,9 @@ class ClienteController extends Controller
             }
         }
 
+        $fl_ativo_cli = ($request->fl_ativo_cli) ? $request->fl_ativo_cli : 'N';
+        $fl_nota_fiscal_cli = ($request->fl_nota_fiscal_cli) ? $request->fl_nota_fiscal_cli : 'N';
+
         $request->merge(['nu_cep_ede' => $cep]);
         $request->merge(['cd_conta_con' => $cd_conta_con]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
@@ -601,6 +604,9 @@ class ClienteController extends Controller
 
         $cliente = new Cliente();
         $cliente->fill($request->all());
+
+        $cliente->fl_ativo_cli = $fl_ativo_cli;
+        $cliente->fl_nota_fiscal_cli = $fl_nota_fiscal_cli;
 
         if($cliente->saveOrFail()){
 
@@ -744,12 +750,20 @@ class ClienteController extends Controller
             }
         }
 
+        $fl_ativo_cli = ($request->fl_ativo_cli) ? $request->fl_ativo_cli : 'N';
+        $fl_nota_fiscal_cli = ($request->fl_nota_fiscal_cli) ? $request->fl_nota_fiscal_cli : 'N';
+
         $request->merge(['nu_cep_ede' => $cep]);
         $request->merge(['cd_conta_con' => $this->conta]);
         $request->merge(['taxa_imposto_cli' => $taxa_imposto_cli]);
-        $request->merge(['cd_entidade_ete' => $cliente->entidade->cd_entidade_ete]);
+        $request->merge(['cd_entidade_ete' => $cliente->entidade->cd_entidade_ete]);    
+        
+        //dd($request->fl_ativo_cli);
 
         $cliente->fill($request->all());
+        $cliente->fl_ativo_cli = $fl_ativo_cli;
+        $cliente->fl_nota_fiscal_cli = $fl_nota_fiscal_cli;
+        $cliente->taxa_imposto_cli = ($fl_nota_fiscal_cli == 'S') ? $taxa_imposto_cli : null;
         
         if($cliente->saveOrFail()){
 

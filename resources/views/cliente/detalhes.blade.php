@@ -84,6 +84,9 @@
                                                     <strong>Site: </strong> {{ ($cliente->ds_site_cli) ? $cliente->ds_site_cli : 'Não informado' }}
                                                 </li>
                                                 <li>
+                                                    <strong>Situação: </strong> {!! ($cliente->fl_ativo_cli == "S") ? '<span class="label label-success">ATIVO</span>' : '<span class="label label-danger">INATIVO</span>' !!}
+                                                </li>
+                                                <li>
                                                     <strong>Pagamento com Nota Fiscal: </strong> {!! ($cliente->fl_nota_fiscal_cli == "S") ? '<span class="label label-success">SIM</span>' : '<span class="label label-danger">NÃO</span>' !!}
                                                 </li>
                                                 @if($cliente->fl_nota_fiscal_cli == "S")

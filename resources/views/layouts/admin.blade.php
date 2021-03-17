@@ -638,7 +638,7 @@
         $(document).ready(function() {
         
             var hostname = document.location.hostname;  
-            /*
+            
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
@@ -648,6 +648,11 @@
                 if(message.data.canal == 'notificacao'){
 
                     if(message.data.conta == 999){
+
+                        //Coloca teu código aqui
+                        /*
+
+                        */
 
                         if(message.data.visibilidade == 1){
 
@@ -688,7 +693,7 @@
                     }
                 }
 
-            });*/
+            });
 
         });
 
