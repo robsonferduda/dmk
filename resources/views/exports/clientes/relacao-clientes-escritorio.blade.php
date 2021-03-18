@@ -53,6 +53,13 @@
                     </td>
                 @endif 
             @endif 
+            @if(in_array('flag', $valores)) 
+                @if($cliente['nu_cliente_cli'])     
+                    <td style="border: 1px hair #000000;vertical-align: center" >
+                        {{ $cliente['flag'] }}
+                    </td>   
+                @endif
+            @endif
         </tr>
         @endforeach   
     </tbody>

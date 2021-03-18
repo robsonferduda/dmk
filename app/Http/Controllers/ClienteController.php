@@ -48,45 +48,6 @@ class ClienteController extends Controller
         return view('cliente/detalhes',['cliente' => $cliente]);
     }
 
-    public function relatorios()
-    {
-        return view('cliente/relatorios');
-    }
-
-    public function gerarRelatorio(Request $request)
-    {
-        $params = array();
-        $labels = array();
-        $dados = array();
-        $valores = $request->campos;
-
-        if($valores){
-        
-            for ($i=0; $i < count($valores); $i++) { 
-                if($valores[$i] == 'nu_cliente_cli') $labels[] = "Código";
-                if($valores[$i] == 'nm_razao_social_cli') $labels[] = "Nome";
-                if($valores[$i] == 'fone') $labels[] = "Telefone";
-                if($valores[$i] == 'email') $labels[] = "Email";
-            }
-
-            $clientes = Cliente::where('cd_conta_con', $this->conta)->with('entidade')->get();
-
-            foreach($clientes as $cliente){
-
-                $dados[] = array('nu_cliente_cli' => $cliente->nu_cliente_cli,
-                                'nm_razao_social_cli' => $cliente->nm_razao_social_cli,
-                                'email' => (EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get()) ? EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null,
-                                'fone' => ($cliente->entidade->fone) ? Fone::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null);
-            }
-            
-            return \Excel::download(new RelacaoClientesEscritorioExport($dados,$valores,$labels),'clientes.xls',\Maatwebsite\Excel\Excel::XLSX);
-        
-        }else{
-            Flash::warning('Selecione pelo menos um campo para o relatório');
-            return redirect('cliente/relatorios');
-        }
-    }
-
     public function contatos($id)
     {
         Session::put('inicial',NULL);
@@ -97,7 +58,6 @@ class ClienteController extends Controller
         $codCliente = '';
 
         $tiposContato = TipoContato::where('cd_conta_con', $this->conta)->orderBy('nm_tipo_contato_tct')->get();
-
 
         $dados = DB::table('contato_cot')
                         ->leftJoin('tipo_contato_tct','tipo_contato_tct.cd_tipo_contato_tct','=','contato_cot.cd_tipo_contato_tct')
@@ -493,11 +453,6 @@ class ClienteController extends Controller
                                           'lista_servicos' => $lista_servicos]);
 
     }
-
-    
-
-   
-
 
     public function excluirHonorarios($entidade,$tipo,$id)
     {
@@ -1063,5 +1018,52 @@ class ClienteController extends Controller
           ->select('cd_contato_cot', 'nm_contato_cot')->get()->toJson();
 
         echo $contatos;
+    }
+
+    public function relatorios()
+    {
+        return view('cliente/relatorios');
+    }
+
+    public function gerarRelatorio(Request $request)
+    {
+        $params = array();
+        $labels = array();
+        $dados = array();
+        $valores = $request->campos;
+
+        if($valores){
+        
+            for ($i=0; $i < count($valores); $i++) { 
+                if($valores[$i] == 'nu_cliente_cli') $labels[] = "Código";
+                if($valores[$i] == 'nm_razao_social_cli') $labels[] = "Nome";
+                if($valores[$i] == 'fone') $labels[] = "Telefone";
+                if($valores[$i] == 'email') $labels[] = "Email";
+            }
+
+            $valores[] = 'flag';
+            $labels[] = 'Situação';
+
+            if($request->fl_ativo_cli){
+                $clientes = Cliente::where('cd_conta_con', $this->conta)->where('fl_ativo_cli','S')->with('entidade')->get();
+            }else{
+                $clientes = Cliente::where('cd_conta_con', $this->conta)->with('entidade')->get();
+            }
+
+            foreach($clientes as $cliente){
+
+                $dados[] = array('nu_cliente_cli' => $cliente->nu_cliente_cli,
+                                'nm_razao_social_cli' => $cliente->nm_razao_social_cli,
+                                'email' => (EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get()) ? EnderecoEletronico::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null,
+                                'fone' => ($cliente->entidade->fone) ? Fone::where('cd_entidade_ete',$cliente->cd_entidade_ete)->get() : null,
+                                'flag' => ($cliente->fl_ativo_cli == "S") ? "Ativo" : "Inativo");
+            }
+            
+            return \Excel::download(new RelacaoClientesEscritorioExport($dados,$valores,$labels),'clientes.xls',\Maatwebsite\Excel\Excel::XLSX);
+        
+        }else{
+            Flash::warning('Selecione pelo menos um campo para o relatório');
+            return redirect('cliente/relatorios');
+        }
     }
 }

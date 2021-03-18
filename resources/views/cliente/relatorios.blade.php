@@ -26,7 +26,7 @@
             <div class="jarviswidget jarviswidget-sortable">
                 <header role="heading" class="ui-sortable-handle">
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>Cadastro de Cliente </h2>             
+                    <h2>Relatório de Clientes </h2>             
                 <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
 
                 <div role="content">
@@ -36,9 +36,16 @@
                                 <header>
                                     <i class="fa fa-file-excel-o"></i> Relatório de Clientes
                                 </header>
-
                                 <fieldset>
                                     <section>
+                                        <div class="row">
+                                            <div class="col col-12 marginBottom10">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="fl_ativo_cli">
+                                                    <i></i>Somente Clientes Ativos 
+                                                </label>
+                                            </div> 
+                                        </div>
                                         <label class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Selecione os campos que deseja no relatório</label>
                                             <div class="row">
                                                 <div class="col col-12">
