@@ -662,16 +662,14 @@
 
                     if(message.data.conta == 999){
 
-<<<<<<< HEAD
                         //Coloca teu código aqui
                         /*
 
                         */
 
-                        if(message.data.visibilidade == 1){
-=======
+
                         // if(message.data.visibilidade == 1){
->>>>>>> 9b10f1e2906878996bd02a84c4e920699371b84b
+
 
                         //     $(".progresso").css('display','block');
 
