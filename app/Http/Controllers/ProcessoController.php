@@ -1287,7 +1287,13 @@ class ProcessoController extends Controller
 
     public function importarUpload()
     {
-        return view('processo/importar/upload', ['failures' => '']);
+
+        $clientes = Cliente::where('cd_conta_con', $this->cdContaCon)
+                    ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli')
+                    ->orderBy('nm_razao_social_cli')
+                    ->get();
+
+        return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
     }
 
     public function importar(Request $request)

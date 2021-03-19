@@ -326,9 +326,7 @@ Route::group(['middleware' => ['web']], function () {
         return response()->download(public_path().'/resources/layouts/varas_importar.xlsx');
     });
 
-    Route::get('layouts/processos-importar', function () {
-        return response()->download(public_path().'/resources/layouts/processos_importar.xlsx');
-    });
+    Route::post('layout/importar/processo', 'LayoutController@processo');
 
 
     Route::delete('correspondente/painel/reports/{nome}', 'RelatorioPainelCorrespondenteController@excluir');

@@ -149,7 +149,7 @@ class ProcessoImport implements ToCollection, WithHeadingRow, WithValidation
                 if (empty(trim($value))) {
                     $onFailure('A coluna Data Prazo Fatal é obrigatória.');
                 }
-
+                
                 if (!empty(trim($value))) {
                     $data = explode('/', trim($value));
 
