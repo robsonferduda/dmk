@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
-class LayoutProcesso extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements WithMultipleSheets
+class LayoutProcesso implements WithMultipleSheets
 {
     
     public function __construct($dados)

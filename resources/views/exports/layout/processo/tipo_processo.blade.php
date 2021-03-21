@@ -7,7 +7,7 @@
     <tbody>
         @foreach($tp as $t)
         <tr>
-            <td>{{ $t->nm_tipo_processo_tpo  }} -----{{$t->nu_tipo_processo_tpo}}-----</td>     
+            <td>{{ $t->nm_tipo_processo_tpo  }} ---{{$t->nu_tipo_processo_tpo}}---</td>     
         </tr>
         @endforeach
     </tbody>

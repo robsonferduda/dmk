@@ -1287,7 +1287,6 @@ class ProcessoController extends Controller
 
     public function importarUpload()
     {
-
         $clientes = Cliente::where('cd_conta_con', $this->cdContaCon)
                     ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli')
                     ->orderBy('nm_razao_social_cli')
@@ -1298,39 +1297,46 @@ class ProcessoController extends Controller
 
     public function importar(Request $request)
     {
+
+        $clientes = Cliente::where('cd_conta_con', $this->cdContaCon)
+                    ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli')
+                    ->orderBy('nm_razao_social_cli')
+                    ->get();
+
         if ($request->hasFile('file')) {
             $file = $request->file('file');
 
             $extensions = array("xls","xlsx","XLSX","XLS");
-
-            if (in_array($file ->getClientOriginalExtension(), $extensions)) {
+            if (in_array($file->getClientOriginalExtension(), $extensions)) {
                 try {
-                    $colunas = ['CLIENTE','ADVOGADO SOLICITANTE','DATA DA SOLICITÇÃO','DATA PRAZO FATAL','AUTOR','RÉU','NÚMERO DO PROCESSO','VARA','COMARCA','TIPO DO SERVIÇO','TIPO DE PROCESSO','NÚMERO EXTERNO','HONORÁRIOS'];
+                    $colunas = ['CLIENTE','ADVOGADO_SOLICITANTE','NUMERO_PROCESSO','AUTOR','REU','DATA_SOLICITACAO','DATA_PRAZO_FATAL','HORA','ESTADO','COMARCA','VARA','TIPO_DE_SERVICO','TIPO_DE_PROCESSO'];
 
                     HeadingRowFormatter::default('none');
                     $headings = (new HeadingRowImport)->toArray($file);
+                     // dd($file->getClientOriginalExtension());
                     foreach ($colunas as $coluna) {
                         if (in_array($coluna, $headings[0][0]) === false) {
                             Flash::error('Coluna ('.$coluna.') não encontrada na planilha');
-                            return view('processo/importar/upload', ['failures' => '']);
+                            return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
                         }
                     }
-
+                    
                     HeadingRowFormatter::default('slug');
                     
-                    $import = new ProcessoImport;
+                    $import = new ProcessoImport();
+    
                     $data =  Excel::import($import, $file);
 
-                    Flash::success($import->getRowCount().' projeto(s) criado(s) com sucesso. ');
-                    return view('processo/importar/upload', ['failures' => '']);
-
+                    Flash::success($import->getRowCount().' Processo(s) criado(s) com sucesso. ');
+                    return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
                 } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
                     $failures = $e->failures();
-                    return view('processo/importar/upload', ['failures' => $failures]);
+                    return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);
                 }
             } else {
                 Flash::error('Extensão da planilha é inválida. Extensões permitidas: "xls","xlsx","XLSX","XLS". ');
+                return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);
             }
-        }        
+        }
     }
 }

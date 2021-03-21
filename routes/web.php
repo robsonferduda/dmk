@@ -130,7 +130,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
     Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');
     Route::get('processos/importar/codigos', 'ProcessoController@codigos');
-    Route::get('processos/importar/upload', 'ProcessoController@importarUpload');
+    Route::get('processos/importar', 'ProcessoController@importarUpload');
     Route::post('processos/importar', 'ProcessoController@importar');
 
     Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}', 'TipoServicoController@consultarClienteCidade');

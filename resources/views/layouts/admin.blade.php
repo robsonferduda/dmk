@@ -277,15 +277,9 @@
                             @endcan
                             @can('processo.relatorios')
                             <li>
-                                <a href="#" title="Importar"><span class="menu-item-parent">Importar</span></a>
-                                <ul>
-                                    <li>
-                                        <a href="{{ url('processos/importar/codigos') }}" title="Códigos"><span class="menu-item-parent">Códigos</span></a>
-                                    </li>   
-                                    <li>
-                                        <a href="{{ url('processos/importar/upload') }}" title="Upload"><span class="menu-item-parent">Upload</span></a>
-                                    </li>                                    
-                                </ul>                                                     
+                                <li>
+                                    <a href="{{ url('processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
+                                </li>                                 
                             </li>
                             @endcan
                         </ul>   

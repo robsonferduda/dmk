@@ -49,6 +49,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
             'K' => 30,
             'L' => 30,
             'M' => 30,
+            'N' => 30,
 
         ];
     }
@@ -84,16 +85,16 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Input error');
-                $validation->setError('Value is not in list.');
-                $validation->setPromptTitle('Pick from list');
-                $validation->setPrompt('Please pick a value from the drop-down list.');
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Vara');
+                $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Varas!A$2:A$'.($this->varas->count()+1));
 
-                // clone validation to remaining rows
-                for ($i = 3; $i <= 500; $i++) {
-                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                }
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                // }
 
                 // TipoServiço
                 $drop_column = 'L';
@@ -106,16 +107,16 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Input error');
-                $validation->setError('Value is not in list.');
-                $validation->setPromptTitle('Pick from list');
-                $validation->setPrompt('Please pick a value from the drop-down list.');
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Tipo de Serviço');
+                $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Tipos_de_Serviço!A$2:A$'.($this->tiposSevico->count()+1));
 
-                // clone validation to remaining rows
-                for ($i = 3; $i <= 500; $i++) {
-                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                }
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                // }
 
                 // Estado
                 $drop_column = 'I';
@@ -128,18 +129,18 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Input error');
-                $validation->setError('Value is not in list.');
-                $validation->setPromptTitle('Pick from list');
-                $validation->setPrompt('Please pick a value from the drop-down list.');
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Estado');
+                $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Estados!A$2:A$28');
 
-                // clone validation to remaining rows
-                for ($i = 3; $i <= 500; $i++) {
-                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                }
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                // }
 
-                // Cidade
+                // Comarca
                 $drop_column = 'J';
 
                 // set dropdown list for first data row
@@ -150,30 +151,30 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Input error');
-                $validation->setError('Value is not in list.');
-                $validation->setPromptTitle('Pick from list');
-                $validation->setPrompt('Please pick a value from the drop-down list.');
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Comarca');
+                $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('=INDIRECT($I$2)');
 
-                // clone validation to remaining rows
-                for ($i = 3; $i <= 500; $i++) {
-                    $validation = $event->sheet->getCell("{$drop_column}".$i)->getDataValidation();
-                    $validation->setType(DataValidation::TYPE_LIST);
-                    $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-                    $validation->setAllowBlank(false);
-                    $validation->setShowInputMessage(true);
-                    $validation->setShowErrorMessage(true);
-                    $validation->setShowDropDown(true);
-                    $validation->setErrorTitle('Input error');
-                    $validation->setError('Value is not in list.');
-                    $validation->setPromptTitle('Pick from list');
-                    $validation->setPrompt('Please pick a value from the drop-down list.');
-                    $validation->setFormula1('=INDIRECT($I$'.$i.')');
-                }
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $validation = $event->sheet->getCell("{$drop_column}".$i)->getDataValidation();
+                //     $validation->setType(DataValidation::TYPE_LIST);
+                //     $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
+                //     $validation->setAllowBlank(false);
+                //     $validation->setShowInputMessage(true);
+                //     $validation->setShowErrorMessage(true);
+                //     $validation->setShowDropDown(true);
+                //     $validation->setErrorTitle('Erro de entrada de dados.');
+                //     $validation->setError('O valor não está na lista.');
+                //     $validation->setPromptTitle('Selecione um valor');
+                //     $validation->setPrompt('Selecione um valor da lista.');
+                //     $validation->setFormula1('=INDIRECT($I$'.$i.')');
+                // }
 
 
-                // Estado
+                // Tipo de Processo
                 $drop_column = 'M';
 
                 // set dropdown list for first data row
@@ -184,16 +185,16 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Input error');
-                $validation->setError('Value is not in list.');
-                $validation->setPromptTitle('Pick from list');
-                $validation->setPrompt('Please pick a value from the drop-down list.');
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Tipo de Processo');
+                $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
 
-                // clone validation to remaining rows
-                for ($i = 3; $i <= 500; $i++) {
-                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                }
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                // }
             },
         ];
     }

@@ -7,7 +7,7 @@
     <tbody>
         @foreach($varas as $vara)
         <tr>
-            <td>{{ $vara->nm_vara_var  }} -----{{$vara->nu_vara_var}}-----</td>     
+            <td>{{ $vara->nm_vara_var  }} ---{{$vara->nu_vara_var}}---</td>     
         </tr>
         @endforeach
     </tbody>

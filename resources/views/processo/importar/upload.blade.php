@@ -77,7 +77,7 @@
                                     <section class="col col-md-12">
                                         <div class="form-group">
                                             <label class="label label-black" >Cliente</label>          
-                                            <select class="select2" name="cliente" data-input="#codigo-cliente" >
+                                            <select required class="select2" name="cliente" data-input="#codigo-cliente" >
                                                  <option selected value="" >Selecione um Cliente</option>
                                                 @foreach($clientes as $cliente)
                                                     <option value="{{ $cliente->cd_cliente_cli }}">{{ $cliente->nm_razao_social_cli }}</option>                              

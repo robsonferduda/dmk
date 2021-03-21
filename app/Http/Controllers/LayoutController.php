@@ -33,9 +33,9 @@ class LayoutController extends Controller
                     ->select('cd_contato_cot', 'nu_contato_cot', 'nm_contato_cot')
                     ->first();
 
-        $nomeCliente = $cliente->nm_razao_social_cli.' -----'.$cliente->nu_cliente_cli.'-----';
+        $nomeCliente = $cliente->nm_razao_social_cli.' ---'.$cliente->nu_cliente_cli.'---';
 
-        $nomeContato = !empty($contato) ? $contato->nm_contato_cot.' -----'.$contato->nu_contato_cot.'-----' : '';
+        $nomeContato = !empty($contato) ? $contato->nm_contato_cot.' ---'.$contato->nu_contato_cot.'---' : '';
 
         $dados = [
             'cliente' => $nomeCliente,
@@ -43,6 +43,6 @@ class LayoutController extends Controller
         ];
 
 
-        return \Excel::download(new LayoutProcesso($dados), 'layout-importacao-processos.xls', \Maatwebsite\Excel\Excel::XLSX);
+        return \Excel::download(new LayoutProcesso($dados), 'layout-importacao-processos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }
