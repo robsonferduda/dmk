@@ -76,7 +76,7 @@
 
                         <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="status" id="status" class="select2">
-                                <option value="">Status do Processo</option>
+                                <option value="">Status do Acompanhamento</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
                                 <option value="data-limite">Data Limite</option>
                                 <option value="atrasado">Atrasado</option>
@@ -95,6 +95,14 @@
                                 <option selected value="">Comarca</option>
                             </select> 
                         </section>  
+                        <section class="col col-md-4 col-lg-3 box-select2">       
+                            <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
+                                <option selected value="">Status do Processo</option>
+                                @foreach($status as $st)
+                                    <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
+                                @endforeach
+                            </select> 
+                        </section> 
                     </div><hr>
                     <div class="row center">
                         <button class="btn btn-primary btn-sm" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
@@ -336,12 +344,14 @@
             autor = $("#autor").val();
             data = $("#dt_prazo_fatal_pro").val();
             comarca = $("#cidade").val();
+            statusProcesso = $("#cd_status_processo_stp").val();
+
 
             $.ajax({
                 
                 url: '../../processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "flag": false },
+                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "statusProcesso": statusProcesso ,"flag": false },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");

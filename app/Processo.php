@@ -164,7 +164,7 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
-    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente)
+    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso)
     {
         $sql = "SELECT t1.cd_processo_pro, 
                        t1.nu_processo_pro, 
@@ -215,6 +215,8 @@ class Processo extends Model implements AuditableContract
             if($status == 'atrasado') $sql .= " AND dt_prazo_fatal_pro < current_date ";
 
         }
+
+        if($statusProcesso) $sql .= "AND t1.cd_status_processo_stp = $statusProcesso ";
 
         $sql .= " AND t1.deleted_at is null ORDER BY dt_prazo_fatal_pro";
 

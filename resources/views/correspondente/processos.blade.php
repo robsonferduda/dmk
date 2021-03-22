@@ -60,7 +60,7 @@
                         
                         <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="status" id="status" class="select2">
-                                <option value="">Status do Processo</option>
+                                <option value="">Status do Acompanhamento</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
                                 <option value="data-limite">Data Limite</option>
                                 <option value="atrasado">Atrasado</option>

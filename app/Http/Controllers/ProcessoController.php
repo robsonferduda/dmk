@@ -22,6 +22,7 @@ use App\TaxaHonorario;
 use App\EnderecoEletronico;
 use App\ContaCorrespondente;
 use App\ProcessoMensagem;
+use App\StatusProcesso;
 use App\Http\Requests\ProcessoRequest;
 use App\Http\Controllers\CalendarioController;
 use Illuminate\Http\Request;
@@ -105,33 +106,11 @@ class ProcessoController extends Controller
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
-        /*
-        $processos = Processo::with(array('correspondente' => function($query){
-              $query->select('cd_conta_con','nm_razao_social_con','nm_fantasia_con');
-              $query->with(array('contaCorrespondente' => function($query){
-                    $query->where('cd_conta_con', $this->cdContaCon);
-              }));
-        }))->with(array('cidade' => function($query){
-              $query->select('cd_cidade_cde','nm_cidade_cde','cd_estado_est');
-              $query->with(array('estado' => function($query){
-                  $query->select('sg_estado_est','cd_estado_est');
-        }));
-        }))->with(array('honorario' => function($query){
-              $query->select('cd_processo_pro','cd_tipo_servico_tse');
-              $query->with(array('tipoServico' => function($query){
-                  $query->select('cd_tipo_servico_tse','nm_tipo_servico_tse');
-        }));
-        }))->with(array('cliente' => function($query){
-              $query->select('cd_cliente_cli','nm_fantasia_cli','nm_razao_social_cli');
-        }))->with('status')
-        ->where('cd_conta_con', $this->cdContaCon)
-        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
-        ->orderBy('dt_prazo_fatal_pro')
-        ->orderBy('hr_audiencia_pro')
-        ->select('cd_processo_pro','nu_processo_pro','cd_cliente_cli','cd_cidade_cde','cd_correspondente_cor','hr_audiencia_pro','dt_solicitacao_pro','dt_prazo_fatal_pro','nm_autor_pro','cd_status_processo_stp')->get();
-        */
-
-        return view('processo/acompanhamento', ['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis]);
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp',[\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+                  ->orderBy('nm_status_processo_conta_stp')
+                  ->get();
+       
+        return view('processo/acompanhamento', ['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis, 'status' => $status]);
     }
 
     public function acompanhamento($id)
@@ -1218,23 +1197,24 @@ class ProcessoController extends Controller
         $comarca = ($request->comarca) ? $request->comarca : null;
         $flag = ($request->flag) ? $request->flag : false;
         $cliente = ($request->cliente) ? $request->cliente : null;
+        $statusProcesso = ($request->statusProcesso) ? $request->statusProcesso : null;
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso);
         
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, false, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, false, null, null);
         return response()->json($processos);
     }
 
     public function getProcessosAndamentoCorrespondente()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null, null);
         return response()->json($processos);
     }
 
