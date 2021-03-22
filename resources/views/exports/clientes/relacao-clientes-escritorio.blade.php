@@ -30,8 +30,9 @@
             @if(in_array('email', $valores))  
                 @if($cliente['email'])   
                     <td style="border: 1px hair #000000;vertical-align: center" >
-                        @foreach($cliente['email'] as $email)
+                        @foreach($cliente['email'] as $key => $email)
                             {{ $email->dc_endereco_eletronico_ede }}
+                            @if($key > 0) {{"\r\n"}} @endif
                         @endforeach
                     </td>
                 @else
@@ -43,8 +44,9 @@
             @if(in_array('fone', $valores)) 
                 @if($cliente['fone'])    
                     <td style="border: 1px hair #000000;vertical-align: center" >
-                        @foreach($cliente['fone'] as $fone)
+                        @foreach($cliente['fone'] as $key => $fone)
                             {{ $fone->nu_fone_fon }}
+                            @if($key > 0) <br style="mso-data-placement:same-cell;" /> @endif
                         @endforeach
                     </td>  
                 @else
