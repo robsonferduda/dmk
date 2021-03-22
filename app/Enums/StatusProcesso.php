@@ -19,4 +19,5 @@ final class StatusProcesso extends Enum
     const AGUARDANDO_CUMPRIMENTO = 11;
     const AGUARDANDO_DADOS = 12;
     const DADOS_ENVIADOS = 13;
+    const PENDENTE_ANALISE = 14;
 }
