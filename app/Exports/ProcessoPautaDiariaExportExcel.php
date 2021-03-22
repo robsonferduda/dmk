@@ -7,13 +7,13 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
-class ProcessoPautaDiariaExportExcel implements FromView, ShouldAutoSize
+class ProcessoPautaDiariaExportExcel implements FromView, ShouldAutoSize, WithTitle
 {
-
-	public function __construct(Array $dados)
+    public function __construct(array $dados)
     {
         $this->dados = $dados;
     }
@@ -23,4 +23,8 @@ class ProcessoPautaDiariaExportExcel implements FromView, ShouldAutoSize
         return view('exports.pauta-diaria', ['dados' => $this->dados]);
     }
 
+    public function title(): string
+    {
+        return 'Pauta Diária  '.now()->format('d-m-Y');
+    }
 }

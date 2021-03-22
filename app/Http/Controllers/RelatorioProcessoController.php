@@ -127,6 +127,7 @@ class RelatorioProcessoController extends Controller
         $responsavel = $request->responsavel;
         $tipoProcesso = $request->tipoProcesso;
         $correspondente = $request->cdCorrespondente;
+        $status = $request->cd_status_processo_stp;
 
         if (!empty($responsavel)) {
             $processos = $processos->where('cd_responsavel_pro', $responsavel);
@@ -159,12 +160,18 @@ class RelatorioProcessoController extends Controller
             $processos = $processos->where('cd_correspondente_cor', $correspondente);
         }
 
-        $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
+        if (!empty($status)) {
+            $processos = $processos->where('cd_status_processo_stp', $status);
+        }
 
+        $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
+    
         if ($request->tipo == 'pdf') {
-            return \Excel::download(new ProcessoPautaDiariaExportPDF(['processos' => $processos]), 'Pauta.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            $fileName = 'Pauta-Diária-'.now()->format('d-m-Y').'.pdf';
+            return \Excel::download(new ProcessoPautaDiariaExportPDF(['processos' => $processos]), $fileName, \Maatwebsite\Excel\Excel::DOMPDF);
         } else {
-            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]), 'Pauta.xls', \Maatwebsite\Excel\Excel::XLS);
+            $fileName = 'Pauta-Diária-'.now()->format('d-m-Y').'.xls';
+            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]), $fileName, \Maatwebsite\Excel\Excel::XLS);
         }
     }
 

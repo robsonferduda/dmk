@@ -203,12 +203,23 @@
                                 <div class="row">    
                                     <input type="hidden" name="cdCorrespondente" value="">           
                                     <section class="col col-sm-12">
-                                        <label class="label">Correspondente</label>
+                                        <label>Correspondente</label>
                                         <label class="input">
                                             <input class="form-control" name="nmCorrespondente" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete_pauta" value="">
                                         </label>
                                     </section>
                                 </div> 
+                                <div class="row">
+                                    <section class="col col-sm-12"> 
+                                        <label>Status do Processo</label> 
+                                        <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
+                                            <option selected value="">Todos</option>
+                                            @foreach($status as $st)
+                                                <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </section>                                     
+                                </div>
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> Gerar Pauta</button>

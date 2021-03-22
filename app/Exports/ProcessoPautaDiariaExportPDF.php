@@ -7,13 +7,13 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
-class ProcessoPautaDiariaExportPDF implements FromView, WithEvents
+class ProcessoPautaDiariaExportPDF implements FromView, WithEvents, WithTitle
 {
-
-	public function __construct(Array $dados)
+    public function __construct(array $dados)
     {
         $this->dados = $dados;
     }
@@ -25,10 +25,9 @@ class ProcessoPautaDiariaExportPDF implements FromView, WithEvents
 
     public function registerEvents(): array
     {
-    
-            return [
+        return [
         
-                    AfterSheet::class  => function(AfterSheet $event) {
+                    AfterSheet::class  => function (AfterSheet $event) {
                         $event->sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
                         $event->sheet->getDelegate()->getPageMargins()->setTop(0.1);
                         $event->sheet->getDelegate()->getPageMargins()->setLeft(0.1);
@@ -37,10 +36,12 @@ class ProcessoPautaDiariaExportPDF implements FromView, WithEvents
                         $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(7);
                         $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(4);
                         $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(1);
-
-                    
                     }
             ];
     }
 
+    public function title(): string
+    {
+        return 'Pauta Diária  '.now()->format('d-m-Y');
+    }
 }
