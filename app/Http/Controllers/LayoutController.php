@@ -39,7 +39,8 @@ class LayoutController extends Controller
             'cliente' => $cliente
         ];
 
+        $fileName = 'layout-'.$cliente->nm_razao_social_cli.'.xlsx';
 
-        return \Excel::download(new LayoutProcesso($dados), 'layout-importacao-processos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        return \Excel::download(new LayoutProcesso($dados), $fileName, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
