@@ -85,17 +85,7 @@
                                             </select>                               
                                         </div>  
                                     </section>      
-                                </div>         
-                                <div class="row">
-                                    <section class="col col-md-12">
-                                        <div class="form-group">
-                                            <label class="label label-black" >Advogado Solicitante</label>          
-                                            <select class="select2"  id="advogado" name="advogado">
-                                                <option value="">Selecione um Advogado Solicitante</option>            
-                                            </select><i></i>                            
-                                        </div>  
-                                    </section>      
-                                </div>                                                          
+                                </div>                                          
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Gerar Layout</button>
