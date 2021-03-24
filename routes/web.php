@@ -227,6 +227,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/atuacao/excluir/{id}', 'CorrespondenteController@excluirAtuacao');
     Route::post('correspondente/atuacao/adicionar', 'CorrespondenteController@adicionarAtuacao');
     Route::put('correspondente/editar', 'CorrespondenteController@editar');
+    Route::get('correspondente/tipo-processo-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoProcesso');
+    Route::get('correspondente/tipo-servico-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoServico');
 
     Route::get('despesas/balanco', 'DespesasController@balanco');
     Route::get('despesas/novo', 'DespesasController@novo');

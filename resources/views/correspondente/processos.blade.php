@@ -50,37 +50,62 @@
                         </section>
 
                         <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Cliente</label><br />
                             <select name="cd_cliente" id="cd_cliente" class="select2">
-                                <option value="">Cliente</option>
+                                <option value="">Selecione</option>
                                 @foreach($clientes as $cliente)
                                     <option value="{{ $cliente->cd_conta_con }}">{{ $cliente->conta->nm_razao_social_con }}</option>
                                 @endforeach
                             </select>
                         </section> 
-                        
+                         <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Tipos de Processo</label><br />
+                            <select name="tipo" id="cd_tipo_processo_tpo" class="select2">
+                                <option value="">Selecione um Cliente</option>
+                               
+                            </select>
+                        </section> 
                         <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Tipos de Serviço</label><br />
+                            <select name="servico" id="cd_tipo_servico_tse" class="select2">
+                                <option value="">Selecione um Cliente</option>                  
+                            </select>
+                        </section> 
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Status do Acompanhamento</label><br />
                             <select name="status" id="status" class="select2">
-                                <option value="">Status do Acompanhamento</option>
+                                <option value="">Selecione</option>
                                 <option value="dentro-prazo">Dentro do Prazo</option>
                                 <option value="data-limite">Data Limite</option>
                                 <option value="atrasado">Atrasado</option>
                             </select>
                         </section> 
 
-                        <section class="col col-md-4 col-lg-3 box-select2">         
+                        <section class="col col-md-4 col-lg-3 box-select2">    
+                            <label class="label label-black">Estado</label><br />     
                             <select  id="estado" name="cd_estado_est" class="select2">
-                                <option selected value="">Estado</option>
+                                <option selected value="">Selecione</option>
                                     @foreach(App\Estado::orderBy('nm_estado_est')->get() as $estado) 
                                         <option {!! (old('cd_estado_est') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                     @endforeach
                             </select> 
                         </section>
 
-                        <section class="col col-md-4 col-lg-3 box-select2">         
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Comarca</label><br />  
                             <select  id="cidade"  name="cd_cidade_cde" class="select2" required>
-                                <option selected value="">Comarca</option>
+                                <option selected value="">Selecione</option>
                             </select> 
                         </section>  
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <label class="label label-black">Status do Processo</label><br />        
+                            <select id="cd_status_processo_stp" name="statusProcesso" class="select2">
+                                <option selected value="">Selecione</option>
+                                @foreach($status as $st)
+                                    <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
+                                @endforeach
+                            </select> 
+                        </section> 
                     </div><hr>
                     <div class="row center">
                         <button class="btn btn-primary btn-sm" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
@@ -124,6 +149,82 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        $("#cd_cliente").change(function(){
+            var cliente = $("#cd_cliente").val();
+            buscaTipoProcesso(cliente);
+            buscaTipoServico(cliente);
+        });
+
+        var buscaTipoServico = function(cliente){
+
+            if(cliente != '') {
+                $.ajax({
+                        url: 'tipo-servico-por-cliente/'+cliente,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                           $('#cd_tipo_servico_tse').empty();
+                           $('#cd_tipo_servico_tse').append('<option selected value="">Carregando...</option>');
+                            $('#cd_tipo_servico_tse').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                    
+                            $('#cd_tipo_servico_tse').empty();
+                            $('#cd_tipo_servico_tse').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){                            
+                                $('#cd_tipo_servico_tse').append('<option value="'+element.cd_tipo_servico_tse+'">'+element.nm_tipo_servico_tse+'</option>');      
+                            });       
+                            $('#cd_tipo_servico_tse').trigger('change');     
+                            $('#cd_tipo_servico_tse').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                });
+            } else {
+                $('#cd_tipo_servico_tse').empty();
+                $('#cd_tipo_servico_tse').append('<option selected value="">Selecione um Cliente</option>');      
+                $('#cd_tipo_servico_tse').trigger('change');            
+            }
+        }
+
+        var buscaTipoProcesso = function(cliente){
+
+            if(cliente != '') {
+                $.ajax({
+                        url: 'tipo-processo-por-cliente/'+cliente,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                           $('#cd_tipo_processo_tpo').empty();
+                           $('#cd_tipo_processo_tpo').append('<option selected value="">Carregando...</option>');
+                            $('#cd_tipo_processo_tpo').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                    
+                            $('#cd_tipo_processo_tpo').empty();
+                            $('#cd_tipo_processo_tpo').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){                            
+                                $('#cd_tipo_processo_tpo').append('<option value="'+element.cd_tipo_processo_tpo+'">'+element.nm_tipo_processo_tpo+'</option>');      
+                            });       
+                            $('#cd_tipo_processo_tpo').trigger('change');     
+                            $('#cd_tipo_processo_tpo').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                });
+            } else {
+                $('#cd_tipo_processo_tpo').empty();
+                $('#cd_tipo_processo_tpo').append('<option selected value="">Selecione um Cliente</option>');         
+                $('#cd_tipo_processo_tpo').trigger('change');           
+            }
+        }
 
         function formataNulo(valor){
             return valor != null ? valor : "";
@@ -228,12 +329,16 @@
             data = $("#dt_prazo_fatal_pro").val();
             comarca = $("#cidade").val();
             cliente = $("#cd_cliente").val();
+            statusProcesso = $("#cd_status_processo_stp").val();
+            tipo = $("#cd_tipo_processo_tpo").val();
+            servico = $("#cd_tipo_servico_tse").val();
+
 
             $.ajax({
                 
                 url: '../../processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": null, "tipo": null, "servico": null, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "flag": true, "cliente": cliente },
+                data: {"processo": processo, "responsavel": null, "tipo": null, "servico": null, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "flag": true, "cliente": cliente, "statusProcesso": statusProcesso, "tipo" : tipo, "servico": servico },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
