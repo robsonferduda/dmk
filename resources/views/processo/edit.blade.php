@@ -299,7 +299,7 @@
                                                         <tbody>  
                                                             <tr>  
                                                                 <td>                     
-                                                                     <input type="hidden" id="cd_tipo_servico_correspondente_tse_aux" name="cd_tipo_servico_correspondente_tse_aux" value="{{ ($processoTaxaHonorario) ?  old('cd_tipo_servico_correspondente_tse') : $processoTaxaHonorario->cd_tipo_servico_correspondente_tse }}">                  
+                                                                     <input type="hidden" id="cd_tipo_servico_correspondente_tse_aux" name="cd_tipo_servico_correspondente_tse_aux" value="{{ ($processoTaxaHonorario) ? $processoTaxaHonorario->cd_tipo_servico_correspondente_tse : old('cd_tipo_servico_correspondente_tse') }}">                  
                                                                     <select id="tipoServicoCorrespondente" name="cd_tipo_servico_correspondente_tse" class="select2" disabled>
                                                                         <option selected value="">Selecione um correspondente e cidade
                                                                         </option>                                
@@ -628,15 +628,15 @@
 
             controlaChangeTSC++;
 
-            if(controlaChangeTSC > 1){
+            if(controlaChangeTSC > 2){
                 $("#taxa-honorario-correspondente").val('');                 
             }
 
             var correspondente = $("select[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
             var tipoServico = $(this).val();
-            if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTSC > 1){
-                
+
+            if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTSC > 2){
                 $.ajax({
                         
                         url: '../../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
@@ -757,8 +757,6 @@
                $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
 
             }
-
-            $("#taxa-honorario-correspondente").val('');
 
             var correspondente = $("select[name='cd_correspondente_cor']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
