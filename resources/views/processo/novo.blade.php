@@ -145,17 +145,13 @@
                                         </section>  
                                     </div>         
                                     <div class="row">    
-                                        <input type="hidden" name="cd_correspondente_cor" value="{{ old('cd_correspondente_cor') }}"> 
+                                        <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{ old('cd_correspondente_cor') }}"> 
                                         <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
                                         <section class="col col-xs-12">
-                                            
                                             <label class="label">Correspondente <a href="#" rel="popover-hover" data-placement="top" data-original-title="O correspondente é filtrado de acordo com a cidade escolhida."><i class="fa fa-question-circle text-primary"></i></a></label>
-                                            <label class="input">
-                                                <div class="input-group col-sm-12">
-                                                    <input class="form-control" name="nm_correspondente_cor" placeholder="Digite 3 caracteres para busca" type="text" id="correspondente_auto_complete" value="{{old('nm_correspondente_cor')}}">
-                                                    <span id="limpar-correspondente" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
-                                                </div>
-                                            </label>
+                                            <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
+                                               <option selected value="">Aguardando Cidade... </option>
+                                            </select>                                                         
                                         </section>
                                     </div> 
                                     <div class="row">    
@@ -482,62 +478,6 @@
 
         });
 
-        $( "#correspondente_auto_complete" ).autocomplete({
-          source: function(request, response) {
-            $.getJSON(
-                pathCorrespondente,
-                { term:request.term, cidade: $("select[name='cd_cidade_cde']").val(), estado: $("#estado").val()  }, 
-                response
-            );
-          },
-          minLength: 3,
-          select: function(event, ui) {
-
-            $("input[name='cd_correspondente_cor']").val(ui.item.id);
-
-            if(ui.item.flag == 'N'){
-               $("input[name='fl_correspondente_escritorio_ccr']").val('N');
-               $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
-            }else{
-               $("input[name='fl_correspondente_escritorio_ccr']").val('S');
-            }
-
-            $("#correspondente_auto_complete").attr('disabled','disabled');
-
-            $("#taxa-honorario-correspondente").val('');
-
-            var correspondente = $("input[name='cd_correspondente_cor']").val();
-            var cidade = $("select[name='cd_cidade_cde']").val();
-
-            if(correspondente != '' && cidade != ''){
-                buscaTiposServicoCorrespondente(correspondente,cidade);
-            } 
-
-          },
-          search: function(event, ui){
-            $("input[name='cd_correspondente_cor']").val('');
-            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
-            $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
-          }
-        });
-
-        $( "#correspondente_auto_complete" ).focusout(function(){
-           if($("input[name='cd_correspondente_cor']").val() == ''){
-                $("#correspondente_auto_complete").val('');
-                $("input[name='fl_correspondente_escritorio_ccr']").val('N');
-                $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
-           }
-        });
-
-        $('#limpar-correspondente').click(function(){
-            $("#correspondente_auto_complete").val('');
-            $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
-            $("input[name='cd_correspondente_cor']").val('');
-            $("input[name='fl_correspondente_escritorio_ccr']").val('N');
-            $("#correspondente_auto_complete").prop('disabled',false);
-
-        });
-
         $( "#responsavel_auto_complete" ).autocomplete({
           source: pathResponsavel,
           minLength: 3,
@@ -602,8 +542,6 @@
                 $('#tipoServico').empty();
                 $('#tipoServico').append('<option selected value="">Selecione um tipo de serviço</option>');
                 $.each(response,function(index,element){
-
-                    console.log(element);
                     if($("#cd_tipo_servico_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
                         $('#tipoServico').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
                     }else{
@@ -634,8 +572,6 @@
                 $('#tipoServicoCorrespondente').empty();
                 $('#tipoServicoCorrespondente').append('<option selected value="">Selecione um tipo de serviço</option>');
                 $.each(response,function(index,element){
-
-                    console.log(element);
                     if($("#cd_tipo_servico_correspondente_tse_aux").val() != element.tipo_servico.cd_tipo_servico_tse){
                         $('#tipoServicoCorrespondente').append('<option value="'+element.tipo_servico.cd_tipo_servico_tse+'">'+element.tipo_servico.nm_tipo_servico_tse+'</option>');                            
                     }else{
@@ -656,17 +592,19 @@
         $('#cidade').change(function(){
             var cliente = $("input[name='cd_cliente_cli']").val();
             var cidade = $("select[name='cd_cidade_cde']").val();
-            var correspondente = $("input[name='cd_correspondente_cor']").val();
+            var estado = $("select[name='cd_cidade_cde']").val();
 
-            if(correspondente != '' && cidade != ''){
-                buscaTiposServicoCorrespondente(correspondente,cidade);
-            } 
-            
+            $('#tipoServicoCorrespondente').empty();
+            $('#tipoServicoCorrespondente').append('<option selected value="">Selecione um correspondente e cidade</option>');
+            $('#tipoServicoCorrespondente').trigger('change');
+                       
             if(cliente != '' && cidade != ''){
                 buscaTiposServico(cliente,cidade);
             }
-        });
+            
+            buscaCorrespondente(estado,cidade);
 
+        });
 
         $('#tipoServico').change(function(){
 
@@ -710,7 +648,7 @@
             var cidade = $("select[name='cd_cidade_cde']").val();
             var tipoServico = $(this).val();
 
-            var correspondente = $("input[name='cd_correspondente_cor']").val();
+            var correspondente = $("select[name='cd_correspondente_cor']").val();
             if(correspondente != '' && cidade != '' && tipoServico != ''){
                 
                 $.ajax({
@@ -779,6 +717,71 @@
 
         }
 
+        var buscaCorrespondente = function(cidade,estado){
+
+            if(estado != '' && cidade != ''){
+                $.ajax(
+                    {
+                        url: pathCorrespondente+'?estado='+estado+'&cidade='+cidade,
+                        type: 'GET',
+                        dataType: "JSON",
+                        beforeSend: function(){
+                            $('#correspondente_auto_complete').empty();
+                            $('#correspondente_auto_complete').append('<option selected value="">Carregando...</option>');
+                            $('#correspondente_auto_complete').prop( "disabled", true );
+
+                        },
+                        success: function(response)
+                        {                                            
+                            $('#correspondente_auto_complete').empty();
+                            $('#correspondente_auto_complete').append('<option selected value="">Selecione</option>');
+                            $.each(response,function(index,element){
+
+                                
+                                if($("#cd_correspondente_cor_aux").val() != element.id){
+                                    $('#correspondente_auto_complete').append('<option value="'+element.id+'" data-flag="'+element.flag+'">'+element.value+'</option>');         
+                                }else{
+                                    $('#correspondente_auto_complete').append('<option selected value="'+element.id+'" data-flag="'+element.flag+'" >'+element.value+'</option>');      
+                                }
+                                
+                            });       
+                            $('#correspondente_auto_complete').trigger('change');     
+                            $('#correspondente_auto_complete').prop( "disabled", false );        
+                        },
+                        error: function(response)
+                        {
+                            //console.log(response);
+                        }
+                });
+            } else {
+                $('#correspondente_auto_complete').empty();
+                $('#correspondente_auto_complete').append('<option selected value="">Aguardando Cidade...</option>');
+                 $('#correspondente_auto_complete').trigger('change');
+            }
+        }
+
+        $('#correspondente_auto_complete').change(function(){
+ 
+            if($(this).find(':selected').data('flag') == 'N'){
+               $("input[name='fl_correspondente_escritorio_ccr']").val('N');
+               $('#tipoServicoCorrespondenteLabel').text('Tipo de Serviço do Correspondente');
+               $('#tipoServicoCorrespondenteLabel').html($('#tipoServicoCorrespondenteLabel').text()+"<span class='text-danger'>*</span>");
+            }else{
+               $("input[name='fl_correspondente_escritorio_ccr']").val('S');
+               $('#tipoServicoCorrespondenteLabel').html('Tipo de Serviço do Correspondente');
+
+            }
+
+            $("#taxa-honorario-correspondente").val('');
+
+            var correspondente = $("select[name='cd_correspondente_cor']").val();
+            var cidade = $("select[name='cd_cidade_cde']").val();
+
+            if(correspondente != '' && cidade != ''){
+                buscaTiposServicoCorrespondente(correspondente,cidade);
+            }    
+        })
+
         var buscaCidade = function(){
 
             estado = $("#estado").val();
@@ -810,7 +813,7 @@
                                 
                             });       
                             $('#cidade').trigger('change');     
-                            $('#cidade').prop( "disabled", false );        
+                            $('#cidade').prop( "disabled", false );  
                         },
                         error: function(response)
                         {
@@ -843,7 +846,7 @@
                         nm_cliente_cli : {
                             required: true,
                         },
-                        nu_processo_pro : {
+                        nu_processo_pro: {
                             required: true
                         },
                         cd_tipo_processo_tpo : {
@@ -870,7 +873,7 @@
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
 
-                                if($("input[name='cd_correspondente_cor']").val() == '' || $("input[name='fl_correspondente_escritorio_ccr']").val() == 'S'){
+                                if($("select[name='cd_correspondente_cor']").val() == '' || $("input[name='fl_correspondente_escritorio_ccr']").val() == 'S'){
                                     return false;
                                 }else{
                                     return true;
@@ -919,8 +922,7 @@
                     },
 
                     errorPlacement: function (error, element) {
-                        var elem = $(element);
-                        console.log(elem);
+                        var elem = $(element);                        
                         if(element.attr("name") == "cd_cidade_cde" || element.attr("name") == "cd_tipo_servico_tse" ||  element.attr("name") == "cd_tipo_servico_correspondente_tse" ) {
                             error.appendTo( element.next("span") );
                         } else {
