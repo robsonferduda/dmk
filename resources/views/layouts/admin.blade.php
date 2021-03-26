@@ -17,6 +17,7 @@
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
         <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
+        <meta name="id_usuario" content="{{ Auth::user()->id }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
@@ -650,7 +651,11 @@
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
                 cod_conta = $('meta[name="conta"]').attr('content');
+                id_usuario = $('meta[name="id_usuario"]').attr('content');
+                canal = "user-"+cod_conta+"-"+id_usuario;
                 path = window.location.protocol + "//" + window.location.host + "/dmk/";
+
+                alert(canal);
 
                 if(message.data.canal == 'notificacao'){
 

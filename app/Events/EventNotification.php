@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Auth;
 use App\Events\Event;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -24,6 +25,6 @@ class EventNotification extends Event implements ShouldBroadcast
     
     public function broadcastOn()
     {
-        return ['notificacao'];
+        return new PrivateChannel('user-'.Auth::user()->cd_conta_con.'-'.Auth::user()->id);
     }
 }
