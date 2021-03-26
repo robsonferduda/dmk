@@ -654,9 +654,11 @@
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
-                alert(canal);
+                console.log(canal);
 
                 if(message.data.canal == canal){
+
+                    console.log(canal);
 
                    // if(message.data.conta == 999){
 
