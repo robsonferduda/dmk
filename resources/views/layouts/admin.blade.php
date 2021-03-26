@@ -655,6 +655,9 @@
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
                 if(message.data.canal == canal){
+
+                    $(".badge-count").html(message.data.total);
+
                     $(".upload-arquivo-processo").css('display','block');
                     $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                 }
