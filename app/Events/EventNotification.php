@@ -25,6 +25,6 @@ class EventNotification extends Event implements ShouldBroadcast
     
     public function broadcastOn()
     {
-        return new PrivateChannel('user-'.Auth::user()->cd_conta_con.'-'.Auth::user()->id);
+        return ['notificacao'];
     }
 }

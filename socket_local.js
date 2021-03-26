@@ -2,8 +2,9 @@ var https = require('https');
 var fs = require('fs');
 
 var options = {
-    key: fs.readFileSync('/home/easyjuris/ssl/keys/e0bd5_92b8b_80d31300b3eed904ba45537afcc8eb43.key'),
-    cert: fs.readFileSync('/home/easyjuris/ssl/certs/easyjuris_com_br_e0bd5_92b8b_1618539860_cde5b8a4797fe9afe1150d1459e76d63.crt')
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem'),
+    passphrase : "duda"
 };
 
 var a = https.createServer(options, function (req, res) {
