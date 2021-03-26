@@ -655,11 +655,11 @@
                 canal = "user-"+cod_conta+"-"+id_usuario;
                 path = window.location.protocol + "//" + window.location.host + "/dmk/";
 
-                alert(canal);
+                console.log(canal);
 
-                if(message.data.canal == 'notificacao'){
+                if(message.data.canal == canal){
 
-                    if(message.data.conta == 999){
+                   // if(message.data.conta == 999){
 
                         //Coloca teu código aqui
                         /*
@@ -705,7 +705,7 @@
 
                         // }
                         
-                    }
+                    //}
                 }
 
             });
