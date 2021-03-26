@@ -25,7 +25,7 @@ class LayoutController extends Controller
     {
         $cliente = Cliente::where('cd_conta_con', $this->conta)
                     ->where('cd_cliente_cli', $request->cliente)
-                    ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli')
+                    ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli', 'cd_entidade_ete')
                     ->first();
 
         $contato = Contato::where('cd_conta_con', $this->conta)
@@ -33,16 +33,14 @@ class LayoutController extends Controller
                     ->select('cd_contato_cot', 'nu_contato_cot', 'nm_contato_cot')
                     ->first();
 
-        $nomeCliente = $cliente->nm_razao_social_cli.' ---'.$cliente->nu_cliente_cli.'---';
-
-        $nomeContato = !empty($contato) ? $contato->nm_contato_cot.' ---'.$contato->nu_contato_cot.'---' : '';
+        //$nomeContato = !empty($contato) ? $contato->nm_contato_cot.' ---'.$contato->nu_contato_cot.'---' : '';
 
         $dados = [
-            'cliente' => $nomeCliente,
-            'contato' => $nomeContato
+            'cliente' => $cliente
         ];
 
+        $fileName = 'layout-'.$cliente->nm_razao_social_cli.'.xlsx';
 
-        return \Excel::download(new LayoutProcesso($dados), 'layout-importacao-processos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        return \Excel::download(new LayoutProcesso($dados), $fileName, \Maatwebsite\Excel\Excel::XLSX);
     }
 }

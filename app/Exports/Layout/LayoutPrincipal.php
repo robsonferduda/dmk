@@ -13,14 +13,14 @@ use App\Vara;
 
 class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidths
 {
-    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $contato)
+    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados)
     {
         $this->varas = $varas;
         $this->tiposSevico = $tiposSevico;
         $this->estados = $estados;
         $this->tiposProcesso = $tiposProcesso;
         $this->cliente = $cliente;
-        $this->contato = $contato;
+        $this->advogados = $advogados;
     }
 
     public function view(): View
@@ -64,14 +64,26 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 // Cliente
                 $drop_column = 'A';
 
+                $nomeCliente = $this->cliente->nm_razao_social_cli.' ---'.$this->cliente->nu_cliente_cli.'---';
+
                 $validation = $event->sheet->getCell("{$drop_column}2");
-                $validation->setValue($this->cliente);
+                $validation->setValue($nomeCliente);
             
                 // Advogado Solicitante
                 $drop_column = 'B';
 
-                $validation = $event->sheet->getCell("{$drop_column}2");
-                $validation->setValue($this->contato);
+                $validation = $event->sheet->getCell("{$drop_column}2")->getDataValidation();
+                $validation->setType(DataValidation::TYPE_LIST);
+                $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
+                $validation->setAllowBlank(false);
+                $validation->setShowInputMessage(true);
+                $validation->setShowErrorMessage(true);
+                $validation->setShowDropDown(true);
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Advogado Solicitante');
+                $validation->setPrompt('Selecione um valor da lista.');
+                $validation->setFormula1('Advogados!A$2:A$'.($this->advogados->count()+1));
 
 
                 // Vara

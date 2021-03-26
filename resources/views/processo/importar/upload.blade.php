@@ -70,13 +70,13 @@
                         <h4 class="modal-title" id="myModalLabel"><i class="fa fa-file-pdf-o"></i> Layoute de Importação</h4>
                      </div>
                     <div class="modal-body">
-                        <form method="POST" class="smart-form" id="frm-pauta" action="{{ url('layout/importar/processo') }}">
+                        <form method="POST" class="smart-form" id="frm-importar-processo" action="{{ url('layout/importar/processo') }}">
                         @csrf
                             <fieldset>
                                 <div class="row">
                                     <section class="col col-md-12">
                                         <div class="form-group">
-                                            <label class="label label-black" >Cliente</label>          
+                                            <label class="label label-black" >Cliente<span class="text-danger">*</span></label></label>          
                                             <select required class="select2" name="cliente" data-input="#codigo-cliente" >
                                                  <option selected value="" >Selecione um Cliente</option>
                                                 @foreach($clientes as $cliente)
@@ -85,17 +85,7 @@
                                             </select>                               
                                         </div>  
                                     </section>      
-                                </div>         
-                                <div class="row">
-                                    <section class="col col-md-12">
-                                        <div class="form-group">
-                                            <label class="label label-black" >Advogado Solicitante</label>          
-                                            <select class="select2"  id="advogado" name="advogado">
-                                                <option value="">Selecione um Advogado Solicitante</option>            
-                                            </select><i></i>                            
-                                        </div>  
-                                    </section>      
-                                </div>                                                          
+                                </div>                                          
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Gerar Layout</button>
@@ -141,6 +131,55 @@
                 });
 
             }
-        });     
+        });  
+
+        $(function() {
+                // Validation
+            var validobj = $("#frm-importar-processo").validate({
+
+                    ignore: 'input[type=hidden], .select2-input, .select2-focusser',
+                    rules : {
+                        cliente : {
+                            required: true,
+                        },                      
+                    },
+
+                    // Messages for form validation
+                    messages : {
+                        cliente : {
+                            required : 'Campo Cliente é Obrigatório'
+                        },
+                                               
+                    },
+
+                    errorPlacement: function (error, element) {
+                        var elem = $(element);
+                        console.log(elem);
+                        if(element.attr("name") == "cliente") {
+                            error.appendTo( element.next("span") );
+                        } else {
+                            error.insertAfter(element);
+                        }
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+                        } else {
+                            elem.addClass(errorClass);
+                        }
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        var elem = $(element);
+                        if (elem.hasClass("select2-offscreen")) {
+                            $("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
+                        } else {
+                            elem.removeClass(errorClass);
+                        }
+                    }    
+                });
+
+        });
+   
     </script>
 @endsection

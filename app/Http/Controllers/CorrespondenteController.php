@@ -36,6 +36,7 @@ use App\EnderecoEletronico;
 use App\ReembolsoTipoDespesa;
 use App\Identificacao;
 use App\RegistroBancario;
+use App\StatusProcesso;
 use Kodeine\Acl\Models\Eloquent\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\ConviteRequest;
@@ -142,7 +143,6 @@ class CorrespondenteController extends Controller
         }
 
         switch (Utils::get_post_action('pesquisar', 'exportar')) {
-            
             case 'pesquisar':
                 return view('correspondente/correspondentes', ['correspondentes' => $correspondentes]);
                 break;
@@ -151,7 +151,6 @@ class CorrespondenteController extends Controller
                 $dados = array('correspondentes' => $correspondentes);
                 return \Excel::download(new RelacaoCorrespondentesEscritorioExport($dados), 'correspondentes.xls', \Maatwebsite\Excel\Excel::XLSX);
                 break;
-
         }
     }
 
@@ -222,7 +221,6 @@ class CorrespondenteController extends Controller
 
                     //Se o login se originou de um convite, registra o correpondente
                     if ($flag_convite) {
-
                         //Entidade usada para criar identificador único para cada conta alterar seus dados de correspondente
                         $entidade_correspondente = new Entidade;
                         $entidade_correspondente->cd_conta_con = $conta_convite;
@@ -276,8 +274,8 @@ class CorrespondenteController extends Controller
             $disponiveis,
             $selecionadas,
             function ($obj_a, $obj_b) {
-                                      return $obj_a->cd_tipo_despesa_tds - $obj_b->cd_tipo_despesa_tds;
-                                  }
+                return $obj_a->cd_tipo_despesa_tds - $obj_b->cd_tipo_despesa_tds;
+            }
         );
 
         return view('correspondente/despesas', ['correspondente' => $correspondente, 'despesas' => $despesas, 'despesas_disponiveis' => $despesas_disponiveis ]);
@@ -295,7 +293,6 @@ class CorrespondenteController extends Controller
         }
 
         if ($removidas == null) { //Remover tudo
-
             for ($i=0; $i < count($selecionadas); $i++) {
                 $despesa = ReembolsoTipoDespesa::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $request->entidade)->where('cd_tipo_despesa_tds', $selecionadas[$i])->first();
                 $despesa->delete();
@@ -447,7 +444,6 @@ class CorrespondenteController extends Controller
                 $conta->saveOrFail();
 
                 if ($conta->cd_conta_con) {
-
                     //Entidade criado do tipo correspondente. Usada para vincular um usuário ao correspondente
                     $entidade = new Entidade;
                     $entidade->cd_conta_con = $conta->cd_conta_con;
@@ -507,12 +503,10 @@ class CorrespondenteController extends Controller
                     }
                 }
             } else {
-
                 //Verifica se o correspondente já está presente na conta, mesmo que tenha sido excluído
                 $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $unique->cd_conta_con)->withTrashed()->get();
 
                 if ($conta_correspondente->isEmpty()) {
-
                     //Se já possui cadastro, cria somente a entidade para associar os dados e insere o vínculo com a conta
                     $entidade_correspondente = new Entidade;
                     $entidade_correspondente->cd_conta_con = $this->conta;
@@ -552,7 +546,6 @@ class CorrespondenteController extends Controller
                         return false;
                     }
                 } else {
-
                     //Quando existir correspondente que foi excluído, restaura o código antigo, fazendo deleted_at = null
                     $correspondente = $conta_correspondente->get(0);
 
@@ -727,7 +720,6 @@ class CorrespondenteController extends Controller
         }
 
         if ($vinculo or $correspondente) {
-
             //Inserção de telefones
             if (!empty($request->telefones) && count(json_decode($request->telefones)) > 0) {
                 $fones = json_decode($request->telefones);
@@ -853,14 +845,6 @@ class CorrespondenteController extends Controller
 
     public function processos()
     {
-        if (!empty(\Cache::tags($this->conta, 'listaTiposProcesso')->get('tiposProcesso'))) {
-            $tiposProcesso = \Cache::tags($this->conta, 'listaTiposProcesso')->get('tiposProcesso');
-        } else {
-            $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->conta)->get();
-            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
-            \Cache::tags($this->conta, 'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
-        }
-
         $clientes = ContaCorrespondente::where('cd_correspondente_cor', $this->conta)->with('conta')->get();
 
         $processos = Processo::where('cd_correspondente_cor', $this->conta)
@@ -872,7 +856,11 @@ class CorrespondenteController extends Controller
                                   ->orderBy('dt_prazo_fatal_pro', 'asc')
                                   ->orderBy('hr_audiencia_pro')->get();
 
-        return view('correspondente/processos', ['processos' => $processos, 'tiposProcesso' => $tiposProcesso, 'clientes' => $clientes ]);
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+                  ->orderBy('nm_status_processo_conta_stp')
+                  ->get();
+
+        return view('correspondente/processos', ['processos' => $processos, 'clientes' => $clientes, 'status' => $status]);
     }
 
     public function buscarProcesso(Request $request)
@@ -938,7 +926,6 @@ class CorrespondenteController extends Controller
             $user_correspondente = User::where('email', Auth::user()->email)->where('cd_nivel_niv', Nivel::CORRESPONDENTE)->first();
 
             if ($user_correspondente) {
-
                 //Loga o usuário a atualiza as variáveis de sessão
                 Auth::login($user_correspondente);
 
@@ -1060,13 +1047,16 @@ class CorrespondenteController extends Controller
         $cidade  = $request->get('cidade');
         $estado  = $request->get('estado');
   
-        $resultados = ContaCorrespondente::where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%')
+        $resultados = ContaCorrespondente::when(!empty($search), function ($query) use ($search) {
+                                                $query->where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%');
+                                            })
                                             ->where('cd_conta_con', $this->conta)
                                             ->when(!empty($cidade) && !empty($estado), function ($query) use ($cidade) {
                                                 return $query->whereHas('cidadeAtuacao', function ($query) use ($cidade) {
                                                     $query->where('cd_cidade_cde', $cidade);
                                                 });
                                             })
+                                            ->orderBy('nm_conta_correspondente_ccr')
                                             ->get();
 
         $results = array();
@@ -1137,5 +1127,31 @@ class CorrespondenteController extends Controller
         $user->save();
 
         return redirect(route('seleciona.perfil', ['nivel_url' => $nivel_url]));
+    }
+
+    public function buscaTipoProcesso($cliente)
+    {
+        $vinculo = ContaCorrespondente::where('cd_correspondente_cor', $this->conta)
+                   ->where('cd_conta_con', $cliente)
+                   ->first();
+        if ($vinculo) {
+            $tiposProcesso = TipoProcesso::where('cd_conta_con', $cliente)->get();
+            echo json_encode($tiposProcesso);
+        } else {
+            echo json_encode([]);
+        }
+    }
+
+    public function buscaTipoServico($cliente)
+    {
+        $vinculo = ContaCorrespondente::where('cd_correspondente_cor', $this->conta)
+                   ->where('cd_conta_con', $cliente)
+                   ->first();
+        if ($vinculo) {
+            $tiposServico = TipoServico::where('cd_conta_con', $cliente)->get();
+            echo json_encode($tiposServico);
+        } else {
+            echo json_encode([]);
+        }
     }
 }

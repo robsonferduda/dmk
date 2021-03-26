@@ -10,9 +10,8 @@
         <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
-        <link rel="shortcut icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
-        
+        <link rel="icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.0/cropper.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/filepicker.css') }}">

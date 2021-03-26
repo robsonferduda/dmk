@@ -7,6 +7,7 @@ use App\TipoServico;
 use App\Cidade;
 use App\Estado;
 use App\TipoProcesso;
+use App\Contato;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -20,7 +21,7 @@ class LayoutProcesso implements WithMultipleSheets
     public function __construct($dados)
     {
         $this->cliente = $dados['cliente'];
-        $this->contato = $dados['contato'];
+        //$this->contato = $dados['contato'];
     }
 
 
@@ -52,14 +53,21 @@ class LayoutProcesso implements WithMultipleSheets
                 ->orderBy('nm_tipo_processo_tpo')
                 ->get();
 
+        $advogados = Contato::whereHas('tipoContato', function ($query) {
+            $query->where('fl_tipo_padrao_tct', 'S');
+        })->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+          ->where('cd_entidade_ete', $this->cliente->cd_entidade_ete)
+          ->select('nu_contato_cot', 'cd_contato_cot', 'nm_contato_cot')->get();
+
         $sheets = [];
 
-        $sheets[0] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $this->contato);
+        $sheets[0] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados);
         $sheets[1] = new LayoutProcessoVaras($varas);
         $sheets[2] = new LayoutTipoServico($ts);
         $sheets[3] = new LayoutCidade($estatos, $cidades);
         $sheets[4] = new LayoutEstado($estatos);
         $sheets[5] = new LayoutTipoProcesso($tp);
+        $sheets[6] = new LayoutAdvogadoSolicitante($advogados);
         
         return $sheets;
     }

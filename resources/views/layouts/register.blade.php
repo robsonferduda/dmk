@@ -29,8 +29,8 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/demo.min.css') }}">
 
 		<!-- #FAVICONS -->
-		<link rel="shortcut icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
-		<link rel="icon" href="{{ asset('img/favicon/favicon.ico') }}" type="image/x-icon">
+		<link rel="icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
 
 		<!-- #GOOGLE FONT -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
