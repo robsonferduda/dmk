@@ -654,59 +654,9 @@
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
-                console.log(canal);
-
                 if(message.data.canal == canal){
-
-                    console.log(canal);
-
-                   // if(message.data.conta == 999){
-
-                        //Coloca teu código aqui
-                        /*
-
-                        */
-
-
-                        // if(message.data.visibilidade == 1){
-
-
-                        //     $(".progresso").css('display','block');
-
-                        // }else{
-
-                        //     $(".progresso").css('display','none');
-
-                        // }
-
-                        $(".upload-arquivo-processo").css('display','block');
-                        $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
-                        
-                        
-                        // $('.badge-count').html(message.data.total);
-                        // $(".notification-body > li").remove();
-
-                        // console.log(message.data.total);
-
-                        // for (var i = 0; i < message.data.mensagens.length; i++) {
-                            
-                        //     item = '<li>'+
-                        //                             '<span class="unread">'+
-                        //                                 '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
-                        //                                     '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
-                        //                                     '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
-                        //                                     '<time>'+message.data.mensagens[i].data+'</time>'+
-                        //                                     '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
-                        //                                     '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
-                        //                                 '</a>' +
-                        //                             '</span>'+
-                        //                         '</li>';
-                                                   
-                        //     $('.notification-body').append(item);
-
-                        // }
-                        
-                    //}
+                    $(".upload-arquivo-processo").css('display','block');
+                    $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                 }
 
             });
@@ -720,7 +670,6 @@
                 'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
             }
         });
-
 
         $uploadCrop = $('#upload-demo').croppie({
             enableExif: true,
@@ -746,16 +695,11 @@
             }
             reader.readAsDataURL(this.files[0]);
         });
-
         
         $(document).ready(function() {
-            
             pageSetUp();
-
-
         })
 
         </script>
-
     </body>
 </html>
