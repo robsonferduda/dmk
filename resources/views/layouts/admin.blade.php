@@ -651,11 +651,11 @@
             path = window.location.protocol + "//" + window.location.host + "/dmk/";
             var hostname = document.location.hostname;  
             var classe_notification = canal+":App\\Events\\EventNotification";
-            
+
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on(classe_notification, function(message){
 
-                console.log(canal);
+                alert(canal);
 
                 if(message.data.canal == canal){
 
