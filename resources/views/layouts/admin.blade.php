@@ -645,15 +645,15 @@
         
         $(document).ready(function() {
         
+            cod_conta = $('meta[name="conta"]').attr('content');
+            id_usuario = $('meta[name="id_usuario"]').attr('content');
+            canal = "user-"+cod_conta+"-"+id_usuario;
+            path = window.location.protocol + "//" + window.location.host + "/dmk/";
             var hostname = document.location.hostname;  
+            var classe_notification = canal+":App\\Events\\EventNotification";
             
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
-            socket.on("notificacao:App\\Events\\EventNotification", function(message){
-
-                cod_conta = $('meta[name="conta"]').attr('content');
-                id_usuario = $('meta[name="id_usuario"]').attr('content');
-                canal = "user-"+cod_conta+"-"+id_usuario;
-                path = window.location.protocol + "//" + window.location.host + "/dmk/";
+            socket.on(classe_notification, function(message){
 
                 console.log(canal);
 
