@@ -30,10 +30,12 @@ class LayoutProcesso implements WithMultipleSheets
      */
     public function sheets(): array
     {
-        $varas = Vara::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                ->select('nu_vara_var', 'nm_vara_var')
-                ->orderBy('nm_vara_var')
-                ->get();
+        $sub = \DB::table('vara_var')->selectRaw("nu_vara_var, cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = ".\Session::get('SESSION_CD_CONTA'))->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("nu_vara_var, cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
 
         $ts = TipoServico::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
                 ->select('nu_tipo_servico_tse', 'nm_tipo_servico_tse')
