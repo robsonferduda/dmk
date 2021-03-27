@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Auth;
 use App\Processo;
 use App\Cliente;
 use App\Contato;
@@ -28,6 +29,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
     public function __construct($importador)
     {
+        $this->canal = 'user-'.Auth::user()->cd_conta_con.'-'.Auth::user()->id;
         $this->importador = $importador;
     }
 
@@ -93,7 +95,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
             $i = ($this->importador->getRowCount()*100) / count($rows)*100;
             
-            event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => $i/100, 'mensagens' => "teste")));
+            event(new EventNotification(array('canal' => $this->canal, 'total' => $i/100)));
 
             usleep(50000);
         }

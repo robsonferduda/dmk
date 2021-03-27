@@ -17,6 +17,7 @@
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
         <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
+        <meta name="id_usuario" content="{{ Auth::user()->id }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
@@ -644,63 +645,21 @@
         
         $(document).ready(function() {
         
+            cod_conta = $('meta[name="conta"]').attr('content');
+            id_usuario = $('meta[name="id_usuario"]').attr('content');
+            canal = "user-"+cod_conta+"-"+id_usuario;
+            path = window.location.protocol + "//" + window.location.host + "/dmk/";
             var hostname = document.location.hostname;  
-            
+
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
-                cod_conta = $('meta[name="conta"]').attr('content');
-                path = window.location.protocol + "//" + window.location.host + "/dmk/";
+                if(message.data.canal == canal){
 
-                if(message.data.canal == 'notificacao'){
+                    $(".badge-count").html(message.data.total);
 
-                    if(message.data.conta == 999){
-
-                        //Coloca teu código aqui
-                        /*
-
-                        */
-
-
-                        // if(message.data.visibilidade == 1){
-
-
-                        //     $(".progresso").css('display','block');
-
-                        // }else{
-
-                        //     $(".progresso").css('display','none');
-
-                        // }
-
-                        $(".upload-arquivo-processo").css('display','block');
-                        $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
-                        
-                        
-                        // $('.badge-count').html(message.data.total);
-                        // $(".notification-body > li").remove();
-
-                        // console.log(message.data.total);
-
-                        // for (var i = 0; i < message.data.mensagens.length; i++) {
-                            
-                        //     item = '<li>'+
-                        //                             '<span class="unread">'+
-                        //                                 '<a href="'+message.data.mensagens[i].url+'" class="msg">'+
-                        //                                     '<img src="'+path+'public/img/users/'+message.data.mensagens[i].img+'" alt="" class="air air-top-left margin-top-5" width="40" height="40" />' +
-                        //                                     '<span class="from">'+message.data.mensagens[i].remetente+'<i class="icon-paperclip"></i></span>'+
-                        //                                     '<time>'+message.data.mensagens[i].data+'</time>'+
-                        //                                     '<span class="subject">Processo '+message.data.mensagens[i].processo+' </span>'+
-                        //                                     '<span class="msg-body">'+message.data.mensagens[i].mensagem+'</span>' +
-                        //                                 '</a>' +
-                        //                             '</span>'+
-                        //                         '</li>';
-                                                   
-                        //     $('.notification-body').append(item);
-
-                        // }
-                        
-                    }
+                    $(".upload-arquivo-processo").css('display','block');
+                    $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                 }
 
             });
@@ -714,7 +673,6 @@
                 'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
             }
         });
-
 
         $uploadCrop = $('#upload-demo').croppie({
             enableExif: true,
@@ -740,16 +698,11 @@
             }
             reader.readAsDataURL(this.files[0]);
         });
-
         
         $(document).ready(function() {
-            
             pageSetUp();
-
-
         })
 
         </script>
-
     </body>
 </html>

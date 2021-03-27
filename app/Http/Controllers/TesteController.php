@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\RegistroBancario;
+use App\Events\EventNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
@@ -20,13 +21,7 @@ class TesteController extends Controller
 
     public function index()
     {
-        $redis = Redis::connection();
-
-        $redis->set('user_details', json_encode([
-                        'first_name' => 'Alex', 
-                        'last_name' => 'Richards'
-                    ])
-                );
+        event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 0, 'mensagens' => "")));
     }
 
 }

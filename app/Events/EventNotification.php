@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Auth;
 use App\Events\Event;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
