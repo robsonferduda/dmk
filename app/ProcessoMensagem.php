@@ -54,7 +54,9 @@ class ProcessoMensagem extends Model
     public function getMensagensPendentes($conta)
     {
         $dados = array();
-        $mensagens = $this->with('processo')->where('destinatario_prm',$conta)
+        $mensagens = $this->with('processo')
+                    ->where('destinatario_prm',$conta)
+                    ->where('remetente_prm','<>',$conta)
                     ->whereNull('fl_leitura_prm')
                     ->withTrashed()
                     ->orderBy('created_at', 'DESC')->get();
