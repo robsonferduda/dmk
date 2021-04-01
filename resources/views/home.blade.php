@@ -41,6 +41,8 @@
         </div>
         -->
 
+        <div id="test-render"></div>
+
         <div class="col-sm-12 col-md-6 col-lg-4">                
             <div class="well text-center connect box-home" style="min-height: 110px;">
                 <div class="col-sm-12 col-md-6 col-lg-3">

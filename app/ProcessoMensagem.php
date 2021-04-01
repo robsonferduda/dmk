@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use URL;
 use App\Enums\TipoMensagem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,6 +51,43 @@ class ProcessoMensagem extends Model
         return $this->hasOne('App\Conta','cd_conta_con', 'destinatario_prm');
     }
 
+    public function getMensagensPendentes($conta)
+    {
+        $dados = array();
+        $mensagens = $this->with('processo')->where('destinatario_prm',$conta)
+                    ->whereNull('fl_leitura_prm')
+                    ->withTrashed()
+                    ->orderBy('created_at', 'DESC')->get();
+
+        foreach($mensagens as $msg){
+
+            if($msg->cd_tipo_mensagem_tim == \App\Enums\TipoMensagem::EXTERNA){
+                $remetente = $msg->entidadeRemetente->nm_razao_social_con;
+                if(file_exists(public_path().'/img/users/ent'.$msg->entidadeRemetente->entidade->cd_entidade_ete.'.png')){
+                    $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeRemetente->entidade->cd_entidade_ete.'.png';
+                }else{
+                    $avatar = URL::to('/').'/img/users/user.png';
+                }
+            }else{
+                $remetente = $msg->entidadeInterna->usuario->name;
+                if(file_exists(public_path().'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png')){
+                    $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png';
+                }else{
+                    $avatar = URL::to('/').'/img/users/user.png';
+                }
+            }
+
+            $dados[] = array('nu_processo' => $msg->processo->nu_processo_pro,
+                             'token' => \Crypt::encrypt($msg->cd_processo_pro),
+                             'remetente' => $remetente,
+                             'avatar' => $avatar,
+                             'url' => URL::to('/').'/processos/acompanhamento/'.\Crypt::encrypt($msg->cd_processo_pro),
+                             'data' => date('d/m/Y H:i:s', strtotime($msg->created_at)));
+        }
+
+        return $dados;
+    }
+
     public function getMensagensPendentesRemetente($conta)
     {
         return $this->where('destinatario_prm',$conta)
@@ -62,7 +100,7 @@ class ProcessoMensagem extends Model
     {
         return $this->where('destinatario_prm',$destinatario)
                     ->where('fl_leitura_prm','<>','S')
-                    ->where('remetente_prm','<>',$destinatario)
+                    ->where('destinatario_prm','<>',$destinatario)
                     ->orderBy('created_at', 'DESC')->get();
     }
 
