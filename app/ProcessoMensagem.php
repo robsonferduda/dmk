@@ -71,8 +71,8 @@ class ProcessoMensagem extends Model
             }else{
                 if($msg->entidadeInterna and $msg->entidadeInterna->usuario){
                     $remetente = $msg->entidadeInterna->usuario;
-                    if(file_exists(public_path().'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png')){
-                        $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png';
+                    if(file_exists(public_path().'/img/users/ent'.$msg->entidadeInterna->cd_entidade_ete.'.png')){
+                        $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeInterna->cd_entidade_ete.'.png';
                     }else{
                         $avatar = URL::to('/').'/img/users/user.png';
                     }
