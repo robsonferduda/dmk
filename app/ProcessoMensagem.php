@@ -82,7 +82,7 @@ class ProcessoMensagem extends Model
                 }
             }
 
-            $dados[] = array('nu_processo' => $msg->processo->nu_processo_pro,
+            $dados[] = array('nu_processo' => ($msg->processo) ? $msg->processo->nu_processo_pro : 'Processo Excluído',
                              'token' => \Crypt::encrypt($msg->cd_processo_pro),
                              'remetente' => $remetente,
                              'avatar' => $avatar,
