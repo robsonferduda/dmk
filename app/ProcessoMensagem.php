@@ -33,7 +33,7 @@ class ProcessoMensagem extends Model
 
     public function entidadeInterna()
     {
-        return $this->hasOne('App\Entidade','cd_entidade_ete', 'remetente_prm');
+        return $this->hasOne('App\Entidade','cd_entidade_ete', 'remetente_prm')->withTrashed();
     }
 
     public function entidadeRemetenteColaborador()
@@ -43,12 +43,12 @@ class ProcessoMensagem extends Model
 
     public function entidadeRemetente()
     {
-        return $this->hasOne('App\Conta','cd_conta_con', 'remetente_prm');
+        return $this->hasOne('App\Conta','cd_conta_con', 'remetente_prm')->withTrashed();
     }
 
     public function entidadeDestinatario()
     {
-        return $this->hasOne('App\Conta','cd_conta_con', 'destinatario_prm');
+        return $this->hasOne('App\Conta','cd_conta_con', 'destinatario_prm')->withTrashed();
     }
 
     public function getMensagensPendentes($conta)
@@ -69,7 +69,7 @@ class ProcessoMensagem extends Model
                     $avatar = URL::to('/').'/img/users/user.png';
                 }
             }else{
-                $remetente = $msg->entidadeInterna->usuario->name;
+                $remetente = $msg->entidadeInterna->usuario;
                 if(file_exists(public_path().'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png')){
                     $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeInterna->entidade->cd_entidade_ete.'.png';
                 }else{
