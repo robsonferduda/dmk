@@ -276,7 +276,7 @@
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
-                            @can('processo.relatorios')
+                            @can('processo.importar')
                             <li>
                                 <li>
                                     <a href="{{ url('processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
