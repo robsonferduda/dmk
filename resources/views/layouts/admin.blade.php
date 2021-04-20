@@ -192,7 +192,7 @@
                                     <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                                 </li>
                             @endcan
-                            @can('cliente.listar')
+                            @can('cliente.relatorios')
                                 <li>
                                     <a href="{{ url('cliente/relatorios') }}" title="Dashboard"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
