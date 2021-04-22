@@ -128,6 +128,12 @@
                 </div>
             </div>
 
+            <div id="box-error" class="col col-12 none">
+                <div class="alert alert-danger fade in">
+                    <i class="fa fa-times"></i> <span></span>
+                </div>
+            </div>
+
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
                     <span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
@@ -187,6 +193,7 @@
             var estado = $("#pai_cidade_atuacao").val();
             var cidade = $("#cidade_atuacao").val();
             var atuacao = $(this).data("atuacao");
+            $("#box-error").css("display","none");
 
             $.ajax(
             {
@@ -209,16 +216,14 @@
                     $(".box_btn_atuacao button").remove();
                     $(".erro-atuacao-vazia").remove();
                     loadAtuacao(entidade);
-                    loadOrigem(entidade);
-                    $("#processamento").modal('hide');
-                    
+                    loadOrigem(entidade);    
+                    $("#processamento").modal('hide');                
                 },
                 error: function(response)
                 {
-                    console.log(response.responseJSON.msg);
+                    $("#box-error").css("display","block");
+                    $("#box-error span").html(response.responseJSON.msg);
                     $("#processamento").modal('hide');
-                    $(".msg_erro_adicao").html(response.responseJSON.msg);
-                    $("#modal_erro_atuacao").modal('show');
                 }
             });
 
@@ -230,6 +235,7 @@
             var entidade = $("#entidade").val();
             var cidade = $("#cidade_origem").val();
             var atuacao = $(this).data("atuacao");
+            $("#box-error").css("display","none");
 
             $.ajax(
             {
@@ -258,8 +264,8 @@
                 {
                     console.log(response.responseJSON.msg);
                     $("#processamento").modal('hide');
-                    $(".msg_erro_adicao").html(response.responseJSON.msg);
-                    $("#modal_erro_atuacao").modal('show');
+                    $("#box-error").css("display","block");
+                    $("#box-error span").html(response.responseJSON.msg);
                 }
             });
 
@@ -295,6 +301,7 @@
 
                         atuacao = $(this).data("id");
                         entidade = $("#entidade").val();
+                        $("#box-error").css("display","none");
 
                         $.ajax({
                                 url: '../../correspondente/atuacao/excluir/'+atuacao,
@@ -308,7 +315,8 @@
                             },
                             error: function(response)
                             {
-
+                                $("#box-error").css("display","block");
+                                $("#box-error span").html(response.responseJSON.message);
                             }
                         });
 
@@ -387,7 +395,8 @@
                             },
                             error: function(response)
                             {
-
+                                $("#box-error").css("display","block");
+                                $("#box-error span").html(response.responseJSON.message);
                             }
                         });
 
@@ -399,30 +408,6 @@
                 }
             });
         }
-
-        $(".btn-atuacao").click(function(){
-
-            atuacao = $(this).data("id");
-            entidade = $("#entidade").val();
-
-            $.ajax({
-                    url: '../../correspondente/atuacao/excluir/'+atuacao,
-                    type: 'GET',
-                    dataType: "JSON",
-                success: function(response)
-                {                
-                    $(".box_btn_atuacao button").remove();       
-                    $(".box_btn_origem button").remove(); 
-                    loadAtuacao(entidade);
-                    loadOrigem(entidade);
-                },
-                error: function(response)
-                {
-
-                }
-            });
-
-        });
 
         var buscaCidade = function(estado,target){
 

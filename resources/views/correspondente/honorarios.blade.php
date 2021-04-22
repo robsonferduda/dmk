@@ -57,7 +57,7 @@
                                                                 </a>
                                                                 Comarca de Atuação
                                                            </label>  
-                                                            <a href="{{ url('correspondente/ficha/'.\Crypt::encrypt($cliente->cd_correspondente_cor)) }}" target="_blank" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Cadastrar Comarca de Atuação </a>        
+                                                            <a href="{{ url('correspondente/comarcas/'.\Crypt::encrypt($cliente->cd_correspondente_cor)) }}" target="_blank" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Cadastrar Comarca de Atuação </a>        
                                                             <select id="cidade" name="cd_cidade_cde" class="select2">
                                                                <option selected value="">Selecione uma comarca</option>
                                                             </select> 

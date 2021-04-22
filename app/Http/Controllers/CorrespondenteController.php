@@ -679,10 +679,22 @@ class CorrespondenteController extends Controller
     {
         $atuacao = CidadeAtuacao::where('cd_cidade_atuacao_cat', $id)->first();
 
-        if ($atuacao->delete()) {
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        } else {
-            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        $honorarios = TaxaHonorario::where('cd_entidade_ete',$atuacao->cd_entidade_ete)
+                                    ->where('cd_cidade_cde',$atuacao->cd_cidade_cde)
+                                    ->get(); 
+
+        if(count($honorarios)){
+
+            return Response::json(array('message' => 'Existem valores de honorários cadastrados para a comarca selecionada. O registro não pode ser excluído'), 500);
+
+        }else{
+
+            if ($atuacao->delete()) {
+                return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+            } else {
+                return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+            }
+
         }
     }
 
