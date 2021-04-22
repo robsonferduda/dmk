@@ -121,10 +121,17 @@
                     </div>
                 </div>                
             </div>
+
+            <div id="box-msg" class="col col-12 none">
+                <div class="alert alert-info fade in">
+                    <i class="fa fa-gear fa-spin"></i> <span>Aguarde, buscando comarcas de atuação</span>
+                </div>
+            </div>
+
             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                    <h2>Usuários</h2>
+                    <span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
+                    <h2>Comarcas de Atuação</h2>
                 </header>
                 <div class="row">
                     <div>
@@ -132,7 +139,7 @@
                             <table id="" class="table table-striped table-bordered table-hover table-comarcas" width="100%">
                                 <thead>                         
                                     <tr>   
-                                        <th style="">Categoria</th>                                  
+                                        <th style="">Comarca</th>                                  
                                         <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                     </tr>
                                 </thead>
@@ -266,14 +273,27 @@
                 url: "../../correspondente/atuacao/"+entidade,
                 type: 'GET',
                 dataType: "JSON",
-
+                beforeSend: function(){
+                    $("#box-msg").css("display","block");
+                },
                 success: function(response)
                 {             
+                    
+
                     $('.table-comarcas').dataTable().fnDestroy();
-                    $('.table-comarcas > tbody > tr').remove();          
-                    $.each(response, function(index, value){
-                        $('.table-comarcas > tbody').append('<tr><td>'+value.cidade.nm_cidade_cde+'</td><td class="center"><button type="button" class="btn btn-danger btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"><i class="fa fa-times"></i> Excluir</button></td></tr>');
-                    });
+                    $('.table-comarcas > tbody > tr').remove(); 
+                    
+                    if(response.length){
+
+                        $("#box-msg span").html("Foram encontradas "+response.length+" comarcas. Aguarde o carregamento dos dados na tabela");
+
+                        $.each(response, function(index, value){
+                            $('.table-comarcas > tbody').append('<tr><td>'+value.cidade.nm_cidade_cde+'</td><td class="center"><button type="button" class="btn btn-danger btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"><i class="fa fa-times"></i> Excluir</button></td></tr>');
+                        });
+
+                    }
+
+                    $("#box-msg").css("display","none");
                     
                     $('.btn-atuacao').on('click', function(){
 
