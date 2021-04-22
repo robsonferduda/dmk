@@ -124,7 +124,7 @@
 
             <div id="box-msg" class="col col-12 none">
                 <div class="alert alert-info fade in">
-                    <i class="fa fa-gear fa-spin"></i> <span>Aguarde, buscando comarcas de atuação</span>
+                    <i class="fa fa-gear fa-spin"></i> <span>Aguarde, buscando comarcas de atuação...</span>
                 </div>
             </div>
 
@@ -278,8 +278,6 @@
                 },
                 success: function(response)
                 {             
-                    
-
                     $('.table-comarcas').dataTable().fnDestroy();
                     $('.table-comarcas > tbody > tr').remove(); 
                     
@@ -292,8 +290,6 @@
                         });
 
                     }
-
-                    $("#box-msg").css("display","none");
                     
                     $('.btn-atuacao').on('click', function(){
 
@@ -347,6 +343,8 @@
                             "sSortDescending": ": Ordenar colunas de forma descendente"
                         },
                     }});
+
+                    $("#box-msg").css("display","none");
                 },
                 error: function(response)
                 {
