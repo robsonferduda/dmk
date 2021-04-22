@@ -108,98 +108,12 @@
                                             <section class="col col-2">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
-                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : ''}}">
+                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab ? $correspondente->entidade->oab->nu_identificacao_ide : '') }}">
                                                 </label>
                                             </section>    
                                         </div>       
                                     </fieldset>
                             <hr/>
-
-                            <header>
-                                <i class="fa fa-map-marker"></i> Comarca de Origem
-                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarca de Origem" data-content="Informe a comarca de origem do correspondente. Caso deseje alterar o valor informado, clique sobre ela para excluir e adicione novamente.">
-                                <i class="fa fa-question-circle text-primary"></i>
-                                </a> 
-                            </header>
-                            <fieldset>
-                                <div class="row">                     
-                                    <section class="col col-4">
-                                        <label class="label" >Estado</label>          
-                                        <select  id="pai_cidade_origem" name="cd_estado_est" class="select2 estado">
-                                            <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
-                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                                @endforeach
-                                        </select> 
-                                    </section>
-                                    <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label label-pai_cidade_origem">Cidade</label>          
-                                        <select id="cidade_origem" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
-                                            <option selected value="">Selecione a cidade</option>
-                                        </select> 
-                                    </section> 
-                                    <section class="col col-2">
-                                        <label class="label" style="color: white;">Adicionar</label>
-                                        <button data-atuacao="S" type="button" class="btn btn-success adicionar-origem" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
-                                    </section>
-                                </div> 
-                            </fieldset>
-                            <div class="row"> 
-                                <div class="box_btn_origem" style="margin: 5px 30px;">
-                                    @if(count($correspondente->entidade->origem()->get()) > 0)
-                                        @foreach($correspondente->entidade->origem()->get() as $atuacao) 
-                                            <button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
-                                        @endforeach
-                                    @else
-                                        <span class="text-warning erro-origem-vazia"><i class="fa fa-warning"></i> Comarca de origem não informada</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <hr/>
-
-                            <header>
-                                <i class="fa fa-check"></i> Comarcas de Atuação 
-                                <a href="#" rel="popover-hover" data-placement="top" data-original-title="Comarcas de Atuação" data-html="true" data-content="Para informar somente uma cidade, selecione o estado e em seguida a cidade desejada. Para inserir todas as cidades de um estado, selecione o estado e na opção Cidade selecione a opção: <strong>Todas as cidades <strong>">
-                                <i class="fa fa-question-circle text-primary"></i>
-                                </a> 
-                            </header>
-                            <fieldset>
-                                <div class="row">                     
-                                    <section class="col col-4">
-                                        <label class="label" >Estado</label>          
-                                        <select id="pai_cidade_atuacao" name="cd_estado_est" class="select2 estado">
-                                            <option selected value="">Selecione</option>
-                                                @foreach(\App\Estado::orderBy('nm_estado_est')->get() as $estado) 
-                                                    <option value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
-                                                @endforeach
-                                        </select> 
-                                    </section>
-                                    <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
-                                        <label class="label label-pai_cidade_atuacao">Cidade</label>          
-                                        <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
-                                            <option selected value="">Selecione a cidade</option>
-                                        </select> 
-                                    </section> 
-                                    <section class="col col-2">
-                                        <label class="label" style="color: white;">Adicionar</label>
-                                        <button data-atuacao="N" type="button" class="btn btn-success adicionar-atuacao" style="padding: 6px 15px;"><i class="fa fa-plus"></i> Adicionar</a>
-                                    </section>
-                                </div> 
-                            </fieldset>
-                            <div class="row">
-                                <div class="box_btn_atuacao" style="margin: 5px 30px;">
-                                    @if(count($correspondente->entidade->atuacao()->get()) > 0)
-                                    <p class="text-primary" style="margin-bottom: 5px;"><i class="fa fa-info-circle"></i> Clique sobre a cidade para excluir</p>
-                                        @foreach($correspondente->entidade->atuacao()->get() as $atuacao) 
-                                            <button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }} <i class="fa fa-times"></i></button>
-                                        @endforeach
-                                    @else
-                                        <span class="text-warning erro-atuacao-vazia"><i class="fa fa-warning"></i> Nenhuma cidade de atuação informada</span>
-                                    @endif
-                                </div>
-                            </div>
                             <div class="row" style="padding: 5px 20px;">
                                 <header>
                                     <i class="fa fa-building"></i> Endereço 
@@ -212,32 +126,32 @@
                                             <section class="col col-3">
                                                 <label class="label">CEP</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
+                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{ (old('nu_cep_ede') ? old('nu_cep_ede') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
                                                 </label>
                                             </section>     
 
                                             <section class="col col-9">
                                                 <label class="label">Logradouro</label>
                                                 <label class="input">
-                                                    <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_logradouro_ede : '' }}">
+                                                    <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{ (old('dc_logradouro_ede') ? old('dc_logradouro_ede') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_logradouro_ede : '' }}">
                                                 </label>
                                             </section>
                                             <section class="col col-2">
                                                 <label class="label">Nº</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_numero_ede : '' }}">
+                                                    <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{ (old('nu_numero_ede') ? old('nu_numero_ede') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_numero_ede : '' }}">
                                                 </label>
                                             </section>
                                             <section class="col col-6">
                                                 <label class="label">Bairro</label>
                                                 <label class="input">
-                                                    <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nm_bairro_ede : '' }}">
+                                                    <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{ (old('nm_bairro_ede') ? old('nm_bairro_ede') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nm_bairro_ede : '' }}">
                                                 </label>
                                             </section> 
                                             <section class="col col-4">
                                                 <label class="label">Complemento</label>
                                                 <label class="input">
-                                                    <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_complemento_ede : '' }}">
+                                                    <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{ (old('dc_complemento_ede') ? old('dc_complemento_ede') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_complemento_ede : '' }}">
                                                 </label>
                                             </section>
                                         </div>
@@ -255,7 +169,7 @@
                                             </section>
 
                                             <section class="col col-8">
-                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ (old('cd_cidade_cde') ? old('cd_cidade_cde') : $correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
                                                 <label class="label label-pai_cidade_endereco" >Cidade</label>          
                                                 <select  id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_endereco">
                                                     <option value="">Selecione uma cidade</option>
@@ -489,7 +403,7 @@
                                         <div class="row"> 
                                             <section class="col col-sm-12">
                                             <label class="input">
-                                                <textarea class="form-control" rows="4" name="obs_ccr" id="observacao" value="{{old('obs_ccr')}}" >{{old('obs_ccr') ? old('obs_ccr') : ($correspondente->obs_ccr) ? $correspondente->obs_ccr : '' }}</textarea>
+                                                <textarea class="form-control" rows="4" name="obs_ccr" id="observacao" value="{{old('obs_ccr')}}" >{{ (old('obs_ccr') ? old('obs_ccr') : $correspondente->obs_ccr) ? $correspondente->obs_ccr : '' }}</textarea>
                                             </label>
                                             </section> 
                                         </div>
@@ -530,206 +444,6 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-
-        $('.adicionar-atuacao').click(function(){
-
-            var entidade = $("#entidade").val();
-            var estado = $("#pai_cidade_atuacao").val();
-            var cidade = $("#cidade_atuacao").val();
-            var atuacao = $(this).data("atuacao");
-
-            $.ajax(
-            {
-                type: "POST",
-                url: "../../correspondente/atuacao/adicionar",
-                dataType: "json",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "entidade": entidade,
-                    "cidade": cidade,
-                    "estado": estado,
-                    "atuacao": atuacao
-                },
-                beforeSend: function()
-                {
-                    $("#processamento").modal('show');
-                },
-                success: function(response)
-                {
-                    $(".box_btn_atuacao button").remove();
-                    $(".erro-atuacao-vazia").remove();
-                    loadAtuacao(entidade);
-                    loadOrigem(entidade);
-                    $("#processamento").modal('hide');
-                    
-                },
-                error: function(response)
-                {
-                    console.log(response.responseJSON.msg);
-                    $("#processamento").modal('hide');
-                    $(".msg_erro_adicao").html(response.responseJSON.msg);
-                    $("#modal_erro_atuacao").modal('show');
-                }
-            });
-
-
-        });
-
-        $('.adicionar-origem').click(function(){
-
-            var entidade = $("#entidade").val();
-            var cidade = $("#cidade_origem").val();
-            var atuacao = $(this).data("atuacao");
-
-            $.ajax(
-            {
-                type: "POST",
-                url: "../../correspondente/atuacao/adicionar",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "entidade": entidade,
-                    "cidade": cidade,
-                    "atuacao": atuacao
-                },
-                beforeSend: function()
-                {
-                    $("#processamento").modal('show');
-                },
-                success: function(response)
-                {
-                    $(".box_btn_atuacao button").remove();
-                    $(".erro-atuacao-vazia").remove();
-                    loadOrigem(entidade);
-                    loadAtuacao(entidade);
-                    $("#processamento").modal('hide');
-                    
-                },
-                error: function(response)
-                {
-                    console.log(response.responseJSON.msg);
-                    $("#processamento").modal('hide');
-                    $(".msg_erro_adicao").html(response.responseJSON.msg);
-                    $("#modal_erro_atuacao").modal('show');
-                }
-            });
-
-
-        });
-
-        function loadAtuacao(entidade){
-
-            $.ajax({
-
-                url: "../../correspondente/atuacao/"+entidade,
-                type: 'GET',
-                dataType: "JSON",
-
-                success: function(response)
-                {                       
-                    $.each(response, function(index, value){
-                        $('.box_btn_atuacao').append('<button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'"> '+value.cidade.nm_cidade_cde+' <i class="fa fa-times"></i> </button>');
-                    });
-
-                    $('.btn-atuacao').on('click', function(){
-
-                        atuacao = $(this).data("id");
-                        entidade = $("#entidade").val();
-
-                        $.ajax({
-                                url: '../../correspondente/atuacao/excluir/'+atuacao,
-                                type: 'GET',
-                                dataType: "JSON",
-                            success: function(response)
-                            {                
-                                $(".box_btn_atuacao button").remove();       
-                                loadAtuacao(entidade);
-                                loadOrigem(entidade);
-                            },
-                            error: function(response)
-                            {
-
-                            }
-                        });
-
-                    });   
-                },
-                error: function(response)
-                {
-
-                }
-            });
-        }
-
-        function loadOrigem(entidade){
-
-            $.ajax({
-
-                url: "../../correspondente/origem/"+entidade,
-                type: 'GET',
-                dataType: "JSON",
-
-                success: function(response)
-                {                   
-                    $(".box_btn_origem button").remove();
-                    $('.erro-origem-vazia').html("");
-
-                    $.each(response, function(index, value){
-                        $('.box_btn_origem').append('<button type="button" class="btn btn-warning btn-atuacao" style="padding: 3px 8px;" data-id="'+value.cd_cidade_atuacao_cat+'">'+value.cidade.nm_cidade_cde+' <i class="fa fa-times"></i> </button>');
-                    });
-
-                    $('.btn-atuacao').on('click', function(){
-
-                        atuacao = $(this).data("id");
-                        entidade = $("#entidade").val();
-
-                        $.ajax({
-                                url: '../../correspondente/atuacao/excluir/'+atuacao,
-                                type: 'GET',
-                                dataType: "JSON",
-                            success: function(response)
-                            {                
-                                $(".box_btn_atuacao button").remove();       
-                                loadAtuacao(entidade);
-                                loadOrigem(entidade);
-                            },
-                            error: function(response)
-                            {
-
-                            }
-                        });
-
-                    });   
-                },
-                error: function(response)
-                {
-
-                }
-            });
-        }
-
-        $(".btn-atuacao").click(function(){
-
-            atuacao = $(this).data("id");
-            entidade = $("#entidade").val();
-
-            $.ajax({
-                    url: '../../correspondente/atuacao/excluir/'+atuacao,
-                    type: 'GET',
-                    dataType: "JSON",
-                success: function(response)
-                {                
-                    $(".box_btn_atuacao button").remove();       
-                    $(".box_btn_origem button").remove(); 
-                    loadAtuacao(entidade);
-                    loadOrigem(entidade);
-                },
-                error: function(response)
-                {
-
-                }
-            });
-
-        });
 
         var buscaCidade = function(estado,target){
 

@@ -218,22 +218,6 @@
                             </div>
                         </div>
                     
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-map-marker"></i> <strong>Cidades de Atuação</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        @if(count($correspondente->entidade->atuacao()->get()) > 0)
-                                            @foreach($correspondente->entidade->atuacao()->get() as $atuacao) 
-                                                <button type="button" class="btn btn-default btn-atuacao" style="padding: 3px 8px;" data-id="{{ $atuacao->cd_cidade_atuacao_cat }}">{{ $atuacao->cidade()->first()->nm_cidade_cde }}</button>
-                                            @endforeach
-                                        @else
-                                            <span class="text-warning erro-atuacao-vazia"><i class="fa fa-warning"></i> Nenhuma cidade de atuação informada</span>
-                                        @endif
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </article>

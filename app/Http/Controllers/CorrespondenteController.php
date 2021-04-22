@@ -830,6 +830,19 @@ class CorrespondenteController extends Controller
         return view('correspondente/clientes', ['clientes' => $clientes]);
     }
 
+    public function comarcas($id)
+    {
+        $id = \Crypt::decrypt($id);
+
+        if (Auth::user()->cd_nivel_niv == 3) {
+            $correspondente = Conta::with('entidade')->where('cd_conta_con', $id)->first();
+            return view('correspondente/ficha-correspondente', ['correspondente' => $correspondente]);
+        } else {
+            $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->first();
+            return view('correspondente/comarcas', ['correspondente' => $correspondente]);
+        }
+    }
+
     public function ficha($id)
     {
         $id = \Crypt::decrypt($id);
