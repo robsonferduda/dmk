@@ -20,41 +20,23 @@ use Illuminate\Support\Facades\Redis;
 
 class MensagemController extends Controller
 {
-    
     public function __construct()
     {
         $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
         $this->entidade = \Session::get('SESSION_CD_ENTIDADE');
         $this->nivel = \Session::get('SESSION_NIVEL');
-
     }
 
     public function index()
     {
        
-        try {
-            // Call Laravel Cache facade when Redis connection is failing
-            // This will throw exception
-            Redis::connect('127.0.0.1',6379);
-            Redis::set('name', 'Taylor');
-            event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
-            $visits = Redis::incr('visits');
+    }
 
-        } catch (RedisException $exception) {
-            // In case Redis error - do custom response
-            Log::error('Redis error', [
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTrace()
-            ]);
-        
-            return response()->json([
-                'error' => 'your error message to client'
-            ]);
-        }
-
-        event(new EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));
-        dd("Teste");
+    public function getMensagensByDestinatario($id)
+    {
+        $mensagens = (new \App\ProcessoMensagem)->getMensagensPendentes($this->conta);
+        return Response::json($mensagens);
     }
 
     public function enviar(Request $request)

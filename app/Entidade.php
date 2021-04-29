@@ -72,7 +72,7 @@ class Entidade extends Model
 
     public function usuario()
     {
-        return $this->hasOne('App\User','cd_entidade_ete', 'cd_entidade_ete');
+        return $this->hasOne('App\User','cd_entidade_ete', 'cd_entidade_ete')->withTrashed();
     }
 
     public function cliente()

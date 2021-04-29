@@ -192,7 +192,7 @@
                                     <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                                 </li>
                             @endcan
-                            @can('cliente.listar')
+                            @can('cliente.relatorios')
                                 <li>
                                     <a href="{{ url('cliente/relatorios') }}" title="Dashboard"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
@@ -276,7 +276,7 @@
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
-                            @can('processo.relatorios')
+                            @can('processo.importar')
                             <li>
                                 <li>
                                     <a href="{{ url('processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
@@ -639,6 +639,8 @@
         
         <script src="{{ asset('js/plugin/morris/raphael.min.js') }}"></script>
         <script src="{{ asset('js/plugin/morris/morris.min.js') }}"></script>
+
+        <script src="{{ asset('js/jquery.tmpl.min.js') }}"></script>
         
         @yield('script')
         <script type="text/javascript">
@@ -650,18 +652,39 @@
             canal = "user-"+cod_conta+"-"+id_usuario;
             path = window.location.protocol + "//" + window.location.host + "/dmk/";
             var hostname = document.location.hostname;  
+            var host = document.location.origin;
 
             var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
                 if(message.data.canal == canal){
 
-                    $(".badge-count").html(message.data.total);
-
                     $(".upload-arquivo-processo").css('display','block');
                     $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                 }
 
+            });
+
+            $.ajax({
+                url: host+"/api/mensagem/destinatario/nao-lidas/"+cod_conta,
+                type: 'GET',
+                dataType: "JSON",
+                success: function(response)
+                {           
+                    $(".badge-count").html(Object.keys(response).length);
+                    if(Object.keys(response).length)
+                        $(".badge-count").css('background','#c50e00');
+
+                    $.each(response, function(i, data) {
+                        console.log(data);                       
+                        $("#msg-template").tmpl(data).appendTo(".ajax-notifications"); 
+                    }); 
+                     
+                },
+                error: function(response)
+                {
+                   
+                }
             });
 
         });
@@ -703,6 +726,22 @@
             pageSetUp();
         })
 
+        </script>
+        <script type="text/x-tmpl" id="msg-template">
+            <ul class="notification-body">
+                <li>
+                    <span class="unread">
+                        <a href="${ url }" class="msg">
+                            <img src="${ avatar }" alt="" class="air air-top-left margin-top-5" width="40" height="40" />   
+                            <span class="txt-color-red">
+                                ${ remetente }                      
+                            </span>
+                            <span class="subject">Processo ${ nu_processo }</span>
+                            <span>${ data }</span>
+                        </a>
+                    </span>
+                </li>
+            </ul>
         </script>
     </body>
 </html>

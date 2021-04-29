@@ -32,7 +32,7 @@ class CidadeController extends Controller
             \Cache::tags(['estados', $estados])->put('cidades', $cidades, now()->addMinutes(1440));
         } else {
             $cidades = \Cache::tags(['estados', $estados])->get('cidades');
-        }       
+        }
         echo json_encode($cidades);
     }
 
@@ -46,6 +46,7 @@ class CidadeController extends Controller
                     ->join('estado_est', 'estado_est.cd_estado_est', '=', 'cidade_cde.cd_estado_est')
                     ->where('cd_entidade_ete', $entidade)
                     ->where('estado_est.cd_estado_est', $estado)
+                    ->whereNull('cidade_atuacao_cat.deleted_at')
                     ->get();
                              
         echo json_encode($cidades);

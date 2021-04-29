@@ -679,10 +679,22 @@ class CorrespondenteController extends Controller
     {
         $atuacao = CidadeAtuacao::where('cd_cidade_atuacao_cat', $id)->first();
 
-        if ($atuacao->delete()) {
-            return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
-        } else {
-            return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+        $honorarios = TaxaHonorario::where('cd_entidade_ete',$atuacao->cd_entidade_ete)
+                                    ->where('cd_cidade_cde',$atuacao->cd_cidade_cde)
+                                    ->get(); 
+
+        if(count($honorarios)){
+
+            return Response::json(array('message' => 'Existem valores de honorários cadastrados para a comarca selecionada. O registro não pode ser excluído'), 500);
+
+        }else{
+
+            if ($atuacao->delete()) {
+                return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
+            } else {
+                return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
+            }
+
         }
     }
 
@@ -828,6 +840,19 @@ class CorrespondenteController extends Controller
         $clientes = ContaCorrespondente::where('cd_correspondente_cor', $this->conta)->with('conta')->get();
 
         return view('correspondente/clientes', ['clientes' => $clientes]);
+    }
+
+    public function comarcas($id)
+    {
+        $id = \Crypt::decrypt($id);
+
+        if (Auth::user()->cd_nivel_niv == 3) {
+            $correspondente = Conta::with('entidade')->where('cd_conta_con', $id)->first();
+            return view('correspondente/ficha-correspondente', ['correspondente' => $correspondente]);
+        } else {
+            $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->first();
+            return view('correspondente/comarcas', ['correspondente' => $correspondente]);
+        }
     }
 
     public function ficha($id)

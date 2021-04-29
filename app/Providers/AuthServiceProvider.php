@@ -29,12 +29,17 @@ class AuthServiceProvider extends ServiceProvider
 
             Gate::define($perm, function ($user) use ($value) {
 
+                /*
                 if(empty(\Session::get('lista_perm_user_'.$user->id))){
                     \Session::put('lista_perm_user_'.$user->id, User::where('id',$user->id)->first()->getArrayOfIdPermissao());
                 }
                     
                 $permissoes_usuario = \Session::get('lista_perm_user_'.$user->id);
               
+                return in_array($value->id, $permissoes_usuario);
+                */
+
+                $permissoes_usuario = User::where('id',$user->id)->first()->getArrayOfIdPermissao();
                 return in_array($value->id, $permissoes_usuario);
 
             });

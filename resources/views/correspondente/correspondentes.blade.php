@@ -119,6 +119,7 @@
                                                 <div class="dropdown" style="display: inline;">
                                                     <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                     <ul class="dropdown-menu">
+                                                        <li><a title="Comarcas de Atuação" class="" href="{{ url('correspondente/comarcas/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-map-marker"></i> Comarcas de Atuação</a></li>
                                                         <li><a title="Despesas" class="" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="fa fa-dollar"></i> Despesas</a></li>
                                                         <li><a title="Honorários" class=""  href="{{ url('correspondente/honorarios/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"><i class="fa fa-money"></i> Honorários</a></li>
                                                         <li><a title="Enviar Notificação" class="notificar_correspondente" data-url="{{ url('correspondente/notificacao/'.$correspondente->cd_correspondente_cor) }}" data-email="{{ ($correspondente->email) ? $correspondente->email : 'nulo' }}"><i class="fa fa-send"></i> Enviar Notificação</a></li>
