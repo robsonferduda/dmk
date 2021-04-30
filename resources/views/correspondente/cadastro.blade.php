@@ -11,7 +11,7 @@
 					<div class="text-danger">
 						@if ($errors->any())
 							@foreach($errors->all() as $error)
-								{!! $error !!}
+								{!! $error !!} <br />
 							@endforeach
 						@endif
 					</div>
@@ -51,6 +51,7 @@
 					</section>
 				</fieldset>
 				<footer>
+					{!! Captcha::display() !!}
 					<button type="submit" class="btn btn-success">
 						<i class="fa fa-check"></i> Cadastrar
 					</button>

@@ -12,7 +12,7 @@
 						<div class="text-danger">
 							@if ($errors->any())
 								@foreach($errors->all() as $error)
-									{!! $error !!}
+									{!! $error !!} <br />
 								@endforeach
 							@endif
 						</div>
@@ -44,8 +44,9 @@
 							<input type="checkbox" name="terms" id="terms"><i></i>Eu aceito os <a href="#" data-toggle="modal" data-target="#myModal"> Termos e Condições</a>
 						</label>
 					</section>
-				</fieldset>
+				</fieldset>				
 				<footer>
+					{!! Captcha::display() !!}
 					<button type="submit" class="btn btn-success">
 						<i class="fa fa-check"></i> Cadastrar
 					</button>

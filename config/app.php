@@ -148,7 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Kodeine\Acl\AclServiceProvider::class,
-        Chumper\Zipper\ZipperServiceProvider::class,       
+        Chumper\Zipper\ZipperServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -229,6 +229,7 @@ return [
         'Zipper' => Chumper\Zipper\Zipper::class,
         'TipoFinanceiro' => App\Enums\TipoFinanceiro::class,
         'TipoBaixaHonorario' => App\Enums\TipoBaixaHonorario::class,
+        'Captcha' => \Buzz\LaravelGoogleCaptcha\CaptchaFacade::class,
     ],
 
 ];

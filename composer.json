@@ -10,6 +10,7 @@
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "bensampo/laravel-enum": "^1.16",
+        "buzz/laravel-google-captcha": "^2.3",
         "chumper/zipper": "^1.0",
         "devfactory/minify": "1.0.*",
         "doctrine/dbal": "^2.9",
