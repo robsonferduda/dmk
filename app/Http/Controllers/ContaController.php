@@ -136,7 +136,7 @@ class ContaController extends Controller
                     Session::put('SESSION_NIVEL', $user->cd_nivel_niv);
 
                     $conta->email = $email;
-                    //$conta->ativarConta();
+                    $conta->ativarConta();
 
                     Auth::login($user);
                 }

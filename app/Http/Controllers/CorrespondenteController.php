@@ -241,7 +241,7 @@ class CorrespondenteController extends Controller
                         }
                     }
                     $conta->email = $email;
-                    //$conta->notificacaoConfirmacao($conta);
+                    $conta->notificacaoConfirmacao($conta);
 
                     Session::put('SESSION_CD_CONTA', $conta->cd_conta_con);
                     Auth::login($user);
