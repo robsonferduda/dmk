@@ -170,8 +170,6 @@ class CorrespondenteController extends Controller
     //Cadastro de correspondentes pela interface do sistema, aberto, sem receber convite
     public function cadastro(CorrespondenteRequest $request)
     {
-        exit;
-
         DB::transaction(function () use ($request) {
             $input = $request->all();
             $email = trim($input['email']);
@@ -679,22 +677,18 @@ class CorrespondenteController extends Controller
     {
         $atuacao = CidadeAtuacao::where('cd_cidade_atuacao_cat', $id)->first();
 
-        $honorarios = TaxaHonorario::where('cd_entidade_ete',$atuacao->cd_entidade_ete)
-                                    ->where('cd_cidade_cde',$atuacao->cd_cidade_cde)
-                                    ->get(); 
+        $honorarios = TaxaHonorario::where('cd_entidade_ete', $atuacao->cd_entidade_ete)
+                                    ->where('cd_cidade_cde', $atuacao->cd_cidade_cde)
+                                    ->get();
 
-        if(count($honorarios)){
-
+        if (count($honorarios)) {
             return Response::json(array('message' => 'Existem valores de honorários cadastrados para a comarca selecionada. O registro não pode ser excluído'), 500);
-
-        }else{
-
+        } else {
             if ($atuacao->delete()) {
                 return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
             } else {
                 return Response::json(array('message' => 'Erro ao excluir o registro'), 500);
             }
-
         }
     }
 
@@ -1073,8 +1067,8 @@ class CorrespondenteController extends Controller
         $estado  = $request->get('estado');
   
         $resultados = ContaCorrespondente::when(!empty($search), function ($query) use ($search) {
-                                                $query->where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%');
-                                            })
+            $query->where('nm_conta_correspondente_ccr', 'ilike', '%'. $search. '%');
+        })
                                             ->where('cd_conta_con', $this->conta)
                                             ->when(!empty($cidade) && !empty($estado), function ($query) use ($cidade) {
                                                 return $query->whereHas('cidadeAtuacao', function ($query) use ($cidade) {

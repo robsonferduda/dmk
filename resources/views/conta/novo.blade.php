@@ -1,7 +1,7 @@
 @extends('layouts.register')
 @section('content')
 	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin: 0 auto; float: none;">
-		<img class="img-responsive" style="margin-bottom: 10px; margin-top: 100px;" src="{{ asset('img/logo_light.png') }}" alt="Easyjuris"> 
+		<img class="img-responsive" style="margin-bottom: 10px; margin-top: 50px;" src="{{ asset('img/logo_light.png') }}" alt="Easyjuris"> 
 		<div class="well no-padding">			
 			{!! Form::open(['id' => 'frm-add-conta', 'url' => 'contas', 'class' => 'smart-form client-form']) !!}
 				<header>
@@ -12,7 +12,7 @@
 						<div class="text-danger">
 							@if ($errors->any())
 								@foreach($errors->all() as $error)
-									{!! $error !!}
+									{!! $error !!} <br />
 								@endforeach
 							@endif
 						</div>
@@ -44,8 +44,9 @@
 							<input type="checkbox" name="terms" id="terms"><i></i>Eu aceito os <a href="#" data-toggle="modal" data-target="#myModal"> Termos e Condições</a>
 						</label>
 					</section>
-				</fieldset>
+				</fieldset>				
 				<footer>
+					{!! Captcha::display() !!}
 					<button type="submit" class="btn btn-success">
 						<i class="fa fa-check"></i> Cadastrar
 					</button>

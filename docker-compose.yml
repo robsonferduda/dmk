@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  apache:
+    image: rafael01costa/php:7.2-apache 
+    container_name: easyjuris_php
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - VIRTUAL_HOST=easyjuris.localhost
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
+
+
