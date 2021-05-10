@@ -88,8 +88,9 @@
                                             <div class="dropdown" style="display: inline;">
                                                 <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                 <ul class="dropdown-menu">
-                                                    <li><a title="Honorários" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a></li>
+                                                    <li><a title="Honorários" href="{{ url('cliente/acessos/'.\Crypt::encrypt($cliente->cd_cliente_cli)) }}"><i class="fa fa-lock"></i> Acessos</a></li>
                                                     <li><a title="Contatos" href="{{ url('cliente/contatos/'.$cliente->cd_entidade_ete) }}"><i class="fa fa-book"></i> Contatos</a></li>
+                                                    <li><a title="Honorários" href="{{ url('cliente/honorarios/'.$cliente->cd_cliente_cli) }}"><i class="fa fa-money"></i> Honorários</a></li>                                                    
                                                     <li><a title="Excluir" data-id="{{ $cliente->cd_cliente_cli }}" class="remover_cliente"><i class="fa fa-trash"></i> Excluir</a></li>
                                                 </ul>
                                             </div>

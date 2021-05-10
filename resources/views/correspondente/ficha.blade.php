@@ -15,7 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
+            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->correspondente->cd_conta_con )) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-legal fa-lg"></i> Dados do Correspondente</a>
         </div>
     </div>
     <div class="row">
@@ -412,7 +413,7 @@
                             
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>
-                                <a href="{{ url('correspondente/dashboard/'.$correspondente->entidade->cd_entidade_ete) }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>
+                                <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->correspondente->cd_conta_con)) }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>
                             </footer>
                         {!! Form::close() !!}                      
                     </div>
