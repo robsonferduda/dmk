@@ -16,6 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
+            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($cliente->cd_correspondente_cor)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-legal fa-lg"></i> Dados do Correspondente</a>
             <button class="btn btn-primary pull-right header-btn marginLeft5" id="showAllHonorariosCorrespondente"><i class="fa fa-table fa-lg"></i> Mostrar Todos</button>  
             <a class="btn btn-danger pull-right header-btn remover_honorarios marginLeft5" data-url="{{ url('correspondente/honorarios/excluir/'.$cliente->cd_correspondente_cor ) }}" data-id="{{ $cliente->entidade->cd_entidade_ete }}"><i class="fa fa-times fa-lg"></i> Excluir Todos os Honorários</a>                                               
         </div>

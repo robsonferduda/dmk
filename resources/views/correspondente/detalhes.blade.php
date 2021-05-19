@@ -9,14 +9,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-legal"></i> Correspondentes <span>> Detalhes </span> <span>> {{ $correspondente->nm_conta_correspondente_ccr }}</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 boxBtnTopo">
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
             <a data-toggle="modal" href="{{ url('correspondente/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>   
+            <a data-toggle="modal" href="{{ url('correspondente/comarcas/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-map-marker fa-lg"></i> Comarcas</a> 
             <a data-toggle="modal" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-dollar fa-lg"></i> Despesas</a>   
             <a data-toggle="modal" href="{{ url('correspondente/honorarios/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-warning pull-right header-btn"><i class="fa fa-money fa-lg"></i> Honorários</a> 
             <a data-toggle="modal" href="{{ url('correspondente/ficha/'.\Crypt::encrypt($correspondente->correspondente->cd_conta_con)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar Dados</a> 
@@ -44,7 +45,7 @@
                                         <p>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <strong>Razão Social: </strong> {{ $correspondente->nm_conta_correspondente_ccr }}
+                                                    <strong>Razão Social: </strong> {{ ($correspondente) ? $correspondente->nm_conta_correspondente_ccr : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}

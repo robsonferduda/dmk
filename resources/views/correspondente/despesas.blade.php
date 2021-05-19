@@ -15,10 +15,8 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-group fa-lg"></i> Listar Correspondentes</a>
-
-            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_conta_con)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-file-text-o fa-lg"></i> Detalhes</a>
-            
+            <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
+            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_conta_con)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-legal fa-lg"></i> Dados do Correspondente</a>
         </div>
     </div>
     <div class="row">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Excel;
+use App\User;
 use App\Fone;
 use App\Cidade;
 use App\Cliente;
@@ -45,6 +46,20 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli', $id)->first();
         return view('cliente/detalhes', ['cliente' => $cliente]);
+    }
+
+    public function acessos($id)
+    {
+        $id = \Crypt::decrypt($id);
+
+        $cliente = Cliente::with('entidade')->where('cd_cliente_cli', $id)->first();
+        
+        $usuario = User::where('cd_entidade_ete', $id)->first();
+
+        dd($usuario);
+
+        return view('cliente/acesso', ['cliente' => $cliente]);
+        
     }
 
     public function contatos($id)

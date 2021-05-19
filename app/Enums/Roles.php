@@ -7,7 +7,8 @@ use BenSampo\Enum\Enum;
 final class Roles extends Enum
 {
 	const ADMINISTRADOR = 1;
-    const COLABORADOR = 2;    
+    const COLABORADOR = 2; 
+    const CLIENTE = 3;    
     const CORRESPONDENTE = 4;
     const SUPER_USER = 5;
 }
