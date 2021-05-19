@@ -179,6 +179,15 @@
 
         });
 
+        $('#frm-edit-grupo').submit(function(e){
+            e.preventDefault();
+            var qtdOpcoesSelecionadas = $('#cidades option:selected').length;
+
+            if(qtdOpcoesSelecionadas > 1000)
+                alert('zebrão');
+
+        });
+
         $('#limparCidades').click(function(){
             duallistbox.empty();
             duallistbox.bootstrapDualListbox('refresh');

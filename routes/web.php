@@ -382,4 +382,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('manutencao/gerar-nu-tipo-servico-tse', 'ManutencaoController@gerarNuTipoServicotse');
     Route::get('manutencao/gerar-nu-contato-cot', 'ManutencaoController@gerarNuContatocot');
     Route::get('manutencao/gerar-nu-tipo-processo-tpo', 'ManutencaoController@gerarTipoProcessotpo');
+
+    Route::get('suporte/ticket/novo', 'TicketController@create');
+    Route::post('suporte/ticket/novo', 'TicketController@store');
+    Route::get('suporte/tickets', 'TicketController@index');
+    Route::get('suporte/ticket/{id}', 'TicketController@show');
+    Route::post('suporte/ticket/{id}/comentario', 'TicketController@comment');
+    Route::get('suporte/ticket/anexo/{id}', 'TicketController@anexo');
 });

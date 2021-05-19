@@ -276,13 +276,13 @@
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
-                            @can('processo.importar')
+                          
                             <li>
                                 <li>
                                     <a href="{{ url('processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
                                 </li>                                 
                             </li>
-                            @endcan
+                           
                         </ul>   
                     </li>
                     @endcan
@@ -392,7 +392,19 @@
                         </ul>   
                     </li>
                     @endcan
-
+                    
+                    <li class="menu {{ (Session::get('menu_pai') == 'suporte') ? 'open' : '' }}">
+                        <a href="#" title="Suporte" class="item_pai" id="suporte"><i class="fa fa-lg fa-fw fa-ticket"></i> <span class="menu-item-parent">Suporte</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'suporte') ? 'display: block;' : 'display: none;' }}">   
+                            <li>
+                                <a href="{{ url('suporte/ticket/novo') }}" title="Ticket"><span class="menu-item-parent">Novo Ticket</span></a>
+                            </li>     
+                            <li>
+                                <a href="{{ url('suporte/tickets') }}" title="Ticket"><span class="menu-item-parent"> Listar</span></a>
+                            </li>                       
+                        </ul>   
+                    </li>
+                    
                     @role('super-user')
                         <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">
                             <a href="#" title="Permissões"  class="item_pai" id="permissoes"><i class="fa fa-lg fa-fw fa-lock"></i> <span class="menu-item-parent">Permissões</span></a>
@@ -654,7 +666,7 @@
             var hostname = document.location.hostname;  
             var host = document.location.origin;
 
-            var socket = io.connect('https://'+hostname+':3000',{secure: true},verify=false);
+            var socket = io.connect('http://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
                 if(message.data.canal == canal){
