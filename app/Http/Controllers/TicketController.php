@@ -35,6 +35,8 @@ class TicketController extends Controller
         if ($idsRedmine) {
             $idsRedmine = implode(',', $idsRedmine);
             $tickets = $this->service->issue->all(['issue_id' => $idsRedmine, 'status_id' => '*']);
+        } else {
+            $tickets['issues'] = [];
         }
 
         return view('ticket/tickets', ['tickets' => $tickets, '']);
