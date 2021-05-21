@@ -106,7 +106,7 @@ class ProcessoController extends Controller
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
-        $status = StatusProcesso::whereNotIn('cd_status_processo_stp',[\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
                   ->orderBy('nm_status_processo_conta_stp')
                   ->get();
        
@@ -170,7 +170,7 @@ class ProcessoController extends Controller
             if ($processo->save()) {
                 if (Auth::user()->cd_nivel_niv == 3) {
                     $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
-
+                
                     if (count($emails) == 0) {
                         Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o escritório não foi notificado.');
                     } else {
@@ -193,9 +193,9 @@ class ProcessoController extends Controller
                                 
                             $lista .= $email->dc_endereco_eletronico_ede.', ';
                         }
-                    }
 
-                    Flash::success('O processo foi finalizado com sucesso e o escritório notificado com mensagem enviada para '.substr(trim($lista), 0, -1));
+                        Flash::success('O processo foi finalizado com sucesso e o escritório notificado com mensagem enviada para '.substr(trim($lista), 0, -1));
+                    }
                 } else {
                     Flash::success('Situação atualizada com sucesso');
                 }
@@ -1022,7 +1022,7 @@ class ProcessoController extends Controller
                         $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
                         if (count($emails) == 0) {
-                            Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi nitificado.');
+                            Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi notificado.');
                         } else {
                             $lista = '';
 
@@ -1082,7 +1082,7 @@ class ProcessoController extends Controller
                     $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
                     if (count($emails) == 0) {
-                        Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi nitificado.');
+                        Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi notificado.');
                     } else {
                         $lista = '';
 
@@ -1277,7 +1277,6 @@ class ProcessoController extends Controller
 
     public function importar(Request $request)
     {
-
         $clientes = Cliente::where('cd_conta_con', $this->cdContaCon)
                     ->select('cd_cliente_cli', 'nu_cliente_cli', 'nm_razao_social_cli')
                     ->orderBy('nm_razao_social_cli')
@@ -1293,7 +1292,7 @@ class ProcessoController extends Controller
 
                     HeadingRowFormatter::default('none');
                     $headings = (new HeadingRowImport)->toArray($file);
-                     // dd($file->getClientOriginalExtension());
+                    // dd($file->getClientOriginalExtension());
                     foreach ($colunas as $coluna) {
                         if (in_array($coluna, $headings[0][0]) === false) {
                             Flash::error('Coluna ('.$coluna.') não encontrada na planilha');
