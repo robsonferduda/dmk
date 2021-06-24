@@ -16,8 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5 box-button">
             <div class="boxBtnTopo sub-box-button">
+                <!-- Regras de negócio para Administrador e Colaborador -->
                 @role('administrator|colaborador')
-
 
                     <div class="dropdown pull-right boxBtnTopo" style="display: inline;margin-right: 15px;">
                         <a href="javascript:void(0);" class="btn btn-info dropdown-toggle btn-responsive" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
@@ -44,58 +44,61 @@
                     <a title="Despesas" class="btn btn-warning pull-right header-btn btn-responsive" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
                     
                 @endrole
-                    @role('correspondente')
+
+                <!-- Regras de negócio para Correspondente -->
+                @role('correspondente')
 
                     @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
 
-                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                        <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                    </form>
+                            <form class="pull-right" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                                {{ csrf_field() }}
+                                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                                <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                            </form>
 
-                    @else
+                        @else
 
-                    <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+                            <button title="Finalizar Processo indisponível. Só é possível finalizar o processo após a realização do ato contratado." class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+
+                        @endif
+
+                        @php
+
+                        $agora = \Carbon\Carbon::now(); 
+                        $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
+
+                        $prazo_recusa = $agora->diffInHours($prazo);                     
+
+                        @endphp
+
+
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
+
+                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                            <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                        </form>
+
+                        @else
+
+                        <button title="Recusar Processo indisponível. Só é possível recusar um processo antes do seu aceite ou até 48 após seu recebimento" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
+
+                        @endif
 
                     @endif
 
-                    @php
-
-                    $agora = \Carbon\Carbon::now(); 
-                    $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
-
-                    $prazo_recusa = $agora->diffInHours($prazo);                     
-
-                    @endphp
-
-
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
-
-                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                        <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                    </form>
-
-                    @else
-
-                    <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
-
-                    @endif
-
-                    @endif
-
-                    @endrole
+                @endrole
                 </div>
 
 
             </div>
         </div>
+        
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
@@ -123,7 +126,7 @@
                                             <select id="status" name="status" class="select2">
                                                 <option selected value="0">Selecione uma situação</option>
                                                 @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
-                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                                    <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
                                                 @endforeach
                                             </select> 
                                         </div> 
@@ -177,6 +180,11 @@
                                                 <li>
                                                     <strong>Nº Processo: </strong> <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                                 </li>
+                                                @role('correspondente')
+                                                    <li>
+                                                        <strong>Status do Processo: </strong> {{ $processo->status->nm_status_processo_conta_stp }}
+                                                    </li>
+                                                @endrole
                                                 @role('administrator|colaborador') 
                                                 <li>
                                                     <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
@@ -583,6 +591,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal fade modal_top_alto" id="modalUpload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
