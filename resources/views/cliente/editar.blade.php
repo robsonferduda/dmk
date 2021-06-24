@@ -104,7 +104,7 @@
                                         <section class="col col-3">
                                             <label class="label">N º OAB</label>
                                             <label class="input">
-                                                <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($cliente->entidade->oab) ? $cliente->entidade->oab->nu_identificacao_ide : ''}}">
+                                                <input type="text" name="oab" placeholder="OAB" value="{{ ( old('oab') ? old('oab') : $cliente->entidade->oab ) ? $cliente->entidade->oab->nu_identificacao_ide : '' }}">
                                                 </label>
                                         </section> 
 
@@ -112,7 +112,7 @@
                                             <section class="col col-3">
                                                 <label class="label">RG</label>
                                                 <label class="input">
-                                                    <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : ($cliente->entidade->rg) ? $cliente->entidade->rg->nu_identificacao_ide : ''}}">
+                                                    <input type="text" name="rg" placeholder="RG" value="{{ ( old('rg') ? old('rg') : $cliente->entidade->rg ) ? $cliente->entidade->rg->nu_identificacao_ide : ''}}">
                                                     </label>
                                             </section> 
                                         </div>
@@ -199,6 +199,34 @@
                                 </fieldset>
                             </section>
                         </div>
+
+                        <div class="row" style="padding: 5px 20px;">
+                            <header>
+                                <i class="fa fa-lock"></i> Dados de Acesso 
+                            </header>
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-3">
+                                        <label class="label">Usuário <span class="text-info">Digite um email válido</span></label>
+                                        <label class="input">
+                                            <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
+                                        </label>
+                                    </section> 
+                                    
+                                    <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">
+                                            <span class="onoffswitch-title">Notificar Cliente</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_notificar_cliente" value="S" id="fl_notificar_cliente">
+                                                <label class="onoffswitch-label" for="fl_notificar_cliente"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                    </div>                                     
+                                </div>
+                            </fieldset>
+                        </div>
+
                             <div class="row" style="padding: 5px 20px;">
         
                                 <header>
@@ -211,19 +239,19 @@
                                         <section class="col col-2">
                                             <label class="label">CEP</label>
                                             <label class="input">
-                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->nu_cep_ede : '' }}">
+                                                <input type="text" class="cep" name="nu_cep_ede" id="cep" placeholder="00000-000" value="{{ ( old('nu_cep_ede') ? old('nu_cep_ede') : $cliente->entidade->endereco) ? $cliente->entidade->endereco->nu_cep_ede : '' }}">
                                             </label>
                                         </section> 
                                         <section class="col col-sm-8">
                                             <label class="label">Logradouro</label>
                                             <label class="input">
-                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->dc_logradouro_ede : '' }}">
+                                                <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{ (old('dc_logradouro_ede') ? old('dc_logradouro_ede') : $cliente->entidade->endereco) ? $cliente->entidade->endereco->dc_logradouro_ede : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-2">
                                             <label class="label">Nº</label>
                                             <label class="input">
-                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->nu_numero_ede : '' }}">
+                                                <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{ (old('nu_numero_ede') ? old('nu_numero_ede') : $cliente->entidade->endereco) ? $cliente->entidade->endereco->nu_numero_ede : '' }}">
                                             </label>
                                         </section>
                                     </div>
@@ -232,13 +260,13 @@
                                         <section class="col col-6">
                                             <label class="label">Bairro</label>
                                             <label class="input">
-                                                <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->nm_bairro_ede : '' }}">
+                                                <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{ ( old('nm_bairro_ede') ? old('nm_bairro_ede') : $cliente->entidade->endereco) ? $cliente->entidade->endereco->nm_bairro_ede : '' }}">
                                             </label>
                                         </section>
                                         <section class="col col-6">
                                             <label class="label">Complemento</label>
                                             <label class="input">
-                                                <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('nm_bairro_ede') ? old('dc_complemento_ede') : ($cliente->entidade->endereco) ? $cliente->entidade->endereco->dc_complemento_ede : '' }}">
+                                                <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{ (old('nm_bairro_ede') ? old('dc_complemento_ede') : $cliente->entidade->endereco) ? $cliente->entidade->endereco->dc_complemento_ede : '' }}">
                                             </label>
                                         </section>                                                                    
                                     </div> 
@@ -382,7 +410,7 @@
                                         <div class="row"> 
                                             <section class="col col-sm-12">
                                             <label class="input">
-                                                <textarea class="form-control" rows="4" name="observacao_cli" id="observacao" value="{{old('observacao_cli')}}" >{{old('observacao_cli') ? old('observacao_cli') : ($cliente->observacao_cli) ? $cliente->observacao_cli : '' }}</textarea>
+                                                <textarea class="form-control" rows="4" name="observacao_cli" id="observacao" value="{{ old('observacao_cli') }}" >{{ ( old('observacao_cli') ? old('observacao_cli') : $cliente->observacao_cli) ? $cliente->observacao_cli : '' }}</textarea>
                                             </label>
                                             </section> 
                                         </div>

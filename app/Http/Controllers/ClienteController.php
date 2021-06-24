@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Hash;
 use Excel;
 use App\User;
 use App\Fone;
@@ -20,6 +21,7 @@ use App\GrupoCidade;
 use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
 use App\GrupoCidadeRelacionamento;
+use App\Enums\Nivel;
 use App\Imports\ClientesImport;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -775,6 +777,31 @@ class ClienteController extends Controller
                     'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
                     'nu_identificacao_ide'      => $request->rg
                     ]);
+                }
+            }
+
+
+            if (!empty($request->email_user)) {
+
+                $user = User::where('cd_entidade_ete', $request->entidade)->first();
+
+                if($user){
+
+                    $user->email = $request->email_user;
+                    $user->save();                    
+
+                }else{
+
+                    //chave_user
+                    $user = new User();
+                    $user->cd_conta_con = $cliente->cd_conta_con;
+                    $user->cd_entidade_ete = $cliente->entidade->cd_entidade_ete;
+                    $user->cd_nivel_niv = Nivel::CLIENTE;
+                    $user->name = $cliente->nm_razao_social_cli;
+                    $user->email = $request->email_user;
+                    $user->password = Hash::make(rand(100000,999999));
+                    $user->save();
+
                 }
             }
 
