@@ -292,70 +292,102 @@
                                         @endif
                                     </legend>
 
-                                    <h6>Arquivos Anexados pelo Escritório</h6>
-                                    <div>
-                                        <div id="filepicker_correspondente">
-                                            <div class="table-responsive div-table">
-                                                <table class="table table-upload">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="column-name">Nome do Arquivo</th>
-                                                            <th class="column-size center">Tamanho</th>                                                            
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="files">
+                                    @role('administrator|colaborador')
+                                        <h6>Arquivos Anexados pelo Escritório</h6>
+                                            <div id="filepicker">
+                                                <!-- Button Bar -->
+                                                <div class="button-bar">
 
-                                                    </tbody>                        
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    <div class="btn btn-success btn-upload-plugin fileinput">
+                                                        <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                        <input type="file" name="files[]" id="input-file" multiple>
+                                                    </div>   
 
-                                    @if($processo->fl_recebimento_anexos_pro == 'S')
-                                        <h6>Meus Arquivos</h6>
-                                        <div id="filepicker">
-                                            <!-- Button Bar -->
-                                            <div class="button-bar">
+                                                    <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                        <i class="fa fa-upload"></i> Enviar Todos
+                                                    </button>                  
 
-                                                <div class="btn btn-success btn-upload-plugin fileinput">
-                                                    <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                    <input type="file" name="files[]" id="input-file" multiple>
-                                                </div>   
+                                                </div>
 
-                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                    <i class="fa fa-upload"></i> Enviar Todos
-                                                </button>                  
+                                                <!-- Listar Arquivos -->
+                                                <div class="table-responsive div-table">
+                                                    <table class="table table-upload">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="column-name">Nome do Arquivo</th>
+                                                                <th class="column-size center">Tamanho</th>                                                            
+                                                                <th class="center">Excluir</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="files">
 
-                                            </div>
+                                                        </tbody>                        
+                                                    </table>
+                                                </div>
 
-                                            <!-- Listar Arquivos -->
-                                            <div class="table-responsive div-table">
-                                                <table class="table table-upload">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="column-name">Nome do Arquivo</th>
-                                                            <th class="column-size center">Tamanho</th>                                                            
-                                                            <th class="center">Excluir</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="files">
-
-                                                    </tbody>                        
-                                                </table>
-                                            </div>
-
-                                            <!-- Drop Zone -->
-                                            <div class="drop-window">
-                                                <div class="drop-window-content">
-                                                    <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                <!-- Drop Zone -->
+                                                <div class="drop-window">
+                                                    <div class="drop-window-content">
+                                                        <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @else
-                                        <div style="margin-left: 8px;">
-                                            <span>Após a confirmação do recebimento dos arquivos, você poderá anexar os comprovantes de cumprimento do ato e finalizar o processo</span>
-                                        </div>
-                                    @endif
+
+                                    @endrole                                   
+                                    
+
+                                    @role('correspondente')
+
+                                        @if($processo->fl_recebimento_anexos_pro == 'S')
+                                            <h6>Meus Arquivos</h6>
+
+                                            <div>
+                                                <div id="filepicker_correspondente">
+
+                                                    <div class="button-bar">
+
+                                                        <div class="btn btn-success btn-upload-plugin fileinput">
+                                                            <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                            <input type="file" name="files[]" id="input-file" multiple>
+                                                        </div>   
+
+                                                        <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                            <i class="fa fa-upload"></i> Enviar Todos
+                                                        </button>                  
+
+                                                    </div>
+
+                                                    <div class="table-responsive div-table">
+                                                        <table class="table table-upload">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="column-name">Nome do Arquivo</th>
+                                                                    <th class="column-size center">Tamanho</th>                                                            
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="files">
+
+                                                            </tbody>                        
+                                                        </table>
+                                                    </div>
+
+                                                      <!-- Drop Zone -->
+                                                    <div class="drop-window">
+                                                        <div class="drop-window-content">
+                                                            <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                          
+                                        @else
+                                            <div style="margin-left: 8px;">
+                                                <span>Após a confirmação do recebimento dos arquivos, você poderá anexar os comprovantes de cumprimento do ato e finalizar o processo</span>
+                                            </div>
+                                        @endif
+
+                                    @endrole
 
                                 </fieldset>
 
@@ -922,7 +954,34 @@
                             id_processo: id_processo
                         }
                     },
-                    plugins: ['ui']
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('done.filepicker', function (e, data) {
+
+                    if(data.files[0].size){            
+
+                        $.ajax({
+                            url: "../../anexo-processo-add",
+                            type: 'POST',
+                            data: {
+                                "_token": $('meta[name="token"]').attr('content'),
+                                "id_processo": $("#processo").val(),
+                                "nome_arquivo": data.files[0].name
+                            },
+                            success: function(response){   
+
+                                $(".box-anexos-correspondente").removeClass('none');
+                                $(".box-anexos-escritorio").removeClass('none');
+                                $(".label-anexos-escritorio").addClass('none');
+
+                            },
+                            error: function(response){
+
+
+                            }
+                        });
+                    }
+
                 })
 
                 $('#filepicker').filePicker({
