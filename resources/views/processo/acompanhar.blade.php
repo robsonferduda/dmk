@@ -293,7 +293,7 @@
                                     </legend>
 
                                     @role('administrator|colaborador')
-                                        <h6>Arquivos Anexados pelo Escritório</h6>
+                                        <h6>Arquivos do Processo</h6>
                                             <div id="filepicker">
                                                 <!-- Button Bar -->
                                                 <div class="button-bar">
@@ -316,7 +316,7 @@
                                                             <tr>
                                                                 <th class="column-name">Nome do Arquivo</th>
                                                                 <th class="column-size center">Tamanho</th>                                                            
-                                                                <th class="center">Excluir</th>
+                                                                <th class="center">Opções</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="files">
@@ -339,6 +339,28 @@
                                     @role('correspondente')
 
                                         @if($processo->fl_recebimento_anexos_pro == 'S')
+                                            
+                                            <h6>Arquivos Anexados pelo Escritório</h6>
+
+                                            <div id="filepicker_escritorio">
+                                               
+                                                <div class="table-responsive div-table">
+                                                    <table class="table table-upload">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="column-name">Nome do Arquivo</th>
+                                                                <th class="column-size center">Tamanho</th>                                                            
+                                                                <th class="center">Opções</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="files">
+
+                                                        </tbody>                        
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                            
                                             <h6>Meus Arquivos</h6>
 
                                             <div>
@@ -362,7 +384,8 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th class="column-name">Nome do Arquivo</th>
-                                                                    <th class="column-size center">Tamanho</th>                                                            
+                                                                    <th class="column-size center">Tamanho</th>   
+                                                                    <th class="center">Opções</th>                                                         
                                                                 </tr>
                                                             </thead>
                                                             <tbody class="files">
@@ -940,6 +963,23 @@
 
                 });
 
+                $('#filepicker_escritorio').filePicker({
+                    url: '../../processos/arquivos-processo/escritorio',
+                    ui: {
+                        autoUpload: false
+                    },
+                    data: function(){
+                        var _token = "{{ csrf_token() }}";
+                        var id_processo = $("#processo").val();
+
+                        return {
+                            _token: _token,
+                            id_processo: id_processo
+                        }
+                    },
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+
                 $('#filepicker_correspondente').filePicker({
                     url: '../../processos/arquivos-processo/correspondente',
                     ui: {
@@ -1028,36 +1068,34 @@
 
                 })
                 .on('delete.filepicker', function (e, data) {
+                    //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+                    $.ajax({
+                        url: '../../anexo-processo-delete',
+                        type: 'POST',
+                        dataType: "JSON",
+                        data: {
+                            "_method": 'DELETE',
+                            "id": $("#processo").val(),                    
+                            "nome_arquivo": data.filename,
+                            "_token": $('meta[name="token"]').attr('content'),
+                        },
+                        success: function(response)
+                        {
+                            location.reload();
+                        },
+                        error: function(response)
+                        {
+                            $(".fa").addClass("fa-times");
+                            $(".msg_titulo").html("Erro");
+                            $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                            $(".alert").addClass("alert-danger");
+                            $(".alert").removeClass("none");
 
-            //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+                            return false;
+                        }
+                    });
 
-            $.ajax({
-                url: '../../anexo-processo-delete',
-                type: 'POST',
-                dataType: "JSON",
-                data: {
-                    "_method": 'DELETE',
-                    "id": $("#processo").val(),                    
-                    "nome_arquivo": data.filename,
-                    "_token": $('meta[name="token"]').attr('content'),
-                },
-                success: function(response)
-                {
-                    location.reload();
-                },
-                error: function(response)
-                {
-                    $(".fa").addClass("fa-times");
-                    $(".msg_titulo").html("Erro");
-                    $(".msg_mensagem").html("Erro ao excluir o arquivo");
-                    $(".alert").addClass("alert-danger");
-                    $(".alert").removeClass("none");
-
-                    return false;
-                }
-            });
-
-        })
+                })
                 .on('fail.filepicker', function (e,data) {
 
                     console.log();
@@ -1535,7 +1573,7 @@ function validate(formData, jqForm, options) {
 
         <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
 
-        {% if (o.file.flag_delete) { %}
+        
             <td class="center">
 
                 {% if (o.file.error) { %}
@@ -1549,7 +1587,7 @@ function validate(formData, jqForm, options) {
                 {% } %}
 
             </td>
-        {% } %}
+       
     </tr>
 </script>
 <!-- Pagination Template -->

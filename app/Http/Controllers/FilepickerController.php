@@ -119,6 +119,49 @@ class FilepickerController extends Controller
         }
     }
 
+    public function arquivosProcessoEscritorio(Request $request)
+    {
+        $this->inicializaPastaProcesso($request->id_processo);
+
+        $method = $request->get('_method', $request->getMethod());
+
+        $anexos = array();
+        $files = array();
+
+        if ($method == 'GET') {
+
+            $anexos = AnexoProcesso::where('cd_processo_pro', $request->id_processo)->where('cd_entidade_ete','<>',Auth::user()->cd_entidade_ete)->orderBy('created_at', 'DESC')->get();
+
+            $files = array();
+
+            foreach ($anexos as $key => $anexo) {
+                $nome_arquivo = $anexo['nm_local_anexo_processo_apr'].$anexo['nm_anexo_processo_apr'];
+                
+                //Se o registro do arquivo existe na pasta, adicona ele na listagem
+                if (file_exists(storage_path($nome_arquivo))) {
+                    $files[$key] = new File(storage_path($nome_arquivo));
+                    $files[$key]->tipo = ($anexo->cd_tipo_anexo_processo_tap) ? $anexo->cd_tipo_anexo_processo_tap : null;
+                    $files[$key]->responsavel = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first()->name;
+                }
+            }
+
+            foreach ($files as &$file) {
+                $tipo = $file->tipo;
+                $responsavel = $file->responsavel;
+                
+                $file = $this->handler->fileToArray($file);
+                $file['tipo'] = $tipo;
+                $file['responsavel'] = $responsavel;
+                $file['flag_delete'] = false;
+            }
+
+            return $this->handler->json(compact('files', count($anexos)));
+
+        } else {
+            return $this->handler->handle($request);
+        }
+    }
+
     public function arquivosProcessoCorrespondente(Request $request)
     {
         $this->inicializaPastaProcesso($request->id_processo);
@@ -152,7 +195,7 @@ class FilepickerController extends Controller
                 $file = $this->handler->fileToArray($file);
                 $file['tipo'] = $tipo;
                 $file['responsavel'] = $responsavel;
-                $file['flag_delete'] = false;
+                $file['flag_delete'] = true;
             }
 
             return $this->handler->json(compact('files', count($anexos)));
