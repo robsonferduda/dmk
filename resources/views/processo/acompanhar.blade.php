@@ -429,13 +429,13 @@
                                         </div>
                                     </section>
 
-                                    <h4 class="label-anexos-escritorio {{ (count($processo->anexos) > 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
+                                    <h4 class="label-anexos-escritorio {{ (count($processo->anexos) >= 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
 
                                 @endrole
 
                                 @role('correspondente') 
 
-                                    <section class="box-anexos-correspondente {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
+                                    <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0) ? '' : 'none' }}">                          
                                         <div class="onoffswitch-container">
                                             <span class="onoffswitch-title">Confirma o recebimento dos documentos?</span> 
                                             <span class="onoffswitch">
@@ -1573,7 +1573,7 @@ function validate(formData, jqForm, options) {
 
         <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
 
-        
+        {% if (o.file.flag_delete) { %}
             <td class="center">
 
                 {% if (o.file.error) { %}
@@ -1587,7 +1587,7 @@ function validate(formData, jqForm, options) {
                 {% } %}
 
             </td>
-       
+        {% } %}
     </tr>
 </script>
 <!-- Pagination Template -->
