@@ -16,8 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5 box-button">
             <div class="boxBtnTopo sub-box-button">
+                <!-- Regras de negócio para Administrador e Colaborador -->
                 @role('administrator|colaborador')
-
 
                     <div class="dropdown pull-right boxBtnTopo" style="display: inline;margin-right: 15px;">
                         <a href="javascript:void(0);" class="btn btn-info dropdown-toggle btn-responsive" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
@@ -44,58 +44,61 @@
                     <a title="Despesas" class="btn btn-warning pull-right header-btn btn-responsive" href="{{ url('processos/despesas/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-money fa-lg"></i> Despesas</a>          
                     
                 @endrole
-                    @role('correspondente')
+
+                <!-- Regras de negócio para Correspondente -->
+                @role('correspondente')
 
                     @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
 
-                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
-                        <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
-                    </form>
+                            <form class="pull-right" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                                {{ csrf_field() }}
+                                <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                                <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE }}">     
+                                <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
+                            </form>
 
-                    @else
+                        @else
 
-                    <button title="Finalizar Processo indisponível" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+                            <button title="Finalizar Processo indisponível. Só é possível finalizar o processo após confirmar o recebimento de documentos e enviar o arquivo comprabatório de realização do ato." class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+
+                        @endif
+
+                        @php
+
+                        $agora = \Carbon\Carbon::now(); 
+                        $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
+
+                        $prazo_recusa = $agora->diffInHours($prazo);                     
+
+                        @endphp
+
+
+                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
+
+                        <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
+                            <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
+                        </form>
+
+                        @else
+
+                        <button title="Recusar Processo indisponível. Só é possível recusar um processo antes do seu aceite ou até 48 após seu recebimento" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
+
+                        @endif
 
                     @endif
 
-                    @php
-
-                    $agora = \Carbon\Carbon::now(); 
-                    $prazo = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $processo->dt_prazo_fatal_pro." ".date('H:i', strtotime($processo->hr_audiencia_pro)));
-
-                    $prazo_recusa = $agora->diffInHours($prazo);                     
-
-                    @endphp
-
-
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE and $prazo_recusa < 48 and $prazo > $agora)
-
-                    <form class="pull-right" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
-                        {{ csrf_field() }}
-                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE }}">     
-                        <button title='Recusar Processo' class="btn btn-warning" type="submit"><i class="fa fa-ban"></i> Recusar Processo</button>
-                    </form>
-
-                    @else
-
-                    <button title="Recusar Processo indisponível" class="btn btn-warning disabled pull-right header-btn" style="display: inline; float: left; margin-right: 10px; margin-top: 17px;" type="button"><i class="fa fa-ban"></i> Recusar Processo</button>
-
-                    @endif
-
-                    @endif
-
-                    @endrole
+                @endrole
                 </div>
 
 
             </div>
         </div>
+        
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
@@ -123,7 +126,7 @@
                                             <select id="status" name="status" class="select2">
                                                 <option selected value="0">Selecione uma situação</option>
                                                 @foreach(App\StatusProcesso::orderBy('nm_status_processo_conta_stp')->get() as $status)
-                                                <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
+                                                    <option value="{{ $status['cd_status_processo_stp'] }}" {{ ($processo->cd_status_processo_stp == $status['cd_status_processo_stp']) ? 'selected' : '' }} >{{ $status['nm_status_processo_conta_stp'] }}</option>
                                                 @endforeach
                                             </select> 
                                         </div> 
@@ -177,6 +180,11 @@
                                                 <li>
                                                     <strong>Nº Processo: </strong> <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                                 </li>
+                                                @role('correspondente')
+                                                    <li>
+                                                        <strong>Status do Processo: </strong> {{ $processo->status->nm_status_processo_conta_stp }}
+                                                    </li>
+                                                @endrole
                                                 @role('administrator|colaborador') 
                                                 <li>
                                                     <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
@@ -280,84 +288,165 @@
                                     <legend>
                                         <i class="fa fa-files-o"></i> <strong>Arquivos do Processo</strong>
                                         @if(count($processo->anexos))
-                                        <a href="{{ url('processos/arquivos/download/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><span>Baixar Todos</span></a>
+                                            <a href="{{ url('processos/arquivos/download/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><span>Baixar Todos</span></a>
                                         @endif
                                     </legend>
 
-                                    <div id="filepicker">
-                                        <!-- Button Bar -->
-                                        <div class="button-bar">
+                                    @role('administrator|colaborador')
+                                        <h6>Arquivos do Processo</h6>
+                                            <div id="filepicker">
+                                                <!-- Button Bar -->
+                                                <div class="button-bar">
 
-                                            <div class="btn btn-success btn-upload-plugin fileinput">
-                                                <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                <input type="file" name="files[]" id="input-file" multiple>
-                                            </div>   
+                                                    <div class="btn btn-success btn-upload-plugin fileinput">
+                                                        <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                        <input type="file" name="files[]" id="input-file" multiple>
+                                                    </div>   
 
-                                            <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                <i class="fa fa-upload"></i> Enviar Todos
-                                            </button>                  
+                                                    <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                        <i class="fa fa-upload"></i> Enviar Todos
+                                                    </button>                  
 
-                                        </div>
+                                                </div>
 
-                                        <!-- Listar Arquivos -->
-                                        <div class="table-responsive div-table">
-                                            <table class="table table-upload">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="column-name">Nome do Arquivo</th>
-                                                        <th class="column-size center">Tamanho</th>                                                            
-                                                        <th class="center">Excluir</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="files">
+                                                <!-- Listar Arquivos -->
+                                                <div class="table-responsive div-table">
+                                                    <table class="table table-upload">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="column-name">Nome do Arquivo</th>
+                                                                <th class="column-size center">Tamanho</th>                                                            
+                                                                <th class="center">Opções</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="files">
 
-                                                </tbody>                        
-                                            </table>
-                                        </div>
+                                                        </tbody>                        
+                                                    </table>
+                                                </div>
 
-                                        <!-- Drop Zone -->
-                                        <div class="drop-window">
-                                            <div class="drop-window-content">
-                                                <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                <!-- Drop Zone -->
+                                                <div class="drop-window">
+                                                    <div class="drop-window-content">
+                                                        <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+
+                                    @endrole                                   
+                                    
+
+                                    @role('correspondente')
+
+                                        @if($processo->fl_recebimento_anexos_pro == 'S')
+                                            
+                                            <h6>Arquivos Anexados pelo Escritório</h6>
+
+                                            <div id="filepicker_escritorio">
+                                               
+                                                <div class="table-responsive div-table">
+                                                    <table class="table table-upload">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="column-name">Nome do Arquivo</th>
+                                                                <th class="column-size center">Tamanho</th>                                                            
+                                                                <th class="center">Opções</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="files">
+
+                                                        </tbody>                        
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                            
+                                            <h6>Meus Arquivos</h6>
+
+                                            <div>
+                                                <div id="filepicker_correspondente">
+
+                                                    <div class="button-bar">
+
+                                                        <div class="btn btn-success btn-upload-plugin fileinput">
+                                                            <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                            <input type="file" name="files[]" id="input-file" multiple>
+                                                        </div>   
+
+                                                        <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                            <i class="fa fa-upload"></i> Enviar Todos
+                                                        </button>                  
+
+                                                    </div>
+
+                                                    <div class="table-responsive div-table">
+                                                        <table class="table table-upload">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="column-name">Nome do Arquivo</th>
+                                                                    <th class="column-size center">Tamanho</th>   
+                                                                    <th class="center">Opções</th>                                                         
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="files">
+
+                                                            </tbody>                        
+                                                        </table>
+                                                    </div>
+
+                                                      <!-- Drop Zone -->
+                                                    <div class="drop-window">
+                                                        <div class="drop-window-content">
+                                                            <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                          
+                                        @else
+                                            <div style="margin-left: 8px;">
+                                                <span>Após a confirmação do recebimento dos arquivos, você poderá anexar os comprovantes de cumprimento do ato e finalizar o processo</span>
+                                            </div>
+                                        @endif
+
+                                    @endrole
 
                                 </fieldset>
 
                                 @role('administrator|colaborador')
 
-                                <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
-                                    <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
-                                        <span class="onoffswitch">
-                                            <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
-                                            <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
-                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                <span class="onoffswitch-switch"></span>
-                                            </label> 
-                                        </span> 
-                                    </div>
-                                </section>
+                                    <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_envio_anexos_pro == 'S') ? 'checked' : '' }} name="fl_envio_anexos_pro" class="onoffswitch-checkbox" id="fl_envio_anexos_pro">
+                                                <label class="onoffswitch-label" for="fl_envio_anexos_pro"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    </section>
 
-                                <h4 class="label-anexos-escritorio {{ (count($processo->anexos) > 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
+                                    <h4 class="label-anexos-escritorio {{ (count($processo->anexos) >= 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
 
                                 @endrole
 
                                 @role('correspondente') 
 
-                                <section class="box-anexos-correspondente {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
-                                    <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato contratado?</span> 
-                                        <span class="onoffswitch">
-                                            <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                            <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                <span class="onoffswitch-switch"></span>
-                                            </label> 
-                                        </span> 
-                                    </div>
-                                </section>
+                                    <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0) ? '' : 'none' }}">                          
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Confirma o recebimento dos documentos?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                                <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    </section>
                                 
                                 @endrole
                                 <section> 
@@ -583,6 +672,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal fade modal_top_alto" id="modalUpload" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -873,6 +963,67 @@
 
                 });
 
+                $('#filepicker_escritorio').filePicker({
+                    url: '../../processos/arquivos-processo/escritorio',
+                    ui: {
+                        autoUpload: false
+                    },
+                    data: function(){
+                        var _token = "{{ csrf_token() }}";
+                        var id_processo = $("#processo").val();
+
+                        return {
+                            _token: _token,
+                            id_processo: id_processo
+                        }
+                    },
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+
+                $('#filepicker_correspondente').filePicker({
+                    url: '../../processos/arquivos-processo/correspondente',
+                    ui: {
+                        autoUpload: false
+                    },
+                    data: function(){
+                        var _token = "{{ csrf_token() }}";
+                        var id_processo = $("#processo").val();
+
+                        return {
+                            _token: _token,
+                            id_processo: id_processo
+                        }
+                    },
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('done.filepicker', function (e, data) {
+
+                    if(data.files[0].size){            
+
+                        $.ajax({
+                            url: "../../anexo-processo-add",
+                            type: 'POST',
+                            data: {
+                                "_token": $('meta[name="token"]').attr('content'),
+                                "id_processo": $("#processo").val(),
+                                "nome_arquivo": data.files[0].name
+                            },
+                            success: function(response){   
+
+                                $(".box-anexos-correspondente").removeClass('none');
+                                $(".box-anexos-escritorio").removeClass('none');
+                                $(".label-anexos-escritorio").addClass('none');
+
+                            },
+                            error: function(response){
+
+
+                            }
+                        });
+                    }
+
+                })
+
                 $('#filepicker').filePicker({
                     url: '../../processos/arquivos-processo',
                     ui: {
@@ -917,36 +1068,34 @@
 
                 })
                 .on('delete.filepicker', function (e, data) {
+                    //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+                    $.ajax({
+                        url: '../../anexo-processo-delete',
+                        type: 'POST',
+                        dataType: "JSON",
+                        data: {
+                            "_method": 'DELETE',
+                            "id": $("#processo").val(),                    
+                            "nome_arquivo": data.filename,
+                            "_token": $('meta[name="token"]').attr('content'),
+                        },
+                        success: function(response)
+                        {
+                            location.reload();
+                        },
+                        error: function(response)
+                        {
+                            $(".fa").addClass("fa-times");
+                            $(".msg_titulo").html("Erro");
+                            $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                            $(".alert").addClass("alert-danger");
+                            $(".alert").removeClass("none");
 
-            //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+                            return false;
+                        }
+                    });
 
-            $.ajax({
-                url: '../../anexo-processo-delete',
-                type: 'POST',
-                dataType: "JSON",
-                data: {
-                    "_method": 'DELETE',
-                    "id": $("#processo").val(),                    
-                    "nome_arquivo": data.filename,
-                    "_token": $('meta[name="token"]').attr('content'),
-                },
-                success: function(response)
-                {
-                    location.reload();
-                },
-                error: function(response)
-                {
-                    $(".fa").addClass("fa-times");
-                    $(".msg_titulo").html("Erro");
-                    $(".msg_mensagem").html("Erro ao excluir o arquivo");
-                    $(".alert").addClass("alert-danger");
-                    $(".alert").removeClass("none");
-
-                    return false;
-                }
-            });
-
-        })
+                })
                 .on('fail.filepicker', function (e,data) {
 
                     console.log();
@@ -1424,19 +1573,21 @@ function validate(formData, jqForm, options) {
 
         <td class="column-size center"><p>{%= o.file.sizeFormatted %}</p></td>
 
-        <td class="center">
+        {% if (o.file.flag_delete) { %}
+            <td class="center">
 
-            {% if (o.file.error) { %}
-            <a href="#" class="action action-warning cancel" title="Cancelar">
-                <i class="fa fa-ban"></i>
-            </a>
-            {% } else { %}
-            <a style="color: #cc0e00; font-size: 20px;" href="#" class="action action-danger delete deleteFile" title="Excluir">
-                <i class="fa fa-trash-o"></i>
-            </a>
-            {% } %}
+                {% if (o.file.error) { %}
+                <a href="#" class="action action-warning cancel" title="Cancelar">
+                    <i class="fa fa-ban"></i>
+                </a>
+                {% } else { %}
+                <a style="color: #cc0e00; font-size: 20px;" href="#" class="action action-danger delete deleteFile" title="Excluir">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+                {% } %}
 
-        </td>
+            </td>
+        {% } %}
     </tr>
 </script>
 <!-- Pagination Template -->

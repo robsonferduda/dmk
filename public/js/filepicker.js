@@ -433,6 +433,7 @@
                 $.each(data.files, function (_, file) {
                     if (!file.error) {
                         formData.append(_this.options.paramName, file, file.name);
+                        formData.append('flag_delete', true);
                     }
                 });
 

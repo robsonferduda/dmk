@@ -43,6 +43,8 @@ Auth::routes();
 Route::group(['middleware' => ['web']], function () {
     Route::any('filepicker', 'FilepickerController@handle');
     Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');
+    Route::any('processos/arquivos-processo/correspondente', 'FilepickerController@arquivosProcessoCorrespondente');
+    Route::any('processos/arquivos-processo/escritorio', 'FilepickerController@arquivosProcessoEscritorio');
     
     Route::any('entrada/anexo', 'FinanceiroController@entradaAnexo');
     Route::post('anexo-processo-baixa-add', 'AnexoFinanceiroController@create');
