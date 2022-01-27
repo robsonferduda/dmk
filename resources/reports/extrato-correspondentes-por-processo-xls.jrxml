@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="extrato-correspondentes" pageWidth="2200" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2160" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="2f6e4db4-9f8f-4ffe-9759-6e1fd142f492">
 	<property name="template.type" value="columnar"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -37,9 +37,11 @@
       t4.cd_banco_ban,
       t4.nm_banco_ban,  
       t2.nu_agencia_dba,
+      t2.dc_pix_dba,
       t2.nu_conta_dba,
       COALESCE (t5.vl_taxa_honorario_correspondente_pth, 0) as vl_taxa_honorario_correspondente_pth,
       COALESCE(sum(t9.vl_processo_despesa_pde),0) as vl_processo_despesa_pde ,
+      t6.cd_tipo_conta_tcb,
       t6.nm_tipo_conta_tcb,
       t8.nm_conta_correspondente_ccr as nm_razao_social_con,
       t7.nm_tipo_servico_tse,
@@ -70,8 +72,10 @@ GROUP BY
       t4.cd_banco_ban,
       t4.nm_banco_ban,  
       t2.nu_agencia_dba,
+      t2.dc_pix_dba,
       t2.nu_conta_dba,
       t5.vl_taxa_honorario_correspondente_pth,
+      t6.cd_tipo_conta_tcb,
       t6.nm_tipo_conta_tcb,
       t8.nm_conta_correspondente_ccr,
       t7.nm_tipo_servico_tse,
@@ -128,6 +132,8 @@ GROUP BY
 		<property name="com.jaspersoft.studio.field.label" value="dt_prazo_fatal_pro"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="processo_pro"/>
 	</field>
+	<field name="dc_pix_dba" class="java.lang.String"/>
+	<field name="cd_tipo_conta_tcb" class="java.lang.Integer"/>
 	<variable name="total_valor" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></variableExpression>
 	</variable>
@@ -135,7 +141,7 @@ GROUP BY
 		<band height="132">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<textField>
-				<reportElement x="0" y="0" width="2034" height="70" uuid="43cbd898-2560-4973-aff8-eabee6eae517">
+				<reportElement x="0" y="0" width="2160" height="70" uuid="43cbd898-2560-4973-aff8-eabee6eae517">
 					<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 					<property name="com.jaspersoft.layout.grid.y" value="1"/>
 					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -150,7 +156,7 @@ GROUP BY
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="SubTitle" x="0" y="70" width="2034" height="40" uuid="1ab5730b-df42-4fb8-83ad-79e09bdfa639">
+				<reportElement style="SubTitle" x="0" y="70" width="2160" height="40" uuid="1ab5730b-df42-4fb8-83ad-79e09bdfa639">
 					<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 					<property name="com.jaspersoft.layout.grid.y" value="2"/>
 					<property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -165,7 +171,7 @@ GROUP BY
 				<text><![CDATA[Pagamento de Correspondentes]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="110" width="2034" height="22" forecolor="#D40C08" uuid="4ff69337-6dad-4eeb-9ee3-37ad54c87520">
+				<reportElement x="0" y="110" width="2160" height="22" forecolor="#D40C08" uuid="4ff69337-6dad-4eeb-9ee3-37ad54c87520">
 					<property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
 					<property name="com.jaspersoft.layout.grid.x" value="-1"/>
 					<property name="com.jaspersoft.layout.grid.y" value="3"/>
@@ -286,78 +292,93 @@ GROUP BY
 				</textElement>
 				<text><![CDATA[Tipo de Conta]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="2034" y="0" width="100" height="23" uuid="c5113165-ea81-418d-bebb-0c18784d3a17">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="74fdc701-ba52-4680-b208-e78f21ccc6b6"/>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIX]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="45" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<printWhenExpression><![CDATA[new Boolean($F{nu_processo_pro} != null)]]></printWhenExpression>
 			<textField>
-				<reportElement x="0" y="0" width="179" height="19" isPrintWhenDetailOverflows="true" uuid="a6e94697-37bb-42c7-872b-2475918e70eb">
+				<reportElement x="0" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="a6e94697-37bb-42c7-872b-2475918e70eb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9fe36938-7772-42d8-83ea-341ab0a97e0c"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_processo_pro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="179" y="0" width="179" height="19" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
+				<reportElement x="179" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6681762-4648-431c-94d1-ad982a889938"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_razao_social_con}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="358" y="0" width="282" height="19" isPrintWhenDetailOverflows="true" uuid="15192a77-5da8-4df6-a7eb-0d6740865b19">
+				<reportElement x="358" y="0" width="282" height="45" isPrintWhenDetailOverflows="true" uuid="15192a77-5da8-4df6-a7eb-0d6740865b19">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c393130a-6d0f-46cd-b76e-780800880b29"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_tipo_servico_tse}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="640" y="0" width="134" height="19" isPrintWhenDetailOverflows="true" uuid="7f883af9-6bac-4fd2-85ba-407a7ae0797b">
+				<reportElement x="640" y="0" width="134" height="45" isPrintWhenDetailOverflows="true" uuid="7f883af9-6bac-4fd2-85ba-407a7ae0797b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3edf1c1c-c065-4bec-b0a2-4e57d832a552"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{dt_prazo_fatal_pro}]]></textFieldExpression>
 			</textField>
 			<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
-				<reportElement x="774" y="0" width="122" height="19" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
+				<reportElement x="774" y="0" width="122" height="45" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="896" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="78134d10-fff5-4901-916f-19be5706a4f4">
+				<reportElement x="896" y="0" width="178" height="45" isPrintWhenDetailOverflows="true" uuid="78134d10-fff5-4901-916f-19be5706a4f4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4010f1d4-c33d-45a4-bf54-a419ed386225"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1074" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="e47acc9e-9a65-433e-adef-2d8d945495ef">
+				<reportElement x="1074" y="0" width="178" height="45" isPrintWhenDetailOverflows="true" uuid="e47acc9e-9a65-433e-adef-2d8d945495ef">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="839c6979-e3e1-4d1c-a330-44c32b835f3f"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="1252" y="0" width="252" height="19" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
+				<reportElement stretchType="ElementGroupHeight" x="1252" y="0" width="252" height="45" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a52172cf-35bf-4081-a80e-ff8502eeff37"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{cd_banco_ban}  != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1504" y="0" width="174" height="19" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">
+				<reportElement x="1504" y="0" width="174" height="45" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffdfc381-0609-46c0-99dd-77211e38c55c"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1678" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="f749dc17-6160-48c3-82d4-c34be44bb02d">
+				<reportElement x="1678" y="0" width="178" height="45" isPrintWhenDetailOverflows="true" uuid="f749dc17-6160-48c3-82d4-c34be44bb02d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93cbf96-5ed9-4c39-93db-38cc59208b0f"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1856" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
+				<reportElement x="1856" y="0" width="178" height="45" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9c0da29-4617-4235-87e9-95a9b6eba8ba"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2034" y="0" width="100" height="45" uuid="40641bf9-8ee6-4011-bca4-394973acd27a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="74fdc701-ba52-4680-b208-e78f21ccc6b6"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{dc_pix_dba}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -311,11 +311,11 @@ GROUP BY
 				<text><![CDATA[Conta:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="75" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
+				<reportElement x="100" y="90" width="280" height="15" uuid="3f052f08-972e-4a2a-b816-210e08fff606"/>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="75" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
+				<reportElement x="0" y="90" width="100" height="15" uuid="1358a41d-b01a-473f-a15d-2a5221096f60"/>
 				<text><![CDATA[Tipo de Conta:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
@@ -331,13 +331,13 @@ GROUP BY
 				<text><![CDATA[Agência:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="90" width="100" height="15" isRemoveLineWhenBlank="true" uuid="a1e2b47f-a74a-4a88-a4b1-6148ec6065be">
+				<reportElement x="0" y="75" width="100" height="15" isRemoveLineWhenBlank="true" uuid="a1e2b47f-a74a-4a88-a4b1-6148ec6065be">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[PIX:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="90" width="280" height="15" isRemoveLineWhenBlank="true" uuid="a9a23987-c415-47b1-b2e0-053185471398">
+				<reportElement x="100" y="75" width="280" height="15" isRemoveLineWhenBlank="true" uuid="a9a23987-c415-47b1-b2e0-053185471398">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{dc_pix_dba}]]></textFieldExpression>
