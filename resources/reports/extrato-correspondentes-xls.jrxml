@@ -311,6 +311,7 @@ GROUP BY
 			<textField>
 				<reportElement x="1499" y="0" width="181" height="38" uuid="6f8bd4cf-690d-498f-a87c-fea64e87c9f4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6fc004cb-4462-431a-9a33-831011350f64"/>
+					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{dc_pix_dba}]]></textFieldExpression>
 			</textField>
