@@ -161,17 +161,24 @@
                             @if($correspondente->entidade->banco)
                                 <ul class="list-unstyled">
                                     <li>
-                                        <strong>Banco: </strong> {{ $correspondente->entidade->banco->banco->nm_banco_ban }}
-                                    </li>
-                                    <li>
-                                        <strong>Agência: </strong> {{ $correspondente->entidade->banco->nu_agencia_dba }}
-                                    </li>
-                                    <li>
-                                        <strong>Conta: </strong> {{ $correspondente->entidade->banco->nu_conta_dba }}
-                                    </li>
-                                    <li>
                                         <strong>Tpo de Conta: </strong> {{ $correspondente->entidade->banco->tipoConta->nm_tipo_conta_tcb }}
                                     </li>
+                                    @if($correspondente->entidade->banco->tipoConta->cd_tipo_conta_tcb != App\Enums\TipoConta::PIX)
+                                        <li>
+                                            <strong>Banco: </strong> {{ $correspondente->entidade->banco->banco->nm_banco_ban }}
+                                        </li>
+                                        <li>
+                                            <strong>Agência: </strong> {{ $correspondente->entidade->banco->nu_agencia_dba }}
+                                        </li>
+                                        <li>
+                                            <strong>Conta: </strong> {{ $correspondente->entidade->banco->nu_conta_dba }}
+                                        </li>
+                                    @else
+                                        <li>
+                                            <strong>PIX: </strong> {{ $correspondente->entidade->banco->dc_pix_dba }}
+                                        </li>
+                                    @endif
+                                   
                                 </ul>
                             @else
                                 <span>Não informados</span>

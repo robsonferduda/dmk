@@ -21,7 +21,8 @@ class RegistroBancario extends Model
     						'cd_banco_ban',
     						'cd_tipo_conta_tcb',
     						'cd_entidade_ete',
-    						'cd_conta_con'
+    						'cd_conta_con',
+                            'dc_pix_dba'
     					  ];
 
     public $timestamps = true;

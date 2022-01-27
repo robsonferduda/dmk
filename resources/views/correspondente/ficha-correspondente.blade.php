@@ -281,19 +281,7 @@
                                                         <label class="input">
                                                             <input type="text" name="nu_cpf_cnpj_dba" id="nu_cpf_cnpj_dba" placeholder="CPF" value="{{old('nu_cpf_cnpj_dba')}}">
                                                         </label>
-                                                    </section>   
-                                                    <section class="col col-4">
-                                                        <label class="label" >Banco</label>          
-                                                        <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
-                                                            <option selected value="">Selecione</option>
-                                                            @foreach(\App\Banco::all() as $banco)
-                                                                <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{ $banco->nm_banco_ban}}</option>
-                                                            @endforeach
-
-                                                        </select> 
-                                                    </section>                        
-                                                </div>
-                                                <div class="row">
+                                                    </section>                                                      
                                                     <section class="col col-4">
                                                         <label class="label">Tipo de Conta</label>
                                                         <label class="select"> 
@@ -304,7 +292,19 @@
                                                                 @endforeach
                                                               
                                                             </select> <i></i> </label>
-                                                    </section>
+                                                    </section>                   
+                                                </div>
+                                                <div class="row dados-conta">
+                                                    <section class="col col-4">
+                                                        <label class="label" >Banco</label>          
+                                                        <select  name="cd_banco_ban" class="select2" id="cd_banco_ban">
+                                                            <option selected value="">Selecione</option>
+                                                            @foreach(\App\Banco::all() as $banco)
+                                                                <option {!! (old('cd_banco_ban') == str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT) ? 'selected' : '' )!!}  value="{{str_pad($banco->cd_banco_ban,3, '0', STR_PAD_LEFT)}}">{{ $banco->nm_banco_ban}}</option>
+                                                            @endforeach
+
+                                                        </select> 
+                                                    </section>     
                                                     <section class="col col-4">
                                                         <label class="label">Agência</label>
                                                         <label class="input">
@@ -315,6 +315,14 @@
                                                         <label class="label">Conta</label>
                                                         <label class="input">
                                                             <input type="text" name="nu_conta_dba" placeholder="Conta" value="{{old('nu_conta_dba')}}" id="nu_conta_dba">
+                                                        </label>
+                                                    </section>
+                                                </div>
+                                                <div class="row dados-pix">                                                    
+                                                    <section class="col col-4">
+                                                        <label class="label">PIX</label>
+                                                        <label class="input">
+                                                            <input type="text" name="dc_pix_dba" placeholder="PIX" value="{{old('dc_pix_dba')}}" id="dc_pix_dba">
                                                         </label>
                                                     </section>
                                                 </div>
@@ -344,10 +352,14 @@
                                                                <tr>
                                                                     <td data-nm_titular_dba="{{ $banco->nm_titular_dba }}">{{ $banco->nm_titular_dba }}</td>
                                                                     <td data-nu_cpf_cnpj_dba="{{ $banco->nu_cpf_cnpj_dba }}">{{ $banco->nu_cpf_cnpj_dba }}</td>
-                                                                    <td data-cd_banco_ban="{{ str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT) }}">{{ $banco->banco->nm_banco_ban }}</td>
                                                                     <td data-cd_tipo_conta_tcb="{{ $banco->tipoConta->cd_tipo_conta_tcb }}">{{ $banco->tipoConta->nm_tipo_conta_tcb }}</td>
-                                                                    <td data-nu_agencia_dba="{{ $banco->nu_agencia_dba }}">{{ $banco->nu_agencia_dba }}</td>
-                                                                    <td data-nu_conta_dba="{{ $banco->nu_conta_dba }}">{{ $banco->nu_conta_dba }}</td>
+                                                                    @if($banco->tipoConta->cd_tipo_conta_tcb == App\Enums\TipoConta::PIX)
+                                                                        <td colspan="3" data-dc_pix_dba="{{ $banco->dc_pix_dba }}">PIX: {{ $banco->dc_pix_dba }}</td>
+                                                                    @else
+                                                                        <td data-cd_banco_ban="{{ !empty($banco->banco->cd_banco_ban) ? str_pad($banco->banco->cd_banco_ban,3, '0', STR_PAD_LEFT) : '' }}">{{ !empty($banco->banco->cd_banco_ban) ? $banco->banco->nm_banco_ban : ''}}</td>
+                                                                        <td data-nu_agencia_dba="{{ $banco->nu_agencia_dba }}">{{ $banco->nu_agencia_dba }}</td>
+                                                                        <td data-nu_conta_dba="{{ $banco->nu_conta_dba }}">{{ $banco->nu_conta_dba }}</td>
+                                                                    @endif
                                                                     <td class="center">
                                                                         <span>
                                                                             <a class="editarDadosBancarios btnContaEditar" style="cursor: pointer;" data-codigo="{{ $banco->cd_dados_bancarios_dba }}" data-edit="S"><i class="fa fa-edit"></i></a>

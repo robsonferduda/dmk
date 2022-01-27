@@ -21,13 +21,12 @@ class RegistroBancarioController extends Controller
     {  
 
         $registro = DB::table('dados_bancarios_dba')
-                ->join('banco_ban','dados_bancarios_dba.cd_banco_ban','=','banco_ban.cd_banco_ban')
+                ->leftjoin('banco_ban','dados_bancarios_dba.cd_banco_ban','=','banco_ban.cd_banco_ban')
                 ->join('tipo_conta_banco_tcb','dados_bancarios_dba.cd_tipo_conta_tcb','=','tipo_conta_banco_tcb.cd_tipo_conta_tcb')
                 ->where('dados_bancarios_dba.cd_entidade_ete','=',$id)
                 ->whereNull('dados_bancarios_dba.deleted_at')
                 ->selectRaw("concat(banco_ban.cd_banco_ban,' - ',banco_ban.nm_banco_ban) as nm_banco_ban, banco_ban.cd_banco_ban, dados_bancarios_dba.*,tipo_conta_banco_tcb.*")
                 ->get();
-
         return response()->json($registro); 
       
     }
@@ -36,7 +35,7 @@ class RegistroBancarioController extends Controller
     {  
 
         $registro = DB::table('dados_bancarios_dba')
-                ->join('banco_ban','dados_bancarios_dba.cd_banco_ban','=','banco_ban.cd_banco_ban')
+                ->leftjoin('banco_ban','dados_bancarios_dba.cd_banco_ban','=','banco_ban.cd_banco_ban')
                 ->join('tipo_conta_banco_tcb','dados_bancarios_dba.cd_tipo_conta_tcb','=','tipo_conta_banco_tcb.cd_tipo_conta_tcb')
                 ->where('dados_bancarios_dba.cd_dados_bancarios_dba','=',$id)
                 ->whereNull('dados_bancarios_dba.deleted_at')
@@ -65,7 +64,8 @@ class RegistroBancarioController extends Controller
         $rb->nu_agencia_dba = $request->agencia;
         $rb->nu_conta_dba = $request->conta;
         $rb->cd_banco_ban = $request->banco;
-        $rb->cd_tipo_conta_tcb = $request->tipo;
+        $rb->cd_tipo_conta_tcb = $request->tipo;        
+        $rb->dc_pix_dba = $request->pix;
         
         if($rb->save())
             return Response::json(array('message' => 'Registro editado com sucesso'), 200);

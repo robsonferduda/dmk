@@ -33,6 +33,7 @@ use App\ProcessoMensagem;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\EnderecoEletronico;
+use App\Enums\TipoConta;
 use App\ReembolsoTipoDespesa;
 use App\Identificacao;
 use App\RegistroBancario;
@@ -753,19 +754,31 @@ class CorrespondenteController extends Controller
             }
 
             //Atualização dos dados bancários
+
             if (!empty($request->registrosBancarios) && count(json_decode($request->registrosBancarios)) > 0) {
                 $registrosBancarios = json_decode($request->registrosBancarios);
                 for ($i = 0; $i < count($registrosBancarios); $i++) {
-                    $registro = RegistroBancario::create([
+                    if($registrosBancarios[$i]->tipo == TipoConta::PIX){
+                        $registro = RegistroBancario::create([
+                            'cd_entidade_ete' => $request->entidade,
+                            'cd_conta_con'    => $correspondente->cd_conta_con,
+                            'nm_titular_dba'  => $registrosBancarios[$i]->titular,
+                            'nu_cpf_cnpj_dba' => str_replace(array('.','-'), '', $registrosBancarios[$i]->cpf),
+                            'dc_pix_dba'      => $registrosBancarios[$i]->pix,
+                            'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
+                        ]);
+                    } else {
+                        $registro = RegistroBancario::create([
                             'cd_entidade_ete' => $request->entidade,
                             'cd_conta_con'    => $correspondente->cd_conta_con,
                             'nm_titular_dba'  => $registrosBancarios[$i]->titular,
                             'nu_cpf_cnpj_dba' => str_replace(array('.','-'), '', $registrosBancarios[$i]->cpf),
                             'nu_agencia_dba'  => $registrosBancarios[$i]->agencia,
                             'nu_conta_dba'    => $registrosBancarios[$i]->conta,
-                            'cd_banco_ban'    => $registrosBancarios[$i]->banco,
+                            'cd_banco_ban'    => !empty($registrosBancarios[$i]->banco) ? $registrosBancarios[$i]->banco : NULL,
                             'cd_tipo_conta_tcb' => $registrosBancarios[$i]->tipo
                         ]);
+                   }                    
                 }
             }
 

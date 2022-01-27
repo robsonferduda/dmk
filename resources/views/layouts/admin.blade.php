@@ -394,7 +394,7 @@
                     </li>
                     @endcan
                     
-                    <li class="menu {{ (Session::get('menu_pai') == 'suporte') ? 'open' : '' }}">
+                    {{--<li class="menu {{ (Session::get('menu_pai') == 'suporte') ? 'open' : '' }}">
                         <a href="#" title="Suporte" class="item_pai" id="suporte"><i class="fa fa-lg fa-fw fa-ticket"></i> <span class="menu-item-parent">Suporte</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'suporte') ? 'display: block;' : 'display: none;' }}">   
                             <li>
@@ -404,7 +404,7 @@
                                 <a href="{{ url('suporte/tickets') }}" title="Ticket"><span class="menu-item-parent"> Listar</span></a>
                             </li>                       
                         </ul>   
-                    </li>
+                    </li>--}}
                     
                     @role('super-user')
                         <li class="menu {{ (Session::get('menu_pai') == 'permissoes') ? 'open' : '' }}">

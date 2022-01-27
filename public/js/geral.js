@@ -1330,11 +1330,16 @@ $(document).ready(function() {
             success: function(response)
             {              
             	      	
+				console.log(response);
 				$.each(response, function(index, value){
 														
 					value.nu_cpf_cnpj_dba = formatCnpjCpf(value.nu_cpf_cnpj_dba);
-					$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.nm_titular_dba+"' >"+value.nm_titular_dba+"</td><td data-nu_cpf_cnpj_dba='"+value.nu_cpf_cnpj_dba+"' >"+value.nu_cpf_cnpj_dba+"</td><td data-cd_banco_ban='"+value.cd_banco_ban+"' >"+value.nm_banco_ban+"</td><td data-cd_tipo_conta_tcb='"+value.cd_tipo_conta_tcb+"' >"+value.nm_tipo_conta_tcb+"</td><td data-nu_agencia_dba='"+value.nu_agencia_dba+"' >"+value.nu_agencia_dba+"</td><td data-nu_conta_dba='"+value.nu_conta_dba+"' >"+value.nu_conta_dba+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='S' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluirDadosBancariosBase' style='cursor:pointer' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-trash'></i> </a></td></tr>");
 
+					if(value.cd_tipo_conta_tcb == 3) {
+						$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.nm_titular_dba+"' >"+value.nm_titular_dba+"</td><td data-nu_cpf_cnpj_dba='"+value.nu_cpf_cnpj_dba+"' >"+value.nu_cpf_cnpj_dba+"</td><td data-cd_tipo_conta_tcb='"+value.cd_tipo_conta_tcb+"' >"+value.nm_tipo_conta_tcb+"</td><td  colspan=3 data-dc_pix_dba='"+value.dc_pix_dba+"' > PIX: "+value.dc_pix_dba+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='S' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluirDadosBancariosBase' style='cursor:pointer' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-trash'></i> </a></td></tr>");
+					}else{
+						$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.nm_titular_dba+"' >"+value.nm_titular_dba+"</td><td data-nu_cpf_cnpj_dba='"+value.nu_cpf_cnpj_dba+"' >"+value.nu_cpf_cnpj_dba+"</td><td data-cd_tipo_conta_tcb='"+value.cd_tipo_conta_tcb+"' >"+value.nm_tipo_conta_tcb+"</td><td data-cd_banco_ban='"+value.cd_banco_ban+"' >"+value.nm_banco_ban+"</td><td data-nu_agencia_dba='"+value.nu_agencia_dba+"' >"+value.nu_agencia_dba+"</td><td data-nu_conta_dba='"+value.nu_conta_dba+"' >"+value.nu_conta_dba+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='S' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluirDadosBancariosBase' style='cursor:pointer' data-codigo='"+value.cd_dados_bancarios_dba+"'><i class='fa fa-trash'></i> </a></td></tr>");
+					}					
 				});   
 
             },
@@ -1348,9 +1353,31 @@ $(document).ready(function() {
 	function loadRegistroBancarioArray(registrosBancarios){
 
 		$.each(registrosBancarios, function(index, value){
-			$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='N' data-codigo='"+index+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-codigo='"+index+"'><i class='fa fa-trash'></i> </a></td></tr>");
+			if(value.tipo == 3) {
+				$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td colspan=3 data-dc_pix_dba='"+value.pix+"' > PIX: "+value.pix+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='N' data-codigo='"+index+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-codigo='"+index+"'><i class='fa fa-trash'></i> </a></td></tr>");
+			} else {
+				$('#tabelaRegistroBancario > tbody').append("<tr><td data-nm_titular_dba='"+value.titular+"' >"+value.titular+"</td><td data-nu_cpf_cnpj_dba='"+value.cpf+"' >"+value.cpf+"</td><td data-cd_tipo_conta_tcb='"+value.tipo+"' >"+value.tipoText+"</td><td data-cd_banco_ban='"+value.banco+"' >"+value.bancoText+"</td><td data-nu_agencia_dba='"+value.agencia+"' >"+value.agencia+"</td><td data-nu_conta_dba='"+value.conta+"' >"+value.conta+"</td><td class='center'><a class='editarDadosBancarios' style='cursor:pointer' data-edit='N' data-codigo='"+index+"'><i class='fa fa-edit'></i> </a>&nbsp;<a class='excluiRegistroBancario' style='cursor:pointer' data-codigo='"+index+"'><i class='fa fa-trash'></i> </a></td></tr>");
+			}
 		});	
 	} 
+
+	$('.dados-pix').hide();	
+	$("#cd_tipo_conta_tcb").change(function(){
+		let tipo = this.value;
+		if(tipo == 3) {			
+			$("#cd_banco_ban").prop('disabled',true).prop('readonly', true);		
+			$("#nu_agencia_dba").prop('disabled',true).prop('readonly', true);		
+			$("#nu_conta_dba").prop('disabled',true).prop('readonly', true);
+			$('.dados-conta').hide();	
+			$('.dados-pix').show();	
+		} else {
+			$("#cd_banco_ban").prop('disabled',false).prop('readonly', false);			
+			$("#nu_agencia_dba").prop('disabled',false).prop('readonly', false);			
+			$("#nu_conta_dba").prop('disabled',false).prop('readonly', false);			
+			$('.dados-conta').show();	
+			$('.dados-pix').hide();		
+		}
+	});
 
 	$("#btnSalvarContaBancaria").click(function(){
 
@@ -1363,17 +1390,22 @@ $(document).ready(function() {
 	    var tipoText = $("#cd_tipo_conta_tcb option:selected").text();
 	    var agencia = $("#nu_agencia_dba").val();
 	    var conta = $("#nu_conta_dba").val();
-	    
+		var pix = $("#dc_pix_dba").val();
+
 		if($.trim(titular) == ''){ flag = false; $("#erroContaBancaria").html("Campo Titular obrigatório"); }
 		if($.trim(cpf) == ''){ flag = false; $("#erroContaBancaria").html("Campo CPF obrigatório"); }
-		if($.trim(banco) == ''){ flag = false; $("#erroContaBancaria").html("Campo Banco obrigatório"); }
+		//if($.trim(banco) == ''){ flag = false; $("#erroContaBancaria").html("Campo Banco obrigatório"); }
 		if($.trim(tipo) == ''){ flag = false; $("#erroContaBancaria").html("Campo Tipo de Conta obrigatório"); }
-		if($.trim(agencia) == ''){ flag = false; $("#erroContaBancaria").html("Campo Agência obrigatório"); }
-		if($.trim(conta) == ''){ flag = false; $("#erroContaBancaria").html("Campo Conta obrigatório"); }
+		//if($.trim(agencia) == ''){ flag = false; $("#erroContaBancaria").html("Campo Agência obrigatório"); }
+		//if($.trim(conta) == ''){ flag = false; $("#erroContaBancaria").html("Campo Conta obrigatório"); }
 
 		if(flag){
 
-			var registroBancario = {titular: titular, cpf: cpf, banco: banco,bancoText: bancoText,tipo: tipo,tipoText:tipoText, agencia: agencia, conta:conta};
+			if(tipo == 3) {
+				var registroBancario = {titular: titular, cpf: cpf,tipo: tipo,tipoText:tipoText, pix: pix};
+			} else {
+				var registroBancario = {titular: titular, cpf: cpf, banco: banco,bancoText: bancoText,tipo: tipo,tipoText:tipoText, agencia: agencia, conta:conta};
+			}
 
 			if(fl_edicao_conta == true){
 				
@@ -1388,7 +1420,8 @@ $(document).ready(function() {
 		                "banco": banco,
 		                "tipo": tipo,
 		                "agencia": agencia,
-		                "conta": conta
+		                "conta": conta,
+						"pix": pix
 		            },
 					success: function(response){   
 
@@ -1425,6 +1458,7 @@ $(document).ready(function() {
 	   		$("#cd_tipo_conta_tcb").val('');
 	    	$("#nu_agencia_dba").val('');
 	    	$("#nu_conta_dba").val('');
+			$("#dc_pix_dba").val('');
 
 	    	fl_edicao_conta = false;
 
@@ -1445,6 +1479,7 @@ $(document).ready(function() {
 		var cd_tipo_conta_tcb = $(this).closest('tr').find('td[data-cd_tipo_conta_tcb]').data('cd_tipo_conta_tcb');
 		var nu_agencia_dba = $(this).closest('tr').find('td[data-nu_agencia_dba]').data('nu_agencia_dba');
 		var nu_conta_dba = $(this).closest('tr').find('td[data-nu_conta_dba]').data('nu_conta_dba');
+		var dc_pix_dba = $(this).closest('tr').find('td[data-dc_pix_dba]').data('dc_pix_dba');
 
 		nu_cpf_cnpj_dba = nu_cpf_cnpj_dba.replace(/\./g,'').replace('-','').replace('/','');
 
@@ -1469,7 +1504,7 @@ $(document).ready(function() {
 		$("#cd_tipo_conta_tcb").val(cd_tipo_conta_tcb).trigger('change');
 		$("#nu_agencia_dba").val(nu_agencia_dba);
 		$("#nu_conta_dba").val(nu_conta_dba);
-
+		$("#dc_pix_dba").val(dc_pix_dba);
 	});
 
 	$(document).on('click','.excluiRegistroBancario',function(){

@@ -115,17 +115,24 @@
                                                         <strong>CPF: </strong> {{ !empty($banco->nu_cpf_cnpj_dba) ? $banco->nu_cpf_cnpj_dba: ' ' }}
                                                     </li>
                                                     <li>
-                                                        <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
-                                                    </li>
-                                                    <li>
                                                         <strong>Tipo de Conta </strong> {{ !empty($banco->tipoConta->nm_tipo_conta_tcb) ? $banco->tipoConta->nm_tipo_conta_tcb : ' ' }}
                                                     </li>
-                                                    <li>
-                                                        <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
-                                                    </li>
+                                                    @if($banco->cd_tipo_conta_tcb != App\Enums\TipoConta::PIX)
+                                                        <li>
+                                                            <strong>Banco: </strong> {{ !empty($banco->banco->nm_banco_ban) ? $banco->banco->nm_banco_ban : ' ' }}
+                                                        </li>
+                                                        
+                                                        <li>
+                                                            <strong>Agência: </strong> {{ !empty($banco->nu_agencia_dba) ? $banco->nu_agencia_dba : ' ' }}
+                                                        </li>
+                                                        <li>
+                                                            <strong>Conta: </strong> {{ !empty($banco->nu_conta_dba) ? $banco->nu_conta_dba : ' ' }}
+                                                        </li>
+                                                    @else                                                    
+                                                        <li>
+                                                            <strong>PIX: </strong> {{ !empty($banco->dc_pix_dba) ? $banco->dc_pix_dba : ' ' }}
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                                 @endforeach   
                                             @else

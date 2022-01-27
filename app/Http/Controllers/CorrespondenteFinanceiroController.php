@@ -68,8 +68,7 @@ class CorrespondenteFinanceiroController extends Controller
             if (!$processo->honorario->anexoFinanceiro->isEmpty()) {
                 foreach ($processo->honorario->anexoFinanceiro as $anexo) {
                     if ($anexo->cd_tipo_financeiro_tfn == \TipoFinanceiro::SAIDA) {
-                        $age=array("Peter"=>"35","Ben"=>"37","Joe"=>"43");
-
+                        
                         //dd(md5_file(storage_path().'/arquivos/'.$processo->cd_conta_con.'/saidas/anexos/'.$processo->honorario->cd_processo_taxa_honorario_pth.'/'.$anexo->nm_anexo_financeiro_afn));
                         if (file_exists(storage_path().'/arquivos/'.$processo->cd_conta_con.'/saidas/anexos/'.$processo->honorario->cd_processo_taxa_honorario_pth.'/'.$anexo->nm_anexo_financeiro_afn)) {
                             $time = $anexo->updated_at->getTimestamp();
