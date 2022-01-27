@@ -271,49 +271,41 @@ GROUP BY
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<printWhenExpression><![CDATA[new Boolean($F{nu_processo_pro} != null)]]></printWhenExpression>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="0" width="280" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f">
-					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="100" y="0" width="280" height="15" uuid="5bc6f049-0f50-4072-9b5d-f57704611f3f"/>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="15" uuid="ce5d8451-df5a-47cf-9ac5-6ea894dad8c3">
-					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="0" width="100" height="15" uuid="ce5d8451-df5a-47cf-9ac5-6ea894dad8c3"/>
 				<text><![CDATA[Nome do Titular]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="15" width="280" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a">
-					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="100" y="15" width="280" height="15" uuid="7a21d009-5a69-40c7-bfed-6d574113fa7a"/>
 				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="15" width="100" height="15" uuid="d4595ba4-4dcd-412f-aaee-7ec9457bf732">
-					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="15" width="100" height="15" uuid="d4595ba4-4dcd-412f-aaee-7ec9457bf732"/>
 				<text><![CDATA[CPF/CNPJ:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="30" width="280" height="15" uuid="80a3b43c-cc86-41e5-b332-58a315b2474c">
+				<reportElement x="100" y="30" width="280" height="15" isRemoveLineWhenBlank="true" uuid="80a3b43c-cc86-41e5-b332-58a315b2474c">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{cd_banco_ban}   != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="30" width="100" height="15" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2">
+				<reportElement x="0" y="30" width="100" height="15" isRemoveLineWhenBlank="true" uuid="537e75ac-85f3-4de2-9349-f28850ec2eb2">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[Banco:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="60" width="280" height="15" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06">
+				<reportElement x="100" y="60" width="280" height="15" isRemoveLineWhenBlank="true" uuid="0741ab99-bbd5-43e5-93cb-56363dc4bf06">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="60" width="100" height="15" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b">
+				<reportElement x="0" y="60" width="100" height="15" isRemoveLineWhenBlank="true" uuid="39405ee7-a34f-4a8a-83fd-77dd79bfbb4b">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[Conta:]]></text>
@@ -327,23 +319,27 @@ GROUP BY
 				<text><![CDATA[Tipo de Conta:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="45" width="280" height="15" uuid="51903c0a-eb0c-4d68-8ab8-beaae5bc8432">
+				<reportElement x="100" y="45" width="280" height="15" isRemoveLineWhenBlank="true" uuid="51903c0a-eb0c-4d68-8ab8-beaae5bc8432">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="45" width="100" height="15" uuid="f59c550f-de3b-4403-81e8-f1abab8c8ff7">
+				<reportElement x="0" y="45" width="100" height="15" isRemoveLineWhenBlank="true" uuid="f59c550f-de3b-4403-81e8-f1abab8c8ff7">
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} != 3]]></printWhenExpression>
 				</reportElement>
 				<text><![CDATA[Agência:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="90" width="100" height="15" uuid="a1e2b47f-a74a-4a88-a4b1-6148ec6065be"/>
+				<reportElement x="0" y="90" width="100" height="15" isRemoveLineWhenBlank="true" uuid="a1e2b47f-a74a-4a88-a4b1-6148ec6065be">
+					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
+				</reportElement>
 				<text><![CDATA[PIX:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="90" width="280" height="15" uuid="a9a23987-c415-47b1-b2e0-053185471398"/>
+				<reportElement x="100" y="90" width="280" height="15" isRemoveLineWhenBlank="true" uuid="a9a23987-c415-47b1-b2e0-053185471398">
+					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{dc_pix_dba}]]></textFieldExpression>
 			</textField>
 		</band>
