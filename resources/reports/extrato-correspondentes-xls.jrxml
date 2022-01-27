@@ -244,60 +244,75 @@ GROUP BY
 				</textElement>
 				<text><![CDATA[Tipo de Conta]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="1499" y="0" width="181" height="23" uuid="91aea669-8940-4ae0-9d8c-adc4b332a945">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6fc004cb-4462-431a-9a33-831011350f64"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIX]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<printWhenExpression><![CDATA[new Boolean($F{nm_conta_correspondente_ccr} != null)]]></printWhenExpression>
 			<textField>
-				<reportElement x="0" y="0" width="179" height="19" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
+				<reportElement x="0" y="0" width="179" height="38" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6681762-4648-431c-94d1-ad982a889938"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_conta_correspondente_ccr}]]></textFieldExpression>
 			</textField>
 			<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
-				<reportElement x="179" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
+				<reportElement x="179" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="357" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="78134d10-fff5-4901-916f-19be5706a4f4">
+				<reportElement x="357" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="78134d10-fff5-4901-916f-19be5706a4f4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4010f1d4-c33d-45a4-bf54-a419ed386225"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_titular_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="535" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="e47acc9e-9a65-433e-adef-2d8d945495ef">
+				<reportElement x="535" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="e47acc9e-9a65-433e-adef-2d8d945495ef">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="839c6979-e3e1-4d1c-a330-44c32b835f3f"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_cpf_cnpj_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="713" y="0" width="252" height="19" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
+				<reportElement stretchType="ElementGroupHeight" x="713" y="0" width="252" height="38" isPrintWhenDetailOverflows="true" uuid="d23029a9-deb2-4f74-bf05-9ed67dea34eb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a52172cf-35bf-4081-a80e-ff8502eeff37"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{cd_banco_ban}  != null ? String.format("%1$" + 3 + "s",$F{cd_banco_ban} ).replace(' ', '0')+" - "+$F{nm_banco_ban} : null]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="965" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">
+				<reportElement x="965" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="c7f0bcf5-3287-4278-bf99-0c234b410450">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ffdfc381-0609-46c0-99dd-77211e38c55c"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_agencia_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1143" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="f749dc17-6160-48c3-82d4-c34be44bb02d">
+				<reportElement x="1143" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="f749dc17-6160-48c3-82d4-c34be44bb02d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e93cbf96-5ed9-4c39-93db-38cc59208b0f"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_conta_dba}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="1321" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
+				<reportElement x="1321" y="0" width="178" height="38" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9c0da29-4617-4235-87e9-95a9b6eba8ba"/>
 					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1499" y="0" width="181" height="38" uuid="6f8bd4cf-690d-498f-a87c-fea64e87c9f4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6fc004cb-4462-431a-9a33-831011350f64"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{dc_pix_dba}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
