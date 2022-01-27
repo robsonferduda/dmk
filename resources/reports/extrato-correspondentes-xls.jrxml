@@ -295,6 +295,7 @@ GROUP BY
 			<textField isBlankWhenNull="true">
 				<reportElement x="1321" y="0" width="178" height="19" isPrintWhenDetailOverflows="true" uuid="8ac094b0-73bb-4fe1-9abc-1db607adbe90">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c9c0da29-4617-4235-87e9-95a9b6eba8ba"/>
+					<printWhenExpression><![CDATA[$F{cd_tipo_conta_tcb} == 3]]></printWhenExpression>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_tipo_conta_tcb}]]></textFieldExpression>
 			</textField>
