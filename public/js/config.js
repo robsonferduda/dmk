@@ -1,3 +1,3 @@
 
 
-var path_app = 'https://easyjuris.com.br/';
+var path_app = 'https://sistema.lawyerexpress.com.br/';
