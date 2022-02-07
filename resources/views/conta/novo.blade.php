@@ -1,7 +1,7 @@
 @extends('layouts.register')
 @section('content')
 	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin: 0 auto; float: none;">
-		<img class="img-responsive" style="margin-bottom: 10px; margin-top: 50px;" src="" alt="Easyjuris"> 
+		{{-- <img class="img-responsive" style="margin-bottom: 10px; margin-top: 50px;" src="{{ asset('img/logo_light.png') }}" alt="Easyjuris">--}}
 		<div class="well no-padding">			
 			{!! Form::open(['id' => 'frm-add-conta', 'url' => 'contas', 'class' => 'smart-form client-form']) !!}
 				<header>
