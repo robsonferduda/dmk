@@ -308,31 +308,31 @@ GROUP BY
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<printWhenExpression><![CDATA[new Boolean($F{nu_processo_pro} != null)]]></printWhenExpression>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="a6e94697-37bb-42c7-872b-2475918e70eb">
+				<reportElement x="0" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="a6e94697-37bb-42c7-872b-2475918e70eb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9fe36938-7772-42d8-83ea-341ab0a97e0c"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nu_processo_pro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="179" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
+				<reportElement x="179" y="0" width="179" height="45" isPrintWhenDetailOverflows="true" uuid="41b62d71-1ac2-41ac-b58e-3c47638d72dc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6681762-4648-431c-94d1-ad982a889938"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_razao_social_con}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="358" y="0" width="282" height="45" isPrintWhenDetailOverflows="true" uuid="15192a77-5da8-4df6-a7eb-0d6740865b19">
+				<reportElement x="358" y="0" width="282" height="45" isPrintWhenDetailOverflows="true" uuid="15192a77-5da8-4df6-a7eb-0d6740865b19">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c393130a-6d0f-46cd-b76e-780800880b29"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{nm_tipo_servico_tse}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement isPrintRepeatedValues="false" x="640" y="0" width="134" height="45" isPrintWhenDetailOverflows="true" uuid="7f883af9-6bac-4fd2-85ba-407a7ae0797b">
+				<reportElement x="640" y="0" width="134" height="45" isPrintWhenDetailOverflows="true" uuid="7f883af9-6bac-4fd2-85ba-407a7ae0797b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3edf1c1c-c065-4bec-b0a2-4e57d832a552"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{dt_prazo_fatal_pro}]]></textFieldExpression>
 			</textField>
 			<textField pattern="R$#,##0.##;R$-##0.##" isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="774" y="0" width="122" height="45" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
+				<reportElement x="774" y="0" width="122" height="45" isPrintWhenDetailOverflows="true" uuid="fa948d5b-5e17-46f1-9c4d-c600f7a90269">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fd86643e-2434-497f-8274-ec65fc0a0531"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{vl_taxa_honorario_correspondente_pth}.add($F{vl_processo_despesa_pde})]]></textFieldExpression>
