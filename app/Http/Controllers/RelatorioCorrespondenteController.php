@@ -104,7 +104,8 @@ class RelatorioCorrespondenteController extends Controller
                             'tipo' => $ret->nm_tipo_servico_tse,
                             'data' => date('d-m-Y', strtotime($ret->dt_prazo_fatal_pro)),
                             'registros_bancarios' => $registrosBancarios,
-                            'razao_social' => $ret->nm_razao_social_con
+                            'razao_social' => $ret->nm_razao_social_con,
+                            'emails' => $ret->emails
                         );
 
 
@@ -187,7 +188,8 @@ class RelatorioCorrespondenteController extends Controller
                         $correspondentes[$ret->cd_correspondente_cor] = array(                    
                             'valor' => (float) $ret->vl_taxa_honorario_correspondente_pth + (float) $ret->vl_processo_despesa_pde,                      
                             'registros_bancarios' => $registrosBancarios,
-                            'razao_social' => $ret->nm_razao_social_con
+                            'razao_social' => $ret->nm_razao_social_con,
+                            'emails' => $ret->emails
                         );
 
 
@@ -303,7 +305,8 @@ class RelatorioCorrespondenteController extends Controller
                     t6.nm_tipo_conta_tcb,
                     t8.nm_conta_correspondente_ccr as nm_razao_social_con,
                     t7.nm_tipo_servico_tse,
-                    t3.dt_prazo_fatal_pro
+                    t3.dt_prazo_fatal_pro,
+                    (SELECT array_to_string (ARRAY(select dc_endereco_eletronico_ede from endereco_eletronico_ele a1 where a1.cd_entidade_ete  = t8.cd_entidade_ete), ' | '::text)  AS array_to_string) as emails
                 FROM
                     processo_pro t3
                     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
@@ -347,7 +350,8 @@ class RelatorioCorrespondenteController extends Controller
                         t6.nm_tipo_conta_tcb,
                         t8.nm_conta_correspondente_ccr,
                         t7.nm_tipo_servico_tse,
-                        t3.dt_prazo_fatal_pro
+                        t3.dt_prazo_fatal_pro,
+                        t8.cd_entidade_ete
                     ORDER BY 
                         t3.cd_processo_pro desc
                     ";
@@ -373,7 +377,8 @@ class RelatorioCorrespondenteController extends Controller
                     COALESCE(sum(t9.vl_processo_despesa_pde),0) as vl_processo_despesa_pde ,
                     t6.cd_tipo_conta_tcb,
                     t6.nm_tipo_conta_tcb,
-                    t8.nm_conta_correspondente_ccr as nm_razao_social_con
+                    t8.nm_conta_correspondente_ccr as nm_razao_social_con,
+                    (SELECT array_to_string (ARRAY(select dc_endereco_eletronico_ede from endereco_eletronico_ele a1 where a1.cd_entidade_ete  = t8.cd_entidade_ete), ' | '::text)  AS array_to_string) as emails
                 FROM
                     processo_pro t3
                     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
@@ -413,7 +418,8 @@ class RelatorioCorrespondenteController extends Controller
                         t2.nu_conta_dba,                        
                         t6.cd_tipo_conta_tcb,
                         t6.nm_tipo_conta_tcb,
-                        t8.nm_conta_correspondente_ccr  
+                        t8.nm_conta_correspondente_ccr,
+                        t8.cd_entidade_ete 
                     ORDER BY cd_correspondente_cor    
                     ";
 
