@@ -26,7 +26,8 @@ class PagamentoCorrespondenteSumarizadoXlsExport implements FromView, ShouldAuto
                         $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(35);
                         $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
                         $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(15); 
-                        $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(100);
+                        $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(30);
+                        $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(100);
                        
                     }
             ];

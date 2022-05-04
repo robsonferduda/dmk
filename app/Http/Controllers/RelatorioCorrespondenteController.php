@@ -336,6 +336,7 @@ class RelatorioCorrespondenteController extends Controller
                
                 $sql .= "
                     GROUP BY 
+                        t8.nm_conta_correspondente_ccr,
                         t3.cd_processo_pro,
                         nu_processo_pro,
                         t2.nm_titular_dba,
@@ -347,8 +348,7 @@ class RelatorioCorrespondenteController extends Controller
                         t2.nu_conta_dba,
                         t5.vl_taxa_honorario_correspondente_pth,
                         t6.cd_tipo_conta_tcb,
-                        t6.nm_tipo_conta_tcb,
-                        t8.nm_conta_correspondente_ccr,
+                        t6.nm_tipo_conta_tcb,                        
                         t7.nm_tipo_servico_tse,
                         t3.dt_prazo_fatal_pro,
                         t8.cd_entidade_ete
