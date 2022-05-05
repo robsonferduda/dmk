@@ -306,7 +306,7 @@ class RelatorioCorrespondenteController extends Controller
                     t8.nm_conta_correspondente_ccr as nm_razao_social_con,
                     t7.nm_tipo_servico_tse,
                     t3.dt_prazo_fatal_pro,
-                    (SELECT array_to_string (ARRAY(select dc_endereco_eletronico_ede from endereco_eletronico_ele a1 where a1.cd_entidade_ete  = t8.cd_entidade_ete), ' | '::text)  AS array_to_string) as emails
+                    (SELECT array_to_string (ARRAY(select dc_endereco_eletronico_ede from endereco_eletronico_ele a1 where a1.cd_entidade_ete  = t8.cd_entidade_ete), ';'::text)  AS array_to_string) as emails
                 FROM
                     processo_pro t3
                     INNER JOIN processo_taxa_honorario_pth t5 ON (t3.cd_processo_pro = t5.cd_processo_pro and t5.deleted_at is null)
@@ -353,7 +353,7 @@ class RelatorioCorrespondenteController extends Controller
                         t3.dt_prazo_fatal_pro,
                         t8.cd_entidade_ete
                     ORDER BY 
-                        t3.cd_processo_pro desc
+                        t8.nm_conta_correspondente_ccr,t3.cd_processo_pro desc
                     ";
 
         $resultado = \DB::select($sql);
