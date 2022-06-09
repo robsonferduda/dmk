@@ -6,6 +6,7 @@
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Tipo de Serviço</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Prazo</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Valor</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Email</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Titular</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">CPF/CNPJ</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">Tipo de Conta</th>
@@ -19,7 +20,8 @@
         @endphp
         @foreach($dados['processos'] as $processo)
         @php
-           $i++;
+           //$i++;
+           $i = 1;
            $primeira_passada = true;
            //rowspan="{{ count($processo['registros_bancarios']) }}"
         @endphp
@@ -43,6 +45,9 @@
                     <td rowspan="{{ count($processo['registros_bancarios']) }}" style="border: 1px hair #000000;text-align: center;vertical-align: center;{{ ($i%2 == 0) ? 'background-color:#CDE5CD' : '' }}" >
                         {{ $processo['valor'] }}
                     </td>  
+                    <td rowspan="{{ count($processo['registros_bancarios']) }}" style="border: 1px hair #000000;text-align: center;vertical-align: center;{{ ($i%2 == 0) ? 'background-color:#CDE5CD' : '' }}" >
+                        {{ $processo['emails'] }}
+                    </td> 
                
                 @endif
                 @php
