@@ -123,6 +123,9 @@
         <aside id="left-panel">
             <div class="login-info">
                 <span> 
+                    <span>
+                        {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                    </span>
                     @role('correspondente') 
                         <a href="{{ url("correspondente/perfil/".\Crypt::encrypt(Auth::user()->cd_entidade_ete)) }}">
                             @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 

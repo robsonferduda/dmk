@@ -111,7 +111,7 @@
                         <strong>Processo Cancelado!</strong> O processo está cancelado.
                     </div>
                     @endif
-                    @role('administrator|colaborador')
+                    
                     <div class="well">
                         <div class="row">
 
@@ -159,7 +159,7 @@
                                     </form>  
                         <div style="clear: both;"></div>
                         </div>
-                    @endrole
+                   
 
                     <div class="jarviswidget jarviswidget-sortable">
                         <header role="heading" class="ui-sortable-handle">
@@ -414,7 +414,7 @@
 
                                 </fieldset>
 
-                                @role('administrator|colaborador')
+                                
 
                                     <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
                                         <div class="onoffswitch-container">
@@ -431,9 +431,7 @@
 
                                     <h4 class="label-anexos-escritorio {{ (count($processo->anexos) >= 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
 
-                                @endrole
-
-                                @role('correspondente') 
+                               
 
                                     <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0) ? '' : 'none' }}">                          
                                         <div class="onoffswitch-container">
@@ -448,7 +446,7 @@
                                         </div>
                                     </section>
                                 
-                                @endrole
+                               
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
 
