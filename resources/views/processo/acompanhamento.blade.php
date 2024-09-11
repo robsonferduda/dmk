@@ -279,7 +279,7 @@
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
-                    //$('.container-acompanhamento').loader('show'); 
+                    $('.container-acompanhamento').loader('show'); 
                     $('.pagination').empty();                      
                 },
                 success: function(response){ 

@@ -675,6 +675,7 @@
             var hostname = document.location.hostname;  
             var host = document.location.origin;
 
+            /*
             var socket = io.connect('http://'+hostname+':3000',{secure: true},verify=false);
             socket.on("notificacao:App\\Events\\EventNotification", function(message){
 
@@ -684,7 +685,7 @@
                     $(".progress-bar-upload-arquivo-processo").css('width',message.data.total+"%");
                 }
 
-            });
+            });*/
 
             $.ajax({
                 url: host+"/api/mensagem/destinatario/nao-lidas/"+cod_conta,
