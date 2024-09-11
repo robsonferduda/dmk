@@ -231,6 +231,11 @@
                             @endcan
                             @can('correspondente.relatorios')
                                 <li>
+                                    <a href="{{ url('correspondente/pagamentos') }}" title="Pagamentos de Correspondentes"><span class="menu-item-parent">Pagamentos</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.relatorios')
+                                <li>
                                     <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
