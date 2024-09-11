@@ -78,6 +78,7 @@ class RelatorioCorrespondenteController extends Controller
                     $registrosBancarios = [];
                     $idProcessoAnt = '';
                     $valorTotal = 0;
+                    
                     foreach($retorno as $ret) {
 
                         if($idProcessoAnt != $ret->cd_processo_pro) {
