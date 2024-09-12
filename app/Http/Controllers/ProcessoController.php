@@ -12,6 +12,7 @@ use App\Cliente;
 use App\Conta;
 use App\Correspondente;
 use App\TipoProcesso;
+use App\LogNotificacao;
 use App\Processo;
 use App\ProcessoDespesa;
 use App\TipoDespesa;
@@ -179,6 +180,8 @@ class ProcessoController extends Controller
                         foreach ($emails as $email) {
                             $processo->email = $email->dc_endereco_eletronico_ede;
                             $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+
+
 
                             try {
                                 $processo->notificarFinalizacaoCorrespondente($processo);
@@ -953,6 +956,11 @@ class ProcessoController extends Controller
                 $processo->save();
 
                 foreach ($emails as $email) {
+
+                    $log = array('email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
+
+                    LogNotificacao::create($log);
+
                     $processo->email =  $email->dc_endereco_eletronico_ede;
                     $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
                     $processo->notificarCorrespondente($processo);
