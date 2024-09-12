@@ -13,6 +13,8 @@
         
         <meta charset="utf-8">
         <title>{{ env('APP_NAME') }}</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="base-url" content="{{ env('APP_URL') }}">
         <meta name="robots" content="noindex">
         <meta name="description" content="">
         <meta name="author" content="">

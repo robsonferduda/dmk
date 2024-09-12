@@ -236,6 +236,9 @@
 
     $(document).ready(function() {
 
+        var host =  $('meta[name="base-url"]').attr('content');
+        alert(host);
+
         function formataNulo(valor){
 
             return valor != null ? valor : "";

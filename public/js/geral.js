@@ -7,6 +7,8 @@ $(document).ready(function() {
     var pathname = _location.substring(0, webFolderIndex);
     var host = document.location.origin;
 
+	var host =  $('meta[name="base-url"]').attr('content');
+
 	/** ======================== Masks ========================   **/
 	$('.hr_audiencia_pro').mask('00:00');
 	$('.dt_prazo_fatal_pro').mask('00/00/0000');
