@@ -991,6 +991,9 @@ class ProcessoController extends Controller
         //Notifica o escritório sobre a decisão do correspondente
         $email = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
 
+        $log = array('email_destinatario' => $email, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+        LogNotificacao::create($log);
+
         $processo->email = $email;
         $processo->token = $token;
         $processo->parecer = $resposta;
