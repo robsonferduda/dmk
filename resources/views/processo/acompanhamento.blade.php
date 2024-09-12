@@ -237,7 +237,6 @@
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
-        alert(host);
 
         function formataNulo(valor){
 
@@ -277,7 +276,7 @@
 
         $.ajax({
                 
-                url: '../../api/processo/andamento',
+                url: host+'/api/processo/andamento',
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
