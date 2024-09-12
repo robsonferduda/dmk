@@ -278,6 +278,7 @@
                 
                 url: host+'/api/processo/andamento',
                 type: 'GET',
+                contentType: 'application/json',
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
