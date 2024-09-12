@@ -363,7 +363,7 @@
 
             $.ajax({
                 
-                url: host+'processos/buscar/andamento',
+                url: host+'/processos/buscar/andamento',
                 type: 'POST',
                 data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "statusProcesso": statusProcesso ,"flag": false },
                 dataType: "JSON",
