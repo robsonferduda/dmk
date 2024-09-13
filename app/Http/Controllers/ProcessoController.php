@@ -990,7 +990,7 @@ class ProcessoController extends Controller
 
         //Notifica o escritório sobre a decisão do correspondente
         $email = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
-        $email = EnderecoEletronico::where('cd_conta_con')->where('cd_tipo_endereco_eletronico', 2)->first();
+        $email = EnderecoEletronico::where('cd_conta_con')->where('cd_tipo_endereco_eletronico_tee', 2)->first();
 
         $email_notificacao = $email->dc_endereco_eletronico_ede;
 
