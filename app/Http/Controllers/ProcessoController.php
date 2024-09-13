@@ -957,7 +957,7 @@ class ProcessoController extends Controller
 
                 foreach ($emails as $email) {
 
-                    $log = array('email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
+                    $log = array('tipo_notificacao' => 'notificacao_correspondente', 'email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
 
                     LogNotificacao::create($log);
 
