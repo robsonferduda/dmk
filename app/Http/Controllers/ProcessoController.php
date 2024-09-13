@@ -981,9 +981,15 @@ class ProcessoController extends Controller
     
         //Atualiza o status do processo de acordo com a resposta do correspondente
         if ($resposta == 'S') {
+
+            $tipo_notificacao = 'aceite_correspondente';
+
             $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
             $processo->save();
         } else {
+
+            $tipo_notificacao = 'recusa_correspondente';
+
             $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE;
             $processo->save();
         }
@@ -994,7 +1000,7 @@ class ProcessoController extends Controller
 
         $email_notificacao = $email->dc_endereco_eletronico_ede;
 
-        $log = array('email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
         LogNotificacao::create($log);
 
         $processo->email = $email_notificacao;
