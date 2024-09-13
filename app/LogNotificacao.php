@@ -20,7 +20,7 @@ class LogNotificacao extends Model
                             'nu_processo',
                             'origem',
                             'email_destinatario',
-                            'log_notificacao'
+                            'tipo_notificacao'
     					  ];
 
     public $timestamps = true;
