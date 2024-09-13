@@ -994,7 +994,7 @@ class ProcessoController extends Controller
 
         $email_notificacao = $email->dc_endereco_eletronico_ede;
 
-        $log = array('email_destinatario' => $email, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+        $log = array('email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
         LogNotificacao::create($log);
 
         $processo->email = $email_notificacao;
