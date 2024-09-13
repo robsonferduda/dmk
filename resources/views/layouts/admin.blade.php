@@ -20,7 +20,7 @@
         <meta name="author" content="">
         <meta name="token" content="{{ csrf_token() }}">
         <meta name="conta" content="{{ Session::get('SESSION_CD_CONTA') }}">
-        <meta name="id_usuario" content="{{ Auth::user()->id }}">
+        <meta name="id_usuario" content="{{ (Auth::user()) ? Auth::user()->id : '' }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="icon" href="{{ asset('img/favicon/favicon-32x32.png') }}" type="image/x-icon">
