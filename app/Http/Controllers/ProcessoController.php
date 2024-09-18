@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Excel;
 use App\User;
 use App\Entidade;
 use App\Vara;
@@ -32,7 +33,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Laracasts\Flash\Flash;
-use Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use App\Imports\ProcessoImport;
@@ -45,6 +45,8 @@ class ProcessoController extends Controller
     {
         $this->middleware('auth', ['except' => ['responderNotificacao']]);
         $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
+        Session::put('menu_pai','processos');
+        Session::forget('item_pai');
     }
 
     //Método utilizado para escritório e correspondente
@@ -55,6 +57,8 @@ class ProcessoController extends Controller
         } else {
             $conta = 'cd_conta_con';
         }
+
+        Session::put('item_pai','processo.listar');
 
         if (!empty(\Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso'))) {
             $tiposProcesso = \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso');
@@ -96,6 +100,8 @@ class ProcessoController extends Controller
 
     public function acompanhar()
     {
+        Session::put('item_pai','processo.acompanhamento');
+
         if (!empty(\Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso'))) {
             $tiposProcesso = \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso');
         } else {
@@ -242,6 +248,7 @@ class ProcessoController extends Controller
     public function relatorio($id)
     {
         $id = \Crypt::decrypt($id);
+        Session::put('item_pai','processo.relatorios');
 
         $processo = Processo::where('cd_processo_pro', $id)->where('cd_conta_con', $this->cdContaCon)->first();
     
@@ -744,6 +751,8 @@ class ProcessoController extends Controller
 
     public function novo()
     {
+        Session::put('item_pai','processo.novo');
+
         if (!\Cache::has('estados')) {
             $estados = Estado::orderBy('nm_estado_est')->get();
             \Cache::put('estados', $estados, now()->addMinutes(1440));

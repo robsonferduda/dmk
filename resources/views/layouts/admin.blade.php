@@ -268,31 +268,34 @@
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                             @can('processo.novo')   
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.novo') ? 'active' : '' }}">
                                     <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
                                 </li>
                             @endcan
                             @can('processo.listar')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.listar') ? 'active' : '' }}">
                                     <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
                                 </li>
                             @endcan
                             @can('processo.acompanhamento')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.acompanhamento') ? 'active' : '' }}">
                                     <a href="{{ url('processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
                                 </li>
                             @endcan
                             @can('processo.relatorios')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.notificacao') ? 'active' : '' }}">
+                                    <a href="{{ url('notificacao/processos') }}" title="Importar"><span class="menu-item-parent">Notificações</span></a>
+                                </li>                                 
+                            @endcan
+                            @can('processo.relatorios')
+                                <li class="{{ (Session::get('item_pai') == 'processo.relatorios') ? 'active' : '' }}">
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
                             @can('processo.importar')
-                            <li>
                                 <li>
                                     <a href="{{ url('processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
                                 </li>                                 
-                            </li>
                             @endcan
                         </ul>   
                     </li>

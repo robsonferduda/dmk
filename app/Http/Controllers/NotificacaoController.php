@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
  
 use App\Conta;
+use App\GrupoNotificacao;
+use App\EmailNotificacao;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -18,10 +20,38 @@ class NotificacaoController extends Controller
         $this->entidade = \Session::get('SESSION_CD_ENTIDADE');
     }
 
+    public function processos()
+    {
+        Session::put('menu_pai','processos');
+        Session::put('item_pai','processo.notificacao');
+
+        $conta = Conta::where('cd_conta_con',$this->conta)->first();
+        $grupos = GrupoNotificacao::where('cd_conta_con',$this->conta)->orderBy('ds_grupo_grn')->get();
+
+        return view('notificacao/processos', compact('grupos'));
+    }
+
+    public function novoGrupo()
+    {
+        Session::put('menu_pai','processos');
+
+        $conta = Conta::where('cd_conta_con',$this->conta)->first();
+
+        return view('notificacao/novo-grupo',['conta' => $conta]);
+    }
+
     public function preferencias()
     {
         $conta = Conta::where('cd_conta_con',$this->conta)->first();
         return view('configuracoes/notificacoes',['conta' => $conta]);
+    }
+
+    public function deleteEmail($id)
+    {
+        $email = EmailNotificacao::find($id);
+        $email->delete();
+
+        return redirect()->back();
     }
 
     public function salvarPreferencias(Request $request)

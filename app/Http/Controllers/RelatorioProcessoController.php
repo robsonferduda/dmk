@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use Laracasts\Flash\Flash;
-use Illuminate\Http\Request;
 use App\Conta;
 use App\Cliente;
 use App\Processo;
 use App\TipoDespesa;
+use Laracasts\Flash\Flash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use App\Exports\ProcessoParaClienteExport;
 use App\Exports\ProcessoPautaDiariaExportPDF;
 use App\Exports\ProcessoPautaDiariaExportExcel;
@@ -27,6 +28,9 @@ class RelatorioProcessoController extends Controller
 
     public function relatorios()
     {
+        Session::put('menu_pai','processos');
+        Session::put('item_pai','processo.relatorios');
+
         return view('processo/relatorios', ['arquivos' => $this->getFiles()]);
     }
 
