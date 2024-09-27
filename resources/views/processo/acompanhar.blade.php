@@ -111,10 +111,9 @@
                         <strong>Processo Cancelado!</strong> O processo está cancelado.
                     </div>
                     @endif
-                    
+                    @role('administrator|colaborador')
                     <div class="well">
                         <div class="row">
-
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button">
                                 <div class='sub-box-button' >
                                     <form action="{{ url('processo/atualizar-status') }}" class="form-inline" method="POST">
@@ -152,14 +151,13 @@
                             </div>
                         </div>
                         <form id="cancelarProcessoForm" action="{{ url('proctesso/atualizar-status') }}" method="POST">
-                                                    {{ csrf_field() }}
-                                        <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
-                                        <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
-                                        
-                                    </form>  
+                            {{ csrf_field() }}
+                            <input type="hidden" id="processo" name="processo" value="{{ $processo->cd_processo_pro }}">  
+                            <input type="hidden" id="status_cancelamento" name="status" value="{{ App\Enums\StatusProcesso::CANCELADO }}">     
+                        </form>  
                         <div style="clear: both;"></div>
-                        </div>
-                   
+                    </div>
+                    @endrole
 
                     <div class="jarviswidget jarviswidget-sortable">
                         <header role="heading" class="ui-sortable-handle">
