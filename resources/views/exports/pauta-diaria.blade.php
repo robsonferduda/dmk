@@ -10,8 +10,9 @@
     html {
         font-family: 'Varela', sans-serif;
     }
+    table {border: none;}
 </style>
-<table>
+<table cellspacing="0" cellpadding="0">
     <tr>
         <td colspan="13">
             <p>Pauta Diária - Período de ___/___/_____ a ___/___/_____</p>
