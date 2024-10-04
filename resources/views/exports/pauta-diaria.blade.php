@@ -12,10 +12,12 @@
     }
 </style>
 <table>
-    <tr><td colspan="13"><h2>Pauta Diária</h2></td></tr>
+    <tr>
+        <td colspan="13">
+            <h2>Pauta Diária</h2>
+        </td>
+    </tr>
 </table>
-
-
 <table>
     <thead>
     <tr>
