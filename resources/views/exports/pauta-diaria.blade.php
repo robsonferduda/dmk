@@ -14,14 +14,14 @@
 <table>
     <tr>
         <td colspan="13">
-            <h2>Pauta Diária</h2>
+            <p>Pauta Diária - Período de ___/___/_____ a ___/___/_____</p>
         </td>
     </tr>
 </table>
 <table>
     <thead>
     <tr>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">RESPONSÁVEL</th>
+        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center; padding: 5px 3px;">RESPONSÁVEL</th>
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">PRAZO FATAL</th>
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">HORA</th>
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">PARTE ADVERSA</th>
@@ -84,4 +84,11 @@
         @endforeach
    
     </tbody>
+</table>
+<table>
+    <tr>
+        <td colspan="13">
+            <p>Gerada em {{ date("d/m/Y H:i:s") }}</p>
+        </td>
+    </tr>
 </table>
