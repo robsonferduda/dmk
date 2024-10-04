@@ -1,4 +1,18 @@
+<style>
+    @font-face {
+        font-family: 'Varela';
+        font-style: normal;
+        font-weight: normal;
+        src: url("https://fonts.googleapis.com/css2?family=Varela+Round") format('truetype');
+    }
+    
+    /* Specify the elements to style */
+    html {
+        font-family: 'Varela', sans-serif;
+    }
+</style>
 <h2>Pauta Diária</h2>
+<span>Teste</span>
 <table>
     <thead>
     <tr>
