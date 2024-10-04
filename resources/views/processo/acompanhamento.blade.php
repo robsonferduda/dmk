@@ -155,18 +155,32 @@
                         @csrf
                             <fieldset>
                                 <div class="row">
+                                    <section class="col col-md-12">
+                                        <label>Tipo de Intervalo de Data</label>
+                                        <label class="select">
+                                            <input type="hidden" id="contatoAux" value="">
+                                            <select id="cd_contato_cot" name="cd_contato_cot">
+                                                <option value="">Selecione o tipo de intervalo</option>    
+                                                <option value="">Data de Solicitação</option> 
+                                                <option value="">Prazo Fatal</option>         
+                                            </select><i></i>  
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row">
                                     <section class="col col-4">
                                         <label>Data prazo fatal início</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input type="text" name="dt_inicio" id="dt_inicio" placeholder="___/___/____" class="mascara_data">
                                         </label>
                                     </section>
-                                     <section class="col col-4">
+                                    <section class="col col-4">
                                         <label>Data prazo fatal fim</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input type="text" name="dt_fim" id="dt_fim" placeholder="___/___/____" class="mascara_data" >
                                         </label>
                                     </section>
+                               
                                     <section class="col col-2">
                                         <br />              
                                         <input type="radio"  required name="tipo" id="tipo" value="excel" >  

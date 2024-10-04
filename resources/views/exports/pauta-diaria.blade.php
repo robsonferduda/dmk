@@ -1,3 +1,4 @@
+<h2>Pauta Diária</h2>
 <table>
     <thead>
     <tr>
@@ -14,13 +15,12 @@
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">CORRESPONDENTE</th>
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DE PROCESSO</th>
         <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">STATUS</th>
-
     </tr>
     </thead>
     <tbody>
 
         @foreach($dados['processos'] as $dado)
-        <tr>
+        <tr style="padding: 5px 3px;">
             <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->responsavel ? $dado->responsavel->name : ''}}
             </td>
