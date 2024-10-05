@@ -134,11 +134,9 @@ class RelatorioProcessoController extends Controller
         $correspondente = $request->cdCorrespondente;
         $status = $request->cd_status_processo_stp;
 
-        /*
         if (!empty($responsavel)) {
             $processos = $processos->where('cd_responsavel_pro', $responsavel);
         }
-        
         
         if (!empty($request->dt_inicio) && !empty($request->dt_fim) && \Helper::validaData($request->dt_inicio) && \Helper::validaData($request->dt_fim)) {
             $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_inicio)));
@@ -170,8 +168,6 @@ class RelatorioProcessoController extends Controller
         if (!empty($status)) {
             $processos = $processos->where('cd_status_processo_stp', $status);
         }
-
-        */
 
         $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
     
