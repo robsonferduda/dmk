@@ -1,0 +1,23 @@
+body {font-family: Arial, Helvetica, sans-serif; }
+	#logo_coperve{width: 10%; float: left; text-align: right;}
+	#logo_ufsc{width: 15%; float: left;}
+	#texto_cabecalho{width: 75%; float: left; text-align: center; margin-top: 10px;}
+	#corpo { margin-top: 0px;}
+	#corpo #corpo_cabecalho{text-align: center;}
+	#corpo #corpo_rodape{text-align: center; margin-top: 50px; }
+	#corpo #corpo_identificacao{border: 1px solid gray; padding: 15px;}
+	#corpo #corpo_argumentacao{text-align: justify; border: 1px solid gray; padding: 10px;}
+	@page {
+        /*margin-bottom: 95px !important;*/
+        /*padding-bottom: 80px !important;*/
+        header: page-header;
+		footer: page-footer;
+    }
+	table {font-size: 11px; padding: 3px 5px;}
+	table tr{font-size: 11px; padding: 5px 3px;}
+	page-footer{color: red; min-height: 120px;}
+	#text-footer{font-size: 10px; text-align: center; padding-bottom: 0px;}
+	.red{color: red; text-align: center;}
+	.page-break { page-break-after: always;}
+	.center{ text-align: center; }
+	.clear {clear: both;}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use PDF;
 use Auth;
 use App\Conta;
 use App\Cliente;
@@ -133,9 +134,11 @@ class RelatorioProcessoController extends Controller
         $correspondente = $request->cdCorrespondente;
         $status = $request->cd_status_processo_stp;
 
+        /*
         if (!empty($responsavel)) {
             $processos = $processos->where('cd_responsavel_pro', $responsavel);
         }
+        
         
         if (!empty($request->dt_inicio) && !empty($request->dt_fim) && \Helper::validaData($request->dt_inicio) && \Helper::validaData($request->dt_fim)) {
             $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_inicio)));
@@ -168,11 +171,38 @@ class RelatorioProcessoController extends Controller
             $processos = $processos->where('cd_status_processo_stp', $status);
         }
 
+        */
+
         $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
     
         if ($request->tipo == 'pdf') {
+
+            $dados = array();
+            $file_name = 'pauta_diaria_'.now()->format('Y_m_d_H_i').'.pdf';
+
+            $conta = Conta::where('cd_conta_con', Auth::user()->cd_conta_con)->first()->nm_razao_social_con;
+
+            $data = [
+                'evento'     => "Teste",
+                'logo'       => "Teste",
+                'dados' => $processos,
+                'conta' => $conta,
+                'data_inicio' => $request->dt_inicio,
+                'data_fim' => $request->dt_fim
+            ];;
+    
+            return $pdf = PDF::loadView('relatorios.pdf.banheiros',
+                                        $data,
+                                        [],
+                                        ['title' => 'Lawyerexpress - Pauta Diária','format' => 'A4-L'])
+                                        ->download($file_name);
+
+            /*
             $fileName = 'Pauta-Diária-'.now()->format('d-m-Y').'.pdf';
             return \Excel::download(new ProcessoPautaDiariaExportPDF(['processos' => $processos]), $fileName, \Maatwebsite\Excel\Excel::DOMPDF);
+            */
+
+
         } else {
             $fileName = 'Pauta-Diária-'.now()->format('d-m-Y').'.xls';
             return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]), $fileName, \Maatwebsite\Excel\Excel::XLS);
