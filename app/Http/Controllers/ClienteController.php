@@ -1025,7 +1025,7 @@ class ClienteController extends Controller
                 $dados[] = array('nu_cliente_cli' => $cliente->nu_cliente_cli,
                                 'nm_razao_social_cli' => $cliente->nm_razao_social_cli,
                                 'email' => (EnderecoEletronico::where('cd_entidade_ete', $cliente->cd_entidade_ete)->get()) ? EnderecoEletronico::where('cd_entidade_ete', $cliente->cd_entidade_ete)->get() : null,
-                                'fone' => ($cliente->entidade->fone) ? Fone::where('cd_entidade_ete', $cliente->cd_entidade_ete)->get() : null,
+                                'fone' => ($cliente->entidade) ? Fone::where('cd_entidade_ete', $cliente->cd_entidade_ete)->get() : null,
                                 'flag' => ($cliente->fl_ativo_cli == "S") ? "Ativo" : "Inativo");
             }
             
