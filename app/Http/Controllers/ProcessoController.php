@@ -1146,6 +1146,27 @@ class ProcessoController extends Controller
         }
     }
 
+    public function atualizaDocumentoRepresentacao($id)
+    {
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+        $vinculo = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
+
+        if ($processo->fl_documento_representacao_pro == 'N') {
+            $flag = 'S';
+        } else {
+            $flag = 'N';
+        }
+
+        $processo->fl_documento_representacao_pro = $flag;
+        
+        if ($processo->save()) {
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        }else {
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+        }
+    }
+
     public function requisitarDados($id_processo)
     {
         $id_processo = \Crypt::decrypt($id_processo);

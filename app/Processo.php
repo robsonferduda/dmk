@@ -49,7 +49,8 @@ class Processo extends Model implements AuditableContract
                             'cd_status_processo_stp',
                             'fl_envio_anexos_pro',
                             'fl_recebimento_anexos_pro',
-                            'cd_responsavel_pro'
+                            'cd_responsavel_pro',
+                            'fl_documento_representacao_pro'
     					  ];
 
     public $timestamps = true;

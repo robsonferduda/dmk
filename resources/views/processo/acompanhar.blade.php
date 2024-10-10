@@ -277,7 +277,18 @@
                                             </ul>
                                         </p> 
                                     </div>
+                                    <div class="onoffswitch-container">
+                                        <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
+                                        <span class="onoffswitch">
+                                            <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
+                                            <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
+                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                <span class="onoffswitch-switch"></span>
+                                            </label> 
+                                        </span> 
+                                    </div>
                                 </fieldset>
+                               
                             </div>
 
                             <div class="col-md-12 col-lg-6">
@@ -1186,6 +1197,35 @@
             $("#arquivo").empty();
             $("#poster").empty();
             $(".upload-msg").empty();
+        });
+
+        $("#fl_documento_representacao_pro").change(function(){
+
+            processo = $("#processo").val();
+
+            $.ajax(
+            {
+                url: "../../processos/atualiza/documento-representacao/"+processo,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function()
+                {
+                    $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
+                },
+                success: function(response)
+                {                    
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    $('.box-loader').loader('hide');
+                    $("#fl_documento_representacao_pro").prop('checked', false);
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
+
+                }
+            });
+
         });
 
         $("#fl_envio_anexos_pro").change(function(){

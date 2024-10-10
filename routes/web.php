@@ -126,6 +126,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/notificar/{id}', 'ProcessoController@notificarCorrespondente');
     Route::get('processos/acompanhar', 'ProcessoController@acompanhar');
     Route::get('processos/relatorio/{id}', 'ProcessoController@relatorio');
+    Route::get('processos/atualiza/documento-representacao/{id}', 'ProcessoController@atualizaDocumentoRepresentacao');
     Route::get('processos/atualiza/enviados/{id}', 'ProcessoController@atualizaAnexosEnviados');
     Route::get('processos/atualiza/recebidos/{id}', 'ProcessoController@atualizaAnexosRecebidos');
     Route::get('processo/notificacao/resposta/{resposta}/{id}', 'ProcessoController@responderNotificacao')->name('resposta');
