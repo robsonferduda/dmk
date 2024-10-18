@@ -166,7 +166,7 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
-    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso)
+    public function getProcessosAndamento($conta, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento)
     {
         $sql = "SELECT t1.cd_processo_pro, 
                        t1.nu_processo_pro, 
@@ -208,6 +208,7 @@ class Processo extends Model implements AuditableContract
         if($autor) $sql .= " AND t1.nm_autor_pro ilike '%$autor%' ";
         if($data) $sql .= " AND t1.dt_prazo_fatal_pro = '$data' ";
         if($comarca) $sql .= " AND t1.cd_cidade_cde = $comarca ";
+        if($numero_acompanhamento) $sql .= " AND t1.nu_acompanhamento_pro = '$numero_acompanhamento' ";
         if($flag_correspondente == true) $sql .= " AND t1.cd_correspondente_cor = $conta";
         if($flag_correspondente == false) $sql .= " AND t1.cd_conta_con = $conta";
 

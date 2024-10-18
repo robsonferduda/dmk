@@ -32,19 +32,25 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="acompanhamento" value="S">
                     <div class="row" style="margin-bottom: 10px;">
-                        <section class="col col-md-4 col-lg-3">
+
+                        <section class="col col-md-2 col-lg-2">
                             <label class="label label-black">Prazo Fatal</label><br />
                             <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-4 col-lg-3">
+                        <section class="col col-md-2 col-lg-2">
                             <label class="label label-black">Número do Processo</label><br />
                             <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-4 col-lg-3">
+                        <section class="col col-md-2 col-lg-2">
+                            <label class="label label-black">Código Cliente</label><br />
+                            <input style="width: 100%" class="form-control" type="text" id="nu_acompanhamento_pro" placeholder="Código Cliente" value="{{ !empty($nu_acompanhamento_pro) ? $nu_acompanhamento_pro : '' }}" >         
+                        </section>
+                        <section class="col col-md-3 col-lg-3">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
-                        <section class="col col-md-4 col-lg-3">
+                        
+                        <section class="col col-md-3 col-lg-3">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
@@ -367,6 +373,7 @@
 
             processo = $("#nu_processo_pro").val();
             responsavel = $("#cd_responsavel_pro").val();
+            numero_acompanhamento = $("#nu_acompanhamento_pro").val();
             tipo = $("#cd_tipo_processo_tpo").val();
             servico = $("#cd_tipo_servico_tse").val();
             status = $("#status").val();
@@ -376,12 +383,11 @@
             comarca = $("#cidade").val();
             statusProcesso = $("#cd_status_processo_stp").val();
 
-
             $.ajax({
                 
                 url: host+'/processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "statusProcesso": statusProcesso ,"flag": false },
+                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "statusProcesso": statusProcesso ,"flag": false, "numero_acompanhamento": numero_acompanhamento },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");
@@ -401,7 +407,8 @@
                             '<div class="row box-processo">'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
-                                    '<h6><strong>Status</strong>: '+data.nm_status_processo_conta_stp+'</h6>'+
+                                    '<h6><strong>Código Cliente</strong>: '+formataNuloResposta(data.nu_acompanhamento_pro)+'</h6>'+ 
+                                   
                                     '<h6><strong>Tipo de Serviço</strong>: '+data.nm_tipo_servico_tse+'</h6>'+                   
                                     '<h6><strong>Vara/Cidade</strong>: '+formataNuloResposta(data.nm_vara_var)+'/'+data.nm_cidade_cde+'-'+data.sg_estado_est+'</h6>'+    
                                     '<h6><strong>Responsável</strong>: '+formataNuloResposta(data.name)+'</h6>'+                                             

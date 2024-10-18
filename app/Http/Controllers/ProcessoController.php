@@ -1252,23 +1252,24 @@ class ProcessoController extends Controller
         $flag = ($request->flag) ? $request->flag : false;
         $cliente = ($request->cliente) ? $request->cliente : null;
         $statusProcesso = ($request->statusProcesso) ? $request->statusProcesso : null;
+        $numeroAcompanhamento = ($request->numero_acompanhamento) ? $request->numero_acompanhamento : null;
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento);
         
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, false, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, false, null, null, null);
         return response()->json($processos);
     }
 
     public function getProcessosAndamentoCorrespondente()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null, null. null);
         return response()->json($processos);
     }
 
