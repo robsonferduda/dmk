@@ -257,6 +257,7 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
+                                                
                                                 @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
                                                 <h6 style="font-weight: 400;">
                                                     DADOS DA AUDIÊNCIA: 

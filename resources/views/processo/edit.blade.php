@@ -49,11 +49,18 @@
                     <div class="widget-body no-padding">
                         
                         {!! Form::open(['id' => 'frm-add-processo', 'url' => ['processos',$processo->cd_processo_pro], 'class' => 'smart-form', 'method' => 'PUT']) !!}
+                        
                         <div class="row">
-                            <div  class="col col-6">
+                            <div  class="col col-md-12">
                                 <header>
-                                    <i class="fa fa-file-text-o"></i> Dados do Processo
+                                    <i class="fa fa-file-text-o"></i> Dados do Processo <span class="text-danger">(*) Campos Obrigatórios</span>
                                 </header>
+                            </div>
+                        </div>
+                        <div class="row">
+                            
+                            <div  class="col col-6">
+                              
 
                                 <fieldset>
                                    
@@ -95,7 +102,7 @@
                                             </label>
                                         </section> 
                                          <section class="col col-6" >                                       
-                                            <label class="label" >Tipos de Processo<span class="text-danger">*</span></label>          
+                                            <label class="label" >Tipo de Processo<span class="text-danger">*</span></label>          
                                             <label class="select">
                                                 <select  name="cd_tipo_processo_tpo" required>
                                                     <option selected value="">Selecione o Tipo de Processo</option>     
@@ -105,15 +112,21 @@
                                                 </select><i></i>   
                                             </label>
                                         </section>
-                                    </div>                                                     
+                                    </div>   
+                                    
                                     <div class="row">
-                                        <section class="col col-sm-12">
-                                            <label class="label">Autor</label>
-                                            <label class="input">
-                                                <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
-                                            </label>
-                                        </section> 
-                                    </div>    
+                                        <section class="col col-sm-12">       
+                                            <label class="label" >Vara</label>          
+                                            <select  name="cd_vara_var" class="select2">
+                                                <option selected value="">Selecione uma vara</option>
+                                                @foreach($varas as $vara) 
+                                                    <option {!! (old('cd_vara_var',$processo->cd_vara_var) == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
+                                                @endforeach
+    
+                                            </select> 
+                                        </section>
+                                    </div> 
+
                                     <div class="row">
                     
                                         <section class="col col-6">
@@ -125,7 +138,7 @@
                                                 @foreach($estados as $estado) 
                                                     <option {!! (old('cd_estado_est',!empty($processo->cidade->cd_estado_est) ? $processo->cidade->cd_estado_est : '') == $estado->cd_estado_est ? 'selected' : '' ) !!} value="{{$estado->cd_estado_est}}">{{ $estado->nm_estado_est}}</option>
                                                 @endforeach
-
+    
                                             </select> 
                                         </section>
                                         <section class="col col-6">
@@ -135,38 +148,14 @@
                                                <option selected value="">Selecione uma Cidade</option>
                                             </select> 
                                         </section>  
-                                    </div>         
-                                    <div class="row">
-
-                                        <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}"> 
-
-                                         <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >       
-
-                                        <section class="col col-xs-12">
-                                            <label class="label">Correspondente <a href="#" rel="popover-hover" data-placement="top" data-original-title="O correspondente é filtrado de acordo com a cidade escolhida."><i class="fa fa-question-circle text-primary"></i></a></label>
-                                            <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
-                                               <option selected value="">Aguardando Cidade... </option>
-                                            </select>                                                         
-                                        </section>
-                                    </div> 
-
-                                    <div class="row">
-                                        <input type="hidden" name="cd_responsavel_pro" value="{{old('cd_responsavel_pro') ? old('cd_responsavel_pro') : $processo->cd_responsavel_pro}}" >      
-                                        <section class="col col-sm-12">
-                                            <label class="label">Responsável</label>
-                                            <label class="input">
-                                                <input class="form-control ui-autocomplete-input"  name="name" value="{{ ($processo->responsavel) ? $processo->responsavel->name : old('name') }}" placeholder="Digite 3 caracteres para busca" id="responsavel_auto_complete" type="text" autocomplete="off">
-                                            </label>
-                                        </section>
-                                    </div>
+                                    </div>   
+                                    
 
                                 </fieldset>
                         </div>
                         <div  class="col col-6">
-                            <header>
-                                <i class="">&nbsp;</i> 
-                            </header>
                             <fieldset>
+
                                 <div class="row">
                                     <section class="col col-4">
                                         <label class="label">Data da Solicitação</label>
@@ -186,7 +175,44 @@
                                            <input class="hr_audiencia_pro" placeholder="___ : ___" type="text" name="hr_audiencia_pro" value="{{ old('hr_audiencia_pro') ? old('hr_audiencia_pro') : $processo->hr_audiencia_pro}}" >
                                         </label>
                                     </section> 
+                                </div> 
+
+                                      
+                                <div class="row">
+
+                                    <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}"> 
+
+                                     <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >       
+
+                                    <section class="col col-xs-12">
+                                        <label class="label">Correspondente <span class="text-info">Filtrado de acordo com estado/cidade escolhida</span></label>
+                                        <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
+                                           <option selected value="">Aguardando Cidade... </option>
+                                        </select>                                                         
+                                    </section>
+                                </div> 
+
+                                <div class="row">
+                                    <input type="hidden" name="cd_responsavel_pro" value="{{old('cd_responsavel_pro') ? old('cd_responsavel_pro') : $processo->cd_responsavel_pro}}" >      
+                                    <section class="col col-sm-12">
+                                        <label class="label">Responsável</label>
+                                        <label class="input">
+                                            <input class="form-control ui-autocomplete-input"  name="name" value="{{ ($processo->responsavel) ? $processo->responsavel->name : old('name') }}" placeholder="Digite 3 caracteres para busca" id="responsavel_auto_complete" type="text" autocomplete="off">
+                                        </label>
+                                    </section>
+                                </div>
+
+                                <div class="row">
+                                    <section class="col col-sm-12">
+                                        <label class="label">Autor</label>
+                                        <label class="input">
+                                            <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
+                                        </label>
+                                    </section> 
                                 </div>    
+                                
+                               
+                                  
                                 <div class="row"> 
                                      <section class="col col-sm-12">
                                         <label class="label">Réu</label>
@@ -195,48 +221,48 @@
                                         </label>
                                     </section> 
                                 </div>
-                                <div class="row">
-                                    <section class="col col-sm-12">       
-                                        <label class="label" >Vara</label>          
-                                        <select  name="cd_vara_var" class="select2">
-                                            <option selected value="">Selecione uma vara</option>
-                                            @foreach($varas as $vara) 
-                                                <option {!! (old('cd_vara_var',$processo->cd_vara_var) == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
-                                            @endforeach
 
-                                        </select> 
-                                    </section>
-                                </div> 
-                                <header>
-                                    <i class="fa">Audiência com:</i> 
-                                </header>
-                                <fieldset>
-                                    <div class="row"> 
-                                         <section class="col col-sm-12">
-                                            <label class="label">Preposto</label>
-                                            <label class="input">
-                                               <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_preposto_pro" value="{{ old('nm_preposto_pro') ? old('nm_preposto_pro') : $processo->nm_preposto_pro }}">
-                                            </label>
-                                        </section> 
-                                    </div>
-                                    <div class="row"> 
-                                         <section class="col col-sm-12">
-                                            <label class="label">Advogado</label>
-                                            <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{ old('nm_advogado_pro') ? old('nm_advogado_pro') : $processo->nm_advogado_pro }}" maxlength="500">
-                                            </label>
-                                        </section> 
-                                    </div>
-                                </fieldset>
+
+                               
+                                
+                            </fieldset>
+                        </div>
+                        <div class="col col-sm-12">
+                            <header>
+                                <i class="fa fa-legal"></i> Dados da Audiência
+                            </header>
+                            <fieldset>
+                                <div class="row" style="margin: 1px 0px 1px -10px !important;"> 
+                                    <section class="col col-sm-6">
+                                        <label class="label">Advogado</label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="nm_advogado_pro">{{ old('nm_advogado_pro') ? old('nm_advogado_pro') : $processo->nm_advogado_pro }}</textarea>
+                                        </label>
+                                    </section> 
+
+                                    <section class="col col-sm-6">
+                                        <label class="label">Preposto</label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="nm_preposto_pro">{{ old('nm_preposto_pro') ? old('nm_preposto_pro') : $processo->nm_preposto_pro }}</textarea>
+                                        </label>
+                                    </section>                               
+                                    
+                                    <section class="col col-sm-12">
+                                        <label class="label">Observações do Processo <span class="text-info">Aparecem na Pauta Diária</span></label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="dc_observacao_processo_pro">{{ old('observacao_processo') ? old('observacao_processo') : $processo->observacao_processo }}</textarea>
+                                        </label>
+                                    </section> 
+                                </div>
                             </fieldset>
                         </div>
                         <div class="col col-sm-12">
                             <fieldset style="padding-top: 0px">
-                                <div class="row"> 
+                                <div class="row" style="margin: 1px -10px 1px -10px !important;"> 
                                     <section class="col col-sm-12">
-                                    <label class="label">Observações</label>
+                                    <label class="label">Observações para Correspondentes</label>
                                     <label class="input">
-                                        <textarea class="form-control" id="observacao" rows="4" name="dc_observacao_pro" value="{{ old('dc_observacao_pro') ? old('dc_observacao_pro') : $processo->dc_observacao_pro }}" >{{ old('dc_observacao_pro') ? old('dc_observacao_pro') :  $processo->dc_observacao_pro }}</textarea>
+                                        <textarea class="form-control" id="observacao" rows="8" name="dc_observacao_pro">{!! old('dc_observacao_pro') ? old('dc_observacao_pro') : nl2br($processo->dc_observacao_pro) !!}</textarea>
                                     </label>
                                     </section> 
                                 </div>

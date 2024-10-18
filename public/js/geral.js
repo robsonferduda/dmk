@@ -88,11 +88,8 @@ $(document).ready(function() {
 		CKEDITOR.editorConfig = function( config )
 			{
 				config.toolbar = 'MyToolbar';
-
 				config.extraPlugins = 'font';
-
 				config.font_names =  'Hoefler Text/Hoefler Text;'+config.font_names;
-
 
 
 				config.toolbar_MyToolbar =
@@ -103,10 +100,10 @@ $(document).ready(function() {
 			};
 			
 			CKEDITOR.replace( 'observacao', { toolbar : [
-														{ name: 'document', items : [ 'NewPage','Preview' ] },
+												
 														{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
 														{ name: 'insert', items : [ 'Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
-												                '/',
+												                
 														{ name: 'styles', items : [ 'Styles','Format','Font', 'FontSize' ] },
 														{ name: 'basicstyles', items : [ 'Bold','Italic','Strike' ] },
 														{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] }

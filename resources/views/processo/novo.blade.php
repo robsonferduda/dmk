@@ -80,13 +80,13 @@
                                         </section>
                                     </div> 
                                     <div class="row">
-                                        <section class="col col-xs-12 col-lg-6">
+                                        <section class="col col-xs-12 col-lg-4">
                                             <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
                                                 <input class="form-control" value="{{old('nu_acompanhamento_pro')}}" type="text" name="nu_acompanhamento_pro" maxlength="50">
                                             </label>
                                         </section> 
-                                        <section class="col col-xs-12 col-lg-6">                                       
+                                        <section class="col col-xs-12 col-lg-8">                                       
                                             <label class="label" >Advogado Solicitante <a href="#" data-toggle="modal" data-target="#novoAdvogado" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Novo </a></label> 
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
@@ -114,15 +114,21 @@
                                                 </select><i></i>   
                                             </label>
                                         </section>
-                                    </div>                                                     
+                                    </div>  
+
                                     <div class="row">
-                                        <section class="col col-xs-12">
-                                            <label class="label">Autor</label>
-                                            <label class="input">
-                                                <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
-                                            </label>
-                                        </section> 
-                                    </div>    
+                                        <section class="col col-xs-12 col-sm-12">       
+                                            <label class="label" >Vara</label>          
+                                            <select  name="cd_vara_var" class="select2">
+                                                <option selected value="">Selecione uma vara</option>
+                                                @foreach($varas as $vara) 
+                                                    <option {!! (old('cd_vara_var') == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
+                                                @endforeach
+    
+                                            </select> 
+                                        </section>
+                                    </div> 
+                                    
                                     <div class="row">
                     
                                         <section class="col col-xs-12 col-lg-6">
@@ -143,26 +149,9 @@
                                                <option selected value="">Selecione uma Cidade</option>
                                             </select> 
                                         </section>  
-                                    </div>         
-                                    <div class="row">    
-                                        <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{ old('cd_correspondente_cor') }}"> 
-                                        <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
-                                        <section class="col col-xs-12">
-                                            <label class="label">Correspondente <a href="#" rel="popover-hover" data-placement="top" data-original-title="O correspondente é filtrado de acordo com a cidade escolhida."><i class="fa fa-question-circle text-primary"></i></a></label>
-                                            <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
-                                               <option selected value="">Aguardando Cidade... </option>
-                                            </select>                                                         
-                                        </section>
                                     </div> 
-                                    <div class="row">    
-                                        <input type="hidden" name="cd_responsavel_pro" value="{{ old('cd_responsavel_pro') }}">           
-                                        <section class="col col-xs-12">
-                                            <label class="label">Responsável</label>
-                                            <label class="input">
-                                                <input class="form-control" name="name" placeholder="Digite 3 caracteres para busca" type="text" id="responsavel_auto_complete" value="{{ old('nm_correspondente_cor') }}">
-                                            </label>
-                                        </section>
-                                    </div> 
+
+                                   
 
                                 </fieldset>
                             </div>
@@ -189,61 +178,89 @@
                                         </label>
                                     </section> 
                                 </div>    
-                                <div class="row"> 
-                                     <section class="col col-xs-12 col-sm-12">
-                                        <label class="label">Réu</label>
+                                                                       
+                                <div class="row">    
+                                    <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{ old('cd_correspondente_cor') }}"> 
+                                    <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
+                                    <section class="col col-xs-12">
+                                        <label class="label">Correspondente <span class="text-info">Filtrado de acordo com estado/cidade escolhida</span></label>
+                                        <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
+                                           <option selected value="">Aguardando Cidade... </option>
+                                        </select>                                                         
+                                    </section>
+                                </div> 
+                                <div class="row">    
+                                    <input type="hidden" name="cd_responsavel_pro" value="{{ old('cd_responsavel_pro') }}">           
+                                    <section class="col col-xs-12">
+                                        <label class="label">Responsável</label>
                                         <label class="input">
-                                           <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
+                                            <input class="form-control" name="name" placeholder="Digite 3 caracteres para busca" type="text" id="responsavel_auto_complete" value="{{ old('nm_correspondente_cor') }}">
+                                        </label>
+                                    </section>
+                                </div> 
+
+                                <div class="row">
+                                    <section class="col col-xs-12">
+                                        <label class="label">Autor</label>
+                                        <label class="input">
+                                            <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
+                                        </label>
+                                    </section> 
+                                </div>    
+
+                                <div class="row"> 
+                                    <section class="col col-xs-12 col-sm-12">
+                                       <label class="label">Réu</label>
+                                       <label class="input">
+                                          <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
+                                       </label>
+                                   </section> 
+                               </div>
+                                
+                            </fieldset>
+                        </div>
+                        <div class="col col-sm-12">
+                            <header>
+                                <i class="fa fa-legal"></i> Dados da Audiência
+                            </header>
+                            <fieldset>
+                                <div class="row" style="margin: 1px 0px 1px -10px !important;"> 
+                                    <section class="col col-sm-6">
+                                        <label class="label">Advogado</label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="nm_advogado_pro">{{ old('nm_advogado_pro') }}</textarea>
+                                        </label>
+                                    </section> 
+
+                                    <section class="col col-sm-6">
+                                        <label class="label">Preposto</label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="nm_preposto_pro">{{ old('nm_preposto_pro') }}</textarea>
+                                        </label>
+                                    </section>                               
+                                    
+                                    <section class="col col-sm-12">
+                                        <label class="label">Observações do Processo <span class="text-info">Aparecem na Pauta Diária</span></label>
+                                        <label class="input">
+                                           <textarea class="form-control texto-processo" rows="8" name="dc_observacao_processo_pro">{{ old('dc_observacao_processo_pro') }}</textarea>
                                         </label>
                                     </section> 
                                 </div>
-                                <div class="row">
-                                    <section class="col col-xs-12 col-sm-12">       
-                                        <label class="label" >Vara</label>          
-                                        <select  name="cd_vara_var" class="select2">
-                                            <option selected value="">Selecione uma vara</option>
-                                            @foreach($varas as $vara) 
-                                                <option {!! (old('cd_vara_var') == $vara->cd_vara_var ? 'selected' : '' ) !!} value="{{$vara->cd_vara_var}}">{{ $vara->nm_vara_var}}</option>
-                                            @endforeach
-
-                                        </select> 
-                                    </section>
-                                </div> 
-                                <header>
-                                    <i class="fa">Audiência com:</i> 
-                                </header>
-                                <fieldset>
-                                    <div class="row"> 
-                                         <section class="col col-xs-12">
-                                            <label class="label">Preposto</label>
-                                            <label class="input">
-                                               <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_preposto_pro" value="{{old('nm_preposto_pro')}}">
-                                            </label>
-                                        </section> 
-                                    </div>
-                                    <div class="row"> 
-                                         <section class="col col-xs-12">
-                                            <label class="label">Advogado</label>
-                                            <label class="input">
-                                               <input class="form-control" placeholder="" type="text" name="nm_advogado_pro" value="{{old('nm_advogado_pro')}}"  maxlength="500">
-                                            </label>
-                                        </section> 
-                                    </div>
-                                </fieldset>
                             </fieldset>
                         </div>
                         <div class="col col-sm-12">
                             <fieldset style="padding-top: 0px">
-                                <div class="row"> 
+                                <div class="row" style="margin: 1px -10px 1px -10px !important;"> 
                                     <section class="col col-sm-12">
-                                    <label class="label">Observações</label>
+                                    <label class="label">Observações para Correspondentes</label>
                                     <label class="input">
-                                        <textarea class="form-control" rows="4" id="observacao" name="dc_observacao_pro" value="{{old('dc_observacao_pro')}}" >{{old('dc_observacao_pro')}}</textarea>
+                                        <textarea class="form-control" id="observacao" rows="8" name="dc_observacao_pro">{{old('dc_observacao_pro')}}</textarea>
                                     </label>
                                     </section> 
                                 </div>
                             </fieldset>
                         </div>
+
                         <div class="col col-sm-12">
                             <header>
                                 <i class="fa fa-money"></i> Honorários

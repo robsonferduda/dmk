@@ -66,6 +66,8 @@
 
 .box-processo h6 { font-size: 12px; margin: 5px 0px !important; font-weight: 300 !important; font-family: "Open Sans",Arial,Helvetica,Sans-Serif !important; }
 
+.texto-processo {resize: none; border-radius: 3px !important; padding: 5px;}
+
 .label-grupo-notificacao{position: absolute; top: 15px; right: 10px;}
 .pagination{
   padding: 0px 13px;
