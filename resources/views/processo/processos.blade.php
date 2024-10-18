@@ -72,7 +72,7 @@
                             </select>
                         </section>    
                         <section class="col col-md-2">
-                            <label class="label label-black">Nº Externo</label><br />
+                            <label class="label label-black">Código Cliente</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
                         </section>    
                         <section class="col col-md-3">

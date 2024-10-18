@@ -189,7 +189,7 @@
                                                 </li>
                                                 @endrole
                                                 <li>
-                                                    <strong>Nº Externo: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
+                                                    <strong>Código Cliente: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
                                                 </li>
                                                 <li>
                                                     <strong>Tipo de Processo: </strong> {{ !empty($processo->tipoProcesso->nm_tipo_processo_tpo) ? $processo->tipoProcesso->nm_tipo_processo_tpo : 'Não informado' }}

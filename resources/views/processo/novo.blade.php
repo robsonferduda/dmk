@@ -81,7 +81,7 @@
                                     </div> 
                                     <div class="row">
                                         <section class="col col-xs-12 col-lg-4">
-                                            <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
+                                            <label class="label">Código Cliente <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
                                                 <input class="form-control" value="{{old('nu_acompanhamento_pro')}}" type="text" name="nu_acompanhamento_pro" maxlength="50">
                                             </label>

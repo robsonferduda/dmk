@@ -77,9 +77,9 @@
                                     <div class="row">
 
                                         <section class="col col-4">
-                                            <label class="label">Nº Externo <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
+                                            <label class="label">Código Cliente <a href="#" rel="popover-hover" data-placement="top" data-original-title="Número ou código de acompanhamento externo."><i class="fa fa-question-circle text-primary"></i></a></label>
                                             <label class="input">
-                                                <input class="form-control" value="{{old('nu_acompanhamento_pro') ? old('nu_acompanhamento_pro') : $processo->nu_acompanhamento_pro }}"" type="text" name="nu_acompanhamento_pro" maxlength="50">
+                                                <input class="form-control" value="{{old('nu_acompanhamento_pro') ? old('nu_acompanhamento_pro') : $processo->nu_acompanhamento_pro }}" type="text" name="nu_acompanhamento_pro" maxlength="50">
                                             </label>
                                         </section> 
 
@@ -862,9 +862,6 @@
                         nm_autor_pro:{
                             maxlength: 500
                         },
-                        nm_preposto_pro:{
-                            maxlength: 500
-                        },
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
 
@@ -904,9 +901,6 @@
                         },
                         nm_autor_pro:{
                             maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres'
-                        },
-                        nm_preposto_pro:{
-                            maxlength: 'O Campo Preposto excedeu o número máximo de 500 caracteres'
                         },
                         cd_tipo_servico_correspondente_tse: {
                            required : 'Campo Tipo de Serviço é Obrigatório'

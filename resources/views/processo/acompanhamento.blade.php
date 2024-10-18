@@ -316,7 +316,7 @@
                                 '<div class="col-xs-12  col-sm-4 col-md-4 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
                                 '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
-                                    '<h6><strong>Número Externo</strong>: '+formataNuloResposta(data.nu_acompanhamento_pro)+'</h6>'+ 
+                                    '<h6><strong>Código Cliente</strong>: '+formataNuloResposta(data.nu_acompanhamento_pro)+'</h6>'+ 
                                  
                                     '<h6><strong>Tipo de Serviço</strong>: '+data.nm_tipo_servico_tse+'</h6>'+                   
                                     '<h6><strong>Vara/Cidade</strong>: '+formataNuloResposta(data.nm_vara_var)+'/'+data.nm_cidade_cde+'-'+data.sg_estado_est+'</h6>'+    
