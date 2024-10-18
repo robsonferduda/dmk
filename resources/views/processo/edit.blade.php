@@ -176,6 +176,22 @@
                                     </section> 
                                 </div> 
                                 <div class="row">
+                                    <section class="col col-sm-12">
+                                        <label class="label">Autor</label>
+                                        <label class="input">
+                                            <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
+                                        </label>
+                                    </section> 
+                                </div>                                    
+                                <div class="row"> 
+                                     <section class="col col-sm-12">
+                                        <label class="label">Réu</label>
+                                        <label class="input">
+                                           <input class="form-control" placeholder="" type="text"  maxlength="500" name="nm_reu_pro" value="{{ old('nm_reu_pro') ? old('nm_reu_pro') : $processo->nm_reu_pro}}" >
+                                        </label>
+                                    </section> 
+                                </div>
+                                <div class="row">
                                     <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}"> 
                                     <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >       
                                     <section class="col col-xs-12">
@@ -194,22 +210,7 @@
                                         </label>
                                     </section>
                                 </div>
-                                <div class="row">
-                                    <section class="col col-sm-12">
-                                        <label class="label">Autor</label>
-                                        <label class="input">
-                                            <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
-                                        </label>
-                                    </section> 
-                                </div>                                    
-                                <div class="row"> 
-                                     <section class="col col-sm-12">
-                                        <label class="label">Réu</label>
-                                        <label class="input">
-                                           <input class="form-control" placeholder="" type="text"  maxlength="500" name="nm_reu_pro" value="{{ old('nm_reu_pro') ? old('nm_reu_pro') : $processo->nm_reu_pro}}" >
-                                        </label>
-                                    </section> 
-                                </div>
+                                
                             </fieldset>
                         </div>
                         <div class="col col-sm-12">
