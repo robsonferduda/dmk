@@ -12,39 +12,53 @@
         <table id="tabelaDados" border="0" cellspacing="0" width="100%">
                     <thead>
                         <tr style="background:#DDD; }}">
-                            <th style="">Prazo Fatal</th>
+                            <th style="text-align: center;">Documento de Representação</th>
+                            <th style="">Dados Audiencistas</th>
+                            <th style="">Correspondente</th>
                             <th style="">Responsável</th>
+                            <th style="">Prazo Fatal</th>
                             <th style="">Parte Adversa</th>
                             <th style="">Réu</th>
                             <th style="">Comarca</th>
-                            <th style="">Cliente</th>
                             <th style="">Serviço</th>
+                            <th style="">Cliente</th>                            
                             <th style="">Foro</th>
-                            <th style="">Nº dos Autos</th>
-                            <th style="">Correspondente</th>
+                            <th style="">Nº dos Autos</th>                            
                             <th style="">Tipo de Processo</th>
                             <th style="">Situação</th>
+                            <th style="text-align: justify;">Observações</th>
                         </tr>
                     </thead>
                     <tbody>
     @forelse($dados as $key => $processo)      
 
         <tr style="background: {{ ($zebra) ? '#FFFFFF;' : '#DDD;' }}">
+            <td style="text-align: center;">
+                @if($processo->fl_documento_representacao_pro == 'S')
+                    <p style="color: #739e73;">Protocolado</p>
+                @else
+                    <p style="color: #a90329;">Pendente</p>
+                @endif
+            </td>
+            <td>
+
+            </td>
+            <td style="text-align: center;">{{ ($processo->correspondente and $processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}</td>
+            <td style="text-align: left; text-transform: uppercase; ">{{ $processo->responsavel ? $processo->responsavel->name : ''}}</td>
             <td style="text-align: left;">
                 {{ $processo->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' '}} 
                 {{ $processo->hr_audiencia_pro ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' '}}
             </td>
-            <td style="text-align: left; text-transform: uppercase; ">{{ $processo->responsavel ? $processo->responsavel->name : ''}}</td>
-            <td style="text-align: center;"> {{ $processo->nm_autor_pro ? $processo->nm_autor_pro  : ' '}}</td>
+            <td style="text-align: center;"> {{ $processo->nm_autor_pro ? $processo->nm_autor_pro  : ' '}}</td>          
             <td style="text-align: center;">{{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</td>
             <td style="text-align: center;">{{ $processo->cidade ? $processo->cidade->nm_cidade_cde : ' '}}-{{ $processo->cidade->estado ? $processo->cidade->estado->sg_estado_est : ' '}}</td>
-            <td style="text-align: center;">{{ $processo->cliente->nm_razao_social_cli ? $processo->cliente->nm_razao_social_cli :'' }}</td>
             <td style="text-align: center;"> {{ $processo->honorario ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' '}}</td>
+            <td style="text-align: center;">{{ $processo->cliente->nm_razao_social_cli ? $processo->cliente->nm_razao_social_cli :'' }}</td>
             <td style="text-align: center;">{{ $processo->vara ? $processo->vara->nm_vara_var : ' '}} </td>
-            <td style="text-align: center;">{{ $processo->nu_processo_pro ? $processo->nu_processo_pro : ' '}} </td>
-            <td style="text-align: center;">{{ ($processo->correspondente and $processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}</td>
+            <td style="text-align: center;">{{ $processo->nu_processo_pro ? $processo->nu_processo_pro : ' '}} </td>            
             <td style="text-align: center;">{{ $processo->tipoProcesso ? $processo->tipoProcesso->nm_tipo_processo_tpo : '' }}</td>
             <td style="text-align: center;">{{ $processo->status ? $processo->status->nm_status_processo_conta_stp : '' }}</td>
+            <td style="text-align: justify;">{{ $processo->dc_observacao_processo_pro ? $processo->dc_observacao_processo_pro : '' }}</td>
         </tr>    
         @php 
             $zebra = !$zebra;     
