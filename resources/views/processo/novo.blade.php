@@ -178,6 +178,24 @@
                                         </label>
                                     </section> 
                                 </div>    
+
+                                <div class="row">
+                                    <section class="col col-xs-12">
+                                        <label class="label">Autor</label>
+                                        <label class="input">
+                                            <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
+                                        </label>
+                                    </section> 
+                                </div>    
+
+                                <div class="row"> 
+                                    <section class="col col-xs-12 col-sm-12">
+                                       <label class="label">Réu</label>
+                                       <label class="input">
+                                          <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
+                                       </label>
+                                   </section> 
+                               </div>
                                                                        
                                 <div class="row">    
                                     <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{ old('cd_correspondente_cor') }}"> 
@@ -199,23 +217,7 @@
                                     </section>
                                 </div> 
 
-                                <div class="row">
-                                    <section class="col col-xs-12">
-                                        <label class="label">Autor</label>
-                                        <label class="input">
-                                            <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
-                                        </label>
-                                    </section> 
-                                </div>    
-
-                                <div class="row"> 
-                                    <section class="col col-xs-12 col-sm-12">
-                                       <label class="label">Réu</label>
-                                       <label class="input">
-                                          <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
-                                       </label>
-                                   </section> 
-                               </div>
+                                
                                 
                             </fieldset>
                         </div>

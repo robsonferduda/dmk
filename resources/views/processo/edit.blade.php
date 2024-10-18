@@ -155,7 +155,6 @@
                         </div>
                         <div  class="col col-6">
                             <fieldset>
-
                                 <div class="row">
                                     <section class="col col-4">
                                         <label class="label">Data da Solicitação</label>
@@ -176,14 +175,9 @@
                                         </label>
                                     </section> 
                                 </div> 
-
-                                      
                                 <div class="row">
-
                                     <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{old('cd_correspondente_cor') ? old('cd_correspondente_cor') : $processo->cd_correspondente_cor}}"> 
-
-                                     <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >       
-
+                                    <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ (old('fl_correspondente_escritorio_ccr') ? old('fl_correspondente_escritorio_ccr') : !empty($processo->correspondente->contaCorrespondente)) ? $processo->correspondente->contaCorrespondente->fl_correspondente_escritorio_ccr : 'N' }}" >       
                                     <section class="col col-xs-12">
                                         <label class="label">Correspondente <span class="text-info">Filtrado de acordo com estado/cidade escolhida</span></label>
                                         <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
@@ -191,7 +185,6 @@
                                         </select>                                                         
                                     </section>
                                 </div> 
-
                                 <div class="row">
                                     <input type="hidden" name="cd_responsavel_pro" value="{{old('cd_responsavel_pro') ? old('cd_responsavel_pro') : $processo->cd_responsavel_pro}}" >      
                                     <section class="col col-sm-12">
@@ -201,7 +194,6 @@
                                         </label>
                                     </section>
                                 </div>
-
                                 <div class="row">
                                     <section class="col col-sm-12">
                                         <label class="label">Autor</label>
@@ -209,10 +201,7 @@
                                             <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_autor_pro" value="{{ old('nm_autor_pro') ? old('nm_autor_pro') : $processo->nm_autor_pro }}">
                                         </label>
                                     </section> 
-                                </div>    
-                                
-                               
-                                  
+                                </div>                                    
                                 <div class="row"> 
                                      <section class="col col-sm-12">
                                         <label class="label">Réu</label>
@@ -221,10 +210,6 @@
                                         </label>
                                     </section> 
                                 </div>
-
-
-                               
-                                
                             </fieldset>
                         </div>
                         <div class="col col-sm-12">
