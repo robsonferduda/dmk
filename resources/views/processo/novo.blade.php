@@ -886,9 +886,6 @@
                         nm_autor_pro:{
                             maxlength: 500
                         },
-                        nm_preposto_pro:{
-                            maxlength: 500
-                        },
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
 
@@ -929,9 +926,6 @@
                         },
                         nm_autor_pro:{
                             maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres'
-                        },
-                        nm_preposto_pro:{
-                            maxlength: 'O Campo Preposto excedeu o número máximo de 500 caracteres'
                         },
                         cd_tipo_servico_correspondente_tse: {
                             required : 'Campo Tipo de Serviço é Obrigatório'
