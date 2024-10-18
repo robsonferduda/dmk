@@ -326,6 +326,7 @@
                                     '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
+                                    '<h6><strong>Número Externo</strong>: '+formataNuloResposta(data.nu_acompanhamento_pro)+'</h6>'+ 
                                 '</div>'+
                                 '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
