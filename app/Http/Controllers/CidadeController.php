@@ -24,14 +24,17 @@ class CidadeController extends Controller
     {
         $cidades = array();
 
-        if (empty(\Cache::tags(['estados', $estados])->get('cidades'))) {
-            $cidades = Cidade::select('cd_cidade_cde', 'nm_cidade_cde', 'cd_estado_est')->whereIn('cd_estado_est', explode(",", $estados))->orderBy('nm_cidade_cde')->with(['estado' => function ($query) {
-                $query->select('cd_estado_est', 'sg_estado_est');
-            }])->orderBy('nm_cidade_cde')->get();
+        if($estados){
+            if (empty(\Cache::tags(['estados', $estados])->get('cidades'))) {
+                $cidades = Cidade::select('cd_cidade_cde', 'nm_cidade_cde', 'cd_estado_est')->whereIn('cd_estado_est', explode(",", $estados))->orderBy('nm_cidade_cde')->with(['estado' => function ($query) {
+                    $query->select('cd_estado_est', 'sg_estado_est');
+                }])->orderBy('nm_cidade_cde')
+                ->get();
 
-            \Cache::tags(['estados', $estados])->put('cidades', $cidades, now()->addMinutes(1440));
-        } else {
-            $cidades = \Cache::tags(['estados', $estados])->get('cidades');
+                \Cache::tags(['estados', $estados])->put('cidades', $cidades, now()->addMinutes(1440));
+            } else {
+                $cidades = \Cache::tags(['estados', $estados])->get('cidades');
+            }
         }
         echo json_encode($cidades);
     }
