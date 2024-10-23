@@ -1269,7 +1269,7 @@ class ProcessoController extends Controller
 
     public function getProcessosAndamentoCorrespondente()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null, null. null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, true, null, null, null);
         return response()->json($processos);
     }
 

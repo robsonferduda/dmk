@@ -41,7 +41,8 @@
                 @endif
             </td>
             <td>
-
+                {{ $processo->nm_autor_pro ? $processo->nm_autor_pro  : ' '}}
+                {{ $processo->nm_autor_pro ? $processo->nm_autor_pro  : ' '}}
             </td>
             <td style="text-align: center;">{{ ($processo->correspondente and $processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}</td>
             <td style="text-align: left; text-transform: uppercase; ">{{ $processo->responsavel ? $processo->responsavel->name : ''}}</td>
