@@ -1,5 +1,5 @@
 <head>
-    <title>Totais de Banheiros e Cabines</title>
+    <title>Pauta Diária</title>
     <link href="{{ asset('css/relatorios-pdf.css') }}" rel="stylesheet" type="text/css" />
 </head>
 <body>
