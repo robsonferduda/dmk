@@ -41,7 +41,9 @@
                 @endif
             </td>
             <td>
+                <p><strong>Advogado</strong></p>
                 {{ $processo->nm_advogado_pro ? $processo->nm_advogado_pro  : ' '}}
+                <p><strong>Preposto</strong></p>
                 {{ $processo->nm_preposto_pro ? $processo->nm_preposto_pro  : ' '}}
             </td>
             <td style="text-align: center;">{{ ($processo->correspondente and $processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}</td>
