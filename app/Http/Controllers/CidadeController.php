@@ -20,10 +20,11 @@ class CidadeController extends Controller
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
-    public function buscaCidadePorEstado($estados)
+    public function buscaCidadePorEstado($estado)
     {
         $cidades = array();
 
+        /*
         if($estados){
             if (empty(\Cache::tags(['estados', $estados])->get('cidades'))) {
                 $cidades = Cidade::select('cd_cidade_cde', 'nm_cidade_cde', 'cd_estado_est')->whereIn('cd_estado_est', explode(",", $estados))->orderBy('nm_cidade_cde')->with(['estado' => function ($query) {
@@ -36,6 +37,13 @@ class CidadeController extends Controller
                 $cidades = \Cache::tags(['estados', $estados])->get('cidades');
             }
         }
+        */
+
+        $cidades = Cidade::select('cd_cidade_cde', 'nm_cidade_cde', 'cd_estado_est')->whereIn('cd_estado_est', explode(",", $estado))->orderBy('nm_cidade_cde')->with(['estado' => function ($query) {
+            $query->select('cd_estado_est', 'sg_estado_est');
+        }])->orderBy('nm_cidade_cde')
+        ->get();
+
         echo json_encode($cidades);
     }
 
