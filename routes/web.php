@@ -383,6 +383,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/arquivo/{nome}', 'RelatorioProcessoController@arquivo');
     Route::delete('processos/reports/{nome}', 'RelatorioProcessoController@excluir');
 
+    Route::post('notificacao/grupo/email', 'NotificacaoController@addEmailGrupo');
+    Route::post('notificacao/novo-grupo', 'NotificacaoController@grupo');
     Route::get('notificacao/processos', 'NotificacaoController@processos'); 
     Route::get('notificacao/grupo/novo', 'NotificacaoController@novoGrupo');
     Route::delete('notificacao/grupo/email/remover/{id}', 'NotificacaoController@deleteEmail');

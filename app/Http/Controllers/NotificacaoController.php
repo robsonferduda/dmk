@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
  
 use App\Conta;
+use App\TipoProcesso;
 use App\GrupoNotificacao;
 use App\EmailNotificacao;
 use Laracasts\Flash\Flash;
@@ -26,9 +27,10 @@ class NotificacaoController extends Controller
         Session::put('item_pai','processo.notificacao');
 
         $conta = Conta::where('cd_conta_con',$this->conta)->first();
+        $tipos = TipoProcesso::where('cd_conta_con',$this->conta)->get();
         $grupos = GrupoNotificacao::where('cd_conta_con',$this->conta)->orderBy('ds_grupo_grn')->get();
 
-        return view('notificacao/processos', compact('grupos'));
+        return view('notificacao/processos', compact('grupos','tipos'));
     }
 
     public function novoGrupo()
@@ -44,6 +46,36 @@ class NotificacaoController extends Controller
     {
         $conta = Conta::where('cd_conta_con',$this->conta)->first();
         return view('configuracoes/notificacoes',['conta' => $conta]);
+    }
+
+    public function grupo(Request $request)
+    {
+        if($request->id_grupo){
+
+            $grupo = GrupoNotificacao::find($request->id_grupo);
+
+            $grupo->cd_tipo_processo_tpo = $request->cd_tipo_processo_tpo;
+            $grupo->ds_grupo_grn = $request->ds_grupo_grn;
+
+            $grupo->save();
+
+        }else{
+
+            $request->merge(['cd_conta_con' => $this->conta]);
+            GrupoNotificacao::create($request->all());
+        }
+
+        return redirect('notificacao/processos');
+    }
+
+    public function addEmailGrupo(Request $request)
+    {
+        $dados = array('cd_grupo_notificacao_grn' => $request->id_grupo_email, 
+                       'ds_email_egn' => $request->ds_email_egn);
+
+        EmailNotificacao::create($dados);
+
+        return redirect()->back();
     }
 
     public function deleteEmail($id)

@@ -14,8 +14,8 @@
                 <i class="fa-fw fa fa-archive"></i> Processos <span> > Notificações</span>
             </h1>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
-            <a href="{{ url('notificacao/grupo/novo') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-plus"></i> Novo Grupo</a>   
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo"> 
+            <a class="btn btn-primary btn-novo-grupo pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo Grupo</a>
         </div>
     </div>
     <div class="row">
@@ -27,11 +27,15 @@
                 <h5 class="margin-top-0"><i class="fa fa-send"></i> Grupos de Notificação</h5>
                 @forelse($grupos as $key => $grupo)
                     <div style="position: relative">
-                        <h6>{{ $grupo->ds_grupo_grn }}<span class="label bg-color-darken txt-color-white label-grupo-notificacao">{{ $grupo->tipoProcesso->nm_tipo_processo_tpo }}</span></h6>
+                        <h6 class="nome_grupo_notificacao">
+                            {{ $grupo->ds_grupo_grn }}
+                            <span class="editar_grupo_notificacao" data-id="{{ $grupo->cd_grupo_notificacao_grn }}" data-tipo="{{ $grupo->cd_tipo_processo_tpo }}" data-nome="{{ $grupo->ds_grupo_grn }}" style="padding: 1px 8px; font-weight: 400; color: #3276b1;"><i class="fa fa-edit"></i> Editar </span>
+                            <span class="label bg-color-darken txt-color-white label-grupo-notificacao">{{ $grupo->tipoProcesso->nm_tipo_processo_tpo }}</span>
+                        </h6>
                         @if(count($grupo->emails))
                             <strong>Endereços de Notificação</strong>:
                             @foreach($grupo->emails as $key => $email)
-                                <div class="d-inline"><span>{{ $email->ds_email_egn }}</span><i data-id="{{ $email->cd_email_grupo_notificacao_egn }}" class="fa fa-trash text-danger icon-excluir-email remover_cliente"></i></div>
+                                <div class="d-inline"><span>{{ $email->ds_email_egn }}</span><i data-id="{{ $email->cd_email_grupo_notificacao_egn }}" class="fa fa-trash text-danger icon-excluir-email"></i></div>
                                 @if($key < count($grupo->emails)-1)
                                     ,
                                 @endif
@@ -39,7 +43,7 @@
                         @else
                             <label class="text-danger"><i class="fa fa-info-circle"></i> Atenção! Nenhum email cadastrado</label>
                         @endif
-                        <p class="mt-5"><a href="" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Adicionar Email</a></p>
+                        <p class="mt-5"><span class="btn btn-primary btn-xs btn-add-email-grupo" data-id="{{ $grupo->cd_grupo_notificacao_grn }}"><i class="fa fa-plus"></i> Adicionar Email</span></p>
                     </div>
                     @if($key < count($grupos)-1)
                         <hr/>
@@ -49,6 +53,85 @@
                 @endforelse
             </div>
         </article>
+    </div>
+</div>
+<div class="modal fade" id="add_email_grupo" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> Adicionar Email ao Grupo
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-grupo', 'url' => 'notificacao/grupo/email', 'class' => 'smart-form']) !!}
+                    <fieldset>
+                        <input type="hidden" name="id_grupo_email" id="id_grupo_email">
+                        <section class="col col-xs-12 col-lg-12"> 
+                            <div>
+                                <label class="label">Email<span class="text-danger">Obrigatório</span></label>
+                                <label class="input"> <i class="icon-append fa fa-font"></i>
+                                    <input type="text" name="ds_email_egn" id="ds_email_egn" required>
+                                </label>
+                            </div>
+                        </section>                                
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-save-grupo"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="add_grupo" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <i class="icon-append fa fa-plus"></i> Novo Grupo
+                </h4>
+            </div>
+            <div class="modal-body no-padding">
+                {!! Form::open(['id' => 'frm-add-grupo', 'url' => 'notificacao/novo-grupo', 'class' => 'smart-form']) !!}
+                    <fieldset>
+                        <input type="hidden" name="id_grupo" id="id_grupo">
+                        <section class="col col-xs-12 col-lg-12"> 
+                            <div>
+                                <label class="label">Nome do Grupo <span class="text-danger">Obrigatório</span></label>
+                                <label class="input"> <i class="icon-append fa fa-font"></i>
+                                    <input type="text" name="ds_grupo_grn" id="ds_grupo_grn" required>
+                                </label>
+                            </div>
+                        </section>
+                        <section class="col col-xs-12 col-lg-12">                                       
+                            <label class="label">Tipo de Processo <span class="text-danger">Obrigatório</span></label>          
+                            <label class="select">
+                                <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" required aria-required="true">
+                                    <option selected="" value="">Selecione o tipo de processo</option>     
+                                    @foreach($tipos as $tipo) 
+                                        <option value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                    @endforeach
+                                </select><i></i>   
+                            </label>
+                        </section>                                             
+                        <div class="msg_retorno"></div>
+                    </fieldset>
+                    <footer>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-save-grupo"><i class="fa fa-save"></i> Salvar</button>
+                    </footer>
+                {!! Form::close() !!}                    
+            </div>
+        </div>
     </div>
 </div>
 <div class="modal fade modal_top_alto" id="modal_excluir_email" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
@@ -83,7 +166,44 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $(".remover_cliente").click(function(){
+        $(".editar_grupo_notificacao").click(function(){
+
+            var id = $(this).data("id");
+            var tipo = $(this).data("tipo");
+            var nome = $(this).data("nome");
+
+            $("#id_grupo").val(id);
+            $("#ds_grupo_grn").val(nome);
+            $("#cd_tipo_processo_tpo").val(tipo);
+
+            $("#add_grupo").modal('show');
+        });
+
+        $(".btn-add-email-grupo").click(function(){
+            
+            var id = $(this).data("id");
+
+            $("#id_grupo_email").val(id);
+            $("#add_email_grupo").modal('show');
+        });
+
+        $(".btn-novo-grupo").click(function(){
+            $("#id_grupo").empty();
+            $("#ds_grupo_grn").empty();
+            $("#cd_tipo_processo_tpo").val("");
+
+            $("#add_grupo").modal('show');
+        });
+
+        /*
+        $("#frm-add-grupo").submit(function (e) {
+            e.preventDefault();  
+            $(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');
+            $(this).submit();
+        });
+        */
+
+        $(".icon-excluir-email").click(function(){
 
             var id  = $(this).data('id');
             var url = $("#modal_excluir_email #frm_excluir_email").attr('action');
