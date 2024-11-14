@@ -188,14 +188,14 @@
                                     </section>
                                
                                     <section class="col col-2">
-                                        <br />              
-                                        <input type="radio"  required name="tipo" id="tipo" value="excel" >  
-                                        <label>Excel</label> 
+                                        <label class="radio-inline" style="margin-top: 22px; margin-left: 10px;">
+                                            <input type="radio" name="tipo" id="excel" value="excel" required> Excel
+                                        </label>
                                     </section> 
-                                     <section class="col col-2">
-                                        <br />              
-                                        <input type="radio" required name="tipo" id="tipo" value="pdf" >  
-                                        <label>PDF</label> 
+                                    <section class="col col-2">     
+                                        <label class="radio-inline" style="margin-top: 22px; margin-left: 10px;">
+                                            <input type="radio" name="tipo" id="pdf" value="pdf" required> PDF
+                                        </label>
                                     </section> 
                                 </div>
                                 <div class="row">
