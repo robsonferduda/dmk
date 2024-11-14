@@ -14,36 +14,53 @@
 </style>
 <table cellspacing="0" cellpadding="0">
     <tr>
-        <td colspan="13">
-            <p>Pauta Diária - Período de ___/___/_____ a ___/___/_____</p>
+        <td colspan="16" style="font-size: 7px; vertical-align: center">
+            <p>Pauta Diária - Período de {{ $dt_inicio }} a {{ $dt_fim }}</p>
         </td>
     </tr>
 </table>
 <table>
     <thead>
     <tr>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center; padding: 5px 3px;">RESPONSÁVEL</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">PRAZO FATAL</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">HORA</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">PARTE ADVERSA</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">RÉU</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">COMARCA</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DE SERVIÇO CLIENTE</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">CLIENTE</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">FORO</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Nº DOS AUTOS</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">CORRESPONDENTE</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">TIPO DE PROCESSO</th>
-        <th style="background-color:#D99594;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">STATUS</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center; padding: 5px 3px;">Documento de Representação</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center; padding: 5px 3px;">Dados Audiencistas</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Correspondente</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center; padding: 5px 3px;">Responsável</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Prazo Fatal</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Hora</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Parte Adversa</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Réu</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Comarca</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Serviço Cliente</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Cliente</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Foro</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Nº dos Autos</th>        
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Tipo de Processo</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Situação</th>
+        <th style="background-color:#2c699d;height:20px;font-size: 7px;border: 1px hair #000000;text-align: center;vertical-align: center">Observações</th>
     </tr>
     </thead>
     <tbody>
 
         @foreach($dados['processos'] as $dado)
         <tr style="padding: 5px 3px;">
-            <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->responsavel ? $dado->responsavel->name : ''}}
+            <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center">
+                @if($dado->fl_documento_representacao_pro == 'S')
+                    <p style="color: #739e73;">Protocolado</p>
+                @else
+                    <p style="color: #a90329;">Pendente</p>
+                @endif
             </td>
+            <td>
+                <p><strong>Advogado</strong></p>
+                {!! $dado->nm_advogado_pro ? $dado->nm_advogado_pro  : '<span class="text-danger">Não informado</span>' !!}
+                <p><strong>Preposto</strong></p>
+                {!! $dado->nm_preposto_pro ? $dado->nm_preposto_pro  : '<span class="text-danger">Não informado</span>' !!}
+            </td>
+            <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
+                {{ $dado->correspondente ? $dado->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}
+            </td>
+            <td style="text-align: left; text-transform: uppercase; ">{{ $dado->responsavel ? $dado->responsavel->name : ''}}</td>
             <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center">
                  {{ $dado->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($dado->dt_prazo_fatal_pro)) : ' '}} 
             </td>
@@ -70,17 +87,16 @@
             </td>
             <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
                 {{ $dado->nu_processo_pro ? $dado->nu_processo_pro : ' '}} 
-            </td>
-            <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
-                {{ $dado->correspondente ? $dado->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}
-            </td>
+            </td>            
             <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
                {{ $dado->tipoProcesso ? $dado->tipoProcesso->nm_tipo_processo_tpo : '' }}
             </td>
             <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
                {{ $dado->status ? $dado->status->nm_status_processo_conta_stp : '' }}
             </td>   
-            
+            <td style="font-size: 7px;border: 1px hair #000000;vertical-align: center" >
+                {{ $dado->dc_observacao_processo_pro ? $dado->dc_observacao_processo_pro : '' }}
+            </td>
         </tr>
         @endforeach
    
@@ -88,7 +104,7 @@
 </table>
 <table>
     <tr>
-        <td colspan="13">
+        <td colspan="16" style="font-size: 7px; vertical-align: center" >
             <p>Gerada em {{ date("d/m/Y H:i:s") }}</p>
         </td>
     </tr>

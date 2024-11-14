@@ -201,7 +201,7 @@ class RelatorioProcessoController extends Controller
 
         } else {
             $fileName = 'Pauta-Diária-'.now()->format('d-m-Y').'.xls';
-            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos]), $fileName, \Maatwebsite\Excel\Excel::XLS);
+            return \Excel::download(new ProcessoPautaDiariaExportExcel(['processos' => $processos], $request->dt_inicio, $request->dt_fim), $fileName, \Maatwebsite\Excel\Excel::XLS);
         }
     }
 
