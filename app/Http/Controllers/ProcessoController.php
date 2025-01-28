@@ -1219,7 +1219,7 @@ class ProcessoController extends Controller
         $id_processo = \Crypt::decrypt($request->cd_processo_pro);
         $processo = Processo::findOrFail($id_processo);
         $conta = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
-        $emails = EnderecoEletronico::where('cd_entidade_ete', $conta->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+        $emails = EnderecoEletronico::where('cd_entidade_ete', $conta->entidade()->where('cd_tipo_entidade_tpe',7)->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
         if ($processo) {
             if (count($emails) > 0) {
