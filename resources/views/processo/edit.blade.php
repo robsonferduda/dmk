@@ -236,7 +236,7 @@
                                     <section class="col col-sm-12">
                                         <label class="label">Observações do Processo <span class="text-info">Aparecem na Pauta Diária</span></label>
                                         <label class="input">
-                                           <textarea class="form-control texto-processo" rows="8" name="dc_observacao_processo_pro">{{ old('observacao_processo') ? old('observacao_processo') : $processo->observacao_processo }}</textarea>
+                                           <textarea class="form-control texto-processo" rows="8" name="dc_observacao_processo_pro">{{ old('observacao_processo') ? old('observacao_processo') : $processo->dc_observacao_processo_pro }}</textarea>
                                         </label>
                                     </section> 
                                 </div>
