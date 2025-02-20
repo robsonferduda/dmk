@@ -334,6 +334,12 @@ class ProcessoController extends Controller
         $processo->cd_entidade_ete = $entidade->cd_entidade_ete;
 
         $novoProcesso = $processo->replicate();
+
+        //Altera os campos do processo para nulo 
+        $novoProcesso->nm_advogado_pro = null;
+        $novoProcesso->nm_preposto_pro = null;
+        $novoProcesso->observacao_processo = null;
+
         $novoProcesso->save();
 
         $processoTaxaHonorario->cd_processo_pro = $novoProcesso->cd_processo_pro;
