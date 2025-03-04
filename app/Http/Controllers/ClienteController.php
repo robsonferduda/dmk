@@ -58,10 +58,7 @@ class ClienteController extends Controller
         
         $usuario = User::where('cd_entidade_ete', $id)->first();
 
-        dd($usuario);
-
-        return view('cliente/acesso', ['cliente' => $cliente]);
-        
+        return view('cliente/acesso', ['cliente' => $cliente]);        
     }
 
     public function contatos($id)
