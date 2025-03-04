@@ -63,7 +63,7 @@
                                                     <li>
                                                         <strong>Data de Nascimento: </strong> {{ ($cliente->dt_inicial_cli) ? date('d/m/Y', strtotime($cliente->dt_inicial_cli)) : 'Não informada' }}
                                                     </li>
-                                                @else
+                                                @elseif($cliente->entidade and $cliente->entidade->cnpj()->first())
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ ($cliente->entidade->cnpj()->first()) ? $cliente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
