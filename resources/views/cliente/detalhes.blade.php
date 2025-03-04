@@ -53,7 +53,7 @@
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($cliente->tipoPessoa()->first()) ? $cliente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não Informado' }}
                                                 </li>
-                                                @if($cliente->entidade->cpf()->first())
+                                                @if($cliente->entidade and $cliente->entidade->cpf()->first())
                                                     <li>
                                                         <strong>CPF: </strong> {{ ($cliente->entidade->cpf()->first()) ? $cliente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
