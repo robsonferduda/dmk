@@ -123,7 +123,7 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-map-marker fa-fw"></i> <strong>Endereço</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if($cliente->entidade->endereco()->first() and !is_null($cliente->entidade->endereco()->first()->dc_logradouro_ede))
+                                        @if($cliente->entidade->endereco and $cliente->entidade->endereco()->first() and !is_null($cliente->entidade->endereco()->first()->dc_logradouro_ede))
                                             <p>
                                                 <ul class="list-unstyled">
                                                     <li>
@@ -158,7 +158,7 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($cliente->entidade->fone()->get()) > 0)
+                                        @if($cliente->entidade->fone and count($cliente->entidade->fone()->get()) > 0)
                                             @foreach($cliente->entidade->fone()->get() as $fone)
                                                 <div><span>{{ $fone->nu_fone_fon }}</span> - <span>{{ $fone->tipo->dc_tipo_fone_tfo }}</span><br/></div>
                                             @endforeach   
@@ -174,7 +174,7 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-envelope fa-fw"></i> <strong>Emails</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($cliente->entidade->enderecoEletronico()->get()) > 0)
+                                        @if($cliente->entidade->enderecoEletronico and count($cliente->entidade->enderecoEletronico()->get()) > 0)
                                             @foreach($cliente->entidade->enderecoEletronico()->get() as $email)
                                                 <div><span>{{ $email->dc_endereco_eletronico_ede }}</span> - <span>{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</span><br/></div>
                                             @endforeach   
