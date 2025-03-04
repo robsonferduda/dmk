@@ -105,7 +105,7 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-money fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($cliente->entidade->reembolso()->get()) > 0)
+                                        @if($cliente->entidade and count($cliente->entidade->reembolso()->get()) > 0)
                                             @foreach($cliente->entidade->reembolso()->get() as $despesa)
                                                 <div><span>{{ $despesa->tipoDespesa->nm_tipo_despesa_tds }}</span></div>
                                             @endforeach   
