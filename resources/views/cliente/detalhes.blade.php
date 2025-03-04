@@ -72,7 +72,7 @@
                                                     </li>    
                                                 @endif  
                                                 <li>
-                                                    <strong>Número da OAB: </strong> {{ ($cliente->entidade->oab()->first()) ? $cliente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                    <strong>Número da OAB: </strong> {{ ($cliente->entidade and $cliente->entidade->oab()->first()) ? $cliente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
                                                 </li>                                          
                                                 <li>
                                                     <strong>Inscrição Municipal: </strong> {{ ($cliente->inscricao_municipal_cli) ? $cliente->inscricao_municipal_cli : 'Não informado' }}
