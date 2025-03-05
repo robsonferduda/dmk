@@ -151,10 +151,10 @@
                                             {{ $saida->processo->correspondente->contaCorrespondenteTrashedToo->nm_conta_correspondente_ccr }} 
                                         @endif               
                                     </td>
-                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth,2,',',' ') }}</td>
+                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth,2,',','') }}</td>
 
-                                    <td>{{ 'R$ '.number_format($totalDespesas,2,',',' ') }}</td>
-                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth+$totalDespesas,2,',',' ')}}</td>
+                                    <td>{{ 'R$ '.number_format($totalDespesas,2,',','') }}</td>
+                                    <td>{{ 'R$ '.number_format($saida->vl_taxa_honorario_correspondente_pth+$totalDespesas,2,',','')}}</td>
                                     <td style="text-align: center;">
                                         <a title="Pagamentos"  data-id='{{ $saida->cd_processo_taxa_honorario_pth }}'  class="btn btn-warning btn-xs check-pagamento-correspondente"  href="javascript:void(0)" ><i class="fa fa-money"></i></a>
 
