@@ -788,8 +788,17 @@
                                     <div id="box-envio-email" style="display: none;">
 
                                         <div class="form-group">
-                                            <label><strong>Email de Envio</strong> <a href="{{'../../cliente/editar/'.$processo->cliente->cd_cliente_cli}}"><i class="fa fa-plus-circle"></i> Novo</a> </label>
-                                            <input class="form-control" disabled="disabled" placeholder="Email" type="text" value="{{ ($processo->cliente->entidade and $processo->cliente->entidade->getEmailsNotificacao()) ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
+                                            <label><strong>Email de Envio</strong> </label>
+                                            <p>Lista de email carregada automaticamente com os emails de notificação do cliente.</p>
+                                            <p>Caso não existam emails cadastrados ou queira adicionar novos endereços, preencha a lista, separando os endereços com vírgula.</p>
+                                            <p><strong>Exemplo</strong>:
+                                                email1@easyjuris.com.br, email2@easyjuris.com.br,email3@easyjuris.com.br
+                                            </p>
+                                            <input class="form-control"  
+                                            placeholder="Email" 
+                                            type="text" 
+                                            value="{{ ($processo->cliente->entidade and $processo->cliente->entidade->getEmailsNotificacao()) 
+                                                     ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
                                         </div>
                                         <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
 
@@ -806,7 +815,7 @@
                                         <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
                                             <div style="float: left; width: 8%; text-align: center;">
                                                 <label class="text-default" style="margin-top: 8px;">
-                                                    <input type="checkbox" name="lista_arquivos[]" class="lista_arquivos" value="{{ $anexo->nm_local_anexo_processo_apr }}">
+                                                    <input type="checkbox" name="lista_arquivos[]" class="lista_arquivos" value="{{ $anexo->nm_local_anexo_processo_apr }}{{ $anexo->nm_anexo_processo_apr }}">
                                                 </label>
                                             </div>
                                             <div style="float: left; width: 92%">

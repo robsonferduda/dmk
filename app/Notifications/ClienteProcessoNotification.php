@@ -21,7 +21,6 @@ class ClienteProcessoNotification extends Notification
         $this->processo = $processo;
     }
 
-    
     public function via($notifiable)
     {
         return ['mail'];
@@ -44,9 +43,9 @@ class ClienteProcessoNotification extends Notification
             }
 
             for ($i=0; $i < count($notifiable->anexos); $i++) {
-                $file = explode("/", $notifiable->anexos[$i]);
 
-                copy(storage_path($notifiable->anexos[$i]), storage_path($destino.$file[2]));
+                $file = explode("/", $notifiable->anexos[$i]);
+                copy(storage_path(rtrim($notifiable->anexos[$i],"/")), storage_path($destino.$file[4]));
             }
 
             //Gerar zip
