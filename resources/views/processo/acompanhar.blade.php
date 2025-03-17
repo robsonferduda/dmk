@@ -59,10 +59,13 @@
                                 <button title="Finalizar Processo" class="btn btn-success" type="submit"><i class="fa fa-check"></i> Finalizar Processo</button>
                             </form>
 
-                        @else
+                        @elseif($processo->cd_status_processo_stp == App\Enums\StatusProcesso::FINALIZADO)
 
+                            <button title="Processo Finalizado" class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
+
+                        @else 
+                            
                             <button title="Finalizar Processo indisponível. Só é possível finalizar o processo após confirmar o recebimento de documentos e enviar o arquivo comprabatório de realização do ato." class="btn btn-success disabled pull-right header-btn" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" type="button"><i class="fa fa-check"></i> Finalizar Processo</button>
-
                         @endif
 
                         @php
@@ -259,35 +262,42 @@
                                                 </li> 
                                                 
                                                 @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
-                                                <h6 style="font-weight: 400;">
-                                                    DADOS DA AUDIÊNCIA: 
-                                                    @role('administrator|colaborador')
-                                                    <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
-                                                    @endrole
-                                                    @role('correspondente') 
-                                                    <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
-                                                    @endrole
-                                                </h6>
-                                                <li>
-                                                    <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
-                                                </li>
-                                                <li>
-                                                    <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
-                                                </li>
+                                                    <h6 style="font-weight: 400;">
+                                                        DADOS DA AUDIÊNCIA: 
+                                                        @role('administrator|colaborador')
+                                                        <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
+                                                        @endrole
+                                                        @role('correspondente') 
+                                                        <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
+                                                        @endrole
+                                                    </h6>
+                                                    <li>
+                                                        <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
+                                                    </li>
                                                 @endif
                                             </ul>
                                         </p> 
+                                        <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
                                     </div>
-                                    <div class="onoffswitch-container">
-                                        <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
-                                        <span class="onoffswitch">
-                                            <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
-                                            <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
-                                                <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                <span class="onoffswitch-switch"></span>
-                                            </label> 
-                                        </span> 
-                                    </div>
+                                    @role('administrator|colaborador')
+
+
+                                        
+
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
+                                                <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    @endrole
                                 </fieldset>
                                
                             </div>
@@ -304,6 +314,12 @@
 
                                     @role('administrator|colaborador')
                                         <h6>Arquivos do Processo</h6>
+                                        <p>Caso preferir, vocẽ pode informar um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
+
+                                        @if($processo->ds_link_dados_pro)
+                                            <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                                            
+                                        @endif
+                                        
                                             <div id="filepicker">
                                                 <!-- Button Bar -->
                                                 <div class="button-bar">
@@ -348,7 +364,15 @@
 
                                     @role('correspondente')
 
-                                        @if($processo->fl_recebimento_anexos_pro == 'S')
+                                        @if(count($processo->anexos) <= 0 or $processo->fl_envio_anexos_pro == 'N')
+                                            <div style="margin-left: 8px;">
+                                                <p class="label-anexos-escritorio">
+                                                    Aguardando o escritório anexar os documentos necessários para a realização do ato.
+                                                </p>
+                                            </div>
+                                        @endif
+
+                                        @if($processo->fl_envio_anexos_pro == 'S')
                                             
                                             <h6>Arquivos Anexados pelo Escritório</h6>
 
@@ -360,7 +384,7 @@
                                                             <tr>
                                                                 <th class="column-name">Nome do Arquivo</th>
                                                                 <th class="column-size center">Tamanho</th>                                                            
-                                                                <th class="center">Opções</th>
+                                                               
                                                             </tr>
                                                         </thead>
                                                         <tbody class="files">
@@ -370,49 +394,65 @@
                                                 </div>
 
                                             </div>
-                                            
-                                            <h6>Meus Arquivos</h6>
 
-                                            <div>
-                                                <div id="filepicker_correspondente">
-
-                                                    <div class="button-bar">
-
-                                                        <div class="btn btn-success btn-upload-plugin fileinput">
-                                                            <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                            <input type="file" name="files[]" id="input-file" multiple>
-                                                        </div>   
-
-                                                        <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                            <i class="fa fa-upload"></i> Enviar Todos
-                                                        </button>                  
-
-                                                    </div>
-
-                                                    <div class="table-responsive div-table">
-                                                        <table class="table table-upload">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="column-name">Nome do Arquivo</th>
-                                                                    <th class="column-size center">Tamanho</th>   
-                                                                    <th class="center">Opções</th>                                                         
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="files">
-
-                                                            </tbody>                        
-                                                        </table>
-                                                    </div>
-
-                                                      <!-- Drop Zone -->
-                                                    <div class="drop-window">
-                                                        <div class="drop-window-content">
-                                                            <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
-                                                        </div>
-                                                    </div>
-
+                                            <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S') ? '' : 'none' }}">                          
+                                                <div class="onoffswitch-container">
+                                                    <span class="onoffswitch-title">Confirma o recebimento dos documentos?</span> 
+                                                    <span class="onoffswitch">
+                                                        <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                                        <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                            <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                            <span class="onoffswitch-switch"></span>
+                                                        </label> 
+                                                    </span> 
                                                 </div>
-                                            </div>
+                                            </section>
+
+                                            <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S' and $processo->fl_recebimento_anexos_pro == 'S') ? '' : 'none' }}"> 
+                                            
+                                                <h6>Meus Arquivos</h6>
+
+                                                <div>
+                                                    <div id="filepicker_correspondente">
+
+                                                        <div class="button-bar">
+
+                                                            <div class="btn btn-success btn-upload-plugin fileinput">
+                                                                <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                                <input type="file" name="files[]" id="input-file" multiple>
+                                                            </div>   
+
+                                                            <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                                <i class="fa fa-upload"></i> Enviar Todos
+                                                            </button>                  
+
+                                                        </div>
+
+                                                        <div class="table-responsive div-table">
+                                                            <table class="table table-upload">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="column-name">Nome do Arquivo</th>
+                                                                        <th class="column-size center">Tamanho</th>   
+                                                                        <th class="center">Opções</th>                                                         
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="files">
+
+                                                                </tbody>                        
+                                                            </table>
+                                                        </div>
+
+                                                        <!-- Drop Zone -->
+                                                        <div class="drop-window">
+                                                            <div class="drop-window-content">
+                                                                <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </section>
                                           
                                         @else
                                             <div style="margin-left: 8px;">
@@ -425,6 +465,13 @@
                                 </fieldset>
 
                                 
+                                    @role('administrator|colaborador')
+
+                                    @if(count($processo->anexos) <= 0)
+                                        <p class="label-anexos-escritorio">
+                                            Nenhum arquivo anexado no processo. Após finalizar os anexos, confirme que todos os documentos foram anexados para que o correspondente tenha acesso a eles.
+                                        </p>
+                                    @endif
 
                                     <section class="box-anexos-escritorio {{ (count($processo->anexos) > 0) ? '' : 'none' }}">                          
                                         <div class="onoffswitch-container">
@@ -438,25 +485,9 @@
                                             </span> 
                                         </div>
                                     </section>
-
-                                    <h4 class="label-anexos-escritorio {{ (count($processo->anexos) >= 0) ? 'none' : '' }}">Nenhum arquivo anexado. Após finalizar os anexos, confirme que todos os documentos foram anexados.</h4>
-
+                                    @endrole
                                
-
-                                    <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0) ? '' : 'none' }}">                          
-                                        <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Confirma o recebimento dos documentos?</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                                <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                        </div>
-                                    </section>
-                                
-                               
+                                                                                    
                                 <section> 
                                     <div class="erro_atualiza_status" style="padding: 5px 6px; color: #cc1d1d;">
 
@@ -531,9 +562,9 @@
                                                     <span class="time_date">
                                                         <strong>
                                                             @if($mensagem->entidadeRemetenteColaborador)
-                                                            {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
+                                                                {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
                                                             @else
-                                                            {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                                {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
                                                             @endif                                                                               
                                                         </strong>
                                                         disse em 
@@ -891,11 +922,87 @@
             </div>
         </div>
 
+        <div class="modal fade modal_top_alto" id="modalLink" data-backdrop="static" tabindex="100" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ url('processo/informar-link-dados') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title">
+                                <i class="icon-append fa fa-pencil"></i> Informar Link de Documentos
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row box-cadastro">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Link dos Arquivos</strong><span class="text-info"> Informe o link do drive para os arquivos</span></label>
+                                        <input type="text" class="form-control" placeholder="Link dos arquivos" required="required" name="link_dados" id="link_dados" value="{{ ($processo->ds_link_dados_pro) ? $processo->ds_link_dados_pro : '' }}">
+                                        <div id="msg_error_preposto" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success" id="btnSalvarLink"><i class="fa-fw fa fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade modal_top_alto" id="modalLinkAudiencia" data-backdrop="static" tabindex="100" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ url('processo/informar-link-audiencia') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="cd_processo_pro" value="{{ \Crypt::encrypt($processo->cd_processo_pro) }}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title">
+                                <i class="icon-append fa fa-pencil"></i> Informar Link da Audiência
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row box-cadastro">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Link dos Arquivos</strong><span class="text-info"> Informe o link da audiência</span></label>
+                                        <input type="text" class="form-control" placeholder="Link da Audiência" required="required" name="link_audiencia" id="link_audiencia" value="{{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : '' }}">
+                                        <div id="msg_error_preposto" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success" id="btnSalvarLink"><i class="fa-fw fa fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         @endsection
         @section('script')
         <script type="text/javascript">
 
             $(document).ready(function() {
+
+                $("#informarLink").click(function(){
+                    $("#modalLink").modal('show');
+                });
+
+                $("#informarLinkAudiencia").click(function(){
+                    $("#modalLinkAudiencia").modal('show');
+                });
 
                 $("#btnModalFinalizacao").click(function(){
                     var id_processo = $("#processo").val();
@@ -944,7 +1051,7 @@
 
                                 despesas_aviso = "<div class='alert alert-info' role='alert'> <i style='color: red' class='fa fa-warning'></i><strong> Alerta!</strong> Não há <a href='../../processos/despesas/"+$('#id_processo_encrypted').val()+"') }} >despesas</a> cadastradas para o processo.</div>";              
                                
-                                despesas_aviso += '<div class="checkbox"><label><input type="checkbox" class="checkbox" name="sem_despesas" id="sem_despesas"><span> Finalizar processo sem despesas cadastras</span></label></div>';                               
+                                despesas_aviso += '<div class="checkbox"><label><input type="checkbox" class="checkbox" name="sem_despesas" id="sem_despesas"><span> Finalizar processo sem despesas cadastradas</span></label></div>';                               
 
                                $('#despesas_finalizar').append(despesas_aviso);
 

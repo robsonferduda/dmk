@@ -90,6 +90,9 @@ class ProcessoController extends Controller
         ->with(array('cliente' => function ($query) {
             $query->select('cd_cliente_cli', 'nm_fantasia_cli', 'nm_razao_social_cli');
         }))->where($conta, $this->cdContaCon)
+        ->when(Auth::user()->role()->first()->slug == 'correspondente', function ($query) {
+            return $query->whereIn('cd_status_processo_stp', [\StatusProcesso::AGUARDANDO_CUMPRIMENTO, \StatusProcesso::ACEITO_CORRESPONDENTE, \StatusProcesso::AGUARDANDO_DADOS, \StatusProcesso::FINALIZADO_CORRESPONDENTE]);
+        })
             ->take(50)
             //->orderBy('dt_prazo_fatal_pro','DESC')
             ->orderBy('created_at', 'desc')
@@ -1391,5 +1394,43 @@ class ProcessoController extends Controller
                 return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);
             }
         }
+    }
+
+    public function informarLinkDados(Request $request)
+    {
+        $id_processo = \Crypt::decrypt($request->cd_processo_pro);
+
+        $processo = Processo::where('cd_processo_pro', $id_processo)->first();
+        
+        if($processo){
+            $processo->ds_link_dados_pro = $request->link_dados;
+            $processo->save();
+
+            Flash::success('Link de dados informado com sucesso');
+
+        }else{
+            Flash::error('Erro ao informar link de dados');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+    }
+
+    public function informarLinkAudiencia(Request $request)
+    {
+        $id_processo = \Crypt::decrypt($request->cd_processo_pro);
+
+        $processo = Processo::where('cd_processo_pro', $id_processo)->first();
+        
+        if($processo){
+            $processo->ds_link_audiencia_pro = $request->link_audiencia;
+            $processo->save();
+
+            Flash::success('Link da audiência informado com sucesso');
+
+        }else{
+            Flash::error('Erro ao informar link da audiẽncia');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
     }
 }

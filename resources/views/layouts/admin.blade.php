@@ -451,7 +451,7 @@
                             <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                             <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                                 <li>
-                                    <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Arquivo</span></a>
+                                    <a href="{{ url('processos') }}" title="Listar"><span class="menu-item-parent">Meus Processos</span></a>
                                 </li>
                                 <li>
                                     <a href="{{ url('correspondente/processos') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>

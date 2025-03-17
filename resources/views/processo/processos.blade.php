@@ -164,8 +164,7 @@
                                         <td class="hidden-xs">{{ $processo->nm_autor_pro }}</td>
                                         <td class="hidden-xs">{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
                                         <td class="center">                                            
-                                            @role('colaborador|administrator')
-                                               
+                                            @role('colaborador|administrator')                                               
                                                 <div class="dropdown" style="display: inline;">
                                                     <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
                                                     <ul class="dropdown-menu">
@@ -182,7 +181,18 @@
                                                         <li><a title="Excluir" data-url="processos/" class="excluir_registro" href="#"><i class="fa fa-trash"></i> Excluir</a></li>
                                                     </ul>
                                                 </div>   
-                                            @endrole                                 
+                                            @endrole        
+                                            @role('correspondente')
+                                                <div class="dropdown" style="display: inline;">
+                                                    <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a title="Detalhes" href="{{ url('processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i> Detalhes</a>
+                                                        </li>
+                                                        <li><a title="Acompanhamento" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a><li>
+                                                    </ul>
+                                                </div>                                            
+                                            @endrole
                                         </td>
                                     </tr>
                                 @endforeach
