@@ -208,7 +208,7 @@
                                 <div class="row">
 
                                     <section class="col col-md-12"> 
-                                        <p><strong>Usuário</strong>: {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : <span class="text-danger">Nenhum usuário cadastrado</span> !!}</p>
+                                        <p><strong>Usuário</strong>: {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : '<span class="text-danger">Nenhum usuário cadastrado</span>' !!}</p>
                                     </section>                                
 
                                     <section class="col col-12">
