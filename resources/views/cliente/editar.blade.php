@@ -211,23 +211,25 @@
                                         <p><strong>Usuário</strong>: {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : '<span class="text-danger">Nenhum usuário cadastrado</span>' !!}</p>
                                     </section>                                
 
-                                    <section class="col col-12">
+                                    <section class="col col-md-4">
                                         <label class="label">Usuário <span class="text-info">Digite um email válido</span></label>
                                         <label class="input">
                                             <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
                                         </label>
                                     </section> 
                                     
-                                    <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">
-                                            <span class="onoffswitch-title">Notificar Cliente</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" class="onoffswitch-checkbox" name="fl_notificar_cliente" value="S" id="fl_notificar_cliente">
-                                                <label class="onoffswitch-label" for="fl_notificar_cliente"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                    </div>                                     
+                                    <section class="col col-md-12">
+                                        <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">
+                                                <span class="onoffswitch-title">Notificar Cliente</span> 
+                                                <span class="onoffswitch">
+                                                    <input type="checkbox" class="onoffswitch-checkbox" name="fl_notificar_cliente" value="S" id="fl_notificar_cliente">
+                                                    <label class="onoffswitch-label" for="fl_notificar_cliente"> 
+                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label> 
+                                                </span> 
+                                        </div>        
+                                    </section>                             
                                 </div>
                             </fieldset>
                         </div>

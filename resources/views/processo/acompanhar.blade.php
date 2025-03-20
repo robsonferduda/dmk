@@ -260,6 +260,10 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
+                                                <li>
+                                                    <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
+                                                </li>
+                                               
                                                 
                                                 @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
                                                     <h6 style="font-weight: 400;">
@@ -280,7 +284,7 @@
                                                 @endif
                                             </ul>
                                         </p> 
-                                        <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
+                                       
                                     </div>
                                     @role('administrator|colaborador')
 
@@ -314,7 +318,7 @@
 
                                     @role('administrator|colaborador')
                                         <h6>Arquivos do Processo</h6>
-                                        <p>Caso preferir, vocẽ pode informar um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
+                                        <p>Caso preferir, informe um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
 
                                         @if($processo->ds_link_dados_pro)
                                             <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                                            
@@ -397,7 +401,7 @@
 
                                             <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S') ? '' : 'none' }}">                          
                                                 <div class="onoffswitch-container">
-                                                    <span class="onoffswitch-title">Confirma o recebimento dos documentos?</span> 
+                                                    <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato?</span> 
                                                     <span class="onoffswitch">
                                                         <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
                                                         <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
