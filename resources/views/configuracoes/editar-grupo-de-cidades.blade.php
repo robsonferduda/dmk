@@ -150,31 +150,34 @@
 
             $.ajax(
             {
-                url: '../../cidades-por-estado/'+estados.join(","),
-                type: 'GET',
-                dataType: "JSON",
-                beforeSend: function(){
-                    $(".msg_aguarde").html('<h3><i class="fa fa-spinner fa-spin"></i> Buscando cidades...</h3>').css('color','black');
-                    $("#buscarCidades").attr("disabled", true);
-                },
-                success: function(response)
-                {
-                    //duallistbox.empty();
-                    duallistbox.find('option').not(':selected').remove();
-                    $.each(response,function(index,element){
+                if(estados.length >= 1){
+                    url: '../../cidades-por-estado/'+estados.join(","),
+                    type: 'GET',
+                    dataType: "JSON",
+                    beforeSend: function(){
+                        $(".msg_aguarde").html('<h3><i class="fa fa-spinner fa-spin"></i> Buscando cidades...</h3>').css('color','black');
+                        $("#buscarCidades").attr("disabled", true);
+                    },
+                    success: function(response)
+                    {
+                        //duallistbox.empty();
+                        duallistbox.find('option').not(':selected').remove();
+                        $.each(response,function(index,element){
 
-                        duallistbox.append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+' - '+element.estado.sg_estado_est+'</option>');
-                        
-                    });
-                    duallistbox.bootstrapDualListbox('refresh');
-                    $(".msg_aguarde").html('');
-                    $("#buscarCidades").attr("disabled", false);
+                            duallistbox.append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+' - '+element.estado.sg_estado_est+'</option>');
+                            
+                        });
+                        duallistbox.bootstrapDualListbox('refresh');
+                        $(".msg_aguarde").html('');
+                        $("#buscarCidades").attr("disabled", false);
 
-                },
-                error: function(response)
-                {
-                    //console.log(response);
+                    },
+                    error: function(response)
+                    {
+                        //console.log(response);
+                    }
                 }
+
             });
 
         });
