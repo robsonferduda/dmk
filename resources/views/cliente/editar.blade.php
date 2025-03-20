@@ -207,11 +207,9 @@
                             <fieldset>
                                 <div class="row">
 
-                                    @if($cliente->entidade->usuario)
                                         <section class="col col-md-12"> 
                                             <p><strong>Usuário</strong>: {{ ($cliente->entidade->usuario->email) ? $cliente->entidade->usuario->email : 'Nenhum usuário cadastrado' }}</p>
-                                        </section>
-                                    @endif
+                                    </section>                                
 
                                     <section class="col col-12">
                                         <label class="label">Usuário <span class="text-info">Digite um email válido</span></label>
