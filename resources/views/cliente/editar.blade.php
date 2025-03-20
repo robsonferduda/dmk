@@ -206,7 +206,14 @@
                             </header>
                             <fieldset>
                                 <div class="row">
-                                    <section class="col col-3">
+
+                                    @if($cliente->entidade->usuario)
+                                        <section class="col col-md-12"> 
+                                            <p><strong>Usuário</strong>: {{ ($cliente->entidade->usuario->email) ? $cliente->entidade->usuario->email : 'Nenhum usuário cadastrado' }}</p>
+                                        </section>
+                                    @endif
+
+                                    <section class="col col-12">
                                         <label class="label">Usuário <span class="text-info">Digite um email válido</span></label>
                                         <label class="input">
                                             <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
