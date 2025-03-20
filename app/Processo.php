@@ -188,7 +188,8 @@ class Processo extends Model implements AuditableContract
                        t7.nm_cidade_cde,
                        t8.sg_estado_est,
                        t10.nm_tipo_servico_tse,
-                       t1.nu_acompanhamento_pro
+                       t1.nu_acompanhamento_pro,
+                       t2.ds_color_stp
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con

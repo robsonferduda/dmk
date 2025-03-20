@@ -315,7 +315,7 @@
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
                             '<div class="row box-processo">'+
-                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'  <strong><span style="background-color: '+data.ds_color_stp+'" class="label label-default">'+data.nm_status_processo_conta_stp+'</span></strong>  <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
 
                                 '<div class="col-xs-12 col-sm-12 col-md-12 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'</h6></div>'+
                                 '<div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong>'+data.nm_status_processo_conta_stp+'</strong></h6></div>'+
@@ -403,7 +403,7 @@
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
-                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
+                            '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong><span style="background-color: '+data.ds_color_stp+'" class="label label-default">'+data.nm_status_processo_conta_stp+'</span></strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
                             '<div class="row box-processo">'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Prazo Fatal</strong>: '+data.dt_prazo_fatal_pro+' '+formataNulo(data.hr_audiencia_pro)+'</h6>'+
