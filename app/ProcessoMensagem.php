@@ -64,13 +64,18 @@ class ProcessoMensagem extends Model
         foreach($mensagens as $msg){
 
             if($msg->cd_tipo_mensagem_tim == \App\Enums\TipoMensagem::EXTERNA){
-                $remetente = $msg->entidadeRemetente->nm_razao_social_con;
-                if(file_exists(public_path().'/img/users/ent'.$msg->entidadeRemetente->entidade->cd_entidade_ete.'.png')){
+
+                $remetente = ($msg->entidadeRemetente) ? $msg->entidadeRemetente->nm_razao_social_con : 'Desconhecido';
+                $img_user = ($msg->entidadeRemetente) ? public_path().'/img/users/ent'.$msg->entidadeRemetente->entidade->cd_entidade_ete.'.png' : null;
+
+                if($img_user and file_exists($img_user)){
                     $avatar = URL::to('/').'/img/users/ent'.$msg->entidadeRemetente->entidade->cd_entidade_ete.'.png';
                 }else{
                     $avatar = URL::to('/').'/img/users/user.png';
                 }
+
             }else{
+
                 if($msg->entidadeInterna and $msg->entidadeInterna->usuario){
                     $remetente = $msg->entidadeInterna->usuario->name;
                     if(file_exists(public_path().'/img/users/ent'.$msg->entidadeInterna->cd_entidade_ete.'.png')){
