@@ -299,57 +299,6 @@
 
         });
 
-        var buscaCidade = function(){
-
-            estado = $("#estado").val();
-
-            if(estado != ''){
-
-                $.ajax(
-                    {
-                        url: '/cidades-por-estado/'+estado,
-                        type: 'GET',
-                        dataType: "JSON",
-                        beforeSend: function(){
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Carregando...</option>');
-                            $('#cidade').prop( "disabled", true );
-
-                        },
-                        success: function(response)
-                        {                    
-                            $('#cidade').empty();
-                            $('#cidade').append('<option selected value="">Selecione</option>');
-                            $.each(response,function(index,element){
-
-                                if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
-                                    $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
-                                }else{
-                                    $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
-                                }
-                                
-                            });       
-                            $('#cidade').trigger('change');     
-                            $('#cidade').prop( "disabled", false );        
-                        },
-                        error: function(response)
-                        {
-                            //console.log(response);
-                        }
-                    });
-            }
-        }
-
-        buscaCidade();
-
-        $("#estado").change(function(){
-            
-            buscaCidade(); 
-
-        });
-
     });
-
-    
 </script>
 @endsection
