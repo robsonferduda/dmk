@@ -33,6 +33,8 @@ class User extends Authenticatable implements AuditableContract
         'observacao'
     ];
 
+    protected $guard = 'admin';
+
     protected $hidden = [
         'password', 'remember_token',
     ];

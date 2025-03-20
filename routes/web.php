@@ -41,6 +41,7 @@ Route::resource('contas', 'ContaController');
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
+    
     Route::any('filepicker', 'FilepickerController@handle');
     Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');
     Route::any('processos/arquivos-processo/correspondente', 'FilepickerController@arquivosProcessoCorrespondente');
