@@ -50,7 +50,7 @@
 
                     @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
-                        @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO)
+                        @if(true)
 
                             <form class="pull-right" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
                                 {{ csrf_field() }}
