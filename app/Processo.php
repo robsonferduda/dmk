@@ -225,7 +225,7 @@ class Processo extends Model implements AuditableContract
 
         if($statusProcesso) $sql .= "AND t1.cd_status_processo_stp = $statusProcesso ";
 
-        $sql .= " AND t1.deleted_at is null ORDER BY dt_prazo_fatal_pro";
+        $sql .= " AND t1.deleted_at is null ORDER BY dt_prazo_fatal_pro, hr_audiencia_pro";
 
         $processos = DB::select($sql);
 
