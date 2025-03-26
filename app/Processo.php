@@ -189,7 +189,8 @@ class Processo extends Model implements AuditableContract
                        t8.sg_estado_est,
                        t10.nm_tipo_servico_tse,
                        t1.nu_acompanhamento_pro,
-                       t2.ds_color_stp
+                       t2.ds_color_stp,
+                       t1.created_at
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con
@@ -257,6 +258,7 @@ class Processo extends Model implements AuditableContract
             $processos[$key]->background = $background;
             $processos[$key]->situacao = $situacao;
             $processos[$key]->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)); 
+            $processos[$key]->created_at = date('d/m/Y H:i:s', strtotime($processo->created_at)); 
 
         }
 

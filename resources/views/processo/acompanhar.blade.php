@@ -286,21 +286,37 @@
                                         </p> 
                                        
                                     </div>
+                                    
                                     @role('administrator|colaborador')
 
-
-                                        
-
-                                        <div class="onoffswitch-container">
-                                            <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
-                                                <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
+                                        <div class="row">
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class="onoffswitch-container">
+                                                    <span class="onoffswitch-title">Dados Enviados?</span> 
+                                                    <span class="onoffswitch">
+                                                        <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
+                                                        <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
+                                                            <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                            <span class="onoffswitch-switch"></span>
+                                                        </label> 
+                                                    </span> 
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class="onoffswitch-container">
+                                                    <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
+                                                    <span class="onoffswitch">
+                                                        <input type="checkbox" {{ ($processo->fl_documento_representacao_pro == 'S') ? 'checked' : '' }} name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
+                                                        <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
+                                                            <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                            <span class="onoffswitch-switch"></span>
+                                                        </label> 
+                                                    </span> 
+                                                </div>
+                                            </div>
                                         </div>
+
                                     @endrole
                                 </fieldset>
                                
@@ -412,57 +428,53 @@
                                                 </div>
                                             </section>
 
-                                            <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S' and $processo->fl_recebimento_anexos_pro == 'S') ? '' : 'none' }}"> 
+                                        @endif
+
+                                        <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S' and $processo->fl_recebimento_anexos_pro == 'S') ? '' : 'none' }}"> 
                                             
-                                                <h6>Meus Arquivos</h6>
+                                            <h6>Meus Arquivos</h6>
 
-                                                <div>
-                                                    <div id="filepicker_correspondente">
+                                            <div>
+                                                <div id="filepicker_correspondente">
 
-                                                        <div class="button-bar">
+                                                    <div class="button-bar">
 
-                                                            <div class="btn btn-success btn-upload-plugin fileinput">
-                                                                <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                                <input type="file" name="files[]" id="input-file" multiple>
-                                                            </div>   
+                                                        <div class="btn btn-success btn-upload-plugin fileinput">
+                                                            <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                            <input type="file" name="files[]" id="input-file" multiple>
+                                                        </div>   
 
-                                                            <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                                <i class="fa fa-upload"></i> Enviar Todos
-                                                            </button>                  
-
-                                                        </div>
-
-                                                        <div class="table-responsive div-table">
-                                                            <table class="table table-upload">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th class="column-name">Nome do Arquivo</th>
-                                                                        <th class="column-size center">Tamanho</th>   
-                                                                        <th class="center">Opções</th>                                                         
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="files">
-
-                                                                </tbody>                        
-                                                            </table>
-                                                        </div>
-
-                                                        <!-- Drop Zone -->
-                                                        <div class="drop-window">
-                                                            <div class="drop-window-content">
-                                                                <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
-                                                            </div>
-                                                        </div>
+                                                        <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                            <i class="fa fa-upload"></i> Enviar Todos
+                                                        </button>                  
 
                                                     </div>
+
+                                                    <div class="table-responsive div-table">
+                                                        <table class="table table-upload">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="column-name">Nome do Arquivo</th>
+                                                                    <th class="column-size center">Tamanho</th>   
+                                                                    <th class="center">Opções</th>                                                         
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="files">
+
+                                                            </tbody>                        
+                                                        </table>
+                                                    </div>
+
+                                                    <!-- Drop Zone -->
+                                                    <div class="drop-window">
+                                                        <div class="drop-window-content">
+                                                            <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
-                                            </section>
-                                          
-                                        @else
-                                            <div style="margin-left: 8px;">
-                                                <span>Após a confirmação do recebimento dos arquivos, você poderá anexar os comprovantes de cumprimento do ato e finalizar o processo</span>
                                             </div>
-                                        @endif
+                                        </section>
 
                                     @endrole
 
