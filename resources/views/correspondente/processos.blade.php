@@ -150,6 +150,8 @@
 
     $(document).ready(function() {
 
+        var host =  $('meta[name="base-url"]').attr('content');
+
         $("#cd_cliente").change(function(){
             var cliente = $("#cd_cliente").val();
             buscaTipoProcesso(cliente);
@@ -262,7 +264,7 @@
 
         $.ajax({
                 
-                url: '../../api/processo/correspondente/andamento',
+                url: host+'/api/processo/correspondente/andamento',
                 type: 'GET',
                 dataType: "JSON",
                 beforeSend: function(){
@@ -298,6 +300,8 @@
                                 '</div>'+
                                 '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
+                                    '<a title="Aceitar Processo" class="icone-acompanhamento" href="../processo/notificacao/resposta/S/'+data.hash+'"><i class="fa fa-check"></i> Aceitar Processo</a> '+
+                                    '<a title="Recusar Processo" class="icone-acompanhamento" href="../processo/notificacao/resposta/N/'+data.hash+'"><i class="fa fa-ban"></i> Recusar Processo</a> '+
                                 '</div>'+
                                 '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+

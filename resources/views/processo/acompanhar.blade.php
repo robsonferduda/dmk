@@ -385,9 +385,9 @@
                                     @role('correspondente')
 
                                         @if(count($processo->anexos) <= 0 or $processo->fl_envio_anexos_pro == 'N')
-                                            <div style="margin-left: 8px;">
-                                                <p class="label-anexos-escritorio">
-                                                    Aguardando o escritório anexar os documentos necessários para a realização do ato.
+                                            <div>
+                                                <p class="label-anexos-escritorio text-info">
+                                                    <i><i class="fa fa-info-circle"></i></i> O Escritório não anexou nenhum arquivo ao processo pelo sistema.
                                                 </p>
                                             </div>
                                         @endif
@@ -415,22 +415,22 @@
 
                                             </div>
 
-                                            <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S') ? '' : 'none' }}">                          
-                                                <div class="onoffswitch-container">
-                                                    <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato?</span> 
-                                                    <span class="onoffswitch">
-                                                        <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
-                                                        <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
-                                                            <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                            <span class="onoffswitch-switch"></span>
-                                                        </label> 
-                                                    </span> 
-                                                </div>
-                                            </section>
-
                                         @endif
 
-                                        <section class="box-anexos-correspondente {{ (count($processo->anexos) >= 0 and $processo->fl_envio_anexos_pro == 'S' and $processo->fl_recebimento_anexos_pro == 'S') ? '' : 'none' }}"> 
+                                        <section class="box-anexos-correspondente">                          
+                                            <div class="onoffswitch-container">
+                                                <span class="onoffswitch-title">Confirma o recebimento dos documentos e a realização do ato?</span> 
+                                                <span class="onoffswitch">
+                                                    <input type="checkbox" {{ ($processo->fl_recebimento_anexos_pro == 'S') ? 'checked' : '' }} name="fl_recebimento_anexos_pro" class="onoffswitch-checkbox" id="fl_recebimento_anexos_pro">
+                                                    <label class="onoffswitch-label" for="fl_recebimento_anexos_pro"> 
+                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label> 
+                                                </span> 
+                                            </div>
+                                        </section>
+
+                                        <section class="box-anexos-correspondente"> 
                                             
                                             <h6>Meus Arquivos</h6>
 
