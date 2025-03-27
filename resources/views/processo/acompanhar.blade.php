@@ -929,14 +929,14 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label><strong>Advogado</strong><span class="text-info"> Informe nome completo, OAB e telefone, separados por vírgula</span></label>
-                                        <input type="text" class="form-control" placeholder="Nome completo, OAB e telefone" required="required" name="dados_advogado" id="dados_advogado" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
+                                        <input type="text" class="form-control" placeholder="Nome completo, OAB e telefone" name="dados_advogado" id="dados_advogado" value="{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}">
                                         <div id="msg_error_advogado" class="text-danger"></div>
                                     </div>    
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label><strong>Preposto</strong><span class="text-info"> Informe nome completo e CPF, separados por vírgula</span></label>
-                                        <input type="text" class="form-control" placeholder="Nome completo e CPF" required="required" name="dados_preposto" id="dados_preposto" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
+                                        <input type="text" class="form-control" placeholder="Nome completo e CPF" name="dados_preposto" id="dados_preposto" value="{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}">
                                         <div id="msg_error_preposto" class="text-danger"></div>
                                     </div>    
                                 </div>
