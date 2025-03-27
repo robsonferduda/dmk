@@ -928,23 +928,23 @@
                             <div class="row box-cadastro">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label><strong>Advogado</strong><span class="text-info"> Informe NOME COMPLETO, OAB, TELEFONE (Separados por vírgula)</span></label>
+                                        <label><strong>Advogado</strong><span class="text-info"> Informe NOME COMPLETO - OAB - TELEFONE (Separados por traço)</span></label>
                                         <p class="text-danger">Digite cada sequencia de dados em uma linha</p>
                                         <textarea class="form-control texto-processo" rows="8" name="dados_advogado" id="dados_advogado" 
-                                        placeholder="NOME COMPLETO, OAB, TELEFONE"
+                                        placeholder="NOME COMPLETO - OAB - TELEFONE"
                                         style="text-transform: uppercase;"
-                                        oninput="this.value = this.value.toUpperCase();">{{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''}}</textarea>
+                                        oninput="this.value = this.value.toUpperCase();">{!! ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''!!}</textarea>
                                         <div id="msg_error_advogado" class="text-danger"></div>
                                     </div>    
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label><strong>Preposto</strong><span class="text-info"> Informe NOME COMPLETO, CPF, RG, TELEFONE (Separados por vírgula)</span></label>
+                                        <label><strong>Preposto</strong><span class="text-info"> Informe NOME COMPLETO - CPF - RG - TELEFONE (Separados por traço)</span></label>
                                         <p class="text-danger">Digite cada sequencia de dados em uma linha</p>
                                         <textarea class="form-control texto-processo" rows="8" name="dados_preposto" id="dados_preposto" 
-                                        placeholder="NOME COMPLETO, 99999999999, 99999999, 48999999999"
+                                        placeholder="NOME COMPLETO - CPF - RG - TELEFONE"
                                         style="text-transform: uppercase;"
-                                        oninput="this.value = this.value.toUpperCase();">{{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' }}</textarea>
+                                        oninput="this.value = this.value.toUpperCase();">{!! ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : '' !!}</textarea>
                                         <div id="msg_error_preposto" class="text-danger"></div>
                                     </div>    
                                 </div>
