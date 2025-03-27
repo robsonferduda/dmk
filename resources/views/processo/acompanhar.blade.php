@@ -170,12 +170,16 @@
                         <div class="col-md-12 box-loader">
                             <div class="col-md-12 col-lg-6">
                                 <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
+                                    <legend>
+                                        <i class="fa fa-file-text-o"></i> <strong>Dados Básicos</strong>
+                                        <span style="font-size: 12px; background-color: {{ $processo->status->ds_color_stp }}" class="label label-default pull-right">{{ $processo->status->nm_status_processo_conta_stp }}</span>
+                                    </legend>
+                                    <div class="row" style="margin-left: 3px;">
                                         <input type="hidden" name="conta_logada" id="conta_logada" value="{{ Auth::user()->cd_conta_con }}">
                                         <input type="hidden" name="processo" id="processo" value="{{ $processo->cd_processo_pro }}">
                                         <input type="hidden" name="msg_correspondente" id="msg_correspondente" value="{{ $processo->cd_correspondente_cor }}">
-                                        <p>
+
+                                        
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
 
                                                 <li>
@@ -283,7 +287,7 @@
                                                     </li>
                                                 @endif
                                             </ul>
-                                        </p> 
+                                        
                                        
                                     </div>
                                     
