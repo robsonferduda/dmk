@@ -1232,27 +1232,33 @@ class ProcessoController extends Controller
         $emails = EnderecoEletronico::where('cd_entidade_ete', $conta->entidade()->where('cd_tipo_entidade_tpe',7)->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
         if ($processo) {
-            if (count($emails) > 0) {
-                $processo->nm_advogado_pro = $request->dados_advogado;
-                $processo->nm_preposto_pro = $request->dados_preposto;
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::DADOS_ENVIADOS;
 
-                if ($processo->save()) {
+            $processo->nm_advogado_pro = $request->dados_advogado;
+            $processo->nm_preposto_pro = $request->dados_preposto;
+            
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::DADOS_ENVIADOS;
+
+            if ($processo->save()) {
+
+                if (count($emails) > 0) {
                     $lista = '';
-
+    
                     foreach ($emails as $email) {
                         $processo->email =  $email->dc_endereco_eletronico_ede;
                         $processo->notificarAtualizacaoDados($processo);
                         $lista .= $email->dc_endereco_eletronico_ede.', ';
                     }
-
+    
                     Flash::success('Dados atualizados com sucesso e o escritório foi notificado sobre a atualização dos dados. Mensagem enviada para '.substr(trim($lista), 0, -1));
                 } else {
-                    Flash::error('Erro ao atualizar o processo');
+                    Flash::error('Nenhum email de notificação cadastrado para o escritório, a operação foi cancelada. Requisite o cadastro de um email de notificação para o escritório e tente novamente');
                 }
+
+                
             } else {
-                Flash::error('Nenhum email de notificação cadastrado para o escritório, a operação foi cancelada. Requisite o cadastro de um email de notificação para o escritório e tente novamente');
+                Flash::error('Erro ao atualizar o processo');
             }
+
         } else {
             Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
         }
