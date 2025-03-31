@@ -28,27 +28,27 @@
             <div class="row">
                 <div class="col-md-4 col-sm-12">
                     <div class="banner office">
-                        <h2><strong>Escritório</strong></h2>
+                        <h2><strong><i class="fa fa-lg fa-fw fa-archive"></i> Escritório</strong></h2>
                         <p>Você é um escritório de advocacia? Clique abaixo para acessar.</p>
-                        <a href="{{ url('conta/perfil/escritorio') }}" class="btn btn-primary btn-custom"><i class="fa fa-lg fa-fw fa-archive"></i> Acessar como Escritório</a>
+                        <a href="{{ url('conta/perfil/escritorio') }}" class="btn btn-primary btn-custom"> Acessar como Escritório</a>
                     </div>
                 </div>
         
                 <!-- Banner para Cliente -->
                 <div class="col-md-4 col-sm-12">
                     <div class="banner client">
-                        <h2><strong>Cliente</strong></h2>
+                        <h2><strong><i class="fa fa-lg fa-fw fa-user"></i> Cliente</strong></h2>
                         <p>Você é um cliente? Clique abaixo para acessar seus serviços.</p>
-                        <a href="{{ url('conta/perfil/cliente') }}" class="btn btn-success btn-custom"><i class="fa fa-lg fa-fw fa-user"></i> Acessar como Cliente</a>
+                        <a href="{{ url('conta/perfil/cliente') }}" class="btn btn-success btn-custom"> Acessar como Cliente</a>
                     </div>
                 </div>
         
                 <!-- Banner para Correspondente -->
                 <div class="col-md-4 col-sm-12">
                     <div class="banner correspondent">
-                        <h2><strong>Correspondente</strong></h2>
+                        <h2><strong><i class="fa fa-lg fa-fw fa-legal"></i>  Correspondente</strong></h2>
                         <p>Você é um correspondente jurídico? Clique abaixo para acessar.</p>
-                        <a href="{{ url('conta/perfil/correspondente') }}" class="btn btn-warning btn-custom"><i class="fa fa-lg fa-fw fa-legal"></i> Acessar como Correspondente</a>
+                        <a href="{{ url('conta/perfil/correspondente') }}" class="btn btn-warning btn-custom">Acessar como Correspondente</a>
                     </div>
                 </div>
             </div>
