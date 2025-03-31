@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us" id="extr-page">
+<html lang="en-us" id="extr-page"  style="background: #f9f9f9;">
 	<head>
 		<meta charset="utf-8">
 		<title>{{ env('APP_NAME') }}</title>
@@ -39,14 +39,14 @@
 
 	</head>
 	
-	<body id="login">
+	<body id="login" style="background: #f9f9f9 !important;">
 	
 		<header id="header" style="text-align: right; padding-top: 20px;" class="header-register">
 			<span id="btn_correspondentes"><a href="{{ url('/correspondente') }}" class="btn btn-default link-cadastro-correspondente"><i class="fa fa-legal"></i> CADASTRO CORRESPONDENTES</a> </span>
 			<span id="btn_login"><a href="{{ url('login') }}" class="btn btn-danger"><i class="fa fa-sign-in"></i> ACESSAR O SISTEMA</a> </span>
 		</header>
 
-		<div id="main" role="main">
+		<div id="main" role="main" style="background: #f9f9f9 !important;">
 			<div id="content" class="container">
 				<div class="row" style="margin: 0 auto;">					
 					@yield('content')

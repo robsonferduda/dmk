@@ -276,6 +276,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::resource('contas', 'ContaController');
     Route::get('conta/detalhes/{id}', 'ContaController@detalhes');
+    Route::get('conta/perfil/{tipo}', 'ContaController@login');
     Route::get('conta/atualizar/{id}', 'ContaController@editar');
     Route::post('conta/update', 'ContaController@update');
     Route::post('conta/telefone/adicionar', 'ContaController@adicionarTelefone');

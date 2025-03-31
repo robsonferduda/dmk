@@ -64,6 +64,27 @@ class ContaController extends Controller
         return view('conta/detalhes', ['conta' => $conta]);
     }
 
+    public function login($tipo)
+    {
+        $tipo = $tipo;
+
+        switch ($tipo) {
+            case 'correspondente':
+                $tipo = 3;
+                break;
+
+            case 'cliente':
+                $tipo = 4;
+                break;
+            
+            case 'escritorio':
+                $tipo = 1;
+                break;
+        }
+
+        return redirect('login')->with('nivel', $tipo);
+    }
+
     public function editar($id)
     {
         $id = \Crypt::decrypt($id);

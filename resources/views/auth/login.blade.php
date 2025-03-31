@@ -13,7 +13,7 @@
                     <select name="nivel" required="required">
                         <option value="">Selecione um perfil</option>
                         @foreach(\App\Nivel::all() as $nivel)
-                            <option value="{{ $nivel->cd_nivel_niv }}" {{ ((old('nivel') and old('nivel') == $nivel->cd_nivel_niv) or (session('nivel_url') and session('nivel_url') == $nivel->cd_nivel_niv)) ? 'selected="selected"' : ''  }}>{{ $nivel->dc_nome_padronizado_niv }}</option>
+                            <option value="{{ $nivel->cd_nivel_niv }}" {{ ( (session('nivel') and session('nivel') == $nivel->cd_nivel_niv) or (old('nivel') and old('nivel') == $nivel->cd_nivel_niv) or (session('nivel_url') and session('nivel_url') == $nivel->cd_nivel_niv)) ? 'selected="selected"' : ''  }}>{{ $nivel->dc_nome_padronizado_niv }}</option>
                         @endforeach
                     </select><i></i>
                 </label>

@@ -265,28 +265,36 @@
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
                                                 <li>
-                                                    <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
+                                                    <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} 
+                                                    @role('administrator|colaborador')
+                                                        <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
+                                                    @endrole
                                                 </li>
-                                               
-                                                
-                                                @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
-                                                    <h6 style="font-weight: 400;">
-                                                        DADOS DA AUDIÊNCIA: 
-                                                        @role('administrator|colaborador')
-                                                        <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
-                                                        @endrole
-                                                        @role('correspondente') 
-                                                        <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Editar </a>
-                                                        @endrole
-                                                    </h6>
-                                                    <li>
-                                                        <strong>Preposto: </strong> {{ ($processo->nm_preposto_pro) ? $processo->nm_preposto_pro : 'Não informado' }}
-                                                    </li>
-                                                    <li>
-                                                        <strong>Advogado: </strong> {{ ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : 'Não informado'}}
-                                                    </li>
-                                                @endif
                                             </ul>
+                                                <legend>
+                                                    <i class="fa fa-legal"></i> <strong>Dados da Audiência</strong>
+                                                    @role('administrator|colaborador')
+                                                        <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
+                                                    @endrole
+
+                                                    @role('correspondente') 
+                                                        <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Informar </a>
+                                                    @endrole
+                                                </legend>
+                                                
+                                            @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
+                                                <ul class="list-unstyled" style=" line-height: 1.5;">
+                                                    <li>
+                                                        <strong>Preposto: </strong> 
+                                                        <p>{!! ($processo->nm_preposto_pro) ? nl2br(e($processo->nm_preposto_pro))  : 'Não informado' !!}</p>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Advogado: </strong> 
+                                                        <p>{!! ($processo->nm_advogado_pro) ? nl2br(e($processo->nm_advogado_pro))  : 'Não informado' !!}</p>
+                                                    </li>
+                                                </ul>
+                                            @endif
+                                            
                                         
                                        
                                     </div>
@@ -394,6 +402,7 @@
                                                     <i><i class="fa fa-info-circle"></i></i> O Escritório não anexou nenhum arquivo ao processo pelo sistema.
                                                 </p>
                                             </div>
+
                                         @endif
 
                                         @if($processo->fl_envio_anexos_pro == 'S')
@@ -921,7 +930,7 @@
                                 &times;
                             </button>
                             <h4 class="modal-title">
-                                <i class="icon-append fa fa-pencil"></i> Informar Advogado e/ou Preposto
+                                <i class="icon-append fa fa-legal"></i> Dados da Audiência - Informar Advogado e/ou Preposto
                             </h4>
                         </div>
                         <div class="modal-body">
@@ -933,7 +942,7 @@
                                         <textarea class="form-control texto-processo" rows="8" name="dados_advogado" id="dados_advogado" 
                                         placeholder="NOME COMPLETO - OAB - TELEFONE"
                                         style="text-transform: uppercase;"
-                                        oninput="this.value = this.value.toUpperCase();">{!! ($processo->nm_advogado_pro) ? $processo->nm_advogado_pro : ''!!}</textarea>
+                                        oninput="this.value = this.value.toUpperCase();">{!! ($processo->nm_advogado_pro) ?  $processo->nm_advogado_pro : '' !!}</textarea>
                                         <div id="msg_error_advogado" class="text-danger"></div>
                                     </div>    
                                 </div>

@@ -38,7 +38,7 @@ class HomeController extends Controller
                     break;
             }
         } else {
-            return view('conta/novo');
+            return view('inicio');
         }
     }
 
