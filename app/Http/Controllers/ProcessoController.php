@@ -126,7 +126,7 @@ class ProcessoController extends Controller
 
     public function pautaOnline(Request $request)
     {
-        $prazo_fatal = ($request->dt_prazo_fatal_pro) ? $request->dt_prazo_fatal_pro : date('Y-m-d');
+        $prazo_fatal = ($request->dt_prazo_fatal_pro) ? date('Y-m-d', strtotime($request->dt_prazo_fatal_pro)) : date('Y-m-d');
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
         $responsavel = ($request->cd_responsavel_pro) ? $request->cd_responsavel_pro : null;
