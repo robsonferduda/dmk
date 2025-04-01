@@ -134,7 +134,6 @@ class ProcessoController extends Controller
         $processos = Processo::with('cidade')
         ->where('cd_conta_con', $this->cdContaCon)
         ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
-        ->where('dt_prazo_fatal_pro', $prazo_fatal)
         ->when('prazo_fatal', function ($query) use ($prazo_fatal) {
             return $query->where('dt_prazo_fatal_pro', $prazo_fatal);
         })
@@ -1188,6 +1187,27 @@ class ProcessoController extends Controller
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
         } else {
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+        }
+    }
+
+    public function atualizaDadosEnviados($id)
+    {
+        $flag = 'N';
+        $processo = Processo::findOrFail($id);
+        $vinculo = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
+
+        if ($processo->fl_dados_enviados_pro == 'N') {
+            $flag = 'S';
+        } else {
+            $flag = 'N';
+        }
+
+        $processo->fl_dados_enviados_pro = $flag;
+        
+        if ($processo->save()) {
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        }else {
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
         }
     }

@@ -53,7 +53,8 @@ class Processo extends Model implements AuditableContract
                             'fl_documento_representacao_pro',
                             'dc_observacao_processo_pro',
                             'ds_link_dados_pro',
-                            'ds_link_audiencia_pro'
+                            'ds_link_audiencia_pro',
+                            'fl_dados_enviados_pro'
     					  ];
 
     public $timestamps = true;
