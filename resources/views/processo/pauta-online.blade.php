@@ -88,6 +88,9 @@
                                         {!! $processo->nm_preposto_pro ? $processo->nm_preposto_pro  : '<span class="text-danger">Não informado</span>' !!}
                                     </h6>
                                 </div>
+                                <div class="col-md-12 box-content">
+                                    <h6><strong>Observação</strong>: {{ $processo->ds_observacao_pro ? $processo->ds_observacao_pro : ' '}}</h6>
+                                </div>
                             </div>
                         </div>
                     @empty
