@@ -110,6 +110,7 @@ Route::group(['middleware' => ['web']], function () {
     
 
     Route::get('autocompleteResponsavel', 'UsuarioController@search');
+
     Route::get('processos/novo', 'ProcessoController@novo');
     Route::get('processos/editar/{cdProcesso}', 'ProcessoController@editar');
     Route::get('processos/detalhes/{id}', 'ProcessoController@detalhes')->name('processos.detalhes');
@@ -133,6 +134,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processo/notificacao/resposta/{resposta}/{id}', 'ProcessoController@responderNotificacao')->name('resposta');
     Route::get('processos/relatorios', 'RelatorioProcessoController@relatorios');
     Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');
+    Route::match(array('GET', 'POST'),'processos/pauta/online', 'ProcessoController@pautaOnline');
     Route::post('processo/pauta-diaria', 'RelatorioProcessoController@pautaDiaria');
     Route::get('processos/importar/codigos', 'ProcessoController@codigos');
     Route::get('processos/importar', 'ProcessoController@importarUpload');

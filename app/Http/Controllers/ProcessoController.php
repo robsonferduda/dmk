@@ -124,6 +124,27 @@ class ProcessoController extends Controller
         return view('processo/acompanhamento', ['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis, 'status' => $status]);
     }
 
+    public function pautaOnline(Request $request)
+    {
+        $dtInicio = date('Y-m-d');
+        $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
+
+        $responsavel = ($request->cd_responsavel_pro) ? $request->cd_responsavel_pro : null;
+        
+        $processos = Processo::with('cidade')
+        ->where('cd_conta_con', $this->cdContaCon)
+        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
+        ->where('dt_prazo_fatal_pro', $dtInicio)
+        ->when($responsavel, function ($query) use ($responsavel) {
+            return $query->where('cd_responsavel_pro', $responsavel);
+        })
+        ->orderBy('dt_prazo_fatal_pro')
+        ->orderBy('hr_audiencia_pro')
+        ->get();
+
+        return view('processo/pauta-online', ['processos' => $processos, 'responsaveis' => $responsaveis, 'responsavel' => $responsavel]);
+    }
+
     public function acompanhamento($id)
     {
         $id = \Crypt::decrypt($id);
