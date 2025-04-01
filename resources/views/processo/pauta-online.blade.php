@@ -27,6 +27,10 @@
                     {{ csrf_field() }}
                     <fieldset>
                         <div class="row"> 
+                            <section class="col col-md-2">                                       
+                                <label class="" >Prazo Fatal</label>          
+                                <input style="width: 100%" class="form-control date-mask" type="text" name="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($prazo_fatal) ?  date('d/m/Y', strtotime($prazo_fatal)): '' }}" > 
+                            </section>
                             <section class="col col-md-4">                                       
                                 <label class="" >Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
@@ -51,7 +55,11 @@
                         <div class="well box-acompanhamento" style="padding: 10px 15px; border: none; border-radius: 10px; background: white; display: block;">
                             <div class="row box-processo">
                                 <div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content">
-                                    <h6 style="margin: 0px; font-size: 13px;">NÚMERO 222.312312.31233-32 <strong><span style="background-color: null" class="label label-default pull-right">Aceito pelo correspondente</span></strong></h6>
+                                    <h6 style="margin: 0px; font-size: 13px;">{{ $processo->nu_processo_pro ? $processo->nu_processo_pro : ' '}}  
+                                        <strong>
+                                            <span style="background-color: {{ $processo->status ? $processo->status->ds_color_stp : '' }}" class="label label-default pull-right">{{ $processo->status ? $processo->status->nm_status_processo_conta_stp : '' }}</span>
+                                        </strong>
+                                    </h6>
                                 </div>
                                 <div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content">
                                     <h6 style="margin: 0px; font-size: 13px;"><strong>Aceito pelo correspondente</strong></h6>

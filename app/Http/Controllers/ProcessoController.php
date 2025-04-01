@@ -126,7 +126,7 @@ class ProcessoController extends Controller
 
     public function pautaOnline(Request $request)
     {
-        $dtInicio = date('Y-m-d');
+        $prazo_fatal = ($request->dt_prazo_fatal_pro) ? $request->dt_prazo_fatal_pro : date('Y-m-d');
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
         $responsavel = ($request->cd_responsavel_pro) ? $request->cd_responsavel_pro : null;
@@ -134,7 +134,10 @@ class ProcessoController extends Controller
         $processos = Processo::with('cidade')
         ->where('cd_conta_con', $this->cdContaCon)
         ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
-        ->where('dt_prazo_fatal_pro', $dtInicio)
+        ->where('dt_prazo_fatal_pro', $prazo_fatal)
+        ->when('prazo_fatal', function ($query) use ($prazo_fatal) {
+            return $query->where('dt_prazo_fatal_pro', $prazo_fatal);
+        })
         ->when($responsavel, function ($query) use ($responsavel) {
             return $query->where('cd_responsavel_pro', $responsavel);
         })
@@ -142,7 +145,7 @@ class ProcessoController extends Controller
         ->orderBy('hr_audiencia_pro')
         ->get();
 
-        return view('processo/pauta-online', ['processos' => $processos, 'responsaveis' => $responsaveis, 'responsavel' => $responsavel]);
+        return view('processo/pauta-online', ['processos' => $processos, 'responsaveis' => $responsaveis, 'responsavel' => $responsavel, 'prazo_fatal' => $prazo_fatal]);
     }
 
     public function acompanhamento($id)
