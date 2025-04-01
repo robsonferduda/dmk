@@ -29,7 +29,7 @@
                         <div class="row"> 
                             <section class="col col-md-2">                                       
                                 <label class="" >Prazo Fatal</label>          
-                                <input style="width: 100%" class="form-control date-mask" type="text" name="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($prazo_fatal) ?  date('d/m/Y', strtotime($prazo_fatal)): '' }}" > 
+                                <input style="width: 100%" class="form-control date-mask" type="text" name="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($prazo_fatal) ? date('d/m/Y', strtotime($prazo_fatal)) : '' }}" > 
                             </section>
                             <section class="col col-md-4">                                       
                                 <label class="" >Responsável</label>          
