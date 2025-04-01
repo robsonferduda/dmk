@@ -1204,6 +1204,7 @@ class ProcessoController extends Controller
         }
 
         $processo->fl_dados_enviados_pro = $flag;
+        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CLIENTE;
         
         if ($processo->save()) {
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);

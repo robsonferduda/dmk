@@ -285,12 +285,12 @@
                                             @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
                                                 <ul class="list-unstyled" style=" line-height: 1.5;">
                                                     <li>
-                                                        <strong>Preposto: </strong> 
-                                                        <p>{!! ($processo->nm_preposto_pro) ? nl2br(e($processo->nm_preposto_pro))  : 'Não informado' !!}</p>
-                                                    </li>
-                                                    <li>
                                                         <strong>Advogado: </strong> 
                                                         <p>{!! ($processo->nm_advogado_pro) ? nl2br(e($processo->nm_advogado_pro))  : 'Não informado' !!}</p>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Preposto: </strong> 
+                                                        <p>{!! ($processo->nm_preposto_pro) ? nl2br(e($processo->nm_preposto_pro))  : 'Não informado' !!}</p>
                                                     </li>
                                                 </ul>
                                             @endif
