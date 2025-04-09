@@ -26,10 +26,11 @@ class WebhookController extends Controller
         // Registra os dados no log para depuração
         Log::info('Webhook recebido da Autentique:', $payload);
 
+        /*
         // Validação básica (opcional, depende da API)
         if (!isset($payload['event']) || !isset($payload['data'])) {
             return response()->json(['error' => 'Payload inválido'], 400);
-        }
+        }*/
 
         // Processa o evento
         $event = $payload['event'];
