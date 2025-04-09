@@ -102,6 +102,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}', 'ClienteController@excluirHonorarios');
     Route::resource('clientes', 'ClienteController');
 
+    Route::post('documento/criacao', 'WebhookController@handleAutentiqueWebhook');
 
     Route::get('autocompleteConta', 'CorrespondenteController@searchConta');
     Route::get('autocompleteCliente', 'ClienteController@search');
