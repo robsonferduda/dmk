@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
+    public function log()
+    {
+        Log::info('Teste de Log');
+    }
+
     /**
      * Manipula as notificações do webhook da Autentique.
      *
