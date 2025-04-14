@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Excel;
+use App\Utils;
 use App\User;
 use App\Entidade;
 use App\Vara;
@@ -251,11 +252,16 @@ class ProcessoController extends Controller
         $conta = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
         
         $processo->cd_status_processo_stp = $request->status;
+        $processo->txt_finalizacao_pro = $request->txt_finalizacao_pro;
+        $processo->dt_finalizacao_pro = date("Y-m-d H:i:s");
+        $processo->cd_user_finalizacao_pro = Auth::user()->id;
+
+        $lista_emails = Utils::processarListaEmails($request->lista_email);
 
         if ($processo->save()) {
             if ($request->fl_envio_arquivo) {
                 //notificarCliente
-                $emails = explode(",", $cliente->entidade->getEmailsNotificacao());
+                $emails = $lista_emails;
 
                 for ($i=0; $i < count($emails); $i++) {
                     $processo->anexos = ($request->lista_arquivos) ? $request->lista_arquivos : array();
@@ -263,9 +269,11 @@ class ProcessoController extends Controller
                     $processo->conta = $conta->nm_razao_social_con;
                     $processo->notificarCliente($processo);
                 }
+
+                $lista_envio = implode(", ", $emails);
             }
             
-            Flash::success('Situação atualizada com sucesso');
+            Flash::success('O processo foi finalizado com sucesso e a notificação enviada para os seguntes endereços de email: '.$lista_envio);
         } else {
             Flash::success('Erro ao atualizar situação do processo');
         }

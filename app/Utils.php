@@ -16,6 +16,29 @@ class Utils
 	 	return $valor;
 	}
 
+	static function processarListaEmails($stringEmails) {
+	    // 1. Dividir a string em um array usando vírgulas como delimitador
+	    $emails = explode(',', $stringEmails);
+
+	    // 2. Inicializar um array vazio para armazenar os e-mails válidos
+	    $emailsValidos = [];
+
+	    // 3. Iterar sobre cada e-mail na lista
+	    foreach ($emails as $email) {
+	        // 4. Remover espaços em branco antes e depois do e-mail
+	        $email = trim($email);
+
+	        // 5. Validar o formato do e-mail usando filter_var
+	        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	            // 6. Adicionar o e-mail válido ao array de e-mails válidos
+	            $emailsValidos[] = $email;
+	        }
+	    }
+
+	    // 7. Retornar o array de e-mails válidos
+	    return $emailsValidos;
+	}
+
 	static function gerar_senha($tamanho, $maiusculas, $minusculas, $numeros, $simbolos){
 		
 	  $senha = "";

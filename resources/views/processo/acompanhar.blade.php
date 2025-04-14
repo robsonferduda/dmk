@@ -162,6 +162,19 @@
                     </div>
                     @endrole
 
+                    <div class="well" style="border-radius: 8px;">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xs-12">
+                                <p>
+                                    PROCESSO FINALIZADO em <strong>{{ date('d/m/Y', strtotime($processo->dt_finalizacao_pro)) }}</strong> por <strong>{{ $processo->usuario->name }}</strong>.
+                                    <span style="font-size: 12px; background-color: {{ $processo->status->ds_color_stp }}" class="label label-default pull-right">{{ $processo->status->nm_status_processo_conta_stp }}</span>
+                                </p>
+                                <p><strong>Texto de Finalização</strong>: {!! ($processo->txt_finalizacao_pro) ? $processo->txt_finalizacao_pro : '<span class="text-danger">Nenhum texto informado</span>' !!}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="jarviswidget jarviswidget-sortable">
                         <header role="heading" class="ui-sortable-handle">
                             <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -344,7 +357,7 @@
                                         <p>Caso preferir, informe um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
 
                                         @if($processo->ds_link_dados_pro)
-                                            <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                                            
+                                            <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                                       
                                         @endif
                                         
                                             <div id="filepicker">
@@ -385,7 +398,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                     @endrole                                   
                                     
 
@@ -397,7 +409,6 @@
                                                     <i><i class="fa fa-info-circle"></i></i> O Escritório não anexou nenhum arquivo ao processo pelo sistema.
                                                 </p>
                                             </div>
-
                                         @endif
 
                                         @if($processo->fl_envio_anexos_pro == 'S')
@@ -440,7 +451,7 @@
 
                                         <section class="box-anexos-correspondente"> 
                                             
-                                            <h6>Meus Arquivos</h6>
+                                            <h6>Arquivos Anexados pelo Correspondente</h6>
 
                                             <div>
                                                 <div id="filepicker_correspondente">
@@ -821,9 +832,16 @@
                                             <input class="form-control"  
                                             placeholder="Email" 
                                             type="text" 
+                                            name="lista_email"
+                                            id="lista_email"
                                             value="{{ ($processo->cliente->entidade and $processo->cliente->entidade->getEmailsNotificacao()) 
                                                      ? $processo->cliente->entidade->getEmailsNotificacao() : 'Nenhum email informado' }}">
+
+                                        
+                                            <label style="margin-top: 8px; margin-bottom: 3px;"><strong>Texto de Finalização</strong> </label>
+                                            <textarea style="border-radius: 8px !important;" class="form-control texto-processo" rows="6" name="txt_finalizacao_pro" id="txt_finalizacao_pro">{{ $processo->txt_finalizacao_pro }}</textarea>
                                         </div>
+                                        
                                         <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />
 
                                         <div class="form-group">                                                    

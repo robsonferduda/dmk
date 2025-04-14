@@ -54,7 +54,10 @@ class Processo extends Model implements AuditableContract
                             'dc_observacao_processo_pro',
                             'ds_link_dados_pro',
                             'ds_link_audiencia_pro',
-                            'fl_dados_enviados_pro'
+                            'fl_dados_enviados_pro',
+                            'txt_finalizacao_pro',
+                            'dt_finalizacao_pro',
+                            'cd_user_finalizacao_pro'
     					  ];
 
     public $timestamps = true;
@@ -62,6 +65,11 @@ class Processo extends Model implements AuditableContract
     public function responsavel()
     {
         return $this->hasOne('App\User','id', 'cd_responsavel_pro');
+    }
+
+    public function usuario()
+    {
+        return $this->hasOne('App\User','id', 'cd_user_finalizacao_pro');
     }
 
     public function anexos()
