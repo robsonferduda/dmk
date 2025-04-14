@@ -35,23 +35,27 @@
                     <div class="row" style="margin-bottom: 10px;">
 
                         <section class="col col-md-2 col-lg-2">
-                            <label class="label label-black">Prazo Fatal</label><br />
+                            <label class="label label-black label-recuo">Prazo Fatal</label>
                             <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
                         <section class="col col-md-2 col-lg-2">
-                            <label class="label label-black">Número do Processo</label><br />
-                            <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >         
+                            <label class="label label-black label-recuo">Número do Processo</label>
+                            <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >
                         </section> 
                         <section class="col col-md-2 col-lg-2">
-                            <label class="label label-black">Código Cliente</label><br />
+                            <label class="label label-black label-recuo">Código Cliente</label>
                             <input style="width: 100%" class="form-control" type="text" id="nu_acompanhamento_pro" placeholder="Código Cliente" value="{{ !empty($nu_acompanhamento_pro) ? $nu_acompanhamento_pro : '' }}" >         
                         </section>
-                        <section class="col col-md-3 col-lg-3">
-                            <label class="label label-black">Réu</label><br />
+                        <section class="col col-md-2 col-lg-2">
+                            <label class="label label-black label-recuo">Nome Cliente</label><br />
+                            <input style="width: 100%" minlength=3 type="text" name="nm_cliente" class="form-control" id="nm_cliente" placeholder="Nome Cliente" value="{{ !empty($nm_cliente) ? $nm_cliente : '' }}" >         
+                        </section> 
+                        <section class="col col-md-2 col-lg-2">
+                            <label class="label label-black label-recuo">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="reu" class="form-control" id="reu" placeholder="Réu" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
                         
-                        <section class="col col-md-3 col-lg-3">
+                        <section class="col col-md-2 col-lg-2">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>
@@ -80,7 +84,14 @@
                                 @endforeach
                             </select> 
                         </section> 
-
+                        <section class="col col-md-4 col-lg-3 box-select2">       
+                            <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
+                                <option selected value="">Status do Processo</option>
+                                @foreach($status as $st)
+                                    <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
+                                @endforeach
+                            </select> 
+                        </section> 
                         <section class="col col-md-4 col-lg-3 box-select2"> 
                             <select name="status" id="status" class="select2">
                                 <option value="">Status do Acompanhamento</option>
@@ -102,14 +113,6 @@
                                 <option selected value="">Comarca</option>
                             </select> 
                         </section>  
-                        <section class="col col-md-4 col-lg-3 box-select2">       
-                            <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
-                                <option selected value="">Status do Processo</option>
-                                @foreach($status as $st)
-                                    <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
-                                @endforeach
-                            </select> 
-                        </section> 
                     </div><hr>
                     <div class="row center">
                         <button class="btn btn-primary btn-sm" type="button" id="btnBuscarProcessosAndamento"><i class="fa fa-search"></i> Buscar</button>
@@ -377,6 +380,7 @@
             processo = $("#nu_processo_pro").val();
             responsavel = $("#cd_responsavel_pro").val();
             numero_acompanhamento = $("#nu_acompanhamento_pro").val();
+            nm_cliente = $("#nm_cliente").val();
             tipo = $("#cd_tipo_processo_tpo").val();
             servico = $("#cd_tipo_servico_tse").val();
             status = $("#status").val();
@@ -390,7 +394,19 @@
                 
                 url: host+'/processos/buscar/andamento',
                 type: 'POST',
-                data: {"processo": processo, "responsavel": responsavel, "tipo": tipo, "servico": servico, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "statusProcesso": statusProcesso ,"flag": false, "numero_acompanhamento": numero_acompanhamento },
+                data: {"processo": processo, 
+                        "responsavel": responsavel, 
+                        "nm_cliente": nm_cliente, 
+                        "tipo": tipo, 
+                        "servico": servico, 
+                        "status": status, 
+                        "reu": reu, 
+                        "autor": autor, 
+                        "data": data, 
+                        "comarca": comarca, 
+                        "statusProcesso": statusProcesso ,
+                        "flag": false, 
+                        "numero_acompanhamento": numero_acompanhamento },
                 dataType: "JSON",
                 beforeSend: function(){
                     $("#label-total-processos").html("");

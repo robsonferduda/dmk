@@ -137,7 +137,7 @@
                                             @endif
                                         </td>                                       
                                         <td data-id="{{ $processo->cd_processo_pro }}" >
-                                            <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
+                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                         </td>
                                         <td class="hidden-xs">
                                             {{ (!empty($processo->cidade)) ? $processo->cidade->nm_cidade_cde.' - '.$processo->cidade->estado->sg_estado_est : '' }}
