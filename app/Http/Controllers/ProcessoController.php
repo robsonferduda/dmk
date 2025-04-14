@@ -259,21 +259,33 @@ class ProcessoController extends Controller
         $lista_emails = Utils::processarListaEmails($request->lista_email);
 
         if ($processo->save()) {
+
             if ($request->fl_envio_arquivo) {
                 //notificarCliente
                 $emails = $lista_emails;
 
-                for ($i=0; $i < count($emails); $i++) {
-                    $processo->anexos = ($request->lista_arquivos) ? $request->lista_arquivos : array();
-                    $processo->email = $emails[$i];
-                    $processo->conta = $conta->nm_razao_social_con;
-                    $processo->notificarCliente($processo);
+                if(count($emails)){
+
+                    for ($i=0; $i < count($emails); $i++) {
+                        $processo->anexos = ($request->lista_arquivos) ? $request->lista_arquivos : array();
+                        $processo->email = $emails[$i];
+                        $processo->conta = $conta->nm_razao_social_con;
+                        $processo->notificarCliente($processo);
+                    }
+
+                    $lista_envio = implode(", ", $emails);
+
+                    Flash::success('O processo foi finalizado com sucesso e a notificação enviada para os seguntes endereços de email: '.$lista_envio); 
+
+                }else{
+
+                    Flash::success('O processo foi finalizado com sucesso'); 
                 }
 
-                $lista_envio = implode(", ", $emails);
             }
+
+                       
             
-            Flash::success('O processo foi finalizado com sucesso e a notificação enviada para os seguntes endereços de email: '.$lista_envio);
         } else {
             Flash::success('Erro ao atualizar situação do processo');
         }
