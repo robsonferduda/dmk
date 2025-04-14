@@ -282,7 +282,7 @@
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
                             '<div class="row box-processo">'+
-                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'  <strong><span style="background-color: '+data.ds_color_stp+'" class="label label-default">'+data.nm_status_processo_conta_stp+'</span></strong>  <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
 
                                 '<div class="col-xs-12 col-sm-12 col-md-12 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'</h6></div>'+
                                 '<div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong>'+data.nm_status_processo_conta_stp+'</strong></h6></div>'+
@@ -340,7 +340,7 @@
 
             $.ajax({
                 
-                url: '../../processos/buscar/andamento',
+                url: host+'/processos/buscar/andamento',
                 type: 'POST',
                 data: {"processo": processo, "responsavel": null, "tipo": null, "servico": null, "status": status, "reu": reu, "autor": autor, "data": data, "comarca": comarca, "flag": true, "cliente": cliente, "statusProcesso": statusProcesso, "tipo" : tipo, "servico": servico },
                 dataType: "JSON",
@@ -360,7 +360,7 @@
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
                             '<div class="row box-processo">'+
-                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong>'+data.nm_status_processo_conta_stp+'</strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
+                                '<div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'  <strong><span style="background-color: '+data.ds_color_stp+'" class="label label-default">'+data.nm_status_processo_conta_stp+'</span></strong>  <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h6></div>'+
 
                                 '<div class="col-xs-12 col-sm-12 col-md-12 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+'</h6></div>'+
                                 '<div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content"><h6 style="margin: 0px; font-size: 13px;"><strong>'+data.nm_status_processo_conta_stp+'</strong></h6></div>'+
@@ -376,8 +376,10 @@
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                 '</div>'+
-                                '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
+                                   '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
+                                    '<a title="Aceitar Processo" class="icone-acompanhamento" href="../processo/notificacao/resposta/S/'+data.hash+'"><i class="fa fa-check"></i> Aceitar Processo</a> '+
+                                    '<a title="Recusar Processo" class="icone-acompanhamento" href="../processo/notificacao/resposta/N/'+data.hash+'"><i class="fa fa-ban"></i> Recusar Processo</a> '+
                                 '</div>'+
                                 '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
