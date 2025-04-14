@@ -178,7 +178,6 @@
                                         <input type="hidden" name="conta_logada" id="conta_logada" value="{{ Auth::user()->cd_conta_con }}">
                                         <input type="hidden" name="processo" id="processo" value="{{ $processo->cd_processo_pro }}">
                                         <input type="hidden" name="msg_correspondente" id="msg_correspondente" value="{{ $processo->cd_correspondente_cor }}">
-
                                         
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
 
@@ -271,18 +270,19 @@
                                                     @endrole
                                                 </li>
                                             </ul>
-                                                <legend>
-                                                    <i class="fa fa-legal"></i> <strong>Dados da Audiência</strong>
-                                                    @role('administrator|colaborador')
-                                                        <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
-                                                    @endrole
-
-                                                    @role('correspondente') 
-                                                        <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Informar </a>
-                                                    @endrole
-                                                </legend>
                                                 
-                                            @if($processo->tipoProcesso and $processo->tipoProcesso->cd_tipo_processo_tpo == App\Enums\TipoProcesso::AUDIENCIA)
+                                            <legend>
+                                                <i class="fa fa-legal"></i> <strong>Dados da Audiência</strong>
+                                                @role('administrator|colaborador')
+                                                    <a href="#" data-toggle="modal" data-target="#requisitarPreposto"><i class="fa fa-file-text-o"></i> Requisitar Dados</a>
+                                                @endrole
+
+                                                @role('correspondente') 
+                                                    <a href="#" data-toggle="modal" data-target="#informarPreposto" style="padding: 1px 8px;"><i class="fa fa-pencil"></i> Informar </a>
+                                                @endrole
+                                            </legend>
+                                                
+                                            @if($processo->tipoProcesso)
                                                 <ul class="list-unstyled" style=" line-height: 1.5;">
                                                     <li>
                                                         <strong>Advogado: </strong> 
@@ -294,13 +294,9 @@
                                                     </li>
                                                 </ul>
                                             @endif
-                                            
-                                        
-                                       
                                     </div>
                                     
                                     @role('administrator|colaborador')
-
                                         <div class="row">
                                             <div class="col-md-12 col-lg-12">
                                                 <div class="onoffswitch-container">
@@ -328,10 +324,9 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     @endrole
+
                                 </fieldset>
-                               
                             </div>
 
                             <div class="col-md-12 col-lg-6">
