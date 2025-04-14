@@ -162,7 +162,7 @@
                     </div>
                     @endrole
 
-                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::FINALIZADO)
+                    @if($processo->cd_status_processo_stp == App\Enums\StatusProcesso::FINALIZADO and $processo->dt_finalizacao_pro)
                     <div class="well" style="border-radius: 8px;">
                         <div class="row">
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xs-12">
