@@ -27,10 +27,11 @@ class LogNotificationListener
      */
     public function handle(MessageLogged $event)
     {
+        /*
         // Verifica se o nível do log é crítico (error, critical, etc.)
         if (in_array($event->level, ['error', 'critical'])) {
             $this->sendErrorEmail($event);
-        }
+        }*/
     }
 
     protected function sendErrorEmail(MessageLogged $event)
