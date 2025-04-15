@@ -119,7 +119,7 @@ class ProcessoController extends Controller
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
-        $statuss = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
                   ->orderBy('nm_status_processo_conta_stp')
                   ->get();
        
