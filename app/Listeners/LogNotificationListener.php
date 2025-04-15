@@ -39,7 +39,7 @@ class LogNotificationListener
 
         $errorDetails = [
             'Message' => $event->message,
-            'Context' => $event->context,
+            'Context' => "Não se aplica",
             'Level' => $event->level,
         ];
 
