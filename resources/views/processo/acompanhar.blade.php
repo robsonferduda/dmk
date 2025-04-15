@@ -841,6 +841,9 @@
                                         
                                             <label style="margin-top: 8px; margin-bottom: 3px;"><strong>Texto de Finalização</strong> </label>
                                             <textarea style="border-radius: 8px !important;" class="form-control texto-processo" rows="6" name="txt_finalizacao_pro" id="txt_finalizacao_pro">{{ $processo->txt_finalizacao_pro }}</textarea>
+
+                                            <label style="margin-top: 8px; margin-bottom: 3px;"><strong>Ata de Finalização</strong> </label>
+                                            <input type="file" name="ata_finalizacao">
                                         </div>
                                         
                                         <label>Arquivos disponíveis para envio em anexo</label><hr style="margin: 0" />

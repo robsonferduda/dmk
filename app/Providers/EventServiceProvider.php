@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Listeners\LogNotificationListener;
+use Illuminate\Log\Events\MessageLogged;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'App\Events\Event' => [
             'App\Listeners\EventListener',
+        ],
+        'Illuminate\Log\Events\MessageLogged' => [
+            'App\Listeners\LogNotificationListener',
         ],
     ];
 
