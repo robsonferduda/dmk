@@ -1037,7 +1037,7 @@
                             <div class="row box-cadastro">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label><strong>Link dos Arquivos</strong><span class="text-info"> Informe o link da audiência</span></label>
+                                        <label><strong>Link da Audiência</strong><span class="text-info"> Informe o link da audiência</span></label>
                                         <input type="text" class="form-control" placeholder="Link da Audiência" required="required" name="link_audiencia" id="link_audiencia" value="{{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : '' }}">
                                         <div id="msg_error_preposto" class="text-danger"></div>
                                     </div>    

@@ -226,7 +226,15 @@
                                 <i class="fa fa-legal"></i> Dados da Audiência
                             </header>
                             <fieldset>
-                                <div class="row" style="margin: 1px 0px 1px -10px !important;"> 
+                                <div class="row" style=""> 
+                                    <section class="col col-md-12 col-lg-12">
+                                        <label class="label">Link da Audiência</label>
+                                        <label class="input">
+                                            <input type="text" class="form-control" placeholder="Link da Audiência" name="ds_link_audiencia_pro" id="ds_link_audiencia_pro">
+                                        </label>
+                                    </section> 
+                                </div>
+                                <div class="row" style="margin: 0px 0px 0px -10px !important;"> 
                                     <section class="col col-sm-6">
                                         <label class="label">Advogado</label>
                                         <label class="input">
