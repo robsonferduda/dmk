@@ -222,7 +222,7 @@
                                     <section class="col col-md-12 col-lg-12">
                                         <label class="label">Link da Audiência</label>
                                         <label class="input">
-                                            <input type="text" class="form-control" placeholder="Link da Audiência" required="required" name="ds_link_audiencia_pro" id="ds_link_audiencia_pro" {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : old('ds_link_audiencia_pro') }}>
+                                            <input type="text" class="form-control" placeholder="Link da Audiência" name="ds_link_audiencia_pro" id="ds_link_audiencia_pro" {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : old('ds_link_audiencia_pro') }}>
                                         </label>
                                     </section> 
                                 </div>
