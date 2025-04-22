@@ -63,7 +63,7 @@ class CorrespondenteProcessoNotification extends Notification
         $vara = ($this->processo->vara) ? $this->processo->vara->nm_vara_var : 'Não informada';
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Solicitação de Diligência - Processo '.$this->processo->nu_processo_pro))
+            ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Solicitação de Diligência'))
             ->markdown('email.resposta',$this->options)
             ->line(Lang::getFromJson('Olá '.$notifiable->correspondente.','))
             ->line(Lang::getFromJson('Você acaba de receber uma nova solicitação de '.$this->processo->conta->nm_razao_social_con.'.'))

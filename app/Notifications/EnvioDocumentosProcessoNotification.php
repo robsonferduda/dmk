@@ -29,7 +29,7 @@ class EnvioDocumentosProcessoNotification extends Notification
     {
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Orientações e Documentos disponíveis no processo '.$this->processo->nu_processo_pro))
+            ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Orientações e documentos disponíveis'))
             ->markdown('email.documentos')
             ->line(Lang::getFromJson('As orientações e documentos do processo foram disponibilizados no sistema para seu aceite.'))
             ->line(Lang::getFromJson('Utilize o botão abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.'))

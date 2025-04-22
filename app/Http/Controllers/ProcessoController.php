@@ -1068,7 +1068,7 @@ class ProcessoController extends Controller
 
             $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
 
-            if(count($grupo->emails)){
+            if($grupo and count($grupo->emails)){
 
                 foreach ($grupo->emails as $key => $email) {
 
@@ -1089,12 +1089,12 @@ class ProcessoController extends Controller
                 }
 
             }else{
-                \Session::put('retorno', array('tipo' => 'error','msg' => 'Sua resposta foi registrada no sistema, mas o escritório não foi notificado por falta de um email válido.'));
+                \Session::put('retorno', array('tipo' => 'erro','msg' => 'Sua resposta foi registrada no sistema, mas o escritório não foi notificado por falta de um email válido.'));
                 return Redirect::route('msg-filiacao');
             }      
 
         }else{
-                \Session::put('retorno', array('tipo' => 'error','msg' => 'O prcesso não existe em nossa base de dados.'));
+                \Session::put('retorno', array('tipo' => 'erro','msg' => 'O prcesso não existe em nossa base de dados.'));
                 return Redirect::route('msg-filiacao');
         }       
     }

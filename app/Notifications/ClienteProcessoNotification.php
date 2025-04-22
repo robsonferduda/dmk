@@ -65,7 +65,7 @@ class ClienteProcessoNotification extends Notification
 
         if ($fl_anexo) {
             return (new MailMessage)
-                ->subject(Lang::getFromJson($this->processo->nu_processo_pro.' - Processo finalizado'))
+                ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Processo finalizado'))
                 ->markdown('email.finalizacao')
                 ->attach(storage_path($destino_zip.$id_file.'_anexos.zip'))
                 ->line(Lang::getFromJson('O processo identificado pelo número '.$this->processo->nu_processo_pro.' foi finalizado por '.$notifiable->conta.'.'))
@@ -74,7 +74,7 @@ class ClienteProcessoNotification extends Notification
                 ->line(Lang::getFromJson('Em caso de dúvidas entre em contato com o responsável pelo processo'));
         } else {
             return (new MailMessage)
-                ->subject(Lang::getFromJson($this->processo->nu_processo_pro.' - Processo finalizado'))
+                ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Processo finalizado'))
                 ->markdown('email.finalizacao')
                 ->line(Lang::getFromJson('O processo identificado pelo número '.$this->processo->nu_processo_pro.' foi finalizado por '.$notifiable->conta.'.'))
                 ->line(Lang::getFromJson('Texto de Finalização: '.$notifiable->txt_finalizacao_pro))

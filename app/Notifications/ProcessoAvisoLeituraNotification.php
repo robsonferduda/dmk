@@ -29,7 +29,7 @@ class ProcessoAvisoLeituraNotification extends Notification
     {
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Confirmação de Leitura dos Documentos do Processo '.$this->processo->nu_processo_pro))
+            ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Confirmação de Leitura dos Documentos'))
             ->markdown('email.documentos')
             ->line(Lang::getFromJson('O correspondente confirma a leitura dos documentos do processo '.$this->processo->nu_processo_pro.' conforme solicitado.'))
             ->line(Lang::getFromJson('Clique no botão abaixo para visualizar o processo:'))

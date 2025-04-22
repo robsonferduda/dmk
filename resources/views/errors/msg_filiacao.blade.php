@@ -28,7 +28,7 @@
                 @endif                   
             </div>   
         </div>
-        <div class="center">
+        <div class="center" style="text-align: center;">
             <a href="{{ url(route('seleciona.perfil', ['nivel_url' => \Crypt::encrypt(3)], false)) }}" class="btn btn-success"><i class="fa fa-sign-in"></i> LOGIN CORRESPONDENTE</a> 
         </div>
     </div>
