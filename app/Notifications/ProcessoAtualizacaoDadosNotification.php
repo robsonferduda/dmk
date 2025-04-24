@@ -31,7 +31,7 @@ class ProcessoAtualizacaoDadosNotification extends Notification
         $correspondente = ContaCorrespondente::where('cd_correspondente_cor', $notifiable->cd_correspondente_cor)->first()->nm_conta_correspondente_ccr;
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Atualização de Dados (Advogado e Preposto) - Processo '.$this->processo->nu_processo_pro))
+            ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Atualização de Dados (Advogado e/ou Preposto)'))
             ->markdown('email.atualizar_dados')
             ->line(Lang::getFromJson($correspondente.' atualizou os dados dos responsáveis pela realização do ato.'))
             ->line(Lang::getFromJson('Clique no botão abaixo para visualizar os dados:'))

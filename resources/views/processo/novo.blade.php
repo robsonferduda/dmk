@@ -181,18 +181,18 @@
 
                                 <div class="row">
                                     <section class="col col-xs-12">
-                                        <label class="label">Autor</label>
+                                        <label class="label">Autor<span class="text-danger">*</span></label>
                                         <label class="input">
-                                            <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" value="{{old('nm_autor_pro')}}">
+                                            <input class="form-control" maxlength="500" placeholder="" type="text" name="nm_autor_pro" required value="{{old('nm_autor_pro')}}">
                                         </label>
                                     </section> 
                                 </div>    
 
                                 <div class="row"> 
                                     <section class="col col-xs-12 col-sm-12">
-                                       <label class="label">Réu</label>
+                                       <label class="label">Réu<span class="text-danger">*</span></label>
                                        <label class="input">
-                                          <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" value="{{old('nm_reu_pro')}}" >
+                                          <input class="form-control" placeholder="" maxlength="500" type="text" name="nm_reu_pro" required value="{{old('nm_reu_pro')}}" >
                                        </label>
                                    </section> 
                                </div>
@@ -889,10 +889,12 @@
                             required: true
                         },
                         nm_reu_pro:{
-                            maxlength: 500
+                            maxlength: 500,
+                            required: true
                         },
                         nm_autor_pro:{
-                            maxlength: 500
+                            maxlength: 500,
+                            required: true
                         },
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
@@ -912,31 +914,33 @@
                     // Messages for form validation
                     messages : {
                         nm_cliente_cli : {
-                            required : 'Campo Cliente é Obrigatório'
+                            required : 'Campo Cliente é obrigatório'
                         },
                         nu_processo_pro : {
-                            required : 'Campo Nº Processo é Obrigatório'
+                            required : 'Campo Nº Processo é obrigatório'
                         },
                         cd_tipo_processo_tpo : {
-                            required : 'Campo Tipo de Processo é Obrigatório'
+                            required : 'Campo Tipo de Processo é obrigatório'
                         },
                         cd_cidade_cde: {
-                            required : 'Campo Cidade é Obrigatório'
+                            required : 'Campo Cidade é obrigatório'
                         },
                         cd_tipo_servico_tse: {
-                            required : 'Campo Tipo de Serviço é Obrigatório'
+                            required : 'Campo Tipo de Serviço é obrigatório'
                         },
                         dt_prazo_fatal_pro: {
-                            required : 'Campo Prazo Fatal é Obrigatório'
+                            required : 'Campo Prazo Fatal é obrigatório'
                         },
                         nm_reu_pro:{
-                            maxlength: 'O Campo Réu excedeu o número máximo de 500 caracteres'
+                            maxlength: 'O Campo Réu excedeu o número máximo de 500 caracteres',
+                            required : 'Campo Réu é obrigatório'
                         },
                         nm_autor_pro:{
-                            maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres'
+                            maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres',
+                            required : 'Campo Autor é obrigatório'
                         },
                         cd_tipo_servico_correspondente_tse: {
-                            required : 'Campo Tipo de Serviço é Obrigatório'
+                            required : 'Campo Tipo de Serviço é obrigatório'
                         }
                        
                         

@@ -866,10 +866,12 @@
                             required: true
                         },
                         nm_reu_pro:{
-                            maxlength: 500
+                            maxlength: 500,
+                            required: true
                         },
                         nm_autor_pro:{
-                            maxlength: 500
+                            maxlength: 500,
+                            required: true
                         },
                         cd_tipo_servico_correspondente_tse : {
                             required: function(element){    
@@ -906,10 +908,12 @@
                             required : 'Campo Prazo Fatal é Obrigatório'
                         },
                         nm_reu_pro:{
-                            maxlength: 'O Campo Réu excedeu o número máximo de 500 caracteres'
+                            maxlength: 'O Campo Réu excedeu o número máximo de 500 caracteres',
+                            required : 'Campo Réu é obrigatório'
                         },
                         nm_autor_pro:{
-                            maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres'
+                            maxlength: 'O Campo Autor excedeu o número máximo de 500 caracteres',
+                            required : 'Campo Autor é obrigatório'
                         },
                         cd_tipo_servico_correspondente_tse: {
                            required : 'Campo Tipo de Serviço é Obrigatório'

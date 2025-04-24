@@ -177,6 +177,23 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
+    public function getAssuntoNotification()
+    {
+        $assunto = "";
+
+        $data = ($this->attributes['dt_prazo_fatal_pro']) ? date('d/m/Y', strtotime($this->attributes['dt_prazo_fatal_pro'])) : 'Não informada';
+        $hora = ($this->attributes['hr_audiencia_pro']) ? date('H:i', strtotime($this->attributes['hr_audiencia_pro'])) : 'Não informada';
+        $parte_autora = ($this->attributes['nm_autor_pro']) ? $this->attributes['nm_autor_pro'] : 'Não informada';
+        $parte_re = ($this->attributes['nm_reu_pro']) ? $this->attributes['nm_reu_pro'] : 'Não informada';
+        $num_processo = $this->attributes['nu_processo_pro'];
+
+        $tipo_servico = $this->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse;
+
+        $assunto = $data.' - '.$hora.' - '.$tipo_servico.' - Autor: '.$parte_autora.' - Réu: '.$parte_re.' - Processo '.$num_processo;
+
+        return $assunto;
+    }
+
     public function getProcessosAndamento($conta, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento)
     {
 
