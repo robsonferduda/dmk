@@ -50,7 +50,8 @@
 
                     @if(App\StatusProcesso::visivelCorrespondente($processo->cd_status_processo_stp))
 
-                        @if(true)
+                        @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE or
+                            $processo->cd_status_processo_stp != App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE)
 
                             <form class="pull-right" style="display: inline; float: left; margin-right: 15px; margin-top: 17px;" action="{{ url('processo/atualizar-status') }}" method="POST">
                                 {{ csrf_field() }}
@@ -1199,6 +1200,34 @@
                             }
                         });
                     }
+
+                }).on('delete.filepicker', function (e, data) {
+                    //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
+                    $.ajax({
+                        url: '../../anexo-processo-delete',
+                        type: 'POST',
+                        dataType: "JSON",
+                        data: {
+                            "_method": 'DELETE',
+                            "id": $("#processo").val(),                    
+                            "nome_arquivo": data.filename,
+                            "_token": $('meta[name="token"]').attr('content'),
+                        },
+                        success: function(response)
+                        {
+                            location.reload();
+                        },
+                        error: function(response)
+                        {
+                            $(".fa").addClass("fa-times");
+                            $(".msg_titulo").html("Erro");
+                            $(".msg_mensagem").html("Erro ao excluir o arquivo");
+                            $(".alert").addClass("alert-danger");
+                            $(".alert").removeClass("none");
+
+                            return false;
+                        }
+                    });
 
                 })
 
