@@ -23,16 +23,11 @@ Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@index');
 Route::get('seleciona/perfil/{perfil}', 'Auth\LoginController@selecionaPerfil')->name('seleciona.perfil');
 Route::get('usuario/senha/definir/{id}', 'UsuarioController@definirSenha')->name('definir.senha');
-Route::get('msg-filiacao', function () {
-    return view('errors/msg_filiacao');
-})->name('msg-filiacao');
-Route::get('correspondente', function () {
-    return view('correspondente/cadastro');
-})->name('correspondente');
+Route::get('msg-filiacao', function () { return view('errors/msg_filiacao');})->name('msg-filiacao');
+Route::get('cadastro', function () {    return view('conta/novo');})->name('cadastro');
+Route::get('correspondente', function () {    return view('correspondente/cadastro');})->name('correspondente');
 Route::get('correspondente/senha/{correspondente}', 'CorrespondenteController@cadastrarSenha')->name('cadastrar.senha');
-Route::get('correspondente/login', function () {
-    return view('auth/correspondente');
-})->name('autenticacao.correspondente');
+Route::get('correspondente/login', function () {    return view('auth/correspondente');})->name('autenticacao.correspondente');
 Route::post('autenticacao', 'Auth\LoginController@loginCorrespondente')->name('autenticacao');
 Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
 Route::post('correspondente/usuario/senha', 'CorrespondenteController@novaSenha')->name('password.novo');

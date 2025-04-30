@@ -413,30 +413,22 @@
                                             </div>
                                         @endif
 
-                                        @if($processo->fl_envio_anexos_pro == 'S')
-                                            
-                                            <h6>Arquivos Anexados pelo Escritório</h6>
+                                        <h6>Arquivos Anexados pelo Escritório</h6>
+                                        <div id="filepicker_escritorio">
+                                            <div class="table-responsive div-table">
+                                                <table class="table table-upload">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="column-name">Nome do Arquivo</th>
+                                                            <th class="column-size center">Tamanho</th>                                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="files">
 
-                                            <div id="filepicker_escritorio">
-                                               
-                                                <div class="table-responsive div-table">
-                                                    <table class="table table-upload">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="column-name">Nome do Arquivo</th>
-                                                                <th class="column-size center">Tamanho</th>                                                            
-                                                               
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="files">
-
-                                                        </tbody>                        
-                                                    </table>
-                                                </div>
-
+                                                    </tbody>                        
+                                                </table>
                                             </div>
-
-                                        @endif
+                                        </div>
 
                                         <section class="box-anexos-correspondente">                          
                                             <div class="onoffswitch-container">
