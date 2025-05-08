@@ -31,7 +31,7 @@ class ProcessoRequisitarDadosNotification extends Notification
         $escritorio = Conta::where('cd_conta_con', $notifiable->cd_conta_con)->first()->nm_razao_social_con;
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Processo '.$this->processo->nu_processo_pro.' - Requisição de Dados'))
+            ->subject(Lang::getFromJson('Requisição de Dados - '.$this->processo->getAssuntoNotification()))
             ->markdown('email.requisitar_dados')
             ->line(Lang::getFromJson($escritorio.' encaminhou um pedido de requisição de dados. Entre no processo e preencha os dados completos dos responsáveis pela realização do ato de acordo com o padrão do sistema.'))
             ->line(Lang::getFromJson('Clique no botão abaixo para realizar a operação:'))

@@ -1099,6 +1099,82 @@ class ProcessoController extends Controller
         }       
     }
 
+    public function atualizarDadosAdvogadoPreposto(Request $request)
+    {
+        $id_processo = \Crypt::decrypt($request->cd_processo_pro);
+        $processo = Processo::findOrFail($id_processo);
+        $conta = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
+       
+        if ($processo) {
+
+            $processo->nm_advogado_pro = $request->dados_advogado;
+            $processo->nm_preposto_pro = $request->dados_preposto;
+            
+            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::DADOS_ENVIADOS;
+
+            if ($processo->save()) {
+
+                //Dados informados pelo correspondente, necessário atualizar o escritório
+                $tipo_notificacao = 'atualizar_dados_advogado_preposto';
+
+                //Notifica o escritório sobre a decisão do correspondente
+                $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
+                $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
+
+                //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
+
+                $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+
+                if($grupo and count($grupo->emails)){
+
+                    foreach ($grupo->emails as $key => $email) {
+
+                        $lista = '';
+
+                        $email_notificacao = $email->ds_email_egn;
+                        
+                        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                        
+                        LogNotificacao::create($log);
+            
+                        $processo->email =  $email_notificacao;
+                        $processo->notificarAtualizacaoDados($processo);
+                        $lista .= $email_notificacao.', ';
+
+                        Flash::success('Dados atualizados com sucesso e o escritório foi notificado sobre a atualização dos dados. Mensagem enviada para '.substr(trim($lista), 0, -1));
+
+                    }
+
+                    /*
+                    if (count($emails) > 0) {
+                        $lista = '';
+        
+                        foreach ($emails as $email) {
+                            $processo->email =  $email->dc_endereco_eletronico_ede;
+                            $processo->notificarAtualizacaoDados($processo);
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+                        }
+        
+                        Flash::success('Dados atualizados com sucesso e o escritório foi notificado sobre a atualização dos dados. Mensagem enviada para '.substr(trim($lista), 0, -1));
+                    } else {
+                        Flash::error('Nenhum email de notificação cadastrado para o escritório, a operação foi cancelada. Requisite o cadastro de um email de notificação para o escritório e tente novamente');
+                    }*/
+
+                }else{
+                    \Session::put('retorno', array('tipo' => 'erro','msg' => 'Sua resposta foi registrada no sistema, mas o escritório não foi notificado por falta de um email válido.'));
+                } 
+
+            } else {
+                Flash::error('Erro ao atualizar o processo');
+            }
+
+        } else {
+            Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
+        }
+
+        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
+    }
+
     public function atualizaAnexosEnviados($id)
     {
         $flag = 'N';
@@ -1294,48 +1370,6 @@ class ProcessoController extends Controller
         } else {
             Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
         }
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
-    }
-
-    public function atualizarDadosAdvogadoPreposto(Request $request)
-    {
-        $id_processo = \Crypt::decrypt($request->cd_processo_pro);
-        $processo = Processo::findOrFail($id_processo);
-        $conta = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
-        $emails = EnderecoEletronico::where('cd_entidade_ete', $conta->entidade()->where('cd_tipo_entidade_tpe',7)->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
-
-        if ($processo) {
-
-            $processo->nm_advogado_pro = $request->dados_advogado;
-            $processo->nm_preposto_pro = $request->dados_preposto;
-            
-            $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::DADOS_ENVIADOS;
-
-            if ($processo->save()) {
-
-                if (count($emails) > 0) {
-                    $lista = '';
-    
-                    foreach ($emails as $email) {
-                        $processo->email =  $email->dc_endereco_eletronico_ede;
-                        $processo->notificarAtualizacaoDados($processo);
-                        $lista .= $email->dc_endereco_eletronico_ede.', ';
-                    }
-    
-                    Flash::success('Dados atualizados com sucesso e o escritório foi notificado sobre a atualização dos dados. Mensagem enviada para '.substr(trim($lista), 0, -1));
-                } else {
-                    Flash::error('Nenhum email de notificação cadastrado para o escritório, a operação foi cancelada. Requisite o cadastro de um email de notificação para o escritório e tente novamente');
-                }
-
-                
-            } else {
-                Flash::error('Erro ao atualizar o processo');
-            }
-
-        } else {
-            Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
-        }
-
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
     }
 

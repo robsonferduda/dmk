@@ -913,11 +913,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="myModalLabel">
-                            <i class="icon-append fa fa-pencil"></i> Requisitar Dados de Advogado e Preposto
+                            <i class="icon-append fa fa-pencil"></i> Requisitar Dados de Advogado e/ou Preposto
                         </h4>
                     </div>
                     <div class="modal-body center">
-                        <h5>Esse procedimento encaminha uma mensagem para o correspondente requisitando que o mesmo atualize os dados de Advogado e Preposto.</h5>
+                        <h5>Esse procedimento encaminha uma mensagem para o correspondente requisitando que o mesmo atualize os dados de Advogado e/ou Preposto.</h5>
                         <h5>Além do envio da mensagem via email, o status do processo é alterado para <strong>Aguardando Dados</strong></h5>
                         <h5>Confirma esse procedimento e o envio da mensagem?</h5>
                     </div>
