@@ -1049,12 +1049,18 @@ class ProcessoController extends Controller
             //Cria fluxo alternativo para processos do tipo Audiências
             if($processo->tipoProcesso->nu_tipo_processo_tpo == 'TP1' AND $resposta == 'S'){
 
-                $this->requisitarDados($token);
+                //Relação entre conta e correspondente
+                $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)
+                                                ->where('cd_correspondente_cor', $processo->cd_correspondente_cor)
+                                                ->first();
 
-                $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
-                $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+                //Notifica o correspondente com os dados de requisição de dados
+                $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)
+                                            ->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)
+                                            ->get();
 
-                    if (count($emails) > 0) {
+                if (count($emails) > 0) {
+
                         $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
 
                         if ($processo->save()) {
@@ -1071,12 +1077,41 @@ class ProcessoController extends Controller
                         } else {
                             Flash::error('Erro ao requisitar dados, o processo não foi atualizado.');
                         }
-                    } else {
-                        Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
+
+                } else {
+                    Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
+                }
+
+                //Notifica o escritório com os dados de aceite
+                $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
+                $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
+
+                //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
+
+                $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+
+                if($grupo and count($grupo->emails)){
+
+                    foreach ($grupo->emails as $key => $email) {
+
+                        $email_notificacao = $email->ds_email_egn;
+
+                        $tipo_notificacao = 'aceite_correspondente';
+                        
+                        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                        LogNotificacao::create($log);
+            
+                        $processo->email = $email_notificacao;
+                        $processo->token = $token;
+                        $processo->parecer = $resposta;
+                        $processo->correspondente = $processo->correspondente->nm_razao_social_con;
+                        $processo->notificarConta($processo);
                     }
 
-                    \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida pelo contratente, que confirmou a requisição dos dados. Aguarde o email de requisição de dados para continuar o trâmite.'));
-                    return Redirect::route('msg-filiacao');
+                }
+
+                \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida pelo contratente, que enviou a requisição dos dados. Aguarde o email de requisição de dados para continuar o trâmite.'));
+                return Redirect::route('msg-filiacao');
          
             }else{
 
