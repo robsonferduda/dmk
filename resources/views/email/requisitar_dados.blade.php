@@ -6,7 +6,7 @@
 @if ($level == 'error')
 # @lang('Ops...!')
 @else
-# @lang('Requisição de Dados de Advogado e Preposto')
+# @lang('Requisição de Dados de Advogado e/ou Preposto')
 @endif
 @endif
 
