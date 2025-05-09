@@ -1059,24 +1059,21 @@ class ProcessoController extends Controller
                                             ->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)
                                             ->get();
 
+                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
+                $processo->save();
+
                 if (count($emails) > 0) {
 
-                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
+                    $lista = '';
 
-                        if ($processo->save()) {
-                            $lista = '';
-
-                            foreach ($emails as $email) {
-                                $processo->email =  $email->dc_endereco_eletronico_ede;
-                                $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                                $processo->notificarRequisitarDados($processo);
-                                $lista .= $email->dc_endereco_eletronico_ede.', ';
-                            }
-
-                            Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
-                        } else {
-                            Flash::error('Erro ao requisitar dados, o processo não foi atualizado.');
+                        foreach ($emails as $email) {
+                            $processo->email =  $email->dc_endereco_eletronico_ede;
+                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                            $processo->notificarRequisitarDados($processo);
+                            $lista .= $email->dc_endereco_eletronico_ede.', ';
                         }
+
+                    Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
 
                 } else {
                     Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
@@ -1208,7 +1205,7 @@ class ProcessoController extends Controller
                         
                         LogNotificacao::create($log);
             
-                        $processo->email =  $email_notificacao;
+                        $processo->email = $email_notificacao;
                         $processo->notificarAtualizacaoDados($processo);
                         $lista .= $email_notificacao.', ';
 
