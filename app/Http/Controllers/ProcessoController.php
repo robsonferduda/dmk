@@ -1104,7 +1104,6 @@ class ProcessoController extends Controller
                         $processo->email = $email_notificacao;
                         $processo->token = $token;
                         $processo->parecer = $resposta;
-                        $processo->correspondente = $processo->correspondente->nm_razao_social_con;
                         $processo->notificarConta($processo);
                     }
 
