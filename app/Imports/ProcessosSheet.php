@@ -74,7 +74,8 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
                 'cd_tipo_processo_tpo' => $tp->cd_tipo_processo_tpo,
                 'nu_acompanhamento_pro' => trim($row['numero_externo']),
                 'hr_audiencia_pro' => !empty($row['hora']) ?  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['hora'])->format('H:i') : null,
-                'cd_status_processo_stp' => \App\Enums\StatusProcesso::PENDENTE_ANALISE
+                'cd_status_processo_stp' => \App\Enums\StatusProcesso::PENDENTE_ANALISE,
+                'nu_lote' => rand(100000,999999)
             ]);
 
             $valor = TaxaHonorario::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))

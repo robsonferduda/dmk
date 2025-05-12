@@ -1558,15 +1558,18 @@ class ProcessoController extends Controller
                             return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
                         }
                     }
-                    
+
                     HeadingRowFormatter::default('slug');
                     
                     $import = new ProcessoImport();
-    
+
                     $data =  Excel::import($import, $file);
+
+                    dd($import->getRowCount());
 
                     Flash::success($import->getRowCount().' Processo(s) criado(s) com sucesso. ');
                     return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
+
                 } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
                     $failures = $e->failures();
                     return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);

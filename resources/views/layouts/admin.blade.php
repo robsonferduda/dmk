@@ -162,6 +162,18 @@
                                 </span>
                             </a> 
                         @endrole    
+                        @role('cliente')
+                            <a href="{{ url("usuarios/".\Crypt::encrypt(Auth::user()->id)) }}">
+                                @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
+                                    <img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="Foto de Perfil">
+                                @else
+                                    <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil">
+                                @endif
+                                <span>
+                                    {{ (Auth::user()) ? Auth::user()->name : 'Indefinido' }} 
+                                </span>
+                            </a> 
+                        @endrole  
                     @endif                
                 </span>
             </div>
@@ -261,6 +273,20 @@
                         </ul>   
                     </li>
                     @endcan
+
+                    @role('cliente') 
+                    <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
+                        <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
+                        <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
+                            <li class="{{ (Session::get('item_pai') == 'processo.novo') ? 'active' : '' }}">
+                                <a href="{{ url('cliente/processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
+                            </li>
+                            <li class="{{ (Session::get('item_pai') == 'processo.listar') ? 'active' : '' }}">
+                                <a href="{{ url('cliente/processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
+                            </li>
+                        </ul>   
+                    </li>
+                    @endrole
 
                     @can('processo.index') 
                     <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">

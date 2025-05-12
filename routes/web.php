@@ -90,6 +90,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}', 'ProcessoController@buscaValorCliente');
     Route::get('busca-valor-correspondente/{correspondente}/{cidade}/{tipoServico}', 'ProcessoController@buscaValorCorrespondente');
 
+    Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
+    Route::get('cliente/processos', 'ClienteProcessoController@processos');
+
     Route::post('cliente/relatorios', 'ClienteController@gerarRelatorio');
     Route::post('cliente/advogado', 'ClienteController@novoAdvogado');
     Route::post('cliente/contato/novo/{id}', 'ClienteController@createContato');

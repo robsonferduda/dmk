@@ -796,7 +796,7 @@ class ClienteController extends Controller
                     $user->cd_nivel_niv = Nivel::CLIENTE;
                     $user->name = $cliente->nm_razao_social_cli;
                     $user->email = $request->email_user;
-                    $user->password = Hash::make(rand(100000,999999));
+                    $user->password = Hash::make("123456");
                     $user->save();
 
                 }
