@@ -57,7 +57,8 @@ class Processo extends Model implements AuditableContract
                             'fl_dados_enviados_pro',
                             'txt_finalizacao_pro',
                             'dt_finalizacao_pro',
-                            'cd_user_finalizacao_pro'
+                            'cd_user_finalizacao_pro',
+                            'nu_lote'
     					  ];
 
     public $timestamps = true;
