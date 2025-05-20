@@ -859,7 +859,7 @@
                                             </div>
                                             <div style="float: left; width: 92%">
                                                 <h4>{{ $anexo->nm_anexo_processo_apr }}</h4>
-                                                <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ $anexo->entidade->usuario->name }}</strong></h6>   
+                                                <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ ($anexo->entidade and $anexo->entidade->usuario) ? $anexo->entidade->usuario->name : 'Sem responsável' }}</strong></h6>   
                                             </div> 
                                         </div>
                                         @if($key < count($processo->anexos)-1)
