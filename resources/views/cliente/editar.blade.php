@@ -209,34 +209,42 @@
 
                                     <section class="col col-md-12"> 
                                         <p><strong>Usuário</strong>: {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : '<span class="text-danger">Nenhum usuário cadastrado</span>' !!}</p>
+                                    </section> 
+
+                                    <section class="col col-md-12">
+                                        <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">
+                                                <span class="onoffswitch-title">Alterar Senha</span> 
+                                                <span class="onoffswitch">
+                                                    <input type="checkbox" class="onoffswitch-checkbox" name="fl_alterar_senha" value="S" id="fl_alterar_senha">
+                                                    <label class="onoffswitch-label" for="fl_alterar_senha"> 
+                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label> 
+                                                </span> 
+                                        </div>        
                                     </section>                                
 
                                     <section class="col col-md-4">
                                         <label class="label">Usuário <span class="text-info">Digite um email válido</span></label>
                                         <label class="input">
-                                            <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
+                                            <input type="text" name="email_user" id="email_user" disabled="disabled" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
                                         </label>
                                     </section> 
 
                                     <section class="col col-md-4">
                                         <label class="label">Senha <span class="text-info">Digite uma senha</span></label>
                                         <label class="input">
-                                            <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
+                                            <input class="disabled" type="password" name="senha_user" id="senha_user" disabled="disabled" value="{{ old('senha_user') }}">
                                         </label>
                                     </section> 
-                                    
-                                    <section class="col col-md-12">
-                                        <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">
-                                                <span class="onoffswitch-title">Notificar Cliente</span> 
-                                                <span class="onoffswitch">
-                                                    <input type="checkbox" class="onoffswitch-checkbox" name="fl_notificar_cliente" value="S" id="fl_notificar_cliente">
-                                                    <label class="onoffswitch-label" for="fl_notificar_cliente"> 
-                                                        <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                        <span class="onoffswitch-switch"></span>
-                                                    </label> 
-                                                </span> 
-                                        </div>        
-                                    </section>                             
+
+                                    <section class="col col-md-4">
+                                        <label class="label">Senha <span class="text-info">Repita a senha</span></label>
+                                        <label class="input">
+                                            <input class="disabled" type="password" name="senha_user_2" id="senha_user_2" disabled="disabled" value="{{ old('senha_user_2') }}">
+                                        </label>
+                                    </section> 
+                                                                
                                 </div>
                             </fieldset>
                         </div>
@@ -457,6 +465,27 @@
             else{
                 $('.box-desconto').css('display','none');
             }
+
+        $("#fl_alterar_senha").click(function(){
+
+            flag = $('#fl_alterar_senha').is(':checked');
+            
+            if(flag){
+                $("#email_user").prop("disabled", false);
+                $("#senha_user").prop("disabled", false);
+                $("#senha_user_2").prop("disabled", false);
+
+                $("#senha_user").removeClass("disabled");
+                $("#senha_user_2").removeClass("disabled");
+            }else{
+                $("#email_user").prop("disabled", true);
+                $("#senha_user").prop("disabled", true);
+                $("#senha_user_2").prop("disabled", true);
+
+                $("#senha_user").addClass("disabled");
+                $("#senha_user_2").addClass("disabled");
+            }
+        });
 
         $("#fl_nota_fiscal_cli").click(function(){
 

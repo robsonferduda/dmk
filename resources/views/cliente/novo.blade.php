@@ -218,7 +218,7 @@
                                     <section class="col col-md-4">
                                         <label class="label">Senha <span class="text-info">Repita a senha</span></label>
                                         <label class="input">
-                                            <input type="password" name="senha_user_2" id="senha_user_2" value="{{ old('senha_user') }}">
+                                            <input type="password" name="senha_user_2" id="senha_user_2" value="{{ old('senha_user_2') }}">
                                         </label>
                                     </section> 
                                     

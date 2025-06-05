@@ -36,10 +36,15 @@ class ClienteController extends Controller
     {
         $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
+
+        Session::put('menu_pai','cliente');
+        Session::forget('item_pai');
     }
 
     public function index()
     {
+        Session::put('item_pai','cliente.listar');
+
         $clientes = Cliente::with('entidade')->with('tipoPessoa')->where('cd_conta_con', $this->conta)->take(10)->orderBy('created_at', 'DESC')->get();
         return view('cliente/clientes', ['clientes' => $clientes]);
     }
@@ -482,6 +487,8 @@ class ClienteController extends Controller
     //Chamada para a tela de novo cliente. Carrega os Modelos necessários na view
     public function novo()
     {
+        Session::put('item_pai','cliente.novo');
+
         $despesas = TipoDespesa::where('cd_conta_con', $this->conta)->where('fl_reembolso_tds', 'S')->get();
         return view('cliente/novo', ['despesas' => $despesas]);
     }
@@ -798,6 +805,10 @@ class ClienteController extends Controller
 
                 if($user){
 
+                    if($request->fl_alterar_senha){
+                        $user->password = Hash::make($request->senha_user_2);
+                    }
+
                     $user->email = $request->email_user;
                     $user->save();                    
 
@@ -810,7 +821,7 @@ class ClienteController extends Controller
                     $user->cd_nivel_niv = Nivel::CLIENTE;
                     $user->name = $cliente->nm_razao_social_cli;
                     $user->email = $request->email_user;
-                    $user->password = Hash::make("123456");
+                    $user->password = Hash::make($request->senha_user_2);
                     $user->save();
 
                 }

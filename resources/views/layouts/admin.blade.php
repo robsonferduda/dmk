@@ -200,17 +200,17 @@
                         <a href="#" title="Clientes" class="item_pai" id="cliente"><i class="fa fa-lg fa-fw fa-group"></i> <span class="menu-item-parent">Clientes</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'cliente') ? 'display: block;' : 'display: none;' }}">
                             @can('cliente.novo')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'cliente.novo') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/novo') }}" title="Dashboard"><span class="menu-item-parent">Novo</span></a>
                                 </li>
                             @endcan
                             @can('cliente.listar')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'cliente.listar') ? 'active' : '' }}">
                                     <a href="{{ url('clientes') }}" title="Dashboard"><span class="menu-item-parent">Listar</span></a>
                                 </li>
                             @endcan
                             @can('cliente.relatorios')
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'cliente.relatorios') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/relatorios') }}" title="Dashboard"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
                             @endcan
