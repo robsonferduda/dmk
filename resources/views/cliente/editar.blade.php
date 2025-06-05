@@ -217,6 +217,13 @@
                                             <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
                                         </label>
                                     </section> 
+
+                                    <section class="col col-md-4">
+                                        <label class="label">Senha <span class="text-info">Digite uma senha</span></label>
+                                        <label class="input">
+                                            <input type="text" name="email_user" id="email_user" value="{{ $cliente->entidade->usuario ? $cliente->entidade->usuario->email : '' }}">
+                                        </label>
+                                    </section> 
                                     
                                     <section class="col col-md-12">
                                         <div class="onoffswitch-container" style="margin-left: 0px; margin-top: 29px;">

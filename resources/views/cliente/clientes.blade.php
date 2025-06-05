@@ -68,6 +68,7 @@
                                     <th style="">Razão Social</th>                             
                                     <th style="">Nome Fantasia</th>                                    
                                     <th style="" class="center">Tipo de Pessoa</th>
+                                    <th style="" class="center">Usuário</th>
                                     <th style="" class="center">Nota Fiscal</th>
                                     <th style="" class="center">Situação</th>                                   
                                     <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -80,6 +81,9 @@
                                         <td>{{ $cliente->nm_razao_social_cli }}</td>
                                         <td>{{ $cliente->nm_fantasia_cli }}</td>                                        
                                         <td class="center">{{ ($cliente->tipoPessoa) ? $cliente->tipoPessoa->nm_tipo_pessoa_tpp : 'Não informado' }}</td>
+                                        <td>
+                                            {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : '<span class="text-danger">Nenhum usuário cadastrado</span>' !!}
+                                        </td>
                                         <td class="center">{!! ($cliente->fl_nota_fiscal_cli == "S") ? '<span class="label label-success">SIM</span>' : '<span class="label label-danger">NÃO</span>' !!}</td>
                                         <td class="center">{!! ($cliente->fl_ativo_cli == "S") ? '<span class="label label-success">ATIVO</span>' : '<span class="label label-danger">INATIVO</span>' !!}</td>
                                         <td class="center">

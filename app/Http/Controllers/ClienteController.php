@@ -563,6 +563,7 @@ class ClienteController extends Controller
         $cliente->fl_nota_fiscal_cli = $fl_nota_fiscal_cli;
 
         if ($cliente->saveOrFail()) {
+
             $nu_identificacao_ide = ($request->cd_tipo_pessoa_tpp == 1) ? $request->cpf : $request->cnpj;
 
             $identificacao = Identificacao::create([
@@ -630,6 +631,19 @@ class ClienteController extends Controller
                     'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
                     'nu_identificacao_ide'      => $request->rg
                 ]);
+            }
+
+            if (!empty($request->email_user)) {
+
+                $user = new User();
+                $user->cd_conta_con = $cliente->cd_conta_con;
+                $user->cd_entidade_ete = $cliente->entidade->cd_entidade_ete;
+                $user->cd_nivel_niv = Nivel::CLIENTE;
+                $user->name = $cliente->nm_razao_social_cli;
+                $user->email = $request->email_user;
+                $user->password = Hash::make($request->senha_user_2);
+
+                $user->save();
             }
 
             Flash::success('Dados inseridos com sucesso');
