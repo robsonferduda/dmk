@@ -1375,6 +1375,8 @@ class ProcessoController extends Controller
             $flag = 'N';
         }
 
+        
+
         $processo->fl_dados_enviados_pro = $flag;
         $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CLIENTE;
         

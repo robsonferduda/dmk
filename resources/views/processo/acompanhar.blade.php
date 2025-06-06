@@ -168,7 +168,7 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xs-12">
                                 <p>
-                                    PROCESSO FINALIZADO em <strong>{{ date('d/m/Y', strtotime($processo->dt_finalizacao_pro)) }}</strong> por <strong>{{ ($processo->usuario) ? $processo->usuario->name : '' }}</strong>.
+                                    PROCESSO FINALIZADO em <strong>{{ date('d/m/Y H:i:s', strtotime($processo->dt_finalizacao_pro)) }}</strong> por <strong>{{ ($processo->usuario) ? $processo->usuario->name : '' }}</strong>.
                                     <span style="font-size: 12px; background-color: {{ $processo->status->ds_color_stp }}" class="label label-default pull-right">{{ $processo->status->nm_status_processo_conta_stp }}</span>
                                 </p>
                                 <p><strong>Texto de Finalização</strong>: {!! ($processo->txt_finalizacao_pro) ? $processo->txt_finalizacao_pro : '<span class="text-danger">Nenhum texto informado</span>' !!}</p>
