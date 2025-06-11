@@ -132,17 +132,6 @@
             <div class="col-xs-6 col-sm-6 col-md-3" style="padding: 5px 8px; margin-top: 12px;">
                 <h4 style="font-size: 13px;" id="label-total-processos"></h4>
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6" style=" margin-top: 12px;">
-                <section class="pull-right">
-                    <select id="filtro-pagination">
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>  <label class="hidden-xs">Registros por página</label>
-                </section>
-            </div>
         </article>
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 body-acompanhamento">
 
@@ -363,7 +352,7 @@
                     });
 
                     $('.container-acompanhamento').loader('hide'); 
-                    $(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                    $(".body-acompanhamento").pagify(20, ".box-acompanhamento");
                     $medias = $('.box-acompanhamento');
                     $h4s = $medias.find('> .box-processo > .box-content > h6');
                                                       
@@ -462,7 +451,7 @@
                     });
 
                     $('.container-acompanhamento').loader('hide'); 
-                    //$(".body-acompanhamento").pagify(10, ".box-acompanhamento");
+                    $(".body-acompanhamento").pagify(20, ".box-acompanhamento");
                                                       
                 },
                 error: function(response)

@@ -67,7 +67,7 @@
 .icone-acompanhamento{ font-size: 11px; color: #3276b1; opacity: 1; }
 .icone-acompanhamento:hover { color: #064e8c; opacity: none; }
 
-.box-processo h6 { font-size: 12px; margin: 5px 0px !important; font-weight: 300 !important; font-family: "Open Sans",Arial,Helvetica,Sans-Serif !important; }
+.box-processo h6 { font-size: 11px; margin: 1px 0px !important; padding: 0px; font-weight: 300 !important; font-family: "Open Sans",Arial,Helvetica,Sans-Serif !important; }
 
 .texto-processo {resize: none; border-radius: 3px !important; padding: 5px;}
 

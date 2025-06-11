@@ -57,6 +57,7 @@ class Processo extends Model implements AuditableContract
                             'fl_dados_enviados_pro',
                             'txt_finalizacao_pro',
                             'dt_finalizacao_pro',
+                            'cd_user_cadastro_pro',
                             'cd_user_finalizacao_pro',
                             'nu_lote'
     					  ];
@@ -66,6 +67,11 @@ class Processo extends Model implements AuditableContract
     public function responsavel()
     {
         return $this->hasOne('App\User','id', 'cd_responsavel_pro');
+    }
+
+    public function usuarioCadastro()
+    {
+        return $this->hasOne('App\User','id', 'cd_user_cadastro_pro');
     }
 
     public function usuario()
