@@ -224,7 +224,8 @@ class Processo extends Model implements AuditableContract
                        t10.nm_tipo_servico_tse,
                        t1.nu_acompanhamento_pro,
                        t2.ds_color_stp,
-                       t1.created_at
+                       t1.created_at,
+                       t12.name as user_cadastro
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con
@@ -236,6 +237,7 @@ class Processo extends Model implements AuditableContract
                 JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
                 LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
                 JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+                LEFT JOIN users t12 ON t1.cd_user_cadastro_pro = t12.id
                 WHERE t1.cd_status_processo_stp NOT IN(6,7)";
 
         if($processo) $sql .= " AND t1.nu_processo_pro like '%$processo%' ";

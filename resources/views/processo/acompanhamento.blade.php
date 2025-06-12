@@ -304,6 +304,8 @@
 
                     $.each(response,function(index,data){
 
+                        var user_cadastro = (data.user_cadastro) ? user_cadastro : 'Sistema';
+
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             
@@ -335,7 +337,7 @@
                                     '<a title="Relatório" class="icone-acompanhamento" href="../processos/relatorio/'+data.hash+'"><i class="fa fa-usd"></i> Relatório Financeiro</a> '+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
-                                    '<span class="pull-right text-muted">Cadastrado em '+data.created_at+'</span>'+
+                                    '<span class="pull-right">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</strong></span>'+
                                 '</div>'+
                                 '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
@@ -344,7 +346,7 @@
                                     '<a title="Relatório" class="icone-acompanhamento" href=""><i class="fa fa-usd"></i> </a>'+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href=""><i class="fa fa-edit"></i> </a>'+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> </a>'+
-                                    '<span class="pull-right text-muted">Cadastrado em '+data.created_at+'</span>'+
+                                    '<span class="pull-right">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</strong></span>'+
                                 '</div>'+
                             '</div>'+
                         '</div>');
@@ -409,6 +411,8 @@
 
                     $.each(response,function(index,data){
 
+                        var user_cadastro = (data.user_cadastro) ? user_cadastro : 'Sistema';
+
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
                             '<h4 style="margin: 0px; font-size: 13px;">NÚMERO '+data.nu_processo_pro+' <strong><span style="background-color: '+data.ds_color_stp+'" class="label label-default">'+data.nm_status_processo_conta_stp+'</span></strong> <strong class="pull-right" style="color: '+data.fonte+'">'+data.situacao+'</strong></h4>'+
@@ -434,7 +438,7 @@
                                     '<a title="Relatório" class="icone-acompanhamento" href="../processos/relatorio/'+data.hash+'"><i class="fa fa-usd"></i> Relatório Financeiro</a> '+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
-                                    '<span class="pull-right text-muted">Cadastrado em '+data.created_at+'</span>'+
+                                    '<span class="pull-right">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</span>'+
                                 '</div>'+
                                 '<div class="hidden-md hidden-lg col-md-6">'+
                                     '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
@@ -443,7 +447,7 @@
                                     '<a title="Relatório" class="icone-acompanhamento" href=""><i class="fa fa-usd"></i> </a>'+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href=""><i class="fa fa-edit"></i> </a>'+
                                     '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> </a>'+
-                                    '<span class="pull-right text-muted">Cadastrado em '+data.created_at+'</span>'+
+                                    '<span class="pull-right">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</span>'+
                                 '</div>'+
                             '</div>'+
                         '</div>');
