@@ -387,6 +387,7 @@ class ProcessoController extends Controller
         $novoProcesso->nm_preposto_pro = null;
         $novoProcesso->dc_observacao_processo_pro = null;
         $novoProcesso->dc_observacao_pro = null;
+        $novoProcesso->cd_user_cadastro_pro = Auth::user()->id;
 
         $novoProcesso->save();
 
@@ -901,6 +902,7 @@ class ProcessoController extends Controller
 
         if ($entidade) {
             $request->merge(['cd_entidade_ete' => $entidade->cd_entidade_ete]);
+            $request->merge(['cd_user_cadastro_pro' => Auth::user()->id]);
 
             $processo = new Processo();
 
@@ -960,6 +962,8 @@ class ProcessoController extends Controller
         if ($request->cd_correspondente_cor and $processo->cd_status_processo_stp == \StatusProcesso::CONTRATAR_CORRESPONDENTE) {
             $request->merge(['cd_status_processo_stp' => \StatusProcesso::ANDAMENTO]);
         }
+
+        $request->merge(['cd_user_cadastro_pro' => Auth::user()->id]);
 
         $processo->fill($request->all());
 

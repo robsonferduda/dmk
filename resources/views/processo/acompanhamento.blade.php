@@ -304,7 +304,7 @@
 
                     $.each(response,function(index,data){
 
-                        var user_cadastro = (data.user_cadastro) ? user_cadastro : 'Sistema';
+                        var user_cadastro = (data.user_cadastro) ? data.user_cadastro : 'Sistema';
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
@@ -411,7 +411,7 @@
 
                     $.each(response,function(index,data){
 
-                        var user_cadastro = (data.user_cadastro) ? user_cadastro : 'Sistema';
+                        var user_cadastro = (data.user_cadastro) ? data.user_cadastro : 'Sistema';
 
                         $(".body-acompanhamento")
                         .append('<div class="well box-acompanhamento" style="padding: 10px 15px; border: none; background: '+data.background+';">'+
