@@ -92,7 +92,9 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
     Route::get('cliente/processos', 'ClienteProcessoController@processos');
-
+    Route::get('cliente/processos/acompanhamento', 'ClienteProcessoController@acompanhamento');
+    Route::get('cliente/processos/acompanhamento/{id}', 'ClienteProcessoController@acompanhar');
+    
     Route::post('cliente/relatorios', 'ClienteController@gerarRelatorio');
     Route::post('cliente/advogado', 'ClienteController@novoAdvogado');
     Route::post('cliente/contato/novo/{id}', 'ClienteController@createContato');
@@ -311,6 +313,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('categorias-correspondentes', 'CategoriaCorrespondenteController');
     Route::resource('grupos-de-cidades', 'GrupoCidadeController');
     Route::resource('processos', 'ProcessoController');
+    Route::resource('processo-cliente', 'ClienteProcessoController');
     Route::resource('usuarios', 'UsuarioController');
 
     //Rotas de permissão

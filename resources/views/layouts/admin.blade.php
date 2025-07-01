@@ -181,7 +181,7 @@
                 <ul>   
                     <li class="">
                         <a href="{{ url('home') }}" title="blank_"><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">Mural</span></a>
-                    </li>              
+                    </li>
 
                     @can('agenda.index')    
                         <li class="">
@@ -275,17 +275,20 @@
                     @endcan
 
                     @role('cliente') 
-                    <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
-                        <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
-                        <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
-                            <li class="{{ (Session::get('item_pai') == 'processo.novo') ? 'active' : '' }}">
-                                <a href="{{ url('cliente/processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
-                            </li>
-                            <li class="{{ (Session::get('item_pai') == 'processo.listar') ? 'active' : '' }}">
-                                <a href="{{ url('cliente/processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
-                            </li>
-                        </ul>   
-                    </li>
+                        <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
+                            <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
+                            <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
+                                <li class="{{ (Session::get('item_pai') == 'processo.novo') ? 'active' : '' }}">
+                                    <a href="{{ url('cliente/processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
+                                </li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.listar') ? 'active' : '' }}">
+                                    <a href="{{ url('cliente/processos') }}" title="Listar"><span class="menu-item-parent">Listar</span></a>
+                                </li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.acompanhamento') ? 'active' : '' }}">
+                                    <a href="{{ url('cliente/processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
+                                </li>
+                            </ul>   
+                        </li>
                     @endrole
 
                     @can('processo.index') 
@@ -510,7 +513,7 @@
         <div class="page-footer">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <span class="txt-color-white">Lawyerexpress <span class="hidden-xs"> </span> © 2019</span>
+                    <span class="txt-color-white">Lawyerexpress <span class="hidden-xs"> </span> © 2019 - {{ date('Y') }}</span>
                 </div>
             </div>
         </div>    

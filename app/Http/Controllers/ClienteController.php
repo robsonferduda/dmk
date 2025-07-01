@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use DB;
 use Hash;
 use Excel;
+use App\Enums\Roles;
+use App\Role as RoleSistema;
 use App\User;
 use App\Fone;
 use App\Cidade;
@@ -651,6 +653,16 @@ class ClienteController extends Controller
                 $user->password = Hash::make($request->senha_user_2);
 
                 $user->save();
+
+                    //Atribuição de roles para o usuário como administrador
+                    $role = RoleSistema::find(Roles::CLIENTE);
+                    if ($user->assignRole($role)) {
+                        $perms = $role->permissao()->get();
+                        
+                        foreach ($perms as $p) {
+                            $user->permissao()->attach($p);
+                        }
+                    }
             }
 
             Flash::success('Dados inseridos com sucesso');
@@ -810,7 +822,17 @@ class ClienteController extends Controller
                     }
 
                     $user->email = $request->email_user;
-                    $user->save();                    
+                    $user->save();  
+
+                    //Atribuição de roles para o usuário como administrador
+                    $role = RoleSistema::find(Roles::CLIENTE);
+                    if ($user->assignRole($role)) {
+                        $perms = $role->permissao()->get();
+                        
+                        foreach ($perms as $p) {
+                            $user->permissao()->attach($p);
+                        }
+                    }                  
 
                 }else{
 
@@ -823,6 +845,16 @@ class ClienteController extends Controller
                     $user->email = $request->email_user;
                     $user->password = Hash::make($request->senha_user_2);
                     $user->save();
+
+                    //Atribuição de roles para o usuário como administrador
+                    $role = RoleSistema::find(Roles::CLIENTE);
+                    if ($user->assignRole($role)) {
+                        $perms = $role->permissao()->get();
+                        
+                        foreach ($perms as $p) {
+                            $user->permissao()->attach($p);
+                        }
+                    }
 
                 }
             }

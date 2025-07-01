@@ -59,7 +59,8 @@ class Processo extends Model implements AuditableContract
                             'dt_finalizacao_pro',
                             'cd_user_cadastro_pro',
                             'cd_user_finalizacao_pro',
-                            'nu_lote'
+                            'nu_lote',
+                            'fl_cadastro_cliente_cli'
     					  ];
 
     public $timestamps = true;
@@ -236,7 +237,7 @@ class Processo extends Model implements AuditableContract
                 JOIN cidade_cde t7 ON t1.cd_cidade_cde = t7.cd_cidade_cde
                 JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
                 LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
-                JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+                LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
                 LEFT JOIN users t12 ON t1.cd_user_cadastro_pro = t12.id
                 WHERE t1.cd_status_processo_stp NOT IN(6,7)";
 
@@ -252,6 +253,7 @@ class Processo extends Model implements AuditableContract
         if($numero_acompanhamento) $sql .= " AND t1.nu_acompanhamento_pro = '$numero_acompanhamento' ";
         if($flag_correspondente == true) $sql .= " AND t1.cd_correspondente_cor = $conta";
         if($flag_correspondente == false) $sql .= " AND t1.cd_conta_con = $conta";
+        if($cliente) $sql .= " AND t1.cd_cliente_cli = $cliente ";
 
         if($status){
 

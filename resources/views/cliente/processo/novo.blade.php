@@ -61,7 +61,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
                         
-                        {!! Form::open(['id' => 'frm-add-processo', 'url' => 'processos', 'class' => 'smart-form']) !!}
+                        {!! Form::open(['id' => 'frm-add-processo', 'url' => 'processo-cliente', 'class' => 'smart-form']) !!}
                          <header>
                             <i class="fa fa-file-text-o"></i> Dados do Processo <span class="text-danger">(*) Campos Obrigatórios</span>
                         </header>
@@ -72,10 +72,16 @@
                                     <div class="row">
                         
                                         <section class="col col-xs-12 col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli" value="{{old('cd_cliente_cli')}}" >
+                                            <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli" value="{{ $cliente->cd_cliente_cli }}" readonly>
                                             <label class="label">Cliente<span class="text-danger">*</span></label>
                                             <label class="input">
-                                                <input required name="nm_cliente_cli" value="{{old('nm_cliente_cli')}}" class="form-control ui-autocomplete-input" placeholder="Digite 3 caracteres para busca" type="text" id="client" autocomplete="off">
+                                                <input required name="nm_cliente_cli" 
+                                                value="{{ $cliente->nm_razao_social_cli }}" 
+                                                class="form-control ui-autocomplete-input" 
+                                                placeholder="Digite 3 caracteres para busca" 
+                                                type="text" 
+                                                id="client" 
+                                                autocomplete="off">
                                             </label>
                                         </section>
                                     </div> 
@@ -196,17 +202,7 @@
                                        </label>
                                    </section> 
                                </div>
-                                                                       
-                                <div class="row">    
-                                    <input type="hidden" name="cd_correspondente_cor_aux" id="cd_correspondente_cor_aux" value="{{ old('cd_correspondente_cor') }}"> 
-                                    <input type="hidden" name="fl_correspondente_escritorio_ccr" value="{{ old('fl_correspondente_escritorio_ccr') }}">           
-                                    <section class="col col-xs-12">
-                                        <label class="label">Correspondente <span class="text-info">Filtrado de acordo com estado/cidade escolhida</span></label>
-                                        <select  id="correspondente_auto_complete"  name="cd_correspondente_cor" class="select2" disabled data-flag=''>
-                                           <option selected value="">Aguardando Cidade... </option>
-                                        </select>                                                         
-                                    </section>
-                                </div> 
+                                                                    
                                 <div class="row">    
                                     <input type="hidden" name="cd_responsavel_pro" value="{{ old('cd_responsavel_pro') }}">           
                                     <section class="col col-xs-12">
@@ -216,151 +212,10 @@
                                         </label>
                                     </section>
                                 </div> 
-
-                                
-                                
                             </fieldset>
                         </div>
-                        <div class="col col-sm-12">
-                            <header>
-                                <i class="fa fa-legal"></i> Dados da Audiência
-                            </header>
-                            <fieldset>
-                                <div class="row" style=""> 
-                                    <section class="col col-md-12 col-lg-12">
-                                        <label class="label">Link da Audiência</label>
-                                        <label class="input">
-                                            <input type="text" class="form-control" placeholder="Link da Audiência" name="ds_link_audiencia_pro" id="ds_link_audiencia_pro">
-                                        </label>
-                                    </section> 
-                                </div>
-                                <div class="row" style="margin: 0px 0px 0px -10px !important;"> 
-                                    <section class="col col-sm-6">
-                                        <label class="label">Advogado</label>
-                                        <label class="input">
-                                           <textarea class="form-control texto-processo" rows="8" name="nm_advogado_pro">{{ old('nm_advogado_pro') }}</textarea>
-                                        </label>
-                                    </section> 
-
-                                    <section class="col col-sm-6">
-                                        <label class="label">Preposto</label>
-                                        <label class="input">
-                                           <textarea class="form-control texto-processo" rows="8" name="nm_preposto_pro">{{ old('nm_preposto_pro') }}</textarea>
-                                        </label>
-                                    </section>                               
-                                    
-                                    <section class="col col-sm-12">
-                                        <label class="label">Observações do Processo <span class="text-info">Aparecem na Pauta Diária</span></label>
-                                        <label class="input">
-                                           <textarea class="form-control texto-processo" rows="8" name="dc_observacao_processo_pro">{{ old('dc_observacao_processo_pro') }}</textarea>
-                                        </label>
-                                    </section> 
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="col col-sm-12">
-                            <fieldset style="padding-top: 0px">
-                                <div class="row" style="margin: 1px -10px 1px -10px !important;"> 
-                                    <section class="col col-sm-12">
-                                    <label class="label">Observações para Correspondentes</label>
-                                    <label class="input">
-                                        <textarea class="form-control" id="observacao" rows="8" name="dc_observacao_pro" value="{{ old('dc_observacao_pro') }}">{{ old('dc_observacao_pro') }}</textarea>
-                                    </label>
-                                    </section> 
-                                </div>
-                            </fieldset>
-                        </div>
-
-                        <div class="col col-sm-12">
-                            <header>
-                                <i class="fa fa-money"></i> Honorários
-                            </header>
-                            <br />
-                            <fieldset style="padding-top: 0px">
-                                <div class="row"> 
-                                    <section class="col col-sm-12">
-                                        
-                                                <div class="alert alert-info" role="alert">
-                                                    <i class="fa-fw fa fa-info"></i>
-                                                    <strong>Informação!</strong> Ao selecionar o tipo de serviço, os campos de valor serão preenchidos com os valores padrões cadastrados no Cliente e/ou Correspondente na cidade selecionada, caso os valores existam. Sendo permitida sua mudança.                          
-                                                </div>
-                                                <div class="">
-                                                    <header class="hidden-sm" style="border-bottom: none;">
-                                                        Tipo de Serviço do Cliente
-                                                    </header>
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <th style="width: 50%">Tipo de Serviço do Cliente<span class="text-danger">*</span></th>
-                                                            <th style="">Valor Cliente</th>                                        
-                                                            <th style="">Nota Fiscal Cliente</th>
-                                                        </thead>
-                                                        <tbody>  
-                                                            <tr>  
-                                                                <td>                     
-                                                                     <input type="hidden" id="cd_tipo_servico_tse_aux" name="cd_tipo_servico_tse_aux" value="{{old('cd_tipo_servico_tse')}}">                  
-                                                                    <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" disabled>
-                                                                        <option selected value="">Selecione um cliente e cidade
-                                                                        </option>      
-                                                                                   
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="col-md-4 col-md-offset-2">
-                                                                        <div class="input-group">
-                                                                            <span class="input-group-addon">$</span>
-                                                                            <input style="width: 100px; padding-left: 12px" name="taxa_honorario_cliente"  id="taxa-honorario-cliente" type="text" class="form-control taxa-honorario" value="{{old('taxa_honorario_cliente')}}" >
-                                                                        </div>
-                                                                        </div>
-                                                                </td>                                                            
-                                                                <td>
-                                                                    <div class="col-md-4 col-md-offset-2">
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-addon">%</span>
-                                                                            <input disabled name="nota_fiscal_cliente" style="width: 100px;padding-left: 12px" id="nota_fiscal_cliente" type="text" class="form-control taxa-honorario"  value="{{old('nota_fiscal_cliente')}}" title="Aguardando seleção do Cliente" >
-                                                                    </div>
-                                                                    </div>
-                                                                </td>
-                                                           
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <header class="hidden-sm" style="border-bottom: none;">
-                                                        Tipo de Serviço do Correspondente
-                                                    </header>
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <th style="width: 50%" id="tipoServicoCorrespondenteLabel" >Tipo de Serviço do Correspondente</th>
-                                                            <th style="">Valor Correspondente</th>            
-                                                        </thead>
-                                                        <tbody>  
-                                                            <tr>  
-                                                                <td>                     
-                                                                     <input type="hidden" id="cd_tipo_servico_correspondente_tse_aux" name="cd_tipo_servico_correspondente_tse_aux" value="{{old('cd_tipo_servico_correspondente_tse')}}">                  
-                                                                    <select id="tipoServicoCorrespondente" name="cd_tipo_servico_correspondente_tse" class="select2" disabled>
-                                                                        <option selected value="">Selecione um correspondente e cidade
-                                                                        </option>                                
-                                                                    </select>
-                                                                </td>                                      
-                                                                <td>
-                                                                    <div class="col-md-4 col-md-offset-2">
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-addon">$</span>
-                                                                            <input name="taxa_honorario_correspondente" style="width: 100px;padding-left: 12px" id="taxa-honorario-correspondente" type="text" class="form-control taxa-honorario"  value="{{old('taxa_honorario_correspondente')}}" >
-                                                                    </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                     </section> 
-                                </div>
-                            </fieldset>
-                        </div>
-
                     </div> 
                      
-                          
                         <footer>                            
                             <button type="submit" class="btn btn-success">
                                 <i class="fa-fw fa fa-save"></i>Cadastrar
@@ -384,6 +239,53 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function(){
+
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            $("#estado").change(function(){           
+                buscaCidade(); 
+            });
+
+            var buscaCidade = function(){
+
+                estado = $("#estado").val();
+
+                if(estado != ''){
+
+                    $.ajax(
+                        {
+                            url: host+'/cidades-por-estado/'+estado,
+                            type: 'GET',
+                            dataType: "JSON",
+                            beforeSend: function(){
+                                $('#cidade').empty();
+                                $('#cidade').append('<option selected value="">Carregando...</option>');
+                                $('#cidade').prop( "disabled", true );
+
+                            },
+                            success: function(response)
+                            {                    
+                                $('#cidade').empty();
+                                $('#cidade').append('<option selected value="">Selecione</option>');
+                                $.each(response,function(index,element){
+
+                                    if($("#cd_cidade_cde_aux").val() != element.cd_cidade_cde){
+                                        $('#cidade').append('<option value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');                            
+                                    }else{
+                                        $('#cidade').append('<option selected value="'+element.cd_cidade_cde+'">'+element.nm_cidade_cde+'</option>');      
+                                    }
+                                    
+                                });       
+                                $('#cidade').trigger('change');     
+                                $('#cidade').prop( "disabled", false );  
+                            },
+                            error: function(response)
+                            {
+                                //console.log(response);
+                            }
+                    });
+                }
+            }
 
         });
     </script>

@@ -118,7 +118,7 @@
                         </div>
                         <div class="col-md-12">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-map-marker fa-fw"></i> <strong>Endereço</strong></legend>
@@ -153,7 +153,7 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-phone fa-fw"></i> <strong>Telefones</strong></legend>
@@ -169,7 +169,7 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-envelope fa-fw"></i> <strong>Emails</strong></legend>
@@ -179,7 +179,28 @@
                                                 <div><span>{{ $email->dc_endereco_eletronico_ede }}</span> - <span>{{ $email->tipo->dc_tipo_endereco_eletronico_tee }}</span><br/></div>
                                             @endforeach   
                                         @else
-                                            <span>Nenhum email infomado</span>
+                                            <span class="text-danger">Nenhum email infomado</span>
+                                        @endif 
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-lock fa-fw"></i> <strong>Usuários</strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        @if($cliente->entidade->usuario)
+                                            <p>
+                                                <strong>Usuário</strong>: {!! ($cliente->entidade->usuario) ? $cliente->entidade->usuario->email : '<span class="text-danger">Nenhum usuário cadastrado</span>' !!}
+                                                @if($cliente->entidade->usuario)
+                                                    @foreach($cliente->entidade->usuario->role as $role)
+                                                        <span class="label label-danger">{{ $role->name }}</span>
+                                                    @endforeach
+                                                @endif
+                                            </p>  
+                                        @else
+                                            <span class="text-danger">Nenhum usuário cadastrado</span>
                                         @endif 
                                     </div>
                                 </fieldset>

@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('mensagem/processo/{id}', function(){});
 Route::get('mensagem/destinatario/nao-lidas/{id}', 'MensagemController@getMensagensByDestinatario');
 
+Route::get('cliente/processo/andamento', 'ClienteProcessoController@getProcessosAndamento');
 Route::get('processo/andamento', 'ProcessoController@getProcessosAndamento');
 Route::get('processo/correspondente/andamento', 'ProcessoController@getProcessosAndamentoCorrespondente');
 Route::get('processo/situacao/prazo', 'ProcessoController@getStatusPrazo');
