@@ -145,9 +145,7 @@
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 box-button" >
                                 <div class="sub-box-button marginTop17 sub-box-button-status-md sub-box-button-status-lg">
                                    
-                                    @if($processo->cd_status_processo_stp != App\Enums\StatusProcesso::CONTRATAR_CORRESPONDENTE)
-                                        <a title="Notificar Correspondente" class="btn btn-default  msg_processamento btn-responsive btn-m-bottom" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
-                                    @endif
+                                    <a title="Notificar Correspondente" class="btn btn-default  msg_processamento btn-responsive btn-m-bottom" href="{{ url('processos/notificar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-send-o"></i> Notificar Correspondente</a>   
                                                                         
                                      <a title="Finalizar Processo"  class="btn btn-success btn-responsive" href="#" id="btnModalFinalizacao"><i class="fa fa-check"></i> Finalizar Processo</a>
                                                                
