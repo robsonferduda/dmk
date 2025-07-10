@@ -164,7 +164,20 @@
                                         <td class="hidden-xs">{{ $processo->nm_autor_pro }}</td>
                                         <td class="hidden-xs">{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
                                         <td class="center">                                            
-                                           
+                                            <div class="dropdown" style="display: inline;">
+                                                <a href="javascript:void(0);" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear"></i> <i class="fa fa-caret-down"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a title="Editar" href="{{ url('cliente/processos/editar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-edit"></i> Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <a title="Detalhes" href="{{ url('cliente/processos/detalhes/'. \Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-file-text-o"></i> Detalhes</a>
+                                                    </li>
+                                                    <li>
+                                                        <a title="Acompanhamento" href="{{ url('cliente/processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}"><i class="fa fa-calendar"></i> Acompanhamento</a>
+                                                    <li>
+                                                </ul>
+                                            </div>    
                                         </td>
                                     </tr>
                                 @endforeach

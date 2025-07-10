@@ -955,14 +955,6 @@ class ProcessoController extends Controller
         }
     
         $processo = Processo::where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro', $id)->first();
-
-        /* Verifica se o campo correspondente foi setado E se o status anterior era "Contratar Correspondente".
-           Se sim, atualiza o status para "Em andamento", sobrescrevendo o status default "Contratar Correspondente" */
-
-        if ($request->cd_correspondente_cor and $processo->cd_status_processo_stp == \StatusProcesso::CONTRATAR_CORRESPONDENTE) {
-            $request->merge(['cd_status_processo_stp' => \StatusProcesso::ANDAMENTO]);
-        }
-
         $request->merge(['cd_user_cadastro_pro' => Auth::user()->id]);
 
         $processo->fill($request->all());

@@ -257,12 +257,8 @@
                                                     @endif
                                                 </li> 
                                                 @endrole    
-                                                <li>
-                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : 'Não informado' }}
-                                                </li> 
-                                                <li>
-                                                    <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : 'Não informado' }}
-                                                </li>  
+                                                
+                                               
                                                 <li>
                                                     <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : 'Não informado' }}
                                                 </li>

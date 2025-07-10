@@ -90,8 +90,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('busca-valor-cliente/{cliente}/{cidade}/{tipoServico}', 'ProcessoController@buscaValorCliente');
     Route::get('busca-valor-correspondente/{correspondente}/{cidade}/{tipoServico}', 'ProcessoController@buscaValorCorrespondente');
 
-    Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
+    Route::get('cliente/pauta', 'ClienteProcessoController@pauta');
+    Route::get('cliente/relatorio', 'ClienteProcessoController@relatorios');
     Route::get('cliente/processos', 'ClienteProcessoController@processos');
+    Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
+    Route::get('cliente/processos/detalhes/{id}', 'ClienteProcessoController@detalhes');
+    Route::get('cliente/processos/editar/{id}', 'ClienteProcessoController@editar');
     Route::get('cliente/processos/acompanhamento', 'ClienteProcessoController@acompanhamento');
     Route::get('cliente/processos/acompanhamento/{id}', 'ClienteProcessoController@acompanhar');
     

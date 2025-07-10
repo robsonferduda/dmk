@@ -6,6 +6,7 @@ use Auth;
 use DB;
 use App\User;
 use App\Cliente;
+use App\Estado;
 use App\Entidade;
 use App\Processo;
 use App\TipoServico;
@@ -136,6 +137,29 @@ class ClienteProcessoController extends Controller
         return view('cliente/processo/acompanhamento', ['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'status' => $status]);
     } 
 
+    public function detalhes($id)
+    {
+        $id = \Crypt::decrypt($id);
+        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+
+        $processo = Processo::where('cd_processo_pro', $id)->where('cd_cliente_cli', $cliente->cd_cliente_cli)->first();
+        return view('cliente/processo/detalhes', ['processo' => $processo]);
+    }
+
+    public function pauta()
+    {
+        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+
+        $processos = array();
+
+        return view('cliente/processo/pauta', ['processos' => $processos]);
+    }
+
+    public function relatorios()
+    {
+        return view('cliente/menu/relatorios');
+    }
+
     public function acompanhar($id)
     {
         $id = \Crypt::decrypt($id);
@@ -193,8 +217,45 @@ class ClienteProcessoController extends Controller
         $tiposProcesso  = TipoProcesso::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_processo_tpo')->get();
         $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
 
-        return view('cliente/processo/novo', ['cliente' => $cliente,'estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico]);
+        return view('cliente/processo/novo', ['cliente' => $cliente,
+                                            'estados' => $estados,
+                                            'varas' => $varas, 
+                                            'tiposProcesso' => $tiposProcesso, 
+                                            'tiposDeServico' => $tiposDeServico]);
     }  
+
+    public function editar($id)
+    {
+        $id = \Crypt::decrypt($id);
+        $id_escritorio = 64;
+        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+        
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        } else {
+            $estados =  \Cache::get('estados');
+        }
+
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $id_escritorio")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
+        $tiposProcesso = TipoProcesso::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_processo_tpo')->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
+
+        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $id_escritorio)->where('cd_processo_pro', $id)->first();
+
+        return view('cliente/processo/editar', ['cliente' => $cliente,
+                                            'processo' => $processo,
+                                            'estados' => $estados, 
+                                            'varas' => $varas,
+                                            'tiposProcesso' => $tiposProcesso,                                              
+                                            'tiposDeServico' => $tiposDeServico]);
+    }
 
     public function store(Request $request)
     {
@@ -214,6 +275,7 @@ class ClienteProcessoController extends Controller
             $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro)))]);
         }
         
+        $request->merge(['cd_status_processo_stp' => \StatusProcesso::CADASTRADO_CLIENTE]);
         $request->merge(['cd_conta_con' => $id_escritorio]);
         $request->merge(['cd_cliente_cli' => $cd_cliente_cli]);
 
@@ -242,4 +304,9 @@ class ClienteProcessoController extends Controller
         Flash::success('Processo cadastrado com sucesso');
         return redirect('cliente/processos/acompanhamento');
     }  
+
+    public function update(Request $request)
+    {
+
+    }
 }
