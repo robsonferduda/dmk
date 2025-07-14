@@ -64,6 +64,9 @@
         </article>
         <div class="col-md-12">
             <div class="row">
+                <div class="col-md-12">
+                    <h5 style="font-size: 12px;"><strong>Total de Processos</strong>: <span id="total-processos">0</span></h5>
+                </div>
                 <div class="col-md-12" id="box-processos-container">
                     
                 </div>
@@ -112,12 +115,15 @@
                 success: function(response){
 
                     let container = $("#box-processos-container");
-                        container.empty(); // limpa os dados atuais
+                    let totalElement = $("#total-processos");
 
-                        if (response.length === 0) {
-                            container.append('<h5 class="center">Nenhum dado para ser exibido</h5>');
-                            return;
-                        }
+                    container.empty(); // limpa os dados atuais
+                    totalElement.text(response.length); // atualiza o total
+
+                    if (response.length === 0) {
+                        container.append('<h5 class="center">Nenhum dado para ser exibido</h5>');
+                        return;
+                    }
 
                         response.forEach(function(processo) {
                             let html = `
@@ -165,7 +171,7 @@
 
                             container.append(html);
                         });
-                    
+
                 }
             });
         }
