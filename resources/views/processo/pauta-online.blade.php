@@ -132,34 +132,38 @@
                                     <div class="col-md-4 box-content">
                                         <h4 style="margin: 0px; font-size: 13px;">NÚMERO ${processo.nu_processo_pro || ''}</h4>
                                         <h6><strong>Prazo Fatal </strong>: ${processo.dt_prazo_fatal_pro || ''} ${processo.hr_audiencia_pro || ''}</h6>
-                                        <h6><strong>Correspondente</strong>: ${processo.nm_correspondente || ''}</h6>
-                                        <h6><strong>Responsável</strong>: ${processo.nm_responsavel || ''}</h6>
+                                        <h6><strong>Correspondente</strong>: ${processo.nm_conta_correspondente_ccr || ''}</h6>
+                                        <h6><strong>Responsável</strong>: ${processo.name || ''}</h6>
                                         <h6><strong>Parte Adversa</strong>: ${processo.nm_autor_pro || ''}</h6>
                                         <h6><strong>Réu</strong>: ${processo.nm_reu_pro || ''}</h6>
                                     </div>
                                     <div class="col-md-4 box-content">
-                                        <h6><strong>Comarca</strong>: ${processo.nm_comarca || ''}</h6>
-                                        <h6><strong>Serviço</strong>: ${processo.nm_servico || ''}</h6>
-                                        <h6><strong>Cliente</strong>: ${processo.nm_cliente || ''}</h6>
-                                        <h6><strong>Foro</strong>: ${processo.nm_foro || ''}</h6>
-                                        <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo || ''}</h6>
+                                        <h6><strong>Comarca</strong>: ${processo.nm_cidade_cde || ''}/${processo.sg_estado_est || ''}</h6>
+                                        <h6><strong>Serviço</strong>: ${processo.nm_tipo_servico_tse || ''}</h6>
+                                        <h6><strong>Cliente</strong>: ${processo.nm_razao_social_cli || ''}</h6>
+                                        <h6><strong>Foro</strong>: ${processo.nm_vara_var || ''}</h6>
+                                        <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo_tpo || ''}</h6>
                                     </div>
                                     <div class="col-md-4 box-content">
                                         <h6>
                                             <strong>Dados Audiencistas</strong>
                                             <a><i class="fa fa-edit"></i>Editar</a>
-                                            <p><strong>Advogado</strong></p>
-                                            ${processo.nm_advogado_pro || '<span class="text-danger">Não informado</span>'}
-                                            <p><strong>Preposto</strong></p>
-                                            ${processo.nm_preposto_pro || '<span class="text-danger">Não informado</span>'}
+                                            <p style="color: #3F51B5; margin-bottom: 0px;"><strong>Advogado</strong></p>
+                                            <div style="margin-bottom: 5px;">
+                                                ${processo.nm_advogado_pro || '<span class="text-danger">Não informado</span>'}
+                                            </div>
+                                            <p style="color: #3F51B5; margin-bottom: 0px;"><strong>Preposto</strong></p>
+                                            <div>
+                                                ${processo.nm_preposto_pro || '<span class="text-danger">Não informado</span>'}
+                                            </div
                                         </h6>
                                     </div>
-                                    <div class="col-md-12 col-lg-12 box-content">
+                                    <div class="col-md-12 col-lg-12">
                                         <div class="onoffswitch-container" style="margin-left: 0px; font-size: 11px;">
                                             <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
                                             <span class="onoffswitch">
-                                                <input type="checkbox" class="onoffswitch-checkbox" ${processo.fl_documento_representacao_pro ? 'checked' : ''}>
-                                                <label class="onoffswitch-label">
+                                                <input type="checkbox" name="fl_documento_representacao_pro" class="onoffswitch-checkbox" id="fl_documento_representacao_pro">
+                                                <label class="onoffswitch-label" for="fl_documento_representacao_pro"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
