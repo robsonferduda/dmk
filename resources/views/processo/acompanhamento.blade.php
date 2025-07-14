@@ -36,7 +36,7 @@
 
                         <section class="col col-md-2 col-lg-2">
                             <label class="label label-black label-recuo">Prazo Fatal</label>
-                            <input style="width: 100%" class="form-control date-mask" type="text" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
+                            <input style="width: 100%" class="form-control datepicker date-mask" type="text" data-dateformat="dd/mm/yy" id="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section> 
                         <section class="col col-md-2 col-lg-2">
                             <label class="label label-black label-recuo">Número do Processo</label>

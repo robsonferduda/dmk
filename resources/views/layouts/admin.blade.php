@@ -305,6 +305,11 @@
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
                             @can('processo.novo')   
+                                <li class="{{ (Session::get('item_pai') == 'processo.pauta') ? 'active' : '' }}">
+                                    <a href="{{ url('processos/pauta/online') }}" title="Novo"><span class="menu-item-parent">Pauta Online</span></a>
+                                </li>
+                            @endcan
+                            @can('processo.novo')   
                                 <li class="{{ (Session::get('item_pai') == 'processo.novo') ? 'active' : '' }}">
                                     <a href="{{ url('processos/novo') }}" title="Novo"><span class="menu-item-parent">Novo</span></a>
                                 </li>

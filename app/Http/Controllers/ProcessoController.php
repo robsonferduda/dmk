@@ -128,6 +128,8 @@ class ProcessoController extends Controller
 
     public function pautaOnline(Request $request)
     {
+        Session::put('item_pai','processo.pauta');
+
         $prazo_fatal = ($request->dt_prazo_fatal_pro) ? date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro))) : date('Y-m-d');
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
@@ -147,6 +149,30 @@ class ProcessoController extends Controller
         ->get();
 
         return view('processo/pauta-online', ['processos' => $processos, 'responsaveis' => $responsaveis, 'responsavel' => $responsavel, 'prazo_fatal' => $prazo_fatal]);
+    }
+
+    public function listarPauta(Request $request)
+    {
+        $processo = ($request->processo) ? $request->processo : null;
+        $responsavel = ($request->responsavel) ? $request->responsavel : null;
+        $tipo = ($request->tipo) ? $request->tipo : null;
+        $nm_cliente = ($request->nm_cliente) ? $request->nm_cliente : null;
+        $servico = ($request->servico) ? $request->servico : null;
+        $status = ($request->status) ? $request->status : null;
+        $reu = ($request->reu) ? $request->reu : null;
+        $autor = ($request->autor) ? $request->autor : null;
+        $data = ($request->data) ? date('Y-m-d', strtotime(str_replace('/', '-', $request->data))) : date("Y-m-d");
+        $comarca = ($request->comarca) ? $request->comarca : null;
+        $flag = ($request->flag) ? $request->flag : false;
+        $cliente = ($request->cliente) ? $request->cliente : null;
+        $statusProcesso = ($request->statusProcesso) ? $request->statusProcesso : null;
+        $numeroAcompanhamento = ($request->numero_acompanhamento) ? $request->numero_acompanhamento : null;
+
+        $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
+
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento);
+        
+        return response()->json($processos);
     }
 
     public function acompanhamento($id)

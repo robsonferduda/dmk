@@ -16,9 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
             <div class="sub-box-button-xs">
-                <a  title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-                <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
-                <a title="Pauta Online" href="{{ url('processos/pauta/online') }}" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-globe fa-lg"></i> Pauta Online</a>
+                <a data-toggle="modal" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class ="fa fa-list fa-lg"></i> Listar Processos</a>
             </div>
         </div>
         <article class="col-sm-12 col-md-12 col-lg-12">
@@ -28,11 +26,27 @@
                     <fieldset>
                         <div class="row"> 
                             <section class="col col-md-2">                                       
-                                <label class="" >Prazo Fatal</label>          
-                                <input style="width: 100%" class="form-control date-mask" type="text" name="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($prazo_fatal) ? date('d/m/Y', strtotime($prazo_fatal)) : '' }}" > 
+                                <label class="label-padrao">Prazo Fatal</label>          
+                                <input style="width: 100%" class="form-control datepicker date-mask" type="text" data-dateformat="dd/mm/yy" name="dt_prazo_fatal_pro" id="dt_prazo_fatal_pro" placeholder="___/___/____" value="{{ !empty($prazo_fatal) ? date('d/m/Y', strtotime($prazo_fatal)) : '' }}" > 
                             </section>
-                            <section class="col col-md-4">                                       
-                                <label class="" >Responsável</label>          
+                            <section class="col col-md-2 col-lg-2">
+                                <label class="label-padrao">Número do Processo</label>
+                                <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >
+                            </section> 
+                            <section class="col col-md-2 col-lg-2">
+                                <label class="label-padrao">Código Cliente</label>
+                                <input style="width: 100%" class="form-control" type="text" id="nu_acompanhamento_pro" placeholder="Código Cliente" value="{{ !empty($nu_acompanhamento_pro) ? $nu_acompanhamento_pro : '' }}" >         
+                            </section>
+                            <section class="col col-md-3 col-lg-3">
+                                <label class="label-padrao">Nome Cliente</label><br />
+                                <input style="width: 100%" minlength=3 type="text" name="nm_cliente" class="form-control" id="nm_cliente" placeholder="Nome Cliente" value="{{ !empty($nm_cliente) ? $nm_cliente : '' }}" >         
+                            </section> 
+                            <section class="col col-md-3 col-lg-3">
+                                <label class="label-padrao">Correspondente</label><br />
+                                <input style="width: 100%" minlength=3 type="text" name="nm_correspondente" class="form-control" id="nm_correspondente" placeholder="Correspondente" value="{{ !empty($nm_correspondente) ? $nm_correspondente : '' }}" >         
+                            </section> 
+                            <section class="col col-md-12" style="margin-top: 8px;">                                       
+                                <label class="label-padrao">Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                     <option selected value="">Selecione um responsável</option>
                                     @foreach($responsaveis as $usuario)
@@ -40,8 +54,8 @@
                                     @endforeach
                                 </select> 
                             </section>
-                            <section class="col col-md-4"> 
-                                <button class="btn btn-primary" style="width: 20%; margin-top: 22px;"  type="submit"><i class="fa fa-search"></i> Buscar</button>
+                            <section class="col col-md-12 center"> 
+                                <button class="btn btn-primary btn-pesquisar" style="width: 10%; margin-top: 22px;"  type="button"><i class="fa fa-search"></i> Pesquisar</button>
                             </section>
                         </div>
                     </fieldset>
@@ -50,60 +64,8 @@
         </article>
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-12">
-                    @forelse($processos as $key => $processo)
-                        <div class="well box-acompanhamento" style="padding: 10px 15px; border: none; border-radius: 10px; background: white; display: block;">
-                            <div class="row box-processo">
-                                <div class="hidden-xs hidden-sm hidden-md col-lg-12 box-content">
-                                    <h6 style="margin: 0px; font-size: 13px;">{{ $processo->nu_processo_pro ? $processo->nu_processo_pro : ' '}}  
-                                        <strong>
-                                            <span style="background-color: {{ $processo->status ? $processo->status->ds_color_stp : '' }}" class="label label-default pull-right">{{ $processo->status ? $processo->status->nm_status_processo_conta_stp : '' }}</span>
-                                        </strong>
-                                    </h6>
-                                </div>
-                                <div class="col-xs-12 col-sm-8 col-md-8 hidden-lg box-content">
-                                    <h6 style="margin: 0px; font-size: 13px;"><strong>Aceito pelo correspondente</strong></h6>
-                                </div>
-                                <div class="col-md-4 box-content">
-                                    <h6><strong>Documento de Representação</strong>: 
-                                        @if($processo->fl_documento_representacao_pro == 'S')
-                                            <strong style="color: #739e73;">Protocolado</strong>
-                                        @else
-                                            <strong style="color: #a90329;">Pendente</strong>
-                                        @endif
-                                    </h6>
-                                    <h6><strong>Correspondente</strong>: {{ ($processo->correspondente and $processo->correspondente->contaCorrespondente) ? $processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr  : '' }}</h6>
-                                    <h6><strong>Responsável</strong>: {{ $processo->responsavel ? $processo->responsavel->name : ''}}</h6>
-                                    <h6><strong>Prazo Fatal </strong>: 
-                                        {{ $processo->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) : ' '}} 
-                                        {{ $processo->hr_audiencia_pro ? date('H:i', strtotime($processo->hr_audiencia_pro)) : ' '}}
-                                    </h6>
-                                    <h6><strong>Parte Adversa</strong>: {{ $processo->nm_autor_pro ? $processo->nm_autor_pro  : ' '}}</h6>
-                                    <h6><strong>Réu</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                </div>
-                                <div class="col-md-4 box-content">
-                                    <h6><strong>Comarca</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                    <h6><strong>Serviço</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                    <h6><strong>Cliente</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                    <h6><strong>Foro</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                    <h6><strong>Tipo de Processo</strong>: {{ $processo->nm_reu_pro ? $processo->nm_reu_pro : ' '}}</h6>
-                                </div>
-                                <div class="col-md-4 box-content">
-                                    <h6><strong>Dados Audiencistas</strong>
-                                        <p><strong>Advogado</strong></p>
-                                        {!! $processo->nm_advogado_pro ? $processo->nm_advogado_pro  : '<span class="text-danger">Não informado</span>' !!}
-                                        <p><strong>Preposto</strong></p>
-                                        {!! $processo->nm_preposto_pro ? $processo->nm_preposto_pro  : '<span class="text-danger">Não informado</span>' !!}
-                                    </h6>
-                                </div>
-                                <div class="col-md-12 box-content">
-                                    <h6><strong>Observação</strong>: {{ $processo->ds_observacao_pro ? $processo->ds_observacao_pro : ' '}}</h6>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <h5 class="center">Nenhum dado para ser exibido</h5>    
-                    @endforelse
+                <div class="col-md-12" id="box-processos-container">
+                    
                 </div>
             </div>
         </div>
@@ -112,10 +74,102 @@
 @endsection
 @section('script')
 <script type="text/javascript">
-
     $(document).ready(function() {
 
-    });
+        var host =  $('meta[name="base-url"]').attr('content');
 
+        carregaProcessos();
+
+        $(".btn-pesquisar").click(function(){
+            carregaProcessos();
+        });
+
+        function carregaProcessos()
+        {
+
+            data = $("#dt_prazo_fatal_pro").val();
+            processo = $("#nu_processo_pro").val();
+            numero_acompanhamento = $("#nu_acompanhamento_pro").val();
+            nm_cliente = $("#nm_cliente").val();
+            nm_correspondente = $("#nm_correspondente").val();
+            responsavel = $("#cd_responsavel_pro").val();            
+
+            $.ajax({
+                
+                url: host+'/api/processo/pauta',
+                type: 'POST',
+                data: {"data": data, 
+                       "processo": processo, 
+                       "numero_acompanhamento": numero_acompanhamento,
+                       "nm_cliente": nm_cliente, 
+                       "nm_correspondente": nm_correspondente,                         
+                       "responsavel": responsavel
+                },
+                dataType: "JSON",
+                beforeSend: function(){
+                    //$(".box-acompanhamento").empty();            
+                },
+                success: function(response){
+
+                    let container = $("#box-processos-container");
+                        container.empty(); // limpa os dados atuais
+
+                        if (response.length === 0) {
+                            container.append('<h5 class="center">Nenhum dado para ser exibido</h5>');
+                            return;
+                        }
+
+                        response.forEach(function(processo) {
+                            let html = `
+                            <div class="well box-acompanhamento" style="padding: 10px 15px; border: none; border-radius: 10px; background: white; display: block;">
+                                <div class="row box-processo">
+                                    <div class="col-md-4 box-content">
+                                        <h4 style="margin: 0px; font-size: 13px;">NÚMERO ${processo.nu_processo_pro || ''}</h4>
+                                        <h6><strong>Prazo Fatal </strong>: ${processo.dt_prazo_fatal_pro || ''} ${processo.hr_audiencia_pro || ''}</h6>
+                                        <h6><strong>Correspondente</strong>: ${processo.nm_correspondente || ''}</h6>
+                                        <h6><strong>Responsável</strong>: ${processo.nm_responsavel || ''}</h6>
+                                        <h6><strong>Parte Adversa</strong>: ${processo.nm_autor_pro || ''}</h6>
+                                        <h6><strong>Réu</strong>: ${processo.nm_reu_pro || ''}</h6>
+                                    </div>
+                                    <div class="col-md-4 box-content">
+                                        <h6><strong>Comarca</strong>: ${processo.nm_comarca || ''}</h6>
+                                        <h6><strong>Serviço</strong>: ${processo.nm_servico || ''}</h6>
+                                        <h6><strong>Cliente</strong>: ${processo.nm_cliente || ''}</h6>
+                                        <h6><strong>Foro</strong>: ${processo.nm_foro || ''}</h6>
+                                        <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo || ''}</h6>
+                                    </div>
+                                    <div class="col-md-4 box-content">
+                                        <h6>
+                                            <strong>Dados Audiencistas</strong>
+                                            <a><i class="fa fa-edit"></i>Editar</a>
+                                            <p><strong>Advogado</strong></p>
+                                            ${processo.nm_advogado_pro || '<span class="text-danger">Não informado</span>'}
+                                            <p><strong>Preposto</strong></p>
+                                            ${processo.nm_preposto_pro || '<span class="text-danger">Não informado</span>'}
+                                        </h6>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 box-content">
+                                        <div class="onoffswitch-container" style="margin-left: 0px; font-size: 11px;">
+                                            <span class="onoffswitch-title">Documento de Representação Protocolado?</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" class="onoffswitch-checkbox" ${processo.fl_documento_representacao_pro ? 'checked' : ''}>
+                                                <label class="onoffswitch-label">
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                            container.append(html);
+                        });
+                    
+                }
+            });
+        }
+
+    });
 </script>
 @endsection
