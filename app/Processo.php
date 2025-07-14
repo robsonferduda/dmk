@@ -16,6 +16,7 @@ use App\Notifications\ProcessoRequisitarDadosNotification;
 use App\Notifications\ProcessoAtualizacaoDadosNotification;
 use App\Notifications\ProcessoAvisoLeituraNotification;
 use App\Notifications\ProcessoCorrespondenteFinalizarNotification;
+use App\Notifications\ProcessoCancelamentoNotification;
 
 class Processo extends Model implements AuditableContract
 {
@@ -165,6 +166,11 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ClienteProcessoNotification($processo));
     }
 
+    public function notificarCancelamento($processo)
+    {
+        $this->notify(new ProcessoCancelamentoNotification($processo));
+    }
+
     public function notificarNovaMensagem($processo)
     {
         $this->notify(new MensagemProcessoNotification($processo));
@@ -195,7 +201,7 @@ class Processo extends Model implements AuditableContract
         $parte_re = ($this->attributes['nm_reu_pro']) ? $this->attributes['nm_reu_pro'] : 'Não informada';
         $num_processo = $this->attributes['nu_processo_pro'];
 
-        $tipo_servico = $this->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse;
+        $tipo_servico = ($this->honorario) ? $this->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : '';
 
         $assunto = $data.' - '.$hora.' - '.$tipo_servico.' - Autor: '.$parte_autora.' - Réu: '.$parte_re.' - Processo '.$num_processo;
 

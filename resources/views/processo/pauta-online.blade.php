@@ -126,10 +126,37 @@
                     }
 
                         response.forEach(function(processo) {
+
                             let html = `
                             <div class="well box-acompanhamento" style="padding: 10px 15px; border: none; border-radius: 10px; background: white; display: block;">
                                 <div class="row box-processo">
-                                    <div class="col-md-4 box-content">
+                                    <div class="col-lg-12 box-content">
+                                        <h6 style="margin: 0px; font-size: 13px;">
+                                            <strong>
+                                                <span style="background-color: ${ processo.background }" class="label label-default pull-right">${ processo.nm_status_processo_conta_stp }</span>
+                                            </strong> 
+                                            <select id="status" name="status" id="status" class="pull-left">
+                                                <option selected value="0">Alterar Situação</option>
+                                                <option value="3">ACEITO PELO CORRESPONDENTE</option>
+                                                <option value="2">AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO</option>
+                                                <option value="10">AGUARDANDO CONFIRMAÇÃO DE RECEBIMENTO DE DOCUMENTOS</option>
+                                                <option value="11">AGUARDANDO CUMPRIMENTO</option>
+                                                <option value="12">AGUARDANDO DADOS</option>
+                                                <option value="5">AGUARDANDO RECEBIMENTO DOS DOCUMENTOS DO CLIENTE</option>
+                                                <option value="16">ALTERADO PELO CLIENTE</option>
+                                                <option value="15">CADASTRADO PELO CLIENTE</option>
+                                                <option value="7">CANCELADO PELO CLIENTE</option>
+                                                <option value="9">CONTRATAR CORRESPONDENTE</option>
+                                                <option value="13">DADOS ATUALIZADOS</option>
+                                                <option value="1">ELABORAR DOCUMENTOS DE REPRESENTAÇÃO</option>
+                                                <option value="6">FINALIZADO</option>
+                                                <option value="8">FINALIZADO PELO CORRESPONDENTE</option>
+                                                <option value="14">PENDENTE DE ANÁLISE</option>
+                                                <option value="4">RECUSADO PELO CORRESPONDENTE</option>
+                                            </select>                 
+                                        </h6>
+                                    </div>
+                                    <div class="col-md-4 box-content" style="margin-top: 5px;">
                                         <h4 style="margin: 0px; font-size: 13px;">NÚMERO ${processo.nu_processo_pro || ''}</h4>
                                         <h6><strong>Prazo Fatal </strong>: ${processo.dt_prazo_fatal_pro || ''} ${processo.hr_audiencia_pro || ''}</h6>
                                         <h6><strong>Correspondente</strong>: ${processo.nm_conta_correspondente_ccr || ''}</h6>
@@ -170,6 +197,7 @@
                                             </span> 
                                         </div>
                                     </div>
+
                                 </div>
                             </div>`;
 

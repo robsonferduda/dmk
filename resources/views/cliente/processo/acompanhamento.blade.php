@@ -314,21 +314,15 @@
                                     
                                 '</div>'+
                                 '<div class="hidden-xs col-sm-12 col-md-12 pull-right">'+
-                                    '<a title="Despesas" class="icone-acompanhamento" href="../processos/despesas/'+data.hash+'"><i class="fa fa-money"></i> Despesas</a> '+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> Acompanhamento</a> '+
-                                    '<a title="Clonar" class="dialog_clone icone-acompanhamento" href="../processos/clonar/'+data.hash+'"><i class="fa fa-clone"></i> Clonar</a> '+
-                                    '<a title="Relatório" class="icone-acompanhamento" href="../processos/relatorio/'+data.hash+'"><i class="fa fa-usd"></i> Relatório Financeiro</a> '+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href="../processos/editar/'+data.hash+'"><i class="fa fa-edit"></i> Editar </a> '+
-                                    '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> Excluir</a>'+
+                                    '<a title="Cancelar" class="cancelar_registro icone-acompanhamento" href="../processos/cancelar/'+data.hash+'"><i class="fa fa-ban"></i> Cancelar</a>'+
                                     '<span class="pull-right processo-user">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</strong></span>'+
                                 '</div>'+
                                 '<div class="hidden-md hidden-sm hidden-lg col-md-6">'+
-                                    '<a title="Despesas" class="icone-acompanhamento" href=""><i class="fa fa-money"></i> </a>'+
                                     '<a title="Acompanhamento" class="icone-acompanhamento" href="../processos/acompanhamento/'+data.hash+'"><i class="fa fa-calendar"></i> </a>'+
-                                    '<a title="Clonar" class="icone-acompanhamento" class="dialog_clone" href=""><i class="fa fa-clone"></i> </a>'+
-                                    '<a title="Relatório" class="icone-acompanhamento" href=""><i class="fa fa-usd"></i> </a>'+
                                     '<a title="Editar" class="icone-acompanhamento" class="editar_vara" href=""><i class="fa fa-edit"></i> </a>'+
-                                    '<a title="Excluir" data-id="'+data.cd_processo_pro+'" data-url="../processos/" class="excluir_registro icone-acompanhamento" href="#"><i class="fa fa-trash"></i> </a>'+
+                                    '<a title="Cancelar" class="cancelar_registro icone-acompanhamento" href="href="../processos/cancelar/'+data.hash+'""><i class="fa fa-ban"></i> </a>'+
                                     '<span class="pull-right processo-user">Cadastrado em '+data.created_at+' por <strong>'+user_cadastro+'</strong></span>'+
                                 '</div>'+
                             '</div>'+

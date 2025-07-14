@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+
+class ProcessoCancelamentoNotification extends Notification
+{
+    use Queueable;
+
+    public $processo;
+
+    public function __construct($processo)
+    {
+        $this->processo = $processo;
+    }
+
+    
+    public function via($notifiable)
+    {
+        return ['mail'];
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject(Lang::getFromJson('Cancelado pelo Cliente - '.$this->processo->getAssuntoNotification()))
+            ->markdown('email.notificacao_processo_cancelado_cliente')
+            ->line(Lang::getFromJson('Processo cancelado pelo cliente '.$this->processo->nu_processo_pro.'.'))
+            ->line(Lang::getFromJson('Clique no botão abaixo para visualizar o processo:'))
+            ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.acompanhar', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
+            ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
+    }
+
+}

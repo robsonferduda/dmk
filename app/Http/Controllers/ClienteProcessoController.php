@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use DB;
 use App\User;
+use App\Conta;
 use App\Cliente;
 use App\Estado;
 use App\Entidade;
@@ -13,6 +14,7 @@ use App\TipoServico;
 use App\TipoProcesso;
 use App\StatusProcesso;
 use App\ProcessoMensagem;
+use App\EnderecoEletronico;
 use App\Enums\TipoMensagem;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -144,6 +146,31 @@ class ClienteProcessoController extends Controller
 
         $processo = Processo::where('cd_processo_pro', $id)->where('cd_cliente_cli', $cliente->cd_cliente_cli)->first();
         return view('cliente/processo/detalhes', ['processo' => $processo]);
+    }
+
+    public function cancelar($id)
+    {
+        $id = \Crypt::decrypt($id);
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+        $processo = Processo::where('cd_processo_pro', $id)->where('cd_cliente_cli', $cliente->cd_cliente_cli)->first();
+
+        //O processo deve ser cancelado e o escritório notificado
+        $processo->cd_status_processo_stp = \StatusProcesso::CANCELADO_PELO_CLIENTE;
+        $processo->save();
+        $vinculo = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
+
+        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+        foreach ($emails as $email) {
+
+            $processo->email = $email->dc_endereco_eletronico_ede;
+            $processo->notificarCancelamento($processo);
+        }
+
+        Flash::success('Processo '.$processo->nu_processo_pro.' cancelado e escritório notificado');
+
+        return redirect('cliente/processos/acompanhamento')->withInput();
     }
 
     public function pauta()
