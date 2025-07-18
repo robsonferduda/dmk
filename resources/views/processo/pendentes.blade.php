@@ -30,14 +30,10 @@
 
             $diferenca = $dtEnvio->diffForHumans($agora, true);
 
-            dd($diferenca);
-
             // Converte para dias, horas e minutos
             $dias = floor($diffInMinutes / 1440); // 1440 minutos por dia
             $horas = floor(($diffInMinutes % 1440) / 60);
             $minutos = $diffInMinutes % 60;
-
-            dd($horas);
 
             // Cálculo das horas totais
             $totalHoras = $dtEnvio->diffInHours($agora);
