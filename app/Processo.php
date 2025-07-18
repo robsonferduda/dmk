@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+
 use DB;
 use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
