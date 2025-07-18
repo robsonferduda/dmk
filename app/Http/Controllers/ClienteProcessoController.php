@@ -227,9 +227,11 @@ class ClienteProcessoController extends Controller
         }
 
         $id_escritorio = 64;
+        $id_correspondente = 83;
 
         $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
-        
+        $correspondente = Conta::where('cd_conta_con', $id_correspondente)->first();
+
         $sub = \DB::table('vara_var')
                 ->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")
                 ->whereNull('deleted_at')
@@ -245,6 +247,7 @@ class ClienteProcessoController extends Controller
         $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
 
         return view('cliente/processo/novo', ['cliente' => $cliente,
+                                            'correspondente' => $correspondente,
                                             'estados' => $estados,
                                             'varas' => $varas, 
                                             'tiposProcesso' => $tiposProcesso, 
@@ -254,8 +257,12 @@ class ClienteProcessoController extends Controller
     public function editar($id)
     {
         $id = \Crypt::decrypt($id);
+
         $id_escritorio = 64;
+        $id_correspondente = 83;
+
         $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+        $correspondente = Conta::where('cd_conta_con', $id_correspondente)->first();
         
         if (!\Cache::has('estados')) {
             $estados = Estado::orderBy('nm_estado_est')->get();
@@ -277,6 +284,7 @@ class ClienteProcessoController extends Controller
         $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $id_escritorio)->where('cd_processo_pro', $id)->first();
 
         return view('cliente/processo/editar', ['cliente' => $cliente,
+                                            'correspondente' => $correspondente,
                                             'processo' => $processo,
                                             'estados' => $estados, 
                                             'varas' => $varas,

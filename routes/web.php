@@ -134,6 +134,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/clonar/{id}', 'ProcessoController@clonar');
     Route::get('processos/notificar/{id}', 'ProcessoController@notificarCorrespondente');
     Route::get('processos/acompanhar', 'ProcessoController@acompanhar');
+    Route::get('processos/pendentes', 'ProcessoController@pendentes');
     Route::get('processos/relatorio/{id}', 'ProcessoController@relatorio');
     Route::get('processos/atualiza/dados-enviados/{id}', 'ProcessoController@atualizaDadosEnviados');
     Route::get('processos/atualiza/documento-representacao/{id}', 'ProcessoController@atualizaDocumentoRepresentacao');

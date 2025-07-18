@@ -329,6 +329,9 @@
                                     <a href="{{ url('notificacao/processos') }}" title="Importar"><span class="menu-item-parent">Notificações</span></a>
                                 </li>                                 
                             @endcan
+                             <li>
+                                <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendentes</span></a>
+                            </li>
                             @can('processo.relatorios')
                                 <li class="{{ (Session::get('item_pai') == 'processo.relatorios') ? 'active' : '' }}">
                                     <a href="{{ url('processos/relatorios') }}" title="Relatórios"><span class="menu-item-parent">Relatórios</span></a>

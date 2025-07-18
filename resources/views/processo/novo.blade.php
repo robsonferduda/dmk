@@ -90,7 +90,7 @@
                                             <label class="label" >Advogado Solicitante <a href="#" data-toggle="modal" data-target="#novoAdvogado" style="padding: 1px 8px;"><i class="fa fa-plus-circle"></i> Novo </a></label> 
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
-                                                <select  id="cd_contato_cot" name="cd_contato_cot" >
+                                                <select id="cd_contato_cot" name="cd_contato_cot" >
                                                     <option value="">Selecione um Advogado Solicitante</option>            
                                                 </select><i></i>  
                                             </label>         

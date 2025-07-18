@@ -104,6 +104,20 @@ class ProcessoController extends Controller
         return view('processo/processos', ['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
     }
 
+    public function pendentes()
+    {
+        $processos = DB::table('processo_pro')
+            ->select('cd_processo_pro', 'nu_processo_pro', 'dt_solicitacao_pro','updated_at')
+            ->whereNotNull('cd_correspondente_cor')
+            ->whereIn('cd_status_processo_stp', [2,12])
+            ->whereNull('dt_finalizacao_pro') // ou outro campo que indique aceite
+            ->whereNull('deleted_at')
+            ->orderBy('dt_solicitacao_pro','DESC')
+            ->get();
+
+        return view('processo/pendentes', compact('processos'));
+    }
+
     public function acompanhar()
     {
         Session::put('item_pai','processo.acompanhamento');
