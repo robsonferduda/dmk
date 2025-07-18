@@ -109,6 +109,7 @@ class ProcessoController extends Controller
 
         $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
                             ->whereNotNull('cd_correspondente_cor')
+                            ->orderBy('cd_status_processo_stp')
                             ->orderBy('updated_at')
                             ->get();
 
