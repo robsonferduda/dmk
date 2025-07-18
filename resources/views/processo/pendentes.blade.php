@@ -22,6 +22,8 @@
     </div>
     @forelse($processos as $processo)
         @php
+            Carbon::setLocale('pt_BR');
+
             $dtEnvio = Carbon::parse($processo->updated_at);
             $agora = Carbon::now();
 
