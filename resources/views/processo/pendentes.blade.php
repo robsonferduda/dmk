@@ -67,7 +67,7 @@
                     <h5 style="margin-bottom: 2px; margin-top: 3px;" class="card-title mb-0">{{ $processo->nu_processo_pro }}</h5>
                     <p style="margin-bottom: 2px;"><strong>Correspondente</strong>: {{ $processo->correspondente->nm_razao_social_con }}</p>
                     <p style="margin-bottom: 2px;"><strong>Última Atualização:</strong> {{ $dtEnvio->format('d/m/Y H:i') }}</p>
-                    <p style="margin-bottom: 5px;"><strong>Tempo transcorrido:</strong> {{ $tempoTranscorrido }}</p>
+                    <p style="margin-bottom: 5px;"><strong>Tempo transcorrido:</strong> {{ $diferenca }}</p>
 
                     <span style="background-color: {{ $processo->status->ds_color_stp }}; position: absolute; top: 10px; right: 8px;" class="label label-default pull-right">{{ $processo->status->nm_status_processo_conta_stp }}</span>
                     <span class="label label-{{ $cor }} pull-right" style="position: absolute; bottom: 8px; right: 8px;">
