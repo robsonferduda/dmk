@@ -330,7 +330,7 @@
                                 </li>                                 
                             @endcan
                              <li>
-                                <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendentes</span></a>
+                                <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendências</span></a>
                             </li>
                             @can('processo.relatorios')
                                 <li class="{{ (Session::get('item_pai') == 'processo.relatorios') ? 'active' : '' }}">
