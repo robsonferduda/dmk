@@ -106,14 +106,11 @@ class ProcessoController extends Controller
 
     public function pendentes()
     {
-        $processos = DB::table('processo_pro')
-            ->select('cd_processo_pro', 'nu_processo_pro', 'dt_solicitacao_pro','updated_at')
-            ->whereNotNull('cd_correspondente_cor')
-            ->whereIn('cd_status_processo_stp', [2,12])
-            ->whereNull('dt_finalizacao_pro') // ou outro campo que indique aceite
-            ->whereNull('deleted_at')
-            ->orderBy('dt_solicitacao_pro','DESC')
-            ->get();
+
+        $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
+                            ->whereNotNull('cd_correspondente_cor')
+                            ->orderBy('updated_at')
+                            ->get();
 
         return view('processo/pendentes', compact('processos'));
     }
