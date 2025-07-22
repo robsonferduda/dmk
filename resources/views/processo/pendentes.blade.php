@@ -77,6 +77,28 @@
                     <span class="label label-{{ $cor }} pull-right" style="position: absolute; bottom: 8px; right: 8px;">
                         {{ ucfirst($aviso) }}
                     </span>
+                    <div class="text-left">
+                        <a href="#detalhesProcesso{{ $processo->cd_processo_pro }}"
+                           data-toggle="collapse"
+                           role="button"
+                           style="margin-bottom: 5px;" 
+                           aria-expanded="false"
+                           aria-controls="detalhesProcesso{{ $processo->cd_processo_pro }}"
+                           class="small">
+                            <i class="fa fa-bell mr-1"></i> Notificações Enviadas
+                        </a>
+                    </div>
+                    <div class="collapse mt-3" id="detalhesProcesso{{ $processo->cd_processo_pro }}">
+                        <div class="border-top pt-3">
+                            @foreach($processo->notificacoes as $notificacao)
+                                <p style="font-size: 11px;">
+                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
+                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
+                                    {{ $notificacao->tipo->nm_tipo_notificacao_tin }}
+                                </p>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

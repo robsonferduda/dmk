@@ -62,7 +62,8 @@ class Processo extends Model implements AuditableContract
                             'cd_user_cadastro_pro',
                             'cd_user_finalizacao_pro',
                             'nu_lote',
-                            'fl_cadastro_cliente_cli'
+                            'fl_cadastro_cliente_cli',
+                            'dt_notificacao_pro'
     					  ];
 
     public $timestamps = true;
@@ -80,6 +81,11 @@ class Processo extends Model implements AuditableContract
     public function usuario()
     {
         return $this->hasOne('App\User','id', 'cd_user_finalizacao_pro');
+    }
+
+    public function notificacoes()
+    {
+        return $this->hasMany('App\LogNotificacao','cd_processo', 'cd_processo_pro');
     }
 
     public function anexos()

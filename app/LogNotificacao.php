@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LogNotificacao extends Model
 {
-
 	use SoftDeletes;
 
     protected $table = 'log_notificacao';
@@ -24,4 +23,9 @@ class LogNotificacao extends Model
     					  ];
 
     public $timestamps = true;
+
+    public function tipo()
+    {
+        return $this->hasOne('App\TipoNotificacao','ds_tipo_notificacao_tin', 'tipo_notificacao');
+    }
 }
