@@ -213,11 +213,7 @@ class ProcessoController extends Controller
                 }       
 
                 Log::info("Notificando correspondente do processo {$processo->nu_processo_pro}");
-            }
-
-
-            dd($qtdeNotificacoes);
-            
+            }            
         }
     }
 
