@@ -91,10 +91,11 @@
                     <div class="collapse mt-3" id="detalhesProcesso{{ $processo->cd_processo_pro }}">
                         <div class="border-top pt-3">
                             @foreach($processo->notificacoes as $notificacao)
-                                <p style="font-size: 11px;">
-                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
-                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
+                                <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
+                                    {{ date('d/m/Y H:i:s', strtotime($notificacao->created_at)) }} - 
                                     {{ $notificacao->tipo->nm_tipo_notificacao_tin }}
+                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
+                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }}                                     
                                 </p>
                             @endforeach
                         </div>
