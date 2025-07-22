@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Excel;
+use Log;
 use App\Utils;
 use App\User;
 use App\Entidade;
@@ -115,6 +116,109 @@ class ProcessoController extends Controller
                             ->get();
 
         return view('processo/pendentes', compact('processos'));
+    }
+
+    public function notificarPendentes()
+    {
+        /* 
+            2 - AGUARDANDO_CORRESPONDENTE
+            Notificar a cada 12 horas;
+            Limite de 6 notificações;
+            Após isso, marcar como recusado automaticamente RECUSADO_CORRESPONDENTE = 4;
+
+
+            12 - AGUARDANDO_DADOS
+            Notificar a cada 24 horas, sem limite;
+
+
+        */
+
+        $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
+                            ->whereNotNull('cd_correspondente_cor')
+                            ->where('cd_conta_con', $this->cdContaCon)
+                            ->orderBy('cd_status_processo_stp')
+                            ->orderBy('dt_notificacao_pro','ASC')
+                            ->get();
+
+        foreach ($processos as $key => $processo) {
+
+            $agora = \Carbon\Carbon::now();
+            $status = $processo->cd_status_processo_stp;
+            $ultimaNotificacao = $processo->dt_notificacao_pro ? \Carbon\Carbon::parse($processo->dt_notificacao_pro) : null;
+            $deveNotificar = false;
+
+            // Conta notificações anteriores
+            $qtdeNotificacoes = DB::table('log_notificacao')
+                ->where('cd_processo', $processo->cd_processo_pro)
+                ->where('tipo_notificacao', 'notificacao_correspondente')
+                ->count();
+
+            if ($status == 2) { // AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO
+                if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
+                    if ($qtdeNotificacoes < 6) {
+                        $deveNotificar = true;
+                    } else {
+                        // Excedeu o número máximo → marcar como recusado
+                        $processo->cd_status_processo_stp = 99; // Ajuste conforme seu status de "recusado"
+                        $processo->dc_observacao_processo_pro = trim(($processo->dc_observacao_processo_pro ?? '') . "\n[{$agora->format('d/m/Y H:i')}] Recusado automaticamente por falta de aceite.");
+                    }
+                }
+
+            }elseif ($status == 12) { // AGUARDANDO DADOS
+                if ($processo->fl_dados_enviados_pro != 'S') {
+                    if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 24) {
+                        $deveNotificar = true;
+                    }
+                }
+            }
+
+            if ($deveNotificar) {
+
+                if($status == 2){
+                    $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
+
+                    if (empty($processo->cd_correspondente_cor) or is_null($vinculo)) {
+                        Flash::error('Nenhum correspondente informado para o processo');
+                    } else {
+                        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+                        if (count($emails) == 0) {
+                            Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+                        } else {
+                            $lista = '';
+
+                            
+                            // Atualiza data de notificação
+                            $processo->dt_notificacao_pro = $agora;
+                            $processo->save();
+
+                            foreach ($emails as $email) {
+
+                                $log = array('tipo_notificacao' => 'notificacao_correspondente', 'email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
+
+                                LogNotificacao::create($log);
+
+                                $processo->email =  $email->dc_endereco_eletronico_ede;
+                                $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                                $processo->notificarCorrespondente($processo);
+                                $lista .= $email->dc_endereco_eletronico_ede.', ';
+                            }
+                        }
+                    }
+                }    
+
+                if($status == 12){
+
+
+                }       
+
+                Log::info("Notificando correspondente do processo {$processo->nu_processo_pro}");
+            }
+
+
+            dd($qtdeNotificacoes);
+            
+        }
     }
 
     public function acompanhar()
@@ -1052,6 +1156,7 @@ class ProcessoController extends Controller
                 $lista = '';
 
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE;
+                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
                 $processo->save();
 
                 foreach ($emails as $email) {
@@ -1408,9 +1513,7 @@ class ProcessoController extends Controller
             $flag = 'S';
         } else {
             $flag = 'N';
-        }
-
-        
+        }        
 
         $processo->fl_dados_enviados_pro = $flag;
         $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CLIENTE;
@@ -1453,7 +1556,10 @@ class ProcessoController extends Controller
 
         if ($processo) {
             if (count($emails) > 0) {
+
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
+                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
+                $processo->save();
 
                 if ($processo->save()) {
                     $lista = '';
