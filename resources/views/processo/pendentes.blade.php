@@ -95,7 +95,8 @@
                                     {{ date('d/m/Y H:i:s', strtotime($notificacao->created_at)) }} - 
                                     {{ $notificacao->tipo->nm_tipo_notificacao_tin }} - 
                                     {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
-                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }}                                     
+                                    {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
+                                    {{ $notificacao->email_destinataria }}                                     
                                 </p>
                             @endforeach
                         </div>
