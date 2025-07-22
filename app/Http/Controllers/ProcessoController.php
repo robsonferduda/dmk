@@ -108,6 +108,21 @@ class ProcessoController extends Controller
     public function pendentes()
     {
 
+        if (!empty(\Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso'))) {
+            $tiposProcesso = \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->get('tiposProcesso');
+        } else {
+            $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->get();
+            $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
+            \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
+        }
+
+        $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
+        $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
+       
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+                  ->orderBy('nm_status_processo_conta_stp')
+                  ->get();
+
         $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
                             ->whereNotNull('cd_correspondente_cor')
                             ->where('cd_conta_con', $this->cdContaCon)
@@ -115,7 +130,7 @@ class ProcessoController extends Controller
                             ->orderBy('updated_at','ASC')
                             ->get();
 
-        return view('processo/pendentes', compact('processos'));
+        return view('processo/pendentes', compact('processos','tiposServico','tiposProcesso','status','responsaveis'));
     }
 
     public function notificarPendentes()
