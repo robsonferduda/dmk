@@ -96,7 +96,7 @@
                                     {{ $notificacao->tipo->nm_tipo_notificacao_tin }} - 
                                     {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
                                     {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
-                                    {{ $notificacao->email_destinataria }}                                     
+                                    {{ $notificacao->email_destinatario }}                                     
                                 </p>
                             @endforeach
                         </div>
