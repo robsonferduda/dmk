@@ -133,6 +133,8 @@ class ProcessoController extends Controller
 
         */
 
+        $total_notificacoes = 0;
+
         $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
                             ->whereNotNull('cd_correspondente_cor')
                             ->where('cd_conta_con', $this->cdContaCon)
@@ -154,6 +156,7 @@ class ProcessoController extends Controller
                 ->count();
 
             if ($status == 2) { // AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO
+
                 if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
                     if ($qtdeNotificacoes < 6) {
                         $deveNotificar = true;
@@ -205,16 +208,18 @@ class ProcessoController extends Controller
                             }
                         }
                     }
+                    Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO");
+                    $total_notificacoes += 1;
                 }    
 
                 if($status == 12){
-
-
-                }       
-
-                Log::info("Notificando correspondente do processo {$processo->nu_processo_pro}");
+                    Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO DADOS");
+                    $total_notificacoes += 1;
+                }     
             }            
         }
+
+        return "Foram realizadas $total_notificacoes notificações";
     }
 
     public function acompanhar()
