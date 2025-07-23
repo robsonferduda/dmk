@@ -55,7 +55,7 @@
                                 </select> 
                             </section>
                             <section class="col col-md-12 center"> 
-                                <button class="btn btn-primary btn-pesquisar" style="width: 10%; margin-top: 22px;"  type="button"><i class="fa fa-search"></i> Pesquisar</button>
+                                <button class="btn btn-primary btn-pesquisar" style="width: 10%; margin-top: 22px;" type="button"><i class="fa fa-search"></i> Pesquisar</button>
                             </section>
                         </div>
                     </fieldset>
@@ -74,6 +74,54 @@
         </div>
     </div>
 </div>
+  <div class="modal fade modal_top_alto" id="informarPreposto" data-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="frmInformarPreposto" action="{{ url('processo/pauta/atualizar-dados') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="cd_processo_pro" id="cd_processo_pro" value="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title">
+                                <i class="icon-append fa fa-legal"></i> Dados da Audiência - Informar Advogado e/ou Preposto
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row box-cadastro">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Advogado</strong><span class="text-info"> Informe NOME COMPLETO - OAB - TELEFONE (Separados por traço)</span></label>
+                                        <p class="text-danger">Digite cada sequencia de dados em uma linha</p>
+                                        <textarea class="form-control texto-processo" rows="8" name="dados_advogado" id="dados_advogado" 
+                                        placeholder="NOME COMPLETO - OAB - TELEFONE"
+                                        style="text-transform: uppercase;"
+                                        oninput="this.value = this.value.toUpperCase();"></textarea>
+                                        <div id="msg_error_advogado" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label><strong>Preposto</strong><span class="text-info"> Informe NOME COMPLETO - CPF - RG - TELEFONE (Separados por traço)</span></label>
+                                        <p class="text-danger">Digite cada sequencia de dados em uma linha</p>
+                                        <textarea class="form-control texto-processo" rows="8" name="dados_preposto" id="dados_preposto" 
+                                        placeholder="NOME COMPLETO - CPF - RG - TELEFONE"
+                                        style="text-transform: uppercase;"
+                                        oninput="this.value = this.value.toUpperCase();"></textarea>
+                                        <div id="msg_error_preposto" class="text-danger"></div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                            <button type="button" class="btn btn-success" id="btnSalvarAdvogadoSolicitante"><i class="fa-fw fa fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -85,6 +133,55 @@
 
         $(".btn-pesquisar").click(function(){
             carregaProcessos();
+        });
+
+        $("#btnSalvarAdvogadoSolicitante").click(function(e) {
+            e.preventDefault(); // impede o comportamento padrão
+
+            var form = $("#frmInformarPreposto");
+            var formData = form.serialize(); // ou new FormData(form[0]) se houver arquivos
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: formData,
+                success: function(response) {
+                    // Aqui você trata o retorno do controlador Laravel
+                    console.log("✅ Sucesso:", response);
+                    $("#informarPreposto").modal("hide");
+                    $(".btn-pesquisar").trigger('click');
+                },
+                error: function(xhr) {
+                    console.error("❌ Erro:", xhr.responseText);
+                    // Ex: exibir erro de validação ou alerta
+                }
+            });
+
+            return false; // redundante com e.preventDefault(), mas pode manter por segurança
+        });
+
+        $(document).on('click','.dados-audiencistas',function(){
+
+            let id = $(this).data("id");
+
+            $.ajax({
+                
+                url: host+'/api/processo/'+id,
+                type: 'GET',
+                beforeSend: function(){
+                               
+                },
+                success: function(response){
+                    $("#cd_processo_pro").val(id);
+                    $("#dados_advogado").val(response.nm_advogado_pro);
+                    $("#dados_preposto").val(response.nm_preposto_pro); 
+
+                    $("#informarPreposto").modal("show");                
+                },
+                complete: function(){
+                     
+                }
+            });
         });
 
         function carregaProcessos()
@@ -174,7 +271,7 @@
                                     <div class="col-md-4 box-content">
                                         <h6>
                                             <strong>Dados Audiencistas</strong>
-                                            <a><i class="fa fa-edit"></i>Editar</a>
+                                            <a class="dados-audiencistas" data-id="${processo.cd_processo_pro}"><i class="fa fa-edit"></i>Editar</a>
                                             <p style="color: #3F51B5; margin-bottom: 0px;"><strong>Advogado</strong></p>
                                             <div style="margin-bottom: 5px;">
                                                 ${processo.nm_advogado_pro || '<span class="text-danger">Não informado</span>'}

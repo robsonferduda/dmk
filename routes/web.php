@@ -159,6 +159,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::delete('anexo-processo-delete', 'AnexoProcessoController@destroy');
 
     Route::post('processo/atualizar-dados', 'ProcessoController@atualizarDadosAdvogadoPreposto');
+    Route::post('processo/pauta/atualizar-dados', 'ProcessoController@atualizarDadosAdvogadoPrepostoPauta');
     Route::post('processo/informar-link-dados', 'ProcessoController@informarLinkDados');
     Route::post('processo/informar-link-audiencia', 'ProcessoController@informarLinkAudiencia');
 

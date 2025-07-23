@@ -133,6 +133,13 @@ class ProcessoController extends Controller
         return view('processo/pendentes', compact('processos','tiposServico','tiposProcesso','status','responsaveis'));
     }
 
+    public function getDados($id)
+    {
+        $processo = Processo::find($id);
+
+        return response()->json($processo); 
+    }
+
     public function notificarPendentes()
     {
         /* 
@@ -1321,6 +1328,16 @@ class ProcessoController extends Controller
                 \Session::put('retorno', array('tipo' => 'erro','msg' => 'Não existe processo correspondente ao número informado.'));
                 return Redirect::route('msg-filiacao');
         }       
+    }
+
+    public function atualizarDadosAdvogadoPrepostoPauta(Request $request)
+    {
+        $processo = Processo::findOrFail($request->cd_processo_pro);
+        $processo->nm_advogado_pro = $request->dados_advogado;
+        $processo->nm_preposto_pro = $request->dados_preposto;
+        $processo->save();
+
+        return response()->json($processo); 
     }
 
     public function atualizarDadosAdvogadoPreposto(Request $request)
