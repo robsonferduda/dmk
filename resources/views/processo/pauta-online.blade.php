@@ -124,6 +124,7 @@
         </div>
 @endsection
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -158,6 +159,59 @@
             });
 
             return false; // redundante com e.preventDefault(), mas pode manter por segurança
+        });
+
+        $(document).on('change','.status',function(){
+
+            let select = $(this);
+            let novoStatus = select.val();
+            let processoId = select.data('processo');
+
+            if (novoStatus == 0) return; // Evita envio se for a opção "Alterar Situação"
+
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja realmente alterar a situação deste processo?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, alterar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Enviar via AJAX
+                    $.ajax({
+                        url: host+'/processos/alterar-status',
+                        type: 'POST',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            cd_processo_pro: processoId,
+                            novo_status: novoStatus
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Status alterado!',
+                                text: 'O status do processo foi atualizado com sucesso.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+
+                            $(".btn-pesquisar").trigger('click');
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                title: 'Erro!',
+                                text: 'Não foi possível alterar o status.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                } else {
+                    // Volta o select para a opção original (se quiser)
+                    select.val(0); // ou guardar a antiga e restaurar
+                }
+            });
+
         });
 
         $(document).on('click','.dados-audiencistas',function(){
@@ -232,24 +286,24 @@
                                             <strong>
                                                 <span style="background-color: ${ processo.background }" class="label label-default pull-right">${ processo.nm_status_processo_conta_stp }</span>
                                             </strong> 
-                                            <select id="status" name="status" id="status" class="pull-left">
+                                            <select class="status" name="status" data-processo="${ processo.cd_processo_pro }" class="pull-left">
                                                 <option selected value="0">Alterar Situação</option>
-                                                <option value="3">ACEITO PELO CORRESPONDENTE</option>
-                                                <option value="2">AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO</option>
-                                                <option value="10">AGUARDANDO CONFIRMAÇÃO DE RECEBIMENTO DE DOCUMENTOS</option>
-                                                <option value="11">AGUARDANDO CUMPRIMENTO</option>
-                                                <option value="12">AGUARDANDO DADOS</option>
-                                                <option value="5">AGUARDANDO RECEBIMENTO DOS DOCUMENTOS DO CLIENTE</option>
-                                                <option value="16">ALTERADO PELO CLIENTE</option>
-                                                <option value="15">CADASTRADO PELO CLIENTE</option>
-                                                <option value="7">CANCELADO PELO CLIENTE</option>
-                                                <option value="9">CONTRATAR CORRESPONDENTE</option>
-                                                <option value="13">DADOS ATUALIZADOS</option>
-                                                <option value="1">ELABORAR DOCUMENTOS DE REPRESENTAÇÃO</option>
-                                                <option value="6">FINALIZADO</option>
-                                                <option value="8">FINALIZADO PELO CORRESPONDENTE</option>
-                                                <option value="14">PENDENTE DE ANÁLISE</option>
-                                                <option value="4">RECUSADO PELO CORRESPONDENTE</option>
+                                                <option value="3" ${processo.cd_status_processo_stp == 3 ? 'selected' : ''}>ACEITO PELO CORRESPONDENTE</option>
+                                                <option value="2" ${processo.cd_status_processo_stp == 2 ? 'selected' : ''}>AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO</option>
+                                                <option value="10" ${processo.cd_status_processo_stp == 10 ? 'selected' : ''}>AGUARDANDO CONFIRMAÇÃO DE RECEBIMENTO DE DOCUMENTOS</option>
+                                                <option value="11" ${processo.cd_status_processo_stp == 11 ? 'selected' : ''}>AGUARDANDO CUMPRIMENTO</option>
+                                                <option value="12" ${processo.cd_status_processo_stp == 12 ? 'selected' : ''}>AGUARDANDO DADOS</option>
+                                                <option value="5" ${processo.cd_status_processo_stp == 5 ? 'selected' : ''}>AGUARDANDO RECEBIMENTO DOS DOCUMENTOS DO CLIENTE</option>
+                                                <option value="16" ${processo.cd_status_processo_stp == 16 ? 'selected' : ''}>ALTERADO PELO CLIENTE</option>
+                                                <option value="15" ${processo.cd_status_processo_stp == 15 ? 'selected' : ''}>CADASTRADO PELO CLIENTE</option>
+                                                <option value="7" ${processo.cd_status_processo_stp == 7 ? 'selected' : ''}>CANCELADO PELO CLIENTE</option>
+                                                <option value="9" ${processo.cd_status_processo_stp == 9 ? 'selected' : ''}>CONTRATAR CORRESPONDENTE</option>
+                                                <option value="13" ${processo.cd_status_processo_stp == 13 ? 'selected' : ''}>DADOS ATUALIZADOS</option>
+                                                <option value="1" ${processo.cd_status_processo_stp == 1 ? 'selected' : ''}>ELABORAR DOCUMENTOS DE REPRESENTAÇÃO</option>
+                                                <option value="6" ${processo.cd_status_processo_stp == 6 ? 'selected' : ''}>FINALIZADO</option>
+                                                <option value="8" ${processo.cd_status_processo_stp == 8 ? 'selected' : ''}>FINALIZADO PELO CORRESPONDENTE</option>
+                                                <option value="14" ${processo.cd_status_processo_stp == 14 ? 'selected' : ''}>PENDENTE DE ANÁLISE</option>
+                                                <option value="4" ${processo.cd_status_processo_stp == 4 ? 'selected' : ''}>RECUSADO PELO CORRESPONDENTE</option>
                                             </select>                 
                                         </h6>
                                     </div>

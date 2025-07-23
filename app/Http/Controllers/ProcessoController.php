@@ -1794,4 +1794,16 @@ class ProcessoController extends Controller
 
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
     }
+
+    public function alterarStatus(Request $request)
+    {
+        $id = $request->cd_processo_pro;
+        $novoStatus = $request->novo_status;
+
+        $processo = Processo::findOrFail($id);
+        $processo->cd_status_processo_stp = $novoStatus;
+        $processo->save();
+
+        return response()->json(['success' => true]);
+    }
 }
