@@ -45,7 +45,16 @@
                                 <label class="label-padrao">Correspondente</label><br />
                                 <input style="width: 100%" minlength=3 type="text" name="nm_correspondente" class="form-control" id="nm_correspondente" placeholder="Correspondente" value="{{ !empty($nm_correspondente) ? $nm_correspondente : '' }}" >         
                             </section> 
-                            <section class="col col-md-12" style="margin-top: 8px;">                                       
+                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">  
+                                <label class="label-padrao">Situação</label>       
+                                <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
+                                    <option selected value="">Status do Processo</option>
+                                    @foreach($status as $st)
+                                        <option value="{{ $st->cd_status_processo_stp }}">{{ $st->nm_status_processo_conta_stp }}</option>
+                                    @endforeach
+                                </select> 
+                            </section> 
+                            <section class="col col-md-8 col-lg-8" style="margin-top: 8px;">                                       
                                 <label class="label-padrao">Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                     <option selected value="">Selecione um responsável</option>
@@ -312,7 +321,8 @@
             numero_acompanhamento = $("#nu_acompanhamento_pro").val();
             nm_cliente = $("#nm_cliente").val();
             nm_correspondente = $("#nm_correspondente").val();
-            responsavel = $("#cd_responsavel_pro").val();            
+            responsavel = $("#cd_responsavel_pro").val();    
+            situacao = $("#cd_status_processo_stp").val();          
 
             $.ajax({
                 
@@ -323,7 +333,8 @@
                        "numero_acompanhamento": numero_acompanhamento,
                        "nm_cliente": nm_cliente, 
                        "nm_correspondente": nm_correspondente,                         
-                       "responsavel": responsavel
+                       "responsavel": responsavel,
+                       "statusProcesso": situacao
                 },
                 dataType: "JSON",
                 beforeSend: function(){

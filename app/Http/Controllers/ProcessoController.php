@@ -273,6 +273,10 @@ class ProcessoController extends Controller
         $prazo_fatal = ($request->dt_prazo_fatal_pro) ? date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro))) : date('Y-m-d');
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
 
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+                  ->orderBy('nm_status_processo_conta_stp')
+                  ->get();
+
         $responsavel = ($request->cd_responsavel_pro) ? $request->cd_responsavel_pro : null;
         
         $processos = Processo::with('cidade')
@@ -288,7 +292,11 @@ class ProcessoController extends Controller
         ->orderBy('hr_audiencia_pro')
         ->get();
 
-        return view('processo/pauta-online', ['processos' => $processos, 'responsaveis' => $responsaveis, 'responsavel' => $responsavel, 'prazo_fatal' => $prazo_fatal]);
+        return view('processo/pauta-online', ['processos' => $processos, 
+            'responsaveis' => $responsaveis, 
+            'responsavel' => $responsavel, 
+            'status' => $status,
+            'prazo_fatal' => $prazo_fatal]);
     }
 
     public function listarPauta(Request $request)
