@@ -34,7 +34,7 @@
                                 <input style="width: 100%" class="form-control" type="text" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($reu) ? $reu : '' }}" >
                             </section> 
                             <section class="col col-md-2 col-lg-2">
-                                <label class="label-padrao">Código Cliente</label>
+                                <label class="label-padrao">Código do Cliente</label>
                                 <input style="width: 100%" class="form-control" type="text" id="nu_acompanhamento_pro" placeholder="Código Cliente" value="{{ !empty($nu_acompanhamento_pro) ? $nu_acompanhamento_pro : '' }}" >         
                             </section>
                             <section class="col col-md-3 col-lg-3">
@@ -387,6 +387,7 @@
                                     <div class="col-md-4 box-content">
                                         <h6><strong>Comarca</strong>: ${processo.nm_cidade_cde || ''}/${processo.sg_estado_est || ''}</h6>
                                         <h6><strong>Serviço</strong>: ${processo.nm_tipo_servico_tse || ''}</h6>
+                                        <h6><strong>Código do Cliente</strong>: ${processo.nu_acompanhamento_pro || ''}</h6>
                                         <h6><strong>Cliente</strong>: ${processo.nm_razao_social_cli || ''}</h6>
                                         <h6><strong>Foro</strong>: ${processo.nm_vara_var || ''}</h6>
                                         <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo_tpo || ''}</h6>
