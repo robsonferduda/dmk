@@ -1806,4 +1806,22 @@ class ProcessoController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function atualizarAudiencia(Request $request)
+    {
+        $processo = Processo::findOrFail($request->cd_processo_pro);
+        $processo->fl_audiencia_confirmada_pro = $request->fl_audiencia_confirmada_pro === 'S' ? true : false;
+        $processo->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function atualizarDocumentoRepresentacao(Request $request)
+    {
+        $processo = Processo::findOrFail($request->cd_processo_pro);
+        $processo->fl_documento_representacao_pro = $request->fl_documento_representacao_pro === 'S' ? 'S' : 'N';
+        $processo->save();
+
+        return response()->json(['success' => true]);
+    }
 }
