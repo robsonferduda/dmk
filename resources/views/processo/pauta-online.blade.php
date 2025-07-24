@@ -45,7 +45,7 @@
                                 <label class="label-padrao">Correspondente</label><br />
                                 <input style="width: 100%" minlength=3 type="text" name="nm_correspondente" class="form-control" id="nm_correspondente" placeholder="Correspondente" value="{{ !empty($nm_correspondente) ? $nm_correspondente : '' }}" >         
                             </section> 
-                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">  
+                            <section class="col col-md-6 col-lg-6" style="margin-top: 8px;">  
                                 <label class="label-padrao">Situação</label>       
                                 <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
                                     <option selected value="">Status do Processo</option>
@@ -54,7 +54,7 @@
                                     @endforeach
                                 </select> 
                             </section> 
-                            <section class="col col-md-8 col-lg-8" style="margin-top: 8px;">                                       
+                            <section class="col col-md-6 col-lg-6" style="margin-top: 8px;">                                       
                                 <label class="label-padrao">Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                     <option selected value="">Selecione um responsável</option>
@@ -364,7 +364,7 @@
                                     <div class="col-lg-12 box-content">
                                         <h6 style="margin: 0px; font-size: 13px;">
                                             <strong>
-                                                <span style="background-color: ${ processo.background }" class="label label-default pull-right">${ processo.nm_status_processo_conta_stp }</span>
+                                                <span style="background-color: ${ processo.ds_color_stp }" class="label label-default pull-right">${ processo.nm_status_processo_conta_stp }</span>
                                             </strong> 
                                             <select class="status" name="status" data-processo="${ processo.cd_processo_pro }" class="pull-left">
                                                 <option selected value="0">Alterar Situação</option>
