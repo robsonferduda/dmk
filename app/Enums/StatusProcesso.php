@@ -23,4 +23,5 @@ final class StatusProcesso extends Enum
     const CADASTRADO_CLIENTE = 15;
     const ALTERADO_PELO_CLIENTE = 16;
     const CANCELADO_PELO_CLIENTE = 7;
+    const RECUSADO_AUTOMATICAMENTE = 17;
 }
