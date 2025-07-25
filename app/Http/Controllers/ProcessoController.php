@@ -173,19 +173,21 @@ class ProcessoController extends Controller
 
             // Conta notificações anteriores
             $qtdeNotificacoes = DB::table('log_notificacao')
-                ->where('cd_processo', $processo->cd_processo_pro)
-                ->where('tipo_notificacao', 'notificacao_correspondente')
-                ->count();
+                                ->where('cd_processo', $processo->cd_processo_pro)
+                                ->where('tipo_notificacao', 'notificacao_correspondente')
+                                ->where('email_destinatario', $processo->correspondente->email ?? null)
+                                ->count();
 
             if ($status == 2) { // AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO
 
                 if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
-                    if ($qtdeNotificacoes < 6) {
+                    if ($qtdeNotificacoes <= 6) {
                         $deveNotificar = true;
                     } else {
                         // Excedeu o número máximo → marcar como recusado
-                        $processo->cd_status_processo_stp = 99; // Ajuste conforme seu status de "recusado"
+                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE; // Ajuste conforme seu status de "recusado"
                         $processo->dc_observacao_processo_pro = trim(($processo->dc_observacao_processo_pro ?? '') . "\n[{$agora->format('d/m/Y H:i')}] Recusado automaticamente por falta de aceite.");
+                        $processo->save();
                     }
                 }
 
@@ -211,7 +213,6 @@ class ProcessoController extends Controller
                             Flash::error('Nenhum email de notificação cadastrado para o correspondente');
                         } else {
                             $lista = '';
-
                             
                             // Atualiza data de notificação
                             $processo->dt_notificacao_pro = $agora;
@@ -235,6 +236,9 @@ class ProcessoController extends Controller
                 }    
 
                 if($status == 12){
+
+
+
                     Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO DADOS");
                     $total_notificacoes += 1;
                 }     
