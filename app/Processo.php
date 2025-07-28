@@ -211,7 +211,8 @@ class Processo extends Model implements AuditableContract
                       new_values 
                 FROM audits t1
                 LEFT JOIN users t2 ON t2.id = t1.user_id
-                WHERE auditable_type = 'App\Processo' and auditable_id = ".$this->cd_processo_pro;
+                WHERE auditable_type = 'App\Processo' and auditable_id = ".$this->cd_processo_pro."
+                ORDER BY t1.created_at DESC";
 
         return DB::select($sql); 
     }
