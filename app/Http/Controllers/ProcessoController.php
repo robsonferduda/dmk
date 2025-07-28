@@ -21,6 +21,7 @@ use App\Processo;
 use App\ProcessoDespesa;
 use App\TipoDespesa;
 use App\Enums\TipoMensagem;
+use App\Enums\Nivel;
 use App\TipoServico;
 use App\ProcessoTaxaHonorario;
 use App\TaxaHonorario;
@@ -278,7 +279,10 @@ class ProcessoController extends Controller
         Session::put('item_pai','processo.pauta');
 
         $prazo_fatal = ($request->dt_prazo_fatal_pro) ? date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro))) : date('Y-m-d');
-        $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
+        
+        $responsaveis = User::where('cd_conta_con', $this->cdContaCon)
+                        ->where('cd_nivel_niv', Nivel::COLABORADOR)
+                        ->orderBy('name')->get();
 
         $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
                   ->orderBy('nm_status_processo_conta_stp')

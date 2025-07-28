@@ -20,6 +20,7 @@ use App\Departamento;
 use App\Cargo;
 use App\Role as RoleSistema;
 use App\Enums\Roles;
+use App\Enums\Nivel as NivelUsuario;
 use Kodeine\Acl\Models\Eloquent\Role;
 use App\Http\Requests\UsuarioRequest;
 use App\Http\Requests\UsuarioSenhaRequest;
@@ -55,7 +56,7 @@ class UsuarioController extends Controller
 
         //Busca de usuários
         $usuarios = User::with('tipoPerfil')->where('cd_conta_con', $this->cdContaCon)
-                                            ->where('cd_nivel_niv','>=',1)
+                                            ->where('cd_nivel_niv', NivelUsuario::COLABORADOR)
                                             ->when($nome, function($sql) use($nome){
                                                 $sql->where('name','ilike',"%$nome%");
                                             })
