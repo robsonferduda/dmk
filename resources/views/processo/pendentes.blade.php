@@ -31,7 +31,7 @@
         @php
             Carbon::setLocale('pt_BR');
 
-            $dtEnvio = Carbon::parse($processo->updated_at);
+            $dtEnvio = Carbon::parse($processo->dt_notificacao_pro);
             $agora = Carbon::now();
 
             // Calcula diferença total em minutos

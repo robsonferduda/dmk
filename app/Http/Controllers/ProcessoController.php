@@ -237,7 +237,10 @@ class ProcessoController extends Controller
 
                 if($status == 12){
 
+                    $processo->dt_notificacao_pro = $agora;
+                    //$processo->save();
 
+                    $this->requisitarDadosProcesso($processo->cd_processo_pro);
 
                     Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO DADOS");
                     $total_notificacoes += 1;
@@ -1589,6 +1592,42 @@ class ProcessoController extends Controller
         }else {
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
         }
+    }
+
+    public function requisitarDadosProcesso($id_processo)
+    {
+        $processo = Processo::findOrFail($id_processo);
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
+        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+
+        if ($processo) {
+            if (count($emails) > 0) {
+
+                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
+                $processo->save();
+
+                if ($processo->save()) {
+                    $lista = '';
+
+                    foreach ($emails as $email) {
+                        $processo->email =  $email->dc_endereco_eletronico_ede;
+                        $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                        $processo->notificarRequisitarDados($processo);
+                        $lista .= $email->dc_endereco_eletronico_ede.', ';
+
+                        $log = array('tipo_notificacao' => 'requisitar_dados',
+                            'email_destinatario' => $email->dc_endereco_eletronico_ede, 
+                            'cd_remetente' => $processo->cd_conta_con, 
+                            'cd_destinatario' => $processo->cd_correspondente_cor, 
+                            'cd_processo' => $processo->cd_processo_pro, 
+                            'nu_processo' => $processo->nu_processo_pro, 
+                            'origem' => 'conta');
+                    
+                        LogNotificacao::create($log);
+                    }
+                } 
+            } 
+        } 
     }
 
     public function requisitarDados($id_processo)
