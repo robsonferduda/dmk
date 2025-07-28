@@ -199,6 +199,23 @@ class Processo extends Model implements AuditableContract
         $this->notify(new ProcessoCorrespondenteFinalizarNotification($processo));
     }
 
+    public function getHistorico()
+    {
+        $sql = "SELECT auditable_id as cd_processo_pro,
+                      t1.created_at as data_evento, 
+                      NAME as usuario, 
+                      email, 
+                      url, 
+                      ip_address as ip,
+                      old_values, 
+                      new_values 
+                FROM audits t1
+                LEFT JOIN users t2 ON t2.id = t1.user_id
+                WHERE auditable_type = 'App\Processo' and auditable_id = ".$this->cd_entidade_ete;
+
+        return DB::select($sql); 
+    }
+
     public function getAssuntoNotification()
     {
         $assunto = "";

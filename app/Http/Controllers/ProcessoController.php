@@ -264,6 +264,8 @@ class ProcessoController extends Controller
             \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
         }
 
+        
+
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
        
