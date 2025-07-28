@@ -742,7 +742,7 @@
                             @forelse($processo->getHistorico() as $historico)
                                 <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
                                     {{ date('d/m/Y H:i:s', strtotime($historico->data_evento)) }} -  
-                                    {{ $historico->usuario }}  
+                                    {{ ($historico->usuario) ? $historico->usuario : 'Sistema' }}  
                                     <a href="#detalhesProcesso{{ strtotime($historico->data_evento) }}"
                                         data-toggle="collapse"
                                         role="button"
