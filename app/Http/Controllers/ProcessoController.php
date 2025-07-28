@@ -238,7 +238,7 @@ class ProcessoController extends Controller
                 if($status == 12){
 
                     $processo->dt_notificacao_pro = $agora;
-                    //$processo->save();
+                    $processo->save();
 
                     $this->requisitarDadosProcesso($processo->cd_processo_pro);
 
