@@ -388,7 +388,7 @@
                                         </h6>
                                     </div>
                                     <div class="col-md-4 box-content" style="margin-top: 5px;">
-                                        <h4 style="margin: 0px; font-size: 13px;">NÚMERO ${processo.nu_processo_pro || ''}</h4>
+                                        <h4 style="margin: 0px; font-size: 13px;"><a title="Acompanhamento" target="_BLANK" class="icone-acompanhamento" href="../../processos/acompanhamento/${processo.hash || ''}">NÚMERO ${processo.nu_processo_pro || ''}</a></h4>
                                         <h6><strong>Prazo Fatal </strong>: ${processo.dt_prazo_fatal_pro || ''} ${processo.hr_audiencia_pro || ''}</h6>
                                         <h6><strong>Correspondente</strong>: ${processo.nm_conta_correspondente_ccr || ''}</h6>
                                         <h6><strong>Responsável</strong>: ${processo.name || ''}</h6>
