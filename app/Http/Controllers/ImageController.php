@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
 use Illuminate\Http\Request;
 
 class ImageController extends Controller
@@ -30,6 +31,10 @@ class ImageController extends Controller
         $data = base64_decode($data);
         $image_name = $id.'.png';
         $path = public_path() . "/img/users/" . $image_name;
+
+        $user = User::where('id', Auth::user()->id)->first();
+        $user->img_user_usu = $image_name;
+        $user->save();
 
         file_put_contents($path, $data);
 

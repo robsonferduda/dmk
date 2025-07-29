@@ -64,6 +64,16 @@ class CorrespondenteController extends Controller
         return view('correspondente/correspondentes');
     }
 
+    public function disponiveis()
+    {
+        $correspondentes = Correspondente::whereHas('entidade.usuario', function ($query){
+                    $query->where('cd_tipo_servico_tse', $tipoServico);
+                })
+                ->get();
+
+        return view('correspondente/disponiveis', compact('correspondnetes'));
+    }
+
     public function painel()
     {
         return view('correspondente/painel');

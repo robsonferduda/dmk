@@ -897,22 +897,10 @@
                                             </div>
                                         </div>
 
-                                        @foreach($processo->anexos as $key => $anexo)
-                                        <div class="row" style="width:100%; background-color: #fff; margin-bottom: 10px; ">
-                                            <div style="float: left; width: 8%; text-align: center;">
-                                                <label class="text-default" style="margin-top: 8px;">
-                                                    <input type="checkbox" name="lista_arquivos[]" class="lista_arquivos" value="{{ $anexo->nm_local_anexo_processo_apr }}{{ $anexo->nm_anexo_processo_apr }}">
-                                                </label>
-                                            </div>
-                                            <div style="float: left; width: 92%">
-                                                <h4>{{ $anexo->nm_anexo_processo_apr }}</h4>
-                                                <h6 style="margin: 0px; font-weight: 200;"><strong>{{ date('d/m/Y H:i:s', strtotime($anexo->created_at)) }}</strong> por <strong>{{ ($anexo->entidade and $anexo->entidade->usuario) ? $anexo->entidade->usuario->name : 'Sem responsável' }}</strong></h6>   
-                                            </div> 
+                                        <div id="box-lista-anexos" class="mt-3">
+                                            <p class="text-muted">Carregando anexos...</p>
                                         </div>
-                                        @if($key < count($processo->anexos)-1)
-                                        <hr style="margin: 0" />
-                                        @endif
-                                        @endforeach
+
                                     </div>
                                 </div>
                             </div>
@@ -1098,6 +1086,24 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
+
+                var host =  $('meta[name="base-url"]').attr('content');
+
+                $('#modalFinalizacao').on('show.bs.modal', function (e) {
+                    const processoId = "{{ $processo->cd_processo_pro }}"; // ou via data-* attribute
+                    $('#box-lista-anexos').html('<p class="text-muted">Carregando anexos...</p>');
+
+                    $.ajax({
+                        url: host+`/processo/${processoId}/anexos`,
+                        type: 'GET',
+                        success: function (html) {
+                            $('#box-lista-anexos').html(html);
+                        },
+                        error: function () {
+                            $('#box-lista-anexos').html('<p class="text-danger">Erro ao carregar anexos.</p>');
+                        }
+                    });
+                });
 
                 $("#informarLink").click(function(){
                     $("#modalLink").modal('show');

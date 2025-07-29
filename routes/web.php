@@ -149,6 +149,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/importar/codigos', 'ProcessoController@codigos');
     Route::get('processos/importar', 'ProcessoController@importarUpload');
     Route::post('processos/importar', 'ProcessoController@importar');
+    Route::get('processo/{id}/anexos', 'ProcessoController@getAnexos')->name('processo.anexos');
 
     Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}', 'TipoServicoController@consultarClienteCidade');
     Route::get('tipos-de-servico/correspondente/{correspondente}/cidade/{cidade}', 'TipoServicoController@consultarCorrespondenteCidade');
@@ -224,6 +225,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('correspondente/despesas', 'CorrespondenteController@adicionarDespesas');
     Route::post('correspondente/cadastro/conta', 'CorrespondenteController@novoCorrespondenteConta');
     Route::get('correspondente/redefinir-senha/{id}/{senha}', 'CorrespondenteController@redefinirSenha');
+    Route::get('correspondentes/disponiveis', 'CorrespondenteController@disponiveis');
 
     Route::get('correspondente/buscar-honorarios/{id}', 'HonorariosCorrespondenteController@getHonorariosInsercao');
     Route::get('correspondente/honorarios/{id}', 'CorrespondenteController@honorarios');

@@ -1881,4 +1881,11 @@ class ProcessoController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function getAnexos($id)
+    {
+        $processo = Processo::with(['anexos.entidade.usuario'])->findOrFail($id);
+        return response()->view('processo.acompanhar.lista-anexos', compact('processo'));
+    }
+
 }

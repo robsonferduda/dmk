@@ -237,6 +237,11 @@
                                     <a href="{{ url('correspondente/novo') }}" title="Novo Correspondente"><span class="menu-item-parent">Novo</span></a>
                                 </li>
                             @endcan
+                             @can('correspondente.meus-correspondentes')
+                                <li>
+                                    <a href="{{ url('correspondentes/disponiveis') }}" title="Meus Correspondentes"><span class="menu-item-parent">Correspondentes</span></a>
+                                </li>
+                            @endcan
                             @can('correspondente.meus-correspondentes')
                                 <li>
                                     <a href="{{ url('correspondentes') }}" title="Meus Correspondentes"><span class="menu-item-parent">Meus Correspondentes</span></a>

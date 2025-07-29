@@ -30,7 +30,8 @@ class User extends Authenticatable implements AuditableContract
         'cd_departamento_dep',
         'cd_cargo_car',
         'active',
-        'observacao'
+        'observacao',
+        'img_user_usu'
     ];
 
     protected $guard = 'admin';
