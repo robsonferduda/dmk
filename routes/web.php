@@ -199,7 +199,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('contato/editar/{id}', 'ContatoController@editar');
     Route::post('contato/salvar', 'ContatoController@salvar');
 
-    
+    Route::get('correspondentes/ajax', 'CorrespondenteController@ajaxList')->name('correspondentes.ajax');
     Route::get('correspondente/buscar', 'CorrespondenteController@buscar');
     Route::get('correspondente/painel', 'CorrespondenteController@painel');
     Route::get('correspondente/dados/{id}', 'CorrespondenteController@dados');

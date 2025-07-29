@@ -59,34 +59,7 @@
                 </form>
             </div>
         </article>
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            @if(isset($correspondentes))
-                @foreach($correspondentes as $correspondente)
-                    <div class="col-md-4">
-                        <div class="well" style="min-height: 160px; padding: 15px 2px; display: table;">
-                            <div class="col-sm-12" style="display: table-row;">
-                                <div class="col-xs-12 col-sm-6 col-md-4 text-center">
-                                    <figure>
-                                        @if(!empty($correspondente->entidade) && file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
-                                            <img src="{{ asset('img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
-                                        @else
-                                            <img src="{{ asset('img/users/user.png') }}" alt="Foto de Perfil" class="img-circle img-responsive">
-                                        @endif
-                                    </figure>
-                                    <button style="margin-top: 10px; padding: 3px 10px;" class="btn btn-xs btn-success"><span class="fa fa-send"></span> Convidar</button>
-                                </div>
-                                <div class="col-xs-12 col-sm-5 col-md-8">
-                                    <label style="font-size: 16px;">{{ $correspondente->nm_razao_social_con }}</label>
-                                    <p><strong><i class="fa fa-phone"></i> Telefone: </strong>(99) 99999-9999</p>
-                                    <p><strong><i class="fa fa-envelope"></i> Email: </strong>{{ (!empty($correspondente->entidade->usuario)) ? $correspondente->entidade->usuario->email : 'Não informado' }}</p>
-                                    <p><strong><i class="fa fa-map-marker"></i> Comarca: </strong>Florianópolis</p>
-                                </div>       
-                            </div>            
-                        </div>                 
-                    </div>
-                @endforeach
-            @endif
-        </article>
+        z
     </div>
 </div>
 @endsection

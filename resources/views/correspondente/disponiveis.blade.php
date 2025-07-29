@@ -23,60 +23,47 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="row">
-            <div class="col-md-12">
-            @if(isset($correspondentes))
-                @foreach($correspondentes as $correspondente)
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div class="well shadow-hover" style="border-radius: 10px; padding: 15px; background: #fff; display: flex; gap: 15px;">
-                            
-                            {{-- Foto --}}
-                            <div style="flex: 0 0 80px;">
-                                <figure style="text-align: center;">
-                                    <img src="{{ (!empty($correspondente->entidade) && file_exists('public/img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png')) 
-                                            ? asset('img/users/ent'.$correspondente->entidade->cd_entidade_ete.'.png') 
-                                            : asset('img/users/user.png') }}"
-                                        alt="Foto de Perfil" 
-                                        class="img-circle" 
-                                        style="width: 70px; height: 70px; object-fit: cover; border: 2px solid #ccc;">
-                                    <button class="btn btn-success btn-xs" style="margin-top: 8px;">
-                                        <i class="fa fa-send"></i> Convidar
-                                    </button>
-                                </figure>
-                            </div>
-
-                            {{-- Informações --}}
-                            <div style="flex: 1;">
-                                <h5 style="margin-top: 0; margin-bottom: 5px;">
-                                    <strong>{{ $correspondente->nm_razao_social_con }}</strong>
-                                </h5>
-                                <p style="margin: 0 0 5px; font-size: 13px;">
-                                    <i class="fa fa-phone"></i> (99) 99999-9999
-                                </p>
-                                <p style="margin: 0 0 5px; font-size: 13px;">
-                                    <i class="fa fa-envelope"></i> 
-                                    {{ $correspondente->entidade->usuario->email ?? 'Não informado' }}
-                                </p>
-                                <p style="margin: 0; font-size: 13px;">
-                                    <i class="fa fa-map-marker"></i> Comarca: Florianópolis
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
-                @endforeach
-            @endif
-            <div class="col-md-12">
-        </article>
-
+        <div class="col-md-12">
+            <article id="lista-correspondentes" class="row">
+                {{-- Conteúdo será carregado aqui via JS --}}
+            </article>
+            <div id="pagination-container" class="text-center" style="margin-top: 20px;"></div>
+        </div>
     </div>
 </div>
 
 @endsection
 @section('script')
 <script type="text/javascript">
-    $(document).ready(function() {
 
+    function carregarCorrespondentes(pagina = 1) {
+
+        var host =  $('meta[name="base-url"]').attr('content');
+
+        $.ajax({
+            url: host+'/correspondentes/ajax?page=' + pagina,
+            type: 'GET',
+            beforeSend: function() {
+                $('#lista-correspondentes').html('<p class="text-center">Carregando...</p>');
+            },
+            success: function(data) {
+                $('#lista-correspondentes').html(data);
+
+                // Reaplica eventos de paginação
+                $('#lista-correspondentes .pagination a').click(function(e) {
+                    e.preventDefault();
+                    let page = $(this).attr('href').split('page=')[1];
+                    carregarCorrespondentes(page);
+                });
+            },
+            error: function() {
+                $('#lista-correspondentes').html('<p class="text-danger">Erro ao carregar correspondentes.</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        carregarCorrespondentes();
     });
 </script>
 @endsection

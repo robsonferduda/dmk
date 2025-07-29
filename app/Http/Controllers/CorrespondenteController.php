@@ -170,6 +170,19 @@ class CorrespondenteController extends Controller
         return view('correspondente/novo');
     }
 
+    public function ajaxList(Request $request)
+    {
+        $correspondentes = Correspondente::with('entidade.usuario')
+            ->paginate(6); // você pode ajustar a quantidade por página
+
+        if ($request->ajax()) {
+            return view('correspondente.partes.disponiveis', compact('correspondentes'))->render();
+        }
+        
+        return view('correspondente.disponiveis', compact('correspondentes'));
+    }
+
+
     public function buscarTodos(Request $request)
     {
         $correspondentes = Correspondente::with('entidade')->with('entidade.usuario')->where('fl_correspondente_con', 'S')->orderBy('cd_conta_con')->get();
