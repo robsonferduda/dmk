@@ -173,15 +173,15 @@ class CorrespondenteController extends Controller
     public function ajaxList(Request $request)
     {
         $correspondentes = Correspondente::with('entidade.usuario')
-            ->paginate(6); // você pode ajustar a quantidade por página
+            ->paginate(6);
 
         if ($request->ajax()) {
+            // Retorna apenas a listagem (HTML) sem layout
             return view('correspondente.partes.disponiveis', compact('correspondentes'))->render();
         }
-        
+
         return view('correspondente.disponiveis', compact('correspondentes'));
     }
-
 
     public function buscarTodos(Request $request)
     {

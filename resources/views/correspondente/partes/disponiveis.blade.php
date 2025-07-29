@@ -1,4 +1,10 @@
- @foreach($correspondentes as $correspondente)
+
+{{-- Paginação no topo --}}
+<div id="paginacao-links-top" class="text-center">
+    {!! $correspondentes->links() !!}
+</div>
+<div id="correspondente-cards" class="row">
+    @foreach($correspondentes as $correspondente)
                     <div class="col-xs-12 col-sm-12 col-md-6">
                         <div class="well shadow-hover" style="border-radius: 10px; padding: 15px; background: #fff; display: flex; gap: 15px;">
                             
@@ -37,7 +43,7 @@
                         </div>
                     </div>
                 @endforeach
-
-<div class="col-xs-12">
+</div>
+<div id="paginacao-links-bottom" class="text-center">
     {!! $correspondentes->links() !!}
 </div>

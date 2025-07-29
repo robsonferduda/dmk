@@ -24,11 +24,14 @@
             @include('layouts/messages')
         </div>
         <div class="col-md-12">
-            <article id="lista-correspondentes" class="row">
-                {{-- Conteúdo será carregado aqui via JS --}}
-            </article>
-            <div id="pagination-container" class="text-center" style="margin-top: 20px;"></div>
+            <div id="area-correspondentes">
+            {{-- Loader inicial --}}
+            <div class="text-center" style="padding: 30px;">
+                <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                <p>Carregando correspondentes...</p>
+            </div>
         </div>
+    </div>
     </div>
 </div>
 
@@ -40,25 +43,36 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
 
+        $('#area-correspondentes').html('<div class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p>Carregando correspondentes...</p></div>');
+
         $.ajax({
             url: host+'/correspondentes/ajax?page=' + pagina,
             type: 'GET',
-            beforeSend: function() {
-                $('#lista-correspondentes').html('<p class="text-center">Carregando...</p>');
-            },
-            success: function(data) {
-                $('#lista-correspondentes').html(data);
+            success: function(response) {
 
-                // Reaplica eventos de paginação
-                $('#lista-correspondentes .pagination a').click(function(e) {
-                    e.preventDefault();
-                    let page = $(this).attr('href').split('page=')[1];
-                    carregarCorrespondentes(page);
-                });
-            },
-            error: function() {
-                $('#lista-correspondentes').html('<p class="text-danger">Erro ao carregar correspondentes.</p>');
-            }
+             let tempDiv = $('<div>').html(response);
+
+                    let novosCards = tempDiv.find('#correspondente-cards').html();
+                    let novaPaginacaoTop = tempDiv.find('#paginacao-links-top').html();
+                    let novaPaginacaoBottom = tempDiv.find('#paginacao-links-bottom').html();
+
+                    $('#area-correspondentes').html(`
+                        <div id="paginacao-links-top" class="text-center">${novaPaginacaoTop}</div>
+                        <div id="correspondente-cards" class="row">${novosCards}</div>
+                        <div id="paginacao-links-bottom" class="text-center">${novaPaginacaoBottom}</div>
+                    `);
+
+                    // Reatribui evento de clique para as novas âncoras
+                    $('#paginacao-links-top a, #paginacao-links-bottom a').off('click').on('click', function (e) {
+                        e.preventDefault();
+                        let page = $(this).attr('href').split('page=')[1];
+                        carregarCorrespondentes(page);
+                    });
+            
+        },
+        error: function() {
+            $('#area-correspondentes').html('<p class="text-danger text-center">Erro ao carregar correspondentes.</p>');
+        }
         });
     }
 
