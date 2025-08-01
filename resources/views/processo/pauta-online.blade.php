@@ -297,7 +297,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Atualizado',
-                        text: 'Audiência confirmada foi atualizada com sucesso!',
+                        text: 'Check In atualizado com sucesso!',
                         timer: 1000,
                         showConfirmButton: false
                     });
