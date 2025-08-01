@@ -64,7 +64,8 @@ class Processo extends Model implements AuditableContract
                             'nu_lote',
                             'fl_cadastro_cliente_cli',
                             'dt_notificacao_pro',
-                            'fl_audiencia_confirmada_pro'
+                            'fl_audiencia_confirmada_pro',
+                            'fl_checkin_pro'
     					  ];
 
     public $timestamps = true;
@@ -263,7 +264,8 @@ class Processo extends Model implements AuditableContract
                        t12.name as user_cadastro,
                        t13.nm_tipo_processo_tpo,
                        fl_audiencia_confirmada_pro,
-                       fl_documento_representacao_pro
+                       fl_documento_representacao_pro,
+                       fl_checkin_pro
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con

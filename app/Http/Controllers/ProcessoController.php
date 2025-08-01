@@ -1873,6 +1873,17 @@ class ProcessoController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function atualizarCheck(Request $request)
+    {
+        $processo = Processo::findOrFail($request->cd_processo_pro);
+        $processo->fl_checkin_pro = $request->fl_checkin_pro === 'S' ? true : false;
+        $processo->save();
+
+        dd($processo);
+
+        return response()->json(['success' => true]);
+    }
+
     public function atualizarDocumentoRepresentacao(Request $request)
     {
         $processo = Processo::findOrFail($request->cd_processo_pro);

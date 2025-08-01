@@ -280,6 +280,39 @@
             });
         });
 
+        $(document).on('change', 'input[name="fl_checkin_pro"]', function () {
+            let confirmado = $(this).is(':checked'); // true ou false
+            let processoId = $(this).data('processo'); // vamos adicionar isso no HTML
+
+            // Enviar via AJAX
+            $.ajax({
+                url: host+'/processo/atualizar-checkin',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    cd_processo_pro: processoId,
+                    fl_checkin_pro: confirmado ? 'S' : 'N'
+                },
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Atualizado',
+                        text: 'Audiência confirmada foi atualizada com sucesso!',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                    $(".btn-pesquisar").trigger('click');
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Falha ao atualizar a audiência.'
+                    });
+                }
+            });
+        });
+
         $(document).on('change', 'input[name="fl_documento_representacao_pro"]', function () {
             let confirmado = $(this).is(':checked'); // true ou false
             let processoId = $(this).data('processo'); // vamos adicionar isso no HTML
@@ -358,6 +391,9 @@
                             let cor_fundo = (processo.fl_audiencia_confirmada_pro) ? '#c9ffcb' : 'white';
                             let cor_borda = (processo.fl_audiencia_confirmada_pro) ? '#95ff9a' : 'white';
 
+                            cor_fundo = (processo.fl_checkin_pro) ? '#c8e7ff' : cor_fundo;
+                            cor_borda = (processo.fl_checkin_pro) ? '#a7d9ff' : cor_borda;
+
                             let html = `
                             <div class="well box-acompanhamento" style="padding: 10px 15px; border: 1px solid ${cor_borda}; border-radius: 10px; background: ${cor_fundo}; display: block;">
                                 <div class="row box-processo">
@@ -435,7 +471,7 @@
                                             </span> 
                                         </div>
 
-                                        <div class="onoffswitch-container" style="margin-left: 0px; font-size: 11px;">
+                                        <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
                                             <span class="onoffswitch-title">Audiência Confirmada</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
@@ -445,6 +481,22 @@
                                                        id="fl_audiencia_confirmada_pro_${processo.cd_processo_pro}"
                                                        data-processo="${processo.cd_processo_pro}">
                                                 <label class="onoffswitch-label" for="fl_audiencia_confirmada_pro_${processo.cd_processo_pro}"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+
+                                        <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
+                                            <span class="onoffswitch-title">Check In</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" 
+                                                       ${processo.fl_checkin_pro ? 'checked' : ''}
+                                                       name="fl_checkin_pro" 
+                                                       class="onoffswitch-checkbox" 
+                                                       id="fl_checkin_pro_${processo.cd_processo_pro}"
+                                                       data-processo="${processo.cd_processo_pro}">
+                                                <label class="onoffswitch-label" for="fl_checkin_pro_${processo.cd_processo_pro}"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
