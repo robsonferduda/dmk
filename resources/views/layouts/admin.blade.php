@@ -32,7 +32,7 @@
         <!-- Smartadmin-all é a junção dos smartadmin-production-plugins.min.css,smartadmin-production.min.css,smartadmin-skins.min.css -->
         <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/smartadmin-all.css?v='.date('His')) }}">
 
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/custom.css') }}?v={{ time() }}">
     
         <!--others.css é a junção dos croppie.css,filepicker.css,css-loader.css,bootstrap-colorselector.css -->
          <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/others.css') }}">
