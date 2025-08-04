@@ -279,7 +279,7 @@
                                                 <li>
                                                     <p class="link-audiencia">
                                                         <strong>Link da Audiência: </strong> 
-                                                        {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} 
+                                                        <a href="{{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : '#'}}" target="_blank">{{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}}</a> 
                                                     </p>
                                                     @role('administrator|colaborador')
                                                         <a id="informarLinkAudiencia">Clique Aqui</a> para editar
