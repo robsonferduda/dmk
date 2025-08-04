@@ -45,7 +45,16 @@
                                 <label class="label-padrao">Correspondente</label><br />
                                 <input style="width: 100%" minlength=3 type="text" name="nm_correspondente" class="form-control" id="nm_correspondente" placeholder="Correspondente" value="{{ !empty($nm_correspondente) ? $nm_correspondente : '' }}" >         
                             </section> 
-                            <section class="col col-md-6 col-lg-6" style="margin-top: 8px;">  
+                            <section class="col col-md-4 col-lg-4 box-select2"> 
+                                <label class="label-padrao">Tipos de Processo</label> 
+                                <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
+                                    <option value="">Tipos de Processo</option>
+                                    @foreach($tiposProcesso as $tipo)
+                                        <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                    @endforeach
+                                </select>
+                            </section> 
+                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">  
                                 <label class="label-padrao">Situação</label>       
                                 <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
                                     <option selected value="">Status do Processo</option>
@@ -54,7 +63,7 @@
                                     @endforeach
                                 </select> 
                             </section> 
-                            <section class="col col-md-6 col-lg-6" style="margin-top: 8px;">                                       
+                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">                                       
                                 <label class="label-padrao">Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                     <option selected value="">Selecione um responsável</option>
@@ -355,7 +364,8 @@
             nm_cliente = $("#nm_cliente").val();
             nm_correspondente = $("#nm_correspondente").val();
             responsavel = $("#cd_responsavel_pro").val();    
-            situacao = $("#cd_status_processo_stp").val();          
+            situacao = $("#cd_status_processo_stp").val();  
+            tipo = $("#cd_tipo_processo_tpo").val();     
 
             $.ajax({
                 
@@ -367,7 +377,8 @@
                        "nm_cliente": nm_cliente, 
                        "nm_correspondente": nm_correspondente,                         
                        "responsavel": responsavel,
-                       "statusProcesso": situacao
+                       "statusProcesso": situacao,
+                       "tipo": tipo
                 },
                 dataType: "JSON",
                 beforeSend: function(){

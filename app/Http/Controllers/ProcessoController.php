@@ -290,6 +290,8 @@ class ProcessoController extends Controller
                   ->orderBy('nm_status_processo_conta_stp')
                   ->get();
 
+        $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->where('fl_habilita_filtro_tpo', true)->get();
+
         $responsavel = ($request->cd_responsavel_pro) ? $request->cd_responsavel_pro : null;
         
         $processos = Processo::with('cidade')
@@ -308,6 +310,7 @@ class ProcessoController extends Controller
         return view('processo/pauta-online', ['processos' => $processos, 
             'responsaveis' => $responsaveis, 
             'responsavel' => $responsavel, 
+            'tiposProcesso' => $tiposProcesso,
             'status' => $status,
             'prazo_fatal' => $prazo_fatal]);
     }
