@@ -277,10 +277,12 @@
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
                                                 <li>
-                                                    <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} 
-                                                    @role('administrator|colaborador')
-                                                        <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
-                                                    @endrole
+                                                    <p class="link-audiencia">
+                                                        <strong>Link da Audiência: </strong> 
+                                                        {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} 
+                                                        @role('administrator|colaborador')
+                                                            <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
+                                                        @endrole
                                                 </li>
                                             </ul>
                                                 
