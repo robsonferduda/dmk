@@ -353,15 +353,20 @@
                                         @endif
                                     </legend>
 
-                                    @if($processo->ds_link_dados_pro)
-                                        <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                            
-                                    @endif
+                                    
+                                    @role('correspondente')
+                                        @if($processo->ds_link_dados_pro)
+                                            <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                            
+                                        @endif
+                                    @endrole
 
                                     @role('administrator|colaborador')
                                         <h6>Arquivos do Processo</h6>
                                         <p>Caso preferir, informe um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
 
-                                        
+                                        @if($processo->ds_link_dados_pro)
+                                            <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                            
+                                        @endif
                                         
                                             <div id="filepicker">
                                                 <!-- Button Bar -->
