@@ -32,7 +32,16 @@ class EnvioDocumentosProcessoNotification extends Notification
             ->subject(Lang::getFromJson('Orientações e documentos disponíveis - '.$this->processo->getAssuntoNotification()))
             ->markdown('email.documentos')
             ->line(Lang::getFromJson('As orientações e documentos do processo foram disponibilizados no sistema para seu aceite.'))
+
+            // Adiciona o botão "Ver Documentos" somente se o link estiver preenchido
+            if (!empty($this->processo->ds_link_dados_pro)) {
+                $mail->action(
+                    Lang::getFromJson('Ver Documentos'),
+                    url($this->processo->ds_link_dados_pro)
+                );
+            }
             ->line(Lang::getFromJson('Utilize o botão abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.'))
+            ->action(Lang::getFromJson('Ver Documentos'), url($processo->ds_link_dados_pro)
             ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.correspondente', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
             ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
     }

@@ -1478,7 +1478,22 @@ class ProcessoController extends Controller
                                 $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
 
                                 try {
+
+                                    //Fazer Log
+                                    $tipo_notificacao = 'envio_documentos';
+                        
+                                    $log = array('tipo_notificacao' => $tipo_notificacao,
+                                                'email_destinatario' => $email->dc_endereco_eletronico_ede, 
+                                                'cd_remetente' => $processo->cd_correspondente_cor, 
+                                                'cd_destinatario' => $processo->cd_conta_con, 
+                                                'cd_processo' => $processo->cd_processo_pro, 
+                                                'nu_processo' => $processo->nu_processo_pro, 
+                                                'origem' => 'conta');
+
+                                    LogNotificacao::create($log);
+
                                     $processo->notificarEnvioDocumentos($processo);
+
                                 } catch (\Swift_RfcComplianceException $e) {
                                     //Retorna o status anterior
                                     $processo = Processo::findOrFail($id);
