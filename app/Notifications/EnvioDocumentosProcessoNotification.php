@@ -37,7 +37,7 @@ class EnvioDocumentosProcessoNotification extends Notification
                 ->line(Lang::getFromJson('As orientações e documentos do processo foram disponibilizados no sistema para seu aceite.'))
                 ->action(Lang::getFromJson('Ver Documentos'), url($this->processo->ds_link_dados_pro))
                 ->line(Lang::getFromJson('Utilize o botão abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.'))
-                ->action(Lang::getFromJson('Ver Documentos'), url($processo->ds_link_dados_pro))
+                ->action(Lang::getFromJson('Ver Documentos'), url($this->processo->ds_link_dados_pro))
                 ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.correspondente', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
                 ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
 
@@ -48,7 +48,6 @@ class EnvioDocumentosProcessoNotification extends Notification
                 ->markdown('email.documentos')
                 ->line(Lang::getFromJson('As orientações e documentos do processo foram disponibilizados no sistema para seu aceite.'))
                 ->line(Lang::getFromJson('Utilize o botão abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.'))
-                ->action(Lang::getFromJson('Ver Documentos'), url($processo->ds_link_dados_pro))
                 ->action(Lang::getFromJson('Ver Processo'), url(config('app.url').route('processo.correspondente', ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)], false)))
                 ->line(Lang::getFromJson('Acesse o sistema para verificar os processos.'));
         }
