@@ -745,7 +745,7 @@
                             <div style="clear: both;"></div>
                         </div>
                     </article>
-                    @if(Auth::user()->cd_nivel_niv == 1)
+                    @role('administrator|colaborador')
                         <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                             <div class="well">
                                 <h5 class="nobreak"><i class="fa fa-clock-o marginBottom5"></i> Histórico do Processo</h5>
@@ -793,7 +793,7 @@
                                 @endforelse
                             </div>
                         </article>
-                    @endif
+                    @endrole
                 </div>
             </div>
         </div>
