@@ -34,8 +34,8 @@
                         <table id="" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Ordem</th>
                                     <th>Nome</th>
+                                    <th>Descrição</th>
                                     <th class="center">Escritório</th>
                                     <th class="center">Correspondente</th>
                                     <th class="center">Cliente</th>
@@ -45,26 +45,27 @@
                                 @foreach($status as $s)
                                     <tr>
                                         <td>{{ $s->nm_status_processo_conta_stp }}</td>
+                                        <td>{{ $s->ds_status }}</td>
                                         <td>
                                             <span style="background-color: {{ $s->ds_color_stp }}; padding: 5px; color: #fff">{{ $s->nm_status_processo_conta_stp }}</span>
                                         </td>
                                         <td class="center">
                                             @if($s->fl_visivel_escritorio_stp == 'S' && $s->fl_visivel_escritorio_stp)
-                                                <span class="label label-success">SIM</span>
+                                                <span class="label label-primary">SIM</span>
                                             @else
                                                 <span class="label label-default">NÃO</span>
                                             @endif
                                         </td>
                                         <td class="center">
                                             @if($s->fl_visivel_correspondente_stp == 'S' && $s->fl_visivel_correspondente_stp)
-                                                <span class="label label-success">SIM</span>
+                                                <span class="label label-primary">SIM</span>
                                             @else
                                                 <span class="label label-default">NÃO</span>
                                             @endif
                                         </td>
                                         <td class="center">
                                             @if($s->fl_visivel_cliente_stp == 'S' && $s->fl_visivel_cliente_stp)
-                                                <span class="label label-success">SIM</span>
+                                                <span class="label label-primary">SIM</span>
                                             @else
                                                 <span class="label label-default">NÃO</span>
                                             @endif
