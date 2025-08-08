@@ -172,6 +172,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('processo/mensagem/enviar', 'MensagemController@enviar');
 
     Route::get('processo/{processo}/despesas', 'ProcessoController@buscaDespesas');
+
+    Route::get('processo/status', 'StatusProcessoController@index');
     
     Route::get('configuracoes/areas', 'AreaController@index');
     Route::get('configuracoes/notificacoes', 'NotificacaoController@preferencias');
