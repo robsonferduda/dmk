@@ -21,7 +21,7 @@ class StatusProcessoController extends Controller
 
     public function index()
     {
-        $status = StatusProcesso::orderBy('cd_status_processo_stp')->get();
+        $status = StatusProcesso::orderBy('nu_ordem_stp')->get();
         return view('processo/status/index', compact('status'));
     }
 }
