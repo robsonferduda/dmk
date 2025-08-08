@@ -47,7 +47,7 @@ class ProcessoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['responderNotificacao']]);
+        $this->middleware('auth', ['except' => ['responderNotificacao','notificarPendentes']]);
         $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
         Session::put('menu_pai','processos');
         Session::forget('item_pai');
@@ -128,7 +128,7 @@ class ProcessoController extends Controller
                             ->whereNotNull('cd_correspondente_cor')
                             ->where('cd_conta_con', $this->cdContaCon)
                             ->orderBy('cd_status_processo_stp')
-                            ->orderBy('updated_at','ASC')
+                            ->orderBy('dt_notificacao_pro','ASC')
                             ->get();
 
         return view('processo/pendentes', compact('processos','tiposServico','tiposProcesso','status','responsaveis'));
@@ -172,42 +172,30 @@ class ProcessoController extends Controller
             $ultimaNotificacao = $processo->dt_notificacao_pro ? \Carbon\Carbon::parse($processo->dt_notificacao_pro) : null;
             $deveNotificar = false;
 
-            // Conta notificações anteriores
-            $qtdeNotificacoes = DB::table('log_notificacao')
-                                ->where('cd_processo', $processo->cd_processo_pro)
-                                ->where('tipo_notificacao', 'notificacao_correspondente')
-                                ->where('email_destinatario', $processo->correspondente->email ?? null)
-                                ->count();
+            if($status == 12){
 
-            if ($status == 2) { // AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO
-
-                if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
-                    if ($qtdeNotificacoes <= 6) {
-                        $deveNotificar = true;
-                    } else {
-                        // Excedeu o número máximo → marcar como recusado
-                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE; // Ajuste conforme seu status de "recusado"
-                        $processo->dc_observacao_processo_pro = trim(($processo->dc_observacao_processo_pro ?? '') . "\n[{$agora->format('d/m/Y H:i')}] Recusado automaticamente por falta de aceite.");
-                        $processo->save();
-                    }
-                }
-
-            }elseif ($status == 12) { // AGUARDANDO DADOS
                 if ($processo->fl_dados_enviados_pro != 'S') {
                     if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 24) {
-                        $deveNotificar = true;
+                        
+                        $processo->dt_notificacao_pro = $agora;
+                        $processo->save();
+
+                        $this->requisitarDadosProcesso($processo->cd_processo_pro);
+
+                        Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO DADOS");
+                        $total_notificacoes += 1;
+
                     }
                 }
-            }
+            }  
 
-            if ($deveNotificar) {
+            if($status == 2){
+                    
+                $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
 
-                if($status == 2){
-                    $vinculo = ContaCorrespondente::where('cd_conta_con', $this->cdContaCon)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
-
-                    if (empty($processo->cd_correspondente_cor) or is_null($vinculo)) {
-                        Flash::error('Nenhum correspondente informado para o processo');
-                    } else {
+                if (empty($processo->cd_correspondente_cor) or is_null($vinculo)) {
+                    Flash::error('Nenhum correspondente informado para o processo');
+                } else {
                         $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
                         if (count($emails) == 0) {
@@ -221,32 +209,46 @@ class ProcessoController extends Controller
 
                             foreach ($emails as $email) {
 
-                                $log = array('tipo_notificacao' => 'notificacao_correspondente', 'email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
+                                 // Conta notificações anteriores
+                                $qtdeNotificacoes = DB::table('log_notificacao')
+                                                    ->where('cd_processo', $processo->cd_processo_pro)
+                                                    ->where('tipo_notificacao', 'notificacao_correspondente')
+                                                    ->where('email_destinatario', $email)
+                                                    ->count();
 
-                                LogNotificacao::create($log);
+                                if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
+                                    if ($qtdeNotificacoes <= 6) {
 
-                                $processo->email =  $email->dc_endereco_eletronico_ede;
-                                $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                                $processo->notificarCorrespondente($processo);
-                                $lista .= $email->dc_endereco_eletronico_ede.', ';
+                                        $log = array('tipo_notificacao' => 'notificacao_correspondente', 
+                                                        'email_destinatario' => $email->dc_endereco_eletronico_ede, 
+                                                        'cd_remetente' => $processo->cd_conta_con, 
+                                                        'cd_destinatario' => $processo->cd_correspondente_cor, 
+                                                        'cd_processo' => $processo->cd_processo_pro, 
+                                                        'nu_processo' => $processo->nu_processo_pro, 
+                                                        'origem' => 'conta');
+
+                                                    LogNotificacao::create($log);
+
+                                                    $processo->email =  $email->dc_endereco_eletronico_ede;
+                                                    $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                                                    $processo->notificarCorrespondente($processo);
+                                                    $lista .= $email->dc_endereco_eletronico_ede.', ';                                       
+
+
+                                    } else {
+                                        // Excedeu o número máximo → marcar como recusado
+                                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE; // Ajuste conforme seu status de "recusado"
+                                        $processo->dc_observacao_processo_pro = trim(($processo->dc_observacao_processo_pro ?? '') . "\n[{$agora->format('d/m/Y H:i')}] Recusado automaticamente por falta de aceite.");
+                                        $processo->save();
+                                    }
+                                }
                             }
                         }
-                    }
-                    Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO");
-                    $total_notificacoes += 1;
-                }    
+                }
+                Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO CONFIRMAÇÃO DE CONTRATAÇÃO");
+                $total_notificacoes += 1;
+            }
 
-                if($status == 12){
-
-                    $processo->dt_notificacao_pro = $agora;
-                    $processo->save();
-
-                    $this->requisitarDadosProcesso($processo->cd_processo_pro);
-
-                    Log::info("Notificando correspondente do processo {$processo->nu_processo_pro} como AGUARDANDO DADOS");
-                    $total_notificacoes += 1;
-                }     
-            }            
         }
 
         return "Foram realizadas $total_notificacoes notificações";
