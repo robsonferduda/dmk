@@ -160,7 +160,7 @@ class ProcessoController extends Controller
 
         $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
                             ->whereNotNull('cd_correspondente_cor')
-                            ->where('cd_conta_con', $this->cdContaCon)
+                            ->where('cd_conta_con', 64) // Ambiente de testes
                             ->orderBy('cd_status_processo_stp')
                             ->orderBy('dt_notificacao_pro','ASC')
                             ->get();
