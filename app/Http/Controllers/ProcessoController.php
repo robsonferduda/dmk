@@ -157,10 +157,11 @@ class ProcessoController extends Controller
         */
 
         $total_notificacoes = 0;
+        $escritorios = [64];
 
         $processos = Processo::whereIn('cd_status_processo_stp',[2,12])
                             ->whereNotNull('cd_correspondente_cor')
-                            ->where('cd_conta_con', 64) // Ambiente de testes
+                            ->whereIn('cd_conta_con', $escritorios) // Ambiente de testes
                             ->orderBy('cd_status_processo_stp')
                             ->orderBy('dt_notificacao_pro','ASC')
                             ->get();
