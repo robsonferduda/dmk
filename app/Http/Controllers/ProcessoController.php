@@ -144,15 +144,14 @@ class ProcessoController extends Controller
     public function notificarPendentes()
     {
         /* 
+        
             2 - AGUARDANDO_CORRESPONDENTE
             Notificar a cada 12 horas;
             Limite de 6 notificações;
             Após isso, marcar como recusado automaticamente RECUSADO_CORRESPONDENTE = 4;
 
-
             12 - AGUARDANDO_DADOS
             Notificar a cada 24 horas, sem limite;
-
 
         */
 
@@ -214,10 +213,11 @@ class ProcessoController extends Controller
                                 $qtdeNotificacoes = DB::table('log_notificacao')
                                                     ->where('cd_processo', $processo->cd_processo_pro)
                                                     ->where('tipo_notificacao', 'notificacao_correspondente')
-                                                    ->where('email_destinatario', $email)
+                                                    ->where('email_destinatario', $email->dc_endereco_eletronico_ede)
                                                     ->count();
 
                                 if (is_null($ultimaNotificacao) || $ultimaNotificacao->diffInHours($agora) >= 12) {
+
                                     if ($qtdeNotificacoes <= 6) {
 
                                         $log = array('tipo_notificacao' => 'notificacao_correspondente', 

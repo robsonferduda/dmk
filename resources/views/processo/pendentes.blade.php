@@ -18,8 +18,8 @@
             <div class="sub-box-button-xs">
                 <button title="Pauta Diária" data-toggle="modal" data-target="#modal_pauta" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-file-pdf-o fa-lg"></i> Pauta Diária</button>
                 <a title="Pauta Online" href="{{ url('processos/pauta/online') }}" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-globe fa-lg"></i> Pauta Online</a>
+                
             </div>
-           
         </div>
     </div>
     @php use Carbon\Carbon; use Illuminate\Support\Str; @endphp
