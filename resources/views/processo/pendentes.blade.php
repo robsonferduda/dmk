@@ -77,6 +77,7 @@
                         <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" target="_blank">{{ $processo->nu_processo_pro }}</a>
                     </h5>
                     <p style="margin-bottom: 2px;"><strong>Correspondente</strong>: {{ $processo->correspondente->nm_razao_social_con }}</p>
+                    <p style="margin-bottom: 2px;"><strong>Prazo Fatal</strong>: {{  date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }}</p>
                     <p style="margin-bottom: 2px;"><strong>Última Atualização:</strong> {{ $dtEnvio->format('d/m/Y H:i') }}</p>
                     <p style="margin-bottom: 5px;"><strong>Tempo transcorrido:</strong> {{ $diferenca }}</p>
 
@@ -92,7 +93,7 @@
                            aria-expanded="false"
                            aria-controls="detalhesProcesso{{ $processo->cd_processo_pro }}"
                            class="small">
-                            <i class="fa fa-bell mr-1"></i> Notificações Enviadas
+                            <i class="fa fa-bell mr-1"></i> Notificações Enviadas - Processo cadastrado em {{  date('d/m/Y', strtotime($processo->created_at))  }}
                         </a>
                     </div>
                     <div class="collapse mt-3" id="detalhesProcesso{{ $processo->cd_processo_pro }}">
