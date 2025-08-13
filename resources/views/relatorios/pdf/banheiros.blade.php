@@ -41,7 +41,7 @@
 
         @endphp 
 
-        <tr style="background: {{ $cor_fundo }}; border: 1px solid {{ $cor_borda }}">
+        <tr style="background: {{ $cor_fundo }}; border: 1px solid {{ $cor_borda }}; border-bottom: 1px solid white;">
             <td style="text-align: center;">
                 @if($processo->fl_documento_representacao_pro == 'S')
                     <p style="color: #739e73;">Protocolado</p>
