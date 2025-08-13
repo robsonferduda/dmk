@@ -93,7 +93,7 @@
                            aria-expanded="false"
                            aria-controls="detalhesProcesso{{ $processo->cd_processo_pro }}"
                            class="small">
-                            <i class="fa fa-bell mr-1"></i> Notificações Enviadas - Processo cadastrado em {{  date('d/m/Y', strtotime($processo->created_at))  }}
+                            <i class="fa fa-bell mr-1"></i> Notificações Enviadas - Processo cadastrado em {{  date('d/m/Y H:i:s', strtotime($processo->created_at))  }}
                         </a>
                     </div>
                     <div class="collapse mt-3" id="detalhesProcesso{{ $processo->cd_processo_pro }}">

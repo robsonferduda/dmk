@@ -30,9 +30,18 @@
                         </tr>
                     </thead>
                     <tbody>
-    @forelse($dados as $key => $processo)      
+    @forelse($dados as $key => $processo)
 
-        <tr style="background: {{ ($zebra) ? '#FFFFFF;' : '#DDD;' }}">
+        @php
+            $cor_fundo = (processo->fl_audiencia_confirmada_pro) ? '#c9ffcb' : 'white';
+            $cor_borda = (processo->fl_audiencia_confirmada_pro) ? '#95ff9a' : 'white';
+
+            $cor_fundo = (processo->fl_checkin_pro) ? '#c8e7ff' : $cor_fundo;
+            $cor_borda = (processo->fl_checkin_pro) ? '#a7d9ff' : $cor_borda;    
+
+        @endphp 
+
+        <tr style="background: {{ $cor_fundo }}; border: 1px solid {{ $cor_borda }}">
             <td style="text-align: center;">
                 @if($processo->fl_documento_representacao_pro == 'S')
                     <p style="color: #739e73;">Protocolado</p>

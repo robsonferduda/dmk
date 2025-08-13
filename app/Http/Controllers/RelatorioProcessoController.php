@@ -169,7 +169,9 @@ class RelatorioProcessoController extends Controller
             $processos = $processos->where('cd_status_processo_stp', $status);
         }
 
-        $processos = $processos->orderBy('dt_prazo_fatal_pro')->get();
+        $processos = $processos->orderBy('dt_prazo_fatal_pro')
+                                ->orderBy('hr_audiencia_pro','ASC')
+                                ->get();
     
         if ($request->tipo == 'pdf') {
 
