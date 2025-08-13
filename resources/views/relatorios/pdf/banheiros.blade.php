@@ -9,7 +9,7 @@
         <h4 style="text-align: center; margin-bottom: 0px; font-weight: 700; text-transform: uppercase; margin-top: 10px;"><strong>Pauta Diária</strong></h4>
         <p style="text-align: center; margin-top: 0px; font-size: 10px; margin-bottom: 5px;">Período de {{ $data_inicio }} a {{ $data_fim }}</p>
 
-        <table id="tabelaDados" cellspacing="0" width="100%">
+        <table width="100%">
                     <thead>
                         <tr style="background:#DDD; }}">
                             <th style="text-align: center;">Documento de Representação</th>
@@ -41,7 +41,7 @@
 
         @endphp 
 
-        <tr style="background: {{ $cor_fundo }}; border: 1px solid {{ $cor_borda }}; border-bottom: 1px solid white;">
+        <tr style="background: {{ $cor_fundo }}; border: 1px solid {{ $cor_borda }}; border-bottom: 3px solid white;">
             <td style="text-align: center;">
                 @if($processo->fl_documento_representacao_pro == 'S')
                     <p style="color: #739e73;">Protocolado</p>
