@@ -77,7 +77,7 @@ class HomeController extends Controller
                 JOIN entidade_ete t3 On t3.cd_conta_con = t2.cd_conta_con 
                 LEFT JOIN cidade_atuacao_cat t4 ON t4.cd_entidade_ete = t3.cd_entidade_ete AND fl_origem_cat = 'S'
                 LEFT JOIN cidade_cde t5 ON t5.cd_cidade_cde = t4.cd_cidade_cde 
-                WHERE t1.cd_conta_con = 64
+                WHERE t1.cd_conta_con = $this->conta
                 AND t1.cd_status_processo_stp IN(6)
                 AND t1.dt_prazo_fatal_pro between '$inicio' AND '$fim'
                 GROUP BY t2.nm_razao_social_con, t5.nm_cidade_cde, t3.cd_entidade_ete
