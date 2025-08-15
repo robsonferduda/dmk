@@ -36,6 +36,8 @@ Route::resource('contas', 'ContaController');
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
+
+    Route::get('dashboard/correspondentes', 'HomeController@correspondentes');
     
     Route::any('filepicker', 'FilepickerController@handle');
     Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');

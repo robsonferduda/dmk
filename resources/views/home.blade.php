@@ -30,12 +30,34 @@
             </div>
         @endrole
     </div>
+
     @role('cliente') 
 
     @endrole
 
     @role('administrator')
-        <div class="row">
+    <div class="row" id="filtro-periodo" style="margin-bottom: 8px;">
+        <div class="col-md-12 col-sm-12 mb-3">
+            <form id="formFiltroPeriodo" class="form-inline" method="GET" action="{{ url()->current() }}">
+                <div class="form-group">
+                    <input type="date" class="form-control" name="data_inicio" id="data_inicio" value="{{ date('d/m/Y') }}">
+                </div>
+                <div class="form-group">
+                    <input type="date" class="form-control" name="data_fim" id="data_fim" value="{{ date('d/m/Y') }}">
+                </div>
+
+                <div class="btn-group" role="group" aria-label="Períodos Rápidos">
+                    <button type="button" class="btn btn-default periodo-btn" data-dias="7">Última semana</button>
+                    <button type="button" class="btn btn-default periodo-btn" data-dias="15">Últimos 15 dias</button>
+                    <button type="button" class="btn btn-default periodo-btn" data-dias="30">Últimos 30 dias</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <div class="row">           
+
+
 
             <!--
             <div class="col-sm-12 col-md-12 col-lg-12">
@@ -46,8 +68,6 @@
                 </div>
             </div>
             -->
-
-            <div id="test-render"></div>
 
             <div class="col-sm-12 col-md-6 col-lg-4">                
                 <div class="well text-center connect box-home" style="min-height: 110px;">
@@ -109,6 +129,84 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-md-4 " id="top5-correspondentes">
+            
+            </div>
+        </div>
     @endrole
 </div>
+@endsection
+@section('script')
+    <script type="text/javascript">
+
+        var host =  $('meta[name="base-url"]').attr('content');
+
+        function carregarTop5Correspondentes(data_inicio, data_fim) {
+            $.ajax({
+                url: host+"/dashboard/correspondentes",
+                type: 'GET',
+                data: {
+                    data_inicio: data_inicio,
+                    data_fim: data_fim
+                },
+                beforeSend: function () {
+                    $("#top5-correspondentes").html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                },
+                success: function (html) {
+                    $("#top5-correspondentes").html(html);
+                },
+                error: function () {
+                    $("#top5-correspondentes").html('<p class="text-danger text-center">Erro ao carregar os dados.</p>');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+
+            // Função para formatar data como yyyy-mm-dd
+            function formatarData(data) {
+                return data.toISOString().split('T')[0];
+            }
+
+            // Define datas iniciais: últimos 7 dias
+            const hoje = new Date();
+            const fim = formatarData(hoje);
+            const inicio = formatarData(new Date(hoje.setDate(hoje.getDate() - 7)));
+
+            $('#data_inicio').val(inicio);
+            $('#data_fim').val(fim);
+
+            if (inicio && fim) {
+                carregarTop5Correspondentes(inicio, fim);
+            }
+
+            // Trigger on date change
+            $('#data_inicio, #data_fim').on('change', function () {
+                const di = $('#data_inicio').val();
+                const df = $('#data_fim').val();
+                if (di && df) {
+                    carregarTop5Correspondentes(di, df);
+                }
+            });
+
+            $(function() {
+                $('.periodo-btn').on('click', function() {
+                    var dias = parseInt($(this).data('dias'));
+                    var hoje = new Date();
+                    var dataFim = hoje.toISOString().split('T')[0];
+
+                    var dataInicio = new Date();
+                    dataInicio.setDate(dataInicio.getDate() - dias);
+                    var dataInicioStr = dataInicio.toISOString().split('T')[0];
+
+                    $('#data_inicio').val(dataInicioStr);
+                    $('#data_fim').val(dataFim);
+
+                    carregarTop5Correspondentes(dataInicioStr, dataFim);
+                });
+            });
+
+        });
+    </script>
 @endsection
