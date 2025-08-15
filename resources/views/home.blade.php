@@ -38,7 +38,7 @@
     @role('administrator')
     <div class="row" id="filtro-periodo" style="margin-bottom: 8px;">
         <div class="col-md-12 col-sm-12 mb-3">
-            <form id="formFiltroPeriodo" class="form-inline" method="GET" action="{{ url()->current() }}">
+            <form id="formFiltroPeriodo" class="form-inline" style="text-align: right;" method="GET" action="{{ url()->current() }}">
                 <div class="form-group">
                     <input type="date" class="form-control" name="data_inicio" id="data_inicio" value="{{ date('d/m/Y') }}">
                 </div>
