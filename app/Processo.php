@@ -271,7 +271,8 @@ class Processo extends Model implements AuditableContract
                        t13.nm_tipo_processo_tpo,
                        fl_audiencia_confirmada_pro,
                        fl_documento_representacao_pro,
-                       fl_checkin_pro
+                       fl_checkin_pro,
+                       t14.dc_area_direito_ado
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con
@@ -284,6 +285,7 @@ class Processo extends Model implements AuditableContract
                 LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
                 LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
                 LEFT JOIN users t12 ON t1.cd_user_cadastro_pro = t12.id
+                LEFT JOIN area_direito_ado t14 ON t1.cd_area_direito_ado = t14.cd_area_direito_ado
                 JOIN tipo_processo_tpo t13 On t13.cd_tipo_processo_tpo = t1.cd_tipo_processo_tpo
                 WHERE t1.cd_status_processo_stp NOT IN(6,7)";
 

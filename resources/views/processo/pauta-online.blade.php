@@ -556,6 +556,7 @@
                                         <h6><strong>Responsável</strong>: ${processo.name || ''}</h6>
                                         <h6><strong>Parte Adversa</strong>: ${processo.nm_autor_pro || ''}</h6>
                                         <h6><strong>Réu</strong>: ${processo.nm_reu_pro || ''}</h6>
+                                        <h6><strong>Área do Direito</strong>: ${processo.dc_area_direito_ado || ''}</h6>
                                     </div>
                                     <div class="col-md-4 box-content">
                                         <h6><strong>Comarca</strong>: ${processo.nm_cidade_cde || ''}/${processo.sg_estado_est || ''}</h6>
