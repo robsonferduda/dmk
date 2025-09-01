@@ -203,11 +203,24 @@
                                 </div> 
                                 <div class="row">
                                     <input type="hidden" name="cd_responsavel_pro" value="{{old('cd_responsavel_pro') ? old('cd_responsavel_pro') : $processo->cd_responsavel_pro}}" >      
-                                    <section class="col col-sm-12">
+                                    
+                                    <section class="col col-xs-6 col-lg-6">
                                         <label class="label">Responsável</label>
                                         <label class="input">
                                             <input class="form-control ui-autocomplete-input"  name="name" value="{{ ($processo->responsavel) ? $processo->responsavel->name : old('name') }}" placeholder="Digite 3 caracteres para busca" id="responsavel_auto_complete" type="text" autocomplete="off">
                                         </label>
+                                    </section>
+
+                                    <section class="col col-xs-6 col-lg-6">
+                                           
+                                            <label class="label" >Área do Direito</label>          
+                                            <select  id="cd_area_direito_ado" name="cd_area_direito_ado" class="select2">
+                                                <option selected value="">Selecione um área</option>
+                                                @foreach($areas as $area) 
+                                                    <option {!! ($processo->cd_area_direito_ado == $area->cd_area_direito_ado) ? 'selected' : '' !!} value="{{ $area->cd_area_direito_ado }}">{{ $area->dc_area_direito_ado}}</option>
+                                                @endforeach
+
+                                            </select> 
                                     </section>
                                 </div>
                                 

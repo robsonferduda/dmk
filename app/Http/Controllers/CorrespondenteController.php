@@ -1148,6 +1148,7 @@ class CorrespondenteController extends Controller
 
         $conta_logada = Conta::where('cd_conta_con', $this->conta)->first();
         $conta_logada->senha = $senha;
+        
         $correspondente = Correspondente::where('cd_conta_con', $id)->first();
         $correspondente->email = $user->email;
 

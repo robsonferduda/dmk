@@ -309,6 +309,9 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
                         <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
+                            <li>
+                                <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
+                            </li>
                             @can('processo.novo')   
                                 <li class="{{ (Session::get('item_pai') == 'processo.pauta') ? 'active' : '' }}">
                                     <a href="{{ url('processos/pauta/online') }}" title="Novo"><span class="menu-item-parent">Pauta Online</span></a>
@@ -410,9 +413,7 @@
                     <li class="menu {{ (Session::get('menu_pai') == 'configuracao') ? 'open' : '' }}">
                         <a href="#" title="Dashboard" class="item_pai" id="configuracao" ><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configurações</span></a>
                         <ul style="{{ (Session::get('menu_pai') == 'configuracao') ? 'display: block;' : 'display: none;' }}">
-                            <li>
-                                <a href="{{ url('configuracoes/areas') }}" title="Dashboard"><span class="menu-item-parent">Áreas de Direito</span></a>
-                            </li>
+                           
                             <li>
                                 <a href="{{ url('configuracoes/cargos') }}" title="Dashboard"><span class="menu-item-parent">Cargos</span></a>
                             </li>

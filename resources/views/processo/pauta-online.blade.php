@@ -46,7 +46,7 @@
                                 <label class="label-padrao">Correspondente</label><br />
                                 <input style="width: 100%" minlength=3 type="text" name="nm_correspondente" class="form-control" id="nm_correspondente" placeholder="Correspondente" value="{{ !empty($nm_correspondente) ? $nm_correspondente : '' }}" >         
                             </section> 
-                            <section class="col col-md-4 col-lg-4 box-select2"> 
+                            <section class="col col-md-3 col-lg-3 box-select2"> 
                                 <label class="label-padrao">Tipos de Processo</label> 
                                 <select name="cd_tipo_processo_tpo" id="cd_tipo_processo_tpo" class="select2">
                                     <option value="">Tipos de Processo</option>
@@ -55,7 +55,7 @@
                                     @endforeach
                                 </select>
                             </section> 
-                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">  
+                            <section class="col col-md-3 col-lg-3" style="margin-top: 8px;">  
                                 <label class="label-padrao">Situação</label>       
                                 <select id="cd_status_processo_stp" name="cd_status_processo_stp" class="select2">
                                     <option selected value="">Status do Processo</option>
@@ -64,7 +64,18 @@
                                     @endforeach
                                 </select> 
                             </section> 
-                            <section class="col col-md-4 col-lg-4" style="margin-top: 8px;">                                       
+                            <section class="col col-xs-3 col-lg-3" style="margin-top: 8px;">
+                                           
+                                            <label class="label-padrao" >Área do Direito</label>          
+                                            <select  id="cd_area_direito_ado" name="cd_area_direito_ado" class="select2">
+                                                <option selected value="">Selecione um área</option>
+                                                @foreach($areas as $area) 
+                                                    <option {!! (old('cd_area_direito_ado') == $area->cd_area_direito_ado ? 'selected' : '' ) !!} value="{{ $area->cd_area_direito_ado }}">{{ $area->dc_area_direito_ado}}</option>
+                                                @endforeach
+
+                                            </select> 
+                            </section>
+                            <section class="col col-md-3 col-lg-3" style="margin-top: 8px;">                                       
                                 <label class="label-padrao">Responsável</label>          
                                 <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                     <option selected value="">Selecione um responsável</option>
@@ -468,6 +479,7 @@
             responsavel = $("#cd_responsavel_pro").val();    
             situacao = $("#cd_status_processo_stp").val();  
             tipo = $("#cd_tipo_processo_tpo").val();     
+            area = $("#cd_area_direito_ado").val(); 
 
             $.ajax({
                 
@@ -480,6 +492,7 @@
                        "nm_correspondente": nm_correspondente,                         
                        "responsavel": responsavel,
                        "statusProcesso": situacao,
+                       "area": area,
                        "tipo": tipo
                 },
                 dataType: "JSON",

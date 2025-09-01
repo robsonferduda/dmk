@@ -12,6 +12,7 @@ use App\Vara;
 use App\Estado;
 use App\Cidade;
 use App\Cliente;
+use App\AreaDireito;
 use App\Conta;
 use App\Correspondente;
 use App\TipoProcesso;
@@ -104,6 +105,81 @@ class ProcessoController extends Controller
             ->get();
 
         return view('processo/processos', ['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+    }
+
+    public function novo()
+    {
+        Session::put('item_pai','processo.novo');
+
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        } else {
+            $estados =  \Cache::get('estados');
+        }
+
+        $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
+        
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
+        $tiposProcesso  = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
+       
+        return view('processo/novo', ['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico, 'areas' => $areas]);
+    }
+
+    public function editar($id)
+    {
+        $id = \Crypt::decrypt($id);
+        
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        } else {
+            $estados =  \Cache::get('estados');
+        }
+
+        $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
+
+        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+        ->orderByRaw("nullif(number,'')::int,caracter")
+        ->get();
+
+        $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
+
+        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro', $id)->first();
+
+        if (!empty($processo->cliente->nm_fantasia_cli)) {
+            $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';
+        } else {
+            $nome = $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli;
+        }
+
+        $nomeCorrespondente = '';
+        if (!empty($processo->correspondente)) {
+            $nomeCorrespondente = ($processo->correspondente->load('contaCorrespondente')->contaCorrespondente) ? $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr : '';
+        }
+
+        if (!empty($processo->dt_solicitacao_pro)) {
+            $processo->dt_solicitacao_pro = date('d/m/Y', strtotime($processo->dt_solicitacao_pro));
+        }
+        
+        if (!empty($processo->dt_prazo_fatal_pro)) {
+            $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
+        }
+
+        $tiposDeServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
+        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro', $id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse', 'cd_tipo_servico_correspondente_tse', 'vl_taxa_honorario_correspondente_pth', 'vl_taxa_honorario_cliente_pth', 'vl_taxa_cliente_pth')->first();
+
+        return view('processo/edit', ['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario, 'areas' => $areas]);
     }
 
     public function pendentes()
@@ -284,6 +360,8 @@ class ProcessoController extends Controller
         Session::put('item_pai','processo.pauta');
 
         $prazo_fatal = ($request->dt_prazo_fatal_pro) ? date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro))) : date('Y-m-d');
+
+        $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
         
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)
                         ->where('cd_nivel_niv', Nivel::COLABORADOR)
@@ -312,6 +390,7 @@ class ProcessoController extends Controller
 
         return view('processo/pauta-online', ['processos' => $processos, 
             'responsaveis' => $responsaveis, 
+            'areas' => $areas,
             'responsavel' => $responsavel, 
             'tiposProcesso' => $tiposProcesso,
             'status' => $status,
@@ -334,10 +413,11 @@ class ProcessoController extends Controller
         $cliente = ($request->cliente) ? $request->cliente : null;
         $statusProcesso = ($request->statusProcesso) ? $request->statusProcesso : null;
         $numeroAcompanhamento = ($request->numero_acompanhamento) ? $request->numero_acompanhamento : null;
+        $area = ($request->area) ? $request->area : null;
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area);
         
         return response()->json($processos);
     }
@@ -998,77 +1078,6 @@ class ProcessoController extends Controller
         }
     }
 
-    public function novo()
-    {
-        Session::put('item_pai','processo.novo');
-
-        if (!\Cache::has('estados')) {
-            $estados = Estado::orderBy('nm_estado_est')->get();
-            \Cache::put('estados', $estados, now()->addMinutes(1440));
-        } else {
-            $estados =  \Cache::get('estados');
-        }
-        
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
-
-        $varas = \DB::table(\DB::raw("($sub) as sub "))
-        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
-        ->orderByRaw("nullif(number,'')::int,caracter")
-        ->get();
-
-        $tiposProcesso  = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
-        $tiposDeServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
-       
-        return view('processo/novo', ['estados' => $estados,'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'tiposDeServico' => $tiposDeServico]);
-    }
-
-    public function editar($id)
-    {
-        $id = \Crypt::decrypt($id);
-        
-        if (!\Cache::has('estados')) {
-            $estados = Estado::orderBy('nm_estado_est')->get();
-            \Cache::put('estados', $estados, now()->addMinutes(1440));
-        } else {
-            $estados =  \Cache::get('estados');
-        }
-
-        $sub = \DB::table('vara_var')->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")->whereNull('deleted_at')->whereRaw("cd_conta_con = $this->cdContaCon")->toSql();
-
-        $varas = \DB::table(\DB::raw("($sub) as sub "))
-        ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
-        ->orderByRaw("nullif(number,'')::int,caracter")
-        ->get();
-
-        $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_processo_tpo')->get();
-
-        $processo = Processo::with('cliente')->with('correspondente')->with('cidade')->with('responsavel')->where('cd_conta_con', $this->cdContaCon)->where('cd_processo_pro', $id)->first();
-
-        if (!empty($processo->cliente->nm_fantasia_cli)) {
-            $nome =  $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli.' ('.$processo->cliente->nm_fantasia_cli.')';
-        } else {
-            $nome = $processo->cliente->nu_cliente_cli.' - '.$processo->cliente->nm_razao_social_cli;
-        }
-
-        $nomeCorrespondente = '';
-        if (!empty($processo->correspondente)) {
-            $nomeCorrespondente = ($processo->correspondente->load('contaCorrespondente')->contaCorrespondente) ? $processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr : '';
-        }
-
-        if (!empty($processo->dt_solicitacao_pro)) {
-            $processo->dt_solicitacao_pro = date('d/m/Y', strtotime($processo->dt_solicitacao_pro));
-        }
-        
-        if (!empty($processo->dt_prazo_fatal_pro)) {
-            $processo->dt_prazo_fatal_pro = date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro));
-        }
-
-        $tiposDeServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
-        $processoTaxaHonorario = ProcessoTaxaHonorario::where('cd_processo_pro', $id)->where('cd_conta_con', $this->cdContaCon)->select('cd_tipo_servico_tse', 'cd_tipo_servico_correspondente_tse', 'vl_taxa_honorario_correspondente_pth', 'vl_taxa_honorario_cliente_pth', 'vl_taxa_cliente_pth')->first();
-
-        return view('processo/edit', ['estados' => $estados, 'varas' => $varas, 'tiposProcesso' => $tiposProcesso, 'processo' => $processo, 'nome' => $nome,'nomeCorrespondente' => $nomeCorrespondente, 'tiposDeServico' => $tiposDeServico,'processoTaxaHonorario' => $processoTaxaHonorario]);
-    }
-
     public function show($id)
     {
         $usuario = User::findOrFail($id);
@@ -1714,20 +1723,20 @@ class ProcessoController extends Controller
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, null);
         
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, false, null, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null);
         return response()->json($processos);
     }
 
     public function getProcessosAndamentoCorrespondente()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, true, null, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, true, null, null, null, null);
         return response()->json($processos);
     }
 

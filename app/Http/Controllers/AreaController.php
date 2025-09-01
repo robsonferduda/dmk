@@ -21,6 +21,7 @@ class AreaController extends Controller
 
     public function index()
     {
+        Session::put('menu_pai','processos');
 
         $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
         return view('configuracoes/areas',['areas' => $areas]);

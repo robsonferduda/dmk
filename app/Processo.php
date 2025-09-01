@@ -65,10 +65,16 @@ class Processo extends Model implements AuditableContract
                             'fl_cadastro_cliente_cli',
                             'dt_notificacao_pro',
                             'fl_audiencia_confirmada_pro',
-                            'fl_checkin_pro'
+                            'fl_checkin_pro',
+                            'cd_area_direito_ado'
     					  ];
 
     public $timestamps = true;
+
+    public function area()
+    {
+        return $this->hasOne('App\AreaDireito','dc_area_direito_ado', 'dc_area_direito_ado');
+    }
 
     public function responsavel()
     {
@@ -235,7 +241,7 @@ class Processo extends Model implements AuditableContract
         return $assunto;
     }
 
-    public function getProcessosAndamento($conta, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento)
+    public function getProcessosAndamento($conta, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento, $area)
     {
 
         $sql = "SELECT t1.cd_processo_pro, 
@@ -294,6 +300,7 @@ class Processo extends Model implements AuditableContract
         if($flag_correspondente == true) $sql .= " AND t1.cd_correspondente_cor = $conta";
         if($flag_correspondente == false) $sql .= " AND t1.cd_conta_con = $conta";
         if($cliente) $sql .= " AND t1.cd_cliente_cli = $cliente ";
+        if($area) $sql .= " AND t1.cd_area_direito_ado = $area ";
 
         if($status){
 
