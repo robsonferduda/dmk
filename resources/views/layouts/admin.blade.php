@@ -640,6 +640,29 @@
             </div>
         </div>
 
+        <div class="modal fade modal_top_alto" id="modal_exclusao_msg" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao_msg" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-trash"></i> <strong>Excluir Registro</strong></h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h4 class="msg_extra text-danger"></h4>
+                        <h4>Essa operação irá excluir o registro definitivamente.</h4>
+                        <h4>Deseja continuar?</h4>
+                        <input type="hidden" name="id" id="id_exclusao">
+                        <input type="hidden" name="url" id="url">
+                        <div class="msg_retorno"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="btn_confirma_exclusao_msg" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade modal_top_alto" id="modal_cancela_correspondente" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modal_exclusao" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
