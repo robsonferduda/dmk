@@ -505,9 +505,42 @@ $(document).ready(function() {
 			id = $(this).data('id');
 		}
 
-		$("#modal_exclusao_msg #url").val(url);
+		$("#modal_exclusao_msg #url_exclusao").val(url);
 		$("#modal_exclusao_msg #id_exclusao").val(id);
 		$("#modal_exclusao_msg").modal('show');
+
+	});
+
+	$("#btn_confirma_exclusao_msg").click(function(){
+
+		var id = $("#id_exclusao").val();
+		var url= $("#url_exclusao").val();
+        var token = $(this).data("token");
+
+        $.ajax(
+        {
+            url: url,
+            type: 'DELETE',
+            dataType: "JSON",
+            data: {
+                "id": id,
+                "_method": 'DELETE',
+                "_token": $('meta[name="token"]').attr('content'),
+            },
+            beforeSend: function()
+            {
+            	$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');
+            },
+            success: function(response)
+            {
+            	$(".msg_retorno").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Os dados serão atualizados!</strong></h4>')
+                location.reload();
+            },
+		   	error: function(response)
+		   	{
+		   		$(".msg_retorno").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
+		   	}
+        });
 
 	});
 
@@ -662,37 +695,6 @@ $(document).ready(function() {
 		   	error: function(response)
 		   	{
 		   		$(".msg_retorno_honorario").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
-		   	}
-        });
-
-	});
-
-	$("#btn_confirma_exclusao_msg").click(function(){
-
-		var id = $("#id_exclusao").val();
-		var url= $("#url").val();
-        var token = $(this).data("token");
-
-        $.ajax(
-        {
-            url: url,
-            type: 'GET',
-            dataType: "JSON",
-            data: {
-                "id": id
-            },
-            beforeSend: function()
-            {
-            	$(".msg_retorno").html('<h3><i class="fa fa-spinner fa-spin"></i> Processando operação...</h3>');
-            },
-            success: function(response)
-            {
-            	$(".msg_retorno").html('<h4 class="text-success marginTop10"><strong>Registro excluído com sucesso. Os dados serão atualizados!</strong></h4>')
-                location.reload();
-            },
-		   	error: function(response)
-		   	{
-		   		$(".msg_retorno").html('<h4 class="text-danger marginTop10"><strong>Ocorreu um erro na sua requisição.</strong></h4>')
 		   	}
         });
 

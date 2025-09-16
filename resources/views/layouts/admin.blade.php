@@ -652,11 +652,11 @@
                         <h4>Essa operação irá excluir o registro definitivamente.</h4>
                         <h4>Deseja continuar?</h4>
                         <input type="hidden" name="id" id="id_exclusao">
-                        <input type="hidden" name="url" id="url">
+                        <input type="hidden" name="url" id="url_exclusao">
                         <div class="msg_retorno"></div>
                     </div>
                     <div class="modal-footer">
-                        <a type="button" id="btn_confirma_exclusao_msg" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
+                        <a type="button" id="btn_confirma_exclusao_msg" data-link="" class="btn btn-primary"><i class="fa fa-user fa-check"></i> Confirmar</a>
                         <a type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-user fa-remove"></i> Cancelar</a>
                     </div>
                 </div>
