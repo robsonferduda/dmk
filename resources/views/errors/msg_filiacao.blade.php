@@ -25,6 +25,13 @@
                     </h1>
                     <h4>{{ Session::get('retorno')['msg'] }}</h4> 
 
+                @elseif(Session::get('retorno')['tipo'] == 'alerta')
+
+                    <h1>
+                        <small class="text-warning slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Processo em Andamento</strong></small>
+                    </h1>
+                    <h4>{{ Session::get('retorno')['msg'] }}</h4> 
+
                 @endif                   
             </div>   
         </div>

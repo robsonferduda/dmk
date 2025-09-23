@@ -1207,30 +1207,45 @@ class ProcessoController extends Controller
         if (empty($processo->cd_correspondente_cor) or is_null($vinculo)) {
             Flash::error('Nenhum correspondente informado para o processo');
         } else {
-            $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-            if (count($emails) == 0) {
-                Flash::error('Nenhum email de notificação cadastrado para o correspondente');
-            } else {
-                $lista = '';
+            //Verificar se o correspondente não foi notificado
+            if($processo->cd_status_processo_stp != \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE and $processo->cd_status_processo_stp != \App\Enums\StatusProcesso::ANDAMENTO){
+                Flash::warning('Nenhuma notificação foi enviada agora! O correspondente já foi notificado e o processo está em andamento.');
+            }else{
 
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE;
-                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
-                $processo->save();
+                $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-                foreach ($emails as $email) {
+                if (count($emails) == 0) {
+                    Flash::error('Nenhum email de notificação cadastrado para o correspondente');
+                } else {
 
-                    $log = array('tipo_notificacao' => 'notificacao_correspondente', 'email_destinatario' => $email->dc_endereco_eletronico_ede, 'cd_remetente' => $processo->cd_conta_con, 'cd_destinatario' => $processo->cd_correspondente_cor, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'conta');
+                    $lista = '';
 
-                    LogNotificacao::create($log);
+                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE;
+                    $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
+                    $processo->save();
 
-                    $processo->email =  $email->dc_endereco_eletronico_ede;
-                    $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                    $processo->notificarCorrespondente($processo);
-                    $lista .= $email->dc_endereco_eletronico_ede.', ';
+                    foreach ($emails as $email) {
+
+                        $log = array('tipo_notificacao' => 'notificacao_correspondente', 
+                                     'email_destinatario' => $email->dc_endereco_eletronico_ede, 
+                                     'cd_remetente' => $processo->cd_conta_con, 
+                                     'cd_destinatario' => $processo->cd_correspondente_cor, 
+                                     'cd_processo' => $processo->cd_processo_pro, 
+                                     'nu_processo' => $processo->nu_processo_pro, 
+                                     'origem' => 'conta');
+
+                        LogNotificacao::create($log);
+
+                        $processo->email =  $email->dc_endereco_eletronico_ede;
+                        $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                        $processo->notificarCorrespondente($processo);
+                        $lista .= $email->dc_endereco_eletronico_ede.', ';
+                    }
+
+                    Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
                 }
 
-                Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
             }
         }
 
@@ -1245,118 +1260,127 @@ class ProcessoController extends Controller
 
         if($processo){
 
-            //Cria fluxo alternativo para processos do tipo Audiências
-            if($processo->tipoProcesso->nu_tipo_processo_tpo == 'TP1' AND $resposta == 'S'){
+            if($processo->cd_status_processo_stp != \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE){
 
-                //Relação entre conta e correspondente
-                $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)
-                                                ->where('cd_correspondente_cor', $processo->cd_correspondente_cor)
-                                                ->first();
-
-                //Notifica o correspondente com os dados de requisição de dados
-                $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)
-                                            ->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)
-                                            ->get();
-
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
-                $processo->save();
-
-                if (count($emails) > 0) {
-
-                    $lista = '';
-
-                        foreach ($emails as $email) {
-                            $processo->email =  $email->dc_endereco_eletronico_ede;
-                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                            $processo->notificarRequisitarDados($processo);
-                            $lista .= $email->dc_endereco_eletronico_ede.', ';
-                        }
-
-                    Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
-
-                } else {
-                    Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
-                }
-
-                //Notifica o escritório com os dados de aceite
-                $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
-                $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
-
-                //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
-
-                $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
-
-                if($grupo and count($grupo->emails)){
-
-                    foreach ($grupo->emails as $key => $email) {
-
-                        $email_notificacao = $email->ds_email_egn;
-
-                        $tipo_notificacao = 'aceite_correspondente';
-                        
-                        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
-                        LogNotificacao::create($log);
-            
-                        $processo->email = $email_notificacao;
-                        $processo->token = $token;
-                        $processo->parecer = $resposta;
-                        $processo->notificarConta($processo);
-                    }
-
-                }
-
-                \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida pelo contratente, que enviou a requisição dos dados. Aguarde o email de requisição de dados para continuar o trâmite.'));
+                \Session::put('retorno', array('tipo' => 'alerta','msg' => 'O processo já foi aceito e está em trâmite.'));
                 return Redirect::route('msg-filiacao');
-         
+
             }else{
 
-                //Atualiza o status do processo de acordo com a resposta do correspondente
-                if ($resposta == 'S') {
+                //Cria fluxo alternativo para processos do tipo Audiências
+                if($processo->tipoProcesso->nu_tipo_processo_tpo == 'TP1' AND $resposta == 'S'){
 
-                    $tipo_notificacao = 'aceite_correspondente';
+                    //Relação entre conta e correspondente
+                    $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)
+                                                    ->where('cd_correspondente_cor', $processo->cd_correspondente_cor)
+                                                    ->first();
 
-                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
+                    //Notifica o correspondente com os dados de requisição de dados
+                    $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)
+                                                ->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)
+                                                ->get();
+
+                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
                     $processo->save();
-                } else {
 
-                    $tipo_notificacao = 'recusa_correspondente';
+                    if (count($emails) > 0) {
 
-                    $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE;
-                    $processo->save();
-                }
+                        $lista = '';
 
-                //Notifica o escritório sobre a decisão do correspondente
-                $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
-                $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
+                            foreach ($emails as $email) {
+                                $processo->email =  $email->dc_endereco_eletronico_ede;
+                                $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                                $processo->notificarRequisitarDados($processo);
+                                $lista .= $email->dc_endereco_eletronico_ede.', ';
+                            }
 
-                //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
+                        Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
 
-                $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+                    } else {
+                        Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
+                    }
 
-                if($grupo and count($grupo->emails)){
+                    //Notifica o escritório com os dados de aceite
+                    $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
+                    $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
 
-                    foreach ($grupo->emails as $key => $email) {
+                    //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
 
-                        $email_notificacao = $email->ds_email_egn;
-                        
-                        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
-                        LogNotificacao::create($log);
-            
-                        $processo->email = $email_notificacao;
-                        $processo->token = $token;
-                        $processo->parecer = $resposta;
-                        $processo->correspondente = $processo->correspondente->nm_razao_social_con;
-                        $processo->notificarConta($processo);
-            
-                        \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida e o interessado notificado sobre a decisão.'));
-                        return Redirect::route('msg-filiacao');
+                    $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+
+                    if($grupo and count($grupo->emails)){
+
+                        foreach ($grupo->emails as $key => $email) {
+
+                            $email_notificacao = $email->ds_email_egn;
+
+                            $tipo_notificacao = 'aceite_correspondente';
+                            
+                            $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                            LogNotificacao::create($log);
+                
+                            $processo->email = $email_notificacao;
+                            $processo->token = $token;
+                            $processo->parecer = $resposta;
+                            $processo->notificarConta($processo);
+                        }
 
                     }
 
-                }else{
-                    \Session::put('retorno', array('tipo' => 'erro','msg' => 'Sua resposta foi registrada no sistema, mas o escritório não foi notificado por falta de um email válido.'));
+                    \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida pelo contratente, que enviou a requisição dos dados. Aguarde o email de requisição de dados para continuar o trâmite.'));
                     return Redirect::route('msg-filiacao');
-                }      
+             
+                }else{
+
+                    //Atualiza o status do processo de acordo com a resposta do correspondente
+                    if ($resposta == 'S') {
+
+                        $tipo_notificacao = 'aceite_correspondente';
+
+                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::ACEITO_CORRESPONDENTE;
+                        $processo->save();
+                    } else {
+
+                        $tipo_notificacao = 'recusa_correspondente';
+
+                        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::RECUSADO_CORRESPONDENTE;
+                        $processo->save();
+                    }
+
+                    //Notifica o escritório sobre a decisão do correspondente
+                    $entidade = Entidade::where('cd_conta_con',  $processo->cd_conta_con)->where('cd_tipo_entidade_tpe', 7)->first();
+                    $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
+
+                    //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
+
+                    $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+
+                    if($grupo and count($grupo->emails)){
+
+                        foreach ($grupo->emails as $key => $email) {
+
+                            $email_notificacao = $email->ds_email_egn;
+                            
+                            $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                            LogNotificacao::create($log);
+                
+                            $processo->email = $email_notificacao;
+                            $processo->token = $token;
+                            $processo->parecer = $resposta;
+                            $processo->correspondente = $processo->correspondente->nm_razao_social_con;
+                            $processo->notificarConta($processo);
+                
+                            \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Sua resposta foi recebida e o interessado notificado sobre a decisão.'));
+                            return Redirect::route('msg-filiacao');
+
+                        }
+
+                    }else{
+                        \Session::put('retorno', array('tipo' => 'erro','msg' => 'Sua resposta foi registrada no sistema, mas o escritório não foi notificado por falta de um email válido.'));
+                        return Redirect::route('msg-filiacao');
+                    }      
+
+                }
 
             }
 
