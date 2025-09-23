@@ -1209,10 +1209,7 @@ class ProcessoController extends Controller
             Flash::error('Nenhum correspondente informado para o processo');
         } else {
 
-            //Verificar se o correspondente não foi notificado
-            if($processo->cd_status_processo_stp != \App\Enums\StatusProcesso::AGUARDANDO_CORRESPONDENTE and $processo->cd_status_processo_stp != \App\Enums\StatusProcesso::ANDAMENTO){
-                Flash::warning('Nenhuma notificação foi enviada agora! O correspondente já foi notificado e o processo está em andamento.');
-            }else{
+           
 
                 $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
@@ -1247,7 +1244,7 @@ class ProcessoController extends Controller
                     Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
                 }
 
-            }
+            
         }
 
         return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
