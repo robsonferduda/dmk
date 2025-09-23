@@ -400,6 +400,7 @@ class ProcessoController extends Controller
     public function listarPauta(Request $request)
     {
         $processo = ($request->processo) ? $request->processo : null;
+        $nm_correspondente = ($request->nm_correspondente) ? $request->nm_correspondente : null;
         $responsavel = ($request->responsavel) ? $request->responsavel : null;
         $tipo = ($request->tipo) ? $request->tipo : null;
         $nm_cliente = ($request->nm_cliente) ? $request->nm_cliente : null;
@@ -417,7 +418,7 @@ class ProcessoController extends Controller
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area, $nm_correspondente);
         
         return response()->json($processos);
     }
@@ -1747,20 +1748,20 @@ class ProcessoController extends Controller
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, null, null);
         
         return response()->json($processos);
     }
 
     public function getProcessosAndamento()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,null);
         return response()->json($processos);
     }
 
     public function getProcessosAndamentoCorrespondente()
     {
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, true, null, null, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, null, null, null, null, null, null, null, null, null, null, true, null, null, null, null,null);
         return response()->json($processos);
     }
 

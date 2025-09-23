@@ -241,7 +241,7 @@ class Processo extends Model implements AuditableContract
         return $assunto;
     }
 
-    public function getProcessosAndamento($conta, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento, $area)
+    public function getProcessosAndamento($conta, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag_correspondente, $cliente, $statusProcesso, $numero_acompanhamento, $area, $nm_correspondente)
     {
 
         $sql = "SELECT t1.cd_processo_pro, 
@@ -303,6 +303,7 @@ class Processo extends Model implements AuditableContract
         if($flag_correspondente == false) $sql .= " AND t1.cd_conta_con = $conta";
         if($cliente) $sql .= " AND t1.cd_cliente_cli = $cliente ";
         if($area) $sql .= " AND t1.cd_area_direito_ado = $area ";
+        if($nm_correspondente) $sql .= " AND t5.nm_conta_correspondente_ccr ilike '%$nm_correspondente%'";
 
         if($status){
 
