@@ -1832,7 +1832,7 @@ class ProcessoController extends Controller
             $extensions = array("xls","xlsx","XLSX","XLS");
             if (in_array($file->getClientOriginalExtension(), $extensions)) {
                 try {
-                    $colunas = ['CLIENTE','ADVOGADO_SOLICITANTE','NUMERO_PROCESSO','AUTOR','REU','DATA_SOLICITACAO','DATA_PRAZO_FATAL','HORA','ESTADO','COMARCA','VARA','TIPO_DE_SERVICO','TIPO_DE_PROCESSO'];
+                    $colunas = ['CLIENTE','ADVOGADO_SOLICITANTE','NUMERO_PROCESSO','AUTOR','REU','DATA_SOLICITACAO','DATA_PRAZO_FATAL','HORA','ESTADO','COMARCA','VARA','TIPO_DE_SERVICO','TIPO_DE_PROCESSO','AREA_DO_DIREITO'];
 
                     HeadingRowFormatter::default('none');
                     $headings = (new HeadingRowImport)->toArray($file);
@@ -1849,8 +1849,6 @@ class ProcessoController extends Controller
                     $import = new ProcessoImport();
 
                     $data =  Excel::import($import, $file);
-
-                    dd($import->getRowCount());
 
                     Flash::success($import->getRowCount().' Processo(s) criado(s) com sucesso. ');
                     return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);

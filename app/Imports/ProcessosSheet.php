@@ -36,6 +36,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
+
             $cliente = $cliente = Cliente::where('nu_cliente_cli', trim($row['cliente']))->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))->select('cd_cliente_cli', 'taxa_imposto_cli', 'cd_entidade_ete')->first();
             $contato = Contato::where('nu_contato_cot', trim($row['advogado_solicitante']))
                                ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
@@ -61,6 +62,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
             $processo = Processo::create([
                 'cd_entidade_ete' => $entidade->cd_entidade_ete,
+                'cd_area_direito_ado' => $row['area_do_direito'],
                 'cd_conta_con' => \Session::get('SESSION_CD_CONTA'),
                 'cd_cliente_cli' => $cliente->cd_cliente_cli,
                 'cd_contato_cot' => !empty($contato) ? $contato->cd_contato_cot : null,
@@ -104,6 +106,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
     public function prepareForValidation($data, $index)
     {
+        $data['area_do_direito'] = $this->limpaCodigo($data['area_do_direito']);
         $data['cliente'] = $this->limpaCodigo($data['cliente']);
         $data['advogado_solicitante'] = $this->limpaCodigo($data['advogado_solicitante']);
         $data['vara'] = $this->limpaCodigo($data['vara']);
