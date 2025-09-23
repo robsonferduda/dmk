@@ -219,7 +219,7 @@
 
                                     <section class="col col-xs-6 col-lg-6">
                                            
-                                            <label class="label" >Área do Direito</label>          
+                                            <label class="label" >Área do Direito<span class="text-danger">*</span>         
                                             <select  id="cd_area_direito_ado" name="cd_area_direito_ado" class="select2">
                                                 <option selected value="">Selecione um área</option>
                                                 @foreach($areas as $area) 
@@ -227,6 +227,7 @@
                                                 @endforeach
 
                                             </select> 
+                                            </label> 
                                     </section>
                                 </div> 
 
@@ -899,6 +900,9 @@
                         cd_tipo_servico_tse: {
                             required: true
                         },
+                        cd_area_direito_ado:{
+                            required: true
+                        },
                         dt_prazo_fatal_pro:{
                             required: true
                         },
@@ -941,6 +945,9 @@
                         },
                         cd_tipo_servico_tse: {
                             required : 'Campo Tipo de Serviço é obrigatório'
+                        },
+                        cd_area_direito_ado: {
+                            required : 'Campo obrigatório'
                         },
                         dt_prazo_fatal_pro: {
                             required : 'Campo Prazo Fatal é obrigatório'
