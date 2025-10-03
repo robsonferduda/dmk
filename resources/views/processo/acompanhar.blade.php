@@ -541,7 +541,7 @@
                         <div class="col-sm-12 col-md-4 col-lg-4">
 
                             @if(Session::get('SESSION_NIVEL') != 3)
-                            <h4 class="nobreak"><i class="fa fa-comments-o marginBottom5"></i> Chat Correspondente</h4>
+                            <h4 class="nobreak text-info"><i class="fa fa-comments-o  marginBottom5"></i> Chat Correspondente</h4>
                             @else
                             <h4><i class="fa fa-comments-o marginBottom5"></i> Histórico de Mensagens</h4>
                             @endif
@@ -650,7 +650,7 @@
 
                         @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
                         <div class="col-sm-12 col-md-4 col-lg-4">
-                            <h4><i class="fa fa-comments-o marginBottom5"></i> Chat Escritório</h4>
+                            <h4 class="text-danger"><i class="fa fa-comments-o marginBottom5"></i> Chat Escritório</h4>
                             <div class="messaging">
                                 <div class="inbox_msg">
                                     <div class="mesgs">
@@ -739,7 +739,7 @@
 
                              @if(Session::get('SESSION_NIVEL') and Session::get('SESSION_NIVEL') != 3)
                         <div class="col-sm-12 col-md-4 col-lg-4">
-                            <h4><i class="fa fa-comments-o marginBottom5"></i> Chat Cliente</h4>
+                            <h4 class="text-success"><i class="fa fa-comments-o marginBottom5"></i> Chat Cliente</h4>
                             <div class="messaging">
                                 <div class="inbox_msg">
                                     <div class="mesgs">
