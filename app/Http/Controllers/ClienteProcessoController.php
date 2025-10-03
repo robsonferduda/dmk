@@ -6,6 +6,7 @@ use Auth;
 use DB;
 use App\User;
 use App\Conta;
+use App\Contato;
 use App\Cliente;
 use App\Estado;
 use App\Entidade;
@@ -75,6 +76,47 @@ class ClienteProcessoController extends Controller
             ->get();
 
         return view('cliente/processo/listar', ['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico]);
+    }  
+
+    public function novo()
+    {
+        Session::put('item_pai','processo.novo');
+
+        if (!\Cache::has('estados')) {
+            $estados = Estado::orderBy('nm_estado_est')->get();
+            \Cache::put('estados', $estados, now()->addMinutes(1440));
+        } else {
+            $estados =  \Cache::get('estados');
+        }
+
+        $id_escritorio = 64;
+        $id_correspondente = 83;
+
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+        $correspondente = Conta::where('cd_conta_con', $id_correspondente)->first();
+        $advogados = Contato::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->get();
+
+        $sub = \DB::table('vara_var')
+                ->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")
+                ->whereNull('deleted_at')
+                ->whereRaw("cd_conta_con = $id_escritorio")
+                ->toSql();
+
+        $varas = \DB::table(\DB::raw("($sub) as sub "))
+            ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
+            ->orderByRaw("nullif(number,'')::int,caracter")
+            ->get();
+
+        $tiposProcesso  = TipoProcesso::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_processo_tpo')->get();
+        $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
+
+        return view('cliente/processo/novo', ['cliente' => $cliente,
+                                            'correspondente' => $correspondente,
+                                            'estados' => $estados,
+                                            'advogados' => $advogados,
+                                            'varas' => $varas, 
+                                            'tiposProcesso' => $tiposProcesso, 
+                                            'tiposDeServico' => $tiposDeServico]);
     }  
 
     public function getProcessosAndamento()
@@ -215,44 +257,7 @@ class ClienteProcessoController extends Controller
         return view('cliente/processo/acompanhar', ['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
     }
 
-    public function novo()
-    {
-        Session::put('item_pai','processo.novo');
-
-        if (!\Cache::has('estados')) {
-            $estados = Estado::orderBy('nm_estado_est')->get();
-            \Cache::put('estados', $estados, now()->addMinutes(1440));
-        } else {
-            $estados =  \Cache::get('estados');
-        }
-
-        $id_escritorio = 64;
-        $id_correspondente = 83;
-
-        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
-        $correspondente = Conta::where('cd_conta_con', $id_correspondente)->first();
-
-        $sub = \DB::table('vara_var')
-                ->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")
-                ->whereNull('deleted_at')
-                ->whereRaw("cd_conta_con = $id_escritorio")
-                ->toSql();
-
-        $varas = \DB::table(\DB::raw("($sub) as sub "))
-            ->selectRaw("cd_vara_var, concat(number,caracter) as nm_vara_var")
-            ->orderByRaw("nullif(number,'')::int,caracter")
-            ->get();
-
-        $tiposProcesso  = TipoProcesso::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_processo_tpo')->get();
-        $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
-
-        return view('cliente/processo/novo', ['cliente' => $cliente,
-                                            'correspondente' => $correspondente,
-                                            'estados' => $estados,
-                                            'varas' => $varas, 
-                                            'tiposProcesso' => $tiposProcesso, 
-                                            'tiposDeServico' => $tiposDeServico]);
-    }  
+    
 
     public function editar($id)
     {
