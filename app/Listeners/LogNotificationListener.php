@@ -43,11 +43,9 @@ class LogNotificationListener
             'Level' => $event->level,
         ];
 
-        /*
         Mail::raw(print_r($errorDetails, true), function ($message) use ($to) {
             $message->to($to)
                     ->subject('Erro Capturado na Aplicação');
         });
-        */
     }
 }
