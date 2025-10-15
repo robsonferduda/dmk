@@ -98,7 +98,7 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
             $i = ($this->importador->getRowCount()*100) / count($rows)*100;
             
-            event(new EventNotification(array('canal' => $this->canal, 'total' => $i/100)));
+            //event(new EventNotification(array('canal' => $this->canal, 'total' => $i/100)));
 
             usleep(50000);
         }
