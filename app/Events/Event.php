@@ -31,6 +31,6 @@ class Event
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('notificacao');
+        //return new PrivateChannel('notificacao');
     }
 }
