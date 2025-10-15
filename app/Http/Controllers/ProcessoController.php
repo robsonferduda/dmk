@@ -1267,7 +1267,7 @@ class ProcessoController extends Controller
             ]);
 
             Session::put('retorno', [
-                'tipo' => 'alerta',
+                'tipo' => 'token',
                 'msg'  => 'Link inválido ou expirado. Solicite um novo link para prosseguir.'
             ]);
 
