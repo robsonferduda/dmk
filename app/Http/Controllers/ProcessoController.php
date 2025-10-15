@@ -1268,7 +1268,7 @@ class ProcessoController extends Controller
 
             Session::put('retorno', [
                 'tipo' => 'token',
-                'msg'  => 'Link inválido ou expirado. Solicite um novo link para prosseguir.'
+                'msg'  => 'Link inválido ou expirado. Entre em contato com o escritório e solicite um novo link para prosseguir.'
             ]);
 
             return Redirect::route('msg-filiacao');
