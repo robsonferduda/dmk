@@ -179,7 +179,7 @@ class HonorariosCorrespondenteController extends Controller
 
             $valor = str_replace(",", ".", $valor);
 
-            event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'visibilidade' => 1)));
+            //event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'visibilidade' => 1)));
 
             //Sempre irá atualizar o valor de serviço da comarca selecionada
             $honorario = TaxaHonorario::updateOrCreate(['cd_conta_con' => $this->conta,
@@ -202,7 +202,7 @@ class HonorariosCorrespondenteController extends Controller
                                                                 ['nu_taxa_the' => $valor,
                                                                 'dc_observacao_the' => '--']);
 
-                    event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'total' => $i, 'mensagens' => "")));
+                    //event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'total' => $i, 'mensagens' => "")));
                 }
                 
             }
@@ -230,7 +230,7 @@ class HonorariosCorrespondenteController extends Controller
                 }
             }
 
-            event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'visibilidade' => 0)));
+            //event(new EventNotification(array('canal' => $this->canal, 'conta' => 999, 'visibilidade' => 0)));
         }        
     }
 
