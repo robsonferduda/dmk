@@ -419,11 +419,13 @@ class CorrespondenteController extends Controller
         $correspondente = ContaCorrespondente::where('cd_conta_con', $convite->cd_conta_con)->where('cd_correspondente_cor', $user->cd_conta_con)->first();
 
         if (is_null($correspondente)) {
+
             $correspondente = new ContaCorrespondente();
             $correspondente->cd_conta_con = $convite->cd_conta_con;
             $correspondente->cd_correspondente_cor = $user->cd_conta_con;
                 
             if ($correspondente->save()) {
+                
                 $convite->fl_aceite_coc = 'S';
                 $convite->dt_aceite_coc = date("Y-m-d H:i:s");
                 $convite->save();
@@ -431,6 +433,7 @@ class CorrespondenteController extends Controller
                 $conta = Conta::where('cd_conta_con', $convite->cd_conta_con)->first();
                 \Session::put('retorno', array('tipo' => 'sucesso','msg' => 'Você foi adicionado como correspondente de '.$conta->nm_razao_social_con.' com sucesso'));
                 return Redirect::route('msg-filiacao');
+
             } else {
                 \Session::put('retorno', array('tipo' => 'erro','msg' => 'Erro ao aceitar convite'));
                 return Redirect::route('msg-filiacao');

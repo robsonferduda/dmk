@@ -428,4 +428,14 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('suporte/ticket/{id}', 'TicketController@show');
     Route::post('suporte/ticket/{id}/comentario', 'TicketController@comment');
     Route::get('suporte/ticket/anexo/{id}', 'TicketController@anexo');
+
+    Route::get('/__put', function () {
+        session(['probe' => 'ok-'.uniqid()]);
+        return 'gravou';
+    });
+
+    Route::get('/__get', function () {
+        return 'probe='.session('probe', 'vazio');
+    });
+
 });
