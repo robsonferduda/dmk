@@ -41,6 +41,7 @@ use Laracasts\Flash\Flash;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use App\Imports\ProcessoImport;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class ProcessoController extends Controller
 {
@@ -1252,7 +1253,37 @@ class ProcessoController extends Controller
 
     public function responderNotificacao($resposta, $token)
     {
-        $id = \Crypt::decrypt($token);
+
+        try {
+
+            $id = \Crypt::decrypt($token);
+        
+        } catch (DecryptException $e) {
+        
+            // token inválido/expirado/corrompido → manda requisitar novo link
+            Log::warning('Link de resposta inválido/expirado', [
+                'ip'   => request()->ip(),
+                'ua'   => request()->userAgent(),
+            ]);
+
+            Session::put('retorno', [
+                'tipo' => 'alerta',
+                'msg'  => 'Link inválido ou expirado. Solicite um novo link para prosseguir.'
+            ]);
+
+            return Redirect::route('msg-filiacao');
+
+        } catch (\Throwable $e) {
+            // fallback para qualquer outro erro inesperado
+            Log::error('Erro ao processar resposta', ['e' => $e]);
+            Session::put('retorno', [
+                'tipo' => 'erro',
+                'msg'  => 'Não foi possível processar sua solicitação no momento. Tente novamente mais tarde.'
+            ]);
+            return Redirect::route('msg-filiacao');
+        }
+
+
 
         $processo = Processo::with('cliente')->where('cd_processo_pro', $id)->first();
 
