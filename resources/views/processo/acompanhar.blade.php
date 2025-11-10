@@ -1133,7 +1133,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label><strong>Link dos Arquivos</strong><span class="text-info"> Informe o link do drive para os arquivos</span></label>
-                                        <input type="text" class="form-control" placeholder="Link dos arquivos" required="required" name="link_dados" id="link_dados" value="{{ ($processo->ds_link_dados_pro) ? $processo->ds_link_dados_pro : '' }}">
+                                        <input type="text" class="form-control" placeholder="Link dos arquivos" name="link_dados" id="link_dados" value="{{ ($processo->ds_link_dados_pro) ? $processo->ds_link_dados_pro : '' }}">
                                         <div id="msg_error_preposto" class="text-danger"></div>
                                     </div>    
                                 </div>
