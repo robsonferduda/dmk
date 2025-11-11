@@ -268,7 +268,7 @@
                                     html += '<td>' + (processo.cidade || 'N/A') + '</td>';
                                     html += '<td><span class="badge badge-' + statusClass + '">' + statusLabel + '</span></td>';
                                     html += '<td>' + processo.dt_cadastro + '</td>';
-                                    html += '<td class="text-center">';
+                                    html += '<td class="text-center" style="min-width: 100px;">';
                                     html += '<a href="{{ url("processos/acompanhamento") }}/' + processo.hash + '" class="btn btn-xs btn-primary" title="Visualizar" style="margin-right: 3px;">';
                                     html += '<i class="fa fa-eye"></i>';
                                     html += '</a>';
