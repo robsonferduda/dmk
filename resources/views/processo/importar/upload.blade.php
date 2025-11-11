@@ -20,10 +20,15 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-6 col-sm-12 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-file-o"></i> Processos <span> > Importar </span>
             </h1>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 box-button-xs">
+            <div class="boxBtnTopo sub-box-button-xs">
+                <a data-toggle="modal" data-target="#modal_layout_processo" class="btn btn-default pull-right"><i class="fa fa-file-excel-o fa-lg"></i><span> Layout de Importação</span></a>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -47,18 +52,15 @@
             <div class="well">
                 <div class="row"> 
                     {{ Form::open(array('url' => 'processos/importar', 'method' => 'post', 'id' => 'form-importar-processos', 'enctype' => 'multipart/form-data')) }}               
-                    <section class="col col-xs-12 col-md-5 smart-form">
-                        <div class="input input-file">
-                            <span class="button"><input type="file" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Procurar Arquivo</span><input type="text" placeholder="Arquivo" readonly="">
-                        </div>
-                    </section>
-                     <section class="col col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <button type="submit" class="btn btn-success btn-importar"><i class="fa fa-file-excel-o fa-lg"></i><span> Importar</span></button>
-                    </section>
+                        <section class="col col-xs-12 col-md-5 smart-form">
+                            <div class="input input-file">
+                                <span class="button"><input type="file" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">Procurar Arquivo</span><input type="text" placeholder="Arquivo" readonly="">
+                            </div>
+                        </section>
+                        <section class="col col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <button type="submit" class="btn btn-success btn-importar"><i class="fa fa-file-excel-o fa-lg"></i><span> Importar Planilha</span></button>
+                        </section>
                     {{ Form::close() }}
-                    <section class="col col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <a data-toggle="modal" data-target="#modal_layout_processo" class="btn btn-default"><i class="fa fa-file-excel-o fa-lg"></i><span> Layout de Importação</span></a>
-                    </section>
                 </div>
                 
                 <!-- Área de Feedback de Importação -->
@@ -161,7 +163,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-file-pdf-o"></i> Layoute de Importação</h4>
+                        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-file-pdf-o"></i> Layout de Importação</h4>
                      </div>
                     <div class="modal-body">
                         <form method="POST" class="smart-form" id="frm-importar-processo" action="{{ url('layout/importar/processo') }}">
@@ -170,7 +172,7 @@
                                 <div class="row">
                                     <section class="col col-md-12">
                                         <div class="form-group">
-                                            <label class="label label-black" >Cliente<span class="text-danger">*</span></label></label>          
+                                            <label class="label label-black">Cliente<span class="text-danger">*</span></label></label>          
                                             <select required class="select2" name="cliente" data-input="#codigo-cliente" >
                                                  <option selected value="" >Selecione um Cliente</option>
                                                 @foreach($clientes as $cliente)
