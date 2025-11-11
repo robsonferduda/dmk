@@ -269,8 +269,11 @@
                                     html += '<td><span class="badge badge-' + statusClass + '">' + statusLabel + '</span></td>';
                                     html += '<td>' + processo.dt_cadastro + '</td>';
                                     html += '<td class="text-center">';
-                                    html += '<a href="{{ url("processos") }}/' + processo.cd_processo_pro + '" class="btn btn-xs btn-info" title="Visualizar">';
+                                    html += '<a href="{{ url("processos/acompanhamento") }}/' + processo.hash + '" class="btn btn-xs btn-primary" title="Visualizar" style="margin-right: 3px;">';
                                     html += '<i class="fa fa-eye"></i>';
+                                    html += '</a>';
+                                    html += '<a href="{{ url("processos/editar") }}/' + processo.hash + '" class="btn btn-xs btn-warning" title="Editar">';
+                                    html += '<i class="fa fa-edit"></i>';
                                     html += '</a>';
                                     html += '</td>';
                                     html += '</tr>';

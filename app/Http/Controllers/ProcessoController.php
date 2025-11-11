@@ -2022,6 +2022,7 @@ class ProcessoController extends Controller
             $processosFormatados = $processos->map(function($processo) {
                 return [
                     'cd_processo_pro' => $processo->cd_processo_pro,
+                    'hash' => \Crypt::encrypt($processo->cd_processo_pro),
                     'nu_processo_pro' => $processo->nu_processo_pro,
                     'nm_autor_pro' => $processo->nm_autor_pro,
                     'nm_reu_pro' => $processo->nm_reu_pro,
