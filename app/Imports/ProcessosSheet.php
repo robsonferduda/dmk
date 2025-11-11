@@ -106,7 +106,16 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
     public function prepareForValidation($data, $index)
     {
-        $data['area_do_direito'] = $this->limpaCodigo($data['area_do_direito']);
+        // Limpa área do direito (extrai apenas o código do formato "53 - CÍVEL")
+        if (!empty($data['area_do_direito'])) {
+            // Se vier no formato "53 - CÍVEL", extrai apenas o número
+            if (strpos($data['area_do_direito'], ' - ') !== false) {
+                $data['area_do_direito'] = trim(explode(' - ', $data['area_do_direito'])[0]);
+            } else {
+                $data['area_do_direito'] = $this->limpaCodigo($data['area_do_direito']);
+            }
+        }
+        
         $data['cliente'] = $this->limpaCodigo($data['cliente']);
         $data['advogado_solicitante'] = $this->limpaCodigo($data['advogado_solicitante']);
         $data['vara'] = $this->limpaCodigo($data['vara']);
@@ -292,6 +301,18 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
                                 ->first();
                     if (!$tp) {
                         $onFailure('Tipo de Processo ('.trim($value).') não encontrado.');
+                    }
+                }
+            },
+            'area_do_direito' => function ($attribute, $value, $onFailure) {
+                if (empty(trim($value))) {
+                    $onFailure('A coluna Área do Direito é obrigatória.');
+                }
+
+                if (!empty(trim($value))) {
+                    $areas_permitidas = [53, 55]; // 53 = CÍVEL, 55 = TRABALHISTA
+                    if (!in_array((int)trim($value), $areas_permitidas)) {
+                        $onFailure('Área do Direito ('.trim($value).') inválida. Valores permitidos: 53 (CÍVEL) ou 55 (TRABALHISTA).');
                     }
                 }
             },

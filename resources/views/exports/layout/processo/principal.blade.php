@@ -14,6 +14,7 @@
             <td style="font-weight: bold;">VARA</td>
             <td style="font-weight: bold;">TIPO_DE_SERVICO</td>
             <td style="font-weight: bold;">TIPO_DE_PROCESSO</td>
+            <td style="font-weight: bold;">AREA_DO_DIREITO</td>
             <td style="font-weight: bold;">NUMERO_EXTERNO</td>                       
 	    </tr>
     </thead>

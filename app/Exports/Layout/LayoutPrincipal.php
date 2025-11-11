@@ -50,6 +50,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
             'L' => 30,
             'M' => 30,
             'N' => 30,
+            'O' => 30,
 
         ];
     }
@@ -202,6 +203,28 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPromptTitle('Tipo de Processo');
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
+
+                // // clone validation to remaining rows
+                // for ($i = 3; $i <= 500; $i++) {
+                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                // }
+
+                // Área do Direito
+                $drop_column = 'N';
+
+                // set dropdown list for first data row
+                $validation = $event->sheet->getCell("{$drop_column}2")->getDataValidation();
+                $validation->setType(DataValidation::TYPE_LIST);
+                $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
+                $validation->setAllowBlank(false);
+                $validation->setShowInputMessage(true);
+                $validation->setShowErrorMessage(true);
+                $validation->setShowDropDown(true);
+                $validation->setErrorTitle('Erro de entrada de dados.');
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Área do Direito');
+                $validation->setPrompt('Selecione um valor da lista.');
+                $validation->setFormula1('"53 - CÍVEL,55 - TRABALHISTA"');
 
                 // // clone validation to remaining rows
                 // for ($i = 3; $i <= 500; $i++) {
