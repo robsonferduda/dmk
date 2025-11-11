@@ -1867,9 +1867,16 @@ class ProcessoController extends Controller
 
                     HeadingRowFormatter::default('none');
                     $headings = (new HeadingRowImport)->toArray($file);
-                    // dd($file->getClientOriginalExtension());
+                    
                     foreach ($colunas as $coluna) {
                         if (in_array($coluna, $headings[0][0]) === false) {
+                            if ($request->ajax()) {
+                                return response()->json([
+                                    'success' => false,
+                                    'message' => 'Coluna ('.$coluna.') não encontrada na planilha',
+                                    'errors' => ['Coluna ('.$coluna.') não encontrada na planilha']
+                                ], 422);
+                            }
                             Flash::error('Coluna ('.$coluna.') não encontrada na planilha');
                             return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
                         }
@@ -1877,22 +1884,180 @@ class ProcessoController extends Controller
 
                     HeadingRowFormatter::default('slug');
                     
+                    // Contar total de linhas
+                    $allData = (new HeadingRowImport)->toArray($file);
+                    $totalLinhas = count($allData[0]) - 1; // Subtrair cabeçalho
+                    
+                    // Inicializar progresso no cache
+                    $progressKey = 'import_progress_' . \Auth::user()->id;
+                    \Cache::put($progressKey, [
+                        'total' => $totalLinhas,
+                        'processadas' => 0,
+                        'sucesso' => 0,
+                        'erros' => 0,
+                        'status' => 'processando'
+                    ], 600); // 10 minutos
+                    
                     $import = new ProcessoImport();
 
-                    $data =  Excel::import($import, $file);
+                    $data = Excel::import($import, $file);
+                    
+                    $rowCount = $import->getRowCount();
+                    $message = $rowCount.' Processo(s) criado(s) com sucesso.';
+                    
+                    // Atualizar progresso final
+                    \Cache::put($progressKey, [
+                        'total' => $totalLinhas,
+                        'processadas' => $rowCount,
+                        'sucesso' => $rowCount,
+                        'erros' => 0,
+                        'status' => 'concluido'
+                    ], 600);
 
-                    Flash::success($import->getRowCount().' Processo(s) criado(s) com sucesso. ');
+                    if ($request->ajax()) {
+                        return response()->json([
+                            'success' => true,
+                            'message' => $message,
+                            'total' => $totalLinhas,
+                            'processadas' => $rowCount,
+                            'sucesso' => $rowCount,
+                            'erros' => 0
+                        ]);
+                    }
+
+                    Flash::success($message);
                     return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
 
                 } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
                     $failures = $e->failures();
+                    
+                    if ($request->ajax()) {
+                        $errors = [];
+                        foreach ($failures as $failure) {
+                            foreach ($failure->errors() as $error) {
+                                $errors[] = 'Linha ' . $failure->row() . ': ' . $error;
+                            }
+                        }
+                        
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Erros de validação encontrados',
+                            'errors' => $errors,
+                            'total' => count($failures),
+                            'processadas' => 0,
+                            'sucesso' => 0,
+                            'erros' => count($failures)
+                        ], 422);
+                    }
+                    
                     return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);
+                } catch (\Exception $e) {
+                    if ($request->ajax()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Erro ao processar arquivo',
+                            'errors' => [$e->getMessage()]
+                        ], 500);
+                    }
+                    
+                    Flash::error('Erro ao processar arquivo: ' . $e->getMessage());
+                    return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
                 }
             } else {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Extensão da planilha é inválida',
+                        'errors' => ['Extensões permitidas: "xls","xlsx","XLSX","XLS"']
+                    ], 422);
+                }
+                
                 Flash::error('Extensão da planilha é inválida. Extensões permitidas: "xls","xlsx","XLSX","XLS". ');
-                return view('processo/importar/upload', ['failures' => $failures, 'clientes' => $clientes]);
+                return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
             }
         }
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nenhum arquivo selecionado',
+                'errors' => ['Por favor, selecione um arquivo para importar']
+            ], 422);
+        }
+        
+        Flash::error('Nenhum arquivo selecionado');
+        return view('processo/importar/upload', ['failures' => '', 'clientes' => $clientes]);
+    }
+    
+    public function progressoImportacao()
+    {
+        $progressKey = 'import_progress_' . \Auth::user()->id;
+        $progress = \Cache::get($progressKey, [
+            'total' => 0,
+            'processadas' => 0,
+            'sucesso' => 0,
+            'erros' => 0,
+            'status' => 'aguardando'
+        ]);
+        
+        return response()->json($progress);
+    }
+    
+    public function processosImportadosHoje(Request $request)
+    {
+        try {
+            $query = Processo::where('cd_conta_con', $this->cdContaCon)
+                ->whereNotNull('nu_lote')
+                ->whereDate('created_at', date('Y-m-d'))
+                ->with(['cliente:cd_cliente_cli,nm_razao_social_cli', 'cidade:cd_cidade_cde,nm_cidade_cde', 'status:cd_status_processo_stp,nm_status_processo_conta_stp'])
+                ->orderBy('created_at', 'desc');
+            
+            // Busca por número do processo
+            if ($request->has('busca') && !empty($request->busca)) {
+                $query->where('nu_processo_pro', 'ILIKE', '%' . $request->busca . '%');
+            }
+            
+            $processos = $query->get();
+            
+            $processosFormatados = $processos->map(function($processo) {
+                return [
+                    'cd_processo_pro' => $processo->cd_processo_pro,
+                    'nu_processo_pro' => $processo->nu_processo_pro,
+                    'nm_autor_pro' => $processo->nm_autor_pro,
+                    'nm_reu_pro' => $processo->nm_reu_pro,
+                    'cliente' => $processo->cliente ? $processo->cliente->nm_razao_social_cli : 'N/A',
+                    'cidade' => $processo->cidade ? $processo->cidade->nm_cidade_cde : 'N/A',
+                    'status_label' => $processo->status ? $processo->status->nm_status_processo_conta_stp : 'N/A',
+                    'status_class' => $this->getStatusClass($processo->cd_status_processo_stp),
+                    'dt_cadastro' => $processo->created_at ? $processo->created_at->format('d/m/Y H:i') : 'N/A',
+                    'nu_lote' => $processo->nu_lote
+                ];
+            });
+            
+            return response()->json([
+                'success' => true,
+                'processos' => $processosFormatados,
+                'total' => $processos->count()
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar processos: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    private function getStatusClass($statusId)
+    {
+        $statusClasses = [
+            1 => 'warning',  // Pendente Análise
+            2 => 'primary',  // Em Andamento
+            3 => 'success',  // Concluído
+            4 => 'danger',   // Cancelado
+        ];
+        
+        return $statusClasses[$statusId] ?? 'default';
     }
 
     public function informarLinkDados(Request $request)

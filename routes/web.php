@@ -151,6 +151,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/importar/codigos', 'ProcessoController@codigos');
     Route::get('processos/importar', 'ProcessoController@importarUpload');
     Route::post('processos/importar', 'ProcessoController@importar');
+    Route::get('processos/importar/progresso', 'ProcessoController@progressoImportacao');
+    Route::get('processos/importados-hoje', 'ProcessoController@processosImportadosHoje');
     Route::get('processo/{id}/anexos', 'ProcessoController@getAnexos')->name('processo.anexos');
 
     Route::get('tipos-de-servico/cliente/{cliente}/cidade/{cidade}', 'TipoServicoController@consultarClienteCidade');

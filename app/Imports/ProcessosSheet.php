@@ -35,66 +35,103 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 
     public function collection(Collection $rows)
     {
-        foreach ($rows as $row) {
+        $progressKey = 'import_progress_' . \Auth::user()->id;
+        $totalLinhas = count($rows);
+        
+        foreach ($rows as $index => $row) {
 
-            $cliente = $cliente = Cliente::where('nu_cliente_cli', trim($row['cliente']))->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))->select('cd_cliente_cli', 'taxa_imposto_cli', 'cd_entidade_ete')->first();
-            $contato = Contato::where('nu_contato_cot', trim($row['advogado_solicitante']))
-                               ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                               ->select('cd_contato_cot')
-                               ->first();
-            $vara = Vara::where('nu_vara_var', trim($row['vara']))
-                               ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                               ->select('cd_vara_var')
-                               ->first();
-            $tp = TipoProcesso::where('nu_tipo_processo_tpo', trim($row['tipo_de_processo']))
-                                ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                                ->select('cd_tipo_processo_tpo')
-                                ->first();
-            $ts = TipoServico::where('nu_tipo_servico_tse', trim($row['tipo_de_servico']))
-                                ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                                ->select('cd_tipo_servico_tse')
-                                ->first();
+            try {
+                $cliente = $cliente = Cliente::where('nu_cliente_cli', trim($row['cliente']))->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))->select('cd_cliente_cli', 'taxa_imposto_cli', 'cd_entidade_ete')->first();
+                $contato = Contato::where('nu_contato_cot', trim($row['advogado_solicitante']))
+                                   ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+                                   ->select('cd_contato_cot')
+                                   ->first();
+                $vara = Vara::where('nu_vara_var', trim($row['vara']))
+                                   ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+                                   ->select('cd_vara_var')
+                                   ->first();
+                $tp = TipoProcesso::where('nu_tipo_processo_tpo', trim($row['tipo_de_processo']))
+                                    ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+                                    ->select('cd_tipo_processo_tpo')
+                                    ->first();
+                $ts = TipoServico::where('nu_tipo_servico_tse', trim($row['tipo_de_servico']))
+                                    ->where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+                                    ->select('cd_tipo_servico_tse')
+                                    ->first();
 
-            $entidade = Entidade::create([
-                'cd_conta_con'         => \Session::get('SESSION_CD_CONTA'),
-                'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
-            ]);
+                $entidade = Entidade::create([
+                    'cd_conta_con'         => \Session::get('SESSION_CD_CONTA'),
+                    'cd_tipo_entidade_tpe' => \TipoEntidade::PROCESSO
+                ]);
 
-            $processo = Processo::create([
-                'cd_entidade_ete' => $entidade->cd_entidade_ete,
-                'cd_area_direito_ado' => $row['area_do_direito'],
-                'cd_conta_con' => \Session::get('SESSION_CD_CONTA'),
-                'cd_cliente_cli' => $cliente->cd_cliente_cli,
-                'cd_contato_cot' => !empty($contato) ? $contato->cd_contato_cot : null,
-                'dt_solicitacao_pro' => !empty(trim($row['data_solicitacao'])) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['data_solicitacao']) : null,
-                'dt_prazo_fatal_pro' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['data_prazo_fatal']),
-                'nm_autor_pro' => trim($row['autor']),
-                'nm_reu_pro' => trim($row['reu']),
-                'nu_processo_pro' => trim($row['numero_processo']),
-                'cd_vara_var' => !empty($vara) ? $vara->cd_vara_var : null,
-                'cd_cidade_cde' => trim($row['comarca']),
-                'cd_tipo_processo_tpo' => $tp->cd_tipo_processo_tpo,
-                'nu_acompanhamento_pro' => trim($row['numero_externo']),
-                'hr_audiencia_pro' => !empty($row['hora']) ?  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['hora'])->format('H:i') : null,
-                'cd_status_processo_stp' => \App\Enums\StatusProcesso::PENDENTE_ANALISE,
-                'nu_lote' => rand(100000,999999)
-            ]);
+                $processo = Processo::create([
+                    'cd_entidade_ete' => $entidade->cd_entidade_ete,
+                    'cd_area_direito_ado' => $row['area_do_direito'],
+                    'cd_conta_con' => \Session::get('SESSION_CD_CONTA'),
+                    'cd_cliente_cli' => $cliente->cd_cliente_cli,
+                    'cd_contato_cot' => !empty($contato) ? $contato->cd_contato_cot : null,
+                    'dt_solicitacao_pro' => !empty(trim($row['data_solicitacao'])) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['data_solicitacao']) : null,
+                    'dt_prazo_fatal_pro' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['data_prazo_fatal']),
+                    'nm_autor_pro' => trim($row['autor']),
+                    'nm_reu_pro' => trim($row['reu']),
+                    'nu_processo_pro' => trim($row['numero_processo']),
+                    'cd_vara_var' => !empty($vara) ? $vara->cd_vara_var : null,
+                    'cd_cidade_cde' => trim($row['comarca']),
+                    'cd_tipo_processo_tpo' => $tp->cd_tipo_processo_tpo,
+                    'nu_acompanhamento_pro' => trim($row['numero_externo']),
+                    'hr_audiencia_pro' => !empty($row['hora']) ?  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['hora'])->format('H:i') : null,
+                    'cd_status_processo_stp' => \App\Enums\StatusProcesso::PENDENTE_ANALISE,
+                    'nu_lote' => rand(100000,999999)
+                ]);
 
-            $valor = TaxaHonorario::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
-                                  ->where('cd_tipo_servico_tse', $ts->cd_tipo_servico_tse)
-                                  ->where('cd_cidade_cde', $row['comarca'])
-                                  ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
-                                  ->select('nu_taxa_the')->first();
+                $valor = TaxaHonorario::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))
+                                      ->where('cd_tipo_servico_tse', $ts->cd_tipo_servico_tse)
+                                      ->where('cd_cidade_cde', $row['comarca'])
+                                      ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+                                      ->select('nu_taxa_the')->first();
 
-            $honorario = ProcessoTaxaHonorario::create([
-                'cd_conta_con' => \Session::get('SESSION_CD_CONTA'),
-                'cd_processo_pro' => $processo->cd_processo_pro,
-                'cd_tipo_servico_tse' => $ts->cd_tipo_servico_tse,
-                'vl_taxa_honorario_cliente_pth' => !empty($valor) ? $valor->nu_taxa_the : null,
-                'vl_taxa_cliente_pth' => !empty($cliente->taxa_imposto_cli) ? $cliente->taxa_imposto_cli : null
-             ]);
+                $honorario = ProcessoTaxaHonorario::create([
+                    'cd_conta_con' => \Session::get('SESSION_CD_CONTA'),
+                    'cd_processo_pro' => $processo->cd_processo_pro,
+                    'cd_tipo_servico_tse' => $ts->cd_tipo_servico_tse,
+                    'vl_taxa_honorario_cliente_pth' => !empty($valor) ? $valor->nu_taxa_the : null,
+                    'vl_taxa_cliente_pth' => !empty($cliente->taxa_imposto_cli) ? $cliente->taxa_imposto_cli : null
+                 ]);
 
-            $this->importador->setRowCount();
+                $this->importador->setRowCount();
+                
+                // Atualizar progresso no cache
+                $progress = \Cache::get($progressKey, [
+                    'total' => $totalLinhas,
+                    'processadas' => 0,
+                    'sucesso' => 0,
+                    'erros' => 0
+                ]);
+                
+                $progress['processadas'] = $this->importador->getRowCount();
+                $progress['sucesso'] = $this->importador->getRowCount();
+                $progress['status'] = 'processando';
+                
+                \Cache::put($progressKey, $progress, 600);
+
+            } catch (\Exception $e) {
+                // Em caso de erro, atualizar contador de erros
+                $progress = \Cache::get($progressKey, [
+                    'total' => $totalLinhas,
+                    'processadas' => 0,
+                    'sucesso' => 0,
+                    'erros' => 0
+                ]);
+                
+                $progress['processadas'] = ($index + 1);
+                $progress['erros'] = $progress['erros'] + 1;
+                $progress['status'] = 'processando';
+                
+                \Cache::put($progressKey, $progress, 600);
+                
+                // Re-lançar exceção para que a validação padrão funcione
+                throw $e;
+            }
 
             $i = ($this->importador->getRowCount()*100) / count($rows)*100;
             
