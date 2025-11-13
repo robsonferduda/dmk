@@ -659,6 +659,7 @@ class ProcessoController extends Controller
 
         //Altera os campos do processo para nulo 
         $novoProcesso->nm_advogado_pro = null;
+        $novoProcesso->ds_link_audiencia_pro = null;
         $novoProcesso->nm_preposto_pro = null;
         $novoProcesso->dc_observacao_processo_pro = null;
         $novoProcesso->dc_observacao_pro = null;
