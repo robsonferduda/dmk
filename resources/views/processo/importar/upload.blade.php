@@ -185,11 +185,11 @@
                                         <div class="form-group">
                                             <label class="label label-black">Onde você irá usar a planilha?<span class="text-danger">*</span></label>
                                             <div class="inline-group">
-                                                <label class="radio" style="padding-left: 10px;">
+                                                <label class="radio" style="">
                                                     <input type="radio" name="formato_planilha" value="google_sheets" checked>
                                                     <i></i>Google Sheets (Google Planilhas)
                                                 </label>
-                                                <label class="radio" style="padding-left: 10px;">
+                                                <label class="radio" style="">
                                                     <input type="radio" name="formato_planilha" value="excel_libreoffice">
                                                     <i></i>Excel ou LibreOffice
                                                 </label>
