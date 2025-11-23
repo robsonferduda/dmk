@@ -35,8 +35,12 @@ class LayoutController extends Controller
 
         //$nomeContato = !empty($contato) ? $contato->nm_contato_cot.' ---'.$contato->nu_contato_cot.'---' : '';
 
+        // Determinar formato da planilha
+        $formatoPlanilha = $request->input('formato_planilha', 'google_sheets');
+
         $dados = [
-            'cliente' => $cliente
+            'cliente' => $cliente,
+            'formato' => $formatoPlanilha
         ];
 
         $fileName = 'layout-'.$cliente->nm_razao_social_cli.'.xlsx';

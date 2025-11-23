@@ -13,7 +13,7 @@ use App\Vara;
 
 class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidths
 {
-    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados)
+    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados, $formato = 'google_sheets')
     {
         $this->varas = $varas;
         $this->tiposSevico = $tiposSevico;
@@ -21,6 +21,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
         $this->tiposProcesso = $tiposProcesso;
         $this->cliente = $cliente;
         $this->advogados = $advogados;
+        $this->formato = $formato;
     }
 
     public function view(): View
@@ -153,38 +154,32 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 // }
 
-                // Comarca
+                // Comarca - Validação baseada no formato escolhido
                 $drop_column = 'J';
 
-                // set dropdown list for first data row
                 $validation = $event->sheet->getCell("{$drop_column}2")->getDataValidation();
                 $validation->setType(DataValidation::TYPE_LIST);
                 $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-                $validation->setAllowBlank(false);
+                $validation->setAllowBlank(true);
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-                $validation->setErrorTitle('Erro de entrada de dados.');
-                $validation->setError('O valor não está na lista.');
-                $validation->setPromptTitle('Comarca');
-                $validation->setPrompt('Selecione um valor da lista.');
-                $validation->setFormula1('=INDIRECT($I$2)');
 
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $validation = $event->sheet->getCell("{$drop_column}".$i)->getDataValidation();
-                //     $validation->setType(DataValidation::TYPE_LIST);
-                //     $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-                //     $validation->setAllowBlank(false);
-                //     $validation->setShowInputMessage(true);
-                //     $validation->setShowErrorMessage(true);
-                //     $validation->setShowDropDown(true);
-                //     $validation->setErrorTitle('Erro de entrada de dados.');
-                //     $validation->setError('O valor não está na lista.');
-                //     $validation->setPromptTitle('Selecione um valor');
-                //     $validation->setPrompt('Selecione um valor da lista.');
-                //     $validation->setFormula1('=INDIRECT($I$'.$i.')');
-                // }
+                if ($this->formato === 'excel_libreoffice') {
+                    // Excel/LibreOffice: Usar INDIRECT para filtro dinâmico
+                    $validation->setErrorTitle('Erro de entrada de dados.');
+                    $validation->setError('O valor não está na lista.');
+                    $validation->setPromptTitle('Comarca');
+                    $validation->setPrompt('Selecione uma comarca. A lista será filtrada automaticamente pelo estado selecionado.');
+                    $validation->setFormula1('=INDIRECT($I$2)');
+                } else {
+                    // Google Sheets: Lista completa com prefixo de estado
+                    $validation->setErrorTitle('Comarca');
+                    $validation->setError('Selecione uma comarca da lista.');
+                    $validation->setPromptTitle('Comarca');
+                    $validation->setPrompt('Selecione uma comarca no formato "UF - Cidade" (ex: SC - Florianópolis). A lista está organizada alfabeticamente.');
+                    $validation->setFormula1('Cidades!$A$2:$A$10000');
+                }
 
 
                 // Tipo de Processo

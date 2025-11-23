@@ -13,11 +13,12 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
 class LayoutCidade implements FromView, ShouldAutoSize, WithTitle, WithEvents, WithColumnFormatting
 {
-    public function __construct($estados, $cidades)
+    public function __construct($estados, $cidades, $formato = 'google_sheets')
     {
         $this->estados = $estados;
         $this->cidades = $cidades;
         $this->cidadesMemory = [];
+        $this->formato = $formato;
     }
 
     public function view(): View
@@ -35,7 +36,11 @@ class LayoutCidade implements FromView, ShouldAutoSize, WithTitle, WithEvents, W
 
         $this->cidadesMemory = $cidades;
 
-        return view('exports.layout.processo.cidades', ['estados' => $this->estados, 'cidades' => $cidades]);
+        return view('exports.layout.processo.cidades', [
+            'estados' => $this->estados, 
+            'cidades' => $cidades,
+            'formato' => $this->formato
+        ]);
     }
 
     public function title(): string
@@ -50,20 +55,36 @@ class LayoutCidade implements FromView, ShouldAutoSize, WithTitle, WithEvents, W
 
                 $event->sheet->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
 
-                $letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
-                           'P','Q','R','S','T','U','V','W','X','Y','Z','AA'];
-                $i = 0;
+                // Se for Excel/LibreOffice, criar Named Ranges para dropdown dinâmico
+                if ($this->formato === 'excel_libreoffice') {
+                    $letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
+                               'P','Q','R','S','T','U','V','W','X','Y','Z','AA'];
+                    $i = 0;
 
-                $sheet = $event->sheet;
+                    $sheet = $event->sheet;
 
-                foreach ($this->estados as $estado) {
-                    $range = '$'.$letras[$i].'$2:$'.$letras[$i].'$'.(count($this->cidadesMemory[$estado->cd_estado_est])+1);
-                    $sheet->getParent()->addNamedRange(new \PhpOffice\PhpSpreadsheet\NamedRange($estado->sg_estado_est, $sheet->getDelegate(), $range));
-        
-                    //  print_r($letras[$i].'2:'.$letras[$i].(count($this->cidadesMemory[$estado->cd_estado_est])+1)); echo '<br>';
-                    $i++;
+                    foreach ($this->estados as $estado) {
+                        // Criar Named Range para cada estado
+                        $range = '$'.$letras[$i].'$2:$'.$letras[$i].'$'.(count($this->cidadesMemory[$estado->cd_estado_est])+1);
+                        $sheet->getParent()->addNamedRange(new \PhpOffice\PhpSpreadsheet\NamedRange($estado->sg_estado_est, $sheet->getDelegate(), $range));
+                        $i++;
+                    }
+                } else {
+                    // Para Google Sheets, apenas adiciona siglas na linha 1
+                    $letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
+                               'P','Q','R','S','T','U','V','W','X','Y','Z','AA'];
+                    $i = 0;
+
+                    $sheet = $event->sheet;
+
+                    foreach ($this->estados as $estado) {
+                        $sheet->setCellValue($letras[$i].'1', $estado->sg_estado_est);
+                        $i++;
+                    }
+
+                    $sheet->getStyle('1:1')->getFont()->setSize(1);
+                    $sheet->getStyle('1:1')->getFont()->getColor()->setARGB('FFFFFF');
                 }
-                // exit;
             },
         ];
     }
