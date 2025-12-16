@@ -26,11 +26,11 @@
                         </h5>
                     </li>
                     <li class="sparks-info">
-                        <h5>ESPAÇO EM DISCO
+                        <h5>UTILIZAÇÃO
                             <span class="txt-color-blue driver_percentual">
                                 @if(isset($infoEspaco))
-                                    {{ $infoEspaco['espaco_usado'] }} / {{ $infoEspaco['espaco_total'] }} 
-                                    ({{ $infoEspaco['percentual_disco'] }}%)
+                                    {{ $infoEspaco['tamanho_pasta'] }} / {{ $infoEspaco['limite_definido'] }} 
+                                    ({{ $infoEspaco['percentual_uso'] }}%)
                                 @endif
                             </span>
                         </h5>

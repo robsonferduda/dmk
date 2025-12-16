@@ -99,7 +99,7 @@ class HomeController extends Controller
 
     private function calcularEspacoPasta()
     {
-        $caminhoPasta = storage_path(env('APP_STORAGE_FOLDER', 'app'));
+        $caminhoPasta = storage_path('arquivos/processo');
         
         // Tamanho total ocupado pela pasta
         $tamanhoOcupado = 0;
@@ -108,26 +108,21 @@ class HomeController extends Controller
             $tamanhoOcupado = $this->getTamanhoRecursivo($caminhoPasta);
         }
         
-        // Espaço total do disco (em bytes)
-        $espacoTotal = disk_total_space($caminhoPasta);
-        $espacoLivre = disk_free_space($caminhoPasta);
-        $espacoUsado = $espacoTotal - $espacoLivre;
+        // Limite definido (padrão: 10 GB) - pode ser configurado no .env
+        $limiteBytes = env('STORAGE_LIMIT_GB', 10) * 1024 * 1024 * 1024;
+        $espacoDisponivel = $limiteBytes - $tamanhoOcupado;
         
-        // Calcular percentual
-        $percentualPasta = $espacoTotal > 0 ? ($tamanhoOcupado / $espacoTotal) * 100 : 0;
-        $percentualDisco = $espacoTotal > 0 ? ($espacoUsado / $espacoTotal) * 100 : 0;
+        // Calcular percentual em relação ao limite
+        $percentualUso = $limiteBytes > 0 ? ($tamanhoOcupado / $limiteBytes) * 100 : 0;
         
         return [
             'tamanho_pasta' => $this->formatarTamanho($tamanhoOcupado),
             'tamanho_pasta_bytes' => $tamanhoOcupado,
-            'espaco_total' => $this->formatarTamanho($espacoTotal),
-            'espaco_total_bytes' => $espacoTotal,
-            'espaco_usado' => $this->formatarTamanho($espacoUsado),
-            'espaco_usado_bytes' => $espacoUsado,
-            'espaco_livre' => $this->formatarTamanho($espacoLivre),
-            'espaco_livre_bytes' => $espacoLivre,
-            'percentual_pasta' => round($percentualPasta, 2),
-            'percentual_disco' => round($percentualDisco, 2)
+            'limite_definido' => $this->formatarTamanho($limiteBytes),
+            'limite_bytes' => $limiteBytes,
+            'espaco_disponivel' => $this->formatarTamanho($espacoDisponivel),
+            'espaco_disponivel_bytes' => $espacoDisponivel,
+            'percentual_uso' => round($percentualUso, 2)
         ];
     }
 
