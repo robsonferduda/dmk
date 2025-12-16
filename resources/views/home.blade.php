@@ -8,22 +8,31 @@
 <div id="content">
 
     <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <h1 class="page-title txt-color-blueDark">
                 <i class="fa-fw fa fa-home"></i>Painel Administrativo 
             </h1>
         </div>
         @role('administrator')
-            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 folder_settings">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 folder_settings">
                 <ul id="sparks" class="">
                     <li class="sparks-info">
                         <h5>TAMANHO DA PASTA
-                            <span class="txt-color-purple driver_tamanho"> </span>
+                            <span class="txt-color-purple driver_tamanho">
+                                @if(isset($infoEspaco))
+                                    {{ $infoEspaco['tamanho_pasta'] }}
+                                @endif
+                            </span>
                         </h5>
                     </li>
                     <li class="sparks-info">
                         <h5>ESPAÇO EM DISCO
-                            <span class="txt-color-blue driver_percentual"> </span>
+                            <span class="txt-color-blue driver_percentual">
+                                @if(isset($infoEspaco))
+                                    {{ $infoEspaco['espaco_usado'] }} / {{ $infoEspaco['espaco_total'] }} 
+                                    ({{ $infoEspaco['percentual_disco'] }}%)
+                                @endif
+                            </span>
                         </h5>
                     </li>
                 </ul>

@@ -36,7 +36,15 @@ class HomeController extends Controller
                 default:
                     $conta = Conta::where('cd_conta_con', Auth::user()->cd_conta_con)->first();
                     $processos = Processo::where('cd_conta_con', $conta->cd_conta_con)->get();
-                    return view('home', ['conta' => $conta, 'processos' => $processos]);
+                    
+                    // Calcular tamanho da pasta
+                    $infoEspaco = $this->calcularEspacoPasta();
+                    
+                    return view('home', [
+                        'conta' => $conta, 
+                        'processos' => $processos,
+                        'infoEspaco' => $infoEspaco
+                    ]);
                     break;
             }
         } else {
@@ -87,5 +95,74 @@ class HomeController extends Controller
         $correspondentes = DB::select($sql);
 
         return view('dashboard/partes/correspondentes', compact('correspondentes'));
+    }
+
+    private function calcularEspacoPasta()
+    {
+        $caminhoPasta = storage_path(env('APP_STORAGE_FOLDER', 'app'));
+        
+        // Tamanho total ocupado pela pasta
+        $tamanhoOcupado = 0;
+        
+        if (file_exists($caminhoPasta)) {
+            $tamanhoOcupado = $this->getTamanhoRecursivo($caminhoPasta);
+        }
+        
+        // Espaço total do disco (em bytes)
+        $espacoTotal = disk_total_space($caminhoPasta);
+        $espacoLivre = disk_free_space($caminhoPasta);
+        $espacoUsado = $espacoTotal - $espacoLivre;
+        
+        // Calcular percentual
+        $percentualPasta = $espacoTotal > 0 ? ($tamanhoOcupado / $espacoTotal) * 100 : 0;
+        $percentualDisco = $espacoTotal > 0 ? ($espacoUsado / $espacoTotal) * 100 : 0;
+        
+        return [
+            'tamanho_pasta' => $this->formatarTamanho($tamanhoOcupado),
+            'tamanho_pasta_bytes' => $tamanhoOcupado,
+            'espaco_total' => $this->formatarTamanho($espacoTotal),
+            'espaco_total_bytes' => $espacoTotal,
+            'espaco_usado' => $this->formatarTamanho($espacoUsado),
+            'espaco_usado_bytes' => $espacoUsado,
+            'espaco_livre' => $this->formatarTamanho($espacoLivre),
+            'espaco_livre_bytes' => $espacoLivre,
+            'percentual_pasta' => round($percentualPasta, 2),
+            'percentual_disco' => round($percentualDisco, 2)
+        ];
+    }
+
+    private function getTamanhoRecursivo($caminho)
+    {
+        $tamanhoTotal = 0;
+        
+        if (is_file($caminho)) {
+            return filesize($caminho);
+        }
+        
+        if (is_dir($caminho)) {
+            $arquivos = scandir($caminho);
+            
+            foreach ($arquivos as $arquivo) {
+                if ($arquivo != '.' && $arquivo != '..') {
+                    $caminhoCompleto = $caminho . DIRECTORY_SEPARATOR . $arquivo;
+                    $tamanhoTotal += $this->getTamanhoRecursivo($caminhoCompleto);
+                }
+            }
+        }
+        
+        return $tamanhoTotal;
+    }
+
+    private function formatarTamanho($bytes)
+    {
+        $unidades = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $indice = 0;
+        
+        while ($bytes >= 1024 && $indice < count($unidades) - 1) {
+            $bytes /= 1024;
+            $indice++;
+        }
+        
+        return round($bytes, 2) . ' ' . $unidades[$indice];
     }
 }

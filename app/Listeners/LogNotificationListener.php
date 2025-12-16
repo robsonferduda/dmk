@@ -35,6 +35,10 @@ class LogNotificationListener
 
     protected function sendErrorEmail(MessageLogged $event)
     {
+        if(env('APP_ENV') !== 'production') {
+            return; // Não enviar e-mails em ambientes que não sejam produção
+        }
+        
         $to = 'robsonferduda@gmail.com';
 
         $errorDetails = [
