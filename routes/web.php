@@ -38,6 +38,7 @@ Auth::routes();
 Route::group(['middleware' => ['web']], function () {
 
     Route::get('dashboard/correspondentes', 'HomeController@correspondentes');
+    Route::get('dashboard/espaco-pasta', 'HomeController@espacoPasta');
     
     Route::any('filepicker', 'FilepickerController@handle');
     Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');

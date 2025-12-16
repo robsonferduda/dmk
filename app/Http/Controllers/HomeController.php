@@ -37,13 +37,9 @@ class HomeController extends Controller
                     $conta = Conta::where('cd_conta_con', Auth::user()->cd_conta_con)->first();
                     $processos = Processo::where('cd_conta_con', $conta->cd_conta_con)->get();
                     
-                    // Calcular tamanho da pasta
-                    $infoEspaco = $this->calcularEspacoPasta();
-                    
                     return view('home', [
                         'conta' => $conta, 
-                        'processos' => $processos,
-                        'infoEspaco' => $infoEspaco
+                        'processos' => $processos
                     ]);
                     break;
             }
@@ -95,6 +91,12 @@ class HomeController extends Controller
         $correspondentes = DB::select($sql);
 
         return view('dashboard/partes/correspondentes', compact('correspondentes'));
+    }
+
+    public function espacoPasta()
+    {
+        $infoEspaco = $this->calcularEspacoPasta();
+        return response()->json($infoEspaco);
     }
 
     private function calcularEspacoPasta()

@@ -19,19 +19,14 @@
                     <li class="sparks-info">
                         <h5>TAMANHO DA PASTA
                             <span class="txt-color-purple driver_tamanho">
-                                @if(isset($infoEspaco))
-                                    {{ $infoEspaco['tamanho_pasta'] }}
-                                @endif
+                                <i class="fa fa-spinner fa-spin"></i> Calculando...
                             </span>
                         </h5>
                     </li>
                     <li class="sparks-info">
                         <h5>UTILIZAÇÃO
                             <span class="txt-color-blue driver_percentual">
-                                @if(isset($infoEspaco))
-                                    {{ $infoEspaco['tamanho_pasta'] }} / {{ $infoEspaco['limite_definido'] }} 
-                                    ({{ $infoEspaco['percentual_uso'] }}%)
-                                @endif
+                                <i class="fa fa-spinner fa-spin"></i> Calculando...
                             </span>
                         </h5>
                     </li>
@@ -151,6 +146,24 @@
 
         var host =  $('meta[name="base-url"]').attr('content');
 
+        function carregarEspacoPasta() {
+            $.ajax({
+                url: host+"/dashboard/espaco-pasta",
+                type: 'GET',
+                success: function (data) {
+                    $('.driver_tamanho').html(data.tamanho_pasta);
+                    $('.driver_percentual').html(
+                        data.tamanho_pasta + ' / ' + data.limite_definido + 
+                        ' (' + data.percentual_uso + '%)'
+                    );
+                },
+                error: function () {
+                    $('.driver_tamanho').html('<span class="text-danger">Erro ao calcular</span>');
+                    $('.driver_percentual').html('<span class="text-danger">Erro ao calcular</span>');
+                }
+            });
+        }
+
         function carregarTop5Correspondentes(data_inicio, data_fim) {
             $.ajax({
                 url: host+"/dashboard/correspondentes",
@@ -172,6 +185,9 @@
         }
 
         $(document).ready(function() {
+
+            // Carregar espaço da pasta via AJAX
+            carregarEspacoPasta();
 
             // Função para formatar data como yyyy-mm-dd
             function formatarData(data) {
