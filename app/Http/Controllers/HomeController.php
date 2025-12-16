@@ -99,7 +99,7 @@ class HomeController extends Controller
 
     private function calcularEspacoPasta()
     {
-        $caminhoPasta = storage_path('arquivos/processo');
+        $caminhoPasta = storage_path(env('APP_STORAGE_FOLDER', 'arquivos/1'));
         
         // Tamanho total ocupado pela pasta
         $tamanhoOcupado = 0;
