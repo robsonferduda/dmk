@@ -1149,16 +1149,32 @@ class CorrespondenteController extends Controller
         //Notifica o correspondente sobre o cadastro realizado, informando o acesso do site
         $user = User::where('cd_nivel_niv', Nivel::CORRESPONDENTE)->where('cd_conta_con', $id)->first();
 
-        $conta_logada = Conta::where('cd_conta_con', $this->conta)->first();
-        $conta_logada->senha = $senha;
-        
-        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
-        $correspondente->email = $user->email;
+        if (!$user) {
+            Flash::error('Correspondente não encontrado.');
+            return redirect('correspondentes');
+        }
 
-        if ($correspondente->notificarAlteracaoSenha($conta_logada)) {
-            Flash::success('Correspondente notificado com sucesso. O correspondente foi notificado no email '.$correspondente->email);
+        // Atualiza a senha do usuário correspondente
+        $user->password = bcrypt($senha);
+        $user->save();
+
+        // Busca o correspondente para notificação
+        $correspondente = Correspondente::where('cd_conta_con', $id)->first();
+        
+        if (!$correspondente) {
+            Flash::error('Correspondente não encontrado.');
+            return redirect('correspondentes');
+        }
+
+        // Prepara os dados para a notificação
+        $conta_notificacao = new \stdClass();
+        $conta_notificacao->email = $user->email;
+        $conta_notificacao->senha = $senha;
+
+        if ($correspondente->notificarAlteracaoSenha($conta_notificacao)) {
+            Flash::success('Senha redefinida com sucesso! O correspondente foi notificado no email '.$user->email);
         } else {
-            Flash::error('Erro ao notificar correspondente. Verifique as configurações de notificação e tente novamente.');
+            Flash::warning('Senha redefinida, mas houve erro ao enviar a notificação. Verifique as configurações de email.');
         }
 
         return redirect('correspondentes');
