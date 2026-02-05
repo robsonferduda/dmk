@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Executa limpeza de arquivos diariamente às 02:00
+        $schedule->command('arquivos:limpar')
+                 ->dailyAt('02:00')
+                 ->appendOutputTo(storage_path('logs/limpeza-arquivos.log'));
     }
 
     /**
