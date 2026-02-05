@@ -257,7 +257,7 @@ Total de arquivos removidos: {$arquivosRemovidos}
         try {
             Mail::raw($relatorio, function ($message) {
                 $message->to($this->destinatarios)
-                        ->subject('Relatório diário de limpeza - Processos');
+                        ->subject('Relatório Diário de Limpeza - Processos');
             });
 
             $this->info("Email enviado com sucesso!");
