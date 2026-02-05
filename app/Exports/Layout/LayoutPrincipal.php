@@ -173,11 +173,11 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                     $validation->setPrompt('Selecione uma comarca. A lista será filtrada automaticamente pelo estado selecionado.');
                     $validation->setFormula1('=INDIRECT($I$2)');
                 } else {
-                    // Google Sheets: Lista completa com prefixo de estado
+                    // Google Sheets: Lista completa com formato Cidade (UF)
                     $validation->setErrorTitle('Comarca');
                     $validation->setError('Selecione uma comarca da lista.');
                     $validation->setPromptTitle('Comarca');
-                    $validation->setPrompt('Selecione uma comarca no formato "UF - Cidade" (ex: SC - Florianópolis). A lista está organizada alfabeticamente.');
+                    $validation->setPrompt('Selecione uma comarca no formato "Cidade (UF)" (ex: Florianópolis (SC)). A lista está organizada alfabeticamente.');
                     $validation->setFormula1('Cidades!$A$2:$A$10000');
                 }
 

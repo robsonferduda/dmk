@@ -12,12 +12,12 @@
     <tbody>
         @if($formato === 'google_sheets')
             @php
-                // Google Sheets: Criar lista consolidada com prefixo de estado
+                // Google Sheets: Criar lista consolidada com formato Cidade (UF)
                 $todasCidades = [];
                 foreach($estados as $estado) {
                     if(isset($cidades[$estado->cd_estado_est])) {
                         foreach($cidades[$estado->cd_estado_est] as $cidade) {
-                            $todasCidades[] = $estado->sg_estado_est . ' - ' . $cidade;
+                            $todasCidades[] = $cidade . ' (' . $estado->sg_estado_est . ')';
                         }
                     }
                 }

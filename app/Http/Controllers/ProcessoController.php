@@ -446,6 +446,11 @@ class ProcessoController extends Controller
                 break;
         }
 
+        if (!$processo) {
+            Flash::error('Processo não encontrado ou você não tem permissão para acessá-lo.');
+            return redirect('processos');
+        }
+
         (new ProcessoMensagem)->atualizaMensagensLidas($id, $this->cdContaCon);
 
         $mensagens_externas = ProcessoMensagem::where('cd_processo_pro', $id)
