@@ -11,34 +11,44 @@
     <div class="row">
         <div class="col-md-12">
             <div class="well center">
-                @if(Session::get('retorno')['tipo'] == 'erro')
-                    
+                @if(Session::has('retorno') && is_array(Session::get('retorno')))
+                    @php
+                        $retorno = Session::get('retorno');
+                    @endphp
+
+                    @if(isset($retorno['tipo']) && $retorno['tipo'] == 'erro')
+                        
+                        <h1>
+                            <small class="text-danger slideInRight fast animated"><strong><i class="fa-fw fa fa-warning"></i> Ocorreu um erro ao processar sua requisição</strong></small>
+                        </h1>
+                        <h4>{{ $retorno['msg'] ?? '' }}</h4>  
+
+                    @elseif(isset($retorno['tipo']) && $retorno['tipo'] == 'sucesso')
+
+                        <h1>
+                            <small class="text-success slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Sua requisição foi realizada com sucesso</strong></small>
+                        </h1>
+                        <h4>{{ $retorno['msg'] ?? '' }}</h4> 
+
+                    @elseif(isset($retorno['tipo']) && $retorno['tipo'] == 'alerta')
+
+                        <h1>
+                            <small class="text-warning slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Processo em Andamento</strong></small>
+                        </h1>
+                        <h4>{{ $retorno['msg'] ?? '' }}</h4> 
+
+                    @elseif(isset($retorno['tipo']) && $retorno['tipo'] == 'token')
+
+                        <h1>
+                            <small class="text-warning slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i>URL de Confirmação Inválida</strong></small>
+                        </h1>
+                        <h4>{{ $retorno['msg'] ?? '' }}</h4> 
+
+                    @endif
+                @else
                     <h1>
-                        <small class="text-danger slideInRight fast animated"><strong><i class="fa-fw fa fa-warning"></i> Ocorreu um erro ao processar sua requisição</strong></small>
+                        <small class="text-info slideInRight fast animated"><strong><i class="fa-fw fa fa-info-circle"></i> Nenhuma mensagem disponível</strong></small>
                     </h1>
-                    <h4>{{ Session::get('retorno')['msg'] }}</h4>  
-
-                @elseif(Session::get('retorno')['tipo'] == 'sucesso')
-
-                    <h1>
-                        <small class="text-success slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Sua requisição foi realizada com sucesso</strong></small>
-                    </h1>
-                    <h4>{{ Session::get('retorno')['msg'] }}</h4> 
-
-                @elseif(Session::get('retorno')['tipo'] == 'alerta')
-
-                    <h1>
-                        <small class="text-warning slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i> Processo em Andamento</strong></small>
-                    </h1>
-                    <h4>{{ Session::get('retorno')['msg'] }}</h4> 
-
-                @elseif(Session::get('retorno')['tipo'] == 'token')
-
-                    <h1>
-                        <small class="text-warning slideInRight fast animated"><strong><i class="fa-fw fa fa-check"></i>URL de Confirmação Inválida</strong></small>
-                    </h1>
-                    <h4>{{ Session::get('retorno')['msg'] }}</h4> 
-
                 @endif                   
             </div>   
         </div>
