@@ -21,6 +21,7 @@ class LayoutProcesso implements WithMultipleSheets
     public function __construct($dados)
     {
         $this->cliente = $dados['cliente'];
+        $this->numLinhas = $dados['num_linhas'] ?? 20;
     }
 
 
@@ -62,7 +63,7 @@ class LayoutProcesso implements WithMultipleSheets
 
         $sheets = [];
 
-        $sheets[0] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados);
+        $sheets[0] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados, $this->numLinhas);
         $sheets[1] = new LayoutProcessoVaras($varas);
         $sheets[2] = new LayoutTipoServico($ts);
         $sheets[3] = new LayoutCidade($estatos, $cidades);

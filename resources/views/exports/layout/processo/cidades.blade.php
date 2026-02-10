@@ -9,12 +9,15 @@
     </thead>
     <tbody>
         @php
-            // Padronizado: Criar lista consolidada com formato Cidade (UF) para todos os formatos
+            // Criar lista consolidada apenas com o nome da cidade (sem UF)
             $todasCidades = [];
             foreach($estados as $estado) {
                 if(isset($cidades[$estado->cd_estado_est])) {
                     foreach($cidades[$estado->cd_estado_est] as $cidade) {
-                        $todasCidades[] = $cidade . ' (' . $estado->sg_estado_est . ')';
+                        // Adiciona apenas o nome da cidade, sem duplicatas
+                        if (!in_array($cidade, $todasCidades)) {
+                            $todasCidades[] = $cidade;
+                        }
                     }
                 }
             }

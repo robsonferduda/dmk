@@ -180,6 +180,22 @@
                                                 @endforeach
                                             </select>                               
                                         </div>  
+                                    </section>
+                                    <section class="col col-md-12">
+                                        <div class="form-group">
+                                            <label class="label label-black">Quantas linhas deseja gerar?<span class="text-danger">*</span></label>
+                                            <select required class="form-control" name="num_linhas">
+                                                <option value="10">10 linhas</option>
+                                                <option value="20" selected>20 linhas</option>
+                                                <option value="50">50 linhas</option>
+                                                <option value="100">100 linhas</option>
+                                                <option value="200">200 linhas</option>
+                                                <option value="500">500 linhas</option>
+                                            </select>
+                                            <div class="note" style="margin-top: 5px;">
+                                                As linhas virão com o cliente preenchido e validações prontas para uso
+                                            </div>
+                                        </div>  
                                     </section>   
                                 </div>                                          
                             </fieldset>

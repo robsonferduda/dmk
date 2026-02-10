@@ -172,31 +172,13 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
         if (!empty($estado)) {
             $data['estado'] = $estado->cd_estado_est;
             
-            // Processar Comarca - aceita formato "Cidade (UF)" ou apenas "Cidade"
+            // Processar Comarca - agora aceita apenas o nome da cidade
             $comarcaValue = trim($data['comarca']);
             
-            // Se a comarca vier no formato "Cidade (UF)", extrair apenas o nome da cidade
-            if (preg_match('/^(.+?)\s*\(([A-Z]{2})\)$/', $comarcaValue, $matches)) {
-                // Formato: "Florianópolis (SC)"
-                $nomeCidade = trim($matches[1]);
-                $siglaEstado = trim($matches[2]);
-                
-                // Buscar cidade pelo nome e validar se a sigla do estado corresponde
-                $cidade = Cidade::where('nm_cidade_cde', $nomeCidade)
-                        ->where('cd_estado_est', $estado->cd_estado_est)
-                        ->first();
-                
-                // Verificar se a sigla do estado na comarca corresponde ao estado selecionado
-                if ($estado->sg_estado_est !== $siglaEstado) {
-                    // Comarca não corresponde ao estado - será tratado na validação
-                    $cidade = null;
-                }
-            } else {
-                // Formato simples: apenas nome da cidade
-                $cidade = Cidade::where('nm_cidade_cde', $comarcaValue)
-                        ->where('cd_estado_est', $estado->cd_estado_est)
-                        ->first();
-            }
+            // Buscar cidade pelo nome simples e estado
+            $cidade = Cidade::where('nm_cidade_cde', $comarcaValue)
+                    ->where('cd_estado_est', $estado->cd_estado_est)
+                    ->first();
         } else {
             $data['estado'] = null;
             $cidade = null;

@@ -18,4 +18,28 @@
             <td style="font-weight: bold;">NUMERO_EXTERNO</td>                       
 	    </tr>
     </thead>
+    <tbody>
+        @php
+            $nomeCliente = $cliente->nm_razao_social_cli . ' ---' . $cliente->nu_cliente_cli . '---';
+        @endphp
+        @for ($i = 0; $i < $numLinhas; $i++)
+        <tr>
+            <td>{{ $nomeCliente }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        @endfor
+    </tbody>
 </table>

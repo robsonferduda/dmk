@@ -33,8 +33,11 @@ class LayoutController extends Controller
                     ->select('cd_contato_cot', 'nu_contato_cot', 'nm_contato_cot')
                     ->first();
 
+        $numLinhas = $request->input('num_linhas', 20); // Padrão 20 linhas
+
         $dados = [
-            'cliente' => $cliente
+            'cliente' => $cliente,
+            'num_linhas' => $numLinhas
         ];
 
         $fileName = 'layout-'.$cliente->nm_razao_social_cli.'.xlsx';

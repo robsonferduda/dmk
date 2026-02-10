@@ -13,7 +13,7 @@ use App\Vara;
 
 class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidths
 {
-    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados)
+    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados, $numLinhas = 20)
     {
         $this->varas = $varas;
         $this->tiposSevico = $tiposSevico;
@@ -21,11 +21,15 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
         $this->tiposProcesso = $tiposProcesso;
         $this->cliente = $cliente;
         $this->advogados = $advogados;
+        $this->numLinhas = $numLinhas;
     }
 
     public function view(): View
     {
-        return view('exports.layout.processo.principal');
+        return view('exports.layout.processo.principal', [
+            'numLinhas' => $this->numLinhas,
+            'cliente' => $this->cliente
+        ]);
     }
 
     public function title(): string
@@ -62,13 +66,12 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
         return [
             AfterSheet::class => function (AfterSheet $event) {
 
-                // Cliente
-                $drop_column = 'A';
-
                 $nomeCliente = $this->cliente->nm_razao_social_cli.' ---'.$this->cliente->nu_cliente_cli.'---';
-
-                $validation = $event->sheet->getCell("{$drop_column}2");
-                $validation->setValue($nomeCliente);
+                
+                // Preencher cliente em todas as linhas geradas
+                for ($i = 2; $i <= ($this->numLinhas + 1); $i++) {
+                    $event->sheet->getCell("A{$i}")->setValue($nomeCliente);
+                }
             
                 // Advogado Solicitante
                 $drop_column = 'B';
@@ -87,7 +90,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('Advogados!A$2:A$'.($this->advogados->count()+1));
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -110,7 +113,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('Varas!A$2:A$'.($this->varas->count()+1));
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -132,7 +135,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('Tipos_de_Serviço!A$2:A$'.($this->tiposSevico->count()+1));
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -154,7 +157,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('Estados!A$2:A$28');
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -171,11 +174,11 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setErrorTitle('Comarca');
                 $validation->setError('Selecione uma comarca da lista.');
                 $validation->setPromptTitle('Comarca');
-                $validation->setPrompt('Selecione uma comarca no formato "Cidade (UF)" (ex: Florianópolis (SC)). A lista está organizada alfabeticamente.');
+                $validation->setPrompt('Digite ou selecione o nome da comarca. A lista está em ordem alfabética. Certifique-se de que a comarca pertence ao estado selecionado.');
                 $validation->setFormula1('Cidades!$A$2:$A$10000');
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -198,7 +201,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
 
@@ -220,7 +223,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setFormula1('"53 - CÍVEL,55 - TRABALHISTA"');
 
                 // clone validation to remaining rows
-                for ($i = 3; $i <= 1000; $i++) {
+                for ($i = 3; $i <= ($this->numLinhas + 1); $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 }
             },
