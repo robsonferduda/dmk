@@ -192,15 +192,15 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
                 $validation->setErrorTitle('Erro de entrada de dados.');
-                $vaclone validation to remaining rows
+                $validation->setError('O valor não está na lista.');
+                $validation->setPromptTitle('Tipo de Processo');
+                $validation->setPrompt('Selecione um valor da lista.');
+                $validation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
+
+                // clone validation to remaining rows
                 for ($i = 3; $i <= 1000; $i++) {
                     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-               alidation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
-
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                // }
+                }
 
                 // Área do Direito
                 $drop_column = 'N';
