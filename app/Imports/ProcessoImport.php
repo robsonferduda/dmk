@@ -19,7 +19,7 @@ class ProcessoImport implements WithMultipleSheets, WithEvents
     public function sheets(): array
     {
         return [
-            0 => new ProcessosSheet($this, $this->nomeArquivoPlanilha),
+            'Processos' => new ProcessosSheet($this, $this->nomeArquivoPlanilha),
         ];
     }
 

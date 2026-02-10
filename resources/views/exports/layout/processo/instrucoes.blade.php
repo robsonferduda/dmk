@@ -5,6 +5,11 @@
 	    </tr>
     </thead>
     <tbody>
+        <tr>
+            <td style="background: #D4EDDA; padding: 10px; font-weight: bold; color: #155724; border: 2px solid #C3E6CB;">
+                ✓ IMPORTANTE: Esta aba (LEIA-ME) pode ser excluída antes da importação! Ela está aqui apenas para orientação.
+            </td>
+        </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td>📋 FORMATO PADRONIZADO</td>
@@ -47,29 +52,35 @@
             <td>📊 ABAS DA PLANILHA</td>
         </tr>
         <tr>
-            <td>• <strong>Processos</strong>: Aba principal onde você deve preencher os dados dos processos</td>
+            <td>• <strong>Processos</strong>: [ABA PRINCIPAL] Aba onde você deve preencher os dados dos processos</td>
         </tr>
         <tr>
-            <td>• <strong>Varas</strong>: Lista de varas disponíveis</td>
+            <td>• <strong>LEIA-ME</strong>: [PODE EXCLUIR] Esta aba com instruções - não é necessária para importação</td>
         </tr>
         <tr>
-            <td>• <strong>Tipos_de_Serviço</strong>: Lista de tipos de serviço</td>
+            <td>• <strong>Varas</strong>: Lista de varas disponíveis (não excluir)</td>
         </tr>
         <tr>
-            <td>• <strong>Cidades</strong>: Lista de comarcas organizadas por estado (consulte esta aba!)</td>
+            <td>• <strong>Tipos_de_Serviço</strong>: Lista de tipos de serviço (não excluir)</td>
         </tr>
         <tr>
-            <td>• <strong>Estados</strong>: Lista de estados</td>
+            <td>• <strong>Cidades</strong>: Lista de comarcas organizadas por estado (não excluir)</td>
         </tr>
         <tr>
-            <td>• <strong>Tipos_de_PROCESSO</strong>: Lista de tipos de processo</td>
+            <td>• <strong>Estados</strong>: Lista de estados (não excluir)</td>
         </tr>
         <tr>
-            <td>• <strong>Advogados</strong>: Lista de advogados solicitantes</td>
+            <td>• <strong>Tipos_de_PROCESSO</strong>: Lista de tipos de processo (não excluir)</td>
+        </tr>
+        <tr>
+            <td>• <strong>Advogados</strong>: Lista de advogados solicitantes (não excluir)</td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td>💡 DICAS DE USO</td>
+        </tr>
+        <tr>
+            <td>• <strong>Esta aba (LEIA-ME) pode ser excluída antes da importação</strong></td>
         </tr>
         <tr>
             <td>• Use as listas suspensas (dropdown) sempre que disponíveis</td>
@@ -81,10 +92,13 @@
             <td>• O campo CLIENTE já vem preenchido automaticamente</td>
         </tr>
         <tr>
+            <td>• Você pode copiar e colar linhas livremente - as validações serão mantidas</td>
+        </tr>
+        <tr>
             <td>• Não altere o nome das abas ou colunas</td>
         </tr>
         <tr>
-            <td>• Não delete as abas auxiliares (Varas, Cidades, Estados, etc.)</td>
+            <td>• Não delete as abas auxiliares (Varas, Cidades, Estados, etc.) - exceto esta aba LEIA-ME</td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
@@ -102,6 +116,9 @@
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td>❌ OBSERVAÇÕES</td>
+        </tr>
+        <tr>
+            <td>• <strong>Aba LEIA-ME:</strong> Esta aba (segunda aba) pode ser excluída sem problemas - ela não é necessária para importação</td>
         </tr>
         <tr>
             <td>• <strong>Excel:</strong> Pode exibir alerta de segurança ao abrir - clique em "Habilitar Edição"</td>

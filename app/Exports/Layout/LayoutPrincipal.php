@@ -86,6 +86,11 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Advogados!A$2:A$'.($this->advogados->count()+1));
 
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
+
 
                 // Vara
                 $drop_column = 'K';
@@ -104,10 +109,10 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Varas!A$2:A$'.($this->varas->count()+1));
 
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                // }
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
 
                 // TipoServiço
                 $drop_column = 'L';
@@ -126,10 +131,10 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Tipos_de_Serviço!A$2:A$'.($this->tiposSevico->count()+1));
 
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                // }
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
 
                 // Estado
                 $drop_column = 'I';
@@ -148,10 +153,10 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('Estados!A$2:A$28');
 
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                // }
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
 
                 // Comarca - Lista simples padronizada para todos os formatos
                 $drop_column = 'J';
@@ -169,6 +174,11 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione uma comarca no formato "Cidade (UF)" (ex: Florianópolis (SC)). A lista está organizada alfabeticamente.');
                 $validation->setFormula1('Cidades!$A$2:$A$10000');
 
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
+
 
                 // Tipo de Processo
                 $drop_column = 'M';
@@ -182,10 +192,10 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
                 $validation->setErrorTitle('Erro de entrada de dados.');
-                $validation->setError('O valor não está na lista.');
-                $validation->setPromptTitle('Tipo de Processo');
-                $validation->setPrompt('Selecione um valor da lista.');
-                $validation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
+                $vaclone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+               alidation->setFormula1('Tipos_de_PROCESSO!A$2:A$'.($this->tiposProcesso->count()+1));
 
                 // // clone validation to remaining rows
                 // for ($i = 3; $i <= 500; $i++) {
@@ -209,10 +219,10 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setPrompt('Selecione um valor da lista.');
                 $validation->setFormula1('"53 - CÍVEL,55 - TRABALHISTA"');
 
-                // // clone validation to remaining rows
-                // for ($i = 3; $i <= 500; $i++) {
-                //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
-                // }
+                // clone validation to remaining rows
+                for ($i = 3; $i <= 1000; $i++) {
+                    $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
+                }
             },
         ];
     }
