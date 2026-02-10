@@ -63,13 +63,12 @@ class LayoutProcesso implements WithMultipleSheets
         $sheets = [];
 
         $sheets[0] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados);
-        $sheets[1] = new LayoutInstrucoes();
-        $sheets[2] = new LayoutProcessoVaras($varas);
-        $sheets[3] = new LayoutTipoServico($ts);
-        $sheets[4] = new LayoutCidade($estatos, $cidades);
-        $sheets[5] = new LayoutEstado($estatos);
-        $sheets[6] = new LayoutTipoProcesso($tp);
-        $sheets[7] = new LayoutAdvogadoSolicitante($advogados);
+        $sheets[1] = new LayoutProcessoVaras($varas);
+        $sheets[2] = new LayoutTipoServico($ts);
+        $sheets[3] = new LayoutCidade($estatos, $cidades);
+        $sheets[4] = new LayoutEstado($estatos);
+        $sheets[5] = new LayoutTipoProcesso($tp);
+        $sheets[6] = new LayoutAdvogadoSolicitante($advogados);
         
         return $sheets;
     }
