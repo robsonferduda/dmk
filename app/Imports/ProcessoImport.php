@@ -9,11 +9,17 @@ use Maatwebsite\Excel\Events\AfterImport;
 class ProcessoImport implements WithMultipleSheets, WithEvents
 {
     private $rows = 0;
+    private $nomeArquivoPlanilha;
+
+    public function __construct($nomeArquivoPlanilha = null)
+    {
+        $this->nomeArquivoPlanilha = $nomeArquivoPlanilha;
+    }
 
     public function sheets(): array
     {
         return [
-            0 => new ProcessosSheet($this),
+            0 => new ProcessosSheet($this, $this->nomeArquivoPlanilha),
         ];
     }
 

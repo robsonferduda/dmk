@@ -12,14 +12,9 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class LayoutInstrucoes implements FromView, WithTitle, WithEvents
 {
-    public function __construct($formato = 'google_sheets')
-    {
-        $this->formato = $formato;
-    }
-
     public function view(): View
     {
-        return view('exports.layout.processo.instrucoes', ['formato' => $this->formato]);
+        return view('exports.layout.processo.instrucoes');
     }
 
     public function title(): string

@@ -26,11 +26,13 @@ use App\Events\EventNotification;
 class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
 {
     private $importador;
+    private $nomeArquivoPlanilha;
 
-    public function __construct($importador)
+    public function __construct($importador, $nomeArquivoPlanilha = null)
     {
         $this->canal = 'user-'.Auth::user()->cd_conta_con.'-'.Auth::user()->id;
         $this->importador = $importador;
+        $this->nomeArquivoPlanilha = $nomeArquivoPlanilha;
     }
 
     public function collection(Collection $rows)
@@ -81,7 +83,9 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
                     'nu_acompanhamento_pro' => trim($row['numero_externo']),
                     'hr_audiencia_pro' => !empty($row['hora']) ?  \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['hora'])->format('H:i') : null,
                     'cd_status_processo_stp' => \App\Enums\StatusProcesso::PENDENTE_ANALISE,
-                    'nu_lote' => rand(100000,999999)
+                    'nu_lote' => rand(100000,999999),
+                    'fl_importacao_pro' => true,
+                    'ds_planilha_pro' => $this->nomeArquivoPlanilha
                 ]);
 
                 $valor = TaxaHonorario::where('cd_conta_con', \Session::get('SESSION_CD_CONTA'))

@@ -21,8 +21,6 @@ class LayoutProcesso implements WithMultipleSheets
     public function __construct($dados)
     {
         $this->cliente = $dados['cliente'];
-        $this->formato = $dados['formato'] ?? 'google_sheets';
-        //$this->contato = $dados['contato'];
     }
 
 
@@ -64,11 +62,11 @@ class LayoutProcesso implements WithMultipleSheets
 
         $sheets = [];
 
-        $sheets[0] = new LayoutInstrucoes($this->formato); // Passa o formato para as instruções
-        $sheets[1] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados, $this->formato);
+        $sheets[0] = new LayoutInstrucoes();
+        $sheets[1] = new LayoutPrincipal($varas, $ts, $estatos, $tp, $this->cliente, $advogados);
         $sheets[2] = new LayoutProcessoVaras($varas);
         $sheets[3] = new LayoutTipoServico($ts);
-        $sheets[4] = new LayoutCidade($estatos, $cidades, $this->formato);
+        $sheets[4] = new LayoutCidade($estatos, $cidades);
         $sheets[5] = new LayoutEstado($estatos);
         $sheets[6] = new LayoutTipoProcesso($tp);
         $sheets[7] = new LayoutAdvogadoSolicitante($advogados);

@@ -1869,6 +1869,12 @@ class ProcessoController extends Controller
             $extensions = array("xls","xlsx","XLSX","XLS");
             if (in_array($file->getClientOriginalExtension(), $extensions)) {
                 try {
+                    // Salvar a planilha no storage com nome único
+                    $nomeOriginal = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $extensao = $file->getClientOriginalExtension();
+                    $nomeUnico = $nomeOriginal . '_' . date('Ymd_His') . '_' . uniqid() . '.' . $extensao;
+                    $file->storeAs('planilhas_importacao', $nomeUnico);
+                    
                     $colunas = ['CLIENTE','ADVOGADO_SOLICITANTE','NUMERO_PROCESSO','AUTOR','REU','DATA_SOLICITACAO','DATA_PRAZO_FATAL','HORA','ESTADO','COMARCA','VARA','TIPO_DE_SERVICO','TIPO_DE_PROCESSO','AREA_DO_DIREITO'];
 
                     HeadingRowFormatter::default('none');
@@ -1904,7 +1910,7 @@ class ProcessoController extends Controller
                         'status' => 'processando'
                     ], 600); // 10 minutos
                     
-                    $import = new ProcessoImport();
+                    $import = new ProcessoImport($nomeUnico);
 
                     $data = Excel::import($import, $file);
                     

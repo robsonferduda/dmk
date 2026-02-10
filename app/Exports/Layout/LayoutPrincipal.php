@@ -13,7 +13,7 @@ use App\Vara;
 
 class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidths
 {
-    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados, $formato = 'google_sheets')
+    public function __construct($varas, $tiposSevico, $estados, $tiposProcesso, $cliente, $advogados)
     {
         $this->varas = $varas;
         $this->tiposSevico = $tiposSevico;
@@ -21,7 +21,6 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
         $this->tiposProcesso = $tiposProcesso;
         $this->cliente = $cliente;
         $this->advogados = $advogados;
-        $this->formato = $formato;
     }
 
     public function view(): View
@@ -154,7 +153,7 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 //     $event->sheet->getCell("{$drop_column}{$i}")->setDataValidation(clone $validation);
                 // }
 
-                // Comarca - Validação baseada no formato escolhido
+                // Comarca - Lista simples padronizada para todos os formatos
                 $drop_column = 'J';
 
                 $validation = $event->sheet->getCell("{$drop_column}2")->getDataValidation();
@@ -164,22 +163,11 @@ class LayoutPrincipal implements FromView, WithTitle, WithEvents, WithColumnWidt
                 $validation->setShowInputMessage(true);
                 $validation->setShowErrorMessage(true);
                 $validation->setShowDropDown(true);
-
-                if ($this->formato === 'excel_libreoffice') {
-                    // Excel/LibreOffice: Usar INDIRECT para filtro dinâmico
-                    $validation->setErrorTitle('Erro de entrada de dados.');
-                    $validation->setError('O valor não está na lista.');
-                    $validation->setPromptTitle('Comarca');
-                    $validation->setPrompt('Selecione uma comarca. A lista será filtrada automaticamente pelo estado selecionado.');
-                    $validation->setFormula1('=INDIRECT($I$2)');
-                } else {
-                    // Google Sheets: Lista completa com formato Cidade (UF)
-                    $validation->setErrorTitle('Comarca');
-                    $validation->setError('Selecione uma comarca da lista.');
-                    $validation->setPromptTitle('Comarca');
-                    $validation->setPrompt('Selecione uma comarca no formato "Cidade (UF)" (ex: Florianópolis (SC)). A lista está organizada alfabeticamente.');
-                    $validation->setFormula1('Cidades!$A$2:$A$10000');
-                }
+                $validation->setErrorTitle('Comarca');
+                $validation->setError('Selecione uma comarca da lista.');
+                $validation->setPromptTitle('Comarca');
+                $validation->setPrompt('Selecione uma comarca no formato "Cidade (UF)" (ex: Florianópolis (SC)). A lista está organizada alfabeticamente.');
+                $validation->setFormula1('Cidades!$A$2:$A$10000');
 
 
                 // Tipo de Processo

@@ -7,66 +7,41 @@
     <tbody>
         <tr><td>&nbsp;</td></tr>
         <tr>
-            <td>📋 FORMATO DESTA PLANILHA</td>
+            <td>📋 FORMATO PADRONIZADO</td>
         </tr>
         <tr>
             <td style="background: #FFF3CD; padding: 10px; font-weight: bold;">
-                @if($formato === 'google_sheets')
-                    ✓ Esta planilha foi gerada para: GOOGLE SHEETS (Google Planilhas)
-                @else
-                    ✓ Esta planilha foi gerada para: MICROSOFT EXCEL ou LIBREOFFICE
-                @endif
+                ✓ Esta planilha funciona em GOOGLE SHEETS, MICROSOFT EXCEL e LIBREOFFICE
             </td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
-            <td>⚠️ ATENÇÃO: COMARCA</td>
+            <td>🗺️ COMO PREENCHER: ESTADO E COMARCA</td>
         </tr>
-        @if($formato === 'google_sheets')
-            <tr>
-                <td><strong>FORMATO GOOGLE SHEETS:</strong> As comarcas aparecem com o prefixo do estado.</td>
-            </tr>
-            <tr>
-                <td>Exemplo: "SC - Florianópolis", "SP - São Paulo", "RJ - Rio de Janeiro"</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><strong>Como usar:</strong></td>
-            </tr>
-            <tr>
-                <td>1. Selecione o ESTADO na coluna "ESTADO" (coluna I)</td>
-            </tr>
-            <tr>
-                <td>2. Na coluna "COMARCA" (coluna J), escolha a comarca que começa com a sigla do estado</td>
-            </tr>
-            <tr>
-                <td>3. As comarcas estão em ordem alfabética para facilitar a busca</td>
-            </tr>
-        @else
-            <tr>
-                <td><strong>FORMATO EXCEL/LIBREOFFICE:</strong> Filtro automático de comarca por estado.</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><strong>Como usar:</strong></td>
-            </tr>
-            <tr>
-                <td>1. Primeiro, selecione o ESTADO na coluna "ESTADO" (coluna I)</td>
-            </tr>
-            <tr>
-                <td>2. Depois, clique na coluna "COMARCA" (coluna J)</td>
-            </tr>
-            <tr>
-                <td>3. A lista mostrará APENAS as comarcas do estado selecionado!</td>
-            </tr>
-            <tr>
-                <td>4. Funcionalidade automática: não precisa consultar outras abas</td>
-            </tr>
-        @endif
+        <tr>
+            <td><strong>FORMATO SIMPLIFICADO:</strong> Todas as comarcas aparecem com a UF na frente do nome.</td>
+        </tr>
+        <tr>
+            <td>Exemplo: "Florianópolis (SC)", "São Paulo (SP)", "Rio de Janeiro (RJ)"</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Como usar:</strong></td>
+        </tr>
+        <tr>
+            <td>1. Selecione o ESTADO na coluna "ESTADO" (coluna I) - escolha a sigla (SC, SP, RJ, etc)</td>
+        </tr>
+        <tr>
+            <td>2. Na coluna "COMARCA" (coluna J), digite ou selecione a comarca no formato "Cidade (UF)"</td>
+        </tr>
+        <tr>
+            <td>3. As comarcas estão em ordem alfabética na lista suspensa</td>
+        </tr>
+        <tr>
+            <td>4. <strong>IMPORTANTE:</strong> Você pode copiar e colar linhas sem problemas! Os filtros não serão afetados.</td>
+        </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td>📊 ABAS DA PLANILHA</td>
@@ -115,27 +90,15 @@
         <tr>
             <td>💡 IMPORTANTE</td>
         </tr>
-        @if($formato === 'google_sheets')
-            <tr>
-                <td>• Esta planilha foi otimizada para Google Sheets</td>
-            </tr>
-            <tr>
-                <td>• Se usar no Excel/LibreOffice, funcionará mas sem filtro automático de comarca</td>
-            </tr>
-            <tr>
-                <td>• Para gerar uma versão otimizada para Excel/LibreOffice, gere a planilha novamente selecionando a opção adequada</td>
-            </tr>
-        @else
-            <tr>
-                <td>• Esta planilha foi otimizada para Excel e LibreOffice</td>
-            </tr>
-            <tr>
-                <td>• Se usar no Google Sheets, o filtro de comarca pode não funcionar corretamente</td>
-            </tr>
-            <tr>
-                <td>• Para gerar uma versão otimizada para Google Sheets, gere a planilha novamente selecionando a opção adequada</td>
-            </tr>
-        @endif
+        <tr>
+            <td>• Esta planilha é compatível com Google Sheets, Excel e LibreOffice</td>
+        </tr>
+        <tr>
+            <td>• Você pode copiar e colar linhas livremente sem afetar os filtros</td>
+        </tr>
+        <tr>
+            <td>• Use a lista suspensa para selecionar comarcas - todas estão no formato "Cidade (UF)"</td>
+        </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td>❌ OBSERVAÇÕES</td>
@@ -144,10 +107,10 @@
             <td>• <strong>Excel:</strong> Pode exibir alerta de segurança ao abrir - clique em "Habilitar Edição"</td>
         </tr>
         <tr>
-            <td>• <strong>Formato correto:</strong> Sempre use a planilha gerada para a plataforma que você vai utilizar</td>
+            <td>• <strong>Formato padronizado:</strong> O sistema identifica automaticamente estado e comarca pelo formato "Cidade (UF)"</td>
         </tr>
         <tr>
-            <td>• <strong>Compatibilidade cruzada:</strong> Planilhas geradas para um formato podem ter funcionalidade limitada em outras plataformas</td>
+            <td>• <strong>Validação:</strong> Certifique-se de que o estado selecionado corresponde à UF da comarca</td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>

@@ -180,26 +180,7 @@
                                                 @endforeach
                                             </select>                               
                                         </div>  
-                                    </section>
-                                    <section class="col col-md-12">
-                                        <div class="form-group">
-                                            <label class="label label-black">Onde você irá usar a planilha?<span class="text-danger">*</span></label>
-                                            <div class="inline-group">
-                                                <label class="radio" style="">
-                                                    <input type="radio" name="formato_planilha" value="google_sheets" checked>
-                                                    <i></i>Google Sheets (Google Planilhas)
-                                                </label>
-                                                <label class="radio" style="">
-                                                    <input type="radio" name="formato_planilha" value="excel_libreoffice">
-                                                    <i></i>Excel ou LibreOffice
-                                                </label>
-                                            </div>
-                                            <div class="note" style="margin-top: 5px;">
-                                                <strong>Google Sheets:</strong> Comarcas aparecem como "UF - Cidade"<br>
-                                                <strong>Excel/LibreOffice:</strong> Comarca filtra automaticamente por estado selecionado
-                                            </div>
-                                        </div>  
-                                    </section>      
+                                    </section>   
                                 </div>                                          
                             </fieldset>
                             <footer>
