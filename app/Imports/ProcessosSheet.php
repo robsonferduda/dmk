@@ -159,15 +159,43 @@ class ProcessosSheet implements ToCollection, WithHeadingRow, WithValidation
         $data['tipo_de_servico'] = $this->limpaCodigo($data['tipo_de_servico']);
         $data['tipo_de_processo'] = $this->limpaCodigo($data['tipo_de_processo']);
 
-        $estado = Estado::where('sg_estado_est', trim($data['estado']))->first();
+        // Processar Estado - aceita tanto sigla quanto nome completo
+        $estadoValue = trim($data['estado']);
+        $estado = Estado::where('sg_estado_est', $estadoValue)
+                        ->orWhere('nm_estado_est', $estadoValue)
+                        ->first();
 
         if (!empty($estado)) {
             $data['estado'] = $estado->cd_estado_est;
-            $cidade = Cidade::where('nm_cidade_cde', trim($data['comarca']))
-                    ->where('cd_estado_est', $estado->cd_estado_est)
-                    ->first();
+            
+            // Processar Comarca - aceita formato "Cidade (UF)" ou apenas "Cidade"
+            $comarcaValue = trim($data['comarca']);
+            
+            // Se a comarca vier no formato "Cidade (UF)", extrair apenas o nome da cidade
+            if (preg_match('/^(.+?)\s*\(([A-Z]{2})\)$/', $comarcaValue, $matches)) {
+                // Formato: "Florianópolis (SC)"
+                $nomeCidade = trim($matches[1]);
+                $siglaEstado = trim($matches[2]);
+                
+                // Buscar cidade pelo nome e validar se a sigla do estado corresponde
+                $cidade = Cidade::where('nm_cidade_cde', $nomeCidade)
+                        ->where('cd_estado_est', $estado->cd_estado_est)
+                        ->first();
+                
+                // Verificar se a sigla do estado na comarca corresponde ao estado selecionado
+                if ($estado->sg_estado_est !== $siglaEstado) {
+                    // Comarca não corresponde ao estado - será tratado na validação
+                    $cidade = null;
+                }
+            } else {
+                // Formato simples: apenas nome da cidade
+                $cidade = Cidade::where('nm_cidade_cde', $comarcaValue)
+                        ->where('cd_estado_est', $estado->cd_estado_est)
+                        ->first();
+            }
         } else {
             $data['estado'] = null;
+            $cidade = null;
         }
         
         if (!empty($cidade)) {
