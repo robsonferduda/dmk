@@ -125,7 +125,7 @@ class ClienteProcessoController extends Controller
         $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
         $prazo_fatal = date("Y-m-d");
 
-        $processos = (new Processo())->getProcessosAndamento($id_escritorio, null, null, null, null, null, null, null, null, $prazo_fatal, null, false, $cd_cliente_cli, null, null);
+        $processos = (new Processo())->getProcessosAndamento($id_escritorio, null, null, null, null, null, null, null, null, $prazo_fatal, null, false, $cd_cliente_cli, null, null, null, null);
         return response()->json($processos);
     }
 
