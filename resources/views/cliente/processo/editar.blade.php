@@ -76,7 +76,18 @@
                                                 autocomplete="off">
                                             </label>
                                         </section>
-                                    </div> 
+                                    </div>
+                                    
+                                    <div class="row">    
+                                        <section class="col col-xs-12 col-sm-12">
+                                            <input type="hidden" id="cd_tipo_servico_tse_aux" value="{{ old('cd_tipo_servico_tse') ? old('cd_tipo_servico_tse') : ($processo->honorario ? $processo->honorario->cd_tipo_servico_tse : '') }}">
+                                            <label class="label">Tipo de Serviço<span class="text-danger">*</span></label>
+                                            <select id="tipoServico" name="cd_tipo_servico_tse" class="select2" required>
+                                                <option selected value="">Selecione um cliente e cidade</option>                          
+                                            </select>
+                                        </section>
+                                    </div>
+                                     
                                     <div class="row">
 
                                         <section class="col col-4">
