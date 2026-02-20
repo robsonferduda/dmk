@@ -92,10 +92,12 @@ class ClienteProcessoController extends Controller
 
         $id_escritorio = 64;
         $id_correspondente = 83;
+        $escritorio = Conta::where('cd_conta_con', $id_escritorio)->first();
+        $escritorio_entidade = $escritorio->entidade()->first();
 
         $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
         $correspondente = Conta::where('cd_conta_con', $id_correspondente)->first();
-        $advogados = Contato::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->get();
+        $advogados = Contato::where('cd_entidade_ete', $escritorio_entidade->cd_entidade_ete)->get();
 
         $sub = \DB::table('vara_var')
                 ->selectRaw("cd_vara_var , regexp_replace(substring(nm_vara_var from 0 for 4), '\D', '', 'g') as number , concat(REGEXP_REPLACE(substring(nm_vara_var from 0 for 4), '[[:digit:]]' ,'','g'),  substring(nm_vara_var from 4))  as caracter ")
