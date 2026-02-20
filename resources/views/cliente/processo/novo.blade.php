@@ -103,8 +103,10 @@
                                             <label class="select">
                                                 <input type="hidden" id="contatoAux"  value="{{old('cd_contato_cot')}}">
                                                 <select  id="cd_contato_cot" name="cd_contato_cot" >
-                                                    <option value="">Selecione um Advogado Solicitante</option>   
-                                                    
+                                                    <option value="">Selecione um Advogado Solicitante</option>
+                                                    @foreach($advogados as $advogado)
+                                                        <option value="{{$advogado->cd_contato_cot}}" {!! (old('cd_contato_cot') == $advogado->cd_contato_cot ? 'selected' : '') !!}>{{$advogado->nm_contato_cot}}</option>
+                                                    @endforeach
                                                 </select><i></i>  
                                             </label>         
                                         </section>
@@ -402,7 +404,7 @@
                         },
                         success: function(response)
                         {
-                            buscaAdvogado(); 
+                            // buscaAdvogado(); // Desativado, pois agora o carregamento é feito pelo backend
                             $("#cd_contato_cot").val(response.id);
                             $("#novoAdvogado").modal('hide');
                         },
