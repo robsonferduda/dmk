@@ -14,6 +14,7 @@ use App\Processo;
 use App\TipoServico;
 use App\TipoProcesso;
 use App\StatusProcesso;
+use App\LogNotificacao;
 use App\ProcessoMensagem;
 use App\EnderecoEletronico;
 use App\Enums\TipoMensagem;
@@ -302,6 +303,7 @@ class ClienteProcessoController extends Controller
         DB::beginTransaction();
         $id_escritorio = 64;
         $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+        $emailsNotificados = array();
 
         $entidade = Entidade::create([
             'cd_conta_con'         => $id_escritorio,
@@ -341,7 +343,38 @@ class ClienteProcessoController extends Controller
 
         DB::commit();
 
-        Flash::success('Processo cadastrado com sucesso');
+        $processo->load('cliente');
+
+        $contaEscritorio = Conta::where('cd_conta_con', $id_escritorio)->first();
+
+        if ($contaEscritorio && $contaEscritorio->entidade()->first()) {
+            $emailsNotificacao = EnderecoEletronico::where('cd_entidade_ete', $contaEscritorio->entidade()->first()->cd_entidade_ete)
+                                                ->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)
+                                                ->get();
+
+            foreach ($emailsNotificacao as $email) {
+                $processo->email = $email->dc_endereco_eletronico_ede;
+                $processo->notificarCadastroCliente($processo);
+
+                $log = array('tipo_notificacao' => 'cadastro_processo_cliente',
+                            'email_destinatario' => $email->dc_endereco_eletronico_ede,
+                            'cd_remetente' => $cd_cliente_cli,
+                            'cd_destinatario' => $id_escritorio,
+                            'cd_processo' => $processo->cd_processo_pro,
+                            'nu_processo' => $processo->nu_processo_pro,
+                            'origem' => 'cliente');
+
+                LogNotificacao::create($log);
+                $emailsNotificados[] = $email->dc_endereco_eletronico_ede;
+            }
+        }
+
+        if (count($emailsNotificados) > 0) {
+            Flash::success('Processo cadastrado com sucesso e escritório notificado: '.implode(', ', $emailsNotificados));
+        } else {
+            Flash::success('Processo cadastrado com sucesso. Escritório sem e-mail de notificação cadastrado.');
+        }
+
         return redirect('cliente/processos/acompanhamento');
     }  
 

@@ -72,16 +72,22 @@
                                     <div class="row">
                         
                                         <section class="col col-xs-12 col-sm-12">
-                                            <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli" value="{{ $cliente->cd_cliente_cli }}" readonly>
-                                            <label class="label">Cliente<span class="text-danger">*</span></label>
+                                            <input type="hidden" 
+                                                name="cd_cliente_cli" 
+                                                id="cd_cliente_cli" 
+                                                value="{{ $cliente->cd_cliente_cli }}" 
+                                                readonly>
+                                            <label class="label">Cliente<span class="text-info"> Preenchido automaticamente</span></label>
                                             <label class="input">
                                                 <input required name="nm_cliente_cli" 
                                                 value="{{ $cliente->nm_razao_social_cli }}" 
                                                 class="form-control ui-autocomplete-input" 
+                                                style="background: #f5f5f5;"
                                                 placeholder="Digite 3 caracteres para busca" 
                                                 type="text" 
                                                 id="client" 
-                                                autocomplete="off">
+                                                autocomplete="off" 
+                                                readonly disabled>
                                             </label>
                                         </section>
                                     </div> 
@@ -167,16 +173,16 @@
                             <fieldset>
                                 <div class="row">
                                     <section class="col col-xs-12 col-lg-4">
-                                        <label class="label">Data da Solicitação</label>
-                                        <label class="input">
-                                           <input class="dt_solicitacao_pro" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}">
-                                        </label>
+                                                     <label class="label">Data da Solicitação</label>
+                                                     <label class="input">
+                                                         <input class="dt_solicitacao_pro datepicker" placeholder="___ /___ /___" type="text" name="dt_solicitacao_pro" value="{{old('dt_solicitacao_pro')}}" autocomplete="off">
+                                                     </label>
                                     </section> 
                                     <section class="col col-xs-12 col-lg-4">
-                                        <label class="label">Data Prazo Fatal<span class="text-danger">*</span></label>
-                                        <label class="input">
-                                           <input class="dt_prazo_fatal_pro" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}" required>
-                                        </label>
+                                                     <label class="label">Data Prazo Fatal<span class="text-danger">*</span></label>
+                                                     <label class="input">
+                                                         <input class="dt_prazo_fatal_pro datepicker" placeholder="___ /___ /___" type="text" name="dt_prazo_fatal_pro" value="{{old('dt_prazo_fatal_pro')}}" required autocomplete="off">
+                                                     </label>
                                     </section> 
                                     <section class="col col-xs-12 col-lg-4">
                                         <label class="label">Hora da Audiência</label>
@@ -206,16 +212,18 @@
                                 
                                 <div class="row">    
                                     <section class="col col-xs-12 col-sm-12">
-                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con }}" readonly>
-                                            <label class="label">Correspondente<span class="text-danger">*</span></label>
+                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con ?? (old('cd_correspondente_cor') ?? '') }}" readonly>
+                                            <label class="label">Correspondente <span class="text-info">Preenchido automaticamente</span></label>
                                             <label class="input">
                                                 <input required name="nm_correspondente_cor" 
-                                                value="{{ $correspondente->nm_razao_social_con }}" 
+                                                value="{{ $correspondente->nm_razao_social_con ?? (old('nm_correspondente_cor') ?? '') }}" 
                                                 class="form-control ui-autocomplete-input" 
                                                 placeholder="Digite 3 caracteres para busca" 
                                                 type="text" 
-                                                id="client" 
-                                                autocomplete="off">
+                                                style="background: #f5f5f5;"
+                                                id="correspondente" 
+                                                autocomplete="off" 
+                                                readonly disabled>
                                             </label>
                                         </section>
                                 </div> 
@@ -322,6 +330,15 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function(){
+            // Ativa o datepicker nos campos de data
+            if ($.fn.datepicker) {
+                $(".datepicker").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true
+                });
+            }
 
             var host =  $('meta[name="base-url"]').attr('content');
 

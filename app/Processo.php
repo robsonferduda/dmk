@@ -18,6 +18,7 @@ use App\Notifications\ProcessoAtualizacaoDadosNotification;
 use App\Notifications\ProcessoAvisoLeituraNotification;
 use App\Notifications\ProcessoCorrespondenteFinalizarNotification;
 use App\Notifications\ProcessoCancelamentoNotification;
+use App\Notifications\ProcessoCadastroClienteNotification;
 
 class Processo extends Model implements AuditableContract
 {
@@ -186,6 +187,11 @@ class Processo extends Model implements AuditableContract
     public function notificarCancelamento($processo)
     {
         $this->notify(new ProcessoCancelamentoNotification($processo));
+    }
+
+    public function notificarCadastroCliente($processo)
+    {
+        $this->notify(new ProcessoCadastroClienteNotification($processo));
     }
 
     public function notificarNovaMensagem($processo)
