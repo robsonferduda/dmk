@@ -116,6 +116,7 @@ class ClienteProcessoController extends Controller
         return view('cliente/processo/novo', ['cliente' => $cliente,
                                             'correspondente' => $correspondente,
                                             'estados' => $estados,
+                                            'escritorio' => $escritorio,
                                             'advogados' => $advogados,
                                             'varas' => $varas, 
                                             'tiposProcesso' => $tiposProcesso, 

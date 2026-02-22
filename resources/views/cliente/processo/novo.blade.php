@@ -77,6 +77,11 @@
                                                 id="cd_cliente_cli" 
                                                 value="{{ $cliente->cd_cliente_cli }}" 
                                                 readonly>
+                                            <input type="hidden" 
+                                                name="cd_escritorio_con" 
+                                                id="cd_escritorio_con" 
+                                                value="{{ $escritorio }}" 
+                                                readonly>
                                             <label class="label">Cliente<span class="text-info"> Preenchido automaticamente</span></label>
                                             <label class="input">
                                                 <input required name="nm_cliente_cli" 
@@ -450,7 +455,7 @@
 
             function buscaAdvogado(){
 
-                var cliente = $("input[name='cd_cliente_cli']").val();
+                var cliente = $("input[name='cd_escritorio_con']").val();
 
                 $.ajax({
                         url: host+'/advogados-por-cliente/'+cliente,
