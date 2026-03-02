@@ -102,10 +102,11 @@ class ProcessoMensagem extends Model
 
     public function getMensagensPendentesRemetente($conta)
     {
-        return $this->where('destinatario_prm',$conta)
+        return $this->join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
+                    ->where('destinatario_prm',$conta)
                     ->where('fl_leitura_prm','<>','S')
                     ->where('remetente_prm','<>',$conta)
-                    ->orderBy('created_at', 'DESC')->get();
+                    ->orderBy('processo_mensagem_prm.created_at', 'DESC')->get();
     }
 
     public function getMensagensPendentesDestinatario($destinatario)
