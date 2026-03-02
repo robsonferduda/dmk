@@ -55,11 +55,13 @@ class ProcessoMensagem extends Model
     {
         $dados = array();
         $mensagens = $this->with('processo')
+                    ->join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
                     ->where('destinatario_prm',$conta)
                     ->where('remetente_prm','<>',$conta)
                     ->whereNull('fl_leitura_prm')
+                    ->whereNull('processo_pro.deleted_at')
                     ->withTrashed()
-                    ->orderBy('created_at', 'DESC')->get();
+                    ->orderBy('processo_mensagem_prm.created_at', 'DESC')->get();
 
         foreach($mensagens as $msg){
 
