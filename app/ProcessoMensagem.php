@@ -106,6 +106,7 @@ class ProcessoMensagem extends Model
                     ->where('destinatario_prm',$conta)
                     ->where('fl_leitura_prm','<>','S')
                     ->where('remetente_prm','<>',$conta)
+                    ->whereNull('processo_pro.deleted_at')
                     ->orderBy('processo_mensagem_prm.created_at', 'DESC')->get();
     }
 
