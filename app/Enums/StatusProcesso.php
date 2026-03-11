@@ -24,4 +24,5 @@ final class StatusProcesso extends Enum
     const ALTERADO_PELO_CLIENTE = 16;
     const CANCELADO_PELO_CLIENTE = 7;
     const RECUSADO_AUTOMATICAMENTE = 17;
+    const ORIENTACOES_RECEBIDAS_DO_CLIENTE = 40;
 }

@@ -381,8 +381,44 @@ class ClienteProcessoController extends Controller
         return redirect('cliente/processos/acompanhamento');
     }  
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
+        DB::beginTransaction();
+        $id_escritorio = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
 
+        $processo = Processo::where('cd_processo_pro', $id)
+                            ->where('cd_conta_con', $id_escritorio)
+                            ->where('cd_cliente_cli', $cd_cliente_cli)
+                            ->first();
+
+        if (!$processo) {
+            DB::rollBack();
+            Flash::error('Processo não encontrado');
+            return redirect('cliente/processos/acompanhamento');
+        }
+
+        if (!empty($request->dt_solicitacao_pro)) {
+            $request->merge(['dt_solicitacao_pro' => date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_solicitacao_pro)))]);
+        }
+        if (!empty($request->dt_prazo_fatal_pro)) {
+            $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro)))]);
+        }
+
+        $request->merge(['cd_status_processo_stp' => \StatusProcesso::ORIENTACOES_RECEBIDAS_DO_CLIENTE]);
+
+        $processo->fill($request->all());
+
+        if (!$processo->saveOrFail()) {
+            DB::rollBack();
+            Flash::error('Erro ao atualizar dados');
+            return redirect('cliente/processos/acompanhamento');
+        }
+
+        DB::commit();
+
+        Flash::success('Processo ' . $processo->nu_processo_pro . ' atualizado com sucesso');
+
+        return redirect('cliente/processos/acompanhamento');
     }
 }
