@@ -362,7 +362,7 @@
                 $.ajax(
                 {
                     type: "POST",
-                    url: "../../cliente/advogado",
+                    url: host+"/cliente/advogado",
                     data: {
                         "_token": $('meta[name="token"]').attr('content'),
                         "cliente": cliente,
@@ -442,7 +442,7 @@
            
             $.ajax(
             {
-               url: "../../tipos-de-servico/cliente/"+cliente+"/cidade/"+cidade,
+               url: host+"/tipos-de-servico/cliente/"+cliente+"/cidade/"+cidade,
                type: 'GET',
                dataType: "JSON",
             success: function(response)
@@ -473,7 +473,7 @@
 
             $.ajax(
             {
-               url: "../../tipos-de-servico/correspondente/"+correspondente+"/cidade/"+cidade,
+               url: host+"/tipos-de-servico/correspondente/"+correspondente+"/cidade/"+cidade,
                type: 'GET',
                dataType: "JSON",
             success: function(response)
@@ -525,7 +525,7 @@
             if(cliente != '' && cidade != '' && tipoServico != '' && controlaChangeTS > 1 ){
                 $.ajax({
                         
-                        url: '../../busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
+                        url: host+'/busca-valor-cliente/'+cliente+'/'+cidade+'/'+tipoServico,
                         type: 'GET',
                         dataType: 'JSON',
                         beforeSend: function(){
@@ -564,7 +564,7 @@
             if(correspondente != '' && cidade != '' && tipoServico != '' && controlaChangeTSC > 2){
                 $.ajax({
                         
-                        url: '../../busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
+                        url: host+'/busca-valor-correspondente/'+correspondente+'/'+cidade+'/'+tipoServico,
                         type: 'GET',
                         dataType: 'JSON',
                         beforeSend: function(){
