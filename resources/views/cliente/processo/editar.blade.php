@@ -46,7 +46,7 @@
                     <!-- widget content -->
                     <div class="widget-body no-padding">
                         
-                        {!! Form::open(['id' => 'frm-add-processo', 'url' => ['processos',$processo->cd_processo_pro], 'class' => 'smart-form', 'method' => 'PUT']) !!}
+                        {!! Form::open(['id' => 'frm-add-processo', 'url' => ['processo-cliente',$processo->cd_processo_pro], 'class' => 'smart-form', 'method' => 'PUT']) !!}
                         
                         <div class="row">
                             <div  class="col col-md-12">
