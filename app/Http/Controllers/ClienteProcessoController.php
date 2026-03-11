@@ -405,7 +405,7 @@ class ClienteProcessoController extends Controller
             $request->merge(['dt_prazo_fatal_pro' => date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_prazo_fatal_pro)))]);
         }
 
-        $request->merge(['cd_status_processo_stp' => \StatusProcesso::ORIENTACOES_RECEBIDAS_DO_CLIENTE]);
+        $request->merge(['cd_status_processo_stp' => \StatusProcesso::ALTERADO_PELO_CLIENTE]);
 
         $processo->fill($request->all());
 
