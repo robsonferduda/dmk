@@ -51,9 +51,9 @@
                 @endphp
 
                 <!-- mensagens não lidas para administrator e colaborador -->
-                @role(['administrator', 'colaborador'])
-                    <span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i><b class="badge badge-count">{{ count($mensagens_pendentes) }}</b></span>
-                @endrole
+                
+                <span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i><b class="badge badge-count">{{ count($mensagens_pendentes) }}</b></span>
+               
 
                 <div class="ajax-dropdown">
 
