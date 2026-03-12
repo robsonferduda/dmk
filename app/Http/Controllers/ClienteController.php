@@ -24,6 +24,7 @@ use App\TaxaHonorario;
 use App\ReembolsoTipoDespesa;
 use App\GrupoCidadeRelacionamento;
 use App\Enums\Nivel;
+use App\LogAcesso;
 use App\Imports\ClientesImport;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -59,13 +60,19 @@ class ClienteController extends Controller
 
     public function acessos($id)
     {
-        $id = \Crypt::decrypt($id);
+        $id = safe_decrypt($id);
 
         $cliente = Cliente::with('entidade')->where('cd_cliente_cli', $id)->first();
-        
-        $usuario = User::where('cd_entidade_ete', $id)->first();
 
-        return view('cliente/acesso', ['cliente' => $cliente]);        
+        $usuario = User::where('cd_entidade_ete', $cliente->cd_entidade_ete)->first();
+
+        $acessos = $usuario
+            ? LogAcesso::where('user_id', $usuario->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(20)
+            : collect();
+
+        return view('cliente/acesso', ['cliente' => $cliente, 'usuario' => $usuario, 'acessos' => $acessos]);
     }
 
     public function contatos($id)

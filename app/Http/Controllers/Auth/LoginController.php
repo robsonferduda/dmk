@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\User;
 use App\Entidade;
+use App\LogAcesso;
+use App\Enums\Nivel;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -56,9 +58,16 @@ class LoginController extends Controller
             //if (Auth::user() && Auth::user()->active == '1') {
             if (Auth::user()) {
 
-                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con); //Grava o id da conta para ser utilizado nos cadastros que exigem 
-                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete); //Grava o id da conta para ser utilizado nos cadastros que exigem 
+                Session::put('SESSION_CD_CONTA', Auth::user()->cd_conta_con);
+                Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete);
                 Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
+
+               
+                LogAcesso::create([
+                    'user_id'    => Auth::user()->id,
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
              
                 return redirect()->intended('home');
                 
