@@ -172,7 +172,7 @@ class ClienteProcessoController extends Controller
         ->with(array('cliente' => function ($query) {
             $query->select('cd_cliente_cli', 'nm_fantasia_cli', 'nm_razao_social_cli');
         }))->where('cd_conta_con', $id_escritorio)
-        ->when(Auth::user()->role()->first()->slug == 'correspondente', function ($query) {
+        ->when(Auth::user()->role()->first()->slug == 'cliente', function ($query) {
             return $query->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, 
                                                                 \StatusProcesso::CANCELADO]);
         })
