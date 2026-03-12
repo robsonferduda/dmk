@@ -2,30 +2,6 @@
 
 namespace App\Helpers;
 
-/**
- * Criptografa um valor e converte o resultado para base64url (sem +, / ou =),
- * tornando o valor seguro para uso em URLs (path segments) sem risco de
- * "The MAC is invalid" causado pela decodificação incorreta de '+' como espaço.
- */
-if (!function_exists('safe_encrypt')) {
-    function safe_encrypt($value)
-    {
-        return rtrim(strtr(\Crypt::encrypt($value), '+/', '-_'), '=');
-    }
-}
-
-/**
- * Inverso de safe_encrypt(): restaura o padding base64, converte de volta
- * para base64 padrão e descriptografa.
- */
-if (!function_exists('safe_decrypt')) {
-    function safe_decrypt($value)
-    {
-        $padded = str_pad($value, strlen($value) + (4 - strlen($value) % 4) % 4, '=');
-        return \Crypt::decrypt(strtr($padded, '-_', '+/'));
-    }
-}
-
 class Helper
 {
     public static function formatarCnpjCpf($value)
