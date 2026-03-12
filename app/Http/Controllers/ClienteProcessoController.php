@@ -18,6 +18,11 @@ use App\LogNotificacao;
 use App\ProcessoMensagem;
 use App\EnderecoEletronico;
 use App\Enums\TipoMensagem;
+use App\Exports\Layout\LayoutProcesso;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+use App\Imports\ProcessoImport;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -299,6 +304,77 @@ class ClienteProcessoController extends Controller
                                             'varas' => $varas,
                                             'tiposProcesso' => $tiposProcesso,                                              
                                             'tiposDeServico' => $tiposDeServico]);
+    }
+
+    public function importar(Request $request)
+    {
+        $id_escritorio = 64;
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)
+                    ->where('cd_conta_con', $id_escritorio)
+                    ->first();
+
+        // Download da planilha pré-preenchida com os dados do cliente logado
+        if ($request->isMethod('get') && $request->has('download')) {
+            $dados = [
+                'cliente'    => $cliente,
+                'num_linhas' => 20,
+            ];
+            $fileName = 'layout-' . $cliente->nm_razao_social_cli . '.xlsx';
+            return \Excel::download(new LayoutProcesso($dados), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        }
+
+        // POST: importar planilha enviada pelo cliente
+        if ($request->isMethod('post') && $request->hasFile('file')) {
+            $file = $request->file('file');
+            $extensions = ['xls', 'xlsx', 'XLSX', 'XLS'];
+
+            if (!in_array($file->getClientOriginalExtension(), $extensions)) {
+                Flash::error('Extensão da planilha é inválida. Extensões permitidas: "xls","xlsx","XLSX","XLS".');
+                return redirect('cliente/processos/importar');
+            }
+
+            try {
+                $nomeOriginal = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extensao     = $file->getClientOriginalExtension();
+                $nomeUnico    = $nomeOriginal . '_' . date('Ymd_His') . '_' . uniqid() . '.' . $extensao;
+                $file->storeAs('planilhas_importacao', $nomeUnico);
+
+                $colunas = ['CLIENTE','ADVOGADO_SOLICITANTE','NUMERO_PROCESSO','AUTOR','REU','DATA_SOLICITACAO','DATA_PRAZO_FATAL','HORA','ESTADO','COMARCA','VARA','TIPO_DE_SERVICO','TIPO_DE_PROCESSO','AREA_DO_DIREITO'];
+
+                HeadingRowFormatter::default('none');
+                $headings = (new HeadingRowImport)->toArray($file);
+
+                foreach ($colunas as $coluna) {
+                    if (!in_array($coluna, $headings[0][0])) {
+                        Flash::error('Coluna (' . $coluna . ') não encontrada na planilha');
+                        return redirect('cliente/processos/importar');
+                    }
+                }
+
+                HeadingRowFormatter::default('slug');
+
+                $import = new ProcessoImport($nomeUnico);
+                Excel::import($import, $file);
+
+                $rowCount = $import->getRowCount();
+                Flash::success($rowCount . ' Processo(s) criado(s) com sucesso.');
+            } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+                $failures = $e->failures();
+                $errors = [];
+                foreach ($failures as $failure) {
+                    foreach ($failure->errors() as $error) {
+                        $errors[] = 'Linha ' . $failure->row() . ': ' . $error;
+                    }
+                }
+                Flash::error('Erros na importação: ' . implode(' | ', $errors));
+            } catch (\Exception $e) {
+                Flash::error('Erro ao importar: ' . $e->getMessage());
+            }
+
+            return redirect('cliente/processos/importar');
+        }
+
+        return view('cliente/processo/importar', ['cliente' => $cliente]);
     }
 
     public function store(Request $request)

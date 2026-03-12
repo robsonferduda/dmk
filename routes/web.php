@@ -97,6 +97,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('cliente/relatorio', 'ClienteProcessoController@relatorios');
     Route::get('cliente/processos', 'ClienteProcessoController@processos');
     Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
+    Route::get('cliente/processos/importar', 'ClienteProcessoController@importar');
+    Route::post('cliente/processos/importar', 'ClienteProcessoController@importar');
     Route::get('cliente/processos/cancelar/{id}', 'ClienteProcessoController@cancelar');
     Route::get('cliente/processos/detalhes/{id}', 'ClienteProcessoController@detalhes');
     Route::get('cliente/processos/editar/{id}', 'ClienteProcessoController@editar');

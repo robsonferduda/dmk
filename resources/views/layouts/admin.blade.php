@@ -304,6 +304,9 @@
                             </ul>   
                         </li>
                         <li>
+                            <a href="{{ url('cliente/processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
+                        </li> 
+                        <li>
                             <a href="{{ url('cliente/relatorio') }}" title="Relatórios"><i class="fa fa-lg fa-fw fa-file-o"></i><span class="menu-item-parent">Relatórios</span></a>
                         </li>
                     @endrole
