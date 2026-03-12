@@ -1059,7 +1059,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                        <a href="{{ url('processos/acompanhamento/requisitar-dados/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" id="btn_requisitar_dados" class="btn btn-success msg_processamento"><i class="fa-fw fa fa-check"></i> Confirmar</a>
+                        <a href="{{ url('processos/acompanhamento/requisitar-dados/'.safe_encrypt($processo->cd_processo_pro)) }}" id="btn_requisitar_dados" class="btn btn-success msg_processamento"><i class="fa-fw fa fa-check"></i> Confirmar</a>
                     </div>
                 </div>
             </div>

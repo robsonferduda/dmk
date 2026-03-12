@@ -18,7 +18,7 @@
             <div class="boxBtnTopo sub-box-button-xs">
                 <a title="Listar Processos" href="{{ url('processos') }}" class="btn btn-default pull-right"><i class="fa fa-list fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Listar Processos</span></a>
                 <a title="Relatório Financeiro" class="btn btn-default pull-right header-btn" href="{{ url('processos/relatorio/'.\Crypt::encrypt($id)) }}"><i class="fa fa-usd fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Relatório Financeiro</span></a>
-                <a title="Acompanhamento" data-toggle="modal" href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Acompanhamento</span></a> 
+                <a title="Acompanhamento" data-toggle="modal" href="{{ url('processos/acompanhamento/'.safe_encrypt($id)) }}" class="btn btn-default pull-right header-btn"><i class="fa fa-calendar fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Acompanhamento</span></a> 
                 <a title="Novo" data-toggle="modal" href="{{ url('processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Novo</span></a>     
                 <a title="Editar" data-toggle="modal" href="{{ url('processos/editar/'.\Crypt::encrypt($id)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i><span class="hidden-xs hidden-sm hidden-md">Editar</span></a>          
                 <input type="hidden" id="cd_processo_pro" value="{{ \Crypt::encrypt($id) }}">   

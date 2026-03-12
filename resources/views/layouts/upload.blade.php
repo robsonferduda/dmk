@@ -44,7 +44,7 @@
                                 @if($mensagem->cd_tipo_mensagem_tim == \App\Enums\TipoMensagem::EXTERNA )
                                     <li>
                                         <span class="unread">
-                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="msg">
+                                            <a href="{{ url('processos/acompanhamento/'.safe_encrypt($mensagem->cd_processo_pro)) }}" class="msg">
                                                 @if(file_exists('public/img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png'))                                                                           
                                                     <img src="{{ asset('img/users/ent'.$mensagem->entidadeRemetente->entidade->cd_entidade_ete.'.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
                                                 @else
@@ -63,7 +63,7 @@
                                 @else
                                     <li>
                                         <span class="unread">
-                                            <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($mensagem->cd_processo_pro)) }}" class="msg">
+                                            <a href="{{ url('processos/acompanhamento/'.safe_encrypt($mensagem->cd_processo_pro)) }}" class="msg">
                                                 @if(file_exists('public/img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png'))                                                                           
                                                     <img src="{{ asset('img/users/ent'.$mensagem->entidadeInterna->cd_entidade_ete.'.png') }}" alt="" class="air air-top-left margin-top-5" width="40" height="40" />
                                                 @else

@@ -74,7 +74,7 @@
             <div class="card mb-1 well" style="padding: 3px 8px; margin-bottom: 10px;">
                 <div class="card-body">
                     <h5 style="margin-bottom: 2px; margin-top: 3px;" class="card-title mb-0">
-                        <a href="{{ url('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" target="_blank">{{ $processo->nu_processo_pro }}</a>
+                        <a href="{{ url('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro)) }}" target="_blank">{{ $processo->nu_processo_pro }}</a>
                     </h5>
                     <p style="margin-bottom: 2px;"><strong>Correspondente</strong>: {{ $processo->correspondente->nm_razao_social_con }}</p>
                     <p style="margin-bottom: 2px;"><strong>Prazo Fatal</strong>: {{  date('d/m/Y', strtotime($processo->dt_prazo_fatal_pro)) }}</p>

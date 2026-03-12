@@ -1727,7 +1727,7 @@ class ProcessoController extends Controller
 
     public function requisitarDados($id_processo)
     {
-        $id_processo = \Crypt::decrypt($id_processo);
+        $id_processo = safe_decrypt($id_processo);
 
         $processo = Processo::findOrFail($id_processo);
         $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
