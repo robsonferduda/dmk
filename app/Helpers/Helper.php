@@ -1,6 +1,23 @@
 <?php
 
-namespace App\Helpers;
+namespace {
+    if (!function_exists('safe_encrypt')) {
+        function safe_encrypt($value)
+        {
+            return rtrim(strtr(\Crypt::encrypt($value), '+/', '-_'), '=');
+        }
+    }
+
+    if (!function_exists('safe_decrypt')) {
+        function safe_decrypt($value)
+        {
+            $padded = str_pad($value, strlen($value) + (4 - strlen($value) % 4) % 4, '=');
+            return \Crypt::decrypt(strtr($padded, '-_', '+/'));
+        }
+    }
+}
+
+namespace App\Helpers {
 
 class Helper
 {
@@ -53,3 +70,5 @@ class Helper
         return new \ReCaptcha\RequestMethod\Post();
     }
 }
+
+} // end namespace App\Helpers
