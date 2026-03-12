@@ -426,7 +426,7 @@ class ProcessoController extends Controller
 
     public function acompanhamento($id)
     {
-        $id = \Crypt::decrypt($id);
+        $id = safe_decrypt($id);
 
         switch (Auth::user()->role()->first()->slug) {
             case 'correspondente':
