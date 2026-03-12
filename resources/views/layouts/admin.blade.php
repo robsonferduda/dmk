@@ -301,11 +301,12 @@
                                 <li class="{{ (Session::get('item_pai') == 'processo.acompanhamento') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
                                 </li>
+                                <li>
+                                    <a href="{{ url('cliente/processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
+                                </li> 
                             </ul>   
                         </li>
-                        <li>
-                            <a href="{{ url('cliente/processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
-                        </li> 
+                        
                         <li>
                             <a href="{{ url('cliente/relatorio') }}" title="Relatórios"><i class="fa fa-lg fa-fw fa-file-o"></i><span class="menu-item-parent">Relatórios</span></a>
                         </li>
