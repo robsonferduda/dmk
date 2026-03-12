@@ -50,10 +50,10 @@
                     $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(Session::get('SESSION_CD_CONTA'));
                 @endphp
 
-                <!-- mensagens não lidas apenas para admin -->
-                @if(Auth::user() && Auth::user()->isAdmin())
+                <!-- mensagens não lidas para administrator e colaborador -->
+                @hasanyrole(['administrator', 'colaborador'])
                     <span id="activity" class="activity-dropdown"> <i class="fa fa-bell"></i><b class="badge badge-count">{{ count($mensagens_pendentes) }}</b></span>
-                @endif
+                @endhasanyrole
 
                 <div class="ajax-dropdown">
 
