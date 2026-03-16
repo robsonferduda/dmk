@@ -53,7 +53,7 @@
 
                         <div class="type_msg" style="margin-top: 10px;">
                             <div class="input_msg_write">
-                                <textarea id="texto_mensagem_cliente" rows="3" class="write_msg" placeholder="Escrever mensagem para o escritório"></textarea>
+                                <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem para o escritório"></textarea>
                                 <button class="msg_send_btn msg_send_cliente" type="button">
                                     <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                                 </button>
