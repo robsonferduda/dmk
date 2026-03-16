@@ -606,7 +606,7 @@
                                             <div class="type_msg">
                                                 <div class="input_msg_write">
                                                     <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
-                                                    <button class="msg_send_btn msg_send_interno" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                                    <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1322,7 +1322,7 @@
 
                 if(flag){
 
-                    $('.msg_send_interno').trigger('click');
+                    $('.msg_send_externo').trigger('click');
                 }
             } 
         };
