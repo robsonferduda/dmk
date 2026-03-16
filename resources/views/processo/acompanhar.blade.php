@@ -750,10 +750,15 @@
                                                         <span class="time_date"></span> </div>
                                                     </div>
 
-                                                    @endif
-
                                                 </div>
-                                                
+                                                <div class="checkbox">
+
+                                                    @if(\App\Conta::where('cd_conta_con',Auth::user()->cd_conta_con)->first()->fl_envio_enter_con == 'S')
+                                                    <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S" checked="checked">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                                    @else
+                                                    <label><input type="checkbox" class="fl_envio_enter" name="fl_envio_enter_interno" id="fl_envio_enter_interno" value="S">Enviar as mensagens apertando a tecla <strong>Enter</strong></label>
+                                                    @endif
+                                                </div>
                                                 <div class="type_msg">
                                                     <div class="input_msg_write">
                                                         <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
@@ -776,6 +781,7 @@
                             <div style="clear: both;"></div>
                         </div>
                     </article>
+
                     @role('administrator|colaborador')
                         <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                             <div class="well">
