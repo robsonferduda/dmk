@@ -33,7 +33,7 @@
                                                         <p style="background: #e8e7e7 !important; color: #686868;">Mensagem excluída</p>
                                                     @else
                                                         <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                        <span class="time_date">Escritório em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                        <span class="time_date"><strong>Escritório</strong> disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
                                                     @endif
                                                 </div>
                                             </div>

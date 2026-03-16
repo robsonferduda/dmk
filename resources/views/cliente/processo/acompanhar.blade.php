@@ -883,8 +883,6 @@
                 var processo = $("#processo").val();
                 var msg = $("#texto_mensagem").val();
 
-                if (!msg.trim()) return;
-
                 $.ajax({
                     type: "POST",
                     url: host+"/cliente/processo/mensagem/enviar",
