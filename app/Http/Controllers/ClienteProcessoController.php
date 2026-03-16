@@ -147,6 +147,8 @@ class ClienteProcessoController extends Controller
 
     public function acompanhamento()
     {
+        Session::put('item_pai','processo.acompanhamento');
+
         $id_escritorio = 64;
         $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
 
@@ -315,6 +317,8 @@ class ClienteProcessoController extends Controller
 
     public function importar(Request $request)
     {
+        Session::put('item_pai','processo.importar');
+
         $id_escritorio = 64;
         $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)
                     ->where('cd_conta_con', $id_escritorio)
