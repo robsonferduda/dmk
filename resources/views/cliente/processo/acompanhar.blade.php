@@ -523,7 +523,7 @@
                         </div>             
                     </div>
                 </article>
-                @include('processo.acompanhamento.chat')
+                @include('cliente.processo.acompanhamento.chat')
                 </div>
             </div>
         </div>
