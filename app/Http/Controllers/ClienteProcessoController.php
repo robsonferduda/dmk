@@ -660,10 +660,8 @@ class ClienteProcessoController extends Controller
         $mensagem->cd_processo_pro = $request->processo;
         $mensagem->texto_mensagem_prm = $mensagem;
 
-        if($mensagem->save())
-            return Response::json(array('message' => 'Mensagem enviada com sucesso'), 200);
-        else
-            return Response::json(array('message' => 'Erro ao enviar a mensagem'), 500);
+        dd($mensagem->save());
+          
 
     }
 }
