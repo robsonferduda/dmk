@@ -18,7 +18,7 @@
                                                     <p style="background: #e8e7e7 !important; color: #686868;">Mensagem excluída</p>
                                                 @else
                                                     <p>{{ $mensagem->texto_mensagem_prm }}</p>
-                                                    <span class="time_date">{{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
+                                                    <span class="time_date"> {{ ($mensagem->cliente and $mensagem->cliente->usuario) ? $mensagem->cliente->usuario->name : 'Não definido' }} disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}</span>
                                                 @endif
                                             </div>
                                         </div>

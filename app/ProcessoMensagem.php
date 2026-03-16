@@ -26,6 +26,10 @@ class ProcessoMensagem extends Model
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
+    public function cliente()
+    {
+        return $this->hasOne('App\Cliente','cd_cliente_cli', 'remetente_prm');
+    }
     public function processo()
     {
         return $this->hasOne('App\Processo','cd_processo_pro', 'cd_processo_pro');
