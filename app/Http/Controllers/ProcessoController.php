@@ -1140,6 +1140,22 @@ class ProcessoController extends Controller
         $dados->servico = $request->cd_tipo_servico_tse;
         $dados->servicoCorrespondente = $request->cd_tipo_servico_correspondente_tse;
         $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
+
+        if (Auth::user()->role()->first()->slug == 'cliente') {
+            $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+            if ($cliente && $processo->cd_cidade_cde && $dados->servico) {
+                $taxaCliente = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
+                                            ->where('cd_tipo_servico_tse', $dados->servico)
+                                            ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                            ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+                                            ->select('nu_taxa_the')->first();
+                if ($taxaCliente) {
+                    $dados->valor_cliente = $taxaCliente->nu_taxa_the;
+                }
+            }
+        }
+
         $this->salvarHonorarios($processo->cd_processo_pro, $dados);
 
         DB::commit();
@@ -1181,6 +1197,21 @@ class ProcessoController extends Controller
         $dados->servico = $request->cd_tipo_servico_tse;
         $dados->servicoCorrespondente = $request->cd_tipo_servico_correspondente_tse;
         $dados->nota_fiscal_cliente = $request->nota_fiscal_cliente;
+
+        if (Auth::user()->role()->first()->slug == 'cliente') {
+            $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+            if ($cliente && $processo->cd_cidade_cde && $dados->servico) {
+                $taxaCliente = TaxaHonorario::where('cd_conta_con', $this->cdContaCon)
+                                            ->where('cd_tipo_servico_tse', $dados->servico)
+                                            ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                            ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+                                            ->select('nu_taxa_the')->first();
+                if ($taxaCliente) {
+                    $dados->valor_cliente = $taxaCliente->nu_taxa_the;
+                }
+            }
+        }
     
         $this->salvarHonorarios($processo->cd_processo_pro, $dados);
 
@@ -1781,6 +1812,13 @@ class ProcessoController extends Controller
         $numeroAcompanhamento = ($request->numero_acompanhamento) ? $request->numero_acompanhamento : null;
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
+
+        if (Auth::user()->role()->first()->slug == 'cliente') {
+            $clienteObj = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+            $cliente = $clienteObj ? $clienteObj->cd_cliente_cli : null;
+        }
+
+
 
         $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, null, null);
         
