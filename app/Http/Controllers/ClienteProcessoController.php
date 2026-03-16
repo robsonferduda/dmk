@@ -646,7 +646,24 @@ class ClienteProcessoController extends Controller
     //Controle de Mensagens dos Processos dos Cliente
     public function enviarMensagem(Request $request)
     {
-        dd($request->all());
-    }
+        $processo = Processo::where('cd_processo_pro',$request->processo)->first();
 
+        $tipo == TipoMensagem::CLIENTE; //Mensagem do cliente
+        $destinatario = $processo->cd_conta_con; //Escritório é sempre o destinatário, pois é o cliente enviando a mensagem para o escritório.
+        $remetente = $processo->cd_cliente_cli; //Cliente é sempre o remetente, pois é o cliente enviando a mensagem para o escritório.
+        $mensagem = $request->mensagem;
+
+        $mensagem = new ProcessoMensagem();
+        $mensagem->remetente_prm = $remetente;            
+        $mensagem->destinatario_prm = $destinatario;
+        $mensagem->cd_tipo_mensagem_tim = $tipo;    	
+        $mensagem->cd_processo_pro = $request->processo;
+        $mensagem->texto_mensagem_prm = $mensagem;
+
+        if($mensagem->save())
+            return Response::json(array('message' => 'Mensagem enviada com sucesso'), 200);
+        else
+            return Response::json(array('message' => 'Erro ao enviar a mensagem'), 500);
+
+    }
 }

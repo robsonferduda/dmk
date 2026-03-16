@@ -8,6 +8,6 @@ final class TipoMensagem extends Enum
 {
     const INTERNA = 1;
     const EXTERNA = 2;
-
+    const CLIENTE = 3;
 }
 
