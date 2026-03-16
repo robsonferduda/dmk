@@ -301,7 +301,7 @@
                                 <li class="{{ (Session::get('item_pai') == 'processo.acompanhamento') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/processos/acompanhamento') }}" title="Acompanhamento"><span class="menu-item-parent">Acompanhamento</span></a>
                                 </li>
-                                <li>
+                                <li class="{{ (Session::get('item_pai') == 'processo.importar') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
                                 </li> 
                             </ul>   

@@ -37,10 +37,14 @@ class ClienteProcessoController extends Controller
     {
         $this->middleware('auth');
         $this->conta = \Session::get('SESSION_CD_CONTA');
+        Session::put('menu_pai','processos');
+        Session::forget('item_pai');
     }
 
     public function processos()
     {
+        Session::put('item_pai','processo.listar');
+
         $id_escritorio = 64;
         $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
 
