@@ -642,4 +642,11 @@ class ClienteProcessoController extends Controller
 
         return true;
     }
+
+    //Controle de Mensagens dos Processos dos Cliente
+    public function enviarMensagem()
+    {
+        
+    }
+
 }
