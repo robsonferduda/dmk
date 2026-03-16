@@ -283,7 +283,7 @@
                     @endcan
 
                     @role('cliente') 
-                        <li class="">
+                        <li class="menu {{ (Session::get('menu_pai') == 'calendario') ? 'open' : '' }}">
                             <a href="{{ url('calendario') }}" title="blank_"><i class="fa fa-lg fa-fw  fa-calendar"></i> <span class="menu-item-parent">Calendário</span></a>
                         </li> 
                         <li class="menu {{ (Session::get('menu_pai') == 'pauta') ? 'open' : '' }}">

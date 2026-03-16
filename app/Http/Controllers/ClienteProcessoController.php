@@ -233,6 +233,18 @@ class ClienteProcessoController extends Controller
         return redirect('cliente/processos/acompanhamento')->withInput();
     }
 
+    public function calendario()
+    {
+        Session::put('menu_pai','calendario');
+        Session::put('item_pai','calendario.listar'); 
+
+        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+
+        $processos = array();
+
+        return view('cliente/calendario', ['processos' => $processos]);
+    }
+
     public function pauta()
     {
         Session::put('menu_pai','pauta');
