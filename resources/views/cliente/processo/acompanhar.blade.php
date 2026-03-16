@@ -932,12 +932,69 @@
                 </div>
             </div>
         </div>
+@endsection
+@section('script')
+    <script type="text/javascript">
 
-        @endsection
-        @section('script')
-        <script type="text/javascript">
+        $(document).ready(function() {
 
-            $(document).ready(function() {
+            var host =  $('meta[name="base-url"]').attr('content');
+
+            //Controle de Mensagens de Processo
+            $('.msg_send_externo').click(function(){
+
+                processo = $("#processo").val();
+                msg = $("#texto_mensagem").val();
+
+                $.ajax(
+                {
+                    type: "POST",
+                    url: host+"processo/mensagem/enviar",
+                    data: {
+                        "_token": $('meta[name="token"]').attr('content'),
+                        "processo": processo,
+                        "msg": msg,
+                        "tipo": 'externo'
+                    },
+                    beforeSend: function()
+                    {
+                        $('.msg_history_externo').loader('show');
+                    },
+                    success: function(response)
+                    {
+                        //Formatando data
+                        data = response.objeto.created_at.split(' ');
+                        dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
+
+                        var m = '<div class="outgoing_msg">'+
+                        '<div class="sent_msg">' +
+                        '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                        '<span class="time_date">'+
+                        '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
+                        '</div>'+
+                        '</div>';
+
+                        $(".msg_history_externo").append(m);
+
+                        $('.msg_history_externo').loader('hide');
+                        
+                        $(".msg_history_externo").append('');
+                        $('.msg_history_externo').scrollTop($('.msg_history_externo')[0].scrollHeight);
+                        $("#texto_mensagem").val("");
+                        $("#texto_mensagem").focus();
+                        //location.reload();
+                    },
+                    error: function(response)
+                    {
+                        $('.msg_history_externo').loader('hide');
+                        $("#erro_envio_mensagem").modal('show');
+                    }
+                });
+
+            });
+
+
+
 
                 $("#informarLink").click(function(){
                     $("#modalLink").modal('show');
@@ -1426,61 +1483,7 @@
 
         });
 
-        $('.msg_send_externo').click(function(){
-
-            processo = $("#processo").val();
-            correspondente = $("#msg_correspondente").val();
-            conta = $("#conta").val();
-            msg = $("#texto_mensagem").val();
-
-            $.ajax(
-            {
-                type: "POST",
-                url: "../../processo/mensagem/enviar",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "processo": processo,
-                    "conta": conta,
-                    "correspondente": correspondente,
-                    "msg": msg,
-                    "tipo": 'externo'
-                },
-                beforeSend: function()
-                {
-                    $('.msg_history_externo').loader('show');
-                },
-                success: function(response)
-                {
-                    //Formatando data
-                    data = response.objeto.created_at.split(' ');
-                    dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
-
-                    var m = '<div class="outgoing_msg">'+
-                    '<div class="sent_msg">' +
-                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                    '<span class="time_date">'+
-                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
-                    '</div>'+
-                    '</div>';
-
-                    $(".msg_history_externo").append(m);
-
-                    $('.msg_history_externo').loader('hide');
-                    
-                    $(".msg_history_externo").append('');
-                    $('.msg_history_externo').scrollTop($('.msg_history_externo')[0].scrollHeight);
-                    $("#texto_mensagem").val("");
-                    $("#texto_mensagem").focus();
-                    //location.reload();
-                },
-                error: function(response)
-                {
-                    $('.msg_history_externo').loader('hide');
-                    $("#erro_envio_mensagem").modal('show');
-                }
-            });
-
-        });
+        
 
         $("#btn_requisitar_dados").click(function(){
 
@@ -1503,79 +1506,23 @@
             $("#modal_exclusao").modal('show');
         });
 
-        $('.msg_send_interno').click(function(){
-
-            processo = $("#processo").val();
-            correspondente = $("#msg_correspondente").val();
-            conta = $("#conta").val();
-            msg = $("#texto_mensagem_interno").val();
-
-            $.ajax(
-            {
-                type: "POST",
-                url: "../../processo/mensagem/enviar",
-                data: {
-                    "_token": $('meta[name="token"]').attr('content'),
-                    "processo": processo,
-                    "conta": conta,
-                    "correspondente": correspondente,
-                    "msg": msg,
-                    "tipo": 'interna'
-                },
-                beforeSend: function()
-                {
-                    $('.msg_history_interno').loader('show');
-                },
-                success: function(response)
-                {
-                    //Formatando data
-                    data = response.objeto.created_at.split(' ');
-                    dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
-
-                    var m = '<div class="outgoing_msg">'+
-                    '<div class="sent_msg">' +
-                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                    '<span class="time_date">'+
-                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
-                    '</div>'+
-                    '</div>';
-
-                    $(".msg_history_interno").append(m);
-
-                    $('.msg_history_interno').loader('hide');
-                    
-                    $(".msg_history_interno").append('');
-                    $('.msg_history_interno').scrollTop($('.msg_history_interno')[0].scrollHeight);
-                    $("#texto_mensagem_interno").val("");
-                    $("#texto_mensagem_interno").focus();
-                    //location.reload();
-                },
-                error: function(response)
-                {
-                    $('.msg_history_interno').loader('hide');
-                    //location.reload();
-                }
-            });
-
-        });
-
     });
 
-function validate(formData, jqForm, options) {
+    function validate(formData, jqForm, options) {
 
-    var form = jqForm[0];
-    var fileExtension = ['exe', 'rar', 'php', 'js', 'zip'];
+        var form = jqForm[0];
+        var fileExtension = ['exe', 'rar', 'php', 'js', 'zip'];
 
-    if(!form.file.value) {
-        $(".upload-msg").html('<span class="text-danger">Obrigatório selecionar um arquivo para envio</span>');
-        return false;
+        if(!form.file.value) {
+            $(".upload-msg").html('<span class="text-danger">Obrigatório selecionar um arquivo para envio</span>');
+            return false;
+        }
+
+        if($.inArray(form.file.value.split('.').pop().toLowerCase(), fileExtension) != -1) {
+            $(".upload-msg").html('<span class="text-danger">Formato do arquivo não permitido</span>');
+            return false;
+        }
     }
-
-    if($.inArray(form.file.value.split('.').pop().toLowerCase(), fileExtension) != -1) {
-        $(".upload-msg").html('<span class="text-danger">Formato do arquivo não permitido</span>');
-        return false;
-    }
-}
 
 (function() {
 

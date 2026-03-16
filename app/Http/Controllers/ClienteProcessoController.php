@@ -644,9 +644,9 @@ class ClienteProcessoController extends Controller
     }
 
     //Controle de Mensagens dos Processos dos Cliente
-    public function enviarMensagem()
+    public function enviarMensagem(Request $request)
     {
-        
+        dd($request->all());
     }
 
 }
