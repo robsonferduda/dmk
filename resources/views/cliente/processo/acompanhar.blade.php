@@ -676,7 +676,7 @@
                                             </div>
                                             <div class="type_msg" style="margin-top: 10px;">
                                                 <div class="input_msg_write">
-                                                    <textarea id="texto_mensagem_cliente" rows="3" class="write_msg" placeholder="Escrever mensagem para o escritório"></textarea>
+                                                    <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem para o escritório"></textarea>
                                                     <button class="msg_send_btn msg_send_cliente" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                                 </div>
                                             </div>
@@ -1004,63 +1004,48 @@
 
             var host =  $('meta[name="base-url"]').attr('content');
 
-            //Controle de Mensagens de Processo
-            $('.msg_send_externo').click(function(){
+            //Posiciona a lista de mensagens na última mensagem enviada
+            $('.msg_history_cliente').scrollTop($('.msg_history_cliente')[0].scrollHeight);
 
-                processo = $("#processo").val();
-                msg = $("#texto_mensagem").val();
+            //Verifica se a oção de envio com Enter está ativada
+            var callback = function(e){
 
-                $.ajax(
-                {
-                    type: "POST",
-                    url: host+"/cliente/processo/mensagem/enviar",
-                    data: {
-                        "_token": $('meta[name="token"]').attr('content'),
-                        "processo": processo,
-                        "msg": msg,
-                        "tipo": 'cliente'
-                    },
-                    beforeSend: function()
-                    {
-                        $('.msg_history_externo').loader('show');
-                    },
-                    success: function(response)
-                    {
-                        //Formatando data
-                        data = response.objeto.created_at.split(' ');
-                        dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
+                var text = e.type;
+                var code = e.which ? e.which : e.keyCode;
+                if(13 === code){
 
-                        var m = '<div class="outgoing_msg">'+
-                        '<div class="sent_msg">' +
-                        '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
-                        '<span class="time_date">'+
-                        '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
-                        '</div>'+
-                        '</div>';
+                    flag = $('#fl_envio_enter').is(':checked'); 
 
-                        $(".msg_history_externo").append(m);
-
-                        $('.msg_history_externo').loader('hide');
-                        
-                        $(".msg_history_externo").append('');
-                        $('.msg_history_externo').scrollTop($('.msg_history_externo')[0].scrollHeight);
-                        $("#texto_mensagem").val("");
-                        $("#texto_mensagem").focus();
-                        //location.reload();
-                    },
-                    error: function(response)
-                    {
-                        $('.msg_history_externo').loader('hide');
-                        $("#erro_envio_mensagem").modal('show');
+                    if(flag){
+                        $('.msg_send_cliente').trigger('click');
                     }
-                });
+                } 
+            };
 
-            });
+            $('#texto_mensagem').keypress(callback);     
 
+            //Verifica se a oção de envio com Enter está ativada
+            var icallback = function(e){
+
+                var text = e.type;
+                var code = e.which ? e.which : e.keyCode;
+                if(13 === code){
+
+                    flag = $('#fl_envio_enter_interno').is(':checked'); 
+
+                    if(flag){
+
+                        $('.msg_send_interno').trigger('click');
+                    }
+                } 
+            };
+
+            $('#texto_mensagem').keypress(icallback);   
+            
             // Envio de mensagem do cliente para o escritório
             $('.msg_send_cliente').click(function(){
                 var processo = $("#processo").val();
-                var msg = $("#texto_mensagem_cliente").val();
+                var msg = $("#texto_mensagem").val();
 
                 if (!msg.trim()) return;
 
@@ -1087,7 +1072,7 @@
                         $(".msg_history_cliente").append(m);
                         $('.msg_history_cliente').loader('hide');
                         $('.msg_history_cliente').scrollTop($('.msg_history_cliente')[0].scrollHeight);
-                        $("#texto_mensagem_cliente").val("").focus();
+                        $("#texto_mensagem").val("").focus();
                     },
                     error: function(response) {
                         $('.msg_history_cliente').loader('hide');
@@ -1393,43 +1378,7 @@
         });
         
 
-        //Posiciona a lista de mensagens na última mensagem enviada
-        $('.msg_history').scrollTop($('.msg_history')[0].scrollHeight);
-
-        //Verifica se a oção de envio com Enter está ativada
-        var callback = function(e){
-
-            var text = e.type;
-            var code = e.which ? e.which : e.keyCode;
-            if(13 === code){
-
-                flag = $('#fl_envio_enter').is(':checked'); 
-
-                if(flag){
-                    $('.msg_send_externo').trigger('click');
-                }
-            } 
-        };
-
-        $('#texto_mensagem').keypress(callback);     
-
-         //Verifica se a oção de envio com Enter está ativada
-         var icallback = function(e){
-
-            var text = e.type;
-            var code = e.which ? e.which : e.keyCode;
-            if(13 === code){
-
-                flag = $('#fl_envio_enter_interno').is(':checked'); 
-
-                if(flag){
-
-                    $('.msg_send_externo').trigger('click');
-                }
-            } 
-        };
-
-        $('#texto_mensagem_interno').keypress(icallback);   
+        
 
         $('#modalUpload').on('show.bs.modal', function () {
             $("#arquivo").empty();
