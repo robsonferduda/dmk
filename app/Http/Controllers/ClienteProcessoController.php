@@ -22,6 +22,9 @@ use App\Exports\Layout\LayoutProcesso;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+use App\ProcessoTaxaHonorario;
+use App\TaxaHonorario;
+use App\ContaCorrespondente;
 use App\Imports\ProcessoImport;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
@@ -420,6 +423,39 @@ class ClienteProcessoController extends Controller
             return redirect('processos');
         }
 
+        $dados = new \stdClass();
+        $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->servicoCorrespondente = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = null;
+        $dados->valor_cliente = null;
+        $dados->valor_correspondente = null;
+
+        if ($processo->cd_cidade_cde && $request->cd_tipo_servico_tse) {
+            $taxaCliente = TaxaHonorario::where('cd_conta_con', $id_escritorio)
+                                        ->where('cd_tipo_servico_tse', $request->cd_tipo_servico_tse)
+                                        ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                        ->where('cd_entidade_ete', Auth::user()->cd_entidade_ete)
+                                        ->select('nu_taxa_the')->first();
+            $dados->valor_cliente = $taxaCliente ? $taxaCliente->nu_taxa_the : null;
+        }
+
+        if ($processo->cd_correspondente_cor && $processo->cd_cidade_cde && $request->cd_tipo_servico_tse) {
+            $entidadeCorrespondente = ContaCorrespondente::select('cd_entidade_ete')
+                                                        ->where('cd_conta_con', $id_escritorio)
+                                                        ->where('cd_correspondente_cor', $processo->cd_correspondente_cor)
+                                                        ->first();
+            if ($entidadeCorrespondente) {
+                $taxaCorrespondente = TaxaHonorario::where('cd_conta_con', $id_escritorio)
+                                                   ->where('cd_tipo_servico_tse', $request->cd_tipo_servico_tse)
+                                                   ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                                   ->where('cd_entidade_ete', $entidadeCorrespondente->cd_entidade_ete)
+                                                   ->select('nu_taxa_the')->first();
+                $dados->valor_correspondente = $taxaCorrespondente ? $taxaCorrespondente->nu_taxa_the : null;
+            }
+        }
+
+        $this->salvarHonorarios($processo->cd_processo_pro, $dados, $id_escritorio);
+
         DB::commit();
 
         $processo->load('cliente');
@@ -491,10 +527,93 @@ class ClienteProcessoController extends Controller
             return redirect('cliente/processos/acompanhamento');
         }
 
+        $dados = new \stdClass();
+        $dados->servico = $request->cd_tipo_servico_tse;
+        $dados->servicoCorrespondente = $request->cd_tipo_servico_tse;
+        $dados->nota_fiscal_cliente = null;
+        $dados->valor_cliente = null;
+        $dados->valor_correspondente = null;
+
+        if ($processo->cd_cidade_cde && $request->cd_tipo_servico_tse) {
+            $taxaCliente = TaxaHonorario::where('cd_conta_con', $id_escritorio)
+                                        ->where('cd_tipo_servico_tse', $request->cd_tipo_servico_tse)
+                                        ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                        ->where('cd_entidade_ete', Auth::user()->cd_entidade_ete)
+                                        ->select('nu_taxa_the')->first();
+            $dados->valor_cliente = $taxaCliente ? $taxaCliente->nu_taxa_the : null;
+        }
+
+        if ($processo->cd_correspondente_cor && $processo->cd_cidade_cde && $request->cd_tipo_servico_tse) {
+            $entidadeCorrespondente = ContaCorrespondente::select('cd_entidade_ete')
+                                                        ->where('cd_conta_con', $id_escritorio)
+                                                        ->where('cd_correspondente_cor', $processo->cd_correspondente_cor)
+                                                        ->first();
+            if ($entidadeCorrespondente) {
+                $taxaCorrespondente = TaxaHonorario::where('cd_conta_con', $id_escritorio)
+                                                   ->where('cd_tipo_servico_tse', $request->cd_tipo_servico_tse)
+                                                   ->where('cd_cidade_cde', $processo->cd_cidade_cde)
+                                                   ->where('cd_entidade_ete', $entidadeCorrespondente->cd_entidade_ete)
+                                                   ->select('nu_taxa_the')->first();
+                $dados->valor_correspondente = $taxaCorrespondente ? $taxaCorrespondente->nu_taxa_the : null;
+            }
+        }
+
+        $this->salvarHonorarios($processo->cd_processo_pro, $dados, $id_escritorio);
+
         DB::commit();
 
         Flash::success('Processo ' . $processo->nu_processo_pro . ' atualizado com sucesso');
 
         return redirect('cliente/processos/acompanhamento');
+    }
+
+    private function salvarHonorarios($id, $dados, $cdContaCon)
+    {
+        if (empty($dados->nota_fiscal_cliente)) {
+            $dados->nota_fiscal_cliente = null;
+        }
+
+        if (empty($dados->valor_cliente)) {
+            $dados->valor_cliente = null;
+        }
+
+        if (empty($dados->valor_correspondente)) {
+            $dados->valor_correspondente = null;
+        }
+
+        $valor = ProcessoTaxaHonorario::where('cd_conta_con', $cdContaCon)
+                                      ->where('cd_processo_pro', $id)->first();
+
+        if (!empty($valor)) {
+            $valor->vl_taxa_honorario_cliente_pth      = $dados->valor_cliente;
+            $valor->vl_taxa_honorario_correspondente_pth = $dados->valor_correspondente;
+            $valor->cd_tipo_servico_tse                = $dados->servico;
+            $valor->cd_tipo_servico_correspondente_tse = $dados->servicoCorrespondente;
+            $valor->vl_taxa_cliente_pth                = $dados->nota_fiscal_cliente;
+
+            if (!$valor->saveOrFail()) {
+                Flash::error('Erro ao atualizar dados');
+                DB::rollBack();
+                return redirect('cliente/processos/acompanhamento');
+            }
+        } else {
+            $valor = ProcessoTaxaHonorario::create([
+                'cd_conta_con'                         => $cdContaCon,
+                'cd_processo_pro'                      => $id,
+                'cd_tipo_servico_tse'                  => $dados->servico,
+                'cd_tipo_servico_correspondente_tse'   => $dados->servicoCorrespondente,
+                'vl_taxa_honorario_cliente_pth'        => $dados->valor_cliente,
+                'vl_taxa_honorario_correspondente_pth' => $dados->valor_correspondente,
+                'vl_taxa_cliente_pth'                  => $dados->nota_fiscal_cliente,
+            ]);
+
+            if (!$valor) {
+                Flash::error('Erro ao atualizar dados');
+                DB::rollBack();
+                return redirect('cliente/processos/acompanhamento');
+            }
+        }
+
+        return true;
     }
 }
