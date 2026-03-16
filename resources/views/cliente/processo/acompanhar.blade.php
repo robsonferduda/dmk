@@ -605,7 +605,7 @@
                                             </div>
                                             <div class="type_msg">
                                                 <div class="input_msg_write">
-                                                    <textarea id="texto_mensagem_interno" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
+                                                    <textarea id="texto_mensagem" rows="3" class="write_msg" placeholder="Escrever mensagem"></textarea>  
                                                     <button class="msg_send_btn msg_send_externo" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                                 </div>
                                             </div>
@@ -954,7 +954,7 @@
                         "_token": $('meta[name="token"]').attr('content'),
                         "processo": processo,
                         "msg": msg,
-                        "tipo": 'externo'
+                        "tipo": 'cliente'
                     },
                     beforeSend: function()
                     {
