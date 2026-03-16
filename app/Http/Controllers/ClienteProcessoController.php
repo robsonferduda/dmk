@@ -651,7 +651,7 @@ class ClienteProcessoController extends Controller
         $tipo == TipoMensagem::CLIENTE; //Mensagem do cliente
         $destinatario = $processo->cd_conta_con; //Escritório é sempre o destinatário, pois é o cliente enviando a mensagem para o escritório.
         $remetente = $processo->cd_cliente_cli; //Cliente é sempre o remetente, pois é o cliente enviando a mensagem para o escritório.
-        $mensagem = $request->mensagem;
+        $mensagem = $request->msg;
 
         $mensagem = new ProcessoMensagem();
         $mensagem->remetente_prm = $remetente;            
