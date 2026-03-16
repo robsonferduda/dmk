@@ -269,11 +269,19 @@ class ClienteProcessoController extends Controller
     {
         $id = \Crypt::decrypt($id);
 
-            $processo = Processo::with('anexos')
-                ->with('anexos.entidade.usuario')
-                ->where('cd_processo_pro', $id)
-                ->first();
-        
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+        $processo = Processo::with('anexos')
+            ->with('anexos.entidade.usuario')
+            ->where('cd_processo_pro', $id)
+            ->where('cd_cliente_cli', $cliente->cd_cliente_cli)
+            ->first();
+
+        if (!$processo) {
+            Flash::error('Processo não encontrado ou você não tem permissão para acessá-lo.');
+            return redirect('cliente/processos/acompanhamento');
+        }
+
         $mensagens_externas = ProcessoMensagem::where('cd_processo_pro', $id)
                                                 ->where('cd_tipo_mensagem_tim', TipoMensagem::EXTERNA)
                                                 ->with('entidadeRemetente')
@@ -289,8 +297,19 @@ class ClienteProcessoController extends Controller
                                                 ->withTrashed()
                                                 ->orderBy('created_at', 'ASC')
                                                 ->get();
-    
-        return view('cliente/processo/acompanhar', ['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
+
+        $mensagens_cliente = ProcessoMensagem::where('cd_processo_pro', $id)
+                                                ->where('cd_tipo_mensagem_tim', TipoMensagem::CLIENTE)
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
+
+        return view('cliente/processo/acompanhar', [
+            'processo'           => $processo,
+            'mensagens_externas' => $mensagens_externas,
+            'mensagens_internas' => $mensagens_internas,
+            'mensagens_cliente'  => $mensagens_cliente,
+        ]);
     }
 
     
@@ -646,22 +665,26 @@ class ClienteProcessoController extends Controller
     //Controle de Mensagens dos Processos dos Cliente
     public function enviarMensagem(Request $request)
     {
-        $processo = Processo::where('cd_processo_pro', $request->processo)->first();
+        try {
+            $processo = Processo::where('cd_processo_pro', $request->processo)->first();
 
-        $tipo         = TipoMensagem::CLIENTE;
-        $destinatario = $processo->cd_conta_con;
-        $remetente    = $processo->cd_cliente_cli;
-        $texto        = $request->msg;
+            if (!$processo) {
+                return response()->json(['success' => false, 'message' => 'Processo não encontrado'], 404);
+            }
 
-        $mensagem = new ProcessoMensagem();
-        $mensagem->remetente_prm       = $remetente;
-        $mensagem->destinatario_prm    = $destinatario;
-        $mensagem->cd_tipo_mensagem_tim = $tipo;
-        $mensagem->cd_processo_pro     = $request->processo;
-        $mensagem->texto_mensagem_prm  = $texto;
+            $mensagem = new ProcessoMensagem();
+            $mensagem->remetente_prm        = $processo->cd_cliente_cli;
+            $mensagem->destinatario_prm     = $processo->cd_conta_con;
+            $mensagem->cd_tipo_mensagem_tim = TipoMensagem::CLIENTE;
+            $mensagem->cd_processo_pro      = $request->processo;
+            $mensagem->texto_mensagem_prm   = $request->msg;
 
-        $mensagem->save();
+            $mensagem->save();
 
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }
