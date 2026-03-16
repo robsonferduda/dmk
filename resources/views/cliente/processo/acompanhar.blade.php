@@ -949,7 +949,7 @@
                 $.ajax(
                 {
                     type: "POST",
-                    url: host+"/processo/mensagem/enviar",
+                    url: host+"/cliente/processo/mensagem/enviar",
                     data: {
                         "_token": $('meta[name="token"]').attr('content'),
                         "processo": processo,
