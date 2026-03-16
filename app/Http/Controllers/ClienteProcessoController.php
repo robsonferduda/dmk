@@ -235,6 +235,9 @@ class ClienteProcessoController extends Controller
 
     public function pauta()
     {
+        Session::put('menu_pai','pauta');
+        Session::put('item_pai','pauta.listar'); 
+
         $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
 
         $processos = array();
@@ -244,6 +247,9 @@ class ClienteProcessoController extends Controller
 
     public function relatorios()
     {
+        Session::put('menu_pai','relatorios');
+        Session::put('item_pai','relatorios.listar');        
+
         return view('cliente/menu/relatorios');
     }
 

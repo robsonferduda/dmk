@@ -286,9 +286,10 @@
                         <li class="">
                             <a href="{{ url('calendario') }}" title="blank_"><i class="fa fa-lg fa-fw  fa-calendar"></i> <span class="menu-item-parent">Calendário</span></a>
                         </li> 
-                        <li>
+                        <li class="menu {{ (Session::get('menu_pai') == 'pauta') ? 'open' : '' }}">
                             <a href="{{ url('cliente/pauta') }}" title="Pauta Online"><i class="fa fa-lg fa-fw fa-globe"></i><span class="menu-item-parent">Pauta Online</span></a>
                         </li>
+                        
                         <li class="menu {{ (Session::get('menu_pai') == 'processos') ? 'open' : '' }}">
                             <a href="#" title="Processos" class="item_pai" id="processos"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Processos</span></a>
                             <ul style="{{ (Session::get('menu_pai') == 'processos') ? 'display: block;' : 'display: none;' }}">
@@ -307,7 +308,7 @@
                             </ul>   
                         </li>
                         
-                        <li>
+                        <li class="menu {{ (Session::get('menu_pai') == 'relatorios') ? 'open' : '' }}">
                             <a href="{{ url('cliente/relatorio') }}" title="Relatórios"><i class="fa fa-lg fa-fw fa-file-o"></i><span class="menu-item-parent">Relatórios</span></a>
                         </li>
                     @endrole
