@@ -301,7 +301,7 @@
                             </div>
 
                             <div class="col-md-12 col-lg-6">
-                                @include('cliente.processo.arquivos')
+                                @include('cliente.processo.acompanhamento.arquivos')
                             </div>
                         </div>             
                     </div>
