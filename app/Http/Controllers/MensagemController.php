@@ -43,7 +43,14 @@ class MensagemController extends Controller
     {
     	$processo = Processo::where('cd_processo_pro',$request->processo)->first();
 
-        $tipo = ($request->tipo == 'interna') ? TipoMensagem::INTERNA : TipoMensagem::EXTERNA;
+        if ($request->tipo == 'interna') {
+            $tipo = TipoMensagem::INTERNA;
+        } elseif ($request->tipo == 'cliente') {
+            $tipo = TipoMensagem::CLIENTE;
+        } else {
+            $tipo = TipoMensagem::EXTERNA;
+        }
+
         $remetente = ($this->nivel == Nivel::COLABORADOR) ? $this->entidade : $this->conta;
 
         if($tipo == TipoMensagem::INTERNA){
@@ -57,6 +64,11 @@ class MensagemController extends Controller
                 $destinatario = $processo->cd_conta_con; 
             else
                 $destinatario = $processo->cd_correspondente_cor;
+        }
+
+        if($tipo == TipoMensagem::CLIENTE){
+
+            $destinatario = $processo->cd_cliente_cli;
         }
 
 		$mensagem = new ProcessoMensagem();

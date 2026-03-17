@@ -1253,7 +1253,24 @@
             } 
         };
 
-        $('#texto_mensagem_interno').keypress(icallback);   
+        $('#texto_mensagem_interno').keypress(icallback);
+
+        //Verifica se a opção de envio com Enter está ativada
+        var ccallback = function(e){
+
+            var text = e.type;
+            var code = e.which ? e.which : e.keyCode;
+            if(13 === code){
+
+                flag = $('#fl_envio_enter_cliente').is(':checked');
+
+                if(flag){
+                    $('.msg_send_cliente').trigger('click');
+                }
+            }
+        };
+
+        $('#texto_mensagem_cliente').keypress(ccallback);
 
         $('#modalUpload').on('show.bs.modal', function () {
             $("#arquivo").empty();
@@ -1537,6 +1554,59 @@
                 {
                     $('.msg_history_interno').loader('hide');
                     //location.reload();
+                }
+            });
+
+        });
+
+        $('.msg_send_cliente').click(function(){
+
+            processo = $("#processo").val();
+            conta = $("#conta").val();
+            msg = $("#texto_mensagem_cliente").val();
+
+            $.ajax(
+            {
+                type: "POST",
+                url: "../../processo/mensagem/enviar",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "processo": processo,
+                    "conta": conta,
+                    "msg": msg,
+                    "tipo": 'cliente'
+                },
+                beforeSend: function()
+                {
+                    $('.msg_history_cliente').loader('show');
+                },
+                success: function(response)
+                {
+                    //Formatando data
+                    data = response.objeto.created_at.split(' ');
+                    dt_msg = data[0].split('-').reverse().join('/')+' '+data[1];
+
+                    var m = '<div class="outgoing_msg">'+
+                    '<div class="sent_msg">'+
+                    '<p>'+response.objeto.texto_mensagem_prm+'</p>'+
+                    '<span class="time_date">'+
+                    '<a href="#" data-url="../../processo/mensagem/excluir/'+response.id+'" class="excluir_registro_msg"><i class="fa fa-trash"></i> Excluir</a> '+dt_msg+'</span>'+
+                    '</div>'+
+                    '</div>';
+
+                    $(".msg_history_cliente").append(m);
+
+                    $('.msg_history_cliente').loader('hide');
+
+                    $(".msg_history_cliente").append('');
+                    $('.msg_history_cliente').scrollTop($('.msg_history_cliente')[0].scrollHeight);
+                    $("#texto_mensagem_cliente").val("");
+                    $("#texto_mensagem_cliente").focus();
+                },
+                error: function(response)
+                {
+                    $('.msg_history_cliente').loader('hide');
+                    $("#erro_envio_mensagem").modal('show');
                 }
             });
 
