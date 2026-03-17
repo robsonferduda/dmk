@@ -82,7 +82,11 @@ class AnexoProcessoController extends Controller
         $conta = Processo::where('cd_processo_pro', $request->id_processo)->select('cd_conta_con')->first()['cd_conta_con'];
         
         $local = "arquivos/{$conta}/processos/{$request->id_processo}/";
-        $tipo = (Auth::user()->cd_nivel_niv == 3) ? TipoAnexoProcesso::CORRESPONDENTE : TipoAnexoProcesso::CONTA;
+        if ($request->tipo == 'cliente') {
+            $tipo = TipoAnexoProcesso::CLIENTE;
+        } else {
+            $tipo = (Auth::user()->cd_nivel_niv == 3) ? TipoAnexoProcesso::CORRESPONDENTE : TipoAnexoProcesso::CONTA;
+        }
 
         AnexoProcesso::create([
             'cd_conta_con'                => $this->conta,

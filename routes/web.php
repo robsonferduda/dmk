@@ -44,6 +44,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::any('processos/arquivos-processo', 'FilepickerController@arquivosProcesso');
     Route::any('processos/arquivos-processo/correspondente', 'FilepickerController@arquivosProcessoCorrespondente');
     Route::any('processos/arquivos-processo/escritorio', 'FilepickerController@arquivosProcessoEscritorio');
+    Route::any('processos/arquivos-processo/cliente', 'FilepickerController@arquivosProcessoCliente');
     
     Route::any('entrada/anexo', 'FinanceiroController@entradaAnexo');
     Route::post('anexo-processo-baixa-add', 'AnexoFinanceiroController@create');

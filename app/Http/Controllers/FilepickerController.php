@@ -8,6 +8,7 @@ use App\Conta;
 use App\Despesa;
 use App\Processo;
 use App\AnexoProcesso;
+use App\Enums\TipoAnexoProcesso;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Routing\Controller as BaseController;
@@ -192,6 +193,52 @@ class FilepickerController extends Controller
                 $tipo = $file->tipo;
                 $responsavel = $file->responsavel;
                 
+                $file = $this->handler->fileToArray($file);
+                $file['tipo'] = $tipo;
+                $file['responsavel'] = $responsavel;
+                $file['flag_delete'] = true;
+            }
+
+            return $this->handler->json(compact('files', count($anexos)));
+
+        } else {
+            return $this->handler->handle($request);
+        }
+    }
+
+    public function arquivosProcessoCliente(Request $request)
+    {
+        $this->inicializaPastaProcesso($request->id_processo);
+
+        $method = $request->get('_method', $request->getMethod());
+
+        $anexos = array();
+        $files = array();
+
+        if ($method == 'GET') {
+
+            $anexos = AnexoProcesso::where('cd_processo_pro', $request->id_processo)
+                                    ->where('cd_tipo_anexo_processo_tap', TipoAnexoProcesso::CLIENTE)
+                                    ->orderBy('created_at', 'DESC')
+                                    ->get();
+
+            $files = array();
+
+            foreach ($anexos as $key => $anexo) {
+                $nome_arquivo = $anexo['nm_local_anexo_processo_apr'].$anexo['nm_anexo_processo_apr'];
+
+                if (file_exists(storage_path($nome_arquivo))) {
+                    $files[$key] = new File(storage_path($nome_arquivo));
+                    $files[$key]->tipo = $anexo->cd_tipo_anexo_processo_tap;
+                    $user = User::where('cd_entidade_ete', $anexo->cd_entidade_ete)->withTrashed()->first();
+                    $files[$key]->responsavel = $user ? $user->name : 'Cliente';
+                }
+            }
+
+            foreach ($files as &$file) {
+                $tipo = $file->tipo;
+                $responsavel = $file->responsavel;
+
                 $file = $this->handler->fileToArray($file);
                 $file['tipo'] = $tipo;
                 $file['responsavel'] = $responsavel;

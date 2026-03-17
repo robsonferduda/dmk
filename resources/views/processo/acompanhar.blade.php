@@ -523,6 +523,38 @@
                                             </span> 
                                         </div>
                                     </section>
+
+                                    <section class="box-anexos-cliente" style="margin-top: 15px;">
+                                        <h6>Arquivos do Cliente</h6>
+                                        <div id="filepicker_cliente">
+                                            <div class="button-bar">
+                                                <div class="btn btn-success btn-upload-plugin fileinput">
+                                                    <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                    <input type="file" name="files[]" id="input-file-cliente" multiple>
+                                                </div>
+                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                    <i class="fa fa-upload"></i> Enviar Todos
+                                                </button>
+                                            </div>
+                                            <div class="table-responsive div-table">
+                                                <table class="table table-upload">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="column-name">Nome do Arquivo</th>
+                                                            <th class="column-size center">Tamanho</th>
+                                                            <th class="center">Opções</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="files"></tbody>
+                                                </table>
+                                            </div>
+                                            <div class="drop-window">
+                                                <div class="drop-window-content">
+                                                    <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
                                     @endrole
                                
                                                                                     
@@ -1019,6 +1051,63 @@
                         }
                     },
                     plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+
+                $('#filepicker_cliente').filePicker({
+                    url: '../../processos/arquivos-processo/cliente',
+                    ui: {
+                        autoUpload: false
+                    },
+                    data: function(){
+                        var _token = "{{ csrf_token() }}";
+                        var id_processo = $("#processo").val();
+
+                        return {
+                            _token: _token,
+                            id_processo: id_processo
+                        }
+                    },
+                    plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('done.filepicker', function (e, data) {
+
+                    if(data.files[0].size){
+
+                        $.ajax({
+                            url: "../../anexo-processo-add",
+                            type: 'POST',
+                            data: {
+                                "_token": $('meta[name="token"]').attr('content'),
+                                "id_processo": $("#processo").val(),
+                                "nome_arquivo": data.files[0].name,
+                                "tipo": "cliente"
+                            },
+                            success: function(response){},
+                            error: function(response){}
+                        });
+                    }
+
+                })
+                .on('delete.filepicker', function (e, data) {
+                    $.ajax({
+                        url: '../../anexo-processo-delete',
+                        type: 'POST',
+                        dataType: "JSON",
+                        data: {
+                            "_method": 'DELETE',
+                            "id": $("#processo").val(),
+                            "nome_arquivo": data.filename,
+                            "_token": $('meta[name="token"]').attr('content'),
+                        },
+                        success: function(response)
+                        {
+                            location.reload();
+                        },
+                        error: function(response)
+                        {
+                            return false;
+                        }
+                    });
                 })
 
                 $('#filepicker_correspondente').filePicker({
