@@ -468,9 +468,16 @@ class ProcessoController extends Controller
                                                 ->withTrashed()
                                                 ->orderBy('created_at', 'ASC')
                                                 ->get();
-        //dd($processo);
 
-        return view('processo/acompanhar', ['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas]);
+        $mensagens_cliente = ProcessoMensagem::where('cd_processo_pro', $id)
+                                                ->where('cd_tipo_mensagem_tim', TipoMensagem::CLIENTE)
+                                                ->with('cliente')
+                                                ->with('entidadeInterna.usuario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
+
+        return view('processo/acompanhar', ['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas, 'mensagens_cliente' => $mensagens_cliente]);
     }
 
     public function atualizarStatus(Request $request)
