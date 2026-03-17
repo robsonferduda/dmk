@@ -81,18 +81,22 @@ class MensagemController extends Controller
 
     	if($mensagem->save()){
 
-            $entidade = Entidade::where('cd_conta_con', $destinatario)->first();
+            if($tipo != TipoMensagem::CLIENTE){
 
-            $emails = EnderecoEletronico::where('cd_conta_con',$destinatario)
-                    ->where('cd_entidade_ete', $entidade->cd_entidade_ete)
-                    ->where('cd_tipo_endereco_eletronico_tee',TipoEnderecoEletronico::NOTIFICACAO)
-                    ->get();
+                $entidade = Entidade::where('cd_conta_con', $destinatario)->first();
 
-            foreach ($emails as $email) {
+                $emails = EnderecoEletronico::where('cd_conta_con',$destinatario)
+                        ->where('cd_entidade_ete', $entidade->cd_entidade_ete)
+                        ->where('cd_tipo_endereco_eletronico_tee',TipoEnderecoEletronico::NOTIFICACAO)
+                        ->get();
 
-                $processo->email = $email->dc_endereco_eletronico_ede;
-                $processo->notificarNovaMensagem($processo);
-                
+                foreach ($emails as $email) {
+
+                    $processo->email = $email->dc_endereco_eletronico_ede;
+                    $processo->notificarNovaMensagem($processo);
+                    
+                }
+
             }
 
             $mensagens_tmp = (new \App\ProcessoMensagem)->getMensagensPendentesDestinatario($mensagem->destinatario_prm);
