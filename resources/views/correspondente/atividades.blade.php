@@ -18,7 +18,7 @@
             <a href="{{ url('correspondente/detalhes/'.safe_encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-info pull-right" style="margin-right:8px;">
                                 <i class="fa fa-file-text-o"></i> Ficha Completa
                             </a>
-                            <a href="{{ url('correspondentes') }}" class="btn btn-warning pull-right" style="margin-right:8px;">
+                            <a href="{{ url()->previous() }}" class="btn btn-warning pull-right" style="margin-right:8px;">
                                 <i class="fa fa-arrow-left"></i> Voltar
                             </a>
         </div>
