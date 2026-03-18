@@ -862,9 +862,9 @@ class CorrespondenteController extends Controller
         }
 
         if (Auth::user()->cd_nivel_niv == 3) {
-            return redirect('correspondente/perfil/'.\Crypt::encrypt($request->entidade));
+            return redirect('correspondente/perfil/'.safe_encrypt($request->entidade));
         } else {
-            return redirect('correspondente/detalhes/'.\Crypt::encrypt($conta_correspondente->correspondente->cd_conta_con));
+            return redirect('correspondente/detalhes/'.safe_encrypt($conta_correspondente->correspondente->cd_conta_con));
         }
     }
 
@@ -1014,7 +1014,11 @@ class CorrespondenteController extends Controller
 
     public function perfil($id)
     {
-        $id = \Crypt::decrypt($id);
+        try {
+            $id = safe_decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
 
         $correspondente = Correspondente::where('cd_conta_con', Entidade::where('cd_entidade_ete', $id)->first()->cd_conta_con)->first();
         return view('correspondente/perfil', ['correspondente' => $correspondente]);
