@@ -426,7 +426,12 @@ class ProcessoController extends Controller
 
     public function acompanhamento($id)
     {
-        $id = safe_decrypt($id);
+        try {
+            $id = safe_decrypt($id);
+        } catch (\Exception $e) {
+            Flash::error('O link utilizado é inválido ou expirou. Por favor, acesse o processo pela listagem.');
+            return redirect('processos');
+        }
 
         switch (Auth::user()->role()->first()->slug) {
             case 'correspondente':
