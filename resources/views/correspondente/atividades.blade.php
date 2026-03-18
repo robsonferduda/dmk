@@ -28,29 +28,120 @@
                 @include('layouts/messages')
 
                 {{-- Cabeçalho do correspondente --}}
+                @php $ent = $correspondente->correspondente->entidade ?? null; @endphp
                 <div class="row" style="margin-bottom:16px;">
-                    <div class="col-md-1 text-center">
-                        @if(file_exists(public_path('img/users/ent'.$correspondente->cd_entidade_ete.'.png')))
-                            <img src="{{ asset('img/users/ent'.$correspondente->cd_entidade_ete.'.png') }}"
+                    {{-- Foto --}}
+                    <div class="col-md-2 text-center">
+                        @if($ent && file_exists(public_path('img/users/ent'.$ent->cd_entidade_ete.'.png')))
+                            <img src="{{ asset('img/users/ent'.$ent->cd_entidade_ete.'.png') }}"
                                  class="img-circle img-responsive"
-                                 style="width:64px;height:64px;object-fit:cover;margin:auto;">
+                                 style="width:90px;height:90px;object-fit:cover;margin:auto;">
                         @else
                             <img src="{{ asset('img/users/user.png') }}"
                                  class="img-circle img-responsive"
-                                 style="width:64px;height:64px;object-fit:cover;margin:auto;">
+                                 style="width:90px;height:90px;object-fit:cover;margin:auto;">
                         @endif
                     </div>
-                    <div class="col-md-11" style="padding-top:8px;">
-                        <h5 style="margin:0 0 4px;"><strong>{{ $correspondente->nm_conta_correspondente_ccr }}</strong></h5>
+
+                    {{-- Dados principais --}}
+                    <div class="col-md-5">
+                        <h4 style="margin:0 0 6px;">
+                            <strong>{{ $correspondente->nm_conta_correspondente_ccr }}</strong>
+                        </h4>
+
                         @if($correspondente->categoria)
-                            <span class="badge" style="background-color:{{ $correspondente->categoria->color_cac ?? '#aaa' }};color:#fff;">
+                            <span class="badge" style="background-color:{{ $correspondente->categoria->color_cac ?? '#aaa' }};color:#fff;font-size:11px;">
                                 {{ $correspondente->categoria->dc_categoria_correspondente_cac }}
                             </span>
                         @endif
+
+                        <ul class="list-unstyled" style="margin-top:10px;">
+                            @if($ent)
+                                {{-- Email --}}
+                                @if($ent->usuario)
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-envelope"></i>&nbsp;
+                                        <a href="mailto:{{ $ent->usuario->email }}">{{ $ent->usuario->email }}</a>
+                                    </li>
+                                @endif
+
+                                {{-- CPF / CNPJ --}}
+                                @if($ent->cpf()->first())
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-tag"></i>&nbsp;
+                                        <strong>CPF:</strong> {{ $ent->cpf()->first()->nu_identificacao_ide }}
+                                    </li>
+                                @elseif($ent->cnpj()->first())
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-tag"></i>&nbsp;
+                                        <strong>CNPJ:</strong> {{ $ent->cnpj()->first()->nu_identificacao_ide }}
+                                    </li>
+                                @endif
+
+                                {{-- OAB --}}
+                                @if($ent->oab)
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-tag"></i>&nbsp;
+                                        <strong>OAB:</strong> {{ $ent->oab->nu_identificacao_ide }}
+                                    </li>
+                                @endif
+
+                                {{-- Comarca de origem --}}
+                                @if($ent->atuacao()->where('fl_origem_cat','S')->first())
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-map-marker"></i>&nbsp;
+                                        <strong>Comarca de Origem:</strong>
+                                        {{ $ent->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde }}
+                                    </li>
+                                @endif
+
+                                {{-- Telefones --}}
+                                @foreach($ent->fone()->get() as $fone)
+                                    <li class="text-muted" style="margin-bottom:4px;">
+                                        <i class="fa fa-phone"></i>&nbsp;{{ $fone->nu_fone_fon }}
+                                        <small class="text-muted"> — {{ $fone->tipo()->first()->dc_tipo_fone_tfo }}</small>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+
                         @if($correspondente->obs_ccr)
-                            <p class="text-muted" style="font-size:13px;margin:4px 0 0;">
-                                <i class="fa fa-comment-o"></i> {{ $correspondente->obs_ccr }}
+                            <p class="text-muted" style="font-size:12px;margin-top:6px;border-top:1px solid #eee;padding-top:6px;">
+                                <i class="fa fa-comment-o"></i> {!! $correspondente->obs_ccr !!}
                             </p>
+                        @endif
+                    </div>
+
+                    {{-- Endereço + Dados bancários --}}
+                    <div class="col-md-5">
+                        @if($ent && $ent->endereco)
+                            <h5><i class="fa fa-map-marker"></i> Endereço</h5>
+                            <ul class="list-unstyled" style="font-size:13px;">
+                                <li><strong>CEP:</strong> {{ $ent->endereco->nu_cep_ede }}</li>
+                                <li><strong>Logradouro:</strong> {{ $ent->endereco->dc_logradouro_ede }}, {{ $ent->endereco->nu_numero_ede }}</li>
+                                @if($ent->endereco->dc_complemento_ede)
+                                    <li><strong>Complemento:</strong> {{ $ent->endereco->dc_complemento_ede }}</li>
+                                @endif
+                                <li><strong>Bairro:</strong> {{ $ent->endereco->nm_bairro_ede }}</li>
+                                <li>
+                                    <strong>Cidade/UF:</strong>
+                                    {{ $ent->endereco->cidade ? $ent->endereco->cidade->nm_cidade_cde.'/'.$ent->endereco->cidade->estado->nm_estado_est : '—' }}
+                                </li>
+                            </ul>
+                        @endif
+
+                        @if($ent && $ent->banco)
+                            <h5 style="margin-top:14px;"><i class="fa fa-bank"></i> Dados Bancários</h5>
+                            <ul class="list-unstyled" style="font-size:13px;">
+                                <li><strong>Tipo:</strong> {{ $ent->banco->tipoConta->nm_tipo_conta_tcb }}</li>
+                                @if($ent->banco->tipoConta->cd_tipo_conta_tcb != \App\Enums\TipoConta::PIX)
+                                    <li><strong>Banco:</strong> {{ $ent->banco->banco->nm_banco_ban }}</li>
+                                    <li><strong>Agência:</strong> {{ $ent->banco->nu_agencia_dba }}</li>
+                                    <li><strong>Conta:</strong> {{ $ent->banco->nu_conta_dba }}</li>
+                                @else
+                                    <li><strong>PIX:</strong> {{ $ent->banco->dc_pix_dba }}</li>
+                                @endif
+                            </ul>
                         @endif
                     </div>
                 </div>

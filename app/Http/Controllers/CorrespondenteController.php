@@ -81,7 +81,7 @@ class CorrespondenteController extends Controller
 
     public function atividades($id)
     {
-        $correspondente = ContaCorrespondente::with(['correspondente', 'entidade', 'categoria'])
+        $correspondente = ContaCorrespondente::with(['correspondente.entidade', 'categoria'])
             ->where('cd_conta_con', $this->conta)
             ->where('cd_correspondente_cor', $id)
             ->first();
