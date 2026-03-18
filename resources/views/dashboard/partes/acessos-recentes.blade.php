@@ -16,6 +16,12 @@
                         <span class="text-muted pull-right" style="font-size: 11px;">
                             {{ \Carbon\Carbon::parse($acesso->created_at)->format('d/m/Y H:i') }}
                         </span>
+                        @if($acesso->user)
+                            @php
+                                $niveis = [1 => 'Administrador', 2 => 'Colaborador', 3 => 'Correspondente', 4 => 'Cliente'];
+                            @endphp
+                            <br><small class="text-muted">{{ $niveis[$acesso->user->cd_nivel_niv] ?? 'Desconhecido' }}</small>
+                        @endif
                     </div>
                 </div>
             </li>
