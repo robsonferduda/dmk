@@ -154,24 +154,30 @@
                     {{-- Cards de resumo --}}
                     <div class="row" style="margin-bottom:10px;">
                         <div class="col-md-4">
-                            <div class="well text-center" style="border-top:3px solid #f0ad4e; padding:20px 15px;">
-                                <i class="fa fa-folder-open fa-3x text-warning" style="display:block; margin-bottom:10px;"></i>
-                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalAtivos }}</h2>
-                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Processos Ativos</p>
+                            <div class="well" style="border-top:3px solid #f0ad4e; padding:18px 20px; overflow:hidden;">
+                                <i class="fa fa-folder-open fa-4x text-warning" style="float:left; margin-right:15px; line-height:1;"></i>
+                                <div style="text-align:right;">
+                                    <h2 style="font-size:42px; font-weight:bold; margin:0; color:#555;">{{ $totalAtivos }}</h2>
+                                    <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Processos Ativos</p>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="well text-center" style="border-top:3px solid #5cb85c; padding:20px 15px;">
-                                <i class="fa fa-check-circle fa-3x text-success" style="display:block; margin-bottom:10px;"></i>
-                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalFinalizados }}</h2>
-                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Finalizados</p>
+                            <div class="well" style="border-top:3px solid #5cb85c; padding:18px 20px; overflow:hidden;">
+                                <i class="fa fa-check-circle fa-4x text-success" style="float:left; margin-right:15px; line-height:1;"></i>
+                                <div style="text-align:right;">
+                                    <h2 style="font-size:42px; font-weight:bold; margin:0; color:#555;">{{ $totalFinalizados }}</h2>
+                                    <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Finalizados</p>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="well text-center" style="border-top:3px solid #d9534f; padding:20px 15px;">
-                                <i class="fa fa-times-circle fa-3x text-danger" style="display:block; margin-bottom:10px;"></i>
-                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalCancelados }}</h2>
-                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Cancelados</p>
+                            <div class="well" style="border-top:3px solid #d9534f; padding:18px 20px; overflow:hidden;">
+                                <i class="fa fa-times-circle fa-4x text-danger" style="float:left; margin-right:15px; line-height:1;"></i>
+                                <div style="text-align:right;">
+                                    <h2 style="font-size:42px; font-weight:bold; margin:0; color:#555;">{{ $totalCancelados }}</h2>
+                                    <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Cancelados</p>
+                                </div>
                             </div>
                         </div>
                     </div>
