@@ -79,6 +79,45 @@ class CorrespondenteController extends Controller
         return view('correspondente/painel');
     }
 
+    public function atividades($id)
+    {
+        $correspondente = ContaCorrespondente::with(['correspondente', 'entidade', 'categoria'])
+            ->where('cd_conta_con', $this->conta)
+            ->where('cd_correspondente_cor', $id)
+            ->first();
+
+        if (!$correspondente) {
+            Flash::error('Correspondente não encontrado.');
+            return redirect('correspondentes');
+        }
+
+        // Processos ativos
+        $processosAtivos = Processo::where('cd_conta_con', $this->conta)
+            ->where('cd_correspondente_cor', $id)
+            ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+            ->with('status')
+            ->orderBy('dt_prazo_fatal_pro', 'asc')
+            ->limit(10)
+            ->get();
+
+        // Contagens
+        $totalAtivos      = Processo::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])->count();
+        $totalFinalizados = Processo::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->where('cd_status_processo_stp', \StatusProcesso::FINALIZADO)->count();
+        $totalCancelados  = Processo::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->where('cd_status_processo_stp', \StatusProcesso::CANCELADO)->count();
+
+        // Últimos acessos do correspondente
+        $user = User::where('cd_conta_con', $id)->where('cd_nivel_niv', \Nivel::CORRESPONDENTE)->first();
+        $ultimosAcessos = $user
+            ? \App\LogAcesso::where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(10)->get()
+            : collect();
+
+        return view('correspondente/atividades', compact(
+            'correspondente', 'processosAtivos',
+            'totalAtivos', 'totalFinalizados', 'totalCancelados',
+            'ultimosAcessos'
+        ));
+    }
+
     public function detalhes($id)
     {
         $id = \Crypt::decrypt($id);

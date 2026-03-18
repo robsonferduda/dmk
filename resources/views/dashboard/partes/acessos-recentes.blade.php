@@ -12,7 +12,11 @@
                         @endif
                     </div>
                     <div class="col-xs-10">
-                        <strong>{{ $acesso->user ? $acesso->user->name : 'Usuário removido' }}</strong>
+                        @if($acesso->user && $acesso->user->cd_nivel_niv == 3)
+                            <strong><a href="{{ url('correspondente/atividades/'.$acesso->user->cd_conta_con) }}">{{ $acesso->user->name }}</a></strong>
+                        @else
+                            <strong>{{ $acesso->user ? $acesso->user->name : 'Usuário removido' }}</strong>
+                        @endif
                         <span class="text-muted pull-right" style="font-size: 11px;">
                             {{ \Carbon\Carbon::parse($acesso->created_at)->format('d/m/Y H:i') }}
                         </span>
