@@ -529,7 +529,7 @@ class ProcessoController extends Controller
             }
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+        return redirect('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro));
     }
 
     public function finalizarProcesso(Request $request)
@@ -577,7 +577,7 @@ class ProcessoController extends Controller
             Flash::success('Erro ao atualizar situação do processo');
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+        return redirect('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro));
     }
 
     public function relatorio($id)
@@ -1172,7 +1172,7 @@ class ProcessoController extends Controller
         }
 
         Flash::success('Processo cadastrado com sucesso');
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+        return redirect('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro));
     }
 
     public function update(ProcessoRequest $request, $id)
@@ -1229,7 +1229,7 @@ class ProcessoController extends Controller
         }
 
         Flash::success('Processo atualizado com sucesso');
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
+        return redirect('processos/acompanhamento/'.safe_encrypt($id));
     }
 
     public function destroy($id)
@@ -1292,7 +1292,7 @@ class ProcessoController extends Controller
             
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id));
+        return redirect('processos/acompanhamento/'.safe_encrypt($id));
     }
 
     public function responderNotificacao($resposta, $token)
@@ -1546,7 +1546,7 @@ class ProcessoController extends Controller
             Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
+        return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
     }
 
     public function atualizaAnexosEnviados($id)
@@ -1798,7 +1798,7 @@ class ProcessoController extends Controller
         } else {
             Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
         }
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($id_processo));
+        return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
     }
 
     public function buscarProcessosAndamento(Request $request)
@@ -2134,7 +2134,7 @@ class ProcessoController extends Controller
             Flash::error('Erro ao informar link de dados');
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+        return redirect('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro));
     }
 
     public function informarLinkAudiencia(Request $request)
@@ -2153,7 +2153,7 @@ class ProcessoController extends Controller
             Flash::error('Erro ao informar link da audiẽncia');
         }
 
-        return redirect('processos/acompanhamento/'.\Crypt::encrypt($processo->cd_processo_pro));
+        return redirect('processos/acompanhamento/'.safe_encrypt($processo->cd_processo_pro));
     }
 
     public function alterarStatus(Request $request)
