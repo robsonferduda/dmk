@@ -62,12 +62,11 @@ class LoginController extends Controller
                 Session::put('SESSION_CD_ENTIDADE', Auth::user()->cd_entidade_ete);
                 Session::put('SESSION_NIVEL', Auth::user()->cd_nivel_niv);
 
-                /*
                 LogAcesso::create([
                     'user_id'    => Auth::user()->id,
                     'ip_address' => $request->ip(),
                     'user_agent' => $request->userAgent(),
-                ]);*/
+                ]);
              
                 return redirect()->intended('home');
                 
