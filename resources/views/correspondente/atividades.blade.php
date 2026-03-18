@@ -113,12 +113,6 @@
                                     @endforeach
                                 @endif
                             </ul>
-
-                            @if($correspondente->obs_ccr)
-                                <p class="text-muted" style="font-size:12px;margin-top:6px;border-top:1px solid #eee;padding-top:6px;">
-                                    <i class="fa fa-comment-o"></i> {!! $correspondente->obs_ccr !!}
-                                </p>
-                            @endif
                         </div>
 
                         {{-- Endereço + Dados bancários --}}
