@@ -977,7 +977,11 @@ class CorrespondenteController extends Controller
     /* Método usado na área do correspondente para listar o acompanhamento de processo */
     public function acompanhamento($id)
     {
-        $id = \Crypt::decrypt($id);
+        try {
+            $id = safe_decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
 
         //Verifica se a conta logada tem nível diferente de correspondente. Se tiver, busca o usuário do correspondente, senão, desloga.
         if (Auth::user() and Auth::user()->cd_nivel_niv != Nivel::CORRESPONDENTE) {
@@ -1000,7 +1004,12 @@ class CorrespondenteController extends Controller
         }
 
         $processo = Processo::with('anexos')->with('anexos.entidade.usuario')->where('cd_processo_pro', $id)->where('cd_correspondente_cor', $this->conta)->first();
-        
+
+        if (!$processo) {
+            Flash::error('Processo não encontrado ou você não tem permissão para acessá-lo.');
+            return redirect('correspondente/processos');
+        }
+
         $mensagens = ProcessoMensagem::where('cd_processo_pro', $id)
                                      ->where('cd_tipo_mensagem_tim', TipoMensagem::EXTERNA)
                                      ->with('entidadeRemetente')
