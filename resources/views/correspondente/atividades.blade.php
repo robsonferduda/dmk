@@ -9,26 +9,30 @@
 </div>
 <div id="content">
     <div class="row">
-        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-            <h1 class="page-title txt-color-blueDark"><i class="fa fa-lg fa-fw fa-file-text-o"></i> Atividades do Correspondente</h1>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <h1 class="page-title txt-color-blueDark">
+                <i class="fa-fw fa fa-legal"></i> Correspondentes <span> > Dashboard</span>
+            </h1>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <a href="{{ url('correspondente/detalhes/'.safe_encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-info pull-right" style="margin-right:8px;">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a href="{{ url('correspondente/detalhes/'.safe_encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-info pull-right" style="margin-right:8px;">
                                 <i class="fa fa-file-text-o"></i> Ficha Completa
                             </a>
                             <a href="{{ url('correspondentes') }}" class="btn btn-warning pull-right" style="margin-right:8px;">
                                 <i class="fa fa-arrow-left"></i> Voltar
                             </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="jarviswidget jarviswidget-sortable">
+                    <header role="heading" class="ui-sortable-handle">
+                        <span class="widget-icon"> <i class="fa fa-tasks"></i> </span>
+                        <h2>Dashboard do Correspondente</h2>
+                    </header>
+
+                    <div class="col-sm-12">
 
                     @include('layouts/messages')
 
@@ -306,8 +310,9 @@
 
                     </div>{{-- /row processos+acessos --}}
 
-                </div>{{-- /card-body --}}
-            </div>{{-- /card --}}
+                    </div>{{-- /col-sm-12 --}}
+                </div>{{-- /jarviswidget --}}
+            </article>
         </div>{{-- /col-md-12 --}}
     </div>{{-- /row --}}
 </div>
