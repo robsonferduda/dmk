@@ -1300,7 +1300,7 @@ class ProcessoController extends Controller
 
         try {
 
-            $id = \Crypt::decrypt($token);
+            $id = safe_decrypt($token);
         
         } catch (DecryptException $e) {
         

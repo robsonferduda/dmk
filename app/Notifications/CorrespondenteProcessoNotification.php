@@ -44,7 +44,8 @@ class CorrespondenteProcessoNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $token = \Crypt::encrypt($this->processo->cd_processo_pro); 
+        $token = safe_encrypt($this->processo->cd_processo_pro); 
+
         $cod_cli = (!empty($this->processo->cliente->cod_externo_cli)) ? $this->processo->cliente->cod_externo_cli.' - '.$this->processo->cliente->nm_razao_social_cli : $this->processo->cliente->nm_razao_social_cli;
 
         $this->options = array('url_yes' => url(config('app.url').route('resposta', ['resposta' => 'S','token' => $token], false)), 
@@ -82,8 +83,8 @@ class CorrespondenteProcessoNotification extends Notification
             ->line(Lang::getFromJson('------------------------------------------------'))
 
             ->line(Lang::getFromJson('Para responder, selecione uma das opções abaixo:'))
-            ->action(Lang::getFromJson('Aceitar Contratação'),null)
-            ->action(Lang::getFromJson('Recusar Contratação'),null)
+            ->action(Lang::getFromJson('Aceitar Contratação'), $this->options['url_yes'])
+            ->action(Lang::getFromJson('Recusar Contratação'), $this->options['url_not'])
             ->line(Lang::getFromJson('Aguardamos a sua resposta.'));
     }
 
@@ -100,22 +101,3 @@ class CorrespondenteProcessoNotification extends Notification
         ];
     }
 }
-
-/*
-Solicitação: 0000 (numero gerado pelo sistema)
-
-Data Prazo Fatal: 22/05/2019 16:15:00
-Número Processo: 0300249-43.2018.8.24.0052
-
-Parte Autora: SEGURADORA LIDER DOS CONSORCIOS DO SEGURO DPVAT S/A
-Parte Ré: ELZA DA SILVA
-Solicitante: DMK ADVOGADOS ASSOCIADOS 
-Tipo: Audiência Advogado e Preposto
-Vara: 2 VARA CIVEL
-
-Cidade: Porto União
-
-UF: Santa Catarina
-Código Cliente: 0000000
-Descrição da Solicitação:  Solicitamos o seu comparecimento etc....
-*/
