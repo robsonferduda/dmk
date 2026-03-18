@@ -152,62 +152,26 @@
                     <hr style="margin:0 0 16px;">
 
                     {{-- Cards de resumo --}}
-                    <div class="row" style="margin-bottom:16px;">
+                    <div class="row" style="margin-bottom:10px;">
                         <div class="col-md-4">
-                            <div class="card card-stats">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-xs-5">
-                                            <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-briefcase-24 text-warning"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-7">
-                                            <div class="numbers">
-                                                <p class="card-category">Processos Ativos</p>
-                                                <p class="card-title">{{ $totalAtivos }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="well text-center" style="border-top:3px solid #f0ad4e; padding:20px 15px;">
+                                <i class="fa fa-folder-open fa-3x text-warning" style="display:block; margin-bottom:10px;"></i>
+                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalAtivos }}</h2>
+                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Processos Ativos</p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card card-stats">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-xs-5">
-                                            <div class="icon-big text-center icon-success">
-                                                <i class="nc-icon nc-check-2 text-success"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-7">
-                                            <div class="numbers">
-                                                <p class="card-category">Finalizados</p>
-                                                <p class="card-title">{{ $totalFinalizados }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="well text-center" style="border-top:3px solid #5cb85c; padding:20px 15px;">
+                                <i class="fa fa-check-circle fa-3x text-success" style="display:block; margin-bottom:10px;"></i>
+                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalFinalizados }}</h2>
+                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Finalizados</p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card card-stats">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-xs-5">
-                                            <div class="icon-big text-center icon-danger">
-                                                <i class="nc-icon nc-simple-remove text-danger"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-7">
-                                            <div class="numbers">
-                                                <p class="card-category">Cancelados</p>
-                                                <p class="card-title">{{ $totalCancelados }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="well text-center" style="border-top:3px solid #d9534f; padding:20px 15px;">
+                                <i class="fa fa-times-circle fa-3x text-danger" style="display:block; margin-bottom:10px;"></i>
+                                <h2 style="font-size:42px; font-weight:bold; margin:0 0 5px; color:#555;">{{ $totalCancelados }}</h2>
+                                <p class="text-muted" style="margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Cancelados</p>
                             </div>
                         </div>
                     </div>
