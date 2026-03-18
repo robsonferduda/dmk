@@ -2,7 +2,7 @@
     <h6><i class="fa fa-lg fa-fw fa-clock-o"></i> ÚLTIMOS ACESSOS</h6>
     <ul class="list-group no-margin">
         @forelse($acessos as $acesso)
-            <li class="list-group-item" style="padding: 8px 10px;">
+            <li class="list-group-item" style="padding: 8px 10px; margin-bottom: 5px;">
                 <div class="row" style="display: flex; align-items: center;">
                     <div class="col-xs-2" style="padding-right: 5px;">
                         @if($acesso->user && file_exists(public_path('img/users/ent'.$acesso->user->cd_entidade_ete.'.png')))
