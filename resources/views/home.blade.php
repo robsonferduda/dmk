@@ -137,6 +137,9 @@
             <div class="col-md-4 " id="top5-correspondentes">
             
             </div>
+            <div class="col-md-4" id="acessos-recentes">
+            
+            </div>
         </div>
     @endrole
 </div>
@@ -160,6 +163,22 @@
                 error: function () {
                     $('.driver_tamanho').html('<span class="text-danger">Erro ao calcular</span>');
                     $('.driver_percentual').html('<span class="text-danger">Erro ao calcular</span>');
+                }
+            });
+        }
+
+        function carregarAcessosRecentes() {
+            $.ajax({
+                url: host+"/dashboard/acessos-recentes",
+                type: 'GET',
+                beforeSend: function () {
+                    $("#acessos-recentes").html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>');
+                },
+                success: function (html) {
+                    $("#acessos-recentes").html(html);
+                },
+                error: function () {
+                    $("#acessos-recentes").html('<p class="text-danger text-center">Erro ao carregar os dados.</p>');
                 }
             });
         }
@@ -188,6 +207,9 @@
 
             // Carregar espaço da pasta via AJAX
             carregarEspacoPasta();
+
+            // Carregar acessos recentes
+            carregarAcessosRecentes();
 
             // Função para formatar data como yyyy-mm-dd
             function formatarData(data) {

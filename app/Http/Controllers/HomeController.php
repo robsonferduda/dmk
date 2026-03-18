@@ -9,6 +9,7 @@ use App\Conta;
 use App\Processo;
 use App\ProcessoMensagem;
 use App\Correspondente;
+use App\LogAcesso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -91,6 +92,16 @@ class HomeController extends Controller
         $correspondentes = DB::select($sql);
 
         return view('dashboard/partes/correspondentes', compact('correspondentes'));
+    }
+
+    public function acessosRecentes()
+    {
+        $acessos = LogAcesso::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('dashboard.partes.acessos-recentes', compact('acessos'));
     }
 
     public function espacoPasta()
