@@ -30,7 +30,7 @@
                         <h6 class="nome_grupo_notificacao">
                             {{ $grupo->ds_grupo_grn }}
                             <span class="editar_grupo_notificacao" data-id="{{ $grupo->cd_grupo_notificacao_grn }}" data-tipo="{{ $grupo->cd_tipo_processo_tpo }}" data-nome="{{ $grupo->ds_grupo_grn }}" style="padding: 1px 8px; font-weight: 400; color: #3276b1;"><i class="fa fa-edit"></i> Editar </span>
-                            <span class="label bg-color-darken txt-color-white label-grupo-notificacao">{{ $grupo->tipoProcesso->nm_tipo_processo_tpo }}</span>
+                            <span class="label bg-color-darken txt-color-white label-grupo-notificacao">{{ $grupo->tipoProcesso ? $grupo->tipoProcesso->nm_tipo_processo_tpo : 'Não definido' }}</span>
                         </h6>
                         @if(count($grupo->emails))
                             <strong>Endereços de Notificação</strong>:
