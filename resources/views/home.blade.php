@@ -137,9 +137,11 @@
             <div class="col-md-4 " id="top5-correspondentes">
             
             </div>
+            <!--
             <div class="col-md-4" id="acessos-recentes">
             
             </div>
+        -->
         </div>
     @endrole
 </div>
