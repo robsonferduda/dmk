@@ -92,7 +92,7 @@
                             </select>
                         </section>
                         <section class="col col-md-4">
-                            <label class="label label-black">Correspondente</label><span class="label label-info">Digite o nome ou parte do nome</span><br />
+                            <label class="label label-black">Correspondente</label><span class="text-primary">Digite o nome ou parte do nome</span><br />
                             <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
                         </section>
                         <section class="col col-md-12" style="text-align: center">
