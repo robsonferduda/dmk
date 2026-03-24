@@ -32,24 +32,26 @@
                 <form action="{{ (Auth::user()->cd_nivel_niv == 3) ? url('correspondente/processo/buscar/arquivo') : url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
+                        <div>
+                            <section class="col col-md-3">
+                                <label class="label label-black">Data prazo fatal inicial</label><br />
+                                <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
+                            </section>
+                            <section class="col col-md-3">                           
+                                <label class="label label-black">Data prazo fatal final</label><br />
+                                <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
+                            </section>
+                            <section class="col col-md-3">                            
+                                <label class="label label-black">Nº Processo</label><br />
+                                <input style="width: 100%" size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="" value="{{ !empty($numero) ? $numero : '' }}" >                            
+                            </section>               
+                            <section class="col col-md-3">
+                                <label class="label label-black">Autor</label><br />
+                                <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
+                            </section>       
+                        </div>
+                        <div>
                         <section class="col col-md-3">
-                            <label class="label label-black">Data prazo fatal inicial</label><br />
-                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
-                            
-                        </section>
-                        <section class="col col-md-3">                           
-                            <label class="label label-black">Data prazo fatal final</label><br />
-                            <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
-                        </section>
-                         <section class="col col-md-3">                            
-                            <label class="label label-black">Nº Processo</label><br />
-                            <input style="width: 100%" size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="" value="{{ !empty($numero) ? $numero : '' }}" >                            
-                        </section>               
-                        <section class="col col-md-3">
-                            <label class="label label-black">Autor</label><br />
-                            <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
-                        </section>       
-                         <section class="col col-md-3">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section>  
@@ -75,6 +77,8 @@
                             <label class="label label-black">Código Cliente</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
                         </section>
+                        </div>
+                        <div>
                         <section class="col col-md-4">
                             <label class="label label-black">Estado</label><br />
                             <select style="width: 100%" id="cd_estado_est" name="cd_estado_est" class="form-control">
@@ -95,6 +99,7 @@
                             <label class="label label-black">Correspondente</label><span class="text-primary">Digite o nome ou parte do nome</span><br />
                             <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
                         </section>
+                        </div>
                         <section class="col col-md-12" style="text-align: center">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
