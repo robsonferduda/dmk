@@ -74,7 +74,27 @@
                         <section class="col col-md-2">
                             <label class="label label-black">Código Cliente</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
-                        </section>    
+                        </section>
+                        <section class="col col-md-4">
+                            <label class="label label-black">Estado</label><br />
+                            <select style="width: 100%" id="cd_estado_est" name="cd_estado_est" class="form-control">
+                                <option value="">Estado</option>
+                                @foreach(App\Estado::orderBy('nm_estado_est')->get() as $est)
+                                    <option {{ (!empty($estado) && $estado == $est->cd_estado_est) ? 'selected' : '' }} value="{{ $est->cd_estado_est }}">{{ $est->nm_estado_est }}</option>
+                                @endforeach
+                            </select>
+                        </section>
+                        <input type="hidden" id="cd_cidade_cde_aux" value="{{ !empty($comarca) ? $comarca : '' }}">
+                        <section class="col col-md-4">
+                            <label class="label label-black">Comarca</label><br />
+                            <select style="width: 100%" id="cd_cidade_cde" name="cd_cidade_cde" class="form-control">
+                                <option selected value="">Selecione o Estado</option>
+                            </select>
+                        </section>
+                        <section class="col col-md-4">
+                            <label class="label label-black">Correspondente</label><br />
+                            <input style="width: 100%" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}">
+                        </section>
                         <section class="col col-md-3">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
@@ -209,4 +229,49 @@
         Ao clicar em "Continuar" uma cópia do processo será realizada.
     </p>
 </div>
+@endsection
+
+@section('script')
+<script>
+    var host = $('meta[name="base-url"]').attr('content');
+
+    var buscaCidade = function() {
+        var estado = $("#cd_estado_est").val();
+        if (estado !== '') {
+            $.ajax({
+                url: host + '/cidades-por-estado/' + estado,
+                type: 'GET',
+                dataType: 'JSON',
+                beforeSend: function() {
+                    $('#cd_cidade_cde').empty();
+                    $('#cd_cidade_cde').append('<option selected value="">Carregando...</option>');
+                    $('#cd_cidade_cde').prop('disabled', true);
+                },
+                success: function(response) {
+                    $('#cd_cidade_cde').empty();
+                    $('#cd_cidade_cde').append('<option selected value="">Selecione</option>');
+                    $.each(response, function(index, element) {
+                        if ($('#cd_cidade_cde_aux').val() != element.cd_cidade_cde) {
+                            $('#cd_cidade_cde').append('<option value="' + element.cd_cidade_cde + '">' + element.nm_cidade_cde + '</option>');
+                        } else {
+                            $('#cd_cidade_cde').append('<option selected value="' + element.cd_cidade_cde + '">' + element.nm_cidade_cde + '</option>');
+                        }
+                    });
+                    $('#cd_cidade_cde').prop('disabled', false);
+                }
+            });
+        } else {
+            $('#cd_cidade_cde').empty();
+            $('#cd_cidade_cde').append('<option selected value="">Selecione o Estado</option>');
+        }
+    };
+
+    $('#cd_estado_est').change(function() {
+        buscaCidade();
+    });
+
+    @if(!empty($estado))
+        buscaCidade();
+    @endif
+</script>
 @endsection

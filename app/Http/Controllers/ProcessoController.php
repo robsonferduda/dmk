@@ -992,6 +992,9 @@ class ProcessoController extends Controller
         $acompanhamento = $request->get('nu_acompanhamento_pro');
         $dtInicio =  $request->get('dtInicio');
         $dtFim =  $request->get('dtFim');
+        $cdCidade = $request->get('cd_cidade_cde');
+        $estado = $request->get('cd_estado_est');
+        $nmCorrespondente = $request->get('nm_correspondente');
 
         if (!empty($dtInicio)) {
             $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $dtInicio)));
@@ -1066,6 +1069,15 @@ class ProcessoController extends Controller
             if (!empty($acompanhamento)) {
                 $processos->where('nu_acompanhamento_pro', 'ilike', '%'. $acompanhamento. '%');
             }
+            if (!empty($cdCidade)) {
+                $processos->where('cd_cidade_cde', $cdCidade);
+            }
+            if (!empty($nmCorrespondente)) {
+                $processos->whereHas('correspondente', function ($query) use ($nmCorrespondente) {
+                    $query->where('nm_razao_social_con', 'ilike', '%'. $nmCorrespondente. '%')
+                          ->orWhere('nm_fantasia_con', 'ilike', '%'. $nmCorrespondente. '%');
+                });
+            }
 
             if (!empty($dtInicio) && !empty($dtFim)) {
                 $processos = $processos->whereBetween('dt_prazo_fatal_pro', [$dtInicio,$dtFim]);
@@ -1095,7 +1107,7 @@ class ProcessoController extends Controller
 
             return view('processo/acompanhamento', ['processos' => $processos,'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico]);
         } else {
-            return view('processo/processos', ['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'dtInicio' => $dtInicio,'dtFim' => $dtFim]);
+            return view('processo/processos', ['processos' => $processos,'numero' => $numero,'tipoProcesso' => $tipo,'tipoServico' => $tipoServico, 'tiposServico' => $tiposServico, 'tiposProcesso' => $tiposProcesso, 'autor' => $autor, 'reu' => $reu, 'acompanhamento' => $acompanhamento, 'dtInicio' => $dtInicio,'dtFim' => $dtFim, 'comarca' => $cdCidade, 'estado' => $estado, 'nmCorrespondente' => $nmCorrespondente]);
         }
     }
 
