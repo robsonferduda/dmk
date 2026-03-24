@@ -51,54 +51,54 @@
                             </section>       
                         </div>
                         <div>
-                        <section class="col col-md-3">
-                            <label class="label label-black">Réu</label><br />
-                            <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
-                        </section>  
-                        <section class="col col-md-3">
-                            <label class="label label-black">Tipos de Processo</label><br />
-                            <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
-                                <option value="">Tipos de Processo</option>
-                                @foreach($tiposProcesso as $tipo)
-                                    <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
-                                @endforeach
-                            </select>
-                        </section>
-                        <section class="col col-md-3">
-                            <label class="label label-black">Tipos de Serviço Cliente</label><br />
-                            <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
-                                <option value="">Tipos de Serviço Cliente</option>
-                                @foreach($tiposServico as $tipo)
-                                    <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
-                                @endforeach
-                            </select>
-                        </section>    
-                        <section class="col col-md-3">
-                            <label class="label label-black">Código Cliente</label><br />
-                            <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
-                        </section>
+                            <section class="col col-md-3">
+                                <label class="label label-black">Réu</label><br />
+                                <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
+                            </section>  
+                            <section class="col col-md-3">
+                                <label class="label label-black">Tipos de Processo</label><br />
+                                <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
+                                    <option value="">Tipos de Processo</option>
+                                    @foreach($tiposProcesso as $tipo)
+                                        <option {{ (!empty($tipoProcesso) && $tipoProcesso == $tipo->cd_tipo_processo_tpo) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_processo_tpo }}">{{ $tipo->nm_tipo_processo_tpo }}</option>
+                                    @endforeach
+                                </select>
+                            </section>
+                            <section class="col col-md-3">
+                                <label class="label label-black">Tipos de Serviço Cliente</label><br />
+                                <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
+                                    <option value="">Tipos de Serviço Cliente</option>
+                                    @foreach($tiposServico as $tipo)
+                                        <option {{ (!empty($tipoServico) && $tipoServico == $tipo->cd_tipo_servico_tse) ? 'selected' : '' }} value="{{ $tipo->cd_tipo_servico_tse }}">{{ $tipo->nm_tipo_servico_tse }}</option>
+                                    @endforeach
+                                </select>
+                            </section>    
+                            <section class="col col-md-3">
+                                <label class="label label-black">Código Cliente</label><br />
+                                <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
+                            </section>
                         </div>
                         <div>
-                        <section class="col col-md-4">
-                            <label class="label label-black">Estado</label><br />
-                            <select style="width: 100%" id="cd_estado_est" name="cd_estado_est" class="form-control">
-                                <option value="">Estado</option>
-                                @foreach(App\Estado::orderBy('nm_estado_est')->get() as $est)
-                                    <option {{ (!empty($estado) && $estado == $est->cd_estado_est) ? 'selected' : '' }} value="{{ $est->cd_estado_est }}">{{ $est->nm_estado_est }}</option>
-                                @endforeach
-                            </select>
-                        </section>
-                        <input type="hidden" id="cd_cidade_cde_aux" value="{{ !empty($comarca) ? $comarca : '' }}">
-                        <section class="col col-md-4">
-                            <label class="label label-black">Comarca</label><br />
-                            <select style="width: 100%" id="cd_cidade_cde" name="cd_cidade_cde" class="form-control">
-                                <option selected value="">Selecione o Estado</option>
-                            </select>
-                        </section>
-                        <section class="col col-md-4">
-                            <label class="label label-black">Correspondente</label><span class="text-primary">Digite o nome ou parte do nome</span><br />
-                            <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
-                        </section>
+                            <section class="col col-md-4">
+                                <label class="label label-black">Estado</label><br />
+                                <select style="width: 100%" id="cd_estado_est" name="cd_estado_est" class="form-control">
+                                    <option value="">Estado</option>
+                                    @foreach(App\Estado::orderBy('nm_estado_est')->get() as $est)
+                                        <option {{ (!empty($estado) && $estado == $est->cd_estado_est) ? 'selected' : '' }} value="{{ $est->cd_estado_est }}">{{ $est->nm_estado_est }}</option>
+                                    @endforeach
+                                </select>
+                            </section>
+                            <input type="hidden" id="cd_cidade_cde_aux" value="{{ !empty($comarca) ? $comarca : '' }}">
+                            <section class="col col-md-4">
+                                <label class="label label-black">Comarca</label><br />
+                                <select style="width: 100%" id="cd_cidade_cde" name="cd_cidade_cde" class="form-control">
+                                    <option selected value="">Selecione o Estado</option>
+                                </select>
+                            </section>
+                            <section class="col col-md-4">
+                                <label class="label label-black">Correspondente</label><span class="text-primary" style="font-size: 80%">Digite o nome ou parte do nome</span><br />
+                                <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
+                            </section>
                         </div>
                         <section class="col col-md-12" style="text-align: center">
                             <br />
