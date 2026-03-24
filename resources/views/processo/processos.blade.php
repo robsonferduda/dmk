@@ -32,7 +32,7 @@
                 <form action="{{ (Auth::user()->cd_nivel_niv == 3) ? url('correspondente/processo/buscar/arquivo') : url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <div>
+                        <div style="display: inline-block; margin-bottom: 10px;"> 
                             <section class="col col-md-3">
                                 <label class="label label-black">Data prazo fatal inicial</label><br />
                                 <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
@@ -50,7 +50,7 @@
                                 <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
                             </section>       
                         </div>
-                        <div>
+                        <div style="display: inline-block; margin-bottom: 10px;">
                             <section class="col col-md-3">
                                 <label class="label label-black">Réu</label><br />
                                 <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
