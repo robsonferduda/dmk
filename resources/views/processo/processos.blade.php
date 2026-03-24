@@ -99,10 +99,10 @@
                             <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
                         </section>
                     </div>
-                    <div class="row" style="margin-bottom: 15px;">
+                    <div class="row" style="margin-bottom: 15px; text-align: center;">
                         <section class="col col-md-12">
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                            <a class="btn btn-default" href="{{ url('processos') }}"><i class="fa fa-times"></i> Limpar Filtros</a>
+                            <a class="btn btn-warning" href="{{ url('processos') }}"><i class="fa fa-times"></i> Limpar Filtros</a>
                         </section>
                     </div>
                     <div style="display: block;margin-top: 10px">
