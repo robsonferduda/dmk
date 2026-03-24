@@ -93,7 +93,7 @@
                         </section>
                         <section class="col col-md-4">
                             <label class="label label-black">Correspondente</label><br />
-                            <input style="width: 100%" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}">
+                            <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
                         </section>
                         <section class="col col-md-12" style="text-align: center">
                             <br />

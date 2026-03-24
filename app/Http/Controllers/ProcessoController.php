@@ -1078,8 +1078,8 @@ class ProcessoController extends Controller
             }
             if (!empty($nmCorrespondente)) {
                 $processos->whereHas('correspondente', function ($query) use ($nmCorrespondente) {
-                    $query->where('nm_razao_social_con', 'ilike', '%'. $nmCorrespondente. '%')
-                          ->orWhere('nm_fantasia_con', 'ilike', '%'. $nmCorrespondente. '%');
+                    $query->whereRaw("unaccent(nm_razao_social_con) ilike unaccent(?)", ['%' . $nmCorrespondente . '%'])
+                          ->orWhereRaw("unaccent(nm_fantasia_con) ilike unaccent(?)", ['%' . $nmCorrespondente . '%']);
                 });
             }
 
