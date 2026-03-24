@@ -76,6 +76,14 @@
                                 @endforeach
                             </select>
                         </section> 
+                        <section class="col col-md-4 col-lg-3 box-select2"> 
+                            <select name="cd_area_direito_ado" id="cd_area_direito_ado" class="select2">
+                                <option value="">Área de Direito</option>
+                                @foreach($areas as $area)
+                                    <option value="{{ $area->cd_area_direito_ado }}">{{ $area->dc_area_direito_ado }}</option>
+                                @endforeach
+                            </select>
+                        </section> 
                         <section class="col col-md-4 col-lg-3 box-select2">       
                             <select id="cd_responsavel_pro" name="cd_responsavel_pro" class="select2">
                                 <option selected value="">Responsável</option>
@@ -374,6 +382,7 @@
             nm_cliente = $("#nm_cliente").val();
             tipo = $("#cd_tipo_processo_tpo").val();
             servico = $("#cd_tipo_servico_tse").val();
+            area = $("#cd_area_direito_ado").val();
             status = $("#status").val();
             reu = $("#reu").val();
             autor = $("#autor").val();
@@ -390,6 +399,7 @@
                         "nm_cliente": nm_cliente, 
                         "tipo": tipo, 
                         "servico": servico, 
+                        "area": area, 
                         "status": status, 
                         "reu": reu, 
                         "autor": autor, 

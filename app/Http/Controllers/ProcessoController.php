@@ -348,12 +348,13 @@ class ProcessoController extends Controller
 
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
+        $areas = AreaDireito::where('cd_conta_con', $this->cdContaCon)->orderBy('dc_area_direito_ado')->get();
        
         $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
                   ->orderBy('nm_status_processo_conta_stp')
                   ->get();
        
-        return view('processo/acompanhamento', ['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis, 'status' => $status]);
+        return view('processo/acompanhamento', ['processos' => array(), 'teste' => array(), 'tiposProcesso' => $tiposProcesso,'tiposServico' => $tiposServico, 'responsaveis' => $responsaveis, 'status' => $status, 'areas' => $areas]);
     }
 
     public function pautaOnline(Request $request)
@@ -1822,6 +1823,7 @@ class ProcessoController extends Controller
         $cliente = ($request->cliente) ? $request->cliente : null;
         $statusProcesso = ($request->statusProcesso) ? $request->statusProcesso : null;
         $numeroAcompanhamento = ($request->numero_acompanhamento) ? $request->numero_acompanhamento : null;
+        $area = ($request->area) ? (int) $request->area : null;
 
         $flag = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
@@ -1832,7 +1834,7 @@ class ProcessoController extends Controller
 
 
 
-        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, null, null);
+        $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area, null);
         
         return response()->json($processos);
     }
