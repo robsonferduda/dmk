@@ -409,6 +409,37 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <hr style="margin: 15px 0;">
+                                            <h6>Arquivos do Cliente</h6>
+                                            <div id="filepicker_cliente">
+                                                <div class="button-bar">
+                                                    <div class="btn btn-success btn-upload-plugin fileinput">
+                                                        <i class="fa fa-files-o"></i> Buscar Arquivos
+                                                        <input type="file" name="files[]" id="input-file-cliente" multiple>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary start-all btn-upload-plugin">
+                                                        <i class="fa fa-upload"></i> Enviar Todos
+                                                    </button>
+                                                </div>
+                                                <div class="table-responsive div-table">
+                                                    <table class="table table-upload">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="column-name">Nome do Arquivo</th>
+                                                                <th class="column-size center">Tamanho</th>
+                                                                <th class="center">Opções</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="files"></tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="drop-window">
+                                                    <div class="drop-window-content">
+                                                        <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     @endrole                                   
                                     
 
@@ -521,38 +552,6 @@
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
                                             </span> 
-                                        </div>
-                                    </section>
-
-                                    <section class="box-anexos-cliente" style="margin-top: 15px;">
-                                        <h6>Arquivos do Cliente</h6>
-                                        <div id="filepicker_cliente">
-                                            <div class="button-bar">
-                                                <div class="btn btn-success btn-upload-plugin fileinput">
-                                                    <i class="fa fa-files-o"></i> Buscar Arquivos
-                                                    <input type="file" name="files[]" id="input-file-cliente" multiple>
-                                                </div>
-                                                <button type="button" class="btn btn-primary start-all btn-upload-plugin">
-                                                    <i class="fa fa-upload"></i> Enviar Todos
-                                                </button>
-                                            </div>
-                                            <div class="table-responsive div-table">
-                                                <table class="table table-upload">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="column-name">Nome do Arquivo</th>
-                                                            <th class="column-size center">Tamanho</th>
-                                                            <th class="center">Opções</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="files"></tbody>
-                                                </table>
-                                            </div>
-                                            <div class="drop-window">
-                                                <div class="drop-window-content">
-                                                    <h3><i class="fa fa-upload"></i> Drop files to upload</h3>
-                                                </div>
-                                            </div>
                                         </div>
                                     </section>
                                     @endrole
