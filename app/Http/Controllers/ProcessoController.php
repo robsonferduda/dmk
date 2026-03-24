@@ -1071,6 +1071,10 @@ class ProcessoController extends Controller
             }
             if (!empty($cdCidade)) {
                 $processos->where('cd_cidade_cde', $cdCidade);
+            } elseif (!empty($estado)) {
+                $processos->whereHas('cidade', function ($query) use ($estado) {
+                    $query->where('cd_estado_est', $estado);
+                });
             }
             if (!empty($nmCorrespondente)) {
                 $processos->whereHas('correspondente', function ($query) use ($nmCorrespondente) {

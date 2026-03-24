@@ -53,7 +53,7 @@
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section>  
-                         <section class="col col-md-3">
+                        <section class="col col-md-3">
                             <label class="label label-black">Tipos de Processo</label><br />
                             <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
                                 <option value="">Tipos de Processo</option>
@@ -95,7 +95,7 @@
                             <label class="label label-black">Correspondente</label><br />
                             <input style="width: 100%" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}">
                         </section>
-                        <section class="col col-md-12">
+                        <section class="col col-md-12" style="text-align: center">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                         </section>                
