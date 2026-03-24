@@ -1077,9 +1077,13 @@ class ProcessoController extends Controller
                 });
             }
             if (!empty($nmCorrespondente)) {
-                $processos->whereHas('correspondente', function ($query) use ($nmCorrespondente) {
-                    $query->whereRaw("unaccent(nm_razao_social_con) ilike unaccent(?)", ['%' . $nmCorrespondente . '%'])
-                          ->orWhereRaw("unaccent(nm_fantasia_con) ilike unaccent(?)", ['%' . $nmCorrespondente . '%']);
+                // Normaliza o termo: maiúsculas + remove acentos (sem depender de extensão PostgreSQL)
+                $buscaNorm = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', mb_strtoupper($nmCorrespondente, 'UTF-8'));
+                $from = 'ÁÀÂÃÉÊÍÓÔÕÚÜÇáàâãéêíóôõúüç';
+                $to   = 'AAAAEEIOOOUUCaaaaeeiooouuc';
+                $processos->whereHas('correspondente', function ($query) use ($buscaNorm, $from, $to) {
+                    $query->whereRaw("translate(upper(nm_razao_social_con), ?, ?) ilike ?", [$from, $to, '%' . $buscaNorm . '%'])
+                          ->orWhereRaw("translate(upper(nm_fantasia_con), ?, ?) ilike ?", [$from, $to, '%' . $buscaNorm . '%']);
                 });
             }
 
