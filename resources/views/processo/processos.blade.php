@@ -78,7 +78,7 @@
                         </section>
                     </div>
                     <div class="row" style="margin-bottom: 15px;">
-                        <section class="col col-md-3">
+                        <section class="col col-md-4">
                             <label class="label label-black">Estado</label><br />
                             <select style="width: 100%" id="cd_estado_est" name="cd_estado_est" class="form-control">
                                 <option value="">Estado</option>
@@ -88,19 +88,19 @@
                             </select>
                         </section>
                         <input type="hidden" id="cd_cidade_cde_aux" value="{{ !empty($comarca) ? $comarca : '' }}">
-                        <section class="col col-md-3">
+                        <section class="col col-md-4">
                             <label class="label label-black">Comarca</label><br />
                             <select style="width: 100%" id="cd_cidade_cde" name="cd_cidade_cde" class="form-control">
                                 <option selected value="">Selecione o Estado</option>
                             </select>
                         </section>
-                        <section class="col col-md-3">
+                        <section class="col col-md-4">
                             <label class="label label-black">Correspondente</label><span class="text-primary" style="font-size: 80%"> Digite o nome ou parte do nome</span><br />
                             <input style="width: 100%; text-transform: uppercase" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}" oninput="this.value = this.value.toUpperCase()">
                         </section>
-                        <section class="col col-md-3" style="display: flex; align-items: flex-end;">
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
-                        </section>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                     </div>
                     <div style="display: block;margin-top: 10px">
                        <span style="display: inline-block;">
