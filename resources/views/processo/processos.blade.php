@@ -32,29 +32,29 @@
                 <form action="{{ (Auth::user()->cd_nivel_niv == 3) ? url('correspondente/processo/buscar/arquivo') : url('processos/buscar') }}" class="form-inline" method="GET" role="search">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-4">
+                        <section class="col col-md-3">
                             <label class="label label-black">Data prazo fatal inicial</label><br />
                             <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtInicio" value="{{ !empty($dtInicio) ? $dtInicio : ''}}" >
                             
                         </section>
-                        <section class="col col-md-4">                           
+                        <section class="col col-md-3">                           
                             <label class="label label-black">Data prazo fatal final</label><br />
                             <input style="width: 100%" class="form-control mascara_data" placeholder="___ /___ /___" type="text" name="dtFim" value="{{ !empty($dtFim) ? $dtFim : '' }}"  >                            
                         </section>
-                         <section class="col col-md-4">                            
+                         <section class="col col-md-3">                            
                             <label class="label label-black">Nº Processo</label><br />
                             <input style="width: 100%" size="20" type="text" name="nu_processo_pro" class="form-control" id="Nome" placeholder="" value="{{ !empty($numero) ? $numero : '' }}" >                            
                         </section>               
-                        <section class="col col-md-4">
+                        <section class="col col-md-3">
                             <label class="label label-black">Autor</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_autor_pro" class="form-control" id="autor" placeholder="" value="{{ !empty($autor) ? $autor : '' }}" >                            
                         </section>       
-                         <section class="col col-md-4">
+                         <section class="col col-md-3">
                             <label class="label label-black">Réu</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nm_reu_pro" class="form-control" id="reu" placeholder="" value="{{ !empty($reu) ? $reu : '' }}" >         
                         </section>  
-                         <section class="col col-md-4">
-                            <label class="label label-black"></label><br />
+                         <section class="col col-md-3">
+                            <label class="label label-black">Tipos de Processo</label><br />
                             <select style="width: 100%" name="cd_tipo_processo_tpo" class="form-control">
                                 <option value="">Tipos de Processo</option>
                                 @foreach($tiposProcesso as $tipo)
@@ -62,8 +62,8 @@
                                 @endforeach
                             </select>
                         </section>
-                        <section class="col col-md-4">
-                            <label class="label label-black"></label><br />
+                        <section class="col col-md-3">
+                            <label class="label label-black">Tipos de Serviço Cliente</label><br />
                             <select style="width: 100%" name="cd_tipo_servico_tse" class="form-control">
                                 <option value="">Tipos de Serviço Cliente</option>
                                 @foreach($tiposServico as $tipo)
@@ -71,7 +71,7 @@
                                 @endforeach
                             </select>
                         </section>    
-                        <section class="col col-md-2">
+                        <section class="col col-md-3">
                             <label class="label label-black">Código Cliente</label><br />
                             <input style="width: 100%" minlength=3 type="text" name="nu_acompanhamento_pro" class="form-control" id="acompanhamento" placeholder="" value="{{ !empty($acompanhamento) ? $acompanhamento : '' }}" >         
                         </section>
@@ -95,7 +95,7 @@
                             <label class="label label-black">Correspondente</label><br />
                             <input style="width: 100%" type="text" name="nm_correspondente" class="form-control" placeholder="" value="{{ !empty($nmCorrespondente) ? $nmCorrespondente : '' }}">
                         </section>
-                        <section class="col col-md-3">
+                        <section class="col col-md-12">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                         </section>                
