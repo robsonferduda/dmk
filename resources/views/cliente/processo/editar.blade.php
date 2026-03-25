@@ -196,17 +196,7 @@
                                 </div>
                                 <div class="row">    
                                     <section class="col col-xs-12 col-sm-12">
-                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con }}" readonly>
-                                            <label class="label">Correspondente<span class="text-danger">*</span></label>
-                                            <label class="input">
-                                                <input required name="nm_correspondente_cor" 
-                                                value="{{ $correspondente->nm_razao_social_con }}" 
-                                                class="form-control ui-autocomplete-input" 
-                                                placeholder="Digite 3 caracteres para busca" 
-                                                type="text" 
-                                                id="client" 
-                                                autocomplete="off">
-                                            </label>
+                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con }}">
                                         </section>
                                 </div>
                                 

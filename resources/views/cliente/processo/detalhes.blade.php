@@ -89,20 +89,6 @@
                                                 <li>
                                                     <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : ' ' }}
                                                 </li>
-                                                @role('administrator|colaborador')
-                                                    <li>
-                                                        <strong>Correspondente: </strong> 
-                                                        @if(!empty($processo->correspondente->contaCorrespondente))
-                                                            <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
-                                                        @endif
-                                                    </li> 
-                                                @endrole    
-                                                <li>
-                                                    <strong>Tipo de Serviço Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? $processo->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : 'Não informado' }}
-                                                </li> 
-                                                <li>
-                                                    <strong>Valor do Correspondente: </strong> {{ !empty($processo->honorario->tipoServicoCorrespondente) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_correspondente_pth) : 'Não informado' }}
-                                                </li>   
                                             </ul>
                                         </p>  
                                     </div>

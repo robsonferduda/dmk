@@ -219,19 +219,7 @@
                                 
                                 <div class="row">    
                                     <section class="col col-xs-12 col-sm-12">
-                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con ?? (old('cd_correspondente_cor') ?? '') }}" readonly>
-                                            <label class="label">Correspondente <span class="text-info">Preenchido automaticamente</span></label>
-                                            <label class="input">
-                                                <input required name="nm_correspondente_cor" 
-                                                value="{{ $correspondente->nm_razao_social_con ?? (old('nm_correspondente_cor') ?? '') }}" 
-                                                class="form-control ui-autocomplete-input" 
-                                                placeholder="Digite 3 caracteres para busca" 
-                                                type="text" 
-                                                style="background: #f5f5f5;"
-                                                id="correspondente" 
-                                                autocomplete="off" 
-                                                readonly disabled>
-                                            </label>
+                                            <input type="hidden" name="cd_correspondente_cor" id="cd_correspondente_cor" value="{{ $correspondente->cd_conta_con ?? (old('cd_correspondente_cor') ?? '') }}">
                                         </section>
                                 </div> 
                                 
@@ -409,13 +397,11 @@
                         },
                         success: function(response)
                         {
-                            // buscaAdvogado(); // Desativado, pois agora o carregamento é feito pelo backend
-                            $("#cd_contato_cot").val(response.id);
+                            buscaAdvogado(response.id);
                             $("#novoAdvogado").modal('hide');
                         },
                         error: function(response)
                         {
-                            
                             //location.reload();
                         }
                     });
@@ -453,9 +439,9 @@
                 });
             }
 
-            function buscaAdvogado(){
+            function buscaAdvogado(selectId){
 
-                var cliente = $("input[name='cd_cliente_cli']").val();
+                var cliente = $('input[name="cd_cliente_cli"]').val();
 
                 $.ajax({
                         url: host+'/advogados-por-cliente/'+cliente,
@@ -480,7 +466,11 @@
                                     $('#cd_contato_cot').append('<option selected value="'+element.cd_contato_cot+'">'+element.nm_contato_cot+'</option>');      
                                 }
                                     
-                                });       
+                                });    
+
+                            if (selectId) {
+                                $('#cd_contato_cot').val(selectId);
+                            }   
                                
                             },
                             error: function(response)

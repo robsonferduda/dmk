@@ -108,7 +108,6 @@
                                     <th class="hidden-xs">Cidade</th>                                                  
                                     <th class="hidden-xs">Tipo de Serviço</th>
                                     <th class="hidden-xs">Cliente</th>
-                                    <th class="hidden-xs">Correspondente</th>
                                     <th class="hidden-xs">Autor</th>
                                     <th class="hidden-xs">Status</th>
                                     <th style="width: 100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
@@ -151,15 +150,6 @@
                                             @else
                                                 {{ ($processo->cliente->nm_fantasia_cli) ? $processo->cliente->nm_fantasia_cli : $processo->cliente->nm_razao_social_cli }}
                                             @endif                                            
-                                        </td>
-                                        <td class="hidden-xs">
-                                            @if(\Auth::user()->cd_nivel_niv != 3)
-                                                @if(!empty($processo->correspondente->contaCorrespondente))
-                                                    <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
-                                                @endif
-                                            @else                                                   {{$processo->correspondente->nm_razao_social_con}}
-                                            @endif
-                                                                                                            
                                         </td>
                                         <td class="hidden-xs">{{ $processo->nm_autor_pro }}</td>
                                         <td class="hidden-xs">{{ ($processo->status) ? $processo->status->nm_status_processo_conta_stp : 'Não informado' }}</td>
