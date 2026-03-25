@@ -1006,7 +1006,15 @@ class ClienteController extends Controller
     public function novoAdvogado(Request $request)
     {
         $request->merge(['cd_conta_con' => $this->conta]);
-        $cliente = Cliente::where('cd_conta_con', $this->conta)->where('cd_cliente_cli', $request->cliente)->first();
+        $entidadeSessao = \Session::get('SESSION_CD_ENTIDADE');
+
+        // Localiza o cliente pelo cd_conta_con da sessão ou pelo cd_entidade_ete
+        // para suportar tanto usuário admin quanto usuário cliente
+        $cliente = Cliente::where('cd_cliente_cli', $request->cliente)
+                          ->where(function ($q) use ($entidadeSessao) {
+                              $q->where('cd_conta_con', $this->conta)
+                                ->orWhere('cd_entidade_ete', $entidadeSessao);
+                          })->first();
 
         $entidade = new Entidade;
         $entidade->cd_conta_con = $this->conta;
@@ -1019,7 +1027,7 @@ class ClienteController extends Controller
                 'cd_entidade_ete'           => $cliente->cd_entidade_ete,
                 'cd_entidade_contato_ete'   => $entidade->cd_entidade_ete,
                 'cd_tipo_contato_tct'       => 2, //Fazer Enum
-                'nm_contato_cot'            => $request->nome_advogado_solicitante
+                'nm_contato_cot'            => strtoupper($request->nome_advogado_solicitante)
             ]);
 
             if ($c->cd_contato_cot) {
@@ -1033,13 +1041,30 @@ class ClienteController extends Controller
     public function buscaAdvogados($cliente)
     {
         $conta = \Session::get('SESSION_CD_CONTA');
+        $entidade = \Session::get('SESSION_CD_ENTIDADE');
 
-        $cliente = Cliente::where('cd_conta_con', $conta)->where('cd_cliente_cli', $cliente)->first();
+        // Localiza o cliente validando pelo cd_conta_con (usuário admin) ou
+        // pelo cd_entidade_ete da sessão (usuário cliente com conta própria)
+        $clienteRecord = Cliente::where('cd_cliente_cli', $cliente)
+                                ->where(function ($q) use ($conta, $entidade) {
+                                    $q->where('cd_conta_con', $conta)
+                                      ->orWhere('cd_entidade_ete', $entidade);
+                                })->first();
+
+        if (!$clienteRecord) {
+            echo json_encode([]);
+            return;
+        }
+
+        // Inclui advogados cadastrados pela conta atual E pela conta do escritório
+        // vinculado ao cliente (cd_conta_con do registro de cliente = conta do admin/escritório)
+        $contas = array_unique([$conta, $clienteRecord->cd_conta_con]);
 
         $contatos = Contato::whereHas('tipoContato', function ($query) {
             $query->where('fl_tipo_padrao_tct', 'S');
-        })->where('cd_conta_con', $conta)
-          ->where('cd_entidade_ete', $cliente->cd_entidade_ete)
+        })->whereIn('cd_conta_con', $contas)
+          ->where('cd_entidade_ete', $clienteRecord->cd_entidade_ete)
+          ->orderBy('nm_contato_cot')
           ->select('nu_contato_cot', 'cd_contato_cot', 'nm_contato_cot')->get()->toJson();
 
         echo $contatos;

@@ -411,7 +411,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label><strong>Nome Completo</strong></label>
-                            <input type="text" class="form-control" placeholder="Nome Completo" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante">
+                            <input type="text" class="form-control" placeholder="Nome Completo" oninput="this.value = this.value.toUpperCase();" required="required" name="nome_advogado_solicitante" id="nome_advogado_solicitante">
                             <div id="msg_error_advogado" class="text-danger"></div>
                         </div>    
                     </div>
