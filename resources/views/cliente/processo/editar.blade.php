@@ -208,7 +208,19 @@
                                             <option selected value="">Selecione um cliente e cidade</option>                          
                                         </select>
                                     </section>
-                                </div> 
+                                </div>
+
+                                <div class="row">
+                                    <section class="col col-xs-12 col-sm-12">
+                                        <label class="label">Área de Direito</label>
+                                        <select id="cd_area_direito_ado" name="cd_area_direito_ado" class="select2">
+                                            <option selected value="">Selecione uma área</option>
+                                            @foreach($areas as $area)
+                                                <option value="{{ $area->cd_area_direito_ado }}" {!! ($processo->cd_area_direito_ado == $area->cd_area_direito_ado ? 'selected' : '') !!}>{{ $area->dc_area_direito_ado }}</option>
+                                            @endforeach
+                                        </select>
+                                    </section>
+                                </div>
                                 
                             </fieldset>
                         </div>
