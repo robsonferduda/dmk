@@ -307,7 +307,6 @@
                                 '</div>'+
                                 '<div class="col-md-6 box-content">'+
                                     '<h6><strong>Cliente</strong>: '+formataNuloResposta(data.nm_razao_social_cli)+'  </h6>'+
-                                    '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                     
@@ -403,7 +402,6 @@
                                 '</div>'+
                                 '<div class="col-md-6">'+
                                     '<h6><strong>Cliente</strong>: '+formataNuloResposta(data.nm_razao_social_cli)+'  </h6>'+
-                                    '<h6><strong>Correspondente</strong>: '+formataNuloResposta(data.nm_conta_correspondente_ccr)+'</h6>'+
                                     '<h6><strong>Autor</strong>: '+formataNuloResposta(data.nm_autor_pro)+'</h6>'+
                                     '<h6><strong>Réu</strong>: '+formataNuloResposta(data.nm_reu_pro)+'</h6>'+ 
                                 '</div>'+
