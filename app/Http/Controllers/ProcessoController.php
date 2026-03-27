@@ -1581,6 +1581,7 @@ class ProcessoController extends Controller
         return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
     }
 
+    /* Método disparado quando o escritório envia os anexos para o correspondente e indica o envio na tela */
     public function atualizaAnexosEnviados($id)
     {
         $flag = 'N';
@@ -1620,6 +1621,8 @@ class ProcessoController extends Controller
 
                                 try {
 
+                                    $processo->notificarEnvioDocumentos($processo);
+
                                     //Fazer Log
                                     $tipo_notificacao = 'envio_documentos';
                         
@@ -1631,9 +1634,7 @@ class ProcessoController extends Controller
                                                 'nu_processo' => $processo->nu_processo_pro, 
                                                 'origem' => 'conta');
 
-                                    LogNotificacao::create($log);
-
-                                    $processo->notificarEnvioDocumentos($processo);
+                                    LogNotificacao::create($log);                                    
 
                                 } catch (\Swift_RfcComplianceException $e) {
                                     //Retorna o status anterior
@@ -1659,6 +1660,7 @@ class ProcessoController extends Controller
         }
     }
 
+    /* Método disparado quando o correspondente recebe os anexos e indica o recebimento na tela */
     public function atualizaAnexosRecebidos($id)
     {
         $flag = 'N';
@@ -1691,7 +1693,7 @@ class ProcessoController extends Controller
                         $lista = '';
 
                         foreach ($grupo->emails as $email) {
-                            
+
                             $email_notificacao = $email->ds_email_egn;
 
                             try {
@@ -1777,41 +1779,47 @@ class ProcessoController extends Controller
         }
     }
 
+    /**
+     * Envia notificação ao correspondente requisitando dados do processo.
+     * Usado internamente (ex: job/scheduler) e também pelo método requisitarDados (rota do usuário).
+     * Retorna a lista de e-mails notificados ou null se não houver correspondente/e-mails cadastrados.
+     */
     public function requisitarDadosProcesso($id_processo)
     {
         $processo = Processo::findOrFail($id_processo);
         $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
+
+        if (!$vinculo) {
+            return null;
+        }
+
         $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-        if ($processo) {
-            if (count($emails) > 0) {
+        if (count($emails) == 0) {
+            return null;
+        }
 
-                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
-                $processo->save();
+        $lista = '';
 
-                if ($processo->save()) {
-                    $lista = '';
+        foreach ($emails as $email) {
+            $processo->email = $email->dc_endereco_eletronico_ede;
+            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+            $processo->notificarRequisitarDados($processo);
 
-                    foreach ($emails as $email) {
+            LogNotificacao::create([
+                'tipo_notificacao'  => 'requisitar_dados',
+                'email_destinatario' => $email->dc_endereco_eletronico_ede,
+                'cd_remetente'      => $processo->cd_conta_con,
+                'cd_destinatario'   => $processo->cd_correspondente_cor,
+                'cd_processo'       => $processo->cd_processo_pro,
+                'nu_processo'       => $processo->nu_processo_pro,
+                'origem'            => 'conta',
+            ]);
 
-                        $processo->email =  $email->dc_endereco_eletronico_ede;
-                        $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                        $processo->notificarRequisitarDados($processo);
-                        $lista .= $email->dc_endereco_eletronico_ede.', ';
+            $lista .= $email->dc_endereco_eletronico_ede.', ';
+        }
 
-                        $log = array('tipo_notificacao' => 'requisitar_dados',
-                            'email_destinatario' => $email->dc_endereco_eletronico_ede, 
-                            'cd_remetente' => $processo->cd_conta_con, 
-                            'cd_destinatario' => $processo->cd_correspondente_cor, 
-                            'cd_processo' => $processo->cd_processo_pro, 
-                            'nu_processo' => $processo->nu_processo_pro, 
-                            'origem' => 'conta');
-                    
-                        LogNotificacao::create($log);
-                    }
-                } 
-            } 
-        } 
+        return $lista;
     }
 
     public function requisitarDados($id_processo)
@@ -1820,35 +1828,28 @@ class ProcessoController extends Controller
 
         $processo = Processo::findOrFail($id_processo);
         $vinculo = ContaCorrespondente::where('cd_conta_con', $processo->cd_conta_con)->where('cd_correspondente_cor', $processo->cd_correspondente_cor)->first();
-        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-        if ($processo) {
-            if (count($emails) > 0) {
-
-                $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
-                $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
-                $processo->save();
-
-                if ($processo->save()) {
-                    $lista = '';
-
-                    foreach ($emails as $email) {
-                        $processo->email =  $email->dc_endereco_eletronico_ede;
-                        $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
-                        $processo->notificarRequisitarDados($processo);
-                        $lista .= $email->dc_endereco_eletronico_ede.', ';
-                    }
-
-                    Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
-                } else {
-                    Flash::error('Erro ao requisitar dados, o processo não foi atualizado.');
-                }
-            } else {
-                Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
-            }
-        } else {
-            Flash::error('Erro ao requisitar dados, o processo não foi encontrado.');
+        if (!$vinculo) {
+            Flash::error('Nenhum correspondente informado para o processo.');
+            return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
         }
+
+        $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DADOS;
+        $processo->dt_notificacao_pro = date('Y-m-d H:i:s');
+
+        if (!$processo->save()) {
+            Flash::error('Erro ao requisitar dados, o processo não foi atualizado.');
+            return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
+        }
+
+        $lista = $this->requisitarDadosProcesso($id_processo);
+
+        if ($lista) {
+            Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
+        } else {
+            Flash::error('Nenhum email de notificação cadastrado para o correspondente, a operação foi cancelada. Cadastre um email de notificação para o correspondente e tente novamente');
+        }
+
         return redirect('processos/acompanhamento/'.safe_encrypt($id_processo));
     }
 
