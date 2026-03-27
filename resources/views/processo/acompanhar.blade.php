@@ -598,7 +598,7 @@
                                                     aria-expanded="false"
                                                     aria-controls="detalhesProcesso{{ strtotime($historico->data_evento) }}"
                                                     class="small">
-                                                    <i class="fa fa-database mr-1"></i> Dados Alterados
+                                                    <i class="fa fa-database mr-1"></i> Ver Alterações
                                                 </a>
                                                 <div class="collapse mt-3" id="detalhesProcesso{{ strtotime($historico->data_evento) }}">
                                                     <div class="border-top pt-3">
