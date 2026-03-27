@@ -1404,7 +1404,6 @@ class ProcessoController extends Controller
                     $usuario = User::where('cd_conta_con', $processo->cd_conta_con)->where('cd_nivel_niv', 1)->first()->email;
 
                     //Seleciona o email para envio da notificação do correspondnete, de acordo com o tipo de processo
-
                     $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
 
                     if($grupo and count($grupo->emails)){
@@ -1415,7 +1414,14 @@ class ProcessoController extends Controller
 
                             $tipo_notificacao = 'aceite_correspondente';
                             
-                            $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                            $log = array('tipo_notificacao' => $tipo_notificacao,
+                                            'email_destinatario' => $email_notificacao, 
+                                            'cd_remetente' => $processo->cd_correspondente_cor, 
+                                            'cd_destinatario' => $processo->cd_conta_con, 
+                                            'cd_processo' => $processo->cd_processo_pro, 
+                                            'nu_processo' => $processo->nu_processo_pro, 
+                                            'origem' => 'corrrespondente');
+
                             LogNotificacao::create($log);
                 
                             $processo->email = $email_notificacao;
@@ -1657,7 +1663,6 @@ class ProcessoController extends Controller
     {
         $flag = 'N';
         $processo = Processo::findOrFail($id);
-        $vinculo = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
 
         if ($processo->fl_recebimento_anexos_pro == 'N') {
             $flag = 'S';
@@ -1668,6 +1673,7 @@ class ProcessoController extends Controller
         $processo->fl_recebimento_anexos_pro = $flag;
         
         if ($processo->save()) {
+
             if ($flag == 'S') {
                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO;
             } else {
@@ -1675,36 +1681,54 @@ class ProcessoController extends Controller
             }
 
             if ($processo->save()) {
-                if ($flag == 'S') {
-                    $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
 
-                    if (count($emails) == 0) {
-                        Flash::warning('Nenhum email de notificação cadastrado para o correspondente. O status foi atualizado, porém o correspondente não foi notificado.');
-                    } else {
+                if ($flag == 'S') {
+
+                    $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)->first();
+
+                    if ($grupo && count($grupo->emails)) {
+                        
                         $lista = '';
 
-                        foreach ($emails as $email) {
-                            $processo->email = $email->dc_endereco_eletronico_ede;
-                            $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
+                        foreach ($grupo->emails as $email) {
+                            
+                            $email_notificacao = $email->ds_email_egn;
 
                             try {
+                                $processo->email = $email_notificacao;
                                 $processo->notificarLeituraDocumentos($processo);
+
+                                $log = array('tipo_notificacao' => 'recebimento_documentos_correspondente',
+                                                'email_destinatario' => $email_notificacao,
+                                                'cd_remetente' => $processo->cd_correspondente_cor,
+                                                'cd_destinatario' => $processo->cd_conta_con,
+                                                'cd_processo' => $processo->cd_processo_pro,
+                                                'nu_processo' => $processo->nu_processo_pro,
+                                                'origem' => 'correspondente');
+
+                                LogNotificacao::create($log);
+
                             } catch (\Swift_RfcComplianceException $e) {
-                                //Retorna o status anterior
+                                //Retorna o processo ao status anterior
                                 $processo = Processo::findOrFail($id);
                                 $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
                                 $processo->save();
 
-                                return Response::json(array('message' => 'Houve um erro ao atualizar o status, pois o email "<strong>'.$email->dc_endereco_eletronico_ede.'</strong>" possui problemas em sua formatação. Verifique o email e tente novamente.'), 500);
+                                return Response::json(array('message' => 'Houve um erro ao atualizar o status, pois o email "<strong>'.$email_notificacao.'</strong>" possui problemas em sua formatação. Verifique o email e tente novamente.'), 500);
                             }
-                                
-                            $lista .= $email->dc_endereco_eletronico_ede.', ';
+
+                            $lista .= $email_notificacao.', ';
                         }
+
+                        Flash::success('Notificação enviada com sucesso para: '.substr(trim($lista), 0, -1));
+                    } else {
+                        Flash::warning('Nenhum grupo de notificação configurado para este tipo de processo. O status foi atualizado, porém o escritório não foi notificado.');
                     }
                 }
             }
 
             return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+
         } else {
             return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
         }
@@ -1769,6 +1793,7 @@ class ProcessoController extends Controller
                     $lista = '';
 
                     foreach ($emails as $email) {
+
                         $processo->email =  $email->dc_endereco_eletronico_ede;
                         $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
                         $processo->notificarRequisitarDados($processo);
