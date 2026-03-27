@@ -195,7 +195,6 @@
                                         <input type="hidden" name="msg_correspondente" id="msg_correspondente" value="{{ $processo->cd_correspondente_cor }}">
                                         
                                             <ul class="list-unstyled" style=" line-height: 1.5;">
-
                                                 <li>
                                                     <strong>Nº Processo: </strong> <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" >{{ $processo->nu_processo_pro }}</a>
                                                 </li>
@@ -203,11 +202,6 @@
                                                     <li>
                                                         <strong>Status do Processo: </strong> {{ $processo->status->nm_status_processo_conta_stp }}
                                                     </li>
-                                                @endrole
-                                                @role('administrator|colaborador') 
-                                                <li>
-                                                    <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
-                                                </li>
                                                 @endrole
                                                 <li>
                                                     <strong>Código Cliente: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
@@ -218,27 +212,10 @@
                                                 <li>
                                                     <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario->tipoServico) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : 'Não informado' }}
                                                 </li> 
-                                                @role('administrator|colaborador')
                                                 <li>
-                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : 'Não informado' }}
+                                                    <strong>Valor do Serviço: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
                                                 </li>   
-                                                <li>
-                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : 'Não informado' }}
-                                                </li>                                                 
-                                                <li>
-                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : 'Não informado' }}
-                                                </li>
-                                                @endrole 
-                                                @role('administrator|colaborador')
-                                                <li>
-                                                    <strong>Responsável: </strong>
-                                                    @if(!empty($processo->responsavel))
-                                                    <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
-                                                    @else
-                                                    <span>Não Alocado</span>
-                                                    @endif
-                                                </li>
-                                                @endrole                                         
+                                                                                   
 
                                                 <li>
                                                     <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
@@ -249,16 +226,7 @@
                                                 <li>
                                                     <strong>Cidade: </strong> {{ !empty($processo->cidade->nm_cidade_cde) ? $processo->cidade->nm_cidade_cde : 'Não informada' }}
                                                 </li>
-                                                @role('administrator|colaborador')
-                                                <li>
-                                                    <strong>Correspondente: </strong> 
-                                                    @if(!empty($processo->correspondente->contaCorrespondente))
-                                                    <a href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($processo->correspondente->cd_conta_con)) }}">{{$processo->correspondente->load('contaCorrespondente')->contaCorrespondente->nm_conta_correspondente_ccr}}</a>
-                                                    @endif
-                                                </li> 
-                                                @endrole    
                                                 
-                                               
                                                 <li>
                                                     <strong>Data da Solicitação: </strong> {{ !empty($processo->dt_solicitacao_pro) ? date('d/m/Y', strtotime($processo->dt_solicitacao_pro)) : 'Não informado' }}
                                                 </li>
@@ -274,12 +242,7 @@
                                                 <li>
                                                     <strong>Vara: </strong> {{ !empty($processo->vara->nm_vara_var) ? $processo->vara->nm_vara_var : 'Não infomado' }}
                                                 </li> 
-                                                <li>
-                                                    <p><strong>Link da Audiência: </strong> {{ ($processo->ds_link_audiencia_pro) ? $processo->ds_link_audiencia_pro : 'Não informado'}} 
-                                                    @role('administrator|colaborador')
-                                                        <a id="informarLinkAudiencia">Clique Aqui</a> para editar</p>
-                                                    @endrole
-                                                </li>
+                                                
                                             </ul>                                                
                                            
                                             @if($processo->tipoProcesso)

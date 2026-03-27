@@ -33,7 +33,6 @@
                     </header>
                 
                     <div class="col-sm-12">
-
                         <div class="col-md-6">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
@@ -44,11 +43,6 @@
                                                 <li>
                                                     <strong>Nº Processo: </strong> {{ $processo->nu_processo_pro }}
                                                 </li>
-                                                @role('administrator|colaborador') 
-                                                    <li>
-                                                        <strong>Cliente: </strong><a href="{{'../../cliente/detalhes/'.$processo->cliente->cd_cliente_cli}}">{{ $processo->cliente->nm_fantasia_cli ? :  $processo->cliente->nm_razao_social_cli }}</a> 
-                                                    </li>
-                                                @endrole
                                                 <li>
                                                     <strong>Código Cliente: </strong>  {{ !empty($processo->nu_acompanhamento_pro) ? $processo->nu_acompanhamento_pro : 'Não informado' }}
                                                 </li>
@@ -111,23 +105,7 @@
                                     </div>
                                 </fieldset>
                             </div>
-                        </div>  
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <fieldset style="margin-bottom: 15px;">
-                                    <legend><i class="fa fa-fw"></i> <strong></strong></legend>
-                                    <div class="row" style="margin-left: 5px;">
-                                        <p>    
-                                            <ul class="list-unstyled">
-                                                <li style="display: inline-block;max-width: 100%;word-break:break-all;">
-                                                    <strong>Observações: </strong> {!! $processo->dc_observacao_pro !!} 
-                                                </li>
-                                            </ul>
-                                        </p> 
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>                    
+                        </div>           
                     </div>
                 </div>
             </article>
