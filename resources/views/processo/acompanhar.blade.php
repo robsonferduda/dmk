@@ -555,49 +555,69 @@
                     @role('administrator|colaborador')
                         <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                             <div class="well">
-                                <h5 class="nobreak"><i class="fa fa-clock-o marginBottom5"></i> Histórico do Processo</h5>
-                                @forelse($processo->getHistorico() as $historico)
-                                    <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
-                                        {{ date('d/m/Y H:i:s', strtotime($historico->data_evento)) }} -  
-                                        {{ ($historico->usuario) ? $historico->usuario : 'Sistema' }}  
-                                        <a href="#detalhesProcesso{{ strtotime($historico->data_evento) }}"
-                                            data-toggle="collapse"
-                                            role="button"
-                                            style="margin-bottom: 5px;" 
-                                            aria-expanded="false"
-                                            aria-controls="detalhesProcesso{{ strtotime($historico->data_evento) }}"
-                                            class="small">
-                                            <i class="fa fa-database mr-1"></i> Dados Alterados
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active">
+                                        <a href="#tab-notificacoes" aria-controls="tab-notificacoes" role="tab" data-toggle="tab">
+                                            <i class="fa fa-send marginBottom5"></i> Histórico de Notificações
+                                            @if($processo->notificacoes->count())
+                                                <span class="badge">{{ $processo->notificacoes->count() }}</span>
+                                            @endif
                                         </a>
-                                        <div class="collapse mt-3" id="detalhesProcesso{{ strtotime($historico->data_evento) }}">
-                                            <div class="border-top pt-3">
-                                                <div>
-                                                    <p style="margin-bottom: 0px;">Dados Antigos</p>
-                                                    <code style="margin-bottom:8px;">{{ $historico->old_values }}</code>
-                                                </div>
-                                                <div>
-                                                    <p style="margin-bottom: 0px;">Dados Novos</p>
-                                                    <code style="margin-bottom:8px;">{{ $historico->new_values }}</code>
-                                                </div>
-                                            </div>
-                                        </div>                                  
-                                    </p>
-                                @empty
-                                    <p class="text-danger">Nenhum histórico registrado</p>
-                                @endforelse
+                                    </li>
+                                    <li role="presentation">
+                                        <a href="#tab-historico" aria-controls="tab-historico" role="tab" data-toggle="tab">
+                                            <i class="fa fa-clock-o marginBottom5"></i> Histórico do Processo
+                                        </a>
+                                    </li>
+                                </ul>
 
-                                <h5 class="nobreak"><i class="fa fa-send marginBottom5"></i> Histórico do Notificações</h5>
-                                @forelse($processo->notificacoes as $notificacao)
-                                    <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
-                                        {{ date('d/m/Y H:i:s', strtotime($notificacao->created_at)) }} - 
-                                        {{ $notificacao->tipo->nm_tipo_notificacao_tin }} - 
-                                        {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
-                                        {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
-                                        {{ $notificacao->email_destinatario }}                                     
-                                    </p>
-                                @empty
-                                    <p class="text-danger">Nenhuma notificação enviada</p>
-                                @endforelse
+                                <div class="tab-content" style="padding-top: 12px;">
+                                    <div role="tabpanel" class="tab-pane active" id="tab-notificacoes">
+                                        @forelse($processo->notificacoes as $notificacao)
+                                            <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
+                                                {{ date('d/m/Y H:i:s', strtotime($notificacao->created_at)) }} - 
+                                                {{ $notificacao->tipo->nm_tipo_notificacao_tin }} - 
+                                                {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
+                                                {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
+                                                {{ $notificacao->email_destinatario }}                                     
+                                            </p>
+                                        @empty
+                                            <p class="text-danger">Nenhuma notificação enviada</p>
+                                        @endforelse
+                                    </div>
+
+                                    <div role="tabpanel" class="tab-pane" id="tab-historico">
+                                        @forelse($processo->getHistorico() as $historico)
+                                            <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
+                                                {{ date('d/m/Y H:i:s', strtotime($historico->data_evento)) }} -  
+                                                {{ ($historico->usuario) ? $historico->usuario : 'Sistema' }}  
+                                                <a href="#detalhesProcesso{{ strtotime($historico->data_evento) }}"
+                                                    data-toggle="collapse"
+                                                    role="button"
+                                                    style="margin-bottom: 5px;" 
+                                                    aria-expanded="false"
+                                                    aria-controls="detalhesProcesso{{ strtotime($historico->data_evento) }}"
+                                                    class="small">
+                                                    <i class="fa fa-database mr-1"></i> Dados Alterados
+                                                </a>
+                                                <div class="collapse mt-3" id="detalhesProcesso{{ strtotime($historico->data_evento) }}">
+                                                    <div class="border-top pt-3">
+                                                        <div>
+                                                            <p style="margin-bottom: 0px;">Dados Antigos</p>
+                                                            <code style="margin-bottom:8px;">{{ $historico->old_values }}</code>
+                                                        </div>
+                                                        <div>
+                                                            <p style="margin-bottom: 0px;">Dados Novos</p>
+                                                            <code style="margin-bottom:8px;">{{ $historico->new_values }}</code>
+                                                        </div>
+                                                    </div>
+                                                </div>                                  
+                                            </p>
+                                        @empty
+                                            <p class="text-danger">Nenhum histórico registrado</p>
+                                        @endforelse
+                                    </div>
+                                </div>
                             </div>
                         </article>
                     @endrole
