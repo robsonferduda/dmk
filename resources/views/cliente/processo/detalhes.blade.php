@@ -118,11 +118,7 @@
             </article>
         </div>
     </div>
-</div>
-@endsection
-
 @if(!empty($processo->honorario))
-@section('modal')
 <div class="modal fade" id="modalSolicitarAlteracao" tabindex="-1" role="dialog" aria-labelledby="modalSolicitarAlteracaoLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -152,5 +148,6 @@
         </div>
     </div>
 </div>
-@endsection
 @endif
+</div>
+@endsection
