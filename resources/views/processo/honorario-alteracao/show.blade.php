@@ -54,7 +54,7 @@
                                         </li>
                                         <li>
                                             <strong>Tipo de Serviço:</strong>
-                                            {{ optional($alteracao->processo?->honorario?->tipoServico)->nm_tipo_servico_tse ?? '—' }}
+                                            {{ optional(optional(optional($alteracao->processo)->honorario)->tipoServico)->nm_tipo_servico_tse ?? '—' }}
                                         </li>
                                         <li>
                                             <strong>Solicitado em:</strong>
