@@ -348,6 +348,9 @@
                              <li>
                                 <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendências</span></a>
                             </li>
+                            <li class="{{ (Session::get('item_pai') == 'honorario.alteracao') ? 'active' : '' }}">
+                                <a href="{{ url('processos/honorario-alteracao') }}" title="Pedidos de Alteração de Honorário"><span class="menu-item-parent">Alteração de Honorário</span></a>
+                            </li>
                             <li>
                                 <a href="{{ url('processo/status') }}" title="Situações"><span class="menu-item-parent">Status Processo</span></a>
                             </li>

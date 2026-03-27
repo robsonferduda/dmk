@@ -134,6 +134,13 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/acompanhamento', 'ProcessoController@acompanhar');
     Route::get('processos/acompanhamento/{id}', 'ProcessoController@acompanhamento')->name('processo.acompanhar');
     Route::get('processos/acompanhamento/requisitar-dados/{processo}', 'ProcessoController@requisitarDados');
+
+    // Pedidos de alteração de honorário
+    Route::post('cliente/processos/honorario/solicitar', 'TaxaHonorarioAlteracaoController@solicitar');
+    Route::get('processos/honorario-alteracao', 'TaxaHonorarioAlteracaoController@index');
+    Route::get('processos/honorario-alteracao/{id}', 'TaxaHonorarioAlteracaoController@show');
+    Route::post('processos/honorario-alteracao/{id}/aprovar', 'TaxaHonorarioAlteracaoController@aprovar');
+    Route::post('processos/honorario-alteracao/{id}/reprovar', 'TaxaHonorarioAlteracaoController@reprovar');
     Route::post('processos/buscar/andamento', 'ProcessoController@buscarProcessosAndamento');
     Route::post('processos/despesas/salvar', 'ProcessoController@salvarDespesas');
     Route::post('processo/honorarios/salvar', 'ProcessoController@salvarHonorarios');

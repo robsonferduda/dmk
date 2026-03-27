@@ -18,7 +18,8 @@ class TaxaHonorario extends Model
                             'cd_tipo_servico_tse',
                             'cd_cidade_cde',
                             'nu_taxa_the',
-                            'dc_observacao_the'
+                            'dc_observacao_the',
+                            'nu_taxa_sugerida_the'
     					  ];
 
     public $timestamps = true;

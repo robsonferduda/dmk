@@ -53,7 +53,14 @@
                                                     <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario and $processo->honorario->tipoServico) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
                                                 <li>
-                                                    <strong>Valor do Serviço: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                    <strong>Valor do Serviço: </strong>
+                                                    {{ !empty($processo->honorario) ? 'R$ '.number_format($processo->honorario->vl_taxa_honorario_cliente_pth, 2, ',', '.') : ' ' }}
+                                                    @if(!empty($processo->honorario))
+                                                        <a href="#" data-toggle="modal" data-target="#modalSolicitarAlteracao"
+                                                           class="btn btn-xs btn-default" style="margin-left: 8px;">
+                                                            <i class="fa fa-pencil"></i> Solicitar Alteração
+                                                        </a>
+                                                    @endif
                                                 </li>                                                              
                                                 <li>
                                                     <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
@@ -113,3 +120,37 @@
     </div>
 </div>
 @endsection
+
+@if(!empty($processo->honorario))
+@section('modal')
+<div class="modal fade" id="modalSolicitarAlteracao" tabindex="-1" role="dialog" aria-labelledby="modalSolicitarAlteracaoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalSolicitarAlteracaoLabel"><i class="fa fa-pencil"></i> Solicitar Alteração de Valor</h4>
+            </div>
+            <form action="{{ url('cliente/processos/honorario/solicitar') }}" method="POST">
+                {{ csrf_field() }}
+                <input type="hidden" name="cd_processo_pro" value="{{ $processo->cd_processo_pro }}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Valor Atual</label>
+                        <input type="text" class="form-control" value="R$ {{ number_format($processo->honorario->vl_taxa_honorario_cliente_pth, 2, ',', '.') }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo Valor Proposto <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" name="nu_valor_novo" class="form-control" placeholder="0,00" required>
+                        <span class="help-block">Informe o valor que deseja propor. O escritório será notificado e poderá aprovar ou reprovar o pedido.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Enviar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+@endif
