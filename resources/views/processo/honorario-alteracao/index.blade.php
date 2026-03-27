@@ -52,7 +52,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ optional(optional($alteracao->processo)->honorario?->tipoServico)->nm_tipo_servico_tse ?? '—' }}
+                                            {{ optional(optional(optional($alteracao->processo)->honorario)->tipoServico)->nm_tipo_servico_tse ?? '—' }}
                                         </td>
                                         <td>R$ {{ number_format($alteracao->nu_valor_antigo_tha, 2, ',', '.') }}</td>
                                         <td>R$ {{ number_format($alteracao->nu_valor_novo_tha, 2, ',', '.') }}</td>
