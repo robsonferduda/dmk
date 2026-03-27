@@ -58,28 +58,9 @@
                                                 <li>
                                                     <strong>Tipo de Serviço Cliente: </strong> {{ !empty($processo->honorario and $processo->honorario->tipoServico) ? $processo->honorario->tipoServico->nm_tipo_servico_tse : ' ' }}
                                                 </li> 
-                                                @role('administrator|colaborador')
                                                 <li>
-                                                    <strong>Valor do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
-                                                </li>   
-                                                <li>
-                                                    <strong>Valor Nota Fiscal do Cliente: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_cliente_pth) : ' ' }}
-                                                </li>                                                 
-                                                <li>
-                                                    <strong>Advogado Solicitante: </strong>  {{ !empty($processo->advogadoSolicitante->nm_contato_cot) ? $processo->advogadoSolicitante->nm_contato_cot : 'Não informado' }}
-                                                </li>
-                                                @endrole 
-                                                @role('administrator|colaborador')
-                                                    <li>
-                                                        <strong>Responsável: </strong>
-                                                        @if(!empty($processo->responsavel))
-                                                         <a href="{{ url('usuarios/detalhes/'.\Crypt::encrypt($processo->responsavel->id)) }}">{{ $processo->responsavel->name }}</a>
-                                                        @else
-                                                            <span>Não Alocado</span>
-                                                        @endif
-                                                    </li>
-                                                @endrole                                         
-                                                                                    
+                                                    <strong>Valor do Serviço: </strong> {{ !empty($processo->honorario) ? str_replace('.',',',$processo->honorario->vl_taxa_honorario_cliente_pth) : ' ' }}
+                                                </li>                                                              
                                                 <li>
                                                     <strong>Autor: </strong> {{ ($processo->nm_autor_pro) ? $processo->nm_autor_pro : 'Não informado' }}
                                                 </li>
