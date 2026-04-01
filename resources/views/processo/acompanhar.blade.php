@@ -409,6 +409,14 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                        @if($processo->fl_documentacao_cliente_pro)
+                                        <div class="alert alert-success" style="margin-top: 15px;">
+                                            <i class="fa fa-check-circle"></i>
+                                            <strong>Documentação confirmada pelo cliente.</strong>
+                                            O cliente confirmou que todos os documentos necessários para a realização do ato foram anexados ao processo.
+                                        </div>
+                                        @endif
                                     @endrole                                   
                                     
 
