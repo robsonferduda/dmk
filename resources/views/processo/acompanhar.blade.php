@@ -416,6 +416,12 @@
                                             <strong>Documentação confirmada pelo cliente.</strong>
                                             O cliente confirmou que todos os documentos necessários para a realização do ato foram anexados ao processo.
                                         </div>
+                                        @elseif($processo->fl_cadastro_cliente_cli)
+                                        <div class="alert alert-warning" style="margin-top: 15px;">
+                                            <i class="fa fa-exclamation-triangle"></i>
+                                            <strong>Processo cadastrado pelo cliente.</strong>
+                                            O cliente ainda não confirmou o envio de toda a documentação necessária para a realização do ato.
+                                        </div>
                                         @endif
                                     @endrole                                   
                                     

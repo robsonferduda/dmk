@@ -452,6 +452,7 @@ class ClienteProcessoController extends Controller
         $request->merge(['cd_status_processo_stp' => \StatusProcesso::CADASTRADO_CLIENTE]);
         $request->merge(['cd_conta_con' => $id_escritorio]);
         $request->merge(['cd_cliente_cli' => $cd_cliente_cli]);
+        $request->merge(['fl_cadastro_cliente_cli' => true]);
 
         if ($entidade) {
 
