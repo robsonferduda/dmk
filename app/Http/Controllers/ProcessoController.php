@@ -1793,6 +1793,16 @@ class ProcessoController extends Controller
 
                 if ($usuario) {
                     $usuario->notify(new \App\Notifications\DocumentacaoClienteProcessoNotification($processo));
+
+                    $log = array('tipo_notificacao' => 'documentacao_cliente_processo',
+                                'email_destinatario' => $usuario->email,
+                                'cd_remetente' => $processo->cd_cliente_cli,
+                                'cd_destinatario' => $processo->cd_conta_con,
+                                'cd_processo' => $processo->cd_processo_pro,
+                                'nu_processo' => $processo->nu_processo_pro,
+                                'origem' => 'cliente');
+
+                    LogNotificacao::create($log);
                 }
             }
 
