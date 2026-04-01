@@ -137,6 +137,8 @@ Route::group(['middleware' => ['web']], function () {
 
     // Pedidos de alteração de honorário
     Route::post('cliente/processos/honorario/solicitar', 'TaxaHonorarioAlteracaoController@solicitar');
+    Route::get('cliente/honorario-alteracoes', 'TaxaHonorarioAlteracaoController@meusHonorarios');
+    Route::get('cliente/honorario-alteracoes/{id}', 'TaxaHonorarioAlteracaoController@meuDetalhe');
     Route::get('processos/honorario-alteracao', 'TaxaHonorarioAlteracaoController@index');
     Route::get('processos/honorario-alteracao/{id}', 'TaxaHonorarioAlteracaoController@show');
     Route::post('processos/honorario-alteracao/{id}/aprovar', 'TaxaHonorarioAlteracaoController@aprovar');

@@ -304,7 +304,10 @@
                                 </li>
                                 <li class="{{ (Session::get('item_pai') == 'processo.importar') ? 'active' : '' }}">
                                     <a href="{{ url('cliente/processos/importar') }}" title="Importar"><span class="menu-item-parent">Importar</span></a>
-                                </li> 
+                                </li>
+                                <li class="{{ (Session::get('item_pai') == 'honorario.alteracao.cliente') ? 'active' : '' }}">
+                                    <a href="{{ url('cliente/honorario-alteracoes') }}" title="Alteração de Honorário"><span class="menu-item-parent">Alteração de Honorário</span></a>
+                                </li>
                             </ul>   
                         </li>
                         

@@ -157,6 +157,49 @@ class TaxaHonorarioAlteracaoController extends Controller
     }
 
     /**
+     * Listagem dos pedidos de alteração do cliente logado.
+     */
+    public function meusHonorarios()
+    {
+        Session::put('menu_pai', 'processos');
+        Session::put('item_pai', 'honorario.alteracao.cliente');
+
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+        if (!$cliente) {
+            abort(403);
+        }
+
+        $alteracoes = TaxaHonorarioAlteracao::with(['processo', 'processo.honorario', 'processo.honorario.tipoServico'])
+            ->whereHas('processo', fn($q) => $q->where('cd_cliente_cli', $cliente->cd_cliente_cli))
+            ->orderByRaw('fl_aceito_tha IS NOT NULL, created_at DESC')
+            ->paginate(20);
+
+        return view('cliente.honorario-alteracao.index', compact('alteracoes'));
+    }
+
+    /**
+     * Detalhe de um pedido do cliente logado.
+     */
+    public function meuDetalhe($id)
+    {
+        Session::put('menu_pai', 'processos');
+        Session::put('item_pai', 'honorario.alteracao.cliente');
+
+        $cliente = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
+
+        if (!$cliente) {
+            abort(403);
+        }
+
+        $alteracao = TaxaHonorarioAlteracao::with(['processo', 'processo.honorario', 'processo.honorario.tipoServico', 'taxaHonorario'])
+            ->whereHas('processo', fn($q) => $q->where('cd_cliente_cli', $cliente->cd_cliente_cli))
+            ->findOrFail($id);
+
+        return view('cliente.honorario-alteracao.show', compact('alteracao'));
+    }
+
+    /**
      * Reprova o pedido — nenhuma alteração de valor é feita.
      */
     public function reprovar($id)
