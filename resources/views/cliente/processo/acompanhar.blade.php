@@ -831,7 +831,7 @@
                 })
 
                 $('#filepicker').filePicker({
-                    url: '../../processos/arquivos-processo',
+                    url: host + '/processos/arquivos-processo/cliente',
                     ui: {
                         autoUpload: false
                     },
