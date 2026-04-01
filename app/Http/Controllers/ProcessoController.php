@@ -1539,7 +1539,13 @@ class ProcessoController extends Controller
 
                         $email_notificacao = $email->ds_email_egn;
                         
-                        $log = array('tipo_notificacao' => $tipo_notificacao,'email_destinatario' => $email_notificacao, 'cd_remetente' => $processo->cd_correspondente_cor, 'cd_destinatario' => $processo->cd_conta_con, 'cd_processo' => $processo->cd_processo_pro, 'nu_processo' => $processo->nu_processo_pro, 'origem' => 'corrrespondente');
+                        $log = array('tipo_notificacao' => $tipo_notificacao,
+                                    'email_destinatario' => $email_notificacao, 
+                                    'cd_remetente' => $processo->cd_correspondente_cor, 
+                                    'cd_destinatario' => $processo->cd_conta_con, 
+                                    'cd_processo' => $processo->cd_processo_pro, 
+                                    'nu_processo' => $processo->nu_processo_pro, 
+                                    'origem' => 'corrrespondente');
                         
                         LogNotificacao::create($log);
             
@@ -1787,22 +1793,27 @@ class ProcessoController extends Controller
 
         if ($processo->save()) {
             if ($processo->fl_documentacao_cliente_pro) {
-                $usuario = \App\User::where('cd_conta_con', $processo->cd_conta_con)
-                    ->where('cd_nivel_niv', 1)
+                $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)
+                    ->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)
                     ->first();
 
-                if ($usuario) {
-                    $usuario->notify(new \App\Notifications\DocumentacaoClienteProcessoNotification($processo));
+                if ($grupo && count($grupo->emails)) {
+                    foreach ($grupo->emails as $email) {
+                        $email_notificacao = $email->ds_email_egn;
 
-                    $log = array('tipo_notificacao' => 'documentacao_cliente_processo',
-                                'email_destinatario' => $usuario->email,
-                                'cd_remetente' => $processo->cd_cliente_cli,
-                                'cd_destinatario' => $processo->cd_conta_con,
-                                'cd_processo' => $processo->cd_processo_pro,
-                                'nu_processo' => $processo->nu_processo_pro,
-                                'origem' => 'cliente');
+                        $processo->email = $email_notificacao;
+                        $processo->notify(new \App\Notifications\DocumentacaoClienteProcessoNotification($processo));
 
-                    LogNotificacao::create($log);
+                        $log = array('tipo_notificacao' => 'documentacao_cliente_processo',
+                                    'email_destinatario' => $email_notificacao,
+                                    'cd_remetente' => $processo->cd_cliente_cli,
+                                    'cd_destinatario' => $processo->cd_conta_con,
+                                    'cd_processo' => $processo->cd_processo_pro,
+                                    'nu_processo' => $processo->nu_processo_pro,
+                                    'origem' => 'cliente');
+
+                        LogNotificacao::create($log);
+                    }
                 }
             }
 
