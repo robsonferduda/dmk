@@ -591,8 +591,8 @@
                                             <p style="font-size: 11px; margin-bottom: 3px; margin-top: 3px;">
                                                 {{ date('d/m/Y H:i:s', strtotime($notificacao->created_at)) }} - 
                                                 {{ $notificacao->tipo->nm_tipo_notificacao_tin }} - 
-                                                {{ App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con }} >> 
-                                                {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con }} -
+                                                {{ $notificacao->origem == 'cliente' ? (App\Cliente::where('cd_cliente_cli', $notificacao->cd_remetente)->first()->nm_razao_social_cli ?? 'Cliente') : (App\Conta::where('cd_conta_con', $notificacao->cd_remetente)->first()->nm_razao_social_con ?? 'N/A') }} >> 
+                                                {{ App\Conta::where('cd_conta_con', $notificacao->cd_destinatario)->first()->nm_razao_social_con ?? 'N/A' }} -
                                                 {{ $notificacao->email_destinatario }}                                     
                                             </p>
                                         @empty
