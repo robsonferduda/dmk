@@ -851,7 +851,7 @@
                     if(data.files[0].size){            
 
                         $.ajax({
-                            url: "../../anexo-processo-add",
+                            url: host + "/anexo-processo-add",
                             type: 'POST',
                             data: {
                                 "_token": $('meta[name="token"]').attr('content'),
@@ -876,7 +876,7 @@
                 .on('delete.filepicker', function (e, data) {
                     //Antes de excluir o arquivo, ele remove o registro do banco. Caso ocorra erro no banco, ele não exclui o arquivo e retorna false. Caso exclua do banco, mas não consiga remover o arquivo, ele recupera o arquivo no método deletedone
                     $.ajax({
-                        url: '../../anexo-processo-delete',
+                        url: host + '/anexo-processo-delete',
                         type: 'POST',
                         dataType: "JSON",
                         data: {
