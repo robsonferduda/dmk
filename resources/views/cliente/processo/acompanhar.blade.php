@@ -856,7 +856,8 @@
                             data: {
                                 "_token": $('meta[name="token"]').attr('content'),
                                 "id_processo": $("#processo").val(),
-                                "nome_arquivo": data.files[0].name
+                                "nome_arquivo": data.files[0].name,
+                                "tipo": "cliente"
                             },
                             success: function(response){   
 
