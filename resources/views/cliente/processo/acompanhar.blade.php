@@ -97,6 +97,19 @@
                     @endif
 
                 @endrole
+
+                @role('cliente')
+                    @if(!in_array($processo->cd_status_processo_stp, [\App\Enums\StatusProcesso::CANCELADO, \App\Enums\StatusProcesso::FINALIZADO]))
+                    <a title="Cancelar Processo" href="#" id="btnCancelarProcesso"
+                        class="btn btn-danger pull-right header-btn btn-responsive"
+                        style="margin-top: 17px; margin-right: 10px;">
+                        <i class="fa fa-ban"></i> Cancelar Processo
+                    </a>
+                    @endif
+                    <a title="Meus Processos" href="{{ url('cliente/processos/acompanhamento') }}" class="btn btn-default pull-right header-btn btn-responsive" style="margin-top: 17px; margin-right: 5px;">
+                        <i class="fa fa-list fa-lg"></i> Meus Processos
+                    </a>
+                @endrole
                 </div>
 
 
@@ -574,6 +587,27 @@
 </div>
 @endif
 
+@role('cliente')
+<div class="modal fade in modal_top_alto" id="modalCancelarProcesso" tabindex="-1" role="dialog" aria-labelledby="modalCancelarProcessoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalCancelarProcessoLabel"><i class="fa fa-ban text-danger"></i> Cancelar Processo</h4>
+            </div>
+            <div class="modal-body center">
+                <h4>Tem certeza que deseja cancelar o processo <strong>{{ $processo->nu_processo_pro }}</strong>?</h4>
+                <p class="text-muted">O escritório será notificado automaticamente sobre o cancelamento.</p>
+                <p class="text-danger"><i class="fa fa-exclamation-triangle"></i> Essa ação não poderá ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Voltar</button>
+                <a href="{{ url('cliente/processos/cancelar/'.\Crypt::encrypt($processo->cd_processo_pro)) }}" class="btn btn-danger"><i class="fa fa-ban"></i> Confirmar Cancelamento</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endrole
+
 @endsection
 @section('script')
     <script type="text/javascript">
@@ -581,6 +615,11 @@
         $(document).ready(function() {
 
             var host =  $('meta[name="base-url"]').attr('content');
+
+            $("#btnCancelarProcesso").click(function(e) {
+                e.preventDefault();
+                $("#modalCancelarProcesso").modal('show');
+            });
 
             //Posiciona a lista de mensagens na última mensagem enviada
             $('.msg_history_cliente').scrollTop($('.msg_history_cliente')[0].scrollHeight);

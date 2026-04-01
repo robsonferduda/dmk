@@ -229,6 +229,16 @@ class ClienteProcessoController extends Controller
 
             $processo->email = $email->dc_endereco_eletronico_ede;
             $processo->notificarCancelamento($processo);
+
+            $log = array('tipo_notificacao' => 'cancelamento_processo_cliente',
+                        'email_destinatario' => $email->dc_endereco_eletronico_ede,
+                        'cd_remetente' => $cliente->cd_cliente_cli,
+                        'cd_destinatario' => $processo->cd_conta_con,
+                        'cd_processo' => $processo->cd_processo_pro,
+                        'nu_processo' => $processo->nu_processo_pro,
+                        'origem' => 'cliente');
+
+            LogNotificacao::create($log);
         }
 
         Flash::success('Processo '.$processo->nu_processo_pro.' cancelado e escritório notificado');
