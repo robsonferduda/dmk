@@ -125,6 +125,7 @@ class ClienteProcessoController extends Controller
 
         $tiposProcesso  = TipoProcesso::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_processo_tpo')->get();
         $tiposDeServico = TipoServico::where('cd_conta_con', $id_escritorio)->orderBy('nm_tipo_servico_tse')->get();
+        $areas = AreaDireito::where('cd_conta_con', $id_escritorio)->orderBy('dc_area_direito_ado')->get();
 
         return view('cliente/processo/novo', ['cliente' => $cliente,
                                             'correspondente' => $correspondente,
@@ -133,7 +134,8 @@ class ClienteProcessoController extends Controller
                                             'advogados' => $advogados,
                                             'varas' => $varas, 
                                             'tiposProcesso' => $tiposProcesso, 
-                                            'tiposDeServico' => $tiposDeServico]);
+                                            'tiposDeServico' => $tiposDeServico,
+                                            'areas' => $areas]);
     }  
 
     public function getProcessosAndamento()
