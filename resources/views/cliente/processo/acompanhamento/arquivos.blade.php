@@ -53,8 +53,9 @@
                                                 </div>
                                             </div>
 
+                                        @role('cliente')
                                         <div class="onoffswitch-container" style="margin-top: 15px;">
-                                            <span class="onoffswitch-title">Documentação enviada?</span>
+                                            <span class="onoffswitch-title">Todos os documentos para a realização do ato foram anexados?</span>
                                             <span class="onoffswitch">
                                                 <input type="checkbox" {{ ($processo->fl_documentacao_cliente_pro) ? 'checked' : '' }}
                                                     name="fl_documentacao_cliente_pro"
@@ -67,6 +68,11 @@
                                             </span>
                                             <span class="erro_atualiza_status text-danger" style="margin-left: 10px;"></span>
                                         </div>
+                                        <p class="text-muted" style="margin-top: 8px; font-size: 12px;">
+                                            <i class="fa fa-info-circle"></i>
+                                            Ao marcar como <strong>SIM</strong>, o escritório será notificado automaticamente para dar continuidade ao processo.
+                                        </p>
+                                        @endrole
                                                                      
                                   
 
