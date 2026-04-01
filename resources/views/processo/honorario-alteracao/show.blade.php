@@ -106,12 +106,14 @@
 
                                     {{-- Reprovar --}}
                                     <form action="{{ url('processos/honorario-alteracao/'.$alteracao->cd_taxa_honorario_alteracao_tha.'/reprovar') }}"
-                                          method="POST" style="display: inline-block; margin-right: 10px;">
+                                          method="POST" style="display: inline-block; margin-right: 10px; vertical-align: top;">
                                         {{ csrf_field() }}
-                                        <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('Confirma a reprovação deste pedido?')">
-                                            <i class="fa fa-times"></i> Reprovar
-                                        </button>
+                                        <div class="well" style="display: inline-block; padding: 10px 15px; margin-bottom: 0;">
+                                            <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Confirma a reprovação deste pedido?')">
+                                                <i class="fa fa-times"></i> Reprovar
+                                            </button>
+                                        </div>
                                     </form>
 
                                     {{-- Aprovar --}}
