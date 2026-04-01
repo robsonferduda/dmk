@@ -159,6 +159,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/atualiza/documento-representacao/{id}', 'ProcessoController@atualizaDocumentoRepresentacao');
     Route::get('processos/atualiza/enviados/{id}', 'ProcessoController@atualizaAnexosEnviados');
     Route::get('processos/atualiza/recebidos/{id}', 'ProcessoController@atualizaAnexosRecebidos');
+    Route::get('processos/atualiza/documentacao-cliente/{id}', 'ProcessoController@atualizaDocumentacaoCliente');
     Route::get('processo/notificacao/resposta/{resposta}/{id}', 'ProcessoController@responderNotificacao')->name('resposta');
     Route::get('processos/relatorios', 'RelatorioProcessoController@relatorios');
     Route::post('processo/relatorios/buscar', 'RelatorioProcessoController@buscar');

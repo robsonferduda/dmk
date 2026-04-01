@@ -1779,6 +1779,29 @@ class ProcessoController extends Controller
         }
     }
 
+    public function atualizaDocumentacaoCliente($id)
+    {
+        $processo = Processo::findOrFail($id);
+
+        $processo->fl_documentacao_cliente_pro = !$processo->fl_documentacao_cliente_pro;
+
+        if ($processo->save()) {
+            if ($processo->fl_documentacao_cliente_pro) {
+                $usuario = \App\User::where('cd_conta_con', $processo->cd_conta_con)
+                    ->where('cd_nivel_niv', 1)
+                    ->first();
+
+                if ($usuario) {
+                    $usuario->notify(new \App\Notifications\DocumentacaoClienteProcessoNotification($processo));
+                }
+            }
+
+            return Response::json(array('message' => 'Registro atualizado com sucesso'), 200);
+        } else {
+            return Response::json(array('message' => 'Erro ao atualizar registro'), 500);
+        }
+    }
+
     /**
      * Envia notificação ao correspondente requisitando dados do processo.
      * Usado internamente (ex: job/scheduler) e também pelo método requisitarDados (rota do usuário).

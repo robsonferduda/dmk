@@ -52,6 +52,21 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                        <div class="onoffswitch-container" style="margin-top: 15px;">
+                                            <span class="onoffswitch-title">Documentação enviada?</span>
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ ($processo->fl_documentacao_cliente_pro) ? 'checked' : '' }}
+                                                    name="fl_documentacao_cliente_pro"
+                                                    class="onoffswitch-checkbox"
+                                                    id="fl_documentacao_cliente_pro">
+                                                <label class="onoffswitch-label" for="fl_documentacao_cliente_pro">
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </span>
+                                            <span class="erro_atualiza_status text-danger" style="margin-left: 10px;"></span>
+                                        </div>
                                                                      
                                   
 

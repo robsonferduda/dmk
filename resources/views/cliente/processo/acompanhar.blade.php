@@ -1078,6 +1078,34 @@
 
         });
 
+        $("#fl_documentacao_cliente_pro").change(function(){
+
+            processo = $("#processo").val();
+
+            $.ajax(
+            {
+                url: host + "/processos/atualiza/documentacao-cliente/" + processo,
+                type: 'GET',
+                dataType: "JSON",
+                beforeSend: function()
+                {
+                    $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
+                },
+                success: function(response)
+                {                    
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    $('.box-loader').loader('hide');
+                    $("#fl_documentacao_cliente_pro").prop('checked', !$("#fl_documentacao_cliente_pro").prop('checked'));
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
+                }
+            });
+
+        });
+
         $(".fl_envio_enter").change(function(){
 
             flag = $(this).is(':checked');   
