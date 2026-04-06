@@ -15,6 +15,7 @@ use App\TipoServico;
 use App\AreaDireito;
 use App\TipoProcesso;
 use App\StatusProcesso;
+use App\GrupoNotificacao;
 use App\LogNotificacao;
 use App\ProcessoMensagem;
 use App\EnderecoEletronico;
@@ -221,24 +222,27 @@ class ClienteProcessoController extends Controller
         //O processo deve ser cancelado e o escritório notificado
         $processo->cd_status_processo_stp = \StatusProcesso::CANCELADO_PELO_CLIENTE;
         $processo->save();
-        $vinculo = Conta::where('cd_conta_con', $processo->cd_conta_con)->first();
 
-        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->entidade()->first()->cd_entidade_ete)->where('cd_tipo_endereco_eletronico_tee', \App\Enums\TipoEnderecoEletronico::NOTIFICACAO)->get();
+        $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)
+            ->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)
+            ->first();
 
-        foreach ($emails as $email) {
+        if ($grupo && count($grupo->emails)) {
+            foreach ($grupo->emails as $email) {
+                $email_notificacao = $email->ds_email_egn;
+                $processo->email = $email_notificacao;
+                $processo->notificarCancelamento($processo);
 
-            $processo->email = $email->dc_endereco_eletronico_ede;
-            $processo->notificarCancelamento($processo);
+                $log = array('tipo_notificacao' => 'cancelamento_processo_cliente',
+                            'email_destinatario' => $email_notificacao,
+                            'cd_remetente' => $cliente->cd_cliente_cli,
+                            'cd_destinatario' => $processo->cd_conta_con,
+                            'cd_processo' => $processo->cd_processo_pro,
+                            'nu_processo' => $processo->nu_processo_pro,
+                            'origem' => 'cliente');
 
-            $log = array('tipo_notificacao' => 'cancelamento_processo_cliente',
-                        'email_destinatario' => $email->dc_endereco_eletronico_ede,
-                        'cd_remetente' => $cliente->cd_cliente_cli,
-                        'cd_destinatario' => $processo->cd_conta_con,
-                        'cd_processo' => $processo->cd_processo_pro,
-                        'nu_processo' => $processo->nu_processo_pro,
-                        'origem' => 'cliente');
-
-            LogNotificacao::create($log);
+                LogNotificacao::create($log);
+            }
         }
 
         Flash::success('Processo '.$processo->nu_processo_pro.' cancelado e escritório notificado');
@@ -261,13 +265,51 @@ class ClienteProcessoController extends Controller
     public function pauta()
     {
         Session::put('menu_pai','pauta');
-        Session::put('item_pai','pauta.listar'); 
+        Session::put('item_pai','pauta.listar');
 
-        $cliente = Cliente::where('cd_entidade_ete',Auth::user()->cd_entidade_ete)->first();
+        $id_escritorio = 64;
 
-        $processos = array();
+        $prazo_fatal = date('Y-m-d');
 
-        return view('cliente/processo/pauta', ['processos' => $processos]);
+        $tiposProcesso = TipoProcesso::where('cd_conta_con', $id_escritorio)->get();
+
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+                  ->orderBy('nm_status_processo_conta_stp')
+                  ->get();
+
+        return view('cliente/processo/pauta', [
+            'prazo_fatal'   => $prazo_fatal,
+            'tiposProcesso' => $tiposProcesso,
+            'status'        => $status,
+        ]);
+    }
+
+    public function listarPauta(Request $request)
+    {
+        $id_escritorio = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+
+        $processo            = $request->processo ?: null;
+        $nm_correspondente   = $request->nm_correspondente ?: null;
+        $tipo                = $request->tipo ?: null;
+        $servico             = $request->servico ?: null;
+        $reu                 = $request->reu ?: null;
+        $autor               = $request->autor ?: null;
+        $comarca             = $request->comarca ?: null;
+        $statusProcesso      = $request->statusProcesso ?: null;
+        $numeroAcompanhamento = $request->numero_acompanhamento ?: null;
+        $area                = $request->area ?: null;
+        $data = $request->data
+            ? date('Y-m-d', strtotime(str_replace('/', '-', $request->data)))
+            : date('Y-m-d');
+
+        $processos = (new Processo())->getProcessosAndamento(
+            $id_escritorio, $processo, null, null, $tipo, $servico, null,
+            $reu, $autor, $data, $comarca, false, $cd_cliente_cli,
+            $statusProcesso, $numeroAcompanhamento, $area, $nm_correspondente
+        );
+
+        return response()->json($processos);
     }
 
     public function relatorios()

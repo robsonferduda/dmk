@@ -26,3 +26,4 @@ Route::get('processo/correspondente/andamento', 'ProcessoController@getProcessos
 Route::get('processo/situacao/prazo', 'ProcessoController@getStatusPrazo');
 Route::get('processo/{id}', 'ProcessoController@getDados');
 Route::post('processo/pauta', 'ProcessoController@listarPauta');
+Route::post('cliente/processo/pauta', 'ClienteProcessoController@listarPauta');

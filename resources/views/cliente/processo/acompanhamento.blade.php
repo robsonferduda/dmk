@@ -17,7 +17,7 @@
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 box-button-xs" >
             <div class="sub-box-button-xs">
                 <a  title="Novo" data-toggle="modal" href="{{ url('cliente/processos/novo') }}" class="btn btn-success pull-right header-btn"><i class="fa fa-plus fa-lg"></i> Novo</a>
-                <a title="Pauta Online" href="{{ url('processos/pauta/online') }}" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-globe fa-lg"></i> Pauta Online</a>
+                <a title="Pauta Online" href="{{ url('cliente/pauta') }}" style="margin-right: 5px" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-globe fa-lg"></i> Pauta Online</a>
             </div>
            
         </div>
