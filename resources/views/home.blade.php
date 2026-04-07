@@ -160,7 +160,7 @@
             <div style="background:#fff; border-left:4px solid #ccc; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);" id="esc-cnt-msg-inner">
                 <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-envelope"></i> Msgs N. Lidas</span>
                 <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-mensagens"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
-                <a href="javascript:void(0);" onclick="$('#activity').trigger('click'); return false;" style="font-size:11px;">Ver mensagens &rsaquo;</a>
+                <a href="{{ url('mensagens/caixa-entrada') }}" style="font-size:11px;">Ver mensagens &rsaquo;</a>
             </div>
         </div>
         <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2" id="esc-cnt-pendente-card">

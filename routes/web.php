@@ -327,6 +327,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('entidade/teste', 'EntidadeController@index');
     Route::get('mensagem/teste', 'MensagemController@index');
+    Route::get('mensagens/caixa-entrada', 'MensagemController@caixaEntrada');
 
     Route::get('/fire', function () {
         event(new \App\Events\EventNotification(array('canal' => 'notificacao', 'conta' => 999, 'total' => 8, 'mensagens' => "")));

@@ -33,6 +33,23 @@ class MensagemController extends Controller
        
     }
 
+    public function caixaEntrada(Request $request)
+    {
+        $conta = $this->conta;
+
+        $mensagens = ProcessoMensagem::with(['processo', 'entidadeRemetente', 'entidadeInterna'])
+            ->join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
+            ->where('processo_mensagem_prm.destinatario_prm', $conta)
+            ->where('processo_mensagem_prm.remetente_prm', '<>', $conta)
+            ->whereNull('processo_pro.deleted_at')
+            ->select('processo_mensagem_prm.*')
+            ->orderBy('processo_mensagem_prm.fl_leitura_prm', 'ASC') // não lidas primeiro
+            ->orderBy('processo_mensagem_prm.created_at', 'DESC')
+            ->paginate(30);
+
+        return view('mensagens.caixa-entrada', compact('mensagens'));
+    }
+
     public function getMensagensByDestinatario($id)
     {
         $mensagens = (new \App\ProcessoMensagem)->getMensagensPendentes($this->conta);
