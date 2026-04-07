@@ -175,12 +175,14 @@ class HomeController extends Controller
 
         $processos = DB::select("
             SELECT t1.cd_processo_pro, t1.nu_processo_pro, t1.hr_audiencia_pro,
+                   t1.dt_prazo_fatal_pro,
                    t1.nm_autor_pro, t1.nm_reu_pro,
                    t2.nm_status_processo_conta_stp, t2.ds_color_stp,
                    t3.nm_razao_social_cli,
                    t5.nm_conta_correspondente_ccr,
                    t7.nm_cidade_cde, t8.sg_estado_est,
                    t10.nm_tipo_servico_tse,
+                   t11.nm_tipo_processo_tpo,
                    t6.name as nm_responsavel
             FROM processo_pro t1
             JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
@@ -191,6 +193,7 @@ class HomeController extends Controller
             LEFT JOIN users t6 ON t1.cd_responsavel_pro = t6.id
             LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
             LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+            LEFT JOIN tipo_processo_tpo t11 ON t11.cd_tipo_processo_tpo = t1.cd_tipo_processo_tpo
             WHERE t1.cd_conta_con = :conta
               AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
               AND t1.dt_prazo_fatal_pro = current_date
@@ -198,8 +201,12 @@ class HomeController extends Controller
             ORDER BY t1.hr_audiencia_pro
         ", ['conta' => $conta]);
 
-        $total     = count($processos);
-        $lista     = array_slice($processos, 0, 10);
+        $total = count($processos);
+        $lista = array_slice($processos, 0, 10);
+        $lista = array_map(function ($p) {
+            $p->hash = \Crypt::encrypt($p->cd_processo_pro);
+            return $p;
+        }, $lista);
 
         return response()->json(['total' => $total, 'processos' => $lista]);
     }
@@ -215,6 +222,7 @@ class HomeController extends Controller
                    t5.nm_conta_correspondente_ccr,
                    t7.nm_cidade_cde, t8.sg_estado_est,
                    t10.nm_tipo_servico_tse,
+                   t11.nm_tipo_processo_tpo,
                    t6.name as nm_responsavel
             FROM processo_pro t1
             JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
@@ -225,6 +233,7 @@ class HomeController extends Controller
             LEFT JOIN users t6 ON t1.cd_responsavel_pro = t6.id
             LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
             LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+            LEFT JOIN tipo_processo_tpo t11 ON t11.cd_tipo_processo_tpo = t1.cd_tipo_processo_tpo
             WHERE t1.cd_conta_con = :conta
               AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
               AND t1.dt_prazo_fatal_pro > current_date
@@ -232,6 +241,11 @@ class HomeController extends Controller
             ORDER BY t1.dt_prazo_fatal_pro, t1.hr_audiencia_pro
             LIMIT 10
         ", ['conta' => $conta]);
+
+        $processos = array_map(function ($p) {
+            $p->hash = \Crypt::encrypt($p->cd_processo_pro);
+            return $p;
+        }, $processos);
 
         return response()->json($processos);
     }
