@@ -14,7 +14,7 @@
                 <i class="fa-fw fa fa-inbox"></i> Caixa de Entrada
                 @if($mensagens->total() > 0)
                     <span class="badge" style="background:#e74c3c; font-size:14px; vertical-align:middle;">
-                        {{ $mensagens->where('fl_leitura_prm', null)->count() }}
+                        {{ $mensagens->total() }}
                     </span>
                 @endif
             </h1>
@@ -51,8 +51,6 @@
                             <tbody>
                                 @foreach($mensagens as $msg)
                                     @php
-                                        $naoLida = is_null($msg->fl_leitura_prm);
-
                                         if ($msg->cd_tipo_mensagem_tim == \App\Enums\TipoMensagem::EXTERNA) {
                                             $remetente = optional(optional($msg->entidadeRemetente))->nm_razao_social_con ?? 'Desconhecido';
                                             $entEte    = optional(optional($msg->entidadeRemetente)->entidade)->cd_entidade_ete;
@@ -67,20 +65,17 @@
                                                             : asset('img/users/user.png');
                                         }
 
-                                        $nuProcesso = optional($msg->processo)->nu_processo_pro ?? 'Processo excluído';
+                                        $nuProcesso   = optional($msg->processo)->nu_processo_pro ?? 'Processo excluído';
                                         $linkProcesso = $msg->processo
                                             ? url('processos/acompanhamento/'.safe_encrypt($msg->cd_processo_pro))
                                             : '#';
                                     @endphp
-                                    <tr style="{{ $naoLida ? 'background:#fffdf0; font-weight:600;' : '' }}">
+                                    <tr>
                                         <td style="padding:10px 12px; text-align:center; vertical-align:middle;">
                                             <img src="{{ $avatar }}" alt="" width="32" height="32"
                                                  style="border-radius:50%; object-fit:cover;">
                                         </td>
                                         <td style="vertical-align:middle;">
-                                            @if($naoLida)
-                                                <span class="label label-danger" style="font-size:10px; margin-right:4px;">Nova</span>
-                                            @endif
                                             {{ $remetente }}
                                         </td>
                                         <td style="vertical-align:middle;">
