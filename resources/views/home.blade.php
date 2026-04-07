@@ -41,61 +41,45 @@
     {{-- Linha 1: Contadores --}}
     <div class="row" id="cliente-contadores">
         <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-            <div class="jarviswidget jarviswidget-color-blue" style="border-radius:8px;">
-                <div style="padding:15px 20px;">
-                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Processos Ativos</span>
-                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-ativos">
-                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
-                    </h2>
-                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver todos</a>
-                </div>
+            <div style="background:#fff; border-left:4px solid #5b9bd1; border-radius:4px; padding:15px 20px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:12px; text-transform:uppercase; color:#888; letter-spacing:.5px;"><i class="fa fa-folder-open txt-color-blue"></i> Processos Ativos</span>
+                <div style="margin:6px 0 4px; font-size:34px; font-weight:700; color:#2c3e50;" id="cnt-ativos"><i class="fa fa-spinner fa-spin" style="font-size:20px;"></i></div>
+                <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver todos &rsaquo;</a>
             </div>
         </div>
         <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-            <div class="jarviswidget jarviswidget-color-orange" style="border-radius:8px;">
-                <div style="padding:15px 20px;">
-                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Audiências Hoje</span>
-                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-hoje">
-                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
-                    </h2>
-                    <a href="{{ url('cliente/pauta') }}" style="font-size:12px;">Ver pauta</a>
-                </div>
+            <div style="background:#fff; border-left:4px solid #e67e22; border-radius:4px; padding:15px 20px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:12px; text-transform:uppercase; color:#888; letter-spacing:.5px;"><i class="fa fa-calendar txt-color-orange"></i> Audiências Hoje</span>
+                <div style="margin:6px 0 4px; font-size:34px; font-weight:700; color:#2c3e50;" id="cnt-hoje"><i class="fa fa-spinner fa-spin" style="font-size:20px;"></i></div>
+                <a href="{{ url('cliente/pauta') }}" style="font-size:12px;">Ver pauta &rsaquo;</a>
             </div>
         </div>
         <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-            <div class="jarviswidget jarviswidget-color-yellow" style="border-radius:8px;">
-                <div style="padding:15px 20px;">
-                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Próximos 7 dias</span>
-                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-7dias">
-                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
-                    </h2>
-                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos</a>
-                </div>
+            <div style="background:#fff; border-left:4px solid #f1c40f; border-radius:4px; padding:15px 20px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:12px; text-transform:uppercase; color:#888; letter-spacing:.5px;"><i class="fa fa-clock-o" style="color:#f1c40f;"></i> Próximos 7 dias</span>
+                <div style="margin:6px 0 4px; font-size:34px; font-weight:700; color:#2c3e50;" id="cnt-7dias"><i class="fa fa-spinner fa-spin" style="font-size:20px;"></i></div>
+                <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos &rsaquo;</a>
             </div>
         </div>
-        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-            <div class="jarviswidget" style="border-radius:8px; background:#fff; border:1px solid #ddd;" id="cnt-msg-card">
-                <div style="padding:15px 20px;">
-                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Mensagens Não Lidas</span>
-                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-mensagens">
-                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
-                    </h2>
-                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos</a>
-                </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3" id="cnt-msg-card">
+            <div style="background:#fff; border-left:4px solid #ccc; border-radius:4px; padding:15px 20px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);" id="cnt-msg-inner">
+                <span style="font-size:12px; text-transform:uppercase; color:#888; letter-spacing:.5px;"><i class="fa fa-envelope"></i> Mensagens Não Lidas</span>
+                <div style="margin:6px 0 4px; font-size:34px; font-weight:700; color:#2c3e50;" id="cnt-mensagens"><i class="fa fa-spinner fa-spin" style="font-size:20px;"></i></div>
+                <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos &rsaquo;</a>
             </div>
         </div>
     </div>
 
     {{-- Linha 2: Pauta de hoje --}}
-    <div class="row" style="margin-top:10px;">
+    <div class="row" style="margin-top:4px;">
         <div class="col-md-12">
-            <div class="jarviswidget" style="border-radius:8px;">
-                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
-                    <span class="widget-icon"><i class="fa fa-calendar-check-o txt-color-orange"></i></span>
-                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Pauta de Hoje</strong> — {{ date('d/m/Y') }}</h2>
-                    <a href="{{ url('cliente/pauta') }}" class="btn btn-xs btn-default pull-right" style="margin-top:2px;"><i class="fa fa-external-link"></i> Pauta completa</a>
-                </header>
-                <div style="padding:10px 15px;" id="box-pauta-hoje">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-calendar-check-o txt-color-orange"></i>
+                    <strong style="margin-left:6px;">Pauta de Hoje</strong> <span class="text-muted">— {{ date('d/m/Y') }}</span>
+                    <a href="{{ url('cliente/pauta') }}" class="btn btn-xs btn-default pull-right"><i class="fa fa-external-link"></i> Pauta completa</a>
+                </div>
+                <div class="panel-body" id="box-pauta-hoje">
                     <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
@@ -103,25 +87,25 @@
     </div>
 
     {{-- Linha 3: Distribuição por status + Mensagens não lidas --}}
-    <div class="row" style="margin-top:10px;">
+    <div class="row">
         <div class="col-md-6">
-            <div class="jarviswidget" style="border-radius:8px; min-height:260px;">
-                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
-                    <span class="widget-icon"><i class="fa fa-pie-chart txt-color-blue"></i></span>
-                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Distribuição por Situação</strong></h2>
-                </header>
-                <div style="padding:10px 15px;" id="box-status">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1); min-height:260px;">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-pie-chart txt-color-blue"></i>
+                    <strong style="margin-left:6px;">Distribuição por Situação</strong>
+                </div>
+                <div class="panel-body" id="box-status">
                     <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="jarviswidget" style="border-radius:8px; min-height:260px;">
-                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
-                    <span class="widget-icon"><i class="fa fa-envelope txt-color-red"></i></span>
-                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Mensagens Pendentes</strong></h2>
-                </header>
-                <div style="padding:10px 15px;" id="box-mensagens">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1); min-height:260px;">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-envelope txt-color-red"></i>
+                    <strong style="margin-left:6px;">Mensagens Pendentes</strong>
+                </div>
+                <div class="panel-body" id="box-mensagens">
                     <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
@@ -129,14 +113,14 @@
     </div>
 
     {{-- Linha 4: Próximas audiências --}}
-    <div class="row" style="margin-top:10px; margin-bottom:20px;">
+    <div class="row" style="margin-bottom:20px;">
         <div class="col-md-12">
-            <div class="jarviswidget" style="border-radius:8px;">
-                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
-                    <span class="widget-icon"><i class="fa fa-clock-o txt-color-blue"></i></span>
-                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Próximas Audiências</strong> <small class="text-muted">(próximos 10 processos)</small></h2>
-                </header>
-                <div style="padding:10px 15px;" id="box-proximas">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-clock-o txt-color-blue"></i>
+                    <strong style="margin-left:6px;">Próximas Audiências</strong> <small class="text-muted">(próximos 10 processos)</small>
+                </div>
+                <div class="panel-body" id="box-proximas">
                     <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
@@ -271,7 +255,7 @@
                 $('#cnt-mensagens').text(d.mensagens_nao_lidas);
 
                 if (d.mensagens_nao_lidas > 0) {
-                    $('#cnt-msg-card').css({'background':'#fdecea','border-color':'#e8b4b8'});
+                    $('#cnt-msg-inner').css({'background':'#fdecea','border-left-color':'#c0392b'});
                     $('#cnt-mensagens').css('color','#c0392b');
                 }
             });
