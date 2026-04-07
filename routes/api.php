@@ -33,3 +33,10 @@ Route::get('cliente/dashboard/pauta-hoje',  'ClienteProcessoController@dashboard
 Route::get('cliente/dashboard/proximas',    'ClienteProcessoController@dashboardProximas');
 Route::get('cliente/dashboard/mensagens',   'ClienteProcessoController@dashboardMensagens');
 Route::get('cliente/dashboard/status',      'ClienteProcessoController@dashboardStatus');
+
+Route::get('escritorio/dashboard/contadores',       'HomeController@escritorioContadores');
+Route::get('escritorio/dashboard/pauta-hoje',       'HomeController@escritorioPautaHoje');
+Route::get('escritorio/dashboard/proximas',         'HomeController@escritorioProximas');
+Route::get('escritorio/dashboard/status',           'HomeController@escritorioStatus');
+Route::get('escritorio/dashboard/por-area',         'HomeController@escritorioPorArea');
+Route::get('escritorio/dashboard/por-tipo-processo','HomeController@escritorioPorTipoProcesso');

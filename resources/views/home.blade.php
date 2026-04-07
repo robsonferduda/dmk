@@ -130,110 +130,123 @@
     @endrole
 
     @role('administrator')
-    <div class="row" id="filtro-periodo" style="margin-bottom: 8px;">
-        <div class="col-md-12 col-sm-12 mb-3">
-            <form id="formFiltroPeriodo" class="form-inline" style="text-align: right;" method="GET" action="{{ url()->current() }}">
-                <div class="form-group">
-                    <input type="date" class="form-control" name="data_inicio" id="data_inicio" value="{{ date('d/m/Y') }}">
-                </div>
-                <div class="form-group">
-                    <input type="date" class="form-control" name="data_fim" id="data_fim" value="{{ date('d/m/Y') }}">
-                </div>
 
-                <div class="btn-group" role="group" aria-label="Períodos Rápidos">
-                    <button type="button" class="btn btn-default periodo-btn" data-dias="7">Última semana</button>
-                    <button type="button" class="btn btn-default periodo-btn" data-dias="15">Últimos 15 dias</button>
-                    <button type="button" class="btn btn-default periodo-btn" data-dias="30">Últimos 30 dias</button>
-                </div>
-            </form>
+    {{-- ===== DASHBOARD DO ESCRITÓRIO ===== --}}
+
+    {{-- Linha 1: Contadores --}}
+    <div class="row" id="escritorio-contadores">
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+            <div style="background:#fff; border-left:4px solid #5b9bd1; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-folder-open txt-color-blue"></i> Ativos</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-ativos"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('processos') }}" style="font-size:11px;">Ver todos &rsaquo;</a>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+            <div style="background:#fff; border-left:4px solid #e67e22; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-calendar txt-color-orange"></i> Audiências Hoje</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-hoje"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('processos/pauta/online') }}" style="font-size:11px;">Ver pauta &rsaquo;</a>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+            <div style="background:#fff; border-left:4px solid #f1c40f; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-clock-o" style="color:#f1c40f;"></i> Próx. 7 dias</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-7dias"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('processos') }}" style="font-size:11px;">Ver processos &rsaquo;</a>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2" id="esc-cnt-msg-card">
+            <div style="background:#fff; border-left:4px solid #ccc; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);" id="esc-cnt-msg-inner">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-envelope"></i> Msgs N. Lidas</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-mensagens"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('processos') }}" style="font-size:11px;">Ver processos &rsaquo;</a>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2" id="esc-cnt-pendente-card">
+            <div style="background:#fff; border-left:4px solid #ccc; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);" id="esc-cnt-pendente-inner">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-exclamation-circle"></i> Pendentes</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-pendentes"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('processos') }}" style="font-size:11px;">Ver processos &rsaquo;</a>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+            <div style="background:#fff; border-left:4px solid #27ae60; border-radius:4px; padding:12px 16px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <span style="font-size:11px; text-transform:uppercase; color:#888;"><i class="fa fa-users" style="color:#27ae60;"></i> Correspondentes</span>
+                <div style="margin:5px 0 3px; font-size:30px; font-weight:700; color:#2c3e50;" id="esc-cnt-correspondentes"><i class="fa fa-spinner fa-spin" style="font-size:18px;"></i></div>
+                <a href="{{ url('correspondentes') }}" style="font-size:11px;">Ver todos &rsaquo;</a>
+            </div>
         </div>
     </div>
 
-        <div class="row">           
-
-
-
-            <!--
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="alert alert-warning fade in">
-                    <button class="close" data-dismiss="alert">×</button>
-                    <i class="fa-fw fa fa-warning"></i>
-                    <strong>Atenção</strong> Sua conta não foi ativada. Acesse seu email e ative sua conta. Não recebeu o email? <a href="{{ url("/") }}">Clique aqui</a>!
+    {{-- Linha 2: Pauta de hoje --}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-calendar-check-o txt-color-orange"></i>
+                    <strong class="esc-pauta-hoje-titulo" style="margin-left:6px;">Pauta de Hoje</strong> <span class="text-muted">&mdash; {{ date('d/m/Y') }}</span>
+                    <a href="{{ url('processos/pauta/online') }}" class="btn btn-xs btn-default pull-right"><i class="fa fa-external-link"></i> Pauta completa</a>
+                </div>
+                <div class="panel-body" id="esc-box-pauta-hoje">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
                 </div>
             </div>
-            -->
-
-            <div class="col-sm-12 col-md-6 col-lg-4">                
-                <div class="well text-center connect box-home" style="min-height: 110px;">
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        @if(file_exists('public/img/users/ent'.Auth::user()->cd_entidade_ete.'.png')) 
-                            <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/ent'.Auth::user()->cd_entidade_ete.'.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
-                        @else
-                            <a href="" data-toggle="modal" data-target="#upload-image"><img src="{{ asset('img/users/user.png') }}" alt="" style="width: 100%; margin: 0 auto;" class="img-circle img-responsive"></a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
-                        <h4><span>Olá <b>{{ (Auth::user()) ? Auth::user()->name : "Usuário não logado!" }}</b>!</span></h4>
-                        <h5>
-                            @if(Auth::user()->cd_nivel_niv == 2)
-                                <a href="{{ url("usuarios/".\Crypt::encrypt(Auth::user()->id)) }}" class="margin-top-5 margin-bottom-5"> <span>Meu Perfil</span></a>
-                            @endif
-
-                            @if(Auth::user()->cd_nivel_niv == 1) 
-                                <a href="{{ url("conta/detalhes/".\Crypt::encrypt(Auth::user()->cd_conta_con)) }}"> Minha Conta</a>  
-                            @endif
-                        </h5>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-            </div>  
-
-            <div class="col-sm-12 col-md-6 col-lg-4">                
-                <div class="well text-center box-home" style="min-height: 110px;">
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        <a href="{{ url('processos') }}"><img src="{{ asset('img/processo.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
-                        <h4>
-                            <span><b>Processos</b></span>
-                        </h4>
-                        
-                        <h5>
-                            @if(count($processos) > 0)
-                                <span>({{ count($processos) }})</span>
-                            @endif
-                            <a href="{{ url('processos') }}">Meus Processos</a>
-                        </h5>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-            </div> 
-
-            <div class="col-sm-12 col-md-6 col-lg-4">                
-                <div class="well text-center box-home" style="min-height: 110px;">
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        <a href="{{ url('processos') }}"><img src="{{ asset('img/legal.png') }}" alt="" style="width: 90%; margin: 0 auto;" ></a>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-9" style="text-align: left;">
-                        <h4><span><b>Correspondentes</b></span></h4>                    
-                        <h5><a href="{{ url('correspondentes') }}">Meus Correspondentes</a></h5>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
-            </div>
-
         </div>
-        <div class="row">
-            <!--
-            <div class="col-md-4 " id="top5-correspondentes">
-            
+    </div>
+
+    {{-- Linha 3: Status + Área do Direito + Tipo de Processo --}}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1); min-height:280px;">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-tasks txt-color-blue"></i>
+                    <strong style="margin-left:6px;">Situação dos Processos</strong>
+                </div>
+                <div class="panel-body" id="esc-box-status">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
             </div>
-            
-            <div class="col-md-4" id="acessos-recentes">
-            
-            </div>
-        -->
         </div>
+        <div class="col-md-4">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1); min-height:280px;">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-balance-scale txt-color-green"></i>
+                    <strong style="margin-left:6px;">Por Área do Direito</strong>
+                </div>
+                <div class="panel-body" id="esc-box-area">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1); min-height:280px;">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-sitemap txt-color-purple"></i>
+                    <strong style="margin-left:6px;">Por Tipo de Processo</strong>
+                </div>
+                <div class="panel-body" id="esc-box-tipo">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Linha 4: Próximas audiências --}}
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+                <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
+                    <i class="fa fa-clock-o txt-color-blue"></i>
+                    <strong style="margin-left:6px;">Próximas Audiências</strong> <small class="text-muted">(próximos 10 processos)</small>
+                </div>
+                <div class="panel-body" id="esc-box-proximas">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @endrole
 </div>
 @endsection
@@ -387,6 +400,222 @@
             carregarStatus();
             carregarMensagens();
             carregarProximas();
+        });
+
+        @endrole
+
+        @role('administrator')
+
+        function escritorioCarregarContadores() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/contadores',
+                type: 'GET',
+                success: function (data) {
+                    $('#esc-cnt-ativos').text(data.total_ativos);
+                    $('#esc-cnt-hoje').text(data.audiencias_hoje);
+                    $('#esc-cnt-7dias').text(data.proximos_7_dias);
+                    $('#esc-cnt-mensagens').text(data.mensagens_nao_lidas);
+                    $('#esc-cnt-pendentes').text(data.pendentes_analise);
+                    $('#esc-cnt-correspondentes').text(data.correspondentes_ativos);
+
+                    if (parseInt(data.mensagens_nao_lidas) > 0) {
+                        $('#esc-cnt-msg-inner').css('border-left-color', '#e74c3c');
+                        $('#esc-cnt-msg-inner i').css('color', '#e74c3c');
+                    }
+                    if (parseInt(data.pendentes_analise) > 0) {
+                        $('#esc-cnt-pendente-inner').css('border-left-color', '#8e44ad');
+                        $('#esc-cnt-pendente-inner i').css('color', '#8e44ad');
+                    }
+                },
+                error: function () {
+                    $('#escritorio-contadores .fa-spinner').replaceWith('<span class="text-danger">!</span>');
+                }
+            });
+        }
+
+        function escritorioCarregarPautaHoje() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/pauta-hoje',
+                type: 'GET',
+                success: function (data) {
+                    var total = data.total;
+                    var lista = data.processos;
+                    var $titulo = $('.esc-pauta-hoje-titulo');
+
+                    $titulo.find('.badge').remove();
+                    if (total > 0) {
+                        $titulo.append(' <span class="badge" id="esc-badge-pauta-hoje" style="background:#e67e22;">' + total + '</span>');
+                    }
+
+                    if (lista.length === 0) {
+                        $('#esc-box-pauta-hoje').html('<p class="text-center text-muted">Nenhum processo com prazo fatal hoje.</p>');
+                        return;
+                    }
+
+                    var aviso = (total > 10)
+                        ? '<p class="text-muted" style="font-size:11px; margin-bottom:6px;">Exibindo 10 de ' + total + ' processos. <a href="{{ url("processos/pauta/online") }}">Ver pauta completa</a>.</p>'
+                        : '';
+
+                    var html = aviso + '<div class="table-responsive"><table class="table table-condensed table-hover" style="margin-bottom:0;"><thead><tr><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Situação</th><th>Prazo Fatal</th></tr></thead><tbody>';
+                    lista.forEach(function (p) {
+                        var hoje = new Date(); hoje.setHours(0,0,0,0);
+                        var prazo = new Date(p.dt_prazo_fatal_pro + 'T00:00:00');
+                        var diff = Math.round((prazo - hoje) / 86400000);
+                        var rowStyle = diff <= 0 ? 'background:#fde8e8;' : (diff <= 3 ? 'background:#fff3cd;' : '');
+                        html += '<tr style="' + rowStyle + '">';
+                        html += '<td><a href="{{ url("processos") }}/' + p.token_pro + '">' + (p.nu_processo_pro || 'S/N') + '</a></td>';
+                        html += '<td>' + (p.nm_cliente || '') + '</td>';
+                        html += '<td>' + (p.nm_tipo_processo || '') + '</td>';
+                        html += '<td>' + (p.nm_status || '') + '</td>';
+                        html += '<td>' + (p.dt_prazo_fatal_pro ? p.dt_prazo_fatal_pro.split('-').reverse().join('/') : '') + '</td>';
+                        html += '</tr>';
+                    });
+                    html += '</tbody></table></div>';
+                    $('#esc-box-pauta-hoje').html(html);
+                },
+                error: function () {
+                    $('#esc-box-pauta-hoje').html('<p class="text-center text-danger">Erro ao carregar a pauta de hoje.</p>');
+                }
+            });
+        }
+
+        function escritorioCarregarStatus() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/status',
+                type: 'GET',
+                success: function (data) {
+                    if (!data || data.length === 0) {
+                        $('#esc-box-status').html('<p class="text-center text-muted">Sem dados.</p>');
+                        return;
+                    }
+                    var total = data.reduce(function(s, i) { return s + parseInt(i.total); }, 0);
+                    var html = '';
+                    data.forEach(function (item) {
+                        var pct = total > 0 ? Math.round(parseInt(item.total) / total * 100) : 0;
+                        var cor = item.ds_color_stp || '#5b9bd1';
+                        html += '<div style="margin-bottom:8px;">';
+                        html += '<div style="display:flex; justify-content:space-between; font-size:12px;">';
+                        html += '<span>' + item.nm_status_processo_conta_stp + '</span>';
+                        html += '<span><b>' + item.total + '</b></span>';
+                        html += '</div>';
+                        html += '<div style="background:#f0f0f0; border-radius:3px; height:10px; overflow:hidden;">';
+                        html += '<div style="width:' + pct + '%; background:' + cor + '; height:100%; border-radius:3px;"></div>';
+                        html += '</div></div>';
+                    });
+                    $('#esc-box-status').html(html);
+                },
+                error: function () {
+                    $('#esc-box-status').html('<p class="text-center text-danger">Erro ao carregar.</p>');
+                }
+            });
+        }
+
+        function escritorioCarregarPorArea() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/por-area',
+                type: 'GET',
+                success: function (data) {
+                    if (!data || data.length === 0) {
+                        $('#esc-box-area').html('<p class="text-center text-muted">Sem dados.</p>');
+                        return;
+                    }
+                    var total = data.reduce(function(s, i) { return s + parseInt(i.total); }, 0);
+                    var cores = ['#5b9bd1','#27ae60','#e67e22','#8e44ad','#e74c3c','#16a085','#2980b9','#f39c12'];
+                    var html = '';
+                    data.forEach(function (item, idx) {
+                        var pct = total > 0 ? Math.round(parseInt(item.total) / total * 100) : 0;
+                        var cor = cores[idx % cores.length];
+                        html += '<div style="margin-bottom:8px;">';
+                        html += '<div style="display:flex; justify-content:space-between; font-size:12px;">';
+                        html += '<span>' + item.area + '</span>';
+                        html += '<span><b>' + item.total + '</b></span>';
+                        html += '</div>';
+                        html += '<div style="background:#f0f0f0; border-radius:3px; height:10px; overflow:hidden;">';
+                        html += '<div style="width:' + pct + '%; background:' + cor + '; height:100%; border-radius:3px;"></div>';
+                        html += '</div></div>';
+                    });
+                    $('#esc-box-area').html(html);
+                },
+                error: function () {
+                    $('#esc-box-area').html('<p class="text-center text-danger">Erro ao carregar.</p>');
+                }
+            });
+        }
+
+        function escritorioCarregarPorTipo() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/por-tipo-processo',
+                type: 'GET',
+                success: function (data) {
+                    if (!data || data.length === 0) {
+                        $('#esc-box-tipo').html('<p class="text-center text-muted">Sem dados.</p>');
+                        return;
+                    }
+                    var total = data.reduce(function(s, i) { return s + parseInt(i.total); }, 0);
+                    var cores = ['#5b9bd1','#e67e22','#27ae60','#8e44ad','#e74c3c','#16a085','#2980b9','#f39c12'];
+                    var html = '';
+                    data.forEach(function (item, idx) {
+                        var pct = total > 0 ? Math.round(parseInt(item.total) / total * 100) : 0;
+                        var cor = cores[idx % cores.length];
+                        html += '<div style="margin-bottom:8px;">';
+                        html += '<div style="display:flex; justify-content:space-between; font-size:12px;">';
+                        html += '<span>' + item.tipo + '</span>';
+                        html += '<span><b>' + item.total + '</b></span>';
+                        html += '</div>';
+                        html += '<div style="background:#f0f0f0; border-radius:3px; height:10px; overflow:hidden;">';
+                        html += '<div style="width:' + pct + '%; background:' + cor + '; height:100%; border-radius:3px;"></div>';
+                        html += '</div></div>';
+                    });
+                    $('#esc-box-tipo').html(html);
+                },
+                error: function () {
+                    $('#esc-box-tipo').html('<p class="text-center text-danger">Erro ao carregar.</p>');
+                }
+            });
+        }
+
+        function escritorioCarregarProximas() {
+            $.ajax({
+                url: host + '/escritorio/dashboard/proximas',
+                type: 'GET',
+                success: function (data) {
+                    if (!data || data.length === 0) {
+                        $('#esc-box-proximas').html('<p class="text-center text-muted">Nenhuma audiência futura encontrada.</p>');
+                        return;
+                    }
+                    var html = '<div class="table-responsive"><table class="table table-condensed table-hover" style="margin-bottom:0;"><thead><tr><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Situação</th><th>Prazo Fatal</th></tr></thead><tbody>';
+                    data.forEach(function (p) {
+                        var hoje = new Date(); hoje.setHours(0,0,0,0);
+                        var prazo = new Date(p.dt_prazo_fatal_pro + 'T00:00:00');
+                        var diff = Math.round((prazo - hoje) / 86400000);
+                        var rowStyle = diff <= 3 ? 'background:#fde8e8;' : (diff <= 7 ? 'background:#fff3cd;' : '');
+                        html += '<tr style="' + rowStyle + '">';
+                        html += '<td><a href="{{ url("processos") }}/' + p.token_pro + '">' + (p.nu_processo_pro || 'S/N') + '</a></td>';
+                        html += '<td>' + (p.nm_cliente || '') + '</td>';
+                        html += '<td>' + (p.nm_tipo_processo || '') + '</td>';
+                        html += '<td>' + (p.nm_status || '') + '</td>';
+                        html += '<td>' + (diff <= 3 ? '<span class="text-danger"><b>' : (diff <= 7 ? '<span class="text-warning"><b>' : '<span>')) + (p.dt_prazo_fatal_pro ? p.dt_prazo_fatal_pro.split('-').reverse().join('/') : '') + (diff <= 7 ? '</b></span>' : '</span>') + '</td>';
+                        html += '</tr>';
+                    });
+                    html += '</tbody></table></div>';
+                    if (data.length >= 10) {
+                        html += '<p class="text-muted text-right" style="font-size:11px; margin-top:4px;">Exibindo os 10 próximos processos.</p>';
+                    }
+                    $('#esc-box-proximas').html(html);
+                },
+                error: function () {
+                    $('#esc-box-proximas').html('<p class="text-center text-danger">Erro ao carregar próximas audiências.</p>');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            escritorioCarregarContadores();
+            escritorioCarregarPautaHoje();
+            escritorioCarregarStatus();
+            escritorioCarregarPorArea();
+            escritorioCarregarPorTipo();
+            escritorioCarregarProximas();
         });
 
         @endrole

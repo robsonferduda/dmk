@@ -104,6 +104,194 @@ class HomeController extends Controller
         return view('dashboard.partes.acessos-recentes', compact('acessos'));
     }
 
+    // -----------------------------------------------------------------------
+    // Dashboard do Escritório — endpoints de API
+    // -----------------------------------------------------------------------
+
+    public function escritorioContadores()
+    {
+        $conta  = $this->conta;
+        $hoje   = date('Y-m-d');
+        $em7    = date('Y-m-d', strtotime('+7 days'));
+
+        $excluidos = [6, 7, 19]; // FINALIZADO, CANCELADO, CANCELADO_PELO_ESCRITORIO
+
+        $total_ativos = DB::table('processo_pro')
+            ->where('cd_conta_con', $conta)
+            ->whereNotIn('cd_status_processo_stp', $excluidos)
+            ->whereNull('deleted_at')
+            ->count();
+
+        $audiencias_hoje = DB::table('processo_pro')
+            ->where('cd_conta_con', $conta)
+            ->whereNotIn('cd_status_processo_stp', $excluidos)
+            ->whereDate('dt_prazo_fatal_pro', $hoje)
+            ->whereNull('deleted_at')
+            ->count();
+
+        $proximos_7_dias = DB::table('processo_pro')
+            ->where('cd_conta_con', $conta)
+            ->whereNotIn('cd_status_processo_stp', $excluidos)
+            ->whereDate('dt_prazo_fatal_pro', '>', $hoje)
+            ->whereDate('dt_prazo_fatal_pro', '<=', $em7)
+            ->whereNull('deleted_at')
+            ->count();
+
+        $mensagens_nao_lidas = DB::table('processo_mensagem_prm')
+            ->join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
+            ->where('processo_pro.cd_conta_con', $conta)
+            ->where('processo_mensagem_prm.destinatario_prm', $conta)
+            ->whereNull('processo_mensagem_prm.fl_leitura_prm')
+            ->whereNull('processo_pro.deleted_at')
+            ->count();
+
+        $pendentes_analise = DB::table('processo_pro')
+            ->where('cd_conta_con', $conta)
+            ->where('cd_status_processo_stp', 14) // PENDENTE_ANALISE
+            ->whereNull('deleted_at')
+            ->count();
+
+        $correspondentes_ativos = DB::table('processo_pro')
+            ->where('cd_conta_con', $conta)
+            ->whereNotIn('cd_status_processo_stp', $excluidos)
+            ->whereNotNull('cd_correspondente_cor')
+            ->whereNull('deleted_at')
+            ->distinct('cd_correspondente_cor')
+            ->count('cd_correspondente_cor');
+
+        return response()->json(compact(
+            'total_ativos',
+            'audiencias_hoje',
+            'proximos_7_dias',
+            'mensagens_nao_lidas',
+            'pendentes_analise',
+            'correspondentes_ativos'
+        ));
+    }
+
+    public function escritorioPautaHoje()
+    {
+        $conta = $this->conta;
+
+        $processos = DB::select("
+            SELECT t1.cd_processo_pro, t1.nu_processo_pro, t1.hr_audiencia_pro,
+                   t1.nm_autor_pro, t1.nm_reu_pro,
+                   t2.nm_status_processo_conta_stp, t2.ds_color_stp,
+                   t3.nm_razao_social_cli,
+                   t5.nm_conta_correspondente_ccr,
+                   t7.nm_cidade_cde, t8.sg_estado_est,
+                   t10.nm_tipo_servico_tse,
+                   t6.name as nm_responsavel
+            FROM processo_pro t1
+            JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+            JOIN cliente_cli t3 ON t1.cd_cliente_cli = t3.cd_cliente_cli
+            JOIN cidade_cde t7 ON t1.cd_cidade_cde = t7.cd_cidade_cde
+            JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
+            LEFT JOIN conta_correspondente_ccr t5 ON t1.cd_conta_con = t5.cd_conta_con AND t1.cd_correspondente_cor = t5.cd_correspondente_cor
+            LEFT JOIN users t6 ON t1.cd_responsavel_pro = t6.id
+            LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
+            LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.dt_prazo_fatal_pro = current_date
+              AND t1.deleted_at IS NULL
+            ORDER BY t1.hr_audiencia_pro
+        ", ['conta' => $conta]);
+
+        $total     = count($processos);
+        $lista     = array_slice($processos, 0, 10);
+
+        return response()->json(['total' => $total, 'processos' => $lista]);
+    }
+
+    public function escritorioProximas()
+    {
+        $conta = $this->conta;
+
+        $processos = DB::select("
+            SELECT t1.cd_processo_pro, t1.nu_processo_pro, t1.dt_prazo_fatal_pro, t1.hr_audiencia_pro,
+                   t2.nm_status_processo_conta_stp, t2.ds_color_stp,
+                   t3.nm_razao_social_cli,
+                   t5.nm_conta_correspondente_ccr,
+                   t7.nm_cidade_cde, t8.sg_estado_est,
+                   t10.nm_tipo_servico_tse,
+                   t6.name as nm_responsavel
+            FROM processo_pro t1
+            JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+            JOIN cliente_cli t3 ON t1.cd_cliente_cli = t3.cd_cliente_cli
+            JOIN cidade_cde t7 ON t1.cd_cidade_cde = t7.cd_cidade_cde
+            JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
+            LEFT JOIN conta_correspondente_ccr t5 ON t1.cd_conta_con = t5.cd_conta_con AND t1.cd_correspondente_cor = t5.cd_correspondente_cor
+            LEFT JOIN users t6 ON t1.cd_responsavel_pro = t6.id
+            LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
+            LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.dt_prazo_fatal_pro > current_date
+              AND t1.deleted_at IS NULL
+            ORDER BY t1.dt_prazo_fatal_pro, t1.hr_audiencia_pro
+            LIMIT 10
+        ", ['conta' => $conta]);
+
+        return response()->json($processos);
+    }
+
+    public function escritorioStatus()
+    {
+        $conta = $this->conta;
+
+        $resultado = DB::select("
+            SELECT t2.nm_status_processo_conta_stp, t2.ds_color_stp, COUNT(t1.cd_processo_pro) as total
+            FROM processo_pro t1
+            JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.deleted_at IS NULL
+            GROUP BY t2.nm_status_processo_conta_stp, t2.ds_color_stp
+            ORDER BY total DESC
+        ", ['conta' => $conta]);
+
+        return response()->json($resultado);
+    }
+
+    public function escritorioPorArea()
+    {
+        $conta = $this->conta;
+
+        $resultado = DB::select("
+            SELECT COALESCE(t2.dc_area_direito_ado, 'Não informada') as dc_area_direito_ado,
+                   COUNT(t1.cd_processo_pro) as total
+            FROM processo_pro t1
+            LEFT JOIN area_direito_ado t2 ON t1.cd_area_direito_ado = t2.cd_area_direito_ado
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.deleted_at IS NULL
+            GROUP BY t2.dc_area_direito_ado
+            ORDER BY total DESC
+        ", ['conta' => $conta]);
+
+        return response()->json($resultado);
+    }
+
+    public function escritorioPorTipoProcesso()
+    {
+        $conta = $this->conta;
+
+        $resultado = DB::select("
+            SELECT COALESCE(t2.nm_tipo_processo_tpo, 'Não informado') as nm_tipo_processo_tpo,
+                   COUNT(t1.cd_processo_pro) as total
+            FROM processo_pro t1
+            LEFT JOIN tipo_processo_tpo t2 ON t1.cd_tipo_processo_tpo = t2.cd_tipo_processo_tpo
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.deleted_at IS NULL
+            GROUP BY t2.nm_tipo_processo_tpo
+            ORDER BY total DESC
+        ", ['conta' => $conta]);
+
+        return response()->json($resultado);
+    }
+
     public function espacoPasta()
     {
         $infoEspaco = $this->calcularEspacoPasta();
