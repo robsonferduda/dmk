@@ -27,3 +27,9 @@ Route::get('processo/situacao/prazo', 'ProcessoController@getStatusPrazo');
 Route::get('processo/{id}', 'ProcessoController@getDados');
 Route::post('processo/pauta', 'ProcessoController@listarPauta');
 Route::post('cliente/processo/pauta', 'ClienteProcessoController@listarPauta');
+
+Route::get('cliente/dashboard/contadores',  'ClienteProcessoController@dashboardContadores');
+Route::get('cliente/dashboard/pauta-hoje',  'ClienteProcessoController@dashboardPautaHoje');
+Route::get('cliente/dashboard/proximas',    'ClienteProcessoController@dashboardProximas');
+Route::get('cliente/dashboard/mensagens',   'ClienteProcessoController@dashboardMensagens');
+Route::get('cliente/dashboard/status',      'ClienteProcessoController@dashboardStatus');

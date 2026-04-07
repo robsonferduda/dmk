@@ -312,6 +312,162 @@ class ClienteProcessoController extends Controller
         return response()->json($processos);
     }
 
+    // -----------------------------------------------------------------------
+    // Dashboard do cliente
+    // -----------------------------------------------------------------------
+
+    public function dashboardContadores()
+    {
+        $id_escritorio  = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+        $hoje           = date('Y-m-d');
+        $em7dias        = date('Y-m-d', strtotime('+7 days'));
+
+        $base = Processo::where('cd_conta_con', $id_escritorio)
+                        ->where('cd_cliente_cli', $cd_cliente_cli)
+                        ->whereNull('deleted_at');
+
+        $total_ativos = (clone $base)
+            ->whereNotIn('cd_status_processo_stp', [\App\Enums\StatusProcesso::FINALIZADO, \App\Enums\StatusProcesso::CANCELADO, \App\Enums\StatusProcesso::CANCELADO_PELO_ESCRITORIO])
+            ->count();
+
+        $audiencias_hoje = (clone $base)
+            ->whereNotIn('cd_status_processo_stp', [\App\Enums\StatusProcesso::FINALIZADO, \App\Enums\StatusProcesso::CANCELADO, \App\Enums\StatusProcesso::CANCELADO_PELO_ESCRITORIO])
+            ->whereDate('dt_prazo_fatal_pro', $hoje)
+            ->count();
+
+        $proximos_7_dias = (clone $base)
+            ->whereNotIn('cd_status_processo_stp', [\App\Enums\StatusProcesso::FINALIZADO, \App\Enums\StatusProcesso::CANCELADO, \App\Enums\StatusProcesso::CANCELADO_PELO_ESCRITORIO])
+            ->whereDate('dt_prazo_fatal_pro', '>', $hoje)
+            ->whereDate('dt_prazo_fatal_pro', '<=', $em7dias)
+            ->count();
+
+        $mensagens_nao_lidas = ProcessoMensagem::join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
+            ->where('processo_pro.cd_conta_con', $id_escritorio)
+            ->where('processo_pro.cd_cliente_cli', $cd_cliente_cli)
+            ->where('processo_mensagem_prm.cd_tipo_mensagem_tim', \App\Enums\TipoMensagem::CLIENTE)
+            ->where('processo_mensagem_prm.destinatario_prm', $cd_cliente_cli)
+            ->whereNull('processo_mensagem_prm.fl_leitura_prm')
+            ->whereNull('processo_pro.deleted_at')
+            ->count();
+
+        $honorarios_pendentes = \App\TaxaHonorarioAlteracao::whereHas('processo', function ($q) use ($id_escritorio, $cd_cliente_cli) {
+            $q->where('cd_conta_con', $id_escritorio)
+              ->where('cd_cliente_cli', $cd_cliente_cli);
+        })->whereNull('fl_aceito_tha')->count();
+
+        return response()->json(compact(
+            'total_ativos',
+            'audiencias_hoje',
+            'proximos_7_dias',
+            'mensagens_nao_lidas',
+            'honorarios_pendentes'
+        ));
+    }
+
+    public function dashboardPautaHoje()
+    {
+        $id_escritorio  = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+
+        $processos = (new Processo())->getProcessosAndamento(
+            $id_escritorio, null, null, null, null, null, null,
+            null, null, date('Y-m-d'), null, false, $cd_cliente_cli,
+            null, null, null, null
+        );
+
+        return response()->json($processos);
+    }
+
+    public function dashboardProximas()
+    {
+        $id_escritorio  = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+
+        $processos = DB::select("
+            SELECT t1.cd_processo_pro,
+                   t1.nu_processo_pro,
+                   t1.dt_prazo_fatal_pro,
+                   t1.hr_audiencia_pro,
+                   t2.nm_status_processo_conta_stp,
+                   t2.ds_color_stp,
+                   t7.nm_cidade_cde,
+                   t8.sg_estado_est,
+                   t10.nm_tipo_servico_tse,
+                   t5.nm_conta_correspondente_ccr,
+                   t13.nm_tipo_processo_tpo
+            FROM processo_pro t1
+            JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+            JOIN cidade_cde t7 ON t1.cd_cidade_cde = t7.cd_cidade_cde
+            JOIN estado_est t8 ON t7.cd_estado_est = t8.cd_estado_est
+            LEFT JOIN conta_correspondente_ccr t5 ON t1.cd_conta_con = t5.cd_conta_con AND t1.cd_correspondente_cor = t5.cd_correspondente_cor
+            LEFT JOIN processo_taxa_honorario_pth t9 ON t1.cd_processo_pro = t9.cd_processo_pro
+            LEFT JOIN tipo_servico_tse t10 ON t9.cd_tipo_servico_tse = t10.cd_tipo_servico_tse
+            JOIN tipo_processo_tpo t13 ON t13.cd_tipo_processo_tpo = t1.cd_tipo_processo_tpo
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_cliente_cli = :cliente
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.dt_prazo_fatal_pro > current_date
+              AND t1.deleted_at IS NULL
+            ORDER BY t1.dt_prazo_fatal_pro, t1.hr_audiencia_pro
+            LIMIT 10
+        ", ['conta' => $id_escritorio, 'cliente' => $cd_cliente_cli]);
+
+        return response()->json($processos);
+    }
+
+    public function dashboardMensagens()
+    {
+        $id_escritorio  = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+
+        $mensagens = ProcessoMensagem::with('processo')
+            ->join('processo_pro', 'processo_pro.cd_processo_pro', '=', 'processo_mensagem_prm.cd_processo_pro')
+            ->where('processo_pro.cd_conta_con', $id_escritorio)
+            ->where('processo_pro.cd_cliente_cli', $cd_cliente_cli)
+            ->where('processo_mensagem_prm.cd_tipo_mensagem_tim', \App\Enums\TipoMensagem::CLIENTE)
+            ->where('processo_mensagem_prm.destinatario_prm', $cd_cliente_cli)
+            ->whereNull('processo_mensagem_prm.fl_leitura_prm')
+            ->whereNull('processo_pro.deleted_at')
+            ->select('processo_mensagem_prm.*')
+            ->orderBy('processo_mensagem_prm.created_at', 'DESC')
+            ->limit(5)
+            ->get();
+
+        $dados = $mensagens->map(function ($msg) {
+            return [
+                'nu_processo'  => optional($msg->processo)->nu_processo_pro ?? 'N/D',
+                'token'        => \Crypt::encrypt($msg->cd_processo_pro),
+                'texto'        => \Illuminate\Support\Str::limit($msg->texto_mensagem_prm, 80),
+                'data'         => date('d/m/Y H:i', strtotime($msg->created_at)),
+            ];
+        });
+
+        return response()->json($dados);
+    }
+
+    public function dashboardStatus()
+    {
+        $id_escritorio  = 64;
+        $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+
+        $resultado = DB::select("
+            SELECT t2.nm_status_processo_conta_stp,
+                   t2.ds_color_stp,
+                   COUNT(t1.cd_processo_pro) as total
+            FROM processo_pro t1
+            JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
+            WHERE t1.cd_conta_con = :conta
+              AND t1.cd_cliente_cli = :cliente
+              AND t1.cd_status_processo_stp NOT IN (6, 7, 19)
+              AND t1.deleted_at IS NULL
+            GROUP BY t2.nm_status_processo_conta_stp, t2.ds_color_stp
+            ORDER BY total DESC
+        ", ['conta' => $id_escritorio, 'cliente' => $cd_cliente_cli]);
+
+        return response()->json($resultado);
+    }
+
     public function relatorios()
     {
         Session::put('menu_pai','relatorios');

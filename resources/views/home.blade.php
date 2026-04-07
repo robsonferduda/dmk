@@ -35,7 +35,113 @@
         @endrole
     </div>
 
-    @role('cliente') 
+    @role('cliente')
+    {{-- ===== DASHBOARD DO CLIENTE ===== --}}
+
+    {{-- Linha 1: Contadores --}}
+    <div class="row" id="cliente-contadores">
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <div class="jarviswidget jarviswidget-color-blue" style="border-radius:8px;">
+                <div style="padding:15px 20px;">
+                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Processos Ativos</span>
+                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-ativos">
+                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                    </h2>
+                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver todos</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <div class="jarviswidget jarviswidget-color-orange" style="border-radius:8px;">
+                <div style="padding:15px 20px;">
+                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Audiências Hoje</span>
+                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-hoje">
+                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                    </h2>
+                    <a href="{{ url('cliente/pauta') }}" style="font-size:12px;">Ver pauta</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <div class="jarviswidget jarviswidget-color-yellow" style="border-radius:8px;">
+                <div style="padding:15px 20px;">
+                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Próximos 7 dias</span>
+                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-7dias">
+                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                    </h2>
+                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <div class="jarviswidget" style="border-radius:8px; background:#fff; border:1px solid #ddd;" id="cnt-msg-card">
+                <div style="padding:15px 20px;">
+                    <span style="font-size:13px; text-transform:uppercase; color:#555;">Mensagens Não Lidas</span>
+                    <h2 style="margin:5px 0 0; font-size:32px; font-weight:bold;" id="cnt-mensagens">
+                        <i class="fa fa-spinner fa-spin" style="font-size:20px;"></i>
+                    </h2>
+                    <a href="{{ url('cliente/processos/acompanhamento') }}" style="font-size:12px;">Ver processos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Linha 2: Pauta de hoje --}}
+    <div class="row" style="margin-top:10px;">
+        <div class="col-md-12">
+            <div class="jarviswidget" style="border-radius:8px;">
+                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
+                    <span class="widget-icon"><i class="fa fa-calendar-check-o txt-color-orange"></i></span>
+                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Pauta de Hoje</strong> — {{ date('d/m/Y') }}</h2>
+                    <a href="{{ url('cliente/pauta') }}" class="btn btn-xs btn-default pull-right" style="margin-top:2px;"><i class="fa fa-external-link"></i> Pauta completa</a>
+                </header>
+                <div style="padding:10px 15px;" id="box-pauta-hoje">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Linha 3: Distribuição por status + Mensagens não lidas --}}
+    <div class="row" style="margin-top:10px;">
+        <div class="col-md-6">
+            <div class="jarviswidget" style="border-radius:8px; min-height:260px;">
+                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
+                    <span class="widget-icon"><i class="fa fa-pie-chart txt-color-blue"></i></span>
+                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Distribuição por Situação</strong></h2>
+                </header>
+                <div style="padding:10px 15px;" id="box-status">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="jarviswidget" style="border-radius:8px; min-height:260px;">
+                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
+                    <span class="widget-icon"><i class="fa fa-envelope txt-color-red"></i></span>
+                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Mensagens Pendentes</strong></h2>
+                </header>
+                <div style="padding:10px 15px;" id="box-mensagens">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Linha 4: Próximas audiências --}}
+    <div class="row" style="margin-top:10px; margin-bottom:20px;">
+        <div class="col-md-12">
+            <div class="jarviswidget" style="border-radius:8px;">
+                <header style="background:#f5f5f5; padding:10px 15px; border-radius:8px 8px 0 0; border-bottom:1px solid #ddd;">
+                    <span class="widget-icon"><i class="fa fa-clock-o txt-color-blue"></i></span>
+                    <h2 style="font-size:14px; display:inline; margin-left:6px;"><strong>Próximas Audiências</strong> <small class="text-muted">(próximos 10 processos)</small></h2>
+                </header>
+                <div style="padding:10px 15px;" id="box-proximas">
+                    <p class="text-center text-muted"><i class="fa fa-spinner fa-spin"></i> Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @endrole
 
@@ -151,6 +257,142 @@
     <script type="text/javascript">
 
         var host =  $('meta[name="base-url"]').attr('content');
+
+        // -----------------------------------------------------------------------
+        // Dashboard do cliente
+        // -----------------------------------------------------------------------
+        @role('cliente')
+
+        function carregarContadores() {
+            $.getJSON(host + '/api/cliente/dashboard/contadores', function (d) {
+                $('#cnt-ativos').text(d.total_ativos);
+                $('#cnt-hoje').text(d.audiencias_hoje);
+                $('#cnt-7dias').text(d.proximos_7_dias);
+                $('#cnt-mensagens').text(d.mensagens_nao_lidas);
+
+                if (d.mensagens_nao_lidas > 0) {
+                    $('#cnt-msg-card').css({'background':'#fdecea','border-color':'#e8b4b8'});
+                    $('#cnt-mensagens').css('color','#c0392b');
+                }
+            });
+        }
+
+        function carregarPautaHoje() {
+            $.getJSON(host + '/api/cliente/dashboard/pauta-hoje', function (lista) {
+                var box = $('#box-pauta-hoje');
+                if (!lista.length) {
+                    box.html('<p class="text-center text-muted">Nenhuma audiência hoje.</p>');
+                    return;
+                }
+                var html = '<div class="table-responsive"><table class="table table-condensed table-hover" style="font-size:12px;">'
+                         + '<thead><tr><th>Horário</th><th>Nº Processo</th><th>Serviço</th><th>Comarca/UF</th><th>Correspondente</th><th>Situação</th><th></th></tr></thead><tbody>';
+                lista.forEach(function (p) {
+                    html += '<tr>'
+                          + '<td>' + (p.hr_audiencia_pro || '—') + '</td>'
+                          + '<td>' + (p.nu_processo_pro || '—') + '</td>'
+                          + '<td>' + (p.nm_tipo_servico_tse || '—') + '</td>'
+                          + '<td>' + (p.nm_cidade_cde || '—') + '/' + (p.sg_estado_est || '') + '</td>'
+                          + '<td>' + (p.nm_conta_correspondente_ccr || '—') + '</td>'
+                          + '<td><span class="label" style="background:' + (p.ds_color_stp || '#999') + '">' + (p.nm_status_processo_conta_stp || '') + '</span></td>'
+                          + '<td><a href="' + host + '/cliente/processos/acompanhamento/' + (p.hash || p.cd_processo_pro) + '" target="_blank" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a></td>'
+                          + '</tr>';
+                });
+                html += '</tbody></table></div>';
+                box.html(html);
+            }).fail(function () {
+                $('#box-pauta-hoje').html('<p class="text-danger text-center">Erro ao carregar pauta.</p>');
+            });
+        }
+
+        function carregarStatus() {
+            $.getJSON(host + '/api/cliente/dashboard/status', function (lista) {
+                var box = $('#box-status');
+                if (!lista.length) {
+                    box.html('<p class="text-center text-muted">Sem processos ativos.</p>');
+                    return;
+                }
+                var total = 0;
+                lista.forEach(function(i){ total += parseInt(i.total); });
+                var html = '';
+                lista.forEach(function (s) {
+                    var pct = total > 0 ? Math.round(parseInt(s.total) / total * 100) : 0;
+                    var cor = s.ds_color_stp || '#aaa';
+                    html += '<div style="margin-bottom:8px;">'
+                          + '<div style="display:flex; justify-content:space-between; font-size:12px;"><span>' + s.nm_status_processo_conta_stp + '</span><strong>' + s.total + '</strong></div>'
+                          + '<div style="background:#eee; border-radius:4px; height:8px;">'
+                          + '<div style="width:' + pct + '%; background:' + cor + '; border-radius:4px; height:8px;"></div>'
+                          + '</div></div>';
+                });
+                box.html(html);
+            }).fail(function () {
+                $('#box-status').html('<p class="text-danger text-center">Erro ao carregar.</p>');
+            });
+        }
+
+        function carregarMensagens() {
+            $.getJSON(host + '/api/cliente/dashboard/mensagens', function (lista) {
+                var box = $('#box-mensagens');
+                if (!lista.length) {
+                    box.html('<p class="text-center text-muted">Nenhuma mensagem pendente.</p>');
+                    return;
+                }
+                var html = '<ul class="list-group" style="margin:0;">';
+                lista.forEach(function (m) {
+                    html += '<li class="list-group-item" style="padding:8px 10px; font-size:12px;">'
+                          + '<a href="' + host + '/cliente/processos/acompanhamento/' + m.token + '" target="_blank" style="font-weight:bold;">Proc. ' + m.nu_processo + '</a>'
+                          + '<span class="pull-right text-muted">' + m.data + '</span>'
+                          + '<p style="margin:3px 0 0; color:#555;">' + m.texto + '</p>'
+                          + '</li>';
+                });
+                html += '</ul>';
+                box.html(html);
+            }).fail(function () {
+                $('#box-mensagens').html('<p class="text-danger text-center">Erro ao carregar.</p>');
+            });
+        }
+
+        function carregarProximas() {
+            $.getJSON(host + '/api/cliente/dashboard/proximas', function (lista) {
+                var box = $('#box-proximas');
+                if (!lista.length) {
+                    box.html('<p class="text-center text-muted">Nenhuma audiência futura nos próximos dias.</p>');
+                    return;
+                }
+                var hoje = new Date(); hoje.setHours(0,0,0,0);
+                var html = '<div class="table-responsive"><table class="table table-condensed table-hover" style="font-size:12px;">'
+                         + '<thead><tr><th>Prazo Fatal</th><th>Horário</th><th>Nº Processo</th><th>Tipo de Serviço</th><th>Comarca/UF</th><th>Situação</th></tr></thead><tbody>';
+                lista.forEach(function (p) {
+                    var prazo = new Date(p.dt_prazo_fatal_pro + 'T00:00:00');
+                    var diff  = Math.round((prazo - hoje) / 86400000);
+                    var rowStyle = diff <= 3 ? 'background:#fdecea;' : (diff <= 7 ? 'background:#fffde7;' : '');
+                    var prazoFmt = p.dt_prazo_fatal_pro
+                        ? p.dt_prazo_fatal_pro.split('-').reverse().join('/')
+                        : '—';
+                    html += '<tr style="' + rowStyle + '">'
+                          + '<td>' + prazoFmt + '</td>'
+                          + '<td>' + (p.hr_audiencia_pro || '—') + '</td>'
+                          + '<td>' + (p.nu_processo_pro || '—') + '</td>'
+                          + '<td>' + (p.nm_tipo_servico_tse || '—') + '</td>'
+                          + '<td>' + (p.nm_cidade_cde || '—') + '/' + (p.sg_estado_est || '') + '</td>'
+                          + '<td><span class="label" style="background:' + (p.ds_color_stp || '#999') + '">' + (p.nm_status_processo_conta_stp || '') + '</span></td>'
+                          + '</tr>';
+                });
+                html += '</tbody></table></div><small class="text-muted" style="font-size:11px;">🔴 ≤ 3 dias &nbsp; 🟡 ≤ 7 dias</small>';
+                box.html(html);
+            }).fail(function () {
+                $('#box-proximas').html('<p class="text-danger text-center">Erro ao carregar.</p>');
+            });
+        }
+
+        $(document).ready(function () {
+            carregarContadores();
+            carregarPautaHoje();
+            carregarStatus();
+            carregarMensagens();
+            carregarProximas();
+        });
+
+        @endrole
 
         function carregarEspacoPasta() {
             $.ajax({
