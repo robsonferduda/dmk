@@ -408,7 +408,7 @@
 
         function escritorioCarregarContadores() {
             $.ajax({
-                url: host + '/escritorio/dashboard/contadores',
+                url: host + '/api/escritorio/dashboard/contadores',
                 type: 'GET',
                 success: function (data) {
                     $('#esc-cnt-ativos').text(data.total_ativos);
@@ -435,7 +435,7 @@
 
         function escritorioCarregarPautaHoje() {
             $.ajax({
-                url: host + '/escritorio/dashboard/pauta-hoje',
+                url: host + '/api/escritorio/dashboard/pauta-hoje',
                 type: 'GET',
                 success: function (data) {
                     var total = data.total;
@@ -481,7 +481,7 @@
 
         function escritorioCarregarStatus() {
             $.ajax({
-                url: host + '/escritorio/dashboard/status',
+                url: host + '/api/escritorio/dashboard/status',
                 type: 'GET',
                 success: function (data) {
                     if (!data || data.length === 0) {
@@ -512,7 +512,7 @@
 
         function escritorioCarregarPorArea() {
             $.ajax({
-                url: host + '/escritorio/dashboard/por-area',
+                url: host + '/api/escritorio/dashboard/por-area',
                 type: 'GET',
                 success: function (data) {
                     if (!data || data.length === 0) {
@@ -544,7 +544,7 @@
 
         function escritorioCarregarPorTipo() {
             $.ajax({
-                url: host + '/escritorio/dashboard/por-tipo-processo',
+                url: host + '/api/escritorio/dashboard/por-tipo-processo',
                 type: 'GET',
                 success: function (data) {
                     if (!data || data.length === 0) {
@@ -576,7 +576,7 @@
 
         function escritorioCarregarProximas() {
             $.ajax({
-                url: host + '/escritorio/dashboard/proximas',
+                url: host + '/api/escritorio/dashboard/proximas',
                 type: 'GET',
                 success: function (data) {
                     if (!data || data.length === 0) {
