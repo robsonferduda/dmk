@@ -527,7 +527,7 @@
                         var cor = cores[idx % cores.length];
                         html += '<div style="margin-bottom:8px;">';
                         html += '<div style="display:flex; justify-content:space-between; font-size:12px;">';
-                        html += '<span>' + item.area + '</span>';
+                        html += '<span>' + (item.dc_area_direito_ado || 'Não informada') + '</span>';
                         html += '<span><b>' + item.total + '</b></span>';
                         html += '</div>';
                         html += '<div style="background:#f0f0f0; border-radius:3px; height:10px; overflow:hidden;">';
@@ -559,7 +559,7 @@
                         var cor = cores[idx % cores.length];
                         html += '<div style="margin-bottom:8px;">';
                         html += '<div style="display:flex; justify-content:space-between; font-size:12px;">';
-                        html += '<span>' + item.tipo + '</span>';
+                        html += '<span>' + (item.nm_tipo_processo_tpo || 'Não informado') + '</span>';
                         html += '<span><b>' + item.total + '</b></span>';
                         html += '</div>';
                         html += '<div style="background:#f0f0f0; border-radius:3px; height:10px; overflow:hidden;">';
