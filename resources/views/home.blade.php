@@ -456,7 +456,7 @@
                         ? '<p class="text-muted" style="font-size:11px; margin-bottom:6px;">Exibindo 10 de ' + total + ' processos. <a href="{{ url("processos/pauta/online") }}">Ver pauta completa</a>.</p>'
                         : '';
 
-                    var html = aviso + '<div class="table-responsive"><table class="table table-condensed table-hover" style="margin-bottom:0;"><thead><tr><th>Hora</th><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Situação</th><th>Prazo Fatal</th></tr></thead><tbody>';
+                    var html = aviso + '<div class="table-responsive"><table class="table table-condensed table-hover" style="margin-bottom:0;"><thead><tr><th>Prazo Fatal</th><th>Hora</th><th>Nº Processo</th><th>Cliente</th><th>Tipo</th><th>Situação</th></tr></thead><tbody>';
                     lista.forEach(function (p) {
                         var hoje = new Date(); hoje.setHours(0,0,0,0);
                         var prazo = new Date(p.dt_prazo_fatal_pro + 'T00:00:00');
@@ -464,12 +464,12 @@
                         var rowStyle = diff <= 0 ? 'background:#fde8e8;' : (diff <= 3 ? 'background:#fff3cd;' : '');
                         var hora = p.hr_audiencia_pro ? p.hr_audiencia_pro.substring(0, 5) : '—';
                         html += '<tr style="' + rowStyle + '">';
+                        html += '<td>' + (p.dt_prazo_fatal_pro ? p.dt_prazo_fatal_pro.split('-').reverse().join('/') : '—') + '</td>';
                         html += '<td>' + hora + '</td>';
                         html += '<td><a href="{{ url("processos/editar") }}/' + p.hash + '">' + (p.nu_processo_pro || 'S/N') + '</a></td>';
                         html += '<td>' + (p.nm_razao_social_cli || '') + '</td>';
                         html += '<td>' + (p.nm_tipo_processo_tpo || p.nm_tipo_servico_tse || '') + '</td>';
                         html += '<td><span class="label" style="background:' + (p.ds_color_stp || '#999') + ';color:#fff;">' + (p.nm_status_processo_conta_stp || '') + '</span></td>';
-                        html += '<td>' + (p.dt_prazo_fatal_pro ? p.dt_prazo_fatal_pro.split('-').reverse().join('/') : '') + '</td>';
                         html += '</tr>';
                     });
                     html += '</tbody></table></div>';
