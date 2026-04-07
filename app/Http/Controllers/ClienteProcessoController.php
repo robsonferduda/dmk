@@ -370,13 +370,16 @@ class ClienteProcessoController extends Controller
         $id_escritorio  = 64;
         $cd_cliente_cli = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
 
-        $processos = (new Processo())->getProcessosAndamento(
+        $todos = (new Processo())->getProcessosAndamento(
             $id_escritorio, null, null, null, null, null, null,
             null, null, date('Y-m-d'), null, false, $cd_cliente_cli,
             null, null, null, null
         );
 
-        return response()->json($processos);
+        $total     = count($todos);
+        $processos = array_slice((array) $todos, 0, 10);
+
+        return response()->json(['total' => $total, 'processos' => $processos]);
     }
 
     public function dashboardProximas()

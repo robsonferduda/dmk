@@ -76,7 +76,7 @@
             <div class="panel panel-default" style="border-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.1);">
                 <div class="panel-heading" style="border-radius:4px 4px 0 0; padding:10px 15px;">
                     <i class="fa fa-calendar-check-o txt-color-orange"></i>
-                    <strong style="margin-left:6px;">Pauta de Hoje</strong> <span class="text-muted">— {{ date('d/m/Y') }}</span>
+                    <strong class="pauta-hoje-titulo" style="margin-left:6px;">Pauta de Hoje</strong> <span class="text-muted">— {{ date('d/m/Y') }}</span>
                     <a href="{{ url('cliente/pauta') }}" class="btn btn-xs btn-default pull-right"><i class="fa fa-external-link"></i> Pauta completa</a>
                 </div>
                 <div class="panel-body" id="box-pauta-hoje">
@@ -262,8 +262,21 @@
         }
 
         function carregarPautaHoje() {
-            $.getJSON(host + '/api/cliente/dashboard/pauta-hoje', function (lista) {
-                var box = $('#box-pauta-hoje');
+            $.getJSON(host + '/api/cliente/dashboard/pauta-hoje', function (data) {
+                var box   = $('#box-pauta-hoje');
+                var lista = data.processos;
+                var total = data.total;
+
+                // atualiza badge no título
+                $('#badge-pauta-hoje').remove();
+                if (total > 0) {
+                    var badgeHtml = ' <span id="badge-pauta-hoje" class="badge" style="background:#e67e22;">' + total + '</span>';
+                    if (total > 10) {
+                        badgeHtml += ' <small class="text-muted" style="font-size:11px;">exibindo 10 de ' + total + '</small>';
+                    }
+                    $('.pauta-hoje-titulo').append(badgeHtml);
+                }
+
                 if (!lista.length) {
                     box.html('<p class="text-center text-muted">Nenhuma audiência hoje.</p>');
                     return;
