@@ -16,7 +16,7 @@ class LimparArquivosAntigos extends Command
      *
      * @var string
      */
-    protected $signature = 'arquivos:limpar {--dias=90 : Número de dias para considerar arquivo antigo}';
+    protected $signature = 'arquivos:limpar {--dias=60 : Número de dias para considerar arquivo antigo}';
 
     /**
      * The console command description.

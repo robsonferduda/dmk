@@ -17,7 +17,7 @@ BASE_DIR = os.path.join(PROJETO_DIR, "storage", "arquivos", "64", "processos")
 # Carrega variáveis do .env
 load_dotenv(os.path.join(PROJETO_DIR, '.env'))
 
-DIAS = 90
+DIAS = 60
 
 # Configurações de email do .env
 EMAIL_REMETENTE = os.getenv('MAIL_FROM_ADDRESS', 'suporte@lawyerexpress.com.br')
