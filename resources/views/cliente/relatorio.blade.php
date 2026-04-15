@@ -50,6 +50,32 @@
             </div>
 
             @if($processos !== null)
+                @if($processos->isNotEmpty())
+                    @php
+                        $totalAtos = $processos->count();
+                        $totalValor = 0;
+                        foreach ($processos as $p) {
+                            $totalValor += $p->honorario ? (float) $p->honorario->vl_taxa_honorario_cliente_pth : 0;
+                            foreach ($p->tiposDespesa as $td) {
+                                $totalValor += (float) $td->pivot->vl_processo_despesa_pde;
+                            }
+                        }
+                    @endphp
+                    <div class="row" style="margin-bottom:10px">
+                        <div class="col-md-2 col-sm-4 col-xs-6">
+                            <div class="well text-center" style="padding:15px 10px; margin-bottom:0">
+                                <div style="font-size:26px; font-weight:bold; color:#4a4a4a">{{ $totalAtos }}</div>
+                                <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Total de Atos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="well text-center" style="padding:15px 10px; margin-bottom:0">
+                                <div style="font-size:20px; font-weight:bold; color:#4a4a4a">R$&nbsp;{{ number_format($totalValor, 2, ',', '.') }}</div>
+                                <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Valor Total</div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="jarviswidget" id="wid-id-resultado" data-widget-editbutton="false">
                     <header>
                         <span class="widget-icon"><i class="fa fa-table"></i></span>
@@ -94,30 +120,8 @@
                                 </div>
                             @else
                                 @php
-                                    $totalAtos = $processos->count();
-                                    $totalValor = 0;
-                                    foreach ($processos as $p) {
-                                        $totalValor += $p->honorario ? (float) $p->honorario->vl_taxa_honorario_cliente_pth : 0;
-                                        foreach ($p->tiposDespesa as $td) {
-                                            $totalValor += (float) $td->pivot->vl_processo_despesa_pde;
-                                        }
-                                    }
                                     $totalGeral = 0;
                                 @endphp
-                                <div class="row" style="margin:15px 15px 5px">
-                                    <div class="col-md-2 col-sm-4 col-xs-6">
-                                        <div class="well text-center" style="padding:15px 10px; margin-bottom:10px">
-                                            <div style="font-size:26px; font-weight:bold; color:#4a4a4a">{{ $totalAtos }}</div>
-                                            <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Total de Atos</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 col-xs-12">
-                                        <div class="well text-center" style="padding:15px 10px; margin-bottom:10px">
-                                            <div style="font-size:20px; font-weight:bold; color:#4a4a4a">R$&nbsp;{{ number_format($totalValor, 2, ',', '.') }}</div>
-                                            <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Valor Total</div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div style="overflow-x:auto">
                                 <table id="dt_resultado" class="table table-striped table-bordered table-hover" width="100%" style="font-size:12px">
                                     <thead>
