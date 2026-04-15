@@ -98,6 +98,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('cliente/calendario', 'ClienteProcessoController@calendario');
     Route::get('cliente/pauta', 'ClienteProcessoController@pauta');
     Route::get('cliente/relatorio', 'ClienteProcessoController@relatorios');
+    Route::get('cliente/relatorio-cobranca', 'RelatorioClienteController@index');
+    Route::post('cliente/relatorio-cobranca/buscar', 'RelatorioClienteController@buscar');
+    Route::post('cliente/relatorio-cobranca/exportar-excel', 'RelatorioClienteController@exportarExcel');
+    Route::post('cliente/relatorio-cobranca/exportar-pdf', 'RelatorioClienteController@exportarPdf');
     Route::get('cliente/processos', 'ClienteProcessoController@processos');
     Route::get('cliente/processos/novo', 'ClienteProcessoController@novo');
     Route::get('cliente/processos/importar', 'ClienteProcessoController@importar');
