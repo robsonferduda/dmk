@@ -28,13 +28,13 @@
                     <div class="row">
                         <section class="col col-md-3">
                             <label class="label label-black">Data prazo fatal início <span class="text-danger">*</span></label><br />
-                            <input style="width:100%" class="form-control dt_mask" placeholder="___ /___ /___" type="text"
-                                   name="dtInicio" value="{{ isset($dados['dtInicio']) ? $dados['dtInicio'] : '' }}" required>
+                            <input style="width:100%" class="form-control datepicker" placeholder="dd/mm/aaaa" type="text"
+                                   name="dtInicio" value="{{ isset($dados['dtInicio']) ? $dados['dtInicio'] : '' }}" autocomplete="off" required>
                         </section>
                         <section class="col col-md-3">
                             <label class="label label-black">Data prazo fatal fim <span class="text-danger">*</span></label><br />
-                            <input style="width:100%" class="form-control dt_mask" placeholder="___ /___ /___" type="text"
-                                   name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" required>
+                            <input style="width:100%" class="form-control datepicker" placeholder="dd/mm/aaaa" type="text"
+                                   name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" autocomplete="off" required>
                         </section>
                         <section class="col col-md-2">
                             <br />
@@ -94,8 +94,30 @@
                                 </div>
                             @else
                                 @php
+                                    $totalAtos = $processos->count();
+                                    $totalValor = 0;
+                                    foreach ($processos as $p) {
+                                        $totalValor += $p->honorario ? (float) $p->honorario->vl_taxa_honorario_cliente_pth : 0;
+                                        foreach ($p->tiposDespesa as $td) {
+                                            $totalValor += (float) $td->pivot->vl_processo_despesa_pde;
+                                        }
+                                    }
                                     $totalGeral = 0;
                                 @endphp
+                                <div class="row" style="margin:15px 15px 5px">
+                                    <div class="col-md-2 col-sm-4 col-xs-6">
+                                        <div class="well text-center" style="padding:15px 10px; margin-bottom:10px">
+                                            <div style="font-size:26px; font-weight:bold; color:#4a4a4a">{{ $totalAtos }}</div>
+                                            <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Total de Atos</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="well text-center" style="padding:15px 10px; margin-bottom:10px">
+                                            <div style="font-size:20px; font-weight:bold; color:#4a4a4a">R$&nbsp;{{ number_format($totalValor, 2, ',', '.') }}</div>
+                                            <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Valor Total</div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div style="overflow-x:auto">
                                 <table id="dt_resultado" class="table table-striped table-bordered table-hover" width="100%" style="font-size:12px">
                                     <thead>
@@ -171,7 +193,14 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".dt_mask").mask("99/99/9999");
+        if ($.fn.datepicker) {
+            $(".datepicker").datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true
+            });
+        }
     });
 </script>
 @endsection
