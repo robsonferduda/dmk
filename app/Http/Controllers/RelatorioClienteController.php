@@ -89,8 +89,6 @@ class RelatorioClienteController extends Controller
             return redirect('cliente/relatorio');
         }
 
-        $eventoParametros = \App\EventoParametros::where('cd_conta_con', $this->conta)->first();
-
         $dados = [
             'processos' => $processos,
             'despesas'  => $despesas,
