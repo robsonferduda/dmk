@@ -17,6 +17,7 @@ use App\Exports\RelatorioCobrancaClienteExport;
 class RelatorioClienteController extends Controller
 {
     public $conta;
+    public $clienteId;
 
     public function __construct()
     {
@@ -24,12 +25,17 @@ class RelatorioClienteController extends Controller
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
+    protected function getClienteId(): int
+    {
+        return Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first()->cd_cliente_cli;
+    }
+
     public function index()
     {
         Session::put('menu_pai', 'clientes');
-        Session::put('item_pai', 'cliente.relatorio-cobranca');
+        Session::put('item_pai', 'cliente.relatorio');
 
-        return view('cliente/relatorio-cobranca', [
+        return view('cliente/relatorio', [
             'processos' => null,
             'despesas'  => collect(),
             'dados'     => null,
@@ -46,7 +52,7 @@ class RelatorioClienteController extends Controller
             Flash::error($erro);
         }
 
-        return view('cliente/relatorio-cobranca', [
+        return view('cliente/relatorio', [
             'processos' => $processos,
             'despesas'  => $despesas,
             'dados'     => $request->all(),
@@ -59,7 +65,7 @@ class RelatorioClienteController extends Controller
 
         if ($erro || !$processos || $processos->isEmpty()) {
             Flash::error($erro ?? 'Não há dados para exportar.');
-            return redirect('cliente/relatorio-cobranca');
+            return redirect('cliente/relatorio');
         }
 
         $dados = [
@@ -69,8 +75,7 @@ class RelatorioClienteController extends Controller
             'dtFim'     => $request->dtFim,
         ];
 
-        $nomeCliente = str_replace('/', '', $request->nm_cliente_cli ?? 'cliente');
-        $nomeArquivo = 'cobranca_' . $nomeCliente . '_' . now()->format('Y-m-d') . '.xlsx';
+        $nomeArquivo = 'cobranca_cliente_' . now()->format('Y-m-d') . '.xlsx';
 
         return \Excel::download(new RelatorioCobrancaClienteExport($dados), $nomeArquivo, \Maatwebsite\Excel\Excel::XLSX);
     }
@@ -81,7 +86,7 @@ class RelatorioClienteController extends Controller
 
         if ($erro || !$processos || $processos->isEmpty()) {
             Flash::error($erro ?? 'Não há dados para exportar.');
-            return redirect('cliente/relatorio-cobranca');
+            return redirect('cliente/relatorio');
         }
 
         $eventoParametros = \App\EventoParametros::where('cd_conta_con', $this->conta)->first();
@@ -94,21 +99,16 @@ class RelatorioClienteController extends Controller
             'conta'     => Conta::where('cd_conta_con', $this->conta)->first(),
         ];
 
-        $nomeCliente = str_replace('/', '', $request->nm_cliente_cli ?? 'cliente');
-        $nomeArquivo = 'cobranca_' . $nomeCliente . '_' . now()->format('Y-m-d') . '.pdf';
+        $nomeArquivo = 'cobranca_cliente_' . now()->format('Y-m-d') . '.pdf';
 
         return PDF::loadView('relatorios.pdf.cobranca-cliente', $dados, [], [
-            'title'  => 'Relatório de Cobrança - ' . ($request->nm_cliente_cli ?? ''),
+            'title'  => 'Relatório de Cobrança',
             'format' => 'A4-L',
         ])->download($nomeArquivo);
     }
 
     protected function executarBusca(Request $request): array
     {
-        if (empty($request->cd_cliente_cli)) {
-            return [null, collect(), 'Campo cliente é obrigatório.'];
-        }
-
         if (!\Helper::validaData($request->dtInicio) || !\Helper::validaData($request->dtFim)) {
             return [null, collect(), 'Data(s) inválida(s).'];
         }
@@ -119,7 +119,7 @@ class RelatorioClienteController extends Controller
 
         $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $request->dtInicio)));
         $dtFim    = date('Y-m-d', strtotime(str_replace('/', '-', $request->dtFim)));
-        $cliente  = $request->cd_cliente_cli;
+        $cliente  = $this->getClienteId();
 
         $processos = Processo::with('advogadoSolicitante')
             ->with('cliente')

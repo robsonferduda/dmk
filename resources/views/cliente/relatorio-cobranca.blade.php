@@ -36,19 +36,6 @@
                             <input style="width:100%" class="form-control dt_mask" placeholder="___ /___ /___" type="text"
                                    name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" required>
                         </section>
-                        <section class="col col-md-4">
-                            <label class="label label-black">Cliente <span class="text-danger">*</span></label><br />
-                            <div class="input-group" style="width:100%">
-                                <input type="hidden" name="cd_cliente_cli" id="cd_cliente_cli"
-                                       value="{{ isset($dados['cd_cliente_cli']) ? $dados['cd_cliente_cli'] : '' }}">
-                                <input style="width:100%" class="form-control" id="cliente_auto_complete"
-                                       name="nm_cliente_cli" placeholder="Digite 3 caracteres para busca" type="text"
-                                       value="{{ isset($dados['nm_cliente_cli']) ? $dados['nm_cliente_cli'] : '' }}" required>
-                                <span id="limpar-cliente" title="Limpar cliente" class="input-group-addon btn btn-warning">
-                                    <i class="fa fa-eraser"></i>
-                                </span>
-                            </div>
-                        </section>
                         <section class="col col-md-2">
                             <br />
                             <input type="checkbox" name="finalizado" id="finalizado" value="S"
@@ -80,8 +67,6 @@
                                     {{ csrf_field() }}
                                     <input type="hidden" name="dtInicio" value="{{ $dados['dtInicio'] }}">
                                     <input type="hidden" name="dtFim" value="{{ $dados['dtFim'] }}">
-                                    <input type="hidden" name="cd_cliente_cli" value="{{ $dados['cd_cliente_cli'] }}">
-                                    <input type="hidden" name="nm_cliente_cli" value="{{ $dados['nm_cliente_cli'] }}">
                                     <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
                                     <button type="submit" class="btn btn-success btn-sm">
                                         <i class="fa fa-file-excel-o"></i> Excel
@@ -92,8 +77,7 @@
                                     {{ csrf_field() }}
                                     <input type="hidden" name="dtInicio" value="{{ $dados['dtInicio'] }}">
                                     <input type="hidden" name="dtFim" value="{{ $dados['dtFim'] }}">
-                                    <input type="hidden" name="cd_cliente_cli" value="{{ $dados['cd_cliente_cli'] }}">
-                                    <input type="hidden" name="nm_cliente_cli" value="{{ $dados['nm_cliente_cli'] }}">
+                                    <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
                                     <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
                                     <button type="submit" class="btn btn-danger btn-sm">
                                         <i class="fa fa-file-pdf-o"></i> PDF
@@ -187,29 +171,7 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function () {
-
         $(".dt_mask").mask("99/99/9999");
-
-        var pathCliente = "{{ url('autocompleteCliente') }}";
-
-        $("#cliente_auto_complete").autocomplete({
-            source: pathCliente,
-            minLength: 3,
-            select: function (event, ui) {
-                $("#cd_cliente_cli").val(ui.item.id);
-            }
-        });
-
-        $("#limpar-cliente").click(function () {
-            $("#cliente_auto_complete").val('');
-            $("#cd_cliente_cli").val('');
-        });
-
-        $("#cliente_auto_complete").focusout(function () {
-            if ($("#cd_cliente_cli").val() == '') {
-                $("#cliente_auto_complete").val('');
-            }
-        });
     });
 </script>
 @endsection
