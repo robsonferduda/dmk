@@ -165,7 +165,7 @@ class LimparArquivosAntigos extends Command
     }
 
     /**
-     * Remove arquivos antigos do diretório
+     * Remove arquivos antigos do diretório, apenas de processos finalizados (status = 6)
      *
      * @param string $baseDir
      * @param int $dias
@@ -183,7 +183,7 @@ class LimparArquivosAntigos extends Command
             return [$arquivosRemovidos, $bytesRemovidos];
         }
 
-        // Percorre apenas pastas numéricas
+        // Percorre apenas pastas numéricas (cada uma = cd_processo_pro)
         $pastas = scandir($baseDir);
 
         foreach ($pastas as $pasta) {
@@ -198,6 +198,16 @@ class LimparArquivosAntigos extends Command
             $caminhoPasta = $baseDir . DIRECTORY_SEPARATOR . $pasta;
 
             if (!is_dir($caminhoPasta)) {
+                continue;
+            }
+
+            // Verifica se o processo está finalizado (cd_status_processo_stp = 6)
+            $processoFinalizado = DB::table('processo_pro')
+                ->where('cd_processo_pro', (int) $pasta)
+                ->where('cd_status_processo_stp', 6)
+                ->exists();
+
+            if (!$processoFinalizado) {
                 continue;
             }
 
