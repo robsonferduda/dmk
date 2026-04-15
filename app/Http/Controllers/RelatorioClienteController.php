@@ -97,7 +97,7 @@ class RelatorioClienteController extends Controller
             'despesas'  => $despesas,
             'dtInicio'  => $request->dtInicio,
             'dtFim'     => $request->dtFim,
-            'conta'     => Conta::where('cd_conta_con', $this->conta)->first(),
+            'conta'     => Conta::where('cd_conta_con', $this->conta)->first()->nm_razao_social_con,
         ];
 
         $nomeArquivo = 'cobranca_cliente_' . now()->format('Y-m-d') . '.pdf';

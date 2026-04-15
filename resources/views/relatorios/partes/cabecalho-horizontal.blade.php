@@ -3,7 +3,7 @@
 </div>
 <div id="texto_cabecalho">
     <span style="font-size: 20px; font-weight: bold; display: block; color: #275b89;">Easyjuris - Sistema de Gerenciamento Jurídico</span><br/>
-    <span style="font-size: 20px; font-weight: bold; display: block; color: #275b89;">{{ $conta->nm_razao_social_con }}</span><br/>
+    <span style="font-size: 20px; font-weight: bold; display: block; color: #275b89;">{{ $conta }}</span><br/>
 </div>
 <div id="logo_coperve">
     
