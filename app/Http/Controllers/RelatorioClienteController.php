@@ -133,9 +133,7 @@ class RelatorioClienteController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('cd_cliente_cli', $cliente)
             ->whereBetween('dt_prazo_fatal_pro', [$dtInicio, $dtFim])
-            ->when(!empty($request->finalizado), function ($query) {
-                $query->where('cd_status_processo_stp', \StatusProcesso::FINALIZADO);
-            })
+            ->where('cd_status_processo_stp', \StatusProcesso::FINALIZADO)
             ->get();
 
         $despesas = TipoDespesa::whereHas('ReembolsoTipoDespesa')

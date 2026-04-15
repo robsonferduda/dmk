@@ -37,12 +37,7 @@
                                    name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" autocomplete="off" required>
                         </section>
                         <section class="col col-md-2">
-                            <br />
-                            <input type="checkbox" name="finalizado" id="finalizado" value="S"
-                                {{ (isset($dados['finalizado']) && $dados['finalizado'] == 'S') ? 'checked' : '' }}>
-                            <label class="label label-black">Apenas finalizados</label>
-                        </section>
-                        <section class="col col-md-12" style="margin-top:10px">
+                            <label class="label label-black">&nbsp;</label><br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
                         </section>
                     </div>
@@ -70,7 +65,7 @@
                         </div>
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="well text-center" style="padding:15px 10px; margin-bottom:0">
-                                <div style="font-size:20px; font-weight:bold; color:#4a4a4a">R$&nbsp;{{ number_format($totalValor, 2, ',', '.') }}</div>
+                                <div style="font-size:26px; font-weight:bold; color:#4a4a4a">R$&nbsp;{{ number_format($totalValor, 2, ',', '.') }}</div>
                                 <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px">Valor Total</div>
                             </div>
                         </div>
@@ -93,7 +88,6 @@
                                     {{ csrf_field() }}
                                     <input type="hidden" name="dtInicio" value="{{ $dados['dtInicio'] }}">
                                     <input type="hidden" name="dtFim" value="{{ $dados['dtFim'] }}">
-                                    <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
                                     <button type="submit" class="btn btn-success btn-sm">
                                         <i class="fa fa-file-excel-o"></i> Excel
                                     </button>
@@ -103,8 +97,6 @@
                                     {{ csrf_field() }}
                                     <input type="hidden" name="dtInicio" value="{{ $dados['dtInicio'] }}">
                                     <input type="hidden" name="dtFim" value="{{ $dados['dtFim'] }}">
-                                    <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
-                                    <input type="hidden" name="finalizado" value="{{ $dados['finalizado'] ?? '' }}">
                                     <button type="submit" class="btn btn-danger btn-sm">
                                         <i class="fa fa-file-pdf-o"></i> PDF
                                     </button>
