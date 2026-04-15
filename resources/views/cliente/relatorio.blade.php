@@ -26,19 +26,19 @@
                 <form id="form-busca" action="{{ url('cliente/relatorio-cobranca/buscar') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="row">
-                        <section class="col col-md-3">
+                        <section class="col col-md-2">
                             <label class="label label-black">Data prazo fatal início <span class="text-danger">*</span></label><br />
                             <input style="width:100%" class="form-control datepicker" placeholder="dd/mm/aaaa" type="text"
-                                   name="dtInicio" value="{{ isset($dados['dtInicio']) ? $dados['dtInicio'] : '' }}" autocomplete="off" required>
+                                   id="dtInicio" name="dtInicio" value="{{ isset($dados['dtInicio']) ? $dados['dtInicio'] : '' }}" autocomplete="off" required>
                         </section>
-                        <section class="col col-md-3">
+                        <section class="col col-md-2">
                             <label class="label label-black">Data prazo fatal fim <span class="text-danger">*</span></label><br />
                             <input style="width:100%" class="form-control datepicker" placeholder="dd/mm/aaaa" type="text"
-                                   name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" autocomplete="off" required>
+                                   id="dtFim" name="dtFim" value="{{ isset($dados['dtFim']) ? $dados['dtFim'] : '' }}" autocomplete="off" required>
                         </section>
                         <section class="col col-md-2">
                             <label class="label label-black">&nbsp;</label><br />
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                            <button class="btn btn-primary" type="submit" id="btn-buscar" style="display:none"><i class="fa fa-search"></i> Buscar</button>
                         </section>
                     </div>
                 </form>
@@ -189,12 +189,23 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function () {
+        function tentarBuscar() {
+            var ini = $('#dtInicio').val();
+            var fim = $('#dtFim').val();
+            if (ini.length === 10 && fim.length === 10) {
+                $('#form-busca').submit();
+            }
+        }
+
         if ($.fn.datepicker) {
             $(".datepicker").datepicker({
                 dateFormat: 'dd/mm/yy',
                 changeMonth: true,
                 changeYear: true,
-                showButtonPanel: true
+                showButtonPanel: true,
+                onSelect: function () {
+                    tentarBuscar();
+                }
             });
         }
     });
