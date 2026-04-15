@@ -208,6 +208,11 @@
                 }
             });
         }
+
+        // Dispara busca automática no carregamento quando as datas já estão preenchidas
+        @if(isset($dados['dtInicio']) && isset($dados['dtFim']) && $processos === null)
+        tentarBuscar();
+        @endif
     });
 </script>
 @endsection

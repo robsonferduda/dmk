@@ -35,10 +35,13 @@ class RelatorioClienteController extends Controller
         Session::put('menu_pai', 'clientes');
         Session::put('item_pai', 'cliente.relatorio');
 
+        $dtInicio = now()->startOfMonth()->format('d/m/Y');
+        $dtFim    = now()->format('d/m/Y');
+
         return view('cliente/relatorio', [
             'processos' => null,
             'despesas'  => collect(),
-            'dados'     => null,
+            'dados'     => ['dtInicio' => $dtInicio, 'dtFim' => $dtFim],
         ]);
     }
 
