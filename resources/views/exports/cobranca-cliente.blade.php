@@ -4,7 +4,7 @@
         <th colspan="3" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;text-align:center;vertical-align:center;font-weight:bold;font-size:16px">
             {{ $dados['processos']->first()->cliente->nm_razao_social_cli ?? '' }} ({{ $dados['dtInicio'] }} - {{ $dados['dtFim'] }})
         </th>
-        <th colspan="{{ count($despesas) + 9 }}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align:center;font-weight:bold;font-size:16px"></th>
+        <th colspan="{{ count($dados['despesas']) + 9 }}" style="background-color:#969696;height:50px;border-bottom:1px hair #000000;vertical-align:center;font-weight:bold;font-size:16px"></th>
     </tr>
     <tr>
         <th style="background-color:#D99594;height:50px;border:1px hair #000000;text-align:center;vertical-align:center">ADVOGADO SOLICITANTE/CONTATO</th>
