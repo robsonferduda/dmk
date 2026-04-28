@@ -119,24 +119,23 @@
                                     <section class="col col-md-12">
                                         <label>Tipo de Intervalo de Data</label>
                                         <label class="select">
-                                            <input type="hidden" id="contatoAux" value="">
-                                            <select id="cd_contato_cot" name="cd_contato_cot">
+                                            <select id="tipo_data" name="tipo_data">
                                                 <option value="">Selecione o tipo de intervalo</option>    
-                                                <option value="">Data de Solicitação</option> 
-                                                <option value="">Prazo Fatal</option>         
+                                                <option value="solicitacao">Data de Solicitação</option> 
+                                                <option value="prazo_fatal" selected>Prazo Fatal</option>         
                                             </select><i></i>  
                                         </label>
                                     </section>
                                 </div>
                                 <div class="row">
                                     <section class="col col-4">
-                                        <label>Data prazo fatal início</label>
+                                        <label>Data início</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input type="text" name="dt_inicio" id="dt_inicio" value="{{ date('d/m/Y') }}" data-dateformat="dd/mm/yy" placeholder="___/___/____" class="datepicker mascara_data">
                                         </label>
                                     </section>
                                     <section class="col col-4">
-                                        <label>Data prazo fatal fim</label>
+                                        <label>Data fim</label>
                                         <label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input type="text" name="dt_fim" id="dt_fim" value="{{ date('d/m/Y') }}" data-dateformat="dd/mm/yy" placeholder="___/___/____" class="datepicker mascara_data" >
                                         </label>

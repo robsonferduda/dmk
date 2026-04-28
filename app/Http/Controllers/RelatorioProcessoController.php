@@ -133,6 +133,7 @@ class RelatorioProcessoController extends Controller
         $tipoProcesso = $request->tipoProcesso;
         $correspondente = $request->cdCorrespondente;
         $status = $request->cd_status_processo_stp;
+        $campoData = ($request->tipo_data === 'solicitacao') ? 'dt_solicitacao_pro' : 'dt_prazo_fatal_pro';
 
         if (!empty($responsavel)) {
             $processos = $processos->where('cd_responsavel_pro', $responsavel);
@@ -142,17 +143,17 @@ class RelatorioProcessoController extends Controller
             $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_inicio)));
             $dtFim    = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_fim)));
 
-            $processos = $processos->whereBetween('dt_prazo_fatal_pro', [$dtInicio,$dtFim]);
+            $processos = $processos->whereBetween($campoData, [$dtInicio, $dtFim]);
         } else {
             if (!empty($request->dt_inicio) && \Helper::validaData($request->dt_inicio)) {
                 $dtInicio = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_inicio)));
                
-                $processos = $processos->where('dt_prazo_fatal_pro', $dtInicio);
+                $processos = $processos->where($campoData, $dtInicio);
             } else {
                 if (!empty($request->dt_fim) && \Helper::validaData($request->dt_fim)) {
                     $dtFim    = date('Y-m-d', strtotime(str_replace('/', '-', $request->dt_fim)));
                
-                    $processos = $processos->where('dt_prazo_fatal_pro', $dtFim);
+                    $processos = $processos->where($campoData, $dtFim);
                 }
             }
         }
