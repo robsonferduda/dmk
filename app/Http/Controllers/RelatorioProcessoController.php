@@ -46,6 +46,7 @@ class RelatorioProcessoController extends Controller
             $conta   = $this->conta;
 
             if ($request->relatorio == 'para-cliente') {
+
                 if (!empty($cliente)) {
                     $processos = Processo::with('advogadoSolicitante')
                                     ->with('cliente')
@@ -60,6 +61,7 @@ class RelatorioProcessoController extends Controller
                                         $query->where('cd_cliente_cli', $cliente);
                                     })
                                     ->where('cd_conta_con', $this->conta)
+                                    ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::CANCELADO, \StatusProcesso::CANCELADO_PELO_ESCRITORIO])
                                     ->whereBetween('dt_prazo_fatal_pro', [$dtInicio,$dtFim])
                                     ->when(!empty($request->finalizado), function ($query) {
                                         $query->where('cd_status_processo_stp', \StatusProcesso::FINALIZADO);
@@ -83,7 +85,9 @@ class RelatorioProcessoController extends Controller
                 } else {
                     Flash::error('Campo cliente obrigatório para o tipo de relatório informado!');
                 }
+
             } else {
+
                 $processos = Processo::with('advogadoSolicitante')
                                     ->with('cliente')
                                     ->with('vara')
@@ -94,6 +98,7 @@ class RelatorioProcessoController extends Controller
                                         $query->wherePivot('fl_despesa_reembolsavel_pde', 'S');
                                     }])
                                     ->where('cd_conta_con', $this->conta)
+                                    ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::CANCELADO, \StatusProcesso::CANCELADO_PELO_ESCRITORIO])
                                     ->whereBetween('dt_prazo_fatal_pro', [$dtInicio,$dtFim])
                                     ->when(!empty($request->finalizado), function ($query) {
                                         $query->where('cd_status_processo_stp', \StatusProcesso::FINALIZADO);
@@ -127,7 +132,7 @@ class RelatorioProcessoController extends Controller
 
     public function pautaDiaria(Request $request)
     {
-        $processos = Processo::with('cidade')->where('cd_conta_con', $this->conta)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO]);
+        $processos = Processo::with('cidade')->where('cd_conta_con', $this->conta)->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO, \StatusProcesso::CANCELADO_PELO_ESCRITORIO]);
 
         $responsavel = $request->responsavel;
         $tipoProcesso = $request->tipoProcesso;
