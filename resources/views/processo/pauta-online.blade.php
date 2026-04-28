@@ -639,6 +639,27 @@
             });
         }
 
+        var pathCorrespondente = "{{ url('autocompleteCorrespondente') }}";
+
+        $("#correspondente_auto_complete_pauta").autocomplete({
+            source: pathCorrespondente,
+            minLength: 3,
+            search: function(event, ui) {
+                $("input[name='cdCorrespondente']").val('');
+            },
+            select: function(event, ui) {
+                $("input[name='cdCorrespondente']").val(ui.item.id);
+            },
+            appendTo: "#modal_pauta",
+        });
+
+        $("#correspondente_auto_complete_pauta").focusout(function() {
+            if ($("input[name='cdCorrespondente']").val() == '') {
+                $("#correspondente_auto_complete_pauta").val('');
+                $('.ui-autocomplete').attr('style', 'z-index: 905 !important');
+            }
+        });
+
     });
 </script>
 @endsection
