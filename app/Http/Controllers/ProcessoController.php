@@ -367,7 +367,7 @@ class ProcessoController extends Controller
                         ->where('cd_nivel_niv', Nivel::COLABORADOR)
                         ->orderBy('name')->get();
 
-        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+        $status = StatusProcesso::whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO,\StatusProcesso::CANCELADO_PELO_ESCRITORIO])
                   ->orderBy('nm_status_processo_conta_stp')
                   ->get();
 
@@ -377,7 +377,7 @@ class ProcessoController extends Controller
         
         $processos = Processo::with('cidade')
         ->where('cd_conta_con', $this->cdContaCon)
-        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO])
+        ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO,\StatusProcesso::CANCELADO,\StatusProcesso::CANCELADO_PELO_ESCRITORIO])
         ->when('prazo_fatal', function ($query) use ($prazo_fatal) {
             return $query->where('dt_prazo_fatal_pro', $prazo_fatal);
         })
@@ -1919,7 +1919,7 @@ class ProcessoController extends Controller
             $clienteObj = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
             $cliente = $clienteObj ? $clienteObj->cd_cliente_cli : null;
         }
-        
+
         $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area, null);
         
         return response()->json($processos);
