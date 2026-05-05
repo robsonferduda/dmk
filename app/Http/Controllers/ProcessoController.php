@@ -342,9 +342,7 @@ class ProcessoController extends Controller
             $tiposProcesso = TipoProcesso::where('cd_conta_con', $this->cdContaCon)->get();
             $expiresAt = \Carbon\Carbon::now()->addMinutes(1440);
             \Cache::tags($this->cdContaCon, 'listaTiposProcesso')->put('tiposProcesso', $tiposProcesso, $expiresAt);
-        }
-
-        
+        }        
 
         $responsaveis = User::where('cd_conta_con', $this->cdContaCon)->orderBy('name')->get();
         $tiposServico = TipoServico::where('cd_conta_con', $this->cdContaCon)->orderBy('nm_tipo_servico_tse')->get();
@@ -1921,9 +1919,7 @@ class ProcessoController extends Controller
             $clienteObj = Cliente::where('cd_entidade_ete', Auth::user()->cd_entidade_ete)->first();
             $cliente = $clienteObj ? $clienteObj->cd_cliente_cli : null;
         }
-
-
-
+        
         $processos = (new Processo())->getProcessosAndamento($this->cdContaCon, $processo, $nm_cliente, $responsavel, $tipo, $servico, $status, $reu, $autor, $data, $comarca, $flag, $cliente, $statusProcesso, $numeroAcompanhamento, $area, null);
         
         return response()->json($processos);

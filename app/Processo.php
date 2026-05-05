@@ -296,7 +296,7 @@ class Processo extends Model implements AuditableContract
                 LEFT JOIN users t12 ON t1.cd_user_cadastro_pro = t12.id
                 LEFT JOIN area_direito_ado t14 ON t1.cd_area_direito_ado = t14.cd_area_direito_ado
                 JOIN tipo_processo_tpo t13 On t13.cd_tipo_processo_tpo = t1.cd_tipo_processo_tpo
-                WHERE t1.cd_status_processo_stp NOT IN(6,7)";
+                WHERE t1.cd_status_processo_stp NOT IN(6,7,19)";
 
         if($processo) $sql .= " AND t1.nu_processo_pro like '%$processo%' ";
         if($responsavel) $sql .= " AND t1.cd_responsavel_pro = $responsavel ";
