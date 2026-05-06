@@ -23,10 +23,6 @@ Acessar Link Externo de Documentos
 @endcomponent
 @endif
 
-@component('mail::button', ['url' => $urlProcesso, 'color' => 'blue'])
-Ver Processo no Sistema
-@endcomponent
-
 ---
 
 **Confirmação de recebimento dos documentos**
@@ -35,6 +31,14 @@ Após verificar os documentos, confirme o recebimento clicando no botão abaixo.
 
 @component('mail::button', ['url' => $urlConfirmarRecebimento, 'color' => 'green'])
 Confirmar Recebimento dos Documentos
+@endcomponent
+
+---
+
+Se preferir, você também pode acessar o processo diretamente no sistema:
+
+@component('mail::button', ['url' => $urlProcesso, 'color' => 'blue'])
+Ver Processo no Sistema
 @endcomponent
 
 Acesse o sistema para verificar os processos.
