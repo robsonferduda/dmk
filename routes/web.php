@@ -25,9 +25,10 @@ Route::get('teste', 'TesteController@index');
  */
 Route::get('dev/teste-email-envio-documentos', function (\Illuminate\Http\Request $request) {
 
+/*
     if (app()->environment('production')) {
         abort(404);
-    }
+    }*/
 
     $idProcesso  = $request->query('id');
     $emailDestino = $request->query('email', 'robsonferddua@gmail.com');
