@@ -5,6 +5,8 @@ As orientações e documentos do processo **{{ $processo->nu_processo_pro }}** f
 
 @if ($temAnexos)
 **Os documentos do processo seguem em anexo neste e-mail (arquivo .zip).** Verifique o anexo antes de prosseguir.
+@elseif (!empty($anexoMuitoGrande) && $anexoMuitoGrande)
+**Os documentos deste processo são muito grandes para serem enviados por e-mail.** Acesse o processo no sistema (botão abaixo) para baixar todos os anexos.
 @endif
 
 Utilize os botões abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.

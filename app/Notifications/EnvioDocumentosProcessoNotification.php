@@ -14,6 +14,13 @@ class EnvioDocumentosProcessoNotification extends Notification
 {
     use Queueable;
 
+    /**
+     * Tamanho máximo (em bytes) do zip de anexos para envio por e-mail.
+     * Acima disso o anexo NÃO é incluído (a maioria dos servidores SMTP
+     * limita a mensagem em ~10-25 MB). Mantemos uma margem de segurança.
+     */
+    const MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024; // 8 MB
+
     public $processo;
 
     public function __construct($processo)
@@ -29,8 +36,19 @@ class EnvioDocumentosProcessoNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $zipPath   = $this->gerarZipAnexos();
-        $temAnexos = !is_null($zipPath);
+        $zipPath          = $this->gerarZipAnexos();
+        $zipExiste        = !is_null($zipPath) && file_exists($zipPath);
+        $tamanhoZip       = $zipExiste ? filesize($zipPath) : 0;
+        $anexoMuitoGrande = $zipExiste && $tamanhoZip > self::MAX_ATTACHMENT_BYTES;
+        $temAnexos        = $zipExiste && !$anexoMuitoGrande;
+
+        if ($anexoMuitoGrande) {
+            Log::warning('Zip de anexos excede limite para envio por e-mail; anexo será omitido.', [
+                'processo'   => $this->processo->cd_processo_pro,
+                'tamanho'    => $tamanhoZip,
+                'limite'     => self::MAX_ATTACHMENT_BYTES,
+            ]);
+        }
 
         $urlProcesso = url(config('app.url').route(
             'processo.correspondente',
@@ -41,9 +59,10 @@ class EnvioDocumentosProcessoNotification extends Notification
         $mail = (new MailMessage)
             ->subject(Lang::getFromJson('Orientações e documentos disponíveis - '.$this->processo->getAssuntoNotification()))
             ->markdown('email.envio-documentos', [
-                'processo'    => $this->processo,
-                'temAnexos'   => $temAnexos,
-                'urlProcesso' => $urlProcesso,
+                'processo'         => $this->processo,
+                'temAnexos'        => $temAnexos,
+                'anexoMuitoGrande' => $anexoMuitoGrande,
+                'urlProcesso'      => $urlProcesso,
             ]);
 
         if ($temAnexos) {

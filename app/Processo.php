@@ -243,7 +243,7 @@ class Processo extends Model implements AuditableContract
         $parte_re = ($this->attributes['nm_reu_pro']) ? $this->attributes['nm_reu_pro'] : 'Não informada';
         $num_processo = $this->attributes['nu_processo_pro'];
 
-        $tipo_servico = ($this->honorario) ? $this->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : '';
+        $tipo_servico = ($this->honorario && $this->honorario->tipoServicoCorrespondente) ? $this->honorario->tipoServicoCorrespondente->nm_tipo_servico_tse : '';
 
         $assunto = $data.' - '.$hora.' - '.$tipo_servico.' - Autor: '.$parte_autora.' - Réu: '.$parte_re.' - Processo '.$num_processo;
 
