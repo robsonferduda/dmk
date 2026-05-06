@@ -31,7 +31,7 @@ Route::get('dev/teste-email-envio-documentos', function (\Illuminate\Http\Reques
     }*/
 
     $idProcesso  = $request->query('id');
-    $emailDestino = $request->query('email', 'robsonferddua@gmail.com');
+    $emailDestino = $request->query('email', 'robsonferduda@gmail.com');
 
     if (!$idProcesso) {
         return response('Informe ?id=CD_PROCESSO_PRO na querystring.', 400);
