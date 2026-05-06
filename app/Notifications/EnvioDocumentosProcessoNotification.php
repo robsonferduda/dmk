@@ -64,14 +64,21 @@ class EnvioDocumentosProcessoNotification extends Notification
             ))
             : null;
 
+        $urlConfirmarRecebimento = url(config('app.url').route(
+            'processo.confirmar-recebimento-anexos',
+            ['token' => safe_encrypt($this->processo->cd_processo_pro)],
+            false
+        ));
+
         $mail = (new MailMessage)
             ->subject(Lang::getFromJson('Orientações e documentos disponíveis - '.$this->processo->getAssuntoNotification()))
             ->markdown('email.envio-documentos', [
-                'processo'          => $this->processo,
-                'temAnexos'         => $temAnexos,
-                'anexoMuitoGrande'  => $anexoMuitoGrande,
-                'urlProcesso'       => $urlProcesso,
-                'urlDownloadAnexos' => $urlDownloadAnexos,
+                'processo'                => $this->processo,
+                'temAnexos'               => $temAnexos,
+                'anexoMuitoGrande'        => $anexoMuitoGrande,
+                'urlProcesso'             => $urlProcesso,
+                'urlDownloadAnexos'       => $urlDownloadAnexos,
+                'urlConfirmarRecebimento' => $urlConfirmarRecebimento,
             ]);
 
         if ($temAnexos) {

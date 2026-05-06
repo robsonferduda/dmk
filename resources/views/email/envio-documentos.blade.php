@@ -27,6 +27,16 @@ Acessar Link Externo de Documentos
 Ver Processo no Sistema
 @endcomponent
 
+---
+
+**Confirmação de recebimento dos documentos**
+
+Após verificar os documentos, confirme o recebimento clicando no botão abaixo. Esta ação dispensa o acesso ao sistema.
+
+@component('mail::button', ['url' => $urlConfirmarRecebimento, 'color' => 'green'])
+Confirmar Recebimento dos Documentos
+@endcomponent
+
 Acesse o sistema para verificar os processos.
 
 @lang('Saudações'),<br>{{ config('app.name') }}

@@ -49,7 +49,7 @@ class ProcessoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['responderNotificacao','notificarPendentes']]);
+        $this->middleware('auth', ['except' => ['responderNotificacao','notificarPendentes','confirmarRecebimentoAnexosToken']]);
         $this->cdContaCon = \Session::get('SESSION_CD_CONTA');
         Session::put('menu_pai','processos');
         Session::forget('item_pai');
@@ -1662,6 +1662,89 @@ class ProcessoController extends Controller
         } else {
             return Response::json(array('message' => 'Informe um correspondente para atualizar o valor do campo'), 500);
         }
+    }
+
+    /**
+     * Confirmação de recebimento de anexos via link no e-mail (sem autenticação).
+     * Token = safe_encrypt($cd_processo_pro). Marca fl_recebimento_anexos_pro = 'S'
+     * (apenas se ainda for 'N') e dispara notificação de leitura ao escritório.
+     */
+    public function confirmarRecebimentoAnexosToken($token)
+    {
+        try {
+            $id = safe_decrypt($token);
+        } catch (\Exception $e) {
+            Session::put('retorno', [
+                'tipo' => 'token',
+                'msg'  => 'Link inválido ou expirado. Entre em contato com o escritório para um novo link.'
+            ]);
+            return Redirect::route('msg-filiacao');
+        }
+
+        $processo = Processo::find($id);
+
+        if (!$processo) {
+            Session::put('retorno', [
+                'tipo' => 'erro',
+                'msg'  => 'Processo não encontrado.'
+            ]);
+            return Redirect::route('msg-filiacao');
+        }
+
+        if ($processo->fl_recebimento_anexos_pro == 'S') {
+            Session::put('retorno', [
+                'tipo' => 'alerta',
+                'msg'  => 'O recebimento dos documentos do processo '.$processo->nu_processo_pro.' já havia sido confirmado anteriormente.'
+            ]);
+            return Redirect::route('msg-filiacao');
+        }
+
+        $processo->fl_recebimento_anexos_pro = 'S';
+        $processo->cd_status_processo_stp    = \App\Enums\StatusProcesso::AGUARDANDO_CUMPRIMENTO;
+        $processo->save();
+
+        // Notifica o escritório (mesma lógica de atualizaAnexosRecebidos)
+        try {
+            $grupo = GrupoNotificacao::where('cd_conta_con', $processo->cd_conta_con)
+                                       ->where('cd_tipo_processo_tpo', $processo->cd_tipo_processo_tpo)
+                                       ->first();
+
+            if ($grupo && count($grupo->emails)) {
+                foreach ($grupo->emails as $email) {
+                    try {
+                        $processo->email = $email->ds_email_egn;
+                        $processo->notificarLeituraDocumentos($processo);
+
+                        LogNotificacao::create([
+                            'tipo_notificacao' => 'recebimento_documentos_correspondente',
+                            'email_destinatario' => $email->ds_email_egn,
+                            'cd_remetente'       => $processo->cd_correspondente_cor,
+                            'cd_destinatario'    => $processo->cd_conta_con,
+                            'cd_processo'        => $processo->cd_processo_pro,
+                            'nu_processo'        => $processo->nu_processo_pro,
+                            'origem'             => 'correspondente',
+                        ]);
+                    } catch (\Throwable $e) {
+                        Log::error('Falha ao notificar leitura de documentos via link público', [
+                            'processo' => $processo->cd_processo_pro,
+                            'email'    => $email->ds_email_egn,
+                            'erro'     => $e->getMessage(),
+                        ]);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error('Erro ao processar notificação de leitura via link público', [
+                'processo' => $processo->cd_processo_pro,
+                'erro'     => $e->getMessage(),
+            ]);
+        }
+
+        Session::put('retorno', [
+            'tipo' => 'sucesso',
+            'msg'  => 'Recebimento dos documentos do processo '.$processo->nu_processo_pro.' confirmado com sucesso. Obrigado!'
+        ]);
+        return Redirect::route('msg-filiacao');
     }
 
     /* Método disparado quando o correspondente recebe os anexos e indica o recebimento na tela */

@@ -20,6 +20,8 @@ Route::get('teste', 'TesteController@index');
 
 // Rota pública para download do zip de anexos via token (link enviado por e-mail)
 Route::get('processos/anexos/download/token/{token}', 'AnexoProcessoController@downloadPorToken')->name('processo.anexos.download.token');
+// Rota pública para confirmar recebimento dos documentos via link no e-mail
+Route::get('processo/confirmar-recebimento-anexos/{token}', 'ProcessoController@confirmarRecebimentoAnexosToken')->name('processo.confirmar-recebimento-anexos');
 
 /**
  * Rota de teste para devs: envia o e-mail de "Envio de Documentos" para verificação do template.
