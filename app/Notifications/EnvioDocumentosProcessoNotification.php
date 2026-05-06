@@ -56,13 +56,22 @@ class EnvioDocumentosProcessoNotification extends Notification
             false
         ));
 
+        $urlDownloadAnexos = $zipExiste
+            ? url(config('app.url').route(
+                'processo.anexos.download.token',
+                ['token' => \Crypt::encrypt($this->processo->cd_processo_pro)],
+                false
+            ))
+            : null;
+
         $mail = (new MailMessage)
             ->subject(Lang::getFromJson('Orientações e documentos disponíveis - '.$this->processo->getAssuntoNotification()))
             ->markdown('email.envio-documentos', [
-                'processo'         => $this->processo,
-                'temAnexos'        => $temAnexos,
-                'anexoMuitoGrande' => $anexoMuitoGrande,
-                'urlProcesso'      => $urlProcesso,
+                'processo'          => $this->processo,
+                'temAnexos'         => $temAnexos,
+                'anexoMuitoGrande'  => $anexoMuitoGrande,
+                'urlProcesso'       => $urlProcesso,
+                'urlDownloadAnexos' => $urlDownloadAnexos,
             ]);
 
         if ($temAnexos) {

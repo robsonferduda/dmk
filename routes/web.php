@@ -18,6 +18,9 @@ Route::get('broadcast', function () {
 
 Route::get('teste', 'TesteController@index');
 
+// Rota pública para download do zip de anexos via token (link enviado por e-mail)
+Route::get('processos/anexos/download/token/{token}', 'AnexoProcessoController@downloadPorToken')->name('processo.anexos.download.token');
+
 /**
  * Rota de teste para devs: envia o e-mail de "Envio de Documentos" para verificação do template.
  * Uso: /dev/teste-email-envio-documentos?id=CD_PROCESSO[&email=outro@dominio.com]
@@ -284,7 +287,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/limpar-selecao/{id}', 'CorrespondenteController@limparSelecao');
     Route::get('correspondente/convite/{token}', 'CorrespondenteController@aceitarConvite')->name("correspondente.convite");
     Route::get('correspondente/filiacao/{token}', 'CorrespondenteController@aceitarFiliacao')->name("correspondente.filiacao");
-    Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acompanhamento')->name('processo.correspondente');
+Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acompanhamento')->name('processo.correspondente');
+
     Route::get('correspondente/{entidade}/cidades-por-estado/{estado}', 'CidadeController@buscaCidadePorEstadoCorrespondente');
     Route::post('correspondente/adicionar', 'CorrespondenteController@adicionar');
     Route::post('correspondente/remover', 'CorrespondenteController@remover');
