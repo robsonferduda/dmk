@@ -18,6 +18,43 @@ Route::get('broadcast', function () {
 
 Route::get('teste', 'TesteController@index');
 
+/**
+ * Rota de teste para devs: envia o e-mail de "Envio de Documentos" para verificação do template.
+ * Uso: /dev/teste-email-envio-documentos?id=CD_PROCESSO[&email=outro@dominio.com]
+ * Remover/proteger antes de subir para produção.
+ */
+Route::get('dev/teste-email-envio-documentos', function (\Illuminate\Http\Request $request) {
+
+    if (app()->environment('production')) {
+        abort(404);
+    }
+
+    $idProcesso  = $request->query('id');
+    $emailDestino = $request->query('email', 'robsonferddua@gmail.com');
+
+    if (!$idProcesso) {
+        return response('Informe ?id=CD_PROCESSO_PRO na querystring.', 400);
+    }
+
+    $processo = \App\Processo::find($idProcesso);
+
+    if (!$processo) {
+        return response('Processo não encontrado.', 404);
+    }
+
+    // Campos usados pelo template/notification
+    $processo->email = $emailDestino;
+    $processo->correspondente = 'Teste Dev';
+
+    try {
+        $processo->notificarEnvioDocumentos($processo);
+    } catch (\Throwable $e) {
+        return response('Erro ao enviar: '.$e->getMessage(), 500);
+    }
+
+    return response('E-mail enviado para '.$emailDestino.' (processo '.$processo->nu_processo_pro.').', 200);
+});
+
 Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
