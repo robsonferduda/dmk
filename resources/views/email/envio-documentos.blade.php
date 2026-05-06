@@ -12,13 +12,13 @@ As orientações e documentos do processo **{{ $processo->nu_processo_pro }}** f
 Utilize os botões abaixo para confirmar o recebimento dos documentos e a realização do ato contratado.
 
 @if (!empty($anexoMuitoGrande) && $anexoMuitoGrande && !empty($urlDownloadAnexos))
-@component('mail::button', ['url' => $urlDownloadAnexos, 'color' => 'green'])
+@component('mail::button', ['url' => $urlDownloadAnexos, 'color' => 'warning'])
 Baixar Anexos do Processo (.zip)
 @endcomponent
 @endif
 
 @if (!empty($processo->ds_link_dados_pro))
-@component('mail::button', ['url' => url($processo->ds_link_dados_pro), 'color' => 'green'])
+@component('mail::button', ['url' => url($processo->ds_link_dados_pro), 'color' => 'warning'])
 Acessar Link Externo de Documentos
 @endcomponent
 @endif
@@ -29,7 +29,7 @@ Acessar Link Externo de Documentos
 
 Após verificar os documentos, confirme o recebimento clicando no botão abaixo. Esta ação dispensa o acesso ao sistema.
 
-@component('mail::button', ['url' => $urlConfirmarRecebimento, 'color' => 'green'])
+@component('mail::button', ['url' => $urlConfirmarRecebimento, 'color' => 'success'])
 Confirmar Recebimento dos Documentos
 @endcomponent
 
@@ -37,7 +37,7 @@ Confirmar Recebimento dos Documentos
 
 Se preferir, você também pode acessar o processo diretamente no sistema:
 
-@component('mail::button', ['url' => $urlProcesso, 'color' => 'blue'])
+@component('mail::button', ['url' => $urlProcesso, 'color' => 'primary'])
 Ver Processo no Sistema
 @endcomponent
 
