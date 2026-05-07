@@ -1597,11 +1597,13 @@ class ProcessoController extends Controller
                 $flag = 'S';
             } else {
                 $flag = 'N';
+                $processo->fl_recebimento_anexos_pro = 'N';
             }
 
             $processo->fl_envio_anexos_pro = $flag;
             
             if ($processo->save()) {
+
                 if ($flag == 'S') {
                     $processo->cd_status_processo_stp = \App\Enums\StatusProcesso::AGUARDANDO_DOCS_CORRESPONDENTE;
                 } else {
