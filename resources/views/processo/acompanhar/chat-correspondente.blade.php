@@ -53,7 +53,7 @@
                                                         @if($mensagem->entidadeRemetenteColaborador)
                                                             {{ ($mensagem->entidadeRemetenteColaborador and $mensagem->entidadeRemetenteColaborador->usuario) ? $mensagem->entidadeRemetenteColaborador->usuario->name : "Não definido" }}
                                                         @else
-                                                            {{ $mensagem->entidadeRemetente->nm_razao_social_con }}
+                                                            {{ $mensagem->entidadeRemetente ? $mensagem->entidadeRemetente->nm_razao_social_con : "Não definido" }}
                                                         @endif
                                                     </strong>
                                                     disse em {{ date('d/m/Y H:i:s', strtotime($mensagem->created_at)) }}
