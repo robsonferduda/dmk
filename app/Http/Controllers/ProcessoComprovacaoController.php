@@ -85,12 +85,50 @@ class ProcessoComprovacaoController extends Controller
      */
     public function store(Request $request, $id)
     {
-        $request->validate([
-            'foto'      => 'required|file|image|max:20480', // 20 MB
+        // Detecta cedo quando o arquivo estourou os limites do PHP
+        // (upload_max_filesize / post_max_size). Sem isso, $request vem
+        // vazio e a validação retorna apenas "The given data was invalid".
+        $contentLength = (int) $request->server('CONTENT_LENGTH');
+        if ($contentLength > 0 && empty($_FILES) && empty($_POST)) {
+            $postMax = ini_get('post_max_size');
+            return response()->json([
+                'success' => false,
+                'message' => 'Arquivo excedeu o limite do servidor (post_max_size = ' . $postMax . '). '
+                           . 'Reduza a resolução da foto ou ajuste os limites do PHP.',
+            ], 413);
+        }
+
+        if ($request->hasFile('foto')) {
+            $f = $request->file('foto');
+            if (!$f->isValid()) {
+                $codes = [
+                    UPLOAD_ERR_INI_SIZE   => 'Arquivo maior que upload_max_filesize do PHP.',
+                    UPLOAD_ERR_FORM_SIZE  => 'Arquivo maior que o limite do formulário.',
+                    UPLOAD_ERR_PARTIAL    => 'Upload incompleto. Tente novamente.',
+                    UPLOAD_ERR_NO_FILE    => 'Nenhum arquivo enviado.',
+                    UPLOAD_ERR_NO_TMP_DIR => 'Servidor sem pasta temporária para upload.',
+                    UPLOAD_ERR_CANT_WRITE => 'Servidor não conseguiu gravar o arquivo.',
+                    UPLOAD_ERR_EXTENSION  => 'Upload bloqueado por extensão do PHP.',
+                ];
+                $msg = $codes[$f->getError()] ?? 'Falha desconhecida no upload.';
+                return response()->json(['success' => false, 'message' => $msg], 413);
+            }
+        }
+
+        $validator = \Validator::make($request->all(), [
+            'foto'      => 'required|file|mimetypes:image/*|max:51200', // 50 MB, qualquer image/* (inclui heic/heif)
             'latitude'  => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'precisao'  => 'nullable|numeric',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Arquivo inválido: ' . implode(' | ', $validator->errors()->all()),
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
 
         $processo = $this->processoAcessivel($id);
         if (!$processo) {
