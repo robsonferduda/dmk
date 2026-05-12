@@ -484,6 +484,85 @@ class ProcessoController extends Controller
         return view('processo/acompanhar', ['processo' => $processo, 'mensagens_externas' => $mensagens_externas, 'mensagens_internas' => $mensagens_internas, 'mensagens_cliente' => $mensagens_cliente]);
     }
 
+    /**
+     * [TIMEMARK - EM TESTES]
+     * Versão paralela de acompanhamento() para validar a feature Timemark
+     * (fotos do correspondente com data/hora, GPS, logo e textos).
+     * Mantida em rota separada (processos/acompanhamento/{id}/timemark)
+     * para que, em caso de bug, o acompanhamento oficial não seja afetado.
+     */
+    public function acompanhamentoTimemark($id)
+    {
+        try {
+            $id = safe_decrypt($id);
+        } catch (\Exception $e) {
+            Flash::error('O link utilizado é inválido ou expirou. Por favor, acesse o processo pela listagem.');
+            return redirect('processos');
+        }
+
+        switch (Auth::user()->role()->first()->slug) {
+            case 'correspondente':
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro', $id)
+                ->where('cd_correspondente_cor', $this->cdContaCon)
+                ->first();
+                break;
+
+            default:
+                $processo = Processo::with('anexos')
+                ->with('anexos.entidade.usuario')
+                ->where('cd_processo_pro', $id)
+                ->where('cd_conta_con', $this->cdContaCon)
+                ->first();
+                break;
+        }
+
+        if (!$processo) {
+            Flash::error('Processo não encontrado ou você não tem permissão para acessá-lo.');
+            return redirect('processos');
+        }
+
+        (new ProcessoMensagem)->atualizaMensagensLidas($id, $this->cdContaCon);
+
+        $mensagens_externas = ProcessoMensagem::where('cd_processo_pro', $id)
+                                                ->where('cd_tipo_mensagem_tim', TipoMensagem::EXTERNA)
+                                                ->with('entidadeRemetente')
+                                                ->with('entidadeDestinatario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
+
+        $mensagens_internas = ProcessoMensagem::where('cd_processo_pro', $id)
+                                                ->where('cd_tipo_mensagem_tim', TipoMensagem::INTERNA)
+                                                ->with('entidadeRemetente')
+                                                ->with('entidadeDestinatario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
+
+        $mensagens_cliente = ProcessoMensagem::where('cd_processo_pro', $id)
+                                                ->where('cd_tipo_mensagem_tim', TipoMensagem::CLIENTE)
+                                                ->with('cliente')
+                                                ->with('entidadeInterna.usuario')
+                                                ->withTrashed()
+                                                ->orderBy('created_at', 'ASC')
+                                                ->get();
+
+        // [TIMEMARK] comprovações de diligência (foto + GPS + estampa).
+        $comprovacoes = \App\ProcessoComprovacao::where('cd_processo_pro', $id)
+                            ->orderBy('dt_captura_pcm', 'DESC')
+                            ->get();
+
+        return view('processo/acompanhar_timemark', [
+            'processo'           => $processo,
+            'mensagens_externas' => $mensagens_externas,
+            'mensagens_internas' => $mensagens_internas,
+            'mensagens_cliente'  => $mensagens_cliente,
+            'comprovacoes'       => $comprovacoes,
+        ]);
+    }
+
     public function atualizarStatus(Request $request)
     {
         $processo = Processo::where('cd_processo_pro', $request->processo)->first();

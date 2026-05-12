@@ -180,7 +180,18 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/despesas/{id}', 'ProcessoController@financas');
     Route::get('processos/acompanhamento', 'ProcessoController@acompanhar');
     Route::get('processos/acompanhamento/{id}', 'ProcessoController@acompanhamento')->name('processo.acompanhar');
+    // [TIMEMARK - EM TESTES] Rota paralela do acompanhamento (correspondente/escritório)
+    // com a feature Timemark de comprovações. Mantida separada para que, em caso de
+    // bug, o acompanhamento tradicional não saia do ar.
+    Route::get('processos/acompanhamento/{id}/timemark', 'ProcessoController@acompanhamentoTimemark')->name('processo.acompanhar.timemark');
     Route::get('processos/acompanhamento/requisitar-dados/{processo}', 'ProcessoController@requisitarDados');
+
+    // [TIMEMARK - EM TESTES] Endpoints das comprovações (foto + GPS + estampa).
+    Route::get('processos/{id}/comprovacoes',                 'ProcessoComprovacaoController@index');
+    Route::post('processos/{id}/comprovacoes',                'ProcessoComprovacaoController@store');
+    Route::get('processos/comprovacao/{id}/imagem',           'ProcessoComprovacaoController@imagem');
+    Route::get('processos/comprovacao/{id}/imagem/{tipo}',    'ProcessoComprovacaoController@imagem');
+    Route::delete('processos/comprovacao/{id}',               'ProcessoComprovacaoController@destroy');
 
     // Pedidos de alteração de honorário
     Route::post('cliente/processos/honorario/solicitar', 'TaxaHonorarioAlteracaoController@solicitar');
