@@ -119,6 +119,14 @@ class ProcessoCheckinController extends Controller
             throw $e;
         }
 
+        // [CHATPRO] Dispara notificações (WhatsApp, etc.) APÓS a resposta HTTP,
+        // de forma fire-and-forget. Sem queue worker (projeto não usa Redis):
+        // app()->terminating() roda na fase de terminate do kernel HTTP.
+        $cdCheckin = $ck->cd_processo_checkin_pck;
+        app()->terminating(function () use ($cdCheckin) {
+            \App\Services\Checkin\CheckinNotifier::notificar($cdCheckin);
+        });
+
         return response()->json([
             'success' => true,
             'checkin' => $ck,
