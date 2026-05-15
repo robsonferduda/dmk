@@ -23,6 +23,17 @@ return [
     'timeout'         => (int) env('CHATPRO_TIMEOUT', 8),
     'connect_timeout' => (int) env('CHATPRO_CONNECT_TIMEOUT', 4),
 
+    // ----------------------------------------------------------------
+    // Webhook (recebimento de mensagens / acks)
+    // ----------------------------------------------------------------
+    // URL pública que cadastramos no painel ChatPro. Apenas referência.
+    'webhook_url'   => env('CHATPRO_WEBHOOK_URL', 'https://sistema.lawyerexpress.com.br/api/chatpro/webhook'),
+
+    // Token (segredo compartilhado) que o ChatPro envia como query string
+    // (?token=...) na URL do webhook. Se vazio, NÃO valida (use só em dev).
+    'webhook_token' => env('CHATPRO_WEBHOOK_TOKEN', ''),
+
+
     // Templates de mensagem. Placeholders disponíveis estão entre {chaves}.
     'templates' => [
 

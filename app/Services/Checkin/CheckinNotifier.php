@@ -61,6 +61,28 @@ class CheckinNotifier
             if (!$res['success']) {
                 Log::warning('[CHECKIN-NOTIFY] Falha ao enviar WhatsApp do check-in ' . $ck->cd_processo_checkin_pck . ': ' . ($res['message'] ?? '?'));
             }
+
+            // [WHATSAPP-LOG] Persiste o envio no histórico unificado, casando
+            // com os inbounds/acks que o webhook vai gravar. Tolera falha:
+            // problema de log nunca derruba a notificação.
+            try {
+                \App\WhatsappMensagem::create([
+                    'cd_conta_con'            => $conta->cd_conta_con,
+                    'tp_direcao_wmm'          => 'O',
+                    'nu_telefone_origem_wmm'  => preg_replace('/\D+/', '', (string) $conta->ds_chatpro_instance_id_con),
+                    'nu_telefone_destino_wmm' => preg_replace('/\D+/', '', (string) $destino),
+                    'ds_mensagem_wmm'         => $mensagem,
+                    'ds_tipo_wmm'             => 'text',
+                    'ds_status_wmm'           => $res['success'] ? 'sent' : 'failed',
+                    'ds_payload_raw_wmm'      => ['response' => $res, 'context' => 'checkin'],
+                    'cd_processo_pro'         => $ck->cd_processo_pro,
+                    'cd_processo_checkin_pck' => $ck->cd_processo_checkin_pck,
+                    'cd_correspondente_cor'   => $ck->processo ? $ck->processo->cd_correspondente_cor : null,
+                    'dt_evento_wmm'           => now(),
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('[CHECKIN-NOTIFY] Falha ao logar mensagem WhatsApp: ' . $e->getMessage());
+            }
         } catch (\Throwable $e) {
             Log::error('[CHECKIN-NOTIFY] Exceção: ' . $e->getMessage());
         }

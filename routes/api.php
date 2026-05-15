@@ -17,6 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// [CHATPRO] Webhook público — recebe eventos da ChatPro (mensagens, acks).
+// Sem auth (validação interna por token). Sem CSRF (rota api.php já está fora).
+Route::post('chatpro/webhook', 'Api\ChatProWebhookController@handle');
+Route::get ('chatpro/webhook', 'Api\ChatProWebhookController@handle'); // alguns gateways validam URL com GET
+
 Route::get('mensagem/processo/{id}', function(){});
 Route::get('mensagem/destinatario/nao-lidas/{id}', 'MensagemController@getMensagensByDestinatario');
 
