@@ -79,6 +79,11 @@ class CorrespondenteController extends Controller
         return view('correspondente/painel');
     }
 
+    public function checkIn()
+    {
+        return view('correspondente/checkin');
+    }
+
     public function atividades($id)
     {
         $correspondente = ContaCorrespondente::with(['correspondente.entidade', 'categoria'])
