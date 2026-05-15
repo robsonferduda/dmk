@@ -30,7 +30,7 @@ class CheckinNotifier
     public static function notificar($cdProcessoCheckinPck)
     {
         try {
-            $ck = ProcessoCheckin::with('processo.cliente', 'processo.vara', 'processo.cidade.estado', 'processo.correspondente.contaCorrespondente')
+            $ck = ProcessoCheckin::with('processo.cliente', 'processo.vara', 'processo.cidade.estado')
                 ->where('cd_processo_checkin_pck', $cdProcessoCheckinPck)
                 ->first();
 
@@ -75,9 +75,18 @@ class CheckinNotifier
 
         $proc = $ck->processo;
 
+        // O nome do correspondente vem de conta_correspondente_ccr (vínculo
+        // correspondente↔escritório). NÃO usamos $proc->correspondente->contaCorrespondente
+        // porque essa relação é filtrada por \Session::get('SESSION_CD_CONTA') e
+        // aqui rodamos pós-resposta, com o correspondente logado (sessão != escritório).
         $correspondente = '—';
-        if ($proc && $proc->correspondente && $proc->correspondente->contaCorrespondente) {
-            $correspondente = $proc->correspondente->contaCorrespondente->nm_conta_correspondente_ccr ?: '—';
+        if ($proc && $proc->cd_correspondente_cor && $ck->cd_conta_con) {
+            $cc = \App\ContaCorrespondente::where('cd_correspondente_cor', $proc->cd_correspondente_cor)
+                ->where('cd_conta_con', $ck->cd_conta_con)
+                ->first();
+            if ($cc && !empty($cc->nm_conta_correspondente_ccr)) {
+                $correspondente = $cc->nm_conta_correspondente_ccr;
+            }
         }
 
         $cliente = ($proc && $proc->cliente) ? $proc->cliente->nm_razao_social_cli : '—';
