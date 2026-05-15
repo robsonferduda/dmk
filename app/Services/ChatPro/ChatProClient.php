@@ -57,7 +57,13 @@ class ChatProClient
         if (!$conta) {
             return null;
         }
-        if (($conta->fl_chatpro_ativo_con ?? 'N') !== 'S') {
+        // fl_chatpro_ativo_con é BOOLEAN no Postgres → vem como bool (true/false)
+        // do Eloquent, mas pode chegar como 't'/'f' em consultas raw. Normalizamos.
+        $ativo = $conta->fl_chatpro_ativo_con ?? false;
+        if (is_string($ativo)) {
+            $ativo = in_array(strtolower($ativo), ['t', 'true', '1', 's', 'y', 'yes'], true);
+        }
+        if (!$ativo) {
             return null;
         }
         if (empty($conta->ds_chatpro_instance_id_con) || empty($conta->ds_chatpro_token_con)) {
