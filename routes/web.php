@@ -193,6 +193,14 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('processos/comprovacao/{id}/imagem/{tipo}',    'ProcessoComprovacaoController@imagem');
     Route::delete('processos/comprovacao/{id}',               'ProcessoComprovacaoController@destroy');
 
+    // [CHECK-IN] Tela admin com mapa + lista (espelho do timemark, sem foto).
+    Route::get('processos/acompanhamento/{id}/checkin', 'ProcessoController@acompanhamentoCheckin')->name('processo.acompanhar.checkin');
+
+    // [CHECK-IN] Endpoints do check-in (apenas GPS + data/hora, sem foto).
+    Route::get('processos/{id}/checkins',     'ProcessoCheckinController@index');
+    Route::post('processos/{id}/checkins',    'ProcessoCheckinController@store');
+    Route::delete('processos/checkin/{id}',   'ProcessoCheckinController@destroy');
+
     // Pedidos de alteração de honorário
     Route::post('cliente/processos/honorario/solicitar', 'TaxaHonorarioAlteracaoController@solicitar');
     Route::get('cliente/honorario-alteracoes', 'TaxaHonorarioAlteracaoController@meusHonorarios');

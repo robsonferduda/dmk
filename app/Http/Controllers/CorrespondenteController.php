@@ -81,7 +81,22 @@ class CorrespondenteController extends Controller
 
     public function checkIn()
     {
-        return view('correspondente/checkin');
+        // [CHECK-IN] Lista de processos ativos do correspondente, com indicação
+        // de quais já tiveram check-in registrado (1 por processo).
+        $processos = Processo::with(['cidade.estado', 'cliente', 'vara', 'status'])
+            ->where('cd_correspondente_cor', $this->conta)
+            ->whereNotIn('cd_status_processo_stp', [\StatusProcesso::FINALIZADO, \StatusProcesso::CANCELADO])
+            ->orderBy('dt_prazo_fatal_pro', 'asc')
+            ->get();
+
+        $checkins = \App\ProcessoCheckin::whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
+            ->get()
+            ->keyBy('cd_processo_pro');
+
+        return view('correspondente/checkin', [
+            'processos' => $processos,
+            'checkins'  => $checkins,
+        ]);
     }
 
     public function atividades($id)

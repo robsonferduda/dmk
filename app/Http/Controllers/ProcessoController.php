@@ -527,6 +527,49 @@ class ProcessoController extends Controller
         ]);
     }
 
+    /**
+     * [CHECK-IN]
+     * Tela dedicada aos check-ins do correspondente para um processo
+     * (apenas data/hora + GPS, sem foto). Espelha acompanhamentoTimemark().
+     */
+    public function acompanhamentoCheckin($id)
+    {
+        try {
+            $id = safe_decrypt($id);
+        } catch (\Exception $e) {
+            Flash::error('O link utilizado é inválido ou expirou. Por favor, acesse o processo pela listagem.');
+            return redirect('processos');
+        }
+
+        switch (Auth::user()->role()->first()->slug) {
+            case 'correspondente':
+                $processo = Processo::where('cd_processo_pro', $id)
+                    ->where('cd_correspondente_cor', $this->cdContaCon)
+                    ->first();
+                break;
+
+            default:
+                $processo = Processo::where('cd_processo_pro', $id)
+                    ->where('cd_conta_con', $this->cdContaCon)
+                    ->first();
+                break;
+        }
+
+        if (!$processo) {
+            Flash::error('Processo não encontrado ou você não tem permissão para acessá-lo.');
+            return redirect('processos');
+        }
+
+        $checkins = \App\ProcessoCheckin::where('cd_processo_pro', $id)
+                        ->orderBy('dt_checkin_pck', 'DESC')
+                        ->get();
+
+        return view('processo/acompanhar_checkin', [
+            'processo' => $processo,
+            'checkins' => $checkins,
+        ]);
+    }
+
     public function atualizarStatus(Request $request)
     {
         $processo = Processo::where('cd_processo_pro', $request->processo)->first();
