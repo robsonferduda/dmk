@@ -74,7 +74,7 @@
                                                 @if($p->status)
                                                     <br>
                                                     <span class="label label-default" style="background-color: {{ $p->status->ds_color_stp }};">
-                                                        {{ $p->status->nm_status_processo_stp ?? '' }}
+                                                        {{ $p->status->nm_status_processo_conta_stp ?? '' }}
                                                     </span>
                                                 @endif
                                             </td>
