@@ -328,6 +328,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::get('correspondente/cliente/{cliente}/dados', 'CorrespondenteController@dadosCliente');
     Route::get('correspondente/cliente/{cliente}/processos', 'CorrespondenteController@processosCliente');
     Route::get('correspondente/dados', 'CorrespondenteController@dados');
+    Route::get('correspondente/check-in', 'CorrespondenteController@checkIn');
     Route::get('correspondente/processos', 'CorrespondenteController@processos');
     Route::get('correspondente/dashboard/{id}', 'CorrespondenteController@dashboard');
     Route::get('correspondente/perfil/{id}', 'CorrespondenteController@perfil');
