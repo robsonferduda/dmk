@@ -80,6 +80,8 @@ class ChatProWebhookController extends Controller
                 $this->tratarAck($payload, $conta);
             } elseif ($this->ehEcoDeEnvio($payload)) {
                 $this->tratarEcoEnvio($payload, $conta);
+            } elseif ($this->ehEventoSistema($payload)) {
+                $this->tratarEventoSistema($payload, $conta);
             } else {
                 $this->tratarMensagemRecebida($payload, $conta);
             }
@@ -113,6 +115,24 @@ class ChatProWebhookController extends Controller
         $fromMe = $p['Body']['Info']['FromMe'] ?? null;
         return $type === 'send_message'
             && ($fromMe === true || $fromMe === 'true' || $fromMe === 1);
+    }
+
+    /**
+     * Eventos administrativos da instância (charge_status, instance_status,
+     * presence, etc.) — não são mensagens nem acks. Apenas registramos
+     * como rastro, sem tentar correlacionar.
+     */
+    private function ehEventoSistema(array $p)
+    {
+        $tipoLower = strtolower((string) ($p['type'] ?? ''));
+        if (in_array($tipoLower, ['charge_status', 'instance_status', 'presence', 'status'], true)) {
+            return true;
+        }
+        // Sem Body de mensagem e sem ack → não há o que processar como inbound.
+        if (empty($p['Body']) && empty($p['body']) && empty($p['message'])) {
+            return true;
+        }
+        return false;
     }
 
     // -----------------------------------------------------------------
@@ -153,6 +173,24 @@ class ChatProWebhookController extends Controller
             'ds_status_wmm'      => $statusNome,
             'ds_payload_raw_wmm' => $p,
             'dt_evento_wmm'      => $dtEvt,
+        ]);
+    }
+
+    /**
+     * Eventos do sistema (charge_status etc.): registra como rastro 'A'
+     * sem tentar relacionar a uma mensagem específica.
+     */
+    private function tratarEventoSistema(array $p, $conta)
+    {
+        $tipo   = (string) ($p['type'] ?? 'system');
+        $status = isset($p['status']) ? (string) $p['status'] : null;
+
+        WhatsappMensagem::create([
+            'cd_conta_con'       => $conta->cd_conta_con,
+            'tp_direcao_wmm'     => 'A',
+            'ds_tipo_wmm'        => $tipo,
+            'ds_status_wmm'      => $status,
+            'ds_payload_raw_wmm' => $p,
         ]);
     }
 
@@ -239,6 +277,18 @@ class ChatProWebhookController extends Controller
         $msgId = $info['Id']        ?? null;
         $ts    = $info['Timestamp'] ?? null;
         $dtEvt = $ts ? Carbon::createFromTimestamp((int) $ts) : null;
+
+        // Sem texto nem origem nem id: payload desconhecido — guarda como
+        // rastro 'A' para não poluir o histórico de conversas.
+        if (empty($texto) && empty($origem) && empty($msgId)) {
+            WhatsappMensagem::create([
+                'cd_conta_con'       => $conta->cd_conta_con,
+                'tp_direcao_wmm'     => 'A',
+                'ds_tipo_wmm'        => 'unknown',
+                'ds_payload_raw_wmm' => $p,
+            ]);
+            return;
+        }
 
         // Idempotência: não duplica mesmo id.
         if ($msgId && WhatsappMensagem::where('ds_message_id_wmm', $msgId)->exists()) {
