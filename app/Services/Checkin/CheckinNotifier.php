@@ -66,13 +66,25 @@ class CheckinNotifier
             // com os inbounds/acks que o webhook vai gravar. Tolera falha:
             // problema de log nunca derruba a notificação.
             try {
+                // ID retornado pela API (vem em response.body.resposeMessage.id [sic]).
+                $msgId = null;
+                if (!empty($res['body']) && is_array($res['body'])) {
+                    $msgId = $res['body']['resposeMessage']['id']
+                          ?? $res['body']['responseMessage']['id']
+                          ?? $res['body']['message_id']
+                          ?? null;
+                }
+
                 \App\WhatsappMensagem::create([
                     'cd_conta_con'            => $conta->cd_conta_con,
                     'tp_direcao_wmm'          => 'O',
-                    'nu_telefone_origem_wmm'  => preg_replace('/\D+/', '', (string) $conta->ds_chatpro_instance_id_con),
+                    // Origem (nº da instância) não é exposto pela API ChatPro;
+                    // só temos o instance_id. Deixamos null para não poluir.
+                    'nu_telefone_origem_wmm'  => null,
                     'nu_telefone_destino_wmm' => preg_replace('/\D+/', '', (string) $destino),
                     'ds_mensagem_wmm'         => $mensagem,
                     'ds_tipo_wmm'             => 'text',
+                    'ds_message_id_wmm'       => $msgId,
                     'ds_status_wmm'           => $res['success'] ? 'sent' : 'failed',
                     'ds_payload_raw_wmm'      => ['response' => $res, 'context' => 'checkin'],
                     'cd_processo_pro'         => $ck->cd_processo_pro,
