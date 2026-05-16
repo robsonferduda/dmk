@@ -70,7 +70,8 @@ class Processo extends Model implements AuditableContract
                             'cd_area_direito_ado',
                             'fl_importacao_pro',    
                             'ds_planilha_pro',
-                            'fl_documentacao_cliente_pro'
+                            'fl_documentacao_cliente_pro',
+                            'ds_checkin_token_pro'
     					  ];
 
     public $timestamps = true;

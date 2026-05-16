@@ -76,6 +76,11 @@ Route::post('correspondente/cadastro', 'CorrespondenteController@cadastro');
 Route::post('correspondente/usuario/senha', 'CorrespondenteController@novaSenha')->name('password.novo');
 Route::resource('contas', 'ContaController');
 
+// [CHECK-IN PÚBLICO] Link com token enviado por WhatsApp ao correspondente.
+// Permite registrar o check-in (GPS) sem login.
+Route::get('c/{token}',  'PublicCheckinController@show')->name('checkin.publico.show');
+Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico.store');
+
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {

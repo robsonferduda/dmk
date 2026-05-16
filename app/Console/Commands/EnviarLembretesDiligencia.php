@@ -195,11 +195,14 @@ class EnviarLembretesDiligencia extends Command
         }
         $hora = $proc->hr_audiencia_pro ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '—';
 
-        // Link de check-in. Hoje a tela do correspondente é uma listagem
-        // (`/correspondente/check-in`); deep-link por processo pode ser
-        // adicionado depois — o correspondente identifica o processo na
-        // lista pelo número/cliente que vão na própria mensagem.
-        $linkCheckin = url('/correspondente/check-in');
+        // Link de check-in: deep-link com token público (sem login).
+        // Token é gerado uma vez por processo e persistido. Se já existir,
+        // reutiliza (o link continua válido enquanto o processo existir).
+        if (empty($proc->ds_checkin_token_pro)) {
+            $proc->ds_checkin_token_pro = bin2hex(random_bytes(16)); // 32 chars hex
+            $proc->save();
+        }
+        $linkCheckin = url('/c/' . $proc->ds_checkin_token_pro);
 
         return strtr($template, [
             '{correspondente}'  => $nomeCorresp,
