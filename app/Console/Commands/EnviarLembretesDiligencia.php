@@ -28,7 +28,8 @@ class EnviarLembretesDiligencia extends Command
 {
     protected $signature = 'whatsapp:lembrete-diligencias
                             {--data= : Data alvo (Y-m-d). Default: hoje.}
-                            {--processo= : Limita a um cd_processo_pro espec\u00edfico (\u00fatil p/ testes).}
+                            {--processo= : Limita a um cd_processo_pro espec\u00edfico (ignora filtro de data).}
+                            {--force : Reenvia mesmo que j\u00e1 tenha sido enviado hoje (\u00fatil em testes).}
                             {--dry-run : N\u00e3o envia; apenas lista o que enviaria.}';
 
     protected $description = 'Envia lembretes de diligência via WhatsApp aos correspondentes (prazo fatal = hoje).';
@@ -38,15 +39,21 @@ class EnviarLembretesDiligencia extends Command
         $data       = $this->option('data') ? Carbon::parse($this->option('data'))->toDateString() : Carbon::today()->toDateString();
         $cdProcesso = $this->option('processo');
         $dryRun     = (bool) $this->option('dry-run');
-
-        $this->info("[lembrete] Data alvo: {$data}" . ($dryRun ? '  (DRY-RUN)' : ''));
-
-        // Processos com prazo fatal na data, com correspondente atribuído.
-        $q = Processo::whereDate('dt_prazo_fatal_pro', $data)
-            ->whereNotNull('cd_correspondente_cor');
+        $force      = (bool) $this->option('force');
 
         if ($cdProcesso) {
+            $this->info("[lembrete] MODO TESTE: processo={$cdProcesso} (filtro de data ignorado)" . ($dryRun ? '  (DRY-RUN)' : ''));
+        } else {
+            $this->info("[lembrete] Data alvo: {$data}" . ($dryRun ? '  (DRY-RUN)' : ''));
+        }
+
+        // Quando --processo é passado, ignoramos o filtro de data: o
+        // intuito é forçar o envio para um processo específico em teste.
+        $q = Processo::whereNotNull('cd_correspondente_cor');
+        if ($cdProcesso) {
             $q->where('cd_processo_pro', $cdProcesso);
+        } else {
+            $q->whereDate('dt_prazo_fatal_pro', $data);
         }
 
         $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
@@ -78,14 +85,17 @@ class EnviarLembretesDiligencia extends Command
                 }
 
                 // Idempotência: não reenvia se já mandamos lembrete deste processo hoje.
-                $jaEnviado = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
-                    ->where('cd_processo_pro', $proc->cd_processo_pro)
-                    ->where('ds_tipo_wmm', 'lembrete_diligencia')
-                    ->whereDate('created_at', $data)
-                    ->exists();
-                if ($jaEnviado) {
-                    $this->line("  processo {$proc->cd_processo_pro}: lembrete já enviado hoje, pulando.");
-                    $ignorados++; continue;
+                // --force ignora a checagem (útil em testes).
+                if (!$force) {
+                    $jaEnviado = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
+                        ->where('cd_processo_pro', $proc->cd_processo_pro)
+                        ->where('ds_tipo_wmm', 'lembrete_diligencia')
+                        ->whereDate('created_at', $data)
+                        ->exists();
+                    if ($jaEnviado) {
+                        $this->line("  processo {$proc->cd_processo_pro}: lembrete já enviado hoje, pulando (use --force para reenviar).");
+                        $ignorados++; continue;
+                    }
                 }
 
                 $mensagem = $this->montarMensagem($proc, $contaCorrespondente, $conta);
