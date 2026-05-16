@@ -46,6 +46,21 @@ return [
             "Data/Hora: {datahora}\n" .
             "Cliente: {cliente}",
 
+        // Lembrete diário enviado ao CORRESPONDENTE no dia do prazo fatal.
+        // Placeholders: {correspondente}, {processo}, {cliente}, {vara},
+        // {cidade}, {hora_audiencia}, {link_checkin}.
+        'lembrete_diligencia' =>
+            "⚖️ *Diligência hoje*\n" .
+            "Olá, {correspondente}!\n" .
+            "Você tem diligência marcada para hoje:\n" .
+            "• Processo: {processo}\n" .
+            "• Cliente: {cliente}\n" .
+            "• Vara: {vara}\n" .
+            "• Cidade: {cidade}\n" .
+            "• Horário: {hora_audiencia}\n\n" .
+            "Ao chegar no local, faça o check-in:\n" .
+            "{link_checkin}",
+
     ],
 
 ];

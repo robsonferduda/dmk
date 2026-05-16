@@ -49,28 +49,12 @@ class CheckinNotifier
                 return;
             }
 
-            // [CHECK-IN] Destinatário = telefone do CORRESPONDENTE.
-            // Em `conta_con`, o correspondente é uma linha com
-            // fl_correspondente_con=true. O processo aponta para ele em
-            // cd_correspondente_cor (que é, na prática, um cd_conta_con).
-            // Caímos para o telefone do escritório (auto-aviso) se o
-            // correspondente não tiver número configurado.
-            $contaCorrespondente = null;
-            if ($ck->processo && $ck->processo->cd_correspondente_cor) {
-                $contaCorrespondente = Conta::where('cd_conta_con', $ck->processo->cd_correspondente_cor)->first();
-            }
-
-            $destino = null;
-            if ($contaCorrespondente && !empty($contaCorrespondente->nu_telefone_whatsapp_con)) {
-                $destino = $contaCorrespondente->nu_telefone_whatsapp_con;
-            } elseif (!empty($conta->nu_telefone_whatsapp_con)) {
-                // Fallback: notifica o próprio escritório.
-                $destino = $conta->nu_telefone_whatsapp_con;
-                Log::info('[CHECKIN-NOTIFY] Correspondente sem WhatsApp; enviando ao escritório (conta ' . $conta->cd_conta_con . ').');
-            }
-
+            // [CHECK-IN] Confirmação do check-in vai para o ESCRITÓRIO
+            // (a notificação ao correspondente é feita ANTES, pelo lembrete
+            // diário de diligência).
+            $destino = $conta->nu_telefone_whatsapp_con ?? null;
             if (empty($destino)) {
-                Log::info('[CHECKIN-NOTIFY] Sem telefone WhatsApp (correspondente nem escritório). Conta ' . $conta->cd_conta_con);
+                Log::info('[CHECKIN-NOTIFY] Escritório (conta ' . $conta->cd_conta_con . ') sem telefone WhatsApp configurado.');
                 return;
             }
 

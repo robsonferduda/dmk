@@ -28,6 +28,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('arquivos:limpar')
                  ->dailyAt('02:00')
                  ->appendOutputTo(storage_path('logs/limpeza-arquivos.log'));
+
+        // [WHATSAPP-LEMBRETE] Lembrete aos correspondentes sobre
+        // diligências do dia (prazo fatal = hoje), com link de check-in.
+        $schedule->command('whatsapp:lembrete-diligencias')
+                 ->dailyAt('07:00')
+                 ->appendOutputTo(storage_path('logs/whatsapp-lembrete.log'));
     }
 
     /**
