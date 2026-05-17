@@ -33,6 +33,12 @@ return [
     // (?token=...) na URL do webhook. Se vazio, NÃO valida (use só em dev).
     'webhook_token' => env('CHATPRO_WEBHOOK_TOKEN', ''),
 
+    // Janela (em dias) usada pelo webhook para amarrar uma mensagem
+    // INBOUND a um processo, quando não há "quoted reply": procura a
+    // última outbound para o mesmo telefone com cd_processo_pro
+    // preenchido dentro desse intervalo. 0 desliga o fallback.
+    'inbound_link_window_days' => (int) env('CHATPRO_INBOUND_LINK_WINDOW_DAYS', 30),
+
 
     // Templates de mensagem. Placeholders disponíveis estão entre {chaves}.
     'templates' => [
@@ -47,19 +53,25 @@ return [
             "Cliente: {cliente}",
 
         // Lembrete diário enviado ao CORRESPONDENTE no dia do prazo fatal.
-        // Placeholders: {correspondente}, {processo}, {cliente}, {vara},
-        // {cidade}, {hora_audiencia}, {link_checkin}.
+        // Placeholders: {correspondente}, {processo}, {reu}, {vara},
+        // {cidade}, {data}, {hora_audiencia}, {link_checkin}.
         'lembrete_diligencia' =>
-            "⚖️ *Diligência hoje*\n" .
             "Olá, {correspondente}!\n" .
-            "Você tem diligência marcada para hoje:\n" .
+            "Você tem audiência do DMK marcada para hoje:\n" .
+            "• Data e Horário: {data} às {hora_audiencia}\n" .
             "• Processo: {processo}\n" .
-            "• Cliente: {cliente}\n" .
+            "• Cliente: {reu}\n" .
             "• Vara: {vara}\n" .
-            "• Cidade: {cidade}\n" .
-            "• Horário: {hora_audiencia}\n\n" .
-            "Ao chegar no local, faça o check-in:\n" .
-            "{link_checkin}",
+            "• Cidade: {cidade}\n\n" .
+            "🚨 *Obrigatório:*\n" .
+            "• Confirme o recebimento dos documentos, orientações e link (se virtual) no sistema.\n" .
+            "• Confirme o local, a manutenção do ato antes do deslocamento e chegue com antecedência.\n" .
+            "• Ausência de advogado/preposto: ligar imediatamente para evitar revelia/confissão.\n" .
+            "• Não dispensar testemunhas/depoimentos sem autorização e registrar protestos em ata.\n" .
+            "• *CHECK-IN NO LOCAL OBRIGATÓRIO* para liberação do pagamento.\n\n" .
+            "📲 Ao chegar no local, realize o check-in no link abaixo:\n" .
+            "{link_checkin}\n\n" .
+            "Urgências, ligue: (48) 99130-8024",
 
     ],
 

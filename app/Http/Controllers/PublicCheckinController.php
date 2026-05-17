@@ -105,6 +105,12 @@ class PublicCheckinController extends Controller
             throw $e;
         }
 
+        // [CHECK-IN PÚBLICO] Token de uso único: invalida após o check-in.
+        // Se o correspondente reabrir o link, verá "link inválido". A
+        // tela de sucesso continua aparecendo nesta resposta JSON.
+        $processo->ds_checkin_token_pro = null;
+        $processo->save();
+
         // Notifica o escritório (WhatsApp), fire-and-forget.
         $cdCheckin = $ck->cd_processo_checkin_pck;
         app()->terminating(function () use ($cdCheckin) {

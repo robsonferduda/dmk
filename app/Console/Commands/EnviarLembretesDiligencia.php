@@ -193,7 +193,8 @@ class EnviarLembretesDiligencia extends Command
             $cidade = $proc->cidade->nm_cidade_cde
                 . (isset($proc->cidade->estado) ? '/' . $proc->cidade->estado->sg_estado_est : '');
         }
-        $hora = $proc->hr_audiencia_pro ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '—';
+        $hora = $proc->hr_audiencia_pro   ? date('H:i', strtotime($proc->hr_audiencia_pro))   : '—';
+        $data = $proc->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '—';
 
         // Link de check-in: deep-link com token público (sem login).
         // Token é gerado uma vez por processo e persistido. Se já existir,
@@ -208,8 +209,10 @@ class EnviarLembretesDiligencia extends Command
             '{correspondente}'  => $nomeCorresp,
             '{processo}'        => $proc->nu_processo_pro ?: ('#' . $proc->cd_processo_pro),
             '{cliente}'         => $cliente,
+            '{reu}'             => $proc->nm_reu_pro ?: '—',
             '{vara}'            => $vara,
             '{cidade}'          => $cidade,
+            '{data}'            => $data,
             '{hora_audiencia}'  => $hora,
             '{link_checkin}'    => $linkCheckin,
         ]);

@@ -299,6 +299,29 @@ class ChatProWebhookController extends Controller
             ? $this->resolverCorrespondentePorTelefone($origem, $conta->cd_conta_con)
             : null;
 
+        // [VÍNCULO COM PROCESSO]
+        // 1) Reply citado: usa o QuotedMessageID e pega o processo
+        //    diretamente da outbound original.
+        // 2) Fallback: última outbound para o mesmo telefone com
+        //    cd_processo_pro preenchido, dentro da janela configurada.
+        $cdProcesso       = null;
+        $cdProcessoCkPck  = null;
+        $quotedMsgId      = $this->extrairQuotedMsgId($p);
+        $janelaDias       = (int) config('chatpro.inbound_link_window_days', 30);
+
+        if ($quotedMsgId || ($origem && $janelaDias > 0)) {
+            $vinculo = $this->resolverProcessoParaInbound(
+                $origem,
+                $conta->cd_conta_con,
+                $quotedMsgId,
+                $janelaDias
+            );
+            if ($vinculo) {
+                $cdProcesso      = $vinculo['cd_processo_pro']         ?? null;
+                $cdProcessoCkPck = $vinculo['cd_processo_checkin_pck'] ?? null;
+            }
+        }
+
         WhatsappMensagem::create([
             'cd_conta_con'           => $conta->cd_conta_con,
             'tp_direcao_wmm'         => 'I',
@@ -309,6 +332,8 @@ class ChatProWebhookController extends Controller
             'ds_status_wmm'          => 'received',
             'ds_payload_raw_wmm'     => $p,
             'cd_correspondente_cor'  => $cdCorrespondente,
+            'cd_processo_pro'        => $cdProcesso,
+            'cd_processo_checkin_pck'=> $cdProcessoCkPck,
             'dt_evento_wmm'          => $dtEvt,
         ]);
     }
@@ -348,5 +373,88 @@ class ChatProWebhookController extends Controller
             ->first();
 
         return $row ? $row->cd_conta_con : null;
+    }
+
+    /**
+     * Extrai o ID da mensagem citada (reply) de um payload de inbound.
+     *
+     * O ChatPro v5 não documenta um nome único para esse campo; aqui
+     * tentamos as variações observadas em produção. Devolve string ou
+     * null.
+     */
+    private function extrairQuotedMsgId(array $p)
+    {
+        $candidatos = [
+            $p['Body']['Info']['QuotedMessageID']         ?? null,
+            $p['Body']['Info']['QuotedMessageId']         ?? null,
+            $p['Body']['QuotedMessageID']                 ?? null,
+            $p['Body']['QuotedMessageId']                 ?? null,
+            $p['Body']['ContextInfo']['QuotedMessageId']  ?? null,
+            $p['Body']['ContextInfo']['stanzaId']         ?? null,
+            $p['quotedMsgId']                             ?? null,
+        ];
+        foreach ($candidatos as $c) {
+            if (is_string($c) && $c !== '') {
+                return $c;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Resolve o processo (e check-in) ao qual uma mensagem INBOUND
+     * pertence.
+     *
+     *  1) Se o WhatsApp marcou a inbound como reply de uma outbound
+     *     nossa (QuotedMessageID), herda o cd_processo_pro daquela
+     *     outbound — vínculo mais preciso possível.
+     *  2) Caso contrário, procura a última outbound enviada para o
+     *     mesmo telefone (sufixo de 10 dígitos), com cd_processo_pro
+     *     preenchido, dentro da janela configurada.
+     *
+     * Retorna ['cd_processo_pro' => ..., 'cd_processo_checkin_pck' => ...]
+     * ou null se nada for encontrado.
+     */
+    private function resolverProcessoParaInbound($telefone, $cdContaEscritorio, $quotedMsgId, $janelaDias)
+    {
+        // 1) Reply citado.
+        if ($quotedMsgId) {
+            $q = WhatsappMensagem::where('ds_message_id_wmm', $quotedMsgId)
+                ->whereNotNull('cd_processo_pro')
+                ->first();
+            if ($q) {
+                return [
+                    'cd_processo_pro'         => $q->cd_processo_pro,
+                    'cd_processo_checkin_pck' => $q->cd_processo_checkin_pck,
+                ];
+            }
+        }
+
+        // 2) Última outbound para o mesmo telefone.
+        if (!$telefone || $janelaDias <= 0) {
+            return null;
+        }
+        $tel = preg_replace('/\D+/', '', (string) $telefone);
+        if (strlen($tel) < 10) {
+            return null;
+        }
+        $sufixo = substr($tel, -10);
+
+        $row = WhatsappMensagem::where('cd_conta_con', $cdContaEscritorio)
+            ->where('tp_direcao_wmm', 'O')
+            ->whereNotNull('cd_processo_pro')
+            ->whereRaw("regexp_replace(nu_telefone_destino_wmm, '\\D', '', 'g') LIKE ?", ['%' . $sufixo])
+            ->where('created_at', '>=', Carbon::now()->subDays($janelaDias))
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'cd_processo_pro'         => $row->cd_processo_pro,
+            'cd_processo_checkin_pck' => $row->cd_processo_checkin_pck,
+        ];
     }
 }
