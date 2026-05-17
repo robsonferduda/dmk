@@ -77,7 +77,7 @@
                                             <section class="col col-3">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
-                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : ''}}">
+                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : (($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : '')}}">
                                                 </label>
                                             </section>    
                                         </div>       
@@ -97,32 +97,32 @@
                                             <section class="col col-3">
                                                 <label class="label">CEP</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '' }}">
+                                                    <input type="text" name="nu_cep_ede" class="cep" placeholder="CEP" value="{{old('nu_cep_ede') ? old('nu_cep_ede') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_cep_ede : '') }}">
                                                 </label>
                                             </section>     
 
                                             <section class="col col-9">
                                                 <label class="label">Logradouro</label>
                                                 <label class="input">
-                                                    <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_logradouro_ede : '' }}">
+                                                    <input type="text" name="dc_logradouro_ede" placeholder="Logradouro" value="{{old('dc_logradouro_ede') ? old('dc_logradouro_ede') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_logradouro_ede : '') }}">
                                                 </label>
                                             </section>
                                             <section class="col col-2">
                                                 <label class="label">Nº</label>
                                                 <label class="input">
-                                                    <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_numero_ede : '' }}">
+                                                    <input type="text" name="nu_numero_ede" placeholder="Nº" value="{{old('nu_numero_ede') ? old('nu_numero_ede') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nu_numero_ede : '') }}">
                                                 </label>
                                             </section>
                                             <section class="col col-6">
                                                 <label class="label">Bairro</label>
                                                 <label class="input">
-                                                    <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nm_bairro_ede : '' }}">
+                                                    <input type="text" name="nm_bairro_ede" placeholder="Bairro" value="{{old('nm_bairro_ede') ? old('nm_bairro_ede') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->nm_bairro_ede : '') }}">
                                                 </label>
                                             </section> 
                                             <section class="col col-4">
                                                 <label class="label">Complemento</label>
                                                 <label class="input">
-                                                    <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_complemento_ede : '' }}">
+                                                    <input type="text" name="dc_complemento_ede" placeholder="Complemento" value="{{old('dc_complemento_ede') ? old('dc_complemento_ede') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->dc_complemento_ede : '') }}">
                                                 </label>
                                             </section>
                                         </div>
@@ -140,7 +140,7 @@
                                             </section>
 
                                             <section class="col col-8">
-                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                                <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '') }}">
                                                 <label class="label label-pai_cidade_endereco" >Cidade</label>          
                                                 <select  id="cidade" name="cd_cidade_cde" class="select2 pai_cidade_endereco">
                                                     <option value="">Selecione uma cidade</option>
@@ -397,7 +397,7 @@
                                         </select> 
                                     </section>
                                     <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '') }}">
                                         <label class="label label-pai_cidade_origem">Cidade</label>          
                                         <select id="cidade_origem" disabled name="cd_cidade_cde" class="select2 pai_cidade_origem">
                                             <option selected value="">Selecione a cidade</option>
@@ -441,7 +441,7 @@
                                         </select> 
                                     </section>
                                     <section class="col col-6">
-                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : ($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '' }}">
+                                        <input type="hidden" id="cd_cidade_cde_aux" name="cd_cidade_cde_aux" value="{{ old('cd_cidade_cde') ? old('cd_cidade_cde') : (($correspondente->entidade->endereco) ? $correspondente->entidade->endereco->cd_cidade_cde : '') }}">
                                         <label class="label label-pai_cidade_atuacao">Cidade</label>          
                                         <select id="cidade_atuacao" disabled name="cd_cidade_cde" class="select2 pai_cidade_atuacao">
                                             <option selected value="">Selecione a cidade</option>
