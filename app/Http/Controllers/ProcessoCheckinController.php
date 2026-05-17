@@ -94,6 +94,7 @@ class ProcessoCheckinController extends Controller
             ? date('Y-m-d H:i:s', strtotime($request->input('dt_checkin')))
             : date('Y-m-d H:i:s');
 
+
         try {
             $ck = ProcessoCheckin::create([
                 'cd_processo_pro'         => $processo->cd_processo_pro,
@@ -108,6 +109,9 @@ class ProcessoCheckinController extends Controller
                 'ds_endereco_pck'         => $endereco,
                 'ds_observacao_pck'       => $observacao,
             ]);
+            // Atualiza o processo para sinalizar check-in feito
+            $processo->fl_checkin_pro = true;
+            $processo->save();
         } catch (\Illuminate\Database\QueryException $e) {
             // 23505 = unique_violation (constraint uq_pck_processo_ativo)
             if ($e->getCode() === '23505') {
