@@ -81,10 +81,18 @@ class CorrespondenteController extends Controller
 
     public function whatsapp()
     {
+        $conta = $this->conta;
+
         $correspondentes = DB::table('conta_correspondente_ccr as t1')
             ->join('conta_con as t3', 't3.cd_conta_con', '=', 't1.cd_correspondente_cor')
-            ->where('t1.cd_conta_con', $this->conta)
+            ->where('t1.cd_conta_con', $conta)
             ->whereNull('t1.deleted_at')
+            ->whereExists(function ($query) use ($conta) {
+                $query->select(DB::raw(1))
+                    ->from('processo_pro')
+                    ->whereColumn('processo_pro.cd_correspondente_cor', 't1.cd_correspondente_cor')
+                    ->where('processo_pro.cd_conta_con', $conta);
+            })
             ->select(
                 't3.cd_conta_con',
                 't3.nm_razao_social_con',
