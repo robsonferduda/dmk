@@ -412,6 +412,26 @@
 
                                 <div class="row" style="padding: 5px 20px;">
                                     <header>
+                                        <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">Número WhatsApp <small class="text-muted">(com DDD, ex: 48999999999)</small></label>
+                                                <label class="input">
+                                                    <i class="icon-append fa fa-whatsapp" style="color: #25D366;"></i>
+                                                    <input type="text" name="nu_telefone_whatsapp_con" id="nu_telefone_whatsapp_con"
+                                                        placeholder="48999999999"
+                                                        value="{{ old('nu_telefone_whatsapp_con', $correspondente->correspondente->nu_telefone_whatsapp_con ?? '') }}">
+                                                </label>
+                                                <small class="text-muted">Este número será usado para receber lembretes e comunicados automáticos via WhatsApp.</small>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                <div class="row" style="padding: 5px 20px;">
+                                    <header>
                                         <i class="fa  fa-file-text-o"></i> Observações 
                                     </header>
                                     <fieldset>

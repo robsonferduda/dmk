@@ -26,7 +26,8 @@ class Conta extends Model implements AuditableContract
                             'fl_despesa_nao_reembolsavel_con',
                             'fl_notificacao_correspondente_con',
                             'fl_envio_enter_con',
-                            'prazo_cancelamento_processo'
+                            'prazo_cancelamento_processo',
+                            'nu_telefone_whatsapp_con'
     					  ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];

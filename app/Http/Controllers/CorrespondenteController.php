@@ -799,6 +799,7 @@ class CorrespondenteController extends Controller
         if (Auth::user()->cd_nivel_niv == 3) {
             $correspondente->nm_razao_social_con = $request->nm_conta_correspondente_ccr;
             $correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
+            $correspondente->nu_telefone_whatsapp_con = preg_replace('/\D/', '', $request->nu_telefone_whatsapp_con ?? '');
             $correspondente->save();
         } else {
             $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $request->conta)->first();
@@ -809,6 +810,9 @@ class CorrespondenteController extends Controller
             $conta_correspondente->obs_ccr = $request->obs_ccr;
 
             $vinculo = $conta_correspondente->saveOrFail();
+
+            $correspondente->nu_telefone_whatsapp_con = preg_replace('/\D/', '', $request->nu_telefone_whatsapp_con ?? '');
+            $correspondente->save();
         }
 
         if ($vinculo or $correspondente) {
