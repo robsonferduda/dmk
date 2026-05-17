@@ -260,7 +260,9 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>                        
+                            </div>           
+                            
+                            
                                  
                             <div class="row" style="padding: 5px 20px;">
                                     <header>
@@ -463,6 +465,42 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <hr/>
+                            <header>
+                                <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                            </header>
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-4">
+                                        <label class="label">Número WhatsApp <small class="text-muted">(somente números, com DDD)</small></label>
+                                        <label class="input">
+                                            <i class="icon-append fa fa-whatsapp" style="color: #25D366;"></i>
+                                            <input type="text" name="nu_telefone_whatsapp_con" id="nu_telefone_whatsapp_con"
+                                                placeholder="48999999999"
+                                                value="{{ old('nu_telefone_whatsapp_con', $correspondente->nu_telefone_whatsapp_con ?? '') }}">
+                                        </label>
+                                        <small class="text-muted">Este número receberá lembretes e comunicados automáticos via WhatsApp.</small>
+                                    </section>
+                                    @php
+                                        $chatproAtivo = $correspondente->fl_chatpro_ativo_con ?? false;
+                                        if (is_string($chatproAtivo)) {
+                                            $chatproAtivo = in_array(strtolower($chatproAtivo), ['t', 'true', '1', 's', 'y', 'yes'], true);
+                                        }
+                                    @endphp
+                                    <section class="col col-4" style="padding-top: 28px;">
+                                        @if($chatproAtivo)
+                                            <span class="label label-success" style="font-size: 12px; padding: 6px 12px;">
+                                                <i class="fa fa-check-circle"></i> Envio automático ativo
+                                            </span>
+                                        @else
+                                            <span class="label label-default" style="font-size: 12px; padding: 6px 12px;">
+                                                <i class="fa fa-times-circle"></i> Envio automático inativo
+                                            </span>
+                                        @endif
+                                    </section>
+                                </div>
+                            </fieldset>
 
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>
