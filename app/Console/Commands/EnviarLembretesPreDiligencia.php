@@ -92,14 +92,14 @@ class EnviarLembretesPreDiligencia extends Command
                 }
 
 
-                // Log de depuração antes do envio
+                $mensagem = $this->montarMensagem($proc, $contaCorrespondente, $conta);
+
+                // Log de depuração após montar a mensagem
                 \Log::info('[LEMBRETE-PRÉ] Enviando mensagem', [
                     'processo' => $proc->cd_processo_pro,
                     'destino' => $destino,
-                    'mensagem' => $mensagem ?? '(ainda não montada)'
+                    'mensagem' => $mensagem
                 ]);
-
-                $mensagem = $this->montarMensagem($proc, $contaCorrespondente, $conta);
 
                 $this->line("  -> {$proc->cd_processo_pro}  destino={$destino}");
 
