@@ -21,6 +21,15 @@ use App\Notifications\ProcessoCancelamentoNotification;
 use App\Notifications\ProcessoCadastroClienteNotification;
 
 class Processo extends Model implements AuditableContract
+    // Gera token público para confirmação de audiência, se não existir
+    public function getOrCreateConfirmacaoAudienciaToken()
+    {
+        if (empty($this->ds_confirmacao_audiencia_token_pro)) {
+            $this->ds_confirmacao_audiencia_token_pro = bin2hex(random_bytes(16));
+            $this->save();
+        }
+        return $this->ds_confirmacao_audiencia_token_pro;
+    }
 {
 
 	use SoftDeletes;

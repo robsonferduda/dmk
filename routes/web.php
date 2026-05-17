@@ -23,6 +23,9 @@ Route::get('processos/anexos/download/token/{token}', 'AnexoProcessoController@d
 // Rota pública para confirmar recebimento dos documentos via link no e-mail
 Route::get('processo/confirmar-recebimento-anexos/{token}', 'ProcessoController@confirmarRecebimentoAnexosToken')->name('processo.confirmar-recebimento-anexos');
 
+// Rota pública para confirmação de audiência via token (link enviado por WhatsApp)
+Route::get('processo/confirmar-audiencia/{token}', 'ConfirmacaoAudienciaController@confirmar')->name('processo.confirmar-audiencia');
+
 /**
  * Rota de teste para devs: envia o e-mail de "Envio de Documentos" para verificação do template.
  * Uso: /dev/teste-email-envio-documentos?id=CD_PROCESSO[&email=outro@dominio.com]

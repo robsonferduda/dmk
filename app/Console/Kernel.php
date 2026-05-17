@@ -34,6 +34,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('whatsapp:lembrete-diligencias')
                  ->dailyAt('07:00')
                  ->appendOutputTo(storage_path('logs/whatsapp-lembrete.log'));
+
+        // [WHATSAPP-LEMBRETE PRÉ] Lembrete pré-diligência (prazo fatal = amanhã)
+        $schedule->command('whatsapp:lembrete-prediligencias')
+             ->dailyAt('07:00')
+             ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
     }
 
     /**
