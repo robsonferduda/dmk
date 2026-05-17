@@ -175,6 +175,10 @@ class EnviarLembretesPreDiligencia extends Command
     private function montarMensagem(Processo $proc, Conta $contaCorrespondente, Conta $contaEscritorio)
     {
         $template = config('chatpro.templates.lembrete_prediligencia', '');
+        \Log::info('[LEMBRETE-PRÉ] Template carregado em montarMensagem', [
+            'processo' => $proc->cd_processo_pro,
+            'template' => $template
+        ]);
         // Gera token de confirmação se não existir
         $token = $proc->getOrCreateConfirmacaoAudienciaToken();
         $linkConfirmacao = url('/processo/confirmar-audiencia/' . $token);
