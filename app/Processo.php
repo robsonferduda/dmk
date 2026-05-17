@@ -21,6 +21,7 @@ use App\Notifications\ProcessoCancelamentoNotification;
 use App\Notifications\ProcessoCadastroClienteNotification;
 
 class Processo extends Model implements AuditableContract
+{
     // Gera token público para confirmação de audiência, se não existir
     public function getOrCreateConfirmacaoAudienciaToken()
     {
