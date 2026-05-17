@@ -31,7 +31,6 @@ class Processo extends Model implements AuditableContract
         }
         return $this->ds_confirmacao_audiencia_token_pro;
     }
-{
 
 	use SoftDeletes;
     use Auditable;
