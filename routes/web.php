@@ -300,6 +300,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondentes/ajax', 'CorrespondenteController@ajaxList')->name('correspondentes.ajax');
     Route::get('correspondente/buscar', 'CorrespondenteController@buscar');
     Route::get('correspondente/painel', 'CorrespondenteController@painel');
+    Route::get('correspondente/whatsapp', 'CorrespondenteController@whatsapp');
     Route::get('correspondente/atividades/{id}', 'CorrespondenteController@atividades');
     Route::get('correspondente/dados/{id}', 'CorrespondenteController@dados');
     Route::get('correspondente/comarcas/{id}', 'CorrespondenteController@comarcas');

@@ -79,6 +79,25 @@ class CorrespondenteController extends Controller
         return view('correspondente/painel');
     }
 
+    public function whatsapp()
+    {
+        $correspondentes = DB::table('conta_correspondente_ccr as t1')
+            ->join('conta_con as t3', 't3.cd_conta_con', '=', 't1.cd_correspondente_cor')
+            ->where('t1.cd_conta_con', $this->conta)
+            ->whereNull('t1.deleted_at')
+            ->select(
+                't3.cd_conta_con',
+                't3.nm_razao_social_con',
+                't3.nu_telefone_whatsapp_con',
+                't3.fl_chatpro_ativo_con',
+                't1.cd_correspondente_cor'
+            )
+            ->orderBy('t3.nm_razao_social_con')
+            ->get();
+
+        return view('correspondente/whatsapp', compact('correspondentes'));
+    }
+
     public function checkIn()
     {
         // [CHECK-IN] Lista de processos ativos do correspondente, com indicação
