@@ -50,7 +50,7 @@
     </div>
 </div>
 
-@section('page-scripts')
+@section('script')
 <script>
     $(document).ready(function () {
         var table = $('#dt_whatsapp').DataTable({
@@ -92,7 +92,22 @@
                 }
             ],
             "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json"
+                "oLanguage": {
+                "sEmptyTable":     "Nenhum registro encontrado",
+                "sInfo":           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando 0 até 0 de 0 registros",
+                "sInfoFiltered":   "(Filtrados de _MAX_ registros)",
+                "sInfoThousands":  ".",
+                "sLengthMenu":     "_MENU_ resultados por página",
+                "sLoadingRecords": "Carregando...",
+                "sProcessing":     "Processando...",
+                "sZeroRecords":    "Nenhum registro encontrado",
+                "oPaginate": {
+                    "sNext":     "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst":    "Primeiro",
+                    "sLast":     "Último"
+                }
             },
             "order": [[0, "asc"]],
             "pageLength": 25,
