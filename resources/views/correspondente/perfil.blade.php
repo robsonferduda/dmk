@@ -94,6 +94,42 @@
                         </p>
 
                         <h4 style="margin-top: 25px;">
+                            <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                        </h4>
+                        <p>
+                            @if(!empty($correspondente->nu_telefone_whatsapp_con))
+                                <div>
+                                    <span>
+                                        <i class="fa fa-whatsapp" style="color: #25D366;"></i>
+                                        <a href="https://wa.me/{{ preg_replace('/\D/', '', $correspondente->nu_telefone_whatsapp_con) }}" target="_blank">
+                                            {{ $correspondente->nu_telefone_whatsapp_con }}
+                                        </a>
+                                    </span>
+                                    <span class="label label-success" style="margin-left: 5px;">WhatsApp</span>
+                                </div>
+                            @else
+                                <span class="text-muted">Nenhum número WhatsApp informado</span>
+                            @endif
+                        </p>
+                        @php
+                            $chatproAtivo = $correspondente->fl_chatpro_ativo_con;
+                            if (is_string($chatproAtivo)) {
+                                $chatproAtivo = in_array(strtolower($chatproAtivo), ['t', 'true', '1', 's', 'y', 'yes'], true);
+                            }
+                        @endphp
+                        <p style="margin-top: 8px;">
+                            @if($chatproAtivo)
+                                <span class="label label-success" style="font-size: 12px; padding: 5px 10px;">
+                                    <i class="fa fa-check-circle"></i> Envio automático via WhatsApp ativo
+                                </span>
+                            @else
+                                <span class="label label-default" style="font-size: 12px; padding: 5px 10px;">
+                                    <i class="fa fa-times-circle"></i> Envio automático via WhatsApp inativo
+                                </span>
+                            @endif
+                        </p>
+
+                        <h4 style="margin-top: 25px;">
                             <i class="fa fa-envelope"></i> Emails
                         </h4>
                         <p>
