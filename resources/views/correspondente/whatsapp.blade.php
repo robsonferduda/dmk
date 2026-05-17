@@ -23,7 +23,10 @@
             <div class="jarviswidget" id="wid-id-whatsapp" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"><i class="fa fa-whatsapp" style="color: #25D366;"></i></span>
-                    <h2>Status WhatsApp dos Correspondentes</h2>
+                    <h2>
+                        Status WhatsApp dos Correspondentes
+                        <span id="total-badge" class="badge" style="margin-left: 8px; display: none;"></span>
+                    </h2>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
@@ -38,45 +41,7 @@
                                     <th class="center" style="width: 80px;"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach($correspondentes as $c)
-                                    @php
-                                        $ativo = $c->fl_chatpro_ativo_con ?? false;
-                                        if (is_string($ativo)) {
-                                            $ativo = in_array(strtolower($ativo), ['t', 'true', '1', 's', 'y', 'yes'], true);
-                                        }
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $c->nm_razao_social_con }}</td>
-                                        <td class="center">
-                                            @if($c->nu_telefone_whatsapp_con)
-                                                <a href="https://wa.me/55{{ $c->nu_telefone_whatsapp_con }}" target="_blank" class="text-success">
-                                                    <i class="fa fa-whatsapp"></i> {{ $c->nu_telefone_whatsapp_con }}
-                                                </a>
-                                            @else
-                                                <span class="text-danger"><i class="fa fa-times-circle"></i> Não informado</span>
-                                            @endif
-                                        </td>
-                                        <td class="center">
-                                            @if($ativo)
-                                                <span class="label label-success">
-                                                    <i class="fa fa-check-circle"></i> Ativo
-                                                </span>
-                                            @else
-                                                <span class="label label-default">
-                                                    <i class="fa fa-times-circle"></i> Inativo
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="center">
-                                            <a title="Editar" class="btn btn-primary btn-xs"
-                                               href="{{ url('correspondente/ficha/'.\Crypt::encrypt($c->cd_correspondente_cor)) }}">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -88,12 +53,53 @@
 @section('page-scripts')
 <script>
     $(document).ready(function () {
-        $('#dt_whatsapp').dataTable({
+        var table = $('#dt_whatsapp').DataTable({
+            "ajax": {
+                "url": "{{ url('correspondente/whatsapp/data') }}",
+                "type": "GET",
+                "dataSrc": "data"
+            },
+            "columns": [
+                { "data": "nm_razao_social_con" },
+                {
+                    "data": "nu_telefone_whatsapp_con",
+                    "render": function (data) {
+                        if (data) {
+                            return '<a href="https://wa.me/55' + data + '" target="_blank" class="text-success">'
+                                 + '<i class="fa fa-whatsapp"></i> ' + data + '</a>';
+                        }
+                        return '<span class="text-danger"><i class="fa fa-times-circle"></i> Não informado</span>';
+                    }
+                },
+                {
+                    "data": "fl_chatpro_ativo_con",
+                    "render": function (data) {
+                        var ativo = (data === true || data === 't' || data === 'true' || data === '1');
+                        if (ativo) {
+                            return '<span class="label label-success"><i class="fa fa-check-circle"></i> Ativo</span>';
+                        }
+                        return '<span class="label label-default"><i class="fa fa-times-circle"></i> Inativo</span>';
+                    }
+                },
+                {
+                    "data": "edit_url",
+                    "orderable": false,
+                    "searchable": false,
+                    "render": function (data) {
+                        return '<a title="Editar" class="btn btn-primary btn-xs" href="' + data + '">'
+                             + '<i class="fa fa-edit"></i></a>';
+                    }
+                }
+            ],
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json"
             },
             "order": [[0, "asc"]],
-            "pageLength": 25
+            "pageLength": 25,
+            "initComplete": function (settings, json) {
+                var total = json.data ? json.data.length : 0;
+                $('#total-badge').text(total).show();
+            }
         });
     });
 </script>

@@ -81,6 +81,11 @@ class CorrespondenteController extends Controller
 
     public function whatsapp()
     {
+        return view('correspondente/whatsapp');
+    }
+
+    public function whatsappData()
+    {
         $conta = $this->conta;
 
         $correspondentes = DB::table('conta_correspondente_ccr as t1')
@@ -101,9 +106,13 @@ class CorrespondenteController extends Controller
                 't1.cd_correspondente_cor'
             )
             ->orderBy('t3.nm_razao_social_con')
-            ->get();
+            ->get()
+            ->map(function ($c) {
+                $c->edit_url = url('correspondente/ficha/' . \Crypt::encrypt($c->cd_correspondente_cor));
+                return $c;
+            });
 
-        return view('correspondente/whatsapp', compact('correspondentes'));
+        return response()->json(['data' => $correspondentes]);
     }
 
     public function checkIn()
