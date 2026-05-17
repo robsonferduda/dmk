@@ -91,8 +91,7 @@
                     }
                 }
             ],
-            "language": {
-                "oLanguage": {
+            "oLanguage": {
                 "sEmptyTable":     "Nenhum registro encontrado",
                 "sInfo":           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                 "sInfoEmpty":      "Mostrando 0 até 0 de 0 registros",
