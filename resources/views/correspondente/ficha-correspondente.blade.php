@@ -79,7 +79,14 @@
                                                 <label class="input">
                                                     <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : (($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : '')}}">
                                                 </label>
-                                            </section>    
+                                            </section>
+
+                                            <section class="col col-3">
+                                                <label class="label">RG</label>
+                                                <label class="input">
+                                                    <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : (($correspondente->entidade->rg) ? $correspondente->entidade->rg->nu_identificacao_ide : '')}}">
+                                                </label>
+                                            </section>
                                         </div>       
                                     </fieldset>
                             <hr/>

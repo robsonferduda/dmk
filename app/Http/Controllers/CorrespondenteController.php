@@ -943,6 +943,23 @@ class CorrespondenteController extends Controller
                 }
             }
 
+            //Identificação para RG
+            if (!empty($request->rg)) {
+                $identificacao = Identificacao::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::RG)->first();
+
+                if ($identificacao) {
+                    $identificacao->nu_identificacao_ide = $request->rg;
+                    $identificacao->saveOrFail();
+                } else {
+                    $identificacao = Identificacao::create([
+                        'cd_entidade_ete'           => $request->entidade,
+                        'cd_conta_con'              => $correspondente->cd_conta_con,
+                        'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
+                        'nu_identificacao_ide'      => $request->rg
+                    ]);
+                }
+            }
+
             //Atualização de endereço - Exige que pelo menos o logradouro esteja preenchido
             if (!empty($request->dc_logradouro_ede)) {
                 $endereco = Endereco::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $request->entidade)->first();
