@@ -1409,4 +1409,30 @@ class CorrespondenteController extends Controller
         return redirect()->route('autenticacao.correspondente')
             ->with('status', 'Obrigado! Faça login para atualizar seus dados cadastrais.');
     }
+
+    // Dispara os emails de atualização em massa via fila (Redis) — um job por correspondente
+    public function dispararEmailsAtualizacaoCadastro()
+    {
+        $conta = $this->conta;
+
+        // Busca todos os correspondentes que já tiveram pelo menos um processo vinculado
+        $vinculos = ContaCorrespondente::where('cd_conta_con', $conta)
+            ->whereNull('deleted_at')
+            ->whereExists(function ($query) use ($conta) {
+                $query->select(DB::raw(1))
+                    ->from('processo_pro')
+                    ->whereColumn('processo_pro.cd_correspondente_cor', 'conta_correspondente_ccr.cd_correspondente_cor')
+                    ->where('processo_pro.cd_conta_con', $conta);
+            })
+            ->pluck('cd_conta_correspondente_ccr');
+
+        $total = $vinculos->count();
+
+        foreach ($vinculos as $cdCcr) {
+            \App\Jobs\EnviarEmailAtualizacaoCadastroJob::dispatch($cdCcr);
+        }
+
+        Flash::success("$total emails de atualização cadastral adicionados à fila de envio.");
+        return redirect()->back();
+    }
 }

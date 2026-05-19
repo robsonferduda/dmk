@@ -310,6 +310,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/comarcas/{id}', 'CorrespondenteController@comarcas');
     Route::get('correspondente/despesas/{id}', 'CorrespondenteController@despesas');
     Route::get('correspondente/enviar-email-atualizacao/{id}', 'CorrespondenteController@enviarEmailAtualizacaoCadastro');
+    Route::get('correspondente/disparar-emails-atualizacao', 'CorrespondenteController@dispararEmailsAtualizacaoCadastro');
     Route::get('correspondente/detalhes/{id}', 'CorrespondenteController@detalhes');
     Route::get('correspondente/categorias', 'CategoriaCorrespondenteController@index');
     Route::get('correspondente/todos/buscar', 'CorrespondenteController@buscarTodos');

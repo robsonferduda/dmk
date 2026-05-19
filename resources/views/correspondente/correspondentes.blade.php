@@ -16,7 +16,12 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo</button>   
-            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite</button> 
+            <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite</button>
+            <a href="{{ url('correspondente/disparar-emails-atualizacao') }}"
+               class="btn btn-warning pull-right header-btn"
+               onclick="return confirm('Confirma o disparo do email de atualização cadastral para todos os correspondentes com processos vinculados? O envio será realizado em background.')">
+                <i class="fa fa-envelope"></i> Email de Atualização Cadastral
+            </a>
         </div>
     </div>
     <div class="row">
