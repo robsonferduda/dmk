@@ -53,14 +53,14 @@
                                         </section>
                                         <div class="row">
 
-                                            <section class="col col-3 box-pessoa-juridica">
+                                            <section class="col col-2 box-pessoa-juridica">
                                                 <label class="label">CNPJ</label>
                                                 <label class="input">
                                                     <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
                     
-                                            <section class="col col-3 box-pessoa-fisica">
+                                            <section class="col col-2 box-pessoa-fisica">
                                                 <label class="label">CPF</label>
                                                 <label class="input">
                                                     <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ ($correspondente->entidade->cpf) ? $correspondente->entidade->cpf->nu_identificacao_ide : '' }}">
@@ -74,14 +74,14 @@
                                                 </label>
                                             </section>
 
-                                            <section class="col col-3">
+                                            <section class="col col-2">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
                                                     <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : (($correspondente->entidade->oab) ? $correspondente->entidade->oab->nu_identificacao_ide : '')}}">
                                                 </label>
                                             </section>
 
-                                            <section class="col col-3">
+                                            <section class="col col-2">
                                                 <label class="label">RG</label>
                                                 <label class="input">
                                                     <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : (($correspondente->entidade->rg) ? $correspondente->entidade->rg->nu_identificacao_ide : '')}}">
