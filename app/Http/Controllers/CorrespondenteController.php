@@ -54,7 +54,7 @@ class CorrespondenteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['cadastro','aceitarFiliacao','aceitarConvite','cadastrarSenha','novaSenha']]);
+        $this->middleware('auth', ['except' => ['cadastro','aceitarFiliacao','aceitarConvite','cadastrarSenha','novaSenha','registrarAcessoAtualizacao']]);
         
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
@@ -1357,5 +1357,56 @@ class CorrespondenteController extends Controller
         } else {
             echo json_encode([]);
         }
+    }
+
+    // Envia o email de atualização cadastral para um correspondente (requer auth)
+    public function enviarEmailAtualizacaoCadastro($id)
+    {
+        $cdCcr = \Crypt::decrypt($id);
+
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->conta)
+            ->where('cd_conta_correspondente_ccr', $cdCcr)
+            ->first();
+
+        if (!$vinculo) {
+            Flash::error('Correspondente não encontrado.');
+            return redirect()->back();
+        }
+
+        $user = User::where('cd_conta_con', $vinculo->cd_correspondente_cor)->first();
+
+        if (!$user || empty($user->email)) {
+            Flash::error('Email do correspondente não encontrado.');
+            return redirect()->back();
+        }
+
+        $token = \Crypt::encrypt($vinculo->cd_conta_correspondente_ccr);
+        $link  = url('atualizar-cadastro/' . $token);
+
+        \Illuminate\Support\Facades\Notification::route('mail', $user->email)
+            ->notify(new \App\Notifications\CorrespondenteAtualizacaoCadastroNotification($link));
+
+        Flash::success('Email de atualização cadastral enviado com sucesso para ' . $user->email . '.');
+        return redirect()->back();
+    }
+
+    // Registra que o correspondente clicou no link do email (rota pública, sem auth)
+    public function registrarAcessoAtualizacao($token)
+    {
+        try {
+            $cdCcr = \Crypt::decrypt($token);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $vinculo = ContaCorrespondente::where('cd_conta_correspondente_ccr', $cdCcr)->first();
+
+        if ($vinculo) {
+            $vinculo->fl_atualizacao_cadastro_ccr = true;
+            $vinculo->save();
+        }
+
+        return redirect()->route('autenticacao.correspondente')
+            ->with('status', 'Obrigado! Faça login para atualizar seus dados cadastrais.');
     }
 }

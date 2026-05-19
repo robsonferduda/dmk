@@ -84,6 +84,9 @@ Route::resource('contas', 'ContaController');
 Route::get('c/{token}',  'PublicCheckinController@show')->name('checkin.publico.show');
 Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico.store');
 
+// [ATUALIZAÇÃO CADASTRAL] Link enviado por email ao correspondente para rastrear acesso.
+Route::get('atualizar-cadastro/{token}', 'CorrespondenteController@registrarAcessoAtualizacao')->name('correspondente.registro-acesso');
+
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
@@ -306,6 +309,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/dados/{id}', 'CorrespondenteController@dados');
     Route::get('correspondente/comarcas/{id}', 'CorrespondenteController@comarcas');
     Route::get('correspondente/despesas/{id}', 'CorrespondenteController@despesas');
+    Route::get('correspondente/enviar-email-atualizacao/{id}', 'CorrespondenteController@enviarEmailAtualizacaoCadastro');
     Route::get('correspondente/detalhes/{id}', 'CorrespondenteController@detalhes');
     Route::get('correspondente/categorias', 'CategoriaCorrespondenteController@index');
     Route::get('correspondente/todos/buscar', 'CorrespondenteController@buscarTodos');

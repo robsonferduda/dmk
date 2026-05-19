@@ -79,7 +79,22 @@
                                                     @else
                                                         Não informado
                                                     @endif
-                                                </li>                                       
+                                                </li>
+                                                <li style="margin-top: 10px;">
+                                                    <strong>Atualização Cadastral: </strong>
+                                                    @if($correspondente->fl_atualizacao_cadastro_ccr)
+                                                        <span class="label label-success"><i class="fa fa-check"></i> Email acessado</span>
+                                                    @else
+                                                        <span class="label label-warning"><i class="fa fa-clock-o"></i> Pendente</span>
+                                                    @endif
+                                                </li>
+                                                <li style="margin-top: 8px;">
+                                                    <a href="{{ url('correspondente/enviar-email-atualizacao/' . \Crypt::encrypt($correspondente->cd_conta_correspondente_ccr)) }}"
+                                                       class="btn btn-xs btn-info"
+                                                       onclick="return confirm('Confirma o envio do email de atualização cadastral para {{ $correspondente->nm_conta_correspondente_ccr }}?')">
+                                                        <i class="fa fa-envelope"></i> Enviar Email de Atualização
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </p> 
                                     </div>

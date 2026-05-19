@@ -22,7 +22,8 @@ class ContaCorrespondente extends Model implements AuditableContract
                             'cd_tipo_pessoa_tpp',
                             'cd_categoria_correspondente_cac',
                             'obs_ccr',
-                            'fl_correspondente_escritorio_ccr'
+                            'fl_correspondente_escritorio_ccr',
+                            'fl_atualizacao_cadastro_ccr'
                           ];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
