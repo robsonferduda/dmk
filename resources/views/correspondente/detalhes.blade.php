@@ -63,7 +63,12 @@
                                                      <li>
                                                         <strong>OAB: </strong> {{ ($correspondente->entidade->oab()->first()) ? $correspondente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
                                                     </li>
-                                                @endif 
+                                                @endif
+                                                @if($correspondente->entidade->rg()->first())
+                                                    <li>
+                                                        <strong>RG: </strong> {{ $correspondente->entidade->rg()->first()->nu_identificacao_ide }}
+                                                    </li>
+                                                @endif
                                                 <li>
                                                     <strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}
                                                 </li>  
@@ -210,6 +215,21 @@
                                         @else
                                             <span>Nenhum email infomado</span>
                                         @endif 
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-whatsapp" style="color: #25D366;"></i> <strong>WhatsApp</strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        @if(!empty($correspondente->correspondente->nu_telefone_whatsapp_con))
+                                            <span>{{ $correspondente->correspondente->nu_telefone_whatsapp_con }}</span>
+                                        @else
+                                            <span>Não informado</span>
+                                        @endif
                                     </div>
                                 </fieldset>
                             </div>
