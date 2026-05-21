@@ -27,6 +27,11 @@
                         Status WhatsApp dos Correspondentes
                         <span id="total-badge" class="badge" style="margin-left: 8px; display: none;"></span>
                     </h2>
+                    <div class="widget-toolbar">
+                        <a href="{{ url('correspondente/whatsapp/lembretes') }}" class="btn btn-default btn-sm">
+                            <i class="fa fa-bell"></i> Lembretes de amanhã
+                        </a>
+                    </div>
                 </header>
                 <div>
                     <div class="widget-body no-padding">

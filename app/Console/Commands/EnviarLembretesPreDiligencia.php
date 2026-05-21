@@ -30,7 +30,8 @@ class EnviarLembretesPreDiligencia extends Command
                             {--processo= : Limita a um cd_processo_pro específico (ignora filtro de data).}
                             {--conta= : Limita a um cd_conta_con específico (útil em testes por escritório).}
                             {--force : Reenvia mesmo que já tenha sido enviado (útil em testes).}
-                            {--dry-run : Não envia; apenas lista o que enviaria.}';
+                            {--dry-run : Não envia; apenas lista o que enviaria com o corpo da mensagem.}
+                            {--list : Exibe tabela compacta dos processos que seriam notificados (sem enviar).}';
 
     protected $description = 'Envia lembretes de PRÉ-diligência via WhatsApp aos correspondentes (prazo fatal = amanhã).';
 
@@ -40,6 +41,7 @@ class EnviarLembretesPreDiligencia extends Command
         $cdProcesso = $this->option('processo');
         $cdConta    = $this->option('conta');
         $dryRun     = (bool) $this->option('dry-run');
+        $list       = (bool) $this->option('list');
         $force      = (bool) $this->option('force');
 
         $contexto = [];
@@ -47,6 +49,7 @@ class EnviarLembretesPreDiligencia extends Command
         else             { $contexto[] = "data={$data}"; }
         if ($cdConta)    { $contexto[] = "conta={$cdConta}"; }
         if ($dryRun)     { $contexto[] = 'DRY-RUN'; }
+        if ($list)       { $contexto[] = 'LIST'; }
         $this->info('[lembrete-pré] ' . implode('  ', $contexto));
 
         $q = Processo::whereNotNull('cd_correspondente_cor');
@@ -62,6 +65,43 @@ class EnviarLembretesPreDiligencia extends Command
         $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
 
         $this->info('[lembrete-pré] Processos encontrados: ' . $processos->count());
+
+        // --list: tabela compacta sem enviar nada
+        if ($list) {
+            $linhas = [];
+            foreach ($processos as $proc) {
+                $escritorio        = Conta::find($proc->cd_conta_con);
+                $correspondente    = Conta::find($proc->cd_correspondente_cor);
+                $chatproOk         = $escritorio && ChatProClient::forConta($escritorio);
+                $whatsapp          = $correspondente->nu_telefone_whatsapp_con ?? null;
+                $jaEnviado         = WhatsappMensagem::where('cd_conta_con', $proc->cd_conta_con)
+                    ->where('cd_processo_pro', $proc->cd_processo_pro)
+                    ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+                    ->whereDate('created_at', Carbon::today())
+                    ->exists();
+
+                if (!$chatproOk)        { $situacao = 'SEM CHATPRO'; }
+                elseif (!$correspondente) { $situacao = 'SEM CORRESPONDENTE'; }
+                elseif (empty($whatsapp)) { $situacao = 'SEM WHATSAPP'; }
+                elseif ($jaEnviado)     { $situacao = 'JA ENVIADO'; }
+                else                    { $situacao = 'ENVIARA'; }
+
+                $linhas[] = [
+                    $proc->cd_processo_pro,
+                    $proc->nu_processo_pro ?: '-',
+                    $proc->dt_prazo_fatal_pro ?? '-',
+                    $proc->hr_audiencia_pro  ?? '-',
+                    $correspondente->nm_razao_social_con ?? $correspondente->nm_conta_con ?? '-',
+                    $whatsapp ?: '-',
+                    $situacao,
+                ];
+            }
+            $this->table(
+                ['ID', 'Nº Processo', 'Data', 'Hora', 'Correspondente', 'WhatsApp', 'Situação'],
+                $linhas
+            );
+            return 0;
+        }
 
         $enviados = 0; $ignorados = 0; $falhas = 0;
 

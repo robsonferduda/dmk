@@ -47,6 +47,9 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
+use Carbon\Carbon;
+use App\WhatsappMensagem;
+use App\Services\ChatPro\ChatProClient;
 
 class CorrespondenteController extends Controller
 {
@@ -82,6 +85,66 @@ class CorrespondenteController extends Controller
     public function whatsapp()
     {
         return view('correspondente/whatsapp');
+    }
+
+    public function whatsappLembretes()
+    {
+        return view('correspondente/whatsapp-lembretes');
+    }
+
+    public function whatsappLembretesData()
+    {
+        $conta      = Conta::find($this->conta);
+        $chatproOk  = ChatProClient::forConta($conta) !== null;
+        $amanha     = Carbon::tomorrow()->toDateString();
+
+        $processos = Processo::with(['vara', 'cidade.estado'])
+            ->where('cd_conta_con', $this->conta)
+            ->whereNotNull('cd_correspondente_cor')
+            ->whereDate('dt_prazo_fatal_pro', $amanha)
+            ->orderBy('dt_prazo_fatal_pro')
+            ->orderBy('hr_audiencia_pro')
+            ->get();
+
+        $corIds = $processos->pluck('cd_correspondente_cor')->unique();
+        $correspondentes = Conta::whereIn('cd_conta_con', $corIds)
+            ->get()
+            ->keyBy('cd_conta_con');
+
+        $jaEnviados = WhatsappMensagem::where('cd_conta_con', $this->conta)
+            ->whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
+            ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+            ->whereDate('created_at', Carbon::today())
+            ->pluck('cd_processo_pro')
+            ->flip();
+
+        $data = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
+            $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
+            $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
+
+            if (!$chatproOk)          $situacao = 'SEM_CHATPRO';
+            elseif (!$cor)            $situacao = 'SEM_CORRESPONDENTE';
+            elseif (empty($whatsapp)) $situacao = 'SEM_WHATSAPP';
+            elseif ($jaEnviados->has($proc->cd_processo_pro)) $situacao = 'JA_ENVIADO';
+            else                      $situacao = 'ENVIARA';
+
+            return [
+                'cd_processo_pro'   => $proc->cd_processo_pro,
+                'nu_processo_pro'   => $proc->nu_processo_pro ?: '#' . $proc->cd_processo_pro,
+                'nm_reu_pro'        => $proc->nm_reu_pro ?? '-',
+                'dt_prazo_fatal'    => $proc->dt_prazo_fatal_pro
+                                         ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '-',
+                'hr_audiencia'      => $proc->hr_audiencia_pro
+                                         ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
+                'nm_correspondente' => $cor
+                                         ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
+                                         : '-',
+                'nu_whatsapp'       => $whatsapp ?: '-',
+                'situacao'          => $situacao,
+            ];
+        });
+
+        return response()->json(['data' => $data]);
     }
 
     public function whatsappData()
