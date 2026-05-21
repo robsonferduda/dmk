@@ -348,11 +348,13 @@
                                     <a href="{{ url('notificacao/processos') }}" title="Importar"><span class="menu-item-parent">Notificações</span></a>
                                 </li>                                 
                             @endcan
-                            @can(true)
-                                <li class="{{ (Session::get('item_pai') == 'correspondente.whatsapp.lembretes') ? 'active' : '' }}">
+                            <li class="{{ (Session::get('item_pai') == 'correspondente.whatsapp.lembretes') ? 'active' : '' }}">
                                     <a href="{{ url('correspondente/whatsapp/lembretes') }}" title="Lembretes"><span class="menu-item-parent">Lembretes Pré-Audiência</span></a>
-                                </li>
-                            @endcan
+                            </li>
+                            <li>
+                                <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendências</span></a>
+                            </li>
+                            <li class="{{ (Session::get('item_pai') == 'honorario.alteracao') ? 'active' : '' }}">
                                 <a href="{{ url('processos/honorario-alteracao') }}" title="Pedidos de Alteração de Honorário"><span class="menu-item-parent">Alteração de Honorário</span></a>
                             </li>
                             <li>
