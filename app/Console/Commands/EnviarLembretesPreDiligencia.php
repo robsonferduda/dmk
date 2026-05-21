@@ -96,6 +96,7 @@ class EnviarLembretesPreDiligencia extends Command
                     $situacao,
                 ];
             }
+            usort($linhas, fn($a, $b) => strcmp($a[4], $b[4]));
             $this->table(
                 ['ID', 'Nº Processo', 'Data', 'Hora', 'Correspondente', 'WhatsApp', 'Situação'],
                 $linhas

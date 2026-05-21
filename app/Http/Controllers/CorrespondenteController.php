@@ -139,6 +139,8 @@ class CorrespondenteController extends Controller
             ];
         });
 
+        $linhas = $linhas->sortBy('nm_correspondente')->values();
+
         return view('correspondente/whatsapp-lembretes', [
             'linhas' => $linhas,
             'amanha' => Carbon::tomorrow()->format('d/m/Y'),
