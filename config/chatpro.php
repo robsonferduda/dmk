@@ -53,8 +53,8 @@ return [
             "Cliente: {cliente}",
 
         // Lembrete diário enviado ao CORRESPONDENTE no dia do prazo fatal.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara},
-        // {cidade}, {data}, {hora_audiencia}, {link_checkin}.
+        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade},
+        //               {data}, {hora_audiencia}, {responsaveis}, {link_checkin}.
         'lembrete_diligencia' =>
             "Olá, {correspondente}!\n" .
             "Você tem audiência do DMK marcada para hoje:\n" .
@@ -62,7 +62,8 @@ return [
             "• Processo: {processo}\n" .
             "• Cliente: {reu}\n" .
             "• Vara: {vara}\n" .
-            "• Cidade: {cidade}\n\n" .
+            "• Cidade: {cidade}\n" .
+            "{responsaveis}\n" .
             "🚨 *Obrigatório:*\n" .
             "• Confirme o recebimento dos documentos, orientações e link (se virtual) no sistema.\n" .
             "• Confirme o local, a manutenção do ato antes do deslocamento e chegue com antecedência.\n" .
@@ -75,10 +76,17 @@ return [
 
 
         // Lembrete PRÉ-diligência enviado ao correspondente um dia antes da audiência.
-        // Placeholders: {link_confirmacao_audiencia}
+        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade},
+        //               {data}, {hora_audiencia}, {responsaveis}, {link_confirmacao_audiencia}
         'lembrete_prediligencia' =>
-            "Olá, tudo bem?\n\n" .
-            "Gostaríamos de confirmar se está tudo certo para a realização da(s) audiência(s)/diligência(s).\n\n" .
+            "Olá, {correspondente}! Tudo bem?\n\n" .
+            "Gostaríamos de confirmar se está tudo certo para a realização do ato de amanhã:\n\n" .
+            "📋 Processo: {processo}\n" .
+            "👤 Parte: {reu}\n" .
+            "🏛️ Vara: {vara}\n" .
+            "📍 Cidade: {cidade}\n" .
+            "📅 Data: {data} às {hora_audiencia}\n" .
+            "{responsaveis}\n" .
             "Todos os documentos e orientações serão anexados em nosso sistema. Assim que receberem, pedimos que confirmem o recebimento AINDA HOJE pelo botão localizado abaixo dos documentos: \"CONFIRMA O RECEBIMENTO DOS DOCUMENTOS E A REALIZAÇÃO DO ATO\".\n\n" .
             "Caso as orientações ainda não estejam disponíveis, é porque ainda não as recebemos do cliente. Assim que forem encaminhadas ao DMK, disponibilizaremos imediatamente no sistema.\n\n" .
             "🚨 Reforçamos que é OBRIGATÓRIO:\n" .

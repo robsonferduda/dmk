@@ -205,6 +205,11 @@ class EnviarLembretesDiligencia extends Command
         }
         $linkCheckin = url('/c/' . $proc->ds_checkin_token_pro);
 
+        $resp = [];
+        if (!empty($proc->nm_preposto_pro))  $resp[] = "👷 Preposto: {$proc->nm_preposto_pro}";
+        if (!empty($proc->nm_advogado_pro))  $resp[] = "⚖️ Advogado: {$proc->nm_advogado_pro}";
+        $responsaveis = $resp ? implode("\n", $resp) . "\n" : '';
+
         return strtr($template, [
             '{correspondente}'  => $nomeCorresp,
             '{processo}'        => $proc->nu_processo_pro ?: ('#' . $proc->cd_processo_pro),
@@ -214,6 +219,7 @@ class EnviarLembretesDiligencia extends Command
             '{cidade}'          => $cidade,
             '{data}'            => $data,
             '{hora_audiencia}'  => $hora,
+            '{responsaveis}'    => $responsaveis,
             '{link_checkin}'    => $linkCheckin,
         ]);
     }

@@ -231,6 +231,12 @@ class EnviarLembretesPreDiligencia extends Command
         // Gera token de confirmação se não existir
         $token = $proc->getOrCreateConfirmacaoAudienciaToken();
         $linkConfirmacao = url('/processo/confirmar-audiencia/' . $token);
+
+        $resp = [];
+        if (!empty($proc->nm_preposto_pro))  $resp[] = "👷 Preposto: {$proc->nm_preposto_pro}";
+        if (!empty($proc->nm_advogado_pro))  $resp[] = "⚖️ Advogado: {$proc->nm_advogado_pro}";
+        $responsaveis = $resp ? implode("\n", $resp) . "\n" : '';
+
         return strtr($template, [
             '{correspondente}'  => $contaCorrespondente->nm_conta_con ?? $contaCorrespondente->nm_razao_social_con ?? 'Correspondente',
             '{processo}'        => $proc->nu_processo_pro ?: ('#' . $proc->cd_processo_pro),
@@ -239,6 +245,7 @@ class EnviarLembretesPreDiligencia extends Command
             '{cidade}'          => ($proc->cidade) ? $proc->cidade->nm_cidade_cde . (isset($proc->cidade->estado) ? '/' . $proc->cidade->estado->sg_estado_est : '') : '—',
             '{data}'            => $proc->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '—',
             '{hora_audiencia}'  => $proc->hr_audiencia_pro ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '—',
+            '{responsaveis}'    => $responsaveis,
             '{link_confirmacao_audiencia}' => $linkConfirmacao,
         ]);
     }
