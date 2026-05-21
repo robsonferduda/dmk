@@ -75,15 +75,20 @@ return [
 
 
         // Lembrete PRÉ-diligência enviado ao correspondente um dia antes da audiência.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade}, {data}, {hora_audiencia}
+        // Placeholders: {link_confirmacao_audiencia}
         'lembrete_prediligencia' =>
             "Olá, tudo bem?\n\n" .
-            "Gostaríamos de confirmar se está tudo certo para a realização da(s) audiência(s). Todos os documentos e orientações serão anexados em nosso sistema.\n\n" .
-            "Pedimos que assim que receber os documentos e orientações, confirmem o recebimento via sistema AINDA HOJE apertando o botão que fica abaixo dos documentos CONFIRMA O RECEBIMENTO DOS DOCUMENTOS E A REALIZAÇÃO DO ATO, para que possamos ter a gestão completa da pauta de audiências.\n\n" .
-            "Caso ainda não tenha recebido as orientações é porque ainda não recebemos de nossos clientes e assim que recebermos encaminharemos.\n\n" .
-            "Reforçamos a importância com todos os correspondentes que é obrigatório a confirmações das documentações e orientações no sistema e confirmação da presença no link abaixo.\n\n" .
-            "Confirme sua audiência aqui: {link_confirmacao_audiencia}\n" .
-            "Para dúvidas, use o WhatsApp ou, em caso de urgência não aguarde LIGUE para 48 991308024. Obrigada!",
+            "Gostaríamos de confirmar se está tudo certo para a realização da(s) audiência(s)/diligência(s).\n\n" .
+            "Todos os documentos e orientações serão anexados em nosso sistema. Assim que receberem, pedimos que confirmem o recebimento AINDA HOJE pelo botão localizado abaixo dos documentos: \"CONFIRMA O RECEBIMENTO DOS DOCUMENTOS E A REALIZAÇÃO DO ATO\".\n\n" .
+            "Caso as orientações ainda não estejam disponíveis, é porque ainda não as recebemos do cliente. Assim que forem encaminhadas ao DMK, disponibilizaremos imediatamente no sistema.\n\n" .
+            "🚨 Reforçamos que é OBRIGATÓRIO:\n" .
+            "* Confirmar o recebimento dos documentos e a realização do ato no sistema;\n" .
+            "* Confirmar presença no link abaixo ainda hoje;\n" .
+            "* Realizar o CHECK-IN amanhã, no local do ato, pelo link que será enviado antes da audiência/diligência.\n\n" .
+            "📲 Confirme sua audiência aqui:\n" .
+            "{link_confirmacao_audiencia}\n\n" .
+            "Em caso de dúvidas, utilize o WhatsApp. Para urgências, não aguarde mensagem: LIGUE imediatamente para (48) 99130-8024.\n\n" .
+            "DMK Advogados",
 
     ],
 
