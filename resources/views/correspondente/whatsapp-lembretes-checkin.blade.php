@@ -1,0 +1,111 @@
+@extends('layouts.admin')
+@section('content')
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li><a href="{{ url('home') }}">Início</a></li>
+        <li><a href="{{ url('correspondente/whatsapp') }}">WhatsApp</a></li>
+        <li>Lembretes de Check-in</li>
+    </ol>
+</div>
+<div id="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1 class="page-title txt-color-blueDark">
+                <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                <span> > Lembretes de Check-in</span>
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @include('layouts/messages')
+        </div>
+        <article class="col-xs-12">
+            <div class="jarviswidget" data-widget-editbutton="false">
+                <header>
+                    <span class="widget-icon"><i class="fa fa-map-marker"></i></span>
+                    <h2>
+                        Diligências de hoje
+                        <strong>{{ $hoje }}</strong>
+                        <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
+                    </h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        @if($linhas->isEmpty())
+                            <p class="text-center text-muted" style="padding: 30px 0;">
+                                Nenhum processo com prazo fatal para hoje.
+                            </p>
+                        @else
+                        <table class="table table-striped table-bordered table-hover" style="margin-bottom: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Processo</th>
+                                    <th>Réu / Parte</th>
+                                    <th>Status</th>
+                                    <th class="center" style="width: 65px;">Hora</th>
+                                    <th>Correspondente</th>
+                                    <th class="center" style="width: 155px;">
+                                        <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
+                                    </th>
+                                    <th class="center" style="width: 120px;">Situação</th>
+                                    <th class="center" style="width: 110px;">Entrega</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($linhas as $linha)
+                                <tr>
+                                    <td>{{ $linha->nu_processo_pro }}</td>
+                                    <td>{{ $linha->nm_reu_pro }}</td>
+                                    <td>{{ $linha->nm_status }}</td>
+                                    <td class="center">{{ $linha->hr_audiencia }}</td>
+                                    <td>{{ $linha->nm_correspondente }}</td>
+                                    <td class="center">
+                                        @if($linha->nu_whatsapp)
+                                            <a href="https://wa.me/{{ $linha->nu_whatsapp }}" target="_blank" class="text-success">
+                                                <i class="fa fa-whatsapp"></i> {{ $linha->nu_whatsapp }}
+                                            </a>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="center">
+                                        @if($linha->situacao === 'JA_ENVIADO')
+                                            <span class="label label-info"><i class="fa fa-check-circle"></i> Enviado {{ $linha->enviado_em }}</span>
+                                        @elseif($linha->situacao === 'PENDENTE')
+                                            <span class="label label-warning"><i class="fa fa-clock-o"></i> Pendente</span>
+                                        @elseif($linha->situacao === 'SEM_WHATSAPP')
+                                            <span class="label label-warning"><i class="fa fa-times-circle"></i> Sem WhatsApp</span>
+                                        @elseif($linha->situacao === 'SEM_CHATPRO')
+                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Sem ChatPro</span>
+                                        @else
+                                            <span class="label label-default"><i class="fa fa-times-circle"></i> Sem correspondente</span>
+                                        @endif
+                                    </td>
+                                    <td class="center">
+                                        @if($linha->ds_status_entrega === 'read')
+                                            <span class="label label-success"><i class="fa fa-eye"></i> Lida</span>
+                                        @elseif(in_array($linha->ds_status_entrega, ['delivered','played']))
+                                            <span class="label label-info"><i class="fa fa-check-circle"></i> Entregue</span>
+                                        @elseif($linha->ds_status_entrega === 'sent')
+                                            <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
+                                        @elseif($linha->ds_status_entrega === 'failed')
+                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
+                                        @elseif($linha->ds_status_entrega === 'pending')
+                                            <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+@endsection

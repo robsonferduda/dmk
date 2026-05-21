@@ -89,7 +89,63 @@ class CorrespondenteController extends Controller
 
     public function whatsappCheckin()
     {
-        return view('correspondente/whatsapp-lembretes-checkin');
+        $conta     = Conta::find($this->conta);
+        $chatproOk = ChatProClient::forConta($conta) !== null;
+        $hoje      = Carbon::today()->toDateString();
+
+        $processos = Processo::with(['vara', 'cidade.estado', 'status'])
+            ->where('cd_conta_con', $this->conta)
+            ->whereNotNull('cd_correspondente_cor')
+            ->whereDate('dt_prazo_fatal_pro', $hoje)
+            ->orderBy('hr_audiencia_pro')
+            ->get();
+
+        $corIds = $processos->pluck('cd_correspondente_cor')->unique();
+        $correspondentes = Conta::whereIn('cd_conta_con', $corIds)
+            ->get()
+            ->keyBy('cd_conta_con');
+
+        $jaEnviados = WhatsappMensagem::where('cd_conta_con', $this->conta)
+            ->whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
+            ->where('ds_tipo_wmm', 'lembrete_diligencia')
+            ->whereDate('created_at', Carbon::today())
+            ->get()
+            ->keyBy('cd_processo_pro');
+
+        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
+            $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
+            $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
+            $wmm      = $jaEnviados->get($proc->cd_processo_pro);
+
+            if (!$chatproOk)          $situacao = 'SEM_CHATPRO';
+            elseif (!$cor)            $situacao = 'SEM_CORRESPONDENTE';
+            elseif (empty($whatsapp)) $situacao = 'SEM_WHATSAPP';
+            elseif ($wmm)             $situacao = 'JA_ENVIADO';
+            else                      $situacao = 'PENDENTE';
+
+            return (object) [
+                'cd_processo_pro'   => $proc->cd_processo_pro,
+                'nu_processo_pro'   => $proc->nu_processo_pro ?: '#' . $proc->cd_processo_pro,
+                'nm_reu_pro'        => $proc->nm_reu_pro ?? '-',
+                'hr_audiencia'      => $proc->hr_audiencia_pro
+                                         ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
+                'nm_status'         => $proc->status->nm_status_processo_conta_stp ?? '-',
+                'nm_correspondente' => $cor
+                                         ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
+                                         : '-',
+                'nu_whatsapp'       => $whatsapp ?: null,
+                'situacao'          => $situacao,
+                'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
+            ];
+        });
+
+        $linhas = $linhas->sortBy('nm_correspondente')->values();
+
+        return view('correspondente/whatsapp-lembretes-checkin', [
+            'linhas' => $linhas,
+            'hoje'   => Carbon::today()->format('d/m/Y'),
+        ]);
     }
 
     public function whatsappLembretes()
