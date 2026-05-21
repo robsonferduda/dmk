@@ -28,6 +28,7 @@ class EnviarLembretesPreDiligencia extends Command
     protected $signature = 'whatsapp:lembrete-prediligencias
                             {--data= : Data alvo (Y-m-d). Default: amanhã.}
                             {--processo= : Limita a um cd_processo_pro específico (ignora filtro de data).}
+                            {--conta= : Limita a um cd_conta_con específico (útil em testes por escritório).}
                             {--force : Reenvia mesmo que já tenha sido enviado (útil em testes).}
                             {--dry-run : Não envia; apenas lista o que enviaria.}';
 
@@ -37,20 +38,25 @@ class EnviarLembretesPreDiligencia extends Command
     {
         $data       = $this->option('data') ? Carbon::parse($this->option('data'))->toDateString() : Carbon::tomorrow()->toDateString();
         $cdProcesso = $this->option('processo');
+        $cdConta    = $this->option('conta');
         $dryRun     = (bool) $this->option('dry-run');
         $force      = (bool) $this->option('force');
 
-        if ($cdProcesso) {
-            $this->info("[lembrete-pré] MODO TESTE: processo={$cdProcesso} (filtro de data ignorado)" . ($dryRun ? '  (DRY-RUN)' : ''));
-        } else {
-            $this->info("[lembrete-pré] Data alvo: {$data}" . ($dryRun ? '  (DRY-RUN)' : ''));
-        }
+        $contexto = [];
+        if ($cdProcesso) { $contexto[] = "processo={$cdProcesso} (filtro de data ignorado)"; }
+        else             { $contexto[] = "data={$data}"; }
+        if ($cdConta)    { $contexto[] = "conta={$cdConta}"; }
+        if ($dryRun)     { $contexto[] = 'DRY-RUN'; }
+        $this->info('[lembrete-pré] ' . implode('  ', $contexto));
 
         $q = Processo::whereNotNull('cd_correspondente_cor');
         if ($cdProcesso) {
             $q->where('cd_processo_pro', $cdProcesso);
         } else {
             $q->whereDate('dt_prazo_fatal_pro', $data);
+        }
+        if ($cdConta) {
+            $q->where('cd_conta_con', $cdConta);
         }
 
         $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
