@@ -31,15 +31,16 @@ class Kernel extends ConsoleKernel
 
         // [WHATSAPP-LEMBRETE] Lembrete aos correspondentes sobre
         // diligências do dia (prazo fatal = hoje), com link de check-in.
-        $schedule->command('whatsapp:lembrete-diligencias')
-                 ->dailyAt('07:00')
+        // --conta=64: fase de testes, restrito ao escritório 64. Remover quando for para produção geral.
+        $schedule->command('whatsapp:lembrete-diligencias --conta=64')
+                 ->dailyAt('08:00')
                  ->appendOutputTo(storage_path('logs/whatsapp-lembrete.log'));
 
         // [WHATSAPP-LEMBRETE PRÉ] Lembrete pré-diligência (prazo fatal = amanhã)
-        // Executado ao meio-dia do dia anterior à audiência.
+        // Executado às 13h do dia anterior à audiência.
         // --conta=64: fase de testes, restrito ao escritório 64. Remover quando for para produção geral.
         $schedule->command('whatsapp:lembrete-prediligencias --conta=64')
-             ->dailyAt('12:00')
+             ->dailyAt('13:00')
              ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
     }
 

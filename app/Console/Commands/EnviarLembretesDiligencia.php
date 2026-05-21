@@ -28,8 +28,7 @@ class EnviarLembretesDiligencia extends Command
 {
     protected $signature = 'whatsapp:lembrete-diligencias
                             {--data= : Data alvo (Y-m-d). Default: hoje.}
-                            {--processo= : Limita a um cd_processo_pro espec\u00edfico (ignora filtro de data).}
-                            {--force : Reenvia mesmo que j\u00e1 tenha sido enviado hoje (\u00fatil em testes).}
+                            {--processo= : Limita a um cd_processo_pro espec\u00edfico (ignora filtro de data).}                            {--conta= : Restringe a um cd_conta_con específico (fase de testes).}                            {--force : Reenvia mesmo que j\u00e1 tenha sido enviado hoje (\u00fatil em testes).}
                             {--dry-run : N\u00e3o envia; apenas lista o que enviaria.}';
 
     protected $description = 'Envia lembretes de diligência via WhatsApp aos correspondentes (prazo fatal = hoje).';
@@ -38,14 +37,16 @@ class EnviarLembretesDiligencia extends Command
     {
         $data       = $this->option('data') ? Carbon::parse($this->option('data'))->toDateString() : Carbon::today()->toDateString();
         $cdProcesso = $this->option('processo');
+        $cdConta    = $this->option('conta');
         $dryRun     = (bool) $this->option('dry-run');
         $force      = (bool) $this->option('force');
 
-        if ($cdProcesso) {
-            $this->info("[lembrete] MODO TESTE: processo={$cdProcesso} (filtro de data ignorado)" . ($dryRun ? '  (DRY-RUN)' : ''));
-        } else {
-            $this->info("[lembrete] Data alvo: {$data}" . ($dryRun ? '  (DRY-RUN)' : ''));
-        }
+        $contexto = [];
+        if ($cdProcesso) { $contexto[] = "processo={$cdProcesso} (filtro de data ignorado)"; }
+        else             { $contexto[] = "data={$data}"; }
+        if ($cdConta)    { $contexto[] = "conta={$cdConta}"; }
+        if ($dryRun)     { $contexto[] = 'DRY-RUN'; }
+        $this->info('[lembrete] ' . implode('  ', $contexto));
 
         // Quando --processo é passado, ignoramos o filtro de data: o
         // intuito é forçar o envio para um processo específico em teste.
@@ -54,6 +55,9 @@ class EnviarLembretesDiligencia extends Command
             $q->where('cd_processo_pro', $cdProcesso);
         } else {
             $q->whereDate('dt_prazo_fatal_pro', $data);
+        }
+        if ($cdConta) {
+            $q->where('cd_conta_con', $cdConta);
         }
 
         $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
