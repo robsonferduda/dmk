@@ -351,6 +351,9 @@
                             <li class="{{ (Session::get('item_pai') == 'correspondente.whatsapp.lembretes') ? 'active' : '' }}">
                                     <a href="{{ url('correspondente/whatsapp/lembretes') }}" title="Lembretes"><span class="menu-item-parent">Lembretes Pré-Audiência</span></a>
                             </li>
+                            <li class="{{ (Session::get('item_pai') == 'correspondente.whatsapp.checkin') ? 'active' : '' }}">
+                                    <a href="{{ url('correspondente/whatsapp/checkin') }}" title="Lembretes Check-in"><span class="menu-item-parent">Lembretes Check-in</span></a>
+                            </li>
                             <li>
                                 <a href="{{ url('processos/pendentes') }}" title="Relatórios"><span class="menu-item-parent">Pendências</span></a>
                             </li>

@@ -306,6 +306,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/whatsapp', 'CorrespondenteController@whatsapp');
     Route::get('correspondente/whatsapp/data', 'CorrespondenteController@whatsappData');
     Route::get('correspondente/whatsapp/lembretes', 'CorrespondenteController@whatsappLembretes');
+    Route::get('correspondente/whatsapp/checkin', 'CorrespondenteController@whatsappCheckin');
     Route::get('correspondente/atividades/{id}', 'CorrespondenteController@atividades');
     Route::get('correspondente/dados/{id}', 'CorrespondenteController@dados');
     Route::get('correspondente/comarcas/{id}', 'CorrespondenteController@comarcas');

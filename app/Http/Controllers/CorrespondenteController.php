@@ -87,6 +87,11 @@ class CorrespondenteController extends Controller
         return view('correspondente/whatsapp');
     }
 
+    public function whatsappCheckin()
+    {
+        return view('correspondente/whatsapp-lembretes-checkin');
+    }
+
     public function whatsappLembretes()
     {
         $conta      = Conta::find($this->conta);
