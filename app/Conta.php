@@ -29,6 +29,7 @@ class Conta extends Model implements AuditableContract
                             'prazo_cancelamento_processo',
                             'nu_telefone_whatsapp_con'
     					  ];
+                          
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 

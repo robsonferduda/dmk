@@ -80,10 +80,11 @@ class EnviarLembretesPreDiligencia extends Command
                 }
 
                 if (!$force) {
+                    // Verifica se já foi enviado HOJE (data de execução, não a data-alvo).
                     $jaEnviado = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
                         ->where('cd_processo_pro', $proc->cd_processo_pro)
                         ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-                        ->whereDate('created_at', $data)
+                        ->whereDate('created_at', Carbon::today())
                         ->exists();
                     if ($jaEnviado) {
                         $this->line("  processo {$proc->cd_processo_pro}: lembrete pré já enviado, pulando (use --force para reenviar).");
