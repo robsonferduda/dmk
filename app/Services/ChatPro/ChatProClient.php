@@ -114,8 +114,9 @@ class ChatProClient
 
     // -----------------------------------------------------------------
 
-    private function request($method, $endpoint, array $options = [])
+    private function request($method, $endpoint, array $options = [], int $tentativa = 1)
     {
+        $maxTentativas = 3;
         try {
             $resp = $this->http->request($method, $endpoint, $options);
             $code = $resp->getStatusCode();
@@ -137,7 +138,14 @@ class ChatProClient
                 'message' => $ok ? null : ('ChatPro respondeu HTTP ' . $code),
             ];
         } catch (GuzzleException $e) {
-            Log::error('[CHATPRO] Falha de comunicação: ' . $e->getMessage(), [
+            if ($tentativa < $maxTentativas) {
+                Log::warning('[CHATPRO] Falha na tentativa ' . $tentativa . '/' . $maxTentativas . ', aguardando para retry: ' . $e->getMessage(), [
+                    'endpoint' => $endpoint,
+                ]);
+                sleep(3 * $tentativa); // backoff: 3s, depois 6s
+                return $this->request($method, $endpoint, $options, $tentativa + 1);
+            }
+            Log::error('[CHATPRO] Falha de comunicação após ' . $maxTentativas . ' tentativas: ' . $e->getMessage(), [
                 'endpoint' => $endpoint,
             ]);
             return [

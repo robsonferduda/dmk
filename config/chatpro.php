@@ -20,8 +20,8 @@ return [
     'base_url' => env('CHATPRO_BASE_URL', 'https://v5.chatpro.com.br'),
 
     // Timeout de conexão / requisição (segundos).
-    'timeout'         => (int) env('CHATPRO_TIMEOUT', 8),
-    'connect_timeout' => (int) env('CHATPRO_CONNECT_TIMEOUT', 4),
+    'timeout'         => (int) env('CHATPRO_TIMEOUT', 15),
+    'connect_timeout' => (int) env('CHATPRO_CONNECT_TIMEOUT', 5),
 
     // ----------------------------------------------------------------
     // Webhook (recebimento de mensagens / acks)
