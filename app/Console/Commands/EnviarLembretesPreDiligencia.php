@@ -62,7 +62,7 @@ class EnviarLembretesPreDiligencia extends Command
             $q->where('cd_conta_con', $cdConta);
         }
 
-        $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
+        $processos = $q->with('cliente', 'vara', 'cidade.estado', 'status')->get();
 
         $this->info('[lembrete-pré] Processos encontrados: ' . $processos->count());
 
@@ -89,6 +89,7 @@ class EnviarLembretesPreDiligencia extends Command
                 $linhas[] = [
                     $proc->cd_processo_pro,
                     $proc->nu_processo_pro ?: '-',
+                    $proc->status->nm_status_processo_conta_stp ?? '-',
                     $proc->dt_prazo_fatal_pro ?? '-',
                     $proc->hr_audiencia_pro  ?? '-',
                     $correspondente->nm_razao_social_con ?? $correspondente->nm_conta_con ?? '-',
@@ -96,9 +97,9 @@ class EnviarLembretesPreDiligencia extends Command
                     $situacao,
                 ];
             }
-            usort($linhas, fn($a, $b) => strcmp($a[4], $b[4]));
+            usort($linhas, fn($a, $b) => strcmp($a[5], $b[5]));
             $this->table(
-                ['ID', 'Nº Processo', 'Data', 'Hora', 'Correspondente', 'WhatsApp', 'Situação'],
+                ['ID', 'Nº Processo', 'Status', 'Data', 'Hora', 'Correspondente', 'WhatsApp', 'Situação'],
                 $linhas
             );
             return 0;

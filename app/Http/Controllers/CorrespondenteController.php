@@ -93,7 +93,7 @@ class CorrespondenteController extends Controller
         $chatproOk  = ChatProClient::forConta($conta) !== null;
         $amanha     = Carbon::tomorrow()->toDateString();
 
-        $processos = Processo::with(['vara', 'cidade.estado'])
+        $processos = Processo::with(['vara', 'cidade.estado', 'status'])
             ->where('cd_conta_con', $this->conta)
             ->whereNotNull('cd_correspondente_cor')
             ->whereDate('dt_prazo_fatal_pro', $amanha)
@@ -131,6 +131,7 @@ class CorrespondenteController extends Controller
                                          ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '-',
                 'hr_audiencia'      => $proc->hr_audiencia_pro
                                          ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
+                'nm_status'         => $proc->status->nm_status_processo_conta_stp ?? '-',
                 'nm_correspondente' => $cor
                                          ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
                                          : '-',
