@@ -908,7 +908,8 @@ class CorrespondenteController extends Controller
             }
 
             //Identificação para tipo de pessoa
-            $identificacao = (Identificacao::where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CNPJ)->first();
+            $entidadeIde = $request->entidade_correspondente ?? $request->entidade;
+            $identificacao = (Identificacao::where('cd_entidade_ete', $entidadeIde)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CPF)->first()) ? Identificacao::where('cd_entidade_ete', $entidadeIde)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CPF)->first() : $identificacao = Identificacao::where('cd_entidade_ete', $entidadeIde)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::CNPJ)->first();
 
             $nu_cpf_cnpj = ($request->cd_tipo_pessoa_tpp == 1) ? $request->cpf : $request->cnpj;
             
@@ -918,7 +919,7 @@ class CorrespondenteController extends Controller
                 $identificacao->saveOrFail();
             } else {
                 $identificacao = Identificacao::create([
-                    'cd_entidade_ete'           => $request->entidade,
+                    'cd_entidade_ete'           => $entidadeIde,
                     'cd_conta_con'              => $correspondente->cd_conta_con,
                     'cd_tipo_identificacao_tpi' => ($request->cd_tipo_pessoa_tpp == 1) ? \TipoIdentificacao::CPF : \TipoIdentificacao::CNPJ,
                     'nu_identificacao_ide'      => (!empty($nu_cpf_cnpj)) ? $nu_cpf_cnpj : ''
@@ -927,7 +928,7 @@ class CorrespondenteController extends Controller
 
             //Identificação para OAB
             if (!empty($request->oab)) {
-                $identificacao = Identificacao::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::OAB)->first();
+                $identificacao = Identificacao::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $entidadeIde)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::OAB)->first();
 
                 if ($identificacao) {
                     $request->merge(['nu_identificacao_ide' => $request->oab]);
@@ -935,7 +936,7 @@ class CorrespondenteController extends Controller
                     $identificacao->saveOrFail();
                 } else {
                     $identificacao = Identificacao::create([
-                    'cd_entidade_ete'           => $request->entidade,
+                    'cd_entidade_ete'           => $entidadeIde,
                     'cd_conta_con'              => $correspondente->cd_conta_con,
                     'cd_tipo_identificacao_tpi' => \TipoIdentificacao::OAB,
                     'nu_identificacao_ide'      => $request->oab
@@ -945,14 +946,14 @@ class CorrespondenteController extends Controller
 
             //Identificação para RG
             if (!empty($request->rg)) {
-                $identificacao = Identificacao::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $request->entidade)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::RG)->first();
+                $identificacao = Identificacao::where('cd_conta_con', $this->conta)->where('cd_entidade_ete', $entidadeIde)->where('cd_tipo_identificacao_tpi', \TipoIdentificacao::RG)->first();
 
                 if ($identificacao) {
                     $identificacao->nu_identificacao_ide = $request->rg;
                     $identificacao->saveOrFail();
                 } else {
                     $identificacao = Identificacao::create([
-                        'cd_entidade_ete'           => $request->entidade,
+                        'cd_entidade_ete'           => $entidadeIde,
                         'cd_conta_con'              => $correspondente->cd_conta_con,
                         'cd_tipo_identificacao_tpi' => \TipoIdentificacao::RG,
                         'nu_identificacao_ide'      => $request->rg

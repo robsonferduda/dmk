@@ -40,12 +40,20 @@
                         @endif
 
                             <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">
+                            @if(Auth::user()->cd_nivel_niv != 3)
+                            <input type="hidden" name="entidade_correspondente" value="{{ $correspondente->correspondente->entidade->cd_entidade_ete }}">
+                            @endif
                             <input type="hidden" name="telefones" id="telefones">
                             <input type="hidden" name="emails" id="emails">
                             <input type="hidden" name="registrosBancarios" id="registrosBancarios">
                                     <header>
                                         <i class="fa fa-user"></i> Dados Básicos
                                     </header>
+                                    @php
+                                        $entIde = Auth::user()->cd_nivel_niv == 3
+                                            ? $correspondente->entidade
+                                            : $correspondente->correspondente->entidade;
+                                    @endphp
                                     <fieldset>
                                          <section>
                                             <div class="inline-group">
@@ -62,7 +70,7 @@
                                             <section class="col col-2 box-pessoa-juridica">
                                                 <label class="label">CNPJ</label>
                                                 <label class="input">
-                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ ($correspondente->entidade->cnpj) ? $correspondente->entidade->cnpj->nu_identificacao_ide : '' }}">
+                                                    <input type="text" name="cnpj" id="cnpj" class="cnpj" placeholder="00.000.000/0000-00" value="{{ ($entIde->cnpj) ? $entIde->cnpj->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
                     
@@ -70,7 +78,7 @@
                                             <section class="col col-2 box-pessoa-fisica">
                                                 <label class="label">CPF</label>
                                                 <label class="input">
-                                                    <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ ($correspondente->entidade->cpf) ? $correspondente->entidade->cpf->nu_identificacao_ide : '' }}">
+                                                    <input type="text" name="cpf" id="cpf" class="cpf" placeholder="000.000.000-000" value="{{ ($entIde->cpf) ? $entIde->cpf->nu_identificacao_ide : '' }}">
                                                 </label>
                                             </section>
 
@@ -109,14 +117,14 @@
                                             <section class="col col-2">
                                                 <label class="label">N º OAB</label>
                                                 <label class="input">
-                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($correspondente->entidade->oab ? $correspondente->entidade->oab->nu_identificacao_ide : '') }}">
+                                                    <input type="text" name="oab" placeholder="OAB" value="{{old('oab') ? old('oab') : ($entIde->oab ? $entIde->oab->nu_identificacao_ide : '') }}">
                                                 </label>
                                             </section>
 
                                             <section class="col col-2">
                                                 <label class="label">RG</label>
                                                 <label class="input">
-                                                    <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : ($correspondente->entidade->rg ? $correspondente->entidade->rg->nu_identificacao_ide : '')}}">
+                                                    <input type="text" name="rg" placeholder="RG" value="{{old('rg') ? old('rg') : ($entIde->rg ? $entIde->rg->nu_identificacao_ide : '')}}">
                                                 </label>
                                             </section>
                                         </div>       
