@@ -39,6 +39,7 @@
 
                         <div class="col-md-4">
                             <div class="col-md-12">
+                                @php $entIde = $correspondente->correspondente->entidade; @endphp
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-group fa-fw"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
@@ -50,23 +51,23 @@
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}
                                                 </li>
-                                                @if($correspondente->entidade->cpf()->first())
+                                                @if($entIde->cpf()->first())
                                                     <li>
-                                                        <strong>CPF: </strong> {{ ($correspondente->entidade->cpf()->first()) ? $correspondente->entidade->cpf()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                        <strong>CPF: </strong> {{ $entIde->cpf()->first()->nu_identificacao_ide }}
                                                     </li>
-                                                @elseif($correspondente->entidade->cnpj()->first())
+                                                @elseif($entIde->cnpj()->first())
                                                     <li>
-                                                        <strong>CNPJ: </strong> {{ ($correspondente->entidade->cnpj()->first()) ? $correspondente->entidade->cnpj()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                        <strong>CNPJ: </strong> {{ $entIde->cnpj()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif  
-                                                @if($correspondente->entidade->oab()->first())
+                                                @if($entIde->oab()->first())
                                                      <li>
-                                                        <strong>OAB: </strong> {{ ($correspondente->entidade->oab()->first()) ? $correspondente->entidade->oab()->first()->nu_identificacao_ide : 'Não informado' }}
+                                                        <strong>OAB: </strong> {{ $entIde->oab()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif
-                                                @if($correspondente->entidade->rg()->first())
+                                                @if($entIde->rg()->first())
                                                     <li>
-                                                        <strong>RG: </strong> {{ $correspondente->entidade->rg()->first()->nu_identificacao_ide }}
+                                                        <strong>RG: </strong> {{ $entIde->rg()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif
                                                 <li>
