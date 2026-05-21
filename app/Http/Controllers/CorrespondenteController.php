@@ -89,11 +89,6 @@ class CorrespondenteController extends Controller
 
     public function whatsappLembretes()
     {
-        return view('correspondente/whatsapp-lembretes');
-    }
-
-    public function whatsappLembretesData()
-    {
         $conta      = Conta::find($this->conta);
         $chatproOk  = ChatProClient::forConta($conta) !== null;
         $amanha     = Carbon::tomorrow()->toDateString();
@@ -118,7 +113,7 @@ class CorrespondenteController extends Controller
             ->pluck('cd_processo_pro')
             ->flip();
 
-        $data = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
+        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
             $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
 
@@ -128,7 +123,7 @@ class CorrespondenteController extends Controller
             elseif ($jaEnviados->has($proc->cd_processo_pro)) $situacao = 'JA_ENVIADO';
             else                      $situacao = 'ENVIARA';
 
-            return [
+            return (object) [
                 'cd_processo_pro'   => $proc->cd_processo_pro,
                 'nu_processo_pro'   => $proc->nu_processo_pro ?: '#' . $proc->cd_processo_pro,
                 'nm_reu_pro'        => $proc->nm_reu_pro ?? '-',
@@ -139,12 +134,15 @@ class CorrespondenteController extends Controller
                 'nm_correspondente' => $cor
                                          ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
                                          : '-',
-                'nu_whatsapp'       => $whatsapp ?: '-',
+                'nu_whatsapp'       => $whatsapp ?: null,
                 'situacao'          => $situacao,
             ];
         });
 
-        return response()->json(['data' => $data]);
+        return view('correspondente/whatsapp-lembretes', [
+            'linhas' => $linhas,
+            'amanha' => Carbon::tomorrow()->format('d/m/Y'),
+        ]);
     }
 
     public function whatsappData()
