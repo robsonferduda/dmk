@@ -49,7 +49,8 @@
                                     <th class="center" style="width: 155px;">
                                         <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
                                     </th>
-                                    <th class="center" style="width: 145px;">Situação</th>
+                                    <th class="center" style="width: 120px;">Situação</th>
+                                    <th class="center" style="width: 110px;">Entrega</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,76 +84,19 @@
                                             <span class="label label-default"><i class="fa fa-times-circle"></i> Sem correspondente</span>
                                         @endif
                                     </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </article>
-    </div>
-
-    {{-- Histórico de envios (últimos 30 dias) --}}
-    <div class="row" style="margin-top: 20px;">
-        <article class="col-xs-12">
-            <div class="jarviswidget" data-widget-editbutton="false">
-                <header>
-                    <span class="widget-icon"><i class="fa fa-history"></i></span>
-                    <h2>
-                        Histórico de envios
-                        <small class="text-muted" style="font-size: 12px;">últimos 30 dias</small>
-                        <span class="badge" style="margin-left: 6px;">{{ $historico->count() }}</span>
-                    </h2>
-                </header>
-                <div>
-                    <div class="widget-body no-padding">
-                        @if($historico->isEmpty())
-                            <p class="text-center text-muted" style="padding: 30px 0;">
-                                Nenhum lembrete enviado nos últimos 30 dias.
-                            </p>
-                        @else
-                        <table class="table table-striped table-bordered table-hover" style="margin-bottom: 0;">
-                            <thead>
-                                <tr>
-                                    <th class="center" style="width: 130px;">Enviado em</th>
-                                    <th>Processo</th>
-                                    <th>Réu / Parte</th>
-                                    <th>Correspondente</th>
-                                    <th class="center" style="width: 155px;">
-                                        <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp
-                                    </th>
-                                    <th class="center" style="width: 110px;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($historico as $h)
-                                <tr>
-                                    <td class="center">{{ $h->enviado_em }}</td>
-                                    <td>{{ $h->nu_processo_pro }}</td>
-                                    <td>{{ $h->nm_reu_pro }}</td>
-                                    <td>{{ $h->nm_correspondente }}</td>
                                     <td class="center">
-                                        @if($h->nu_whatsapp)
-                                            <a href="https://wa.me/{{ $h->nu_whatsapp }}" target="_blank" class="text-success">
-                                                <i class="fa fa-whatsapp"></i> {{ $h->nu_whatsapp }}
-                                            </a>
+                                        @if($linha->ds_status_entrega === 'read')
+                                            <span class="label label-success"><i class="fa fa-eye"></i> Lida</span>
+                                        @elseif(in_array($linha->ds_status_entrega, ['delivered','played']))
+                                            <span class="label label-info"><i class="fa fa-check-circle"></i> Entregue</span>
+                                        @elseif($linha->ds_status_entrega === 'sent')
+                                            <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
+                                        @elseif($linha->ds_status_entrega === 'failed')
+                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
+                                        @elseif($linha->ds_status_entrega === 'pending')
+                                            <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @else
                                             <span class="text-muted">—</span>
-                                        @endif
-                                    </td>
-                                    <td class="center">
-                                        @if($h->ds_status === 'read')
-                                            <span class="label label-success"><i class="fa fa-eye"></i> Lida</span>
-                                        @elseif($h->ds_status === 'delivered' || $h->ds_status === 'played')
-                                            <span class="label label-info"><i class="fa fa-check-circle"></i> Entregue</span>
-                                        @elseif($h->ds_status === 'sent')
-                                            <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
-                                        @elseif($h->ds_status === 'failed')
-                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
-                                        @else
-                                            <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @endif
                                     </td>
                                 </tr>

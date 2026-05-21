@@ -106,21 +106,23 @@ class CorrespondenteController extends Controller
             ->get()
             ->keyBy('cd_conta_con');
 
+        // Busca envios já realizados hoje, guardando também o status de entrega
         $jaEnviados = WhatsappMensagem::where('cd_conta_con', $this->conta)
             ->whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
             ->where('ds_tipo_wmm', 'lembrete_prediligencia')
             ->whereDate('created_at', Carbon::today())
-            ->pluck('cd_processo_pro')
-            ->flip();
+            ->get()
+            ->keyBy('cd_processo_pro');
 
         $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
             $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
+            $wmm      = $jaEnviados->get($proc->cd_processo_pro);
 
             if (!$chatproOk)          $situacao = 'SEM_CHATPRO';
             elseif (!$cor)            $situacao = 'SEM_CORRESPONDENTE';
             elseif (empty($whatsapp)) $situacao = 'SEM_WHATSAPP';
-            elseif ($jaEnviados->has($proc->cd_processo_pro)) $situacao = 'JA_ENVIADO';
+            elseif ($wmm)             $situacao = 'JA_ENVIADO';
             else                      $situacao = 'ENVIARA';
 
             return (object) [
@@ -137,39 +139,16 @@ class CorrespondenteController extends Controller
                                          : '-',
                 'nu_whatsapp'       => $whatsapp ?: null,
                 'situacao'          => $situacao,
+                'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
             ];
         });
 
         $linhas = $linhas->sortBy('nm_correspondente')->values();
 
-        // Histórico dos últimos 30 dias
-        $enviados = WhatsappMensagem::with('processo')
-            ->where('cd_conta_con', $this->conta)
-            ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-            ->where('tp_direcao_wmm', 'O')
-            ->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $hCorIds = $enviados->pluck('cd_correspondente_cor')->filter()->unique();
-        $hCorrespondentes = Conta::whereIn('cd_conta_con', $hCorIds)->get()->keyBy('cd_conta_con');
-
-        $historico = $enviados->map(function ($wmm) use ($hCorrespondentes) {
-            $cor = $hCorrespondentes[$wmm->cd_correspondente_cor] ?? null;
-            return (object) [
-                'enviado_em'        => $wmm->created_at->format('d/m/Y H:i'),
-                'nu_processo_pro'   => optional($wmm->processo)->nu_processo_pro ?: ('#' . $wmm->cd_processo_pro),
-                'nm_reu_pro'        => optional($wmm->processo)->nm_reu_pro ?? '-',
-                'nm_correspondente' => $cor ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-') : '-',
-                'nu_whatsapp'       => $wmm->nu_telefone_destino_wmm,
-                'ds_status'         => $wmm->ds_status_wmm ?? 'pending',
-            ];
-        });
-
         return view('correspondente/whatsapp-lembretes', [
-            'linhas'    => $linhas,
-            'amanha'    => Carbon::tomorrow()->format('d/m/Y'),
-            'historico' => $historico,
+            'linhas' => $linhas,
+            'amanha' => Carbon::tomorrow()->format('d/m/Y'),
         ]);
     }
 
