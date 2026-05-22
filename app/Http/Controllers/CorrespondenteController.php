@@ -96,6 +96,13 @@ class CorrespondenteController extends Controller
         $processos = Processo::with(['vara', 'cidade.estado', 'status'])
             ->where('cd_conta_con', $this->conta)
             ->whereNotNull('cd_correspondente_cor')
+            ->whereNotIn('cd_status_processo_stp', [
+                \App\Enums\StatusProcesso::FINALIZADO,
+                \App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE,
+                \App\Enums\StatusProcesso::CANCELADO,
+                \App\Enums\StatusProcesso::CANCELADO_PELO_ESCRITORIO,
+                \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE,
+            ])
             ->whereDate('dt_prazo_fatal_pro', $hoje)
             ->orderBy('hr_audiencia_pro')
             ->get();

@@ -50,7 +50,14 @@ class EnviarLembretesDiligencia extends Command
 
         // Quando --processo é passado, ignoramos o filtro de data: o
         // intuito é forçar o envio para um processo específico em teste.
-        $q = Processo::whereNotNull('cd_correspondente_cor');
+        $q = Processo::whereNotNull('cd_correspondente_cor')
+            ->whereNotIn('cd_status_processo_stp', [
+                \App\Enums\StatusProcesso::FINALIZADO,
+                \App\Enums\StatusProcesso::FINALIZADO_CORRESPONDENTE,
+                \App\Enums\StatusProcesso::CANCELADO,
+                \App\Enums\StatusProcesso::CANCELADO_PELO_ESCRITORIO,
+                \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE,
+            ]);
         if ($cdProcesso) {
             $q->where('cd_processo_pro', $cdProcesso);
         } else {
