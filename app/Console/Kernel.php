@@ -43,11 +43,7 @@ class Kernel extends ConsoleKernel
              ->dailyAt('13:00')
              ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
 
-        // Notifica correspondentes sobre processos pendentes (status 2 e 12).
-        // A rota é pública (excluída do middleware auth).
-        $schedule->exec('curl -s https://sistema.lawyerexpress.com.br/processos/pendentes/notificar')
-                 ->everyTwelveHours()
-                 ->appendOutputTo(storage_path('logs/notificar-pendentes.log'));
+      
     }
 
     /**
