@@ -109,6 +109,7 @@ class PublicCheckinController extends Controller
         // Se o correspondente reabrir o link, verá "link inválido". A
         // tela de sucesso continua aparecendo nesta resposta JSON.
         $processo->ds_checkin_token_pro = null;
+        $processo->fl_checkin_pro = true;
         $processo->save();
 
         // Notifica o escritório (WhatsApp), fire-and-forget.
