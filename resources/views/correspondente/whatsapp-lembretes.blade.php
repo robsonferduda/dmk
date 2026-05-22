@@ -51,6 +51,7 @@
                                     </th>
                                     <th class="center" style="width: 120px;">Situação</th>
                                     <th class="center" style="width: 110px;">Entrega</th>
+                                    <th class="center" style="width: 90px;">Ação</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,6 +100,18 @@
                                             <span class="text-muted">—</span>
                                         @endif
                                     </td>
+                                    <td class="center">
+                                        @if($linha->situacao === 'ENVIARA' || $linha->ds_status_entrega === 'failed')
+                                            <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/reenviar/' . $linha->cd_processo_pro) }}" class="form-reenviar" style="margin:0;">
+                                                @csrf
+                                                <button type="button" class="btn btn-xs btn-warning btn-reenviar">
+                                                    <i class="fa fa-whatsapp"></i> Reenviar
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -110,4 +123,47 @@
         </article>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    @if(session('success'))
+    Swal.fire({
+        title: 'Enviado!',
+        text: '{{ session('success') }}',
+        icon: 'success',
+        timer: 3500,
+        showConfirmButton: false
+    });
+    @elseif(session('error'))
+    Swal.fire({
+        title: 'Falha no envio',
+        text: '{{ session('error') }}',
+        icon: 'error',
+        confirmButtonText: 'OK'
+    });
+    @endif
+
+    document.querySelectorAll('.btn-reenviar').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var form = btn.closest('form');
+            Swal.fire({
+                title: 'Reenviar lembrete?',
+                text: 'O lembrete pré-diligência será enviado via WhatsApp agora.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f0ad4e',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: '<i class="fa fa-whatsapp"></i> Sim, reenviar',
+                cancelButtonText: 'Cancelar'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+});
+</script>
 @endsection

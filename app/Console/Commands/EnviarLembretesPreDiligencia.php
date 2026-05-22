@@ -37,7 +37,17 @@ class EnviarLembretesPreDiligencia extends Command
 
     public function handle()
     {
-        $data       = $this->option('data') ? Carbon::parse($this->option('data'))->toDateString() : Carbon::tomorrow()->toDateString();
+        // Quando não há --data explícito, usa o próximo dia útil:
+        // se amanhã for fim de semana (sex → seg, sáb → seg), avança até segunda.
+        if ($this->option('data')) {
+            $data = Carbon::parse($this->option('data'))->toDateString();
+        } else {
+            $proximoDiaUtil = Carbon::today()->addDay();
+            while ($proximoDiaUtil->isWeekend()) {
+                $proximoDiaUtil->addDay();
+            }
+            $data = $proximoDiaUtil->toDateString();
+        }
         $cdProcesso = $this->option('processo');
         $cdConta    = $this->option('conta');
         $dryRun     = (bool) $this->option('dry-run');

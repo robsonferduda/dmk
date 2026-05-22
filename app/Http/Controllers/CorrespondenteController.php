@@ -193,11 +193,47 @@ class CorrespondenteController extends Controller
             ->with('success', 'Lembrete reenviado com sucesso.');
     }
 
+    public function whatsappLembretesReenviar($cdProcesso)
+    {
+        \Artisan::call('whatsapp:lembrete-prediligencias', [
+            '--conta'    => $this->conta,
+            '--processo' => $cdProcesso,
+            '--force'    => true,
+        ]);
+
+        $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
+            ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+            ->latest()
+            ->first();
+
+        if ($wmm && $wmm->ds_status_wmm === 'failed') {
+            $erroApi = $wmm->ds_payload_raw_wmm['response']['body']['message']
+                    ?? $wmm->ds_payload_raw_wmm['response']['message']
+                    ?? null;
+
+            if ($erroApi) {
+                $erroApi = preg_replace('/^error:[A-Za-z]+:\s*[^-]+-\s*/u', '', $erroApi);
+            }
+
+            return redirect(url('correspondente/whatsapp/lembretes'))
+                ->with('error', $erroApi ? "Falha: {$erroApi}" : 'Falha ao enviar. Verifique os logs.');
+        }
+
+        return redirect(url('correspondente/whatsapp/lembretes'))
+            ->with('success', 'Lembrete reenviado com sucesso.');
+    }
+
     public function whatsappLembretes()
     {
         $conta      = Conta::find($this->conta);
         $chatproOk  = ChatProClient::forConta($conta) !== null;
-        $amanha     = Carbon::tomorrow()->toDateString();
+
+        // Próximo dia útil: se amanhã cair no fim de semana, avança até segunda.
+        $proximoDiaUtil = Carbon::today()->addDay();
+        while ($proximoDiaUtil->isWeekend()) {
+            $proximoDiaUtil->addDay();
+        }
+        $amanha = $proximoDiaUtil->toDateString();
 
         $processos = Processo::with(['vara', 'cidade.estado', 'status'])
             ->where('cd_conta_con', $this->conta)
@@ -254,7 +290,7 @@ class CorrespondenteController extends Controller
 
         return view('correspondente/whatsapp-lembretes', [
             'linhas' => $linhas,
-            'amanha' => Carbon::tomorrow()->format('d/m/Y'),
+            'amanha' => $proximoDiaUtil->format('d/m/Y'),
         ]);
     }
 
