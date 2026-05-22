@@ -29,6 +29,14 @@
                         <strong>{{ $amanha }}</strong>
                         <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
                     </h2>
+                    <div class="widget-toolbar">
+                        <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/disparar') }}" id="form-disparar" style="margin:0;">
+                            @csrf
+                            <button type="button" id="btn-disparar" class="btn btn-success btn-sm">
+                                <i class="fa fa-whatsapp"></i> Disparar agora
+                            </button>
+                        </form>
+                    </div>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
@@ -163,6 +171,28 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    var btnDisparar = document.getElementById('btn-disparar');
+    if (btnDisparar) {
+        btnDisparar.addEventListener('click', function () {
+            Swal.fire({
+                title: 'Disparar lembretes agora?',
+                text: 'Serão enviados lembretes pré-diligência para todos os processos pendentes de {{ $amanha }}.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#5cb85c',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: '<i class="fa fa-whatsapp"></i> Sim, disparar',
+                cancelButtonText: 'Cancelar'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    btnDisparar.disabled = true;
+                    btnDisparar.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Enviando...';
+                    document.getElementById('form-disparar').submit();
+                }
+            });
+        });
+    }
 
 });
 </script>

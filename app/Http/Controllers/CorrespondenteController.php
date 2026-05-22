@@ -193,8 +193,7 @@ class CorrespondenteController extends Controller
             ->with('success', 'Lembrete reenviado com sucesso.');
     }
 
-    public function whatsappLembretesReenviar($cdProcesso)
-    {
+    public function whatsappLembretesReenviar($cdProcesso)    {
         \Artisan::call('whatsapp:lembrete-prediligencias', [
             '--conta'    => $this->conta,
             '--processo' => $cdProcesso,
@@ -221,6 +220,29 @@ class CorrespondenteController extends Controller
 
         return redirect(url('correspondente/whatsapp/lembretes'))
             ->with('success', 'Lembrete reenviado com sucesso.');
+    }
+
+    public function whatsappLembretesDisparar()
+    {
+        \Artisan::call('whatsapp:lembrete-prediligencias', [
+            '--conta' => $this->conta,
+        ]);
+
+        $output = trim(\Artisan::output());
+
+        // Extrai contadores do output: "Enviados=X  Ignorados=Y  Falhas=Z"
+        preg_match('/Enviados=(\d+)/', $output, $mE);
+        preg_match('/Ignorados=(\d+)/', $output, $mI);
+        preg_match('/Falhas=(\d+)/',   $output, $mF);
+
+        $enviados  = (int) ($mE[1] ?? 0);
+        $ignorados = (int) ($mI[1] ?? 0);
+        $falhas    = (int) ($mF[1] ?? 0);
+
+        $msg = "Enviados: {$enviados} | Ignorados: {$ignorados} | Falhas: {$falhas}";
+
+        return redirect(url('correspondente/whatsapp/lembretes'))
+            ->with($falhas > 0 && $enviados === 0 ? 'error' : 'success', $msg);
     }
 
     public function whatsappLembretes()

@@ -40,6 +40,7 @@ class Kernel extends ConsoleKernel
         // Executado às 13h do dia anterior à audiência.
         // --conta=64: fase de testes, restrito ao escritório 64. Remover quando for para produção geral.
         $schedule->command('whatsapp:lembrete-prediligencias --conta=64')
+             ->weekdays()
              ->dailyAt('13:00')
              ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
 
