@@ -53,16 +53,17 @@ return [
             "Cliente: {cliente}",
 
         // Lembrete diário enviado ao CORRESPONDENTE no dia do prazo fatal.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade},
+        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade}, {tipo_servico},
         //               {data}, {hora_audiencia}, {responsaveis}, {link_checkin}.
         'lembrete_diligencia' =>
             "Olá, {correspondente}!\n" .
-            "Você tem audiência do DMK marcada para hoje:\n" .
+            "Você tem audiência/diligência do DMK marcada para hoje:\n" .
             "• Data e Horário: {data} às {hora_audiencia}\n" .
             "• Processo: {processo}\n" .
             "• Cliente: {reu}\n" .
             "• Vara: {vara}\n" .
             "• Cidade: {cidade}\n" .
+            "• Tipo de Serviço: {tipo_servico}\n" .
             "{responsaveis}\n" .
             "🚨 *Obrigatório:*\n" .
             "• Confirme o recebimento dos documentos, orientações e link (se virtual) no sistema.\n" .
@@ -76,15 +77,16 @@ return [
 
 
         // Lembrete PRÉ-diligência enviado ao correspondente um dia antes da audiência.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade},
+        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade}, {tipo_servico},
         //               {data}, {hora_audiencia}, {responsaveis}, {link_confirmacao_audiencia}
         'lembrete_prediligencia' =>
             "Olá, {correspondente}! Tudo bem?\n\n" .
-            "Gostaríamos de confirmar se está tudo certo para a realização do ato de amanhã:\n\n" .
+            "Gostaríamos de confirmar se está tudo certo para a realização da(s) audiência(s)/diligência(s) de amanhã:\n\n" .
             "📋 Processo: {processo}\n" .
             "👤 Parte: {reu}\n" .
             "🏛️ Vara: {vara}\n" .
             "📍 Cidade: {cidade}\n" .
+            "🔧 Tipo de Serviço: {tipo_servico}\n" .
             "📅 Data: {data} às {hora_audiencia}\n" .
             "{responsaveis}\n" .
             "Todos os documentos e orientações serão anexados em nosso sistema. Assim que receberem, pedimos que confirmem o recebimento AINDA HOJE pelo botão localizado abaixo dos documentos: \"CONFIRMA O RECEBIMENTO DOS DOCUMENTOS E A REALIZAÇÃO DO ATO\".\n\n" .
@@ -93,7 +95,7 @@ return [
             "* Confirmar o recebimento dos documentos e a realização do ato no sistema;\n" .
             "* Confirmar presença no link abaixo ainda hoje;\n" .
             "* Realizar o CHECK-IN amanhã, no local do ato, pelo link que será enviado antes da audiência/diligência.\n\n" .
-            "📲 Confirme sua audiência aqui:\n" .
+            "📲 Confirme sua audiência/diligência aqui:\n" .
             "{link_confirmacao_audiencia}\n\n" .
             "Em caso de dúvidas, utilize o WhatsApp. Para urgências, não aguarde mensagem: LIGUE imediatamente para (48) 99130-8024.\n\n" .
             "DMK Advogados",

@@ -62,7 +62,7 @@ class EnviarLembretesPreDiligencia extends Command
             $q->where('cd_conta_con', $cdConta);
         }
 
-        $processos = $q->with('cliente', 'vara', 'cidade.estado', 'status')->get();
+        $processos = $q->with('cliente', 'vara', 'cidade.estado', 'status', 'honorario.tipoServicoCorrespondente')->get();
 
         $this->info('[lembrete-pré] Processos encontrados: ' . $processos->count());
 
@@ -245,6 +245,7 @@ class EnviarLembretesPreDiligencia extends Command
             '{cidade}'          => ($proc->cidade) ? $proc->cidade->nm_cidade_cde . (isset($proc->cidade->estado) ? '/' . $proc->cidade->estado->sg_estado_est : '') : '—',
             '{data}'            => $proc->dt_prazo_fatal_pro ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '—',
             '{hora_audiencia}'  => $proc->hr_audiencia_pro ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '—',
+            '{tipo_servico}'    => optional(optional($proc->honorario)->tipoServicoCorrespondente)->nm_tipo_servico_tse ?? '—',
             '{responsaveis}'    => $responsaveis,
             '{link_confirmacao_audiencia}' => $linkConfirmacao,
         ]);

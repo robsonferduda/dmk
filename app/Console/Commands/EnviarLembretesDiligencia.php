@@ -67,7 +67,7 @@ class EnviarLembretesDiligencia extends Command
             $q->where('cd_conta_con', $cdConta);
         }
 
-        $processos = $q->with('cliente', 'vara', 'cidade.estado')->get();
+        $processos = $q->with('cliente', 'vara', 'cidade.estado', 'honorario.tipoServicoCorrespondente')->get();
 
         $this->info('[lembrete] Processos encontrados: ' . $processos->count());
 
@@ -230,6 +230,7 @@ class EnviarLembretesDiligencia extends Command
             '{cidade}'          => $cidade,
             '{data}'            => $data,
             '{hora_audiencia}'  => $hora,
+            '{tipo_servico}'    => optional(optional($proc->honorario)->tipoServicoCorrespondente)->nm_tipo_servico_tse ?? '—',
             '{responsaveis}'    => $responsaveis,
             '{link_checkin}'    => $linkCheckin,
         ]);
