@@ -279,10 +279,6 @@ class ProcessoController extends Controller
                             Flash::error('Nenhum email de notificação cadastrado para o correspondente');
                         } else {
                             $lista = '';
-                            
-                            // Atualiza data de notificação
-                            $processo->dt_notificacao_pro = $agora;
-                            $processo->save();
 
                             foreach ($emails as $email) {
 
@@ -310,8 +306,11 @@ class ProcessoController extends Controller
                                                     $processo->email =  $email->dc_endereco_eletronico_ede;
                                                     $processo->correspondente = $vinculo->nm_conta_correspondente_ccr;
                                                     $processo->notificarCorrespondente($processo);
-                                                    $lista .= $email->dc_endereco_eletronico_ede.', ';                                       
+                                                    $lista .= $email->dc_endereco_eletronico_ede.', ';
 
+                                                    // Atualiza data de notificação somente após envio efetivo
+                                                    $processo->dt_notificacao_pro = $agora;
+                                                    $processo->save();
 
                                     } else {
                                         // Excedeu o número máximo → marcar como recusado
