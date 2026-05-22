@@ -43,6 +43,7 @@
                                     <th>Processo</th>
                                     <th>Réu / Parte</th>
                                     <th>Status</th>
+                                    <th class="center" style="width: 95px;">Data</th>
                                     <th class="center" style="width: 65px;">Hora</th>
                                     <th>Correspondente</th>
                                     <th class="center" style="width: 155px;">
@@ -58,6 +59,7 @@
                                     <td>{{ $linha->nu_processo_pro }}</td>
                                     <td>{{ $linha->nm_reu_pro }}</td>
                                     <td>{{ $linha->nm_status }}</td>
+                                    <td class="center">{{ $linha->dt_prazo_fatal }}</td>
                                     <td class="center">{{ $linha->hr_audiencia }}</td>
                                     <td>{{ $linha->nm_correspondente }}</td>
                                     <td class="center">

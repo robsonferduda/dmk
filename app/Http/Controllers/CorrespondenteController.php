@@ -127,6 +127,8 @@ class CorrespondenteController extends Controller
                 'cd_processo_pro'   => $proc->cd_processo_pro,
                 'nu_processo_pro'   => $proc->nu_processo_pro ?: '#' . $proc->cd_processo_pro,
                 'nm_reu_pro'        => $proc->nm_reu_pro ?? '-',
+                'dt_prazo_fatal'    => $proc->dt_prazo_fatal_pro
+                                         ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '-',
                 'hr_audiencia'      => $proc->hr_audiencia_pro
                                          ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
                 'nm_status'         => $proc->status->nm_status_processo_conta_stp ?? '-',
