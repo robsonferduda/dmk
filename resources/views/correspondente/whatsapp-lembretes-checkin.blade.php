@@ -102,10 +102,9 @@
                                     </td>
                                     <td class="center">
                                         @if($linha->situacao === 'PENDENTE' || $linha->ds_status_entrega === 'failed')
-                                            <form method="POST" action="{{ url('correspondente/whatsapp/checkin/reenviar/' . $linha->cd_processo_pro) }}" style="margin:0;">
+                                            <form method="POST" action="{{ url('correspondente/whatsapp/checkin/reenviar/' . $linha->cd_processo_pro) }}" class="form-reenviar" style="margin:0;">
                                                 @csrf
-                                                <button type="submit" class="btn btn-xs btn-warning"
-                                                    onclick="return confirm('Reenviar lembrete de check-in para este processo?')">
+                                                <button type="button" class="btn btn-xs btn-warning btn-reenviar">
                                                     <i class="fa fa-whatsapp"></i> Reenviar
                                                 </button>
                                             </form>
@@ -124,4 +123,26 @@
         </article>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.btn-reenviar').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var form = btn.closest('form');
+        Swal.fire({
+            title: 'Reenviar lembrete?',
+            text: 'O lembrete de check-in será enviado via WhatsApp agora.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#f0ad4e',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: '<i class="fa fa-whatsapp"></i> Sim, reenviar',
+            cancelButtonText: 'Cancelar'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
 @endsection
