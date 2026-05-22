@@ -165,12 +165,32 @@ class CorrespondenteController extends Controller
             '--force'     => true,
         ]);
 
-        $output = trim(\Artisan::output());
-        $sucesso = str_contains($output, 'Enviados=1');
+        // Lê o registro mais recente para extrair o resultado real do envio.
+        $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
+            ->where('ds_tipo_wmm', 'lembrete_diligencia')
+            ->latest()
+            ->first();
+
+        if ($wmm && $wmm->ds_status_wmm === 'failed') {
+            $erroApi = $wmm->ds_payload_raw_wmm['response']['body']['message']
+                    ?? $wmm->ds_payload_raw_wmm['response']['message']
+                    ?? null;
+
+            // Remove prefixos técnicos da mensagem da API (ex.: "error:NotFoundException: getUserJid - ")
+            if ($erroApi) {
+                $erroApi = preg_replace('/^error:[A-Za-z]+:\s*[^-]+-\s*/u', '', $erroApi);
+            }
+
+            $msgErro = $erroApi
+                ? "Falha: {$erroApi}"
+                : 'Falha ao enviar. Verifique os logs.';
+
+            return redirect(url('correspondente/whatsapp/checkin'))
+                ->with('error', $msgErro);
+        }
 
         return redirect(url('correspondente/whatsapp/checkin'))
-            ->with($sucesso ? 'success' : 'error',
-                   $sucesso ? 'Lembrete reenviado com sucesso.' : 'Falha ao reenviar. Verifique os logs.');
+            ->with('success', 'Lembrete reenviado com sucesso.');
     }
 
     public function whatsappLembretes()
