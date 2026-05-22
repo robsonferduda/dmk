@@ -51,6 +51,7 @@
                                     </th>
                                     <th class="center" style="width: 120px;">Situação</th>
                                     <th class="center" style="width: 110px;">Entrega</th>
+                                    <th class="center" style="width: 90px;">Ação</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,6 +96,19 @@
                                             <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
                                         @elseif($linha->ds_status_entrega === 'pending')
                                             <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="center">
+                                        @if($linha->situacao === 'PENDENTE' || $linha->ds_status_entrega === 'failed')
+                                            <form method="POST" action="{{ url('correspondente/whatsapp/checkin/reenviar/' . $linha->cd_processo_pro) }}" style="margin:0;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-xs btn-warning"
+                                                    onclick="return confirm('Reenviar lembrete de check-in para este processo?')">
+                                                    <i class="fa fa-whatsapp"></i> Reenviar
+                                                </button>
+                                            </form>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif

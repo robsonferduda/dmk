@@ -157,6 +157,22 @@ class CorrespondenteController extends Controller
         ]);
     }
 
+    public function whatsappCheckinReenviar($cdProcesso)
+    {
+        \Artisan::call('whatsapp:lembrete-diligencias', [
+            '--conta'     => $this->conta,
+            '--processo'  => $cdProcesso,
+            '--force'     => true,
+        ]);
+
+        $output = trim(\Artisan::output());
+        $sucesso = str_contains($output, 'Enviados=1');
+
+        return redirect(url('correspondente/whatsapp/checkin'))
+            ->with($sucesso ? 'success' : 'error',
+                   $sucesso ? 'Lembrete reenviado com sucesso.' : 'Falha ao reenviar. Verifique os logs.');
+    }
+
     public function whatsappLembretes()
     {
         $conta      = Conta::find($this->conta);
