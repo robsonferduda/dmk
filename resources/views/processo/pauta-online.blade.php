@@ -107,12 +107,6 @@
 
 </div>
 
-<div id="widget-anexos" style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999; background:#fff; border:1px solid #ddd; border-radius:10px; padding:12px 18px; box-shadow:0 4px 12px rgba(0,0,0,0.15); font-size:13px; min-width:200px;">
-    <p style="margin:0 0 6px; font-weight:bold; color:#444;"><i class="fa fa-paperclip"></i> Anexos nos processos</p>
-    <p style="margin:0 0 3px;"><i class="fa fa-file-o"></i> <strong id="widget-total-arquivos">0</strong> arquivo(s)</p>
-    <p style="margin:0;"><i class="fa fa-hdd-o"></i> <strong id="widget-tamanho-total">0</strong> MB</p>
-</div>
-
 <div class="modal fade in modal_top_alto" id="modal_pauta" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -514,20 +508,7 @@
                     container.empty(); // limpa os dados atuais
                     totalElement.text(response.length); // atualiza o total
 
-                    // Atualiza widget de anexos
-                    let totalArquivos = 0;
-                    let tamanhoTotal = 0;
-                    response.forEach(function(p) {
-                        totalArquivos += parseInt(p.nu_total_arquivos_pro) || 0;
-                        tamanhoTotal  += parseFloat(p.nu_tamanho_anexos_pro) || 0;
-                    });
-                    if (totalArquivos > 0) {
-                        $('#widget-total-arquivos').text(totalArquivos);
-                        $('#widget-tamanho-total').text(tamanhoTotal.toFixed(2));
-                        $('#widget-anexos').fadeIn(300);
-                    } else {
-                        $('#widget-anexos').fadeOut(200);
-                    }
+
 
                     if (response.length === 0) {
                         container.append('<h5 class="center">Nenhum dado para ser exibido</h5>');
@@ -587,6 +568,7 @@
                                         <h6><strong>Cliente</strong>: ${processo.nm_razao_social_cli || ''}</h6>
                                         <h6><strong>Foro</strong>: ${processo.nm_vara_var || ''}</h6>
                                         <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo_tpo || ''}</h6>
+                                        ${parseInt(processo.nu_total_arquivos_pro) > 0 ? `<h6><i class="fa fa-paperclip"></i> <strong>Anexos</strong>: ${processo.nu_total_arquivos_pro} arquivo(s) &mdash; ${parseFloat(processo.nu_tamanho_anexos_pro).toFixed(2)} MB</h6>` : ''}
                                     </div>
                                     <div class="col-md-4 box-content">
                                         <h6>
