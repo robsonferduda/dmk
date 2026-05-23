@@ -76,6 +76,27 @@ class AnexoProcessoController extends Controller
         }
     }
 
+    private function atualizarContadoresAnexos($id_processo)
+    {
+        $anexos = AnexoProcesso::where('cd_processo_pro', $id_processo)->get();
+
+        $totalArquivos = 0;
+        $tamanhoTotal = 0;
+
+        foreach ($anexos as $anexo) {
+            $caminho = storage_path($anexo->nm_local_anexo_processo_apr . $anexo->nm_anexo_processo_apr);
+            if (file_exists($caminho)) {
+                $totalArquivos++;
+                $tamanhoTotal += filesize($caminho);
+            }
+        }
+
+        Processo::where('cd_processo_pro', $id_processo)->update([
+            'nu_total_arquivos_pro'  => $totalArquivos,
+            'nu_tamanho_anexos_pro'  => round($tamanhoTotal / 1048576, 4), // bytes → MB
+        ]);
+    }
+
     public function create(Request $request)
     {
 
@@ -96,6 +117,8 @@ class AnexoProcessoController extends Controller
             'nm_anexo_processo_apr'       => $request->nome_arquivo,
             'nm_local_anexo_processo_apr' => $local
         ]);
+
+        $this->atualizarContadoresAnexos($request->id_processo);
     }
 
     public function destroy(Request $request)
@@ -103,6 +126,7 @@ class AnexoProcessoController extends Controller
         $anexo = AnexoProcesso::where('cd_processo_pro', $request->id)->where('nm_anexo_processo_apr', $request->nome_arquivo)->first();
 
         if ($anexo->delete()) {
+            $this->atualizarContadoresAnexos($request->id);
             return Response::json(array('message' => 'Registro excluído com sucesso'), 200);
         } else {
             return Response::json(array('message' => 'Erro ao excluir o registro'), 500);

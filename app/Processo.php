@@ -82,6 +82,8 @@ class Processo extends Model implements AuditableContract
                             'fl_documentacao_cliente_pro',
                             'ds_checkin_token_pro',
                             'ds_confirmacao_audiencia_token_pro',
+                            'nu_tamanho_anexos_pro',
+                            'nu_total_arquivos_pro'
     					  ];
 
     public $timestamps = true;
