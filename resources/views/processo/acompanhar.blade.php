@@ -365,7 +365,7 @@
 
                                     @role('administrator|colaborador')
                                         <h6>Arquivos do Processo</h6>
-                                        <p><strong>Link de Armazenamento Externo<strong>: <a id="informarLink">Clique Aqui</a> e informe um link com os arquivos do processo.</p>
+                                        <p><strong>Link de Armazenamento Externo</strong>: <a id="informarLink">Clique Aqui</a> e informe um link com os arquivos do processo.</p>
                                         <div class="alert alert-warning" style="margin-bottom: 10px; font-size: 13px; padding: 8px 12px;">
                                             <i class="fa fa-exclamation-triangle"></i>
                                             <strong>Limite de 30MB por arquivo.</strong> 
