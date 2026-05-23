@@ -294,7 +294,9 @@ class Processo extends Model implements AuditableContract
                        fl_audiencia_confirmada_pro,
                        fl_documento_representacao_pro,
                        fl_checkin_pro,
-                       t14.dc_area_direito_ado
+                       t14.dc_area_direito_ado,
+                       t1.nu_total_arquivos_pro,
+                       t1.nu_tamanho_anexos_pro
                 FROM processo_pro t1
                 JOIN status_processo_stp t2 ON t1.cd_status_processo_stp = t2.cd_status_processo_stp
                 JOIN conta_con t11 ON t1.cd_conta_con = t11.cd_conta_con
