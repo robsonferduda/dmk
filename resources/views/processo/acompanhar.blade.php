@@ -939,6 +939,7 @@
 
         @endsection
         @section('script')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script type="text/javascript">
 
             $(document).ready(function() {
@@ -1061,7 +1062,7 @@
                 })
                 .on('add.filepicker', function (e, data) {
                     if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
-                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        Swal.fire({ icon: 'warning', title: 'Arquivo muito grande', html: '<p>O arquivo <strong>' + data.files[0].name + '</strong> excede o limite de <strong>30MB</strong>.</p><p>Utilize a opção de link de armazenamento externo para compartilhar arquivos grandes.</p>' });
                         return false;
                     }
                 })
@@ -1084,7 +1085,7 @@
                 })
                 .on('add.filepicker', function (e, data) {
                     if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
-                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        Swal.fire({ icon: 'warning', title: 'Arquivo muito grande', html: '<p>O arquivo <strong>' + data.files[0].name + '</strong> excede o limite de <strong>30MB</strong>.</p><p>Utilize a opção de link de armazenamento externo para compartilhar arquivos grandes.</p>' });
                         return false;
                     }
                 })
@@ -1147,7 +1148,7 @@
                 })
                 .on('add.filepicker', function (e, data) {
                     if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
-                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        Swal.fire({ icon: 'warning', title: 'Arquivo muito grande', html: '<p>O arquivo <strong>' + data.files[0].name + '</strong> excede o limite de <strong>30MB</strong>.</p><p>Utilize a opção de link de armazenamento externo para compartilhar arquivos grandes.</p>' });
                         return false;
                     }
                 })
@@ -1243,7 +1244,7 @@
                 })
                 .on('add.filepicker', function (e, data) {
                     if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
-                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        Swal.fire({ icon: 'warning', title: 'Arquivo muito grande', html: '<p>O arquivo <strong>' + data.files[0].name + '</strong> excede o limite de <strong>30MB</strong>.</p><p>Utilize a opção de link de armazenamento externo para compartilhar arquivos grandes.</p>' });
                         return false;
                     }
                 })
