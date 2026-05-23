@@ -634,7 +634,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                ${parseInt(processo.nu_total_arquivos_pro) > 0 ? `<span style="position:absolute; bottom:10px; right:14px; font-size:11px; color:#666;"><i class="fa fa-paperclip"></i> ${processo.nu_total_arquivos_pro} arquivo(s) &mdash; ${parseFloat(processo.nu_tamanho_anexos_pro).toFixed(2)} MB</span>` : ''}
+                                ${parseInt(processo.nu_total_arquivos_pro) > 0 ? `<span style="position:absolute; bottom:10px; right:14px; font-size:11px; color:#666; font-weight: bold;"><i class="fa fa-paperclip"></i> ${processo.nu_total_arquivos_pro} arquivo(s) - ${parseFloat(processo.nu_tamanho_anexos_pro).toFixed(2)} MB</span>` : ''}
                             </div>`;
 
                             container.append(html);
