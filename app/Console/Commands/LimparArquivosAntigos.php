@@ -16,7 +16,7 @@ class LimparArquivosAntigos extends Command
      *
      * @var string
      */
-    protected $signature = 'arquivos:limpar {--dias=60 : Número de dias para considerar arquivo antigo}';
+    protected $signature = 'arquivos:limpar {--dias=45 : Número de dias para considerar arquivo antigo}';
 
     /**
      * The console command description.
@@ -274,7 +274,7 @@ class LimparArquivosAntigos extends Command
         $linhas[] = "Relatório de Limpeza Automática - Processos";
         $linhas[] = "Data/Hora: {$dataExecucao}";
         $linhas[] = "Critério: arquivos com mais de {$dias} dias";
-        $linhas[] = str_repeat('-', 60);
+        $linhas[] = str_repeat('-', 45);
 
         foreach ($blocos as $bloco) {
             $linhas[] = "";
@@ -287,7 +287,7 @@ class LimparArquivosAntigos extends Command
         }
 
         $linhas[] = "";
-        $linhas[] = str_repeat('=', 60);
+        $linhas[] = str_repeat('=', 45);
         $linhas[] = "TOTAL GERAL";
         $linhas[] = "Arquivos removidos: {$totalArquivosRemovidos}";
         $linhas[] = "Espaço total liberado: {$this->formatarBytes($totalBytesRemovidos)}";
