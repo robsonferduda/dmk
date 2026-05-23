@@ -524,7 +524,7 @@
                             cor_borda = (processo.fl_checkin_pro) ? '#a7d9ff' : cor_borda;
 
                             let html = `
-                            <div class="well box-acompanhamento" style="padding: 10px 15px; border: 1px solid ${cor_borda}; border-radius: 10px; background: ${cor_fundo}; display: block;">
+                            <div class="well box-acompanhamento" style="position: relative; padding: 10px 15px; border: 1px solid ${cor_borda}; border-radius: 10px; background: ${cor_fundo}; display: block;">
                                 <div class="row box-processo">
                                     <div class="col-lg-12 box-content">
                                         <h6 style="margin: 0px; font-size: 13px;">
@@ -568,7 +568,6 @@
                                         <h6><strong>Cliente</strong>: ${processo.nm_razao_social_cli || ''}</h6>
                                         <h6><strong>Foro</strong>: ${processo.nm_vara_var || ''}</h6>
                                         <h6><strong>Tipo de Processo</strong>: ${processo.nm_tipo_processo_tpo || ''}</h6>
-                                        ${parseInt(processo.nu_total_arquivos_pro) > 0 ? `<h6><i class="fa fa-paperclip"></i> <strong>Anexos</strong>: ${processo.nu_total_arquivos_pro} arquivo(s) &mdash; ${parseFloat(processo.nu_tamanho_anexos_pro).toFixed(2)} MB</h6>` : ''}
                                     </div>
                                     <div class="col-md-4 box-content">
                                         <h6>
@@ -635,6 +634,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                ${parseInt(processo.nu_total_arquivos_pro) > 0 ? `<span style="position:absolute; bottom:10px; right:14px; font-size:11px; color:#666;"><i class="fa fa-paperclip"></i> ${processo.nu_total_arquivos_pro} arquivo(s) &mdash; ${parseFloat(processo.nu_tamanho_anexos_pro).toFixed(2)} MB</span>` : ''}
                             </div>`;
 
                             container.append(html);
