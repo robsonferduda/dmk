@@ -366,6 +366,10 @@
                                     @role('administrator|colaborador')
                                         <h6>Arquivos do Processo</h6>
                                         <p>Caso preferir, informe um link com os arquivos do processo. Para fazer isso <a id="informarLink">Clique Aqui</a>.</p>
+                                        <div class="alert alert-warning" style="margin-bottom: 10px; font-size: 13px; padding: 8px 12px;">
+                                            <i class="fa fa-exclamation-triangle"></i>
+                                            <strong>Limite de 30MB por arquivo.</strong> Arquivos maiores devem ser compartilhados via link de armazenamento externo — use a opção <strong>"Clique Aqui"</strong> acima para informar o link.
+                                        </div>
 
                                         @if($processo->ds_link_dados_pro)
                                             <p>Dados do processo disponíveis em: <a href="{{ $processo->ds_link_dados_pro }}" target="_blank">{{ $processo->ds_link_dados_pro }}</a></p>                            
@@ -1054,6 +1058,12 @@
                     },
                     plugins: ['ui', 'drop', 'camera', 'crop']
                 })
+                .on('add.filepicker', function (e, data) {
+                    if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
+                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        return false;
+                    }
+                })
 
                 $('#filepicker_cliente').filePicker({
                     url: '../../processos/arquivos-processo/cliente',
@@ -1070,6 +1080,12 @@
                         }
                     },
                     plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('add.filepicker', function (e, data) {
+                    if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
+                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        return false;
+                    }
                 })
                 .on('done.filepicker', function (e, data) {
 
@@ -1128,6 +1144,12 @@
                     },
                     plugins: ['ui', 'drop', 'camera', 'crop']
                 })
+                .on('add.filepicker', function (e, data) {
+                    if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
+                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        return false;
+                    }
+                })
                 .on('done.filepicker', function (e, data) {
 
                     if(data.files[0].size){            
@@ -1184,6 +1206,24 @@
 
                 })
 
+                var MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
+
+                function validarTamanhoArquivos(input, nomePicker) {
+                    var arquivosInvalidos = [];
+                    for (var i = 0; i < input.files.length; i++) {
+                        if (input.files[i].size > MAX_FILE_SIZE) {
+                            arquivosInvalidos.push(input.files[i].name);
+                        }
+                    }
+                    if (arquivosInvalidos.length > 0) {
+                        var nomes = arquivosInvalidos.join(', ');
+                        alert('O(s) arquivo(s) a seguir excedem o limite de 30MB e não podem ser enviados:\n\n' + nomes + '\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        input.value = '';
+                        return false;
+                    }
+                    return true;
+                }
+
                 $('#filepicker').filePicker({
                     url: '../../processos/arquivos-processo',
                     ui: {
@@ -1199,6 +1239,12 @@
                         }
                     },
                     plugins: ['ui', 'drop', 'camera', 'crop']
+                })
+                .on('add.filepicker', function (e, data) {
+                    if (data.files && data.files[0] && data.files[0].size > MAX_FILE_SIZE) {
+                        alert('O arquivo "' + data.files[0].name + '" excede o limite de 30MB.\n\nUtilize a opção de link de armazenamento externo para compartilhar arquivos grandes.');
+                        return false;
+                    }
                 })
                 .on('done.filepicker', function (e, data) {
 
