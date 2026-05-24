@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /*
         // Executa limpeza de arquivos diariamente às 02:00
         $schedule->command('arquivos:limpar')
                  ->dailyAt('02:00')
@@ -32,14 +33,14 @@ class Kernel extends ConsoleKernel
         // [WHATSAPP-LEMBRETE] Lembrete aos correspondentes sobre
         // diligências do dia (prazo fatal = hoje), com link de check-in.
         // --conta=64: fase de testes, restrito ao escritório 64. Remover quando for para produção geral.
-        $schedule->command('whatsapp:lembrete-diligencias --conta=64')
+        $schedule->command('whatsapp:lembrete-diligencias')
                  ->dailyAt('08:00')
                  ->appendOutputTo(storage_path('logs/whatsapp-lembrete.log'));
 
         // [WHATSAPP-LEMBRETE PRÉ] Lembrete pré-diligência (prazo fatal = amanhã)
         // Executado às 13h do dia anterior à audiência.
         // --conta=64: fase de testes, restrito ao escritório 64. Remover quando for para produção geral.
-        $schedule->command('whatsapp:lembrete-prediligencias --conta=64')
+        $schedule->command('whatsapp:lembrete-prediligencias')
              ->weekdays()
              ->dailyAt('13:00')
              ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('pagamentos:consolidar')
                  ->dailyAt('00:30')
                  ->appendOutputTo(storage_path('logs/pagamentos-consolidar.log'));
+                 */
     }
 
     /**
