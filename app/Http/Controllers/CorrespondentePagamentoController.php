@@ -215,10 +215,13 @@ class CorrespondentePagamentoController extends Controller
         // Gera PDF
         try {
             $pdfPath = $this->gerarPdfFatura($pagamento, $banco, $escritorio);
+            $msgs[] = 'PDF gerado em: ' . $pdfPath;
         } catch (\Throwable $e) {
-            \Log::warning('[pagamento-teste] Falha ao gerar PDF: ' . $e->getMessage());
+            $errDetail = $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine();
+            \Log::error('[pagamento-teste] Falha ao gerar PDF: ' . $errDetail, ['trace' => $e->getTraceAsString()]);
+            file_put_contents(storage_path('app/public/pdf-debug.txt'), date('Y-m-d H:i:s') . "\n" . $errDetail . "\n\n" . $e->getTraceAsString());
             $pdfPath = null;
-            $msgs[] = 'Falha ao gerar PDF: ' . $e->getMessage();
+            $msgs[] = 'ERRO PDF: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ')';
         }
 
         // E-mail de teste
@@ -231,7 +234,7 @@ class CorrespondentePagamentoController extends Controller
                 "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nAtenciosamente,\n{$nmEscritorio}",
                 function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath) {
                     $msg->to($emailTeste)
-                        ->subject("[TESTE] Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
+                        ->subject("[TESTE] Aprovação de Pagamento - {$mesAno} -{$nmEscritorio}");
                     if ($pdfPath && file_exists($pdfPath)) {
                         $msg->attach($pdfPath, [
                             'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
@@ -312,7 +315,7 @@ class CorrespondentePagamentoController extends Controller
                     "Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nO comprovante detalhado está em anexo.\n\nAtenciosamente,\n{$nmEscritorio}",
                     function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath) {
                         $msg->to($email)
-                            ->subject("Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
+                            ->subject("Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}");
                         if ($pdfPath && file_exists($pdfPath)) {
                             $msg->attach($pdfPath, [
                                 'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
@@ -336,7 +339,7 @@ class CorrespondentePagamentoController extends Controller
                     // Envia o PDF como documento anexo
                     if ($pdfPath && file_exists($pdfPath)) {
                         $pdfUrl = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
-                        $chatpro->sendDocument($whatsapp, $pdfUrl, '📄 Demonstrativo de Pagamento – ' . $mesAno);
+                        $chatpro->sendDocument($whatsapp, $pdfUrl, '📄 Demonstrativo de Pagamento - ' . $mesAno);
                     }
                     // Envia mensagem de texto enriquecida
                     $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
