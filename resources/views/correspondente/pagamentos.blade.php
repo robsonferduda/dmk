@@ -20,7 +20,7 @@
                 <input type="hidden" name="mes" value="{{ $mes }}">
                 <input type="hidden" name="ano" value="{{ $ano }}">
                 <button type="submit" class="btn btn-primary pull-right header-btn"
-                        onclick="return confirm('Consolidar pagamentos para {{ str_pad($mes,2,\'0\',STR_PAD_LEFT) }}/{{ $ano }}?')">
+                        onclick="return confirm('Consolidar pagamentos para {{ $mesAnoFmt }}?')">
                     <i class="fa fa-refresh"></i> Consolidar Mês
                 </button>
             </form>
@@ -46,15 +46,17 @@
                 @endforeach
             </div>
             <span class="text-muted" style="margin-left:10px;">
-                Exibindo: <strong>{{ str_pad($mes,2,'0',STR_PAD_LEFT) }}/{{ $ano }}</strong>
+                Exibindo: <strong>{{ $mesAnoFmt }}</strong>
             </span>
         </div>
     </div>
 
     {{-- Resumo por status --}}
     @php
-        $cores  = [1=>'default',2=>'warning',3=>'info',4=>'success'];
-        $icones = [1=>'circle-o',2=>'paper-plane',3=>'check',4=>'dollar'];
+        $cores    = [1=>'default',2=>'warning',3=>'info',4=>'success'];
+        $icones   = [1=>'circle-o',2=>'paper-plane',3=>'check',4=>'dollar'];
+        $mesPad   = str_pad($mes, 2, '0', STR_PAD_LEFT);
+        $mesAnoFmt = $mesPad . '/' . $ano;
     @endphp
     <div class="row" style="margin-bottom:15px;">
         @foreach($statusLabels as $cd => $nm)
@@ -76,7 +78,7 @@
             <div class="jarviswidget jarviswidget-color-blueDark">
                 <header>
                     <span class="widget-icon"><i class="fa fa-table"></i></span>
-                    <h2>Pagamentos – {{ str_pad($mes,2,'0',STR_PAD_LEFT) }}/{{ $ano }}</h2>
+                    <h2>Pagamentos – {{ $mesAnoFmt }}</h2>
                 </header>
                 <div>
                     <div class="widget-body">
