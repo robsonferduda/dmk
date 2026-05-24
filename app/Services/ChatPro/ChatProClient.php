@@ -106,27 +106,27 @@ class ChatProClient
     /**
      * Envia um documento/arquivo (PDF, imagem etc.) via URL pública acessível.
      *
-     * @param string $numero    Telefone destino (E.164 sem '+'), ex.: 5548999999999
-     * @param string $url       URL pública do arquivo
-     * @param string $fileName  Nome sugerido para o arquivo (ex.: fatura_04_2026.pdf)
-     * @param string $caption   Legenda opcional exibida junto ao documento
+     * Endpoint: POST {instance_id}/api/v1/send_message_file_from_url
+     *
+     * @param string $numero   Telefone destino (E.164 sem '+'), ex.: 5548999999999
+     * @param string $url      URL pública do arquivo
+     * @param string $caption  Legenda opcional exibida junto ao documento
      * @return array ['success' => bool, 'status' => int, 'body' => mixed, 'message' => ?string]
      */
-    public function sendDocument($numero, $url, $fileName, $caption = '')
+    public function sendDocument($numero, $url, $caption = '')
     {
         $numero = $this->normalizarNumero($numero);
         if (!$numero) {
             return ['success' => false, 'status' => 0, 'body' => null, 'message' => 'Número destino inválido'];
         }
 
-        $endpoint = $this->instanceId . '/api/v1/send_file';
+        $endpoint = $this->instanceId . '/api/v1/send_message_file_from_url';
 
         return $this->request('POST', $endpoint, [
             'json' => [
-                'number'    => $numero,
-                'url'       => $url,
-                'file_name' => $fileName,
-                'caption'   => $caption,
+                'number'  => $numero,
+                'url'     => $url,
+                'caption' => $caption,
             ],
         ]);
     }

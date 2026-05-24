@@ -253,9 +253,8 @@ class CorrespondentePagamentoController extends Controller
             if ($chatpro) {
                 // Envia o PDF como documento
                 if ($pdfPath && file_exists($pdfPath)) {
-                    $pdfUrl      = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
-                    $pdfFileName = 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf';
-                    $chatpro->sendDocument($whatsappTeste, $pdfUrl, $pdfFileName, '📄 Demonstrativo de Pagamento – ' . $mesAno);
+                    $pdfUrl = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
+                    $chatpro->sendDocument($whatsappTeste, $pdfUrl, '📄 Demonstrativo de Pagamento – ' . $mesAno);
                 }
                 // Envia a mensagem de texto enriquecida
                 $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
@@ -336,9 +335,8 @@ class CorrespondentePagamentoController extends Controller
                 if ($chatpro) {
                     // Envia o PDF como documento anexo
                     if ($pdfPath && file_exists($pdfPath)) {
-                        $pdfUrl      = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
-                        $pdfFileName = 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf';
-                        $chatpro->sendDocument($whatsapp, $pdfUrl, $pdfFileName, '📄 Demonstrativo de Pagamento – ' . $mesAno);
+                        $pdfUrl = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
+                        $chatpro->sendDocument($whatsapp, $pdfUrl, '📄 Demonstrativo de Pagamento – ' . $mesAno);
                     }
                     // Envia mensagem de texto enriquecida
                     $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
