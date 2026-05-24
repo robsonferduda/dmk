@@ -478,7 +478,14 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::post('correspondente/painel/relatorios/buscar', 'RelatorioPainelCorrespondenteController@buscar');
     Route::get('correspondente/painel/relatorios', 'RelatorioPainelCorrespondenteController@index');
     Route::get('correspondente/relatorios', 'RelatorioCorrespondenteController@relatorios');
-    Route::get('correspondente/pagamentos', 'CorrespondentePagamentoController@pagamentos');
+
+    // ── Pagamentos de Correspondentes ──────────────────────────────────────────
+    Route::get('correspondente/pagamentos',                           'CorrespondentePagamentoController@pagamentos');
+    Route::get('correspondente/pagamentos/{id}/detalhe',              'CorrespondentePagamentoController@detalhe');
+    Route::post('correspondente/pagamentos/consolidar',               'CorrespondentePagamentoController@consolidar');
+    Route::post('correspondente/pagamentos/{id}/enviar-aprovacao',    'CorrespondentePagamentoController@enviarAprovacao');
+    Route::post('correspondente/pagamentos/{id}/aprovar',             'CorrespondentePagamentoController@aprovar');
+    Route::post('correspondente/pagamentos/{id}/pagar',               'CorrespondentePagamentoController@pagar');
     Route::post('correspondente/relatorios/buscar', 'RelatorioCorrespondenteController@buscar');
     Route::delete('correspondente/relatorios/{nome}', 'RelatorioCorrespondenteController@excluir');
     Route::get('correspondente/arquivo/{nome}', 'RelatorioCorrespondenteController@arquivo');

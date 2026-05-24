@@ -44,7 +44,11 @@ class Kernel extends ConsoleKernel
              ->dailyAt('13:00')
              ->appendOutputTo(storage_path('logs/whatsapp-lembrete-pre.log'));
 
-      
+        // [PAGAMENTOS] Consolida diariamente os pagamentos devidos aos correspondentes
+        // do mês corrente. Executa às 00:30 para refletir os processos do dia anterior.
+        $schedule->command('pagamentos:consolidar')
+                 ->dailyAt('00:30')
+                 ->appendOutputTo(storage_path('logs/pagamentos-consolidar.log'));
     }
 
     /**
