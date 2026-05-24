@@ -60,7 +60,28 @@ class CorrespondentePagamentoController extends Controller
 
         $statusLabels = StatusPagamentoCorrespondente::labels();
 
-        return view('correspondente/pagamento-detalhe', compact('pagamento', 'statusLabels'));
+        $dadosBancarios = \DB::select("
+            SELECT
+                dba.nm_titular_dba,
+                dba.nu_cpf_cnpj_dba,
+                dba.cd_banco_ban,
+                ban.nm_banco_ban,
+                dba.nu_agencia_dba,
+                dba.nu_conta_dba,
+                dba.dc_pix_dba,
+                dba.cd_tipo_conta_tcb,
+                tcb.nm_tipo_conta_tcb
+            FROM conta_correspondente_ccr ccr
+            LEFT JOIN dados_bancarios_dba dba ON (ccr.cd_entidade_ete = dba.cd_entidade_ete AND dba.deleted_at IS NULL)
+            LEFT JOIN banco_ban ban ON (dba.cd_banco_ban = ban.cd_banco_ban)
+            LEFT JOIN tipo_conta_banco_tcb tcb ON (dba.cd_tipo_conta_tcb = tcb.cd_tipo_conta_tcb)
+            WHERE ccr.cd_correspondente_cor = ?
+            LIMIT 1
+        ", [$pagamento->cd_correspondente_cor]);
+
+        $banco = !empty($dadosBancarios) ? (object) $dadosBancarios[0] : null;
+
+        return view('correspondente/pagamento-detalhe', compact('pagamento', 'statusLabels', 'banco'));
     }
 
     // ─── Consolidar manualmente ───────────────────────────────────────────────

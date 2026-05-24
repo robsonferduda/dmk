@@ -39,8 +39,12 @@
     {{-- Cabeçalho do pagamento --}}
     <div class="row">
         <div class="col-md-4">
-            <div class="well">
-                <dl class="dl-horizontal">
+            {{-- Resumo do pagamento --}}
+            <div class="well" style="margin-bottom:15px;">
+                <h5 style="margin-top:0; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:6px;">
+                    <i class="fa fa-file-text-o"></i> Resumo
+                </h5>
+                <dl class="dl-horizontal" style="margin-bottom:0;">
                     <dt>Correspondente</dt>
                     <dd>{{ $pagamento->correspondente->nm_razao_social_con ?? $pagamento->correspondente->nm_fantasia_con ?? '—' }}</dd>
                     <dt>Competência</dt>
@@ -66,38 +70,78 @@
                     <dd>{{ $pagamento->ds_observacao_pag }}</dd>
                     @endif
                 </dl>
+            </div>
 
-                {{-- Ações conforme status --}}
-                @if($pagamento->podeEnviarAprovacao())
-                <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-warning btn-block"
-                            onclick="return confirm('Enviar para aprovação do correspondente via e-mail e WhatsApp?')">
-                        <i class="fa fa-paper-plane"></i> Enviar para Aprovação
-                    </button>
-                </form>
-                @endif
-
-                @if($pagamento->podeAprovar())
-                <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/aprovar') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-info btn-block"
-                            onclick="return confirm('Confirmar aprovação deste pagamento?')">
-                        <i class="fa fa-check"></i> Aprovar Pagamento
-                    </button>
-                </form>
-                @endif
-
-                @if($pagamento->podePagar())
-                <button type="button" class="btn btn-success btn-block"
-                        data-toggle="modal" data-target="#modalPagar"
-                        data-id="{{ $pagamento->cd_pagamento_correspondente_pag }}"
-                        data-nome="{{ $pagamento->correspondente->nm_razao_social_con ?? '' }}"
-                        data-valor="R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}">
-                    <i class="fa fa-dollar"></i> Registrar Pagamento
-                </button>
+            {{-- Dados bancários --}}
+            <div class="well" style="margin-bottom:15px;">
+                <h5 style="margin-top:0; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:6px;">
+                    <i class="fa fa-bank"></i> Dados Bancários
+                </h5>
+                @if($banco && $banco->nm_titular_dba)
+                <dl class="dl-horizontal" style="margin-bottom:0;">
+                    <dt>Titular</dt>
+                    <dd>{{ $banco->nm_titular_dba }}</dd>
+                    @if($banco->nu_cpf_cnpj_dba)
+                    <dt>CPF/CNPJ</dt>
+                    <dd>{{ $banco->nu_cpf_cnpj_dba }}</dd>
+                    @endif
+                    @if($banco->nm_banco_ban)
+                    <dt>Banco</dt>
+                    <dd>{{ $banco->cd_banco_ban }} – {{ $banco->nm_banco_ban }}</dd>
+                    @endif
+                    @if($banco->nu_agencia_dba)
+                    <dt>Agência</dt>
+                    <dd>{{ $banco->nu_agencia_dba }}</dd>
+                    @endif
+                    @if($banco->nu_conta_dba)
+                    <dt>Conta</dt>
+                    <dd>
+                        {{ $banco->nu_conta_dba }}
+                        @if($banco->nm_tipo_conta_tcb)
+                        <span class="text-muted">({{ $banco->nm_tipo_conta_tcb }})</span>
+                        @endif
+                    </dd>
+                    @endif
+                    @if($banco->dc_pix_dba)
+                    <dt>PIX</dt>
+                    <dd>{{ $banco->dc_pix_dba }}</dd>
+                    @endif
+                </dl>
+                @else
+                <p class="text-muted" style="margin:0;"><i class="fa fa-exclamation-triangle"></i> Dados bancários não cadastrados.</p>
                 @endif
             </div>
+
+            {{-- Ações conforme status --}}
+            @if($pagamento->podeEnviarAprovacao())
+            <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
+                @csrf
+                <button type="submit" class="btn btn-warning btn-block"
+                        onclick="return confirm('Enviar para aprovação do correspondente via e-mail e WhatsApp?')">
+                    <i class="fa fa-paper-plane"></i> Enviar para Aprovação
+                </button>
+            </form>
+            @endif
+
+            @if($pagamento->podeAprovar())
+            <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/aprovar') }}">
+                @csrf
+                <button type="submit" class="btn btn-info btn-block"
+                        onclick="return confirm('Confirmar aprovação deste pagamento?')">
+                    <i class="fa fa-check"></i> Aprovar Pagamento
+                </button>
+            </form>
+            @endif
+
+            @if($pagamento->podePagar())
+            <button type="button" class="btn btn-success btn-block"
+                    data-toggle="modal" data-target="#modalPagar"
+                    data-id="{{ $pagamento->cd_pagamento_correspondente_pag }}"
+                    data-nome="{{ $pagamento->correspondente->nm_razao_social_con ?? '' }}"
+                    data-valor="R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}">
+                <i class="fa fa-dollar"></i> Registrar Pagamento
+            </button>
+            @endif
         </div>
 
         {{-- Lista de itens --}}
