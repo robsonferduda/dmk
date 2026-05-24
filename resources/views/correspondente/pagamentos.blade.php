@@ -59,51 +59,53 @@
 
      {{-- Card total geral --}}
     @php
-        $totalGeral  = $pagamentos->sum('vl_total_pag');
+        $totalGeral    = $pagamentos->sum('vl_total_pag');
         $totalPendente = $pagamentos->whereIn('cd_status_pag', [1,2,3])->sum('vl_total_pag');
         $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
     @endphp
-    <div class="row" style="margin-bottom:15px;">
+    <div class="row" style="margin-bottom:20px;">
         <div class="col-md-12">
-            <div class="well" style="background:#f9f9f9;border-left:4px solid #1a7bb9;padding:15px 20px;margin-bottom:0;">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-4 text-center" style="border-right:1px solid #e0e0e0;">
-                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">Total do Mês</span>
-                        <div style="font-size:2em;font-weight:bold;color:#1a7bb9;">
-                            R$ {{ number_format($totalGeral, 2, ',', '.') }}
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-4 text-center" style="border-right:1px solid #e0e0e0;">
-                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">A Pagar</span>
-                        <div style="font-size:2em;font-weight:bold;color:#e8a400;">
-                            R$ {{ number_format($totalPendente, 2, ',', '.') }}
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-4 text-center">
-                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">Pago</span>
-                        <div style="font-size:2em;font-weight:bold;color:#3c9800;">
-                            R$ {{ number_format($totalPago, 2, ',', '.') }}
-                        </div>
-                    </div>
+            <div style="background:#fff;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.10);display:flex;overflow:hidden;">
+                <div style="flex:1;padding:18px 24px;border-right:1px solid #eee;text-align:center;">
+                    <div style="font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin-bottom:4px;">Total do Mês</div>
+                    <div style="font-size:1.9em;font-weight:700;color:#1a7bb9;">R$ {{ number_format($totalGeral, 2, ',', '.') }}</div>
+                </div>
+                <div style="flex:1;padding:18px 24px;border-right:1px solid #eee;text-align:center;">
+                    <div style="font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin-bottom:4px;">A Pagar</div>
+                    <div style="font-size:1.9em;font-weight:700;color:#d68910;">R$ {{ number_format($totalPendente, 2, ',', '.') }}</div>
+                </div>
+                <div style="flex:1;padding:18px 24px;text-align:center;">
+                    <div style="font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin-bottom:4px;">Pago</div>
+                    <div style="font-size:1.9em;font-weight:700;color:#27ae60;">R$ {{ number_format($totalPago, 2, ',', '.') }}</div>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Resumo por status --}}
-    <div class="row" style="margin-bottom:15px;">
+    @php
+        $statusConfig = [
+            1 => ['cor'=>'#95a5a6', 'bg'=>'#f4f6f7', 'icone'=>'circle-o'],
+            2 => ['cor'=>'#e67e22', 'bg'=>'#fef9f0', 'icone'=>'paper-plane'],
+            3 => ['cor'=>'#2980b9', 'bg'=>'#eaf4fb', 'icone'=>'check-circle'],
+            4 => ['cor'=>'#27ae60', 'bg'=>'#eafaf1', 'icone'=>'dollar'],
+        ];
+    @endphp
+    <div class="row" style="margin-bottom:20px;">
         @foreach($statusLabels as $cd => $nm)
         @php
-            $qtd = $pagamentos->where('cd_status_pag', $cd)->count();
+            $qtd      = $pagamentos->where('cd_status_pag', $cd)->count();
             $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
+            $cfg      = $statusConfig[$cd] ?? ['cor'=>'#aaa','bg'=>'#f5f5f5','icone'=>'circle'];
         @endphp
-        <div class="col-xs-6 col-sm-3">
-            <div class="well text-center" style="padding:10px;">
-                <span class="label label-{{ $cores[$cd] ?? 'default' }}" style="font-size:1.1em;padding:4px 8px;">
-                    <i class="fa fa-{{ $icones[$cd] ?? 'circle' }}"></i> {{ $nm }}
-                </span>
-                <div style="font-size:1.8em;font-weight:bold;margin-top:5px;">{{ $qtd }}</div>
-                <div style="font-size:0.9em;color:#888;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
+        <div class="col-xs-6 col-sm-3" style="margin-bottom:10px;">
+            <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:16px 12px;border-top:3px solid {{ $cfg['cor'] }};text-align:center;">
+                <div style="color:{{ $cfg['cor'] }};font-size:1.6em;margin-bottom:6px;">
+                    <i class="fa fa-{{ $cfg['icone'] }}"></i>
+                </div>
+                <div style="font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:6px;">{{ $nm }}</div>
+                <div style="font-size:2em;font-weight:700;color:#333;line-height:1;">{{ $qtd }}</div>
+                <div style="font-size:0.82em;color:#999;margin-top:4px;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
             </div>
         </div>
         @endforeach
