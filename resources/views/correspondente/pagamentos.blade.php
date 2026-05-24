@@ -57,33 +57,14 @@
         </div>
     </div>
 
-    {{-- Resumo por status --}}
-    <div class="row" style="margin-bottom:15px;">
-        @foreach($statusLabels as $cd => $nm)
-        @php
-            $qtd = $pagamentos->where('cd_status_pag', $cd)->count();
-            $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
-        @endphp
-        <div class="col-xs-6 col-sm-3">
-            <div class="well text-center" style="padding:10px;">
-                <span class="label label-{{ $cores[$cd] ?? 'default' }}" style="font-size:1.1em;padding:4px 8px;">
-                    <i class="fa fa-{{ $icones[$cd] ?? 'circle' }}"></i> {{ $nm }}
-                </span>
-                <div style="font-size:1.8em;font-weight:bold;margin-top:5px;">{{ $qtd }}</div>
-                <div style="font-size:0.9em;color:#888;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-
-    {{-- Card total geral --}}
+     {{-- Card total geral --}}
     @php
         $totalGeral  = $pagamentos->sum('vl_total_pag');
         $totalPendente = $pagamentos->whereIn('cd_status_pag', [1,2,3])->sum('vl_total_pag');
         $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
     @endphp
     <div class="row" style="margin-bottom:15px;">
-        <div class="col-md-4 col-md-offset-8">
+        <div class="col-md-12 col-md-offset-8">
             <div class="well" style="background:#f9f9f9;border-left:4px solid #1a7bb9;padding:15px;">
                 <div class="row">
                     <div class="col-xs-12" style="margin-bottom:6px;">
@@ -108,6 +89,27 @@
             </div>
         </div>
     </div>
+
+    {{-- Resumo por status --}}
+    <div class="row" style="margin-bottom:15px;">
+        @foreach($statusLabels as $cd => $nm)
+        @php
+            $qtd = $pagamentos->where('cd_status_pag', $cd)->count();
+            $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
+        @endphp
+        <div class="col-xs-6 col-sm-3">
+            <div class="well text-center" style="padding:10px;">
+                <span class="label label-{{ $cores[$cd] ?? 'default' }}" style="font-size:1.1em;padding:4px 8px;">
+                    <i class="fa fa-{{ $icones[$cd] ?? 'circle' }}"></i> {{ $nm }}
+                </span>
+                <div style="font-size:1.8em;font-weight:bold;margin-top:5px;">{{ $qtd }}</div>
+                <div style="font-size:0.9em;color:#888;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+   
 
     {{-- Tabela --}}
     <div class="row">
