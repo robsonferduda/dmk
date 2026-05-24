@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Laracasts\Flash\Flash;
 use App\Conta;
 use App\PagamentoCorrespondente;
@@ -18,7 +19,7 @@ class CorrespondentePagamentoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['confirmarPorToken']);
         $this->conta = \Session::get('SESSION_CD_CONTA');
     }
 
@@ -60,26 +61,7 @@ class CorrespondentePagamentoController extends Controller
 
         $statusLabels = StatusPagamentoCorrespondente::labels();
 
-        $dadosBancarios = \DB::select("
-            SELECT
-                dba.nm_titular_dba,
-                dba.nu_cpf_cnpj_dba,
-                dba.cd_banco_ban,
-                ban.nm_banco_ban,
-                dba.nu_agencia_dba,
-                dba.nu_conta_dba,
-                dba.dc_pix_dba,
-                dba.cd_tipo_conta_tcb,
-                tcb.nm_tipo_conta_tcb
-            FROM conta_correspondente_ccr ccr
-            LEFT JOIN dados_bancarios_dba dba ON (ccr.cd_entidade_ete = dba.cd_entidade_ete AND dba.deleted_at IS NULL)
-            LEFT JOIN banco_ban ban ON (dba.cd_banco_ban = ban.cd_banco_ban)
-            LEFT JOIN tipo_conta_banco_tcb tcb ON (dba.cd_tipo_conta_tcb = tcb.cd_tipo_conta_tcb)
-            WHERE ccr.cd_correspondente_cor = ?
-            LIMIT 1
-        ", [$pagamento->cd_correspondente_cor]);
-
-        $banco = !empty($dadosBancarios) ? (object) $dadosBancarios[0] : null;
+        $banco = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
 
         return view('correspondente/pagamento-detalhe', compact('pagamento', 'statusLabels', 'banco'));
     }
@@ -108,7 +90,7 @@ class CorrespondentePagamentoController extends Controller
 
     public function enviarAprovacao($id)
     {
-        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens'])
+        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -118,16 +100,51 @@ class CorrespondentePagamentoController extends Controller
         }
 
         DB::transaction(function () use ($pagamento) {
+            // Gera (ou regenera) o token de confirmação por link
+            $pagamento->tk_confirmacao_pag      = Str::random(64);
             $pagamento->cd_status_pag           = StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
             $pagamento->dt_envio_aprovacao_pag  = Carbon::now();
             $pagamento->save();
         });
 
-        // Notifica via e-mail e WhatsApp
+        // Notifica via e-mail e WhatsApp (com PDF e link de confirmação)
         $this->notificarAprovacao($pagamento);
 
         Flash::success('Pagamento enviado para aprovação do correspondente.');
         return redirect()->back();
+    }
+
+    // ─── Confirmação por Token (pública, sem login) ───────────────────────────
+
+    public function confirmarPorToken($token)
+    {
+        $pagamento = PagamentoCorrespondente::with('correspondente')
+            ->where('tk_confirmacao_pag', $token)
+            ->first();
+
+        if (! $pagamento) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'nao_encontrado']);
+        }
+
+        if ($pagamento->cd_status_pag == StatusPagamentoCorrespondente::PAGO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'ja_pago', 'pagamento' => $pagamento]);
+        }
+
+        if ($pagamento->cd_status_pag == StatusPagamentoCorrespondente::APROVADO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'ja_aprovado', 'pagamento' => $pagamento]);
+        }
+
+        if ($pagamento->cd_status_pag != StatusPagamentoCorrespondente::ENVIADO_APROVACAO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
+        }
+
+        DB::transaction(function () use ($pagamento) {
+            $pagamento->cd_status_pag    = StatusPagamentoCorrespondente::APROVADO;
+            $pagamento->dt_aprovacao_pag = Carbon::now();
+            $pagamento->save();
+        });
+
+        return view('correspondente/pagamento-confirmado', ['status' => 'ok', 'pagamento' => $pagamento->fresh('correspondente')]);
     }
 
     // ─── Aprovar (pelo escritório em nome do correspondente) ──────────────────
@@ -177,40 +194,72 @@ class CorrespondentePagamentoController extends Controller
 
     public function testarNotificacao($id)
     {
-        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens'])
+        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
-        $mesAno      = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
-        $valorFmt    = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
-        $escritorio  = Conta::find($this->conta);
-        $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+        // Garante que há token (sem alterar status)
+        if (! $pagamento->tk_confirmacao_pag) {
+            $pagamento->tk_confirmacao_pag = Str::random(64);
+            $pagamento->save();
+        }
+
+        $banco        = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
+        $escritorio   = Conta::find($this->conta);
+        $token        = $pagamento->tk_confirmacao_pag;
 
         $emailTeste    = 'robsonferduda@gmail.com';
         $whatsappTeste = '48991030204';
         $msgs = [];
 
-        // E-mail de teste
+        // Gera PDF
         try {
-            \Mail::raw(
-                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAtenciosamente,\n{$nmEscritorio}",
-                function ($msg) use ($emailTeste, $mesAno, $nmEscritorio) {
-                    $msg->to($emailTeste)
-                        ->subject("[TESTE] Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
-                }
-            );
-            $msgs[] = 'E-mail enviado para ' . $emailTeste;
+            $pdfPath = $this->gerarPdfFatura($pagamento, $banco, $escritorio);
         } catch (\Throwable $e) {
-            \Log::warning('[pagamento-teste] Falha ao enviar e-mail: ' . $e->getMessage());
-            $msgs[] = 'Falha ao enviar e-mail: ' . $e->getMessage();
+            \Log::warning('[pagamento-teste] Falha ao gerar PDF: ' . $e->getMessage());
+            $pdfPath = null;
+            $msgs[] = 'Falha ao gerar PDF: ' . $e->getMessage();
         }
 
-        // WhatsApp de teste
+        // E-mail de teste
+        try {
+            $mesAno       = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
+            $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
+            $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+
+            \Mail::raw(
+                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nAtenciosamente,\n{$nmEscritorio}",
+                function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath) {
+                    $msg->to($emailTeste)
+                        ->subject("[TESTE] Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
+                    if ($pdfPath && file_exists($pdfPath)) {
+                        $msg->attach($pdfPath, [
+                            'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
+                            'mime' => 'application/pdf',
+                        ]);
+                    }
+                }
+            );
+            $msgs[] = 'E-mail enviado para ' . $emailTeste . ($pdfPath ? ' (com PDF)' : '');
+        } catch (\Throwable $e) {
+            \Log::warning('[pagamento-teste] Falha ao enviar e-mail: ' . $e->getMessage());
+            $msgs[] = 'Falha no e-mail: ' . $e->getMessage();
+        }
+
+        // WhatsApp de teste: documento PDF + mensagem de texto
         try {
             $conta   = Conta::find($this->conta);
             $chatpro = ChatProClient::forConta($conta);
             if ($chatpro) {
-                $mensagem = "[TESTE] Olá! O escritório *{$nmEscritorio}* encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês *{$mesAno}*.\n\n*Valor total: {$valorFmt}*";
+                // Envia o PDF como documento
+                if ($pdfPath && file_exists($pdfPath)) {
+                    $pdfUrl      = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
+                    $pdfFileName = 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf';
+                    $chatpro->sendDocument($whatsappTeste, $pdfUrl, $pdfFileName, '📄 Demonstrativo de Pagamento – ' . $mesAno);
+                }
+                // Envia a mensagem de texto enriquecida
+                $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
+                $mensagem = "[TESTE]\n" . $mensagem;
                 $chatpro->sendText($whatsappTeste, $mensagem);
                 $msgs[] = 'WhatsApp enviado para ' . $whatsappTeste;
             } else {
@@ -218,7 +267,7 @@ class CorrespondentePagamentoController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::warning('[pagamento-teste] Falha ao enviar WhatsApp: ' . $e->getMessage());
-            $msgs[] = 'Falha ao enviar WhatsApp: ' . $e->getMessage();
+            $msgs[] = 'Falha no WhatsApp: ' . $e->getMessage();
         }
 
         Flash::success('[TESTE] ' . implode('. ', $msgs) . '.');
@@ -230,20 +279,29 @@ class CorrespondentePagamentoController extends Controller
     private function notificarAprovacao(PagamentoCorrespondente $pagamento): void
     {
         $correspondente = $pagamento->correspondente;
-
         if (! $correspondente) {
             return;
         }
 
-        $mesAno    = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
-        $valorFmt  = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
-        $escritorio = Conta::find($this->conta);
+        $banco        = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
+        $escritorio   = Conta::find($this->conta);
+        $token        = $pagamento->tk_confirmacao_pag;
+        $mesAno       = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
+        $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
         $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
 
-        // E-mail
+        // Gera PDF
+        $pdfPath = null;
+        try {
+            $pdfPath = $this->gerarPdfFatura($pagamento, $banco, $escritorio);
+        } catch (\Throwable $e) {
+            \Log::warning('[pagamento] Falha ao gerar PDF: ' . $e->getMessage());
+        }
+
+        // ── E-mail ──────────────────────────────────────────────────────────
         $emails = DB::table('endereco_eletronico_ele as e')
-            ->join('entidade_ete as ent', 'ent.cd_entidade_ete', '=', 'e.cd_entidade_ete')
-            ->where('ent.cd_conta_con', $correspondente->cd_conta_con)
+            ->join('conta_correspondente_ccr as ccr', 'ccr.cd_entidade_ete', '=', 'e.cd_entidade_ete')
+            ->where('ccr.cd_correspondente_cor', $pagamento->cd_correspondente_cor)
             ->pluck('e.dc_endereco_eletronico_ede')
             ->filter()
             ->unique()
@@ -252,10 +310,16 @@ class CorrespondentePagamentoController extends Controller
         foreach ($emails as $email) {
             try {
                 \Mail::raw(
-                    "Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAcesse o sistema para visualizar os detalhes e confirmar.\n\nAtenciosamente,\n{$nmEscritorio}",
-                    function ($msg) use ($email, $mesAno, $nmEscritorio) {
+                    "Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nO comprovante detalhado está em anexo.\n\nAtenciosamente,\n{$nmEscritorio}",
+                    function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath) {
                         $msg->to($email)
                             ->subject("Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
+                        if ($pdfPath && file_exists($pdfPath)) {
+                            $msg->attach($pdfPath, [
+                                'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
+                                'mime' => 'application/pdf',
+                            ]);
+                        }
                     }
                 );
             } catch (\Throwable $e) {
@@ -263,20 +327,138 @@ class CorrespondentePagamentoController extends Controller
             }
         }
 
-        // WhatsApp
+        // ── WhatsApp ────────────────────────────────────────────────────────
         $whatsapp = $correspondente->nu_telefone_whatsapp_con ?? null;
         if ($whatsapp) {
             try {
-                $conta    = Conta::find($this->conta);
-                $chatpro  = ChatProClient::forConta($conta);
+                $conta   = Conta::find($this->conta);
+                $chatpro = ChatProClient::forConta($conta);
                 if ($chatpro) {
-                    $mensagem = "Olá! O escritório *{$nmEscritorio}* encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês *{$mesAno}*.\n\n*Valor total: {$valorFmt}*\n\nAcesse o sistema para visualizar os detalhes.";
+                    // Envia o PDF como documento anexo
+                    if ($pdfPath && file_exists($pdfPath)) {
+                        $pdfUrl      = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
+                        $pdfFileName = 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf';
+                        $chatpro->sendDocument($whatsapp, $pdfUrl, $pdfFileName, '📄 Demonstrativo de Pagamento – ' . $mesAno);
+                    }
+                    // Envia mensagem de texto enriquecida
+                    $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
                     $chatpro->sendText($whatsapp, $mensagem);
                 }
             } catch (\Throwable $e) {
                 \Log::warning('[pagamento] Falha ao enviar WhatsApp: ' . $e->getMessage());
             }
         }
+    }
+
+    /**
+     * Monta o texto enriquecido para WhatsApp com link de confirmação e dados bancários.
+     */
+    private function montarMensagemWhatsApp(PagamentoCorrespondente $pagamento, $banco, string $token): string
+    {
+        $escritorio   = Conta::find($this->conta);
+        $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+        $nmCorresp    = $pagamento->correspondente->nm_razao_social_con
+                     ?? $pagamento->correspondente->nm_fantasia_con
+                     ?? '';
+        $mesAno   = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
+        $valorFmt = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
+        $link     = url("pagamentos/confirmar/{$token}");
+
+        $msg  = "Olá" . ($nmCorresp ? ", *{$nmCorresp}*" : "") . "!\n\n";
+        $msg .= "O escritório *{$nmEscritorio}* encaminhou o demonstrativo de honorários referente a *{$mesAno}*.\n\n";
+        $msg .= "💰 *Valor total: {$valorFmt}*\n\n";
+        $msg .= "📄 O comprovante detalhado está no arquivo em anexo.\n\n";
+        $msg .= "✅ *Confirmar aprovação (1 clique):*\n{$link}\n";
+
+        if ($banco && $banco->nm_titular_dba) {
+            $msg .= "\n🏦 *Dados bancários para pagamento:*\n";
+            if ($banco->nm_banco_ban) {
+                $msg .= "Banco: {$banco->cd_banco_ban} – {$banco->nm_banco_ban}\n";
+            }
+            if ($banco->nu_agencia_dba) {
+                $msg .= "Agência: {$banco->nu_agencia_dba}\n";
+            }
+            if ($banco->nu_conta_dba) {
+                $msg .= "Conta: {$banco->nu_conta_dba}";
+                if ($banco->nm_tipo_conta_tcb) $msg .= " ({$banco->nm_tipo_conta_tcb})";
+                $msg .= "\n";
+            }
+            if ($banco->dc_pix_dba) {
+                $msg .= "PIX: {$banco->dc_pix_dba}\n";
+            }
+            $msg .= "Titular: {$banco->nm_titular_dba}\n";
+            if ($banco->nu_cpf_cnpj_dba) {
+                $msg .= "CPF/CNPJ: {$banco->nu_cpf_cnpj_dba}\n";
+            }
+        }
+
+        return $msg;
+    }
+
+    /**
+     * Busca os dados bancários do correspondente via conta_correspondente_ccr.
+     */
+    private function buscarDadosBancarios($cdCorrespondente)
+    {
+        $rows = DB::select("
+            SELECT
+                dba.nm_titular_dba,
+                dba.nu_cpf_cnpj_dba,
+                dba.cd_banco_ban,
+                ban.nm_banco_ban,
+                dba.nu_agencia_dba,
+                dba.nu_conta_dba,
+                dba.dc_pix_dba,
+                dba.cd_tipo_conta_tcb,
+                tcb.nm_tipo_conta_tcb
+            FROM conta_correspondente_ccr ccr
+            LEFT JOIN dados_bancarios_dba dba ON (ccr.cd_entidade_ete = dba.cd_entidade_ete AND dba.deleted_at IS NULL)
+            LEFT JOIN banco_ban ban ON (dba.cd_banco_ban = ban.cd_banco_ban)
+            LEFT JOIN tipo_conta_banco_tcb tcb ON (dba.cd_tipo_conta_tcb = tcb.cd_tipo_conta_tcb)
+            WHERE ccr.cd_correspondente_cor = ?
+            LIMIT 1
+        ", [$cdCorrespondente]);
+
+        return ! empty($rows) ? (object) $rows[0] : null;
+    }
+
+    /**
+     * Gera o PDF da fatura e salva em storage/app/public/pagamentos/.
+     * Retorna o caminho absoluto do arquivo gerado.
+     */
+    private function gerarPdfFatura(PagamentoCorrespondente $pagamento, $banco, $escritorio = null): string
+    {
+        if (! $escritorio) {
+            $escritorio = Conta::find($pagamento->cd_conta_con);
+        }
+
+        $html = view('correspondente/pagamento-fatura-pdf', compact('pagamento', 'banco', 'escritorio'))->render();
+
+        $tmpDir = storage_path('app/mpdf-tmp');
+        $outDir = storage_path('app/public/pagamentos');
+        foreach ([$tmpDir, $outDir] as $dir) {
+            if (! is_dir($dir)) {
+                mkdir($dir, 0775, true);
+            }
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode'          => 'utf-8',
+            'format'        => 'A4',
+            'margin_left'   => 15,
+            'margin_right'  => 15,
+            'margin_top'    => 18,
+            'margin_bottom' => 18,
+            'tempDir'       => $tmpDir,
+        ]);
+
+        $mpdf->SetTitle('Fatura ' . $pagamento->nm_mes_ano);
+        $mpdf->WriteHTML($html);
+
+        $path = $outDir . '/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf';
+        $mpdf->Output($path, 'F');
+
+        return $path;
     }
 
     private function mesesDisponiveis(): array

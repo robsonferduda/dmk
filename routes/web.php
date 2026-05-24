@@ -87,6 +87,10 @@ Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico
 // [ATUALIZAÇÃO CADASTRAL] Link enviado por email ao correspondente para rastrear acesso.
 Route::get('atualizar-cadastro/{token}', 'CorrespondenteController@registrarAcessoAtualizacao')->name('correspondente.registro-acesso');
 
+// [CONFIRMAÇÃO DE PAGAMENTO] Link com token enviado por WhatsApp/e-mail ao correspondente.
+// Permite aprovar o demonstrativo de honorários sem acesso ao sistema.
+Route::get('pagamentos/confirmar/{token}', 'CorrespondentePagamentoController@confirmarPorToken')->name('pagamento.confirmar');
+
 Auth::routes();
 
 Route::group(['middleware' => ['web']], function () {
