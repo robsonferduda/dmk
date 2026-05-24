@@ -99,13 +99,15 @@
             $cfg      = $statusConfig[$cd] ?? ['cor'=>'#aaa','bg'=>'#f5f5f5','icone'=>'circle'];
         @endphp
         <div class="col-xs-6 col-sm-3" style="margin-bottom:10px;">
-            <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:16px 12px;border-top:3px solid {{ $cfg['cor'] }};text-align:center;">
-                <div style="color:{{ $cfg['cor'] }};font-size:1.6em;margin-bottom:6px;">
+            <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:14px 16px;border-left:4px solid {{ $cfg['cor'] }};display:flex;align-items:center;gap:14px;">
+                <div style="color:{{ $cfg['cor'] }};font-size:2em;line-height:1;flex-shrink:0;">
                     <i class="fa fa-{{ $cfg['icone'] }}"></i>
                 </div>
-                <div style="font-size:0.72em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:6px;">{{ $nm }}</div>
-                <div style="font-size:2em;font-weight:700;color:#333;line-height:1;">{{ $qtd }}</div>
-                <div style="font-size:0.82em;color:#999;margin-top:4px;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:0.68em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $nm }}</div>
+                    <div style="font-size:1.7em;font-weight:700;color:#333;line-height:1.1;">{{ $qtd }}</div>
+                    <div style="font-size:0.78em;color:#aaa;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
+                </div>
             </div>
         </div>
         @endforeach
