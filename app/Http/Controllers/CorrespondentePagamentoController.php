@@ -33,8 +33,13 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
-            ->orderBy('cd_status_pag')
-            ->get();
+            ->get()
+            ->sortBy(function ($pag) {
+                return $pag->correspondente->nm_razao_social_con
+                    ?? $pag->correspondente->nm_fantasia_con
+                    ?? 'zzz';
+            })
+            ->values();
 
         $statusLabels  = StatusPagamentoCorrespondente::labels();
         $mesAnoAtual   = Carbon::now()->format('m/Y');
