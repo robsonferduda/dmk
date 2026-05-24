@@ -85,7 +85,7 @@
     {{-- Resumo por status --}}
     @php
         $statusConfig = [
-            1 => ['cor'=>'#95a5a6', 'bg'=>'#f4f6f7', 'icone'=>'circle-o'],
+            1 => ['cor'=>'#95a5a6', 'bg'=>'#f4f6f7', 'icone'=>'file-text-o'],
             2 => ['cor'=>'#e67e22', 'bg'=>'#fef9f0', 'icone'=>'paper-plane'],
             3 => ['cor'=>'#2980b9', 'bg'=>'#eaf4fb', 'icone'=>'check-circle'],
             4 => ['cor'=>'#27ae60', 'bg'=>'#eafaf1', 'icone'=>'dollar'],
