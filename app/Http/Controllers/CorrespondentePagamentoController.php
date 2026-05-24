@@ -173,6 +173,58 @@ class CorrespondentePagamentoController extends Controller
         return redirect()->back();
     }
 
+    // ─── Teste de Notificação ────────────────────────────────────────────────
+
+    public function testarNotificacao($id)
+    {
+        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens'])
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        $mesAno      = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
+        $valorFmt    = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
+        $escritorio  = Conta::find($this->conta);
+        $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+
+        $emailTeste    = 'robsonferduda@gmail.com';
+        $whatsappTeste = '48991030204';
+        $msgs = [];
+
+        // E-mail de teste
+        try {
+            \Mail::raw(
+                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAtenciosamente,\n{$nmEscritorio}",
+                function ($msg) use ($emailTeste, $mesAno, $nmEscritorio) {
+                    $msg->to($emailTeste)
+                        ->subject("[TESTE] Aprovação de Pagamento – {$mesAno} – {$nmEscritorio}");
+                }
+            );
+            $msgs[] = 'E-mail enviado para ' . $emailTeste;
+        } catch (\Throwable $e) {
+            \Log::warning('[pagamento-teste] Falha ao enviar e-mail: ' . $e->getMessage());
+            $msgs[] = 'Falha ao enviar e-mail: ' . $e->getMessage();
+        }
+
+        // WhatsApp de teste
+        try {
+            $conta   = Conta::find($this->conta);
+            $chatpro = ChatProClient::forConta($conta);
+            if ($chatpro) {
+                $mensagem = "[TESTE] Olá! O escritório *{$nmEscritorio}* encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês *{$mesAno}*.\n\n*Valor total: {$valorFmt}*";
+                $chatpro->sendText($whatsappTeste, $mensagem);
+                $msgs[] = 'WhatsApp enviado para ' . $whatsappTeste;
+            } else {
+                $msgs[] = 'WhatsApp: ChatPro não configurado para esta conta';
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('[pagamento-teste] Falha ao enviar WhatsApp: ' . $e->getMessage());
+            $msgs[] = 'Falha ao enviar WhatsApp: ' . $e->getMessage();
+        }
+
+        Flash::success('[TESTE] ' . implode('. ', $msgs) . '.');
+        return redirect()->back();
+    }
+
     // ─── Privados ─────────────────────────────────────────────────────────────
 
     private function notificarAprovacao(PagamentoCorrespondente $pagamento): void

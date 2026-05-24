@@ -142,6 +142,22 @@
                 <i class="fa fa-dollar"></i> Registrar Pagamento
             </button>
             @endif
+
+            {{-- Botão de teste de notificação --}}
+            <div style="margin-top:20px; border-top:1px dashed #ccc; padding-top:12px;">
+                <p class="text-muted" style="font-size:11px; margin-bottom:6px;">
+                    <i class="fa fa-flask"></i> <strong>Ambiente de Teste</strong><br>
+                    Envia e-mail e WhatsApp para contatos fixos (não altera o status).
+                </p>
+                <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/testar-notificacao') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-default btn-block"
+                            style="border-style:dashed; color:#888;"
+                            onclick="return confirm('Enviar notificação de TESTE para robsonferduda@gmail.com e WhatsApp 48991030204?')">
+                        <i class="fa fa-flask"></i> [TESTE] Enviar Notificação
+                    </button>
+                </form>
+            </div>
         </div>
 
         {{-- Lista de itens --}}
