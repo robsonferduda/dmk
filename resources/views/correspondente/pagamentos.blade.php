@@ -64,24 +64,24 @@
         $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
     @endphp
     <div class="row" style="margin-bottom:15px;">
-        <div class="col-md-12 col-md-offset-8">
-            <div class="well" style="background:#f9f9f9;border-left:4px solid #1a7bb9;padding:15px;">
+        <div class="col-md-12">
+            <div class="well" style="background:#f9f9f9;border-left:4px solid #1a7bb9;padding:15px 20px;margin-bottom:0;">
                 <div class="row">
-                    <div class="col-xs-12" style="margin-bottom:6px;">
-                        <span class="text-muted" style="font-size:0.85em;">TOTAL DO MÊS</span>
-                        <div style="font-size:1.8em;font-weight:bold;color:#1a7bb9;">
+                    <div class="col-xs-12 col-sm-4 text-center" style="border-right:1px solid #e0e0e0;">
+                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">Total do Mês</span>
+                        <div style="font-size:2em;font-weight:bold;color:#1a7bb9;">
                             R$ {{ number_format($totalGeral, 2, ',', '.') }}
                         </div>
                     </div>
-                    <div class="col-xs-6">
-                        <span class="text-muted" style="font-size:0.8em;">A PAGAR</span>
-                        <div style="font-size:1.2em;font-weight:bold;color:#e8a400;">
+                    <div class="col-xs-6 col-sm-4 text-center" style="border-right:1px solid #e0e0e0;">
+                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">A Pagar</span>
+                        <div style="font-size:2em;font-weight:bold;color:#e8a400;">
                             R$ {{ number_format($totalPendente, 2, ',', '.') }}
                         </div>
                     </div>
-                    <div class="col-xs-6">
-                        <span class="text-muted" style="font-size:0.8em;">PAGO</span>
-                        <div style="font-size:1.2em;font-weight:bold;color:#3c9800;">
+                    <div class="col-xs-6 col-sm-4 text-center">
+                        <span class="text-muted" style="font-size:0.85em;text-transform:uppercase;letter-spacing:1px;">Pago</span>
+                        <div style="font-size:2em;font-weight:bold;color:#3c9800;">
                             R$ {{ number_format($totalPago, 2, ',', '.') }}
                         </div>
                     </div>
