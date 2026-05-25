@@ -29,6 +29,19 @@
                         <strong>{{ $hoje }}</strong>
                         <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
                     </h2>
+                    <div class="widget-toolbar">
+                        <form method="GET" action="{{ url('correspondente/whatsapp/checkin') }}" class="form-inline" style="margin:0;">
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="q" class="form-control" placeholder="Buscar nº processo…" value="{{ $busca }}" style="width:200px;">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                    @if($busca)
+                                        <a href="{{ url('correspondente/whatsapp/checkin') }}" class="btn btn-default" title="Limpar busca"><i class="fa fa-times"></i></a>
+                                    @endif
+                                </span>
+                            </div>
+                        </form>
+                    </div>
                 </header>
                 <div>
                     <div class="widget-body no-padding">

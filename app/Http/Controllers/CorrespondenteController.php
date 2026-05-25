@@ -87,13 +87,14 @@ class CorrespondenteController extends Controller
         return view('correspondente/whatsapp');
     }
 
-    public function whatsappCheckin()
+    public function whatsappCheckin(Request $request)
     {
         $conta     = Conta::find($this->conta);
         $chatproOk = ChatProClient::forConta($conta) !== null;
         $hoje      = Carbon::today()->toDateString();
+        $busca     = trim($request->input('q', ''));
 
-        $processos = Processo::with(['vara', 'cidade.estado', 'status'])
+        $q = Processo::with(['vara', 'cidade.estado', 'status'])
             ->where('cd_conta_con', $this->conta)
             ->whereNotNull('cd_correspondente_cor')
             ->whereNotIn('cd_status_processo_stp', [
@@ -104,8 +105,13 @@ class CorrespondenteController extends Controller
                 \App\Enums\StatusProcesso::RECUSADO_AUTOMATICAMENTE,
             ])
             ->whereDate('dt_prazo_fatal_pro', $hoje)
-            ->orderBy('hr_audiencia_pro')
-            ->get();
+            ->orderBy('hr_audiencia_pro');
+
+        if ($busca !== '') {
+            $q->where('nu_processo_pro', 'like', '%' . $busca . '%');
+        }
+
+        $processos = $q->get();
 
         $corIds = $processos->pluck('cd_correspondente_cor')->unique();
         $correspondentes = Conta::whereIn('cd_conta_con', $corIds)
@@ -168,6 +174,7 @@ class CorrespondenteController extends Controller
         return view('correspondente/whatsapp-lembretes-checkin', [
             'linhas' => $linhas,
             'hoje'   => Carbon::today()->format('d/m/Y'),
+            'busca'  => $busca,
         ]);
     }
 
