@@ -58,7 +58,7 @@
                             <tbody>
                                 @foreach($linhas as $linha)
                                 <tr>
-                                    <td>{{ $linha->nu_processo_pro }}</td>
+                                    <td><a href="{{ $linha->processo_url }}">{{ $linha->nu_processo_pro }}</a></td>
                                     <td>{{ $linha->nm_reu_pro }}</td>
                                     <td>{{ $linha->nm_status }}</td>
                                     <td class="center">{{ $linha->dt_prazo_fatal }}</td>

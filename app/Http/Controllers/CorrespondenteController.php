@@ -159,6 +159,7 @@ class CorrespondenteController extends Controller
                 'checkin_url'       => $idsComCheckin->has($proc->cd_processo_pro)
                                          ? url('processos/acompanhamento/' . safe_encrypt($proc->cd_processo_pro) . '/checkin')
                                          : null,
+                'processo_url'      => url('processos/acompanhamento/' . safe_encrypt($proc->cd_processo_pro)),
             ];
         });
 
