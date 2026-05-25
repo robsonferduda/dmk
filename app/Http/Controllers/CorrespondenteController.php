@@ -153,7 +153,9 @@ class CorrespondenteController extends Controller
                 'situacao'          => $situacao,
                 'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
                 'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
-                'fl_checkin_feito'  => $idsComCheckin->has($proc->cd_processo_pro),
+                'checkin_status'    => $idsComCheckin->has($proc->cd_processo_pro)
+                                         ? 'correspondente'
+                                         : ($proc->fl_checkin_pro ? 'escritorio' : 'pendente'),
             ];
         });
 

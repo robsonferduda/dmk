@@ -102,8 +102,10 @@
                                         @endif
                                     </td>
                                     <td class="center">
-                                        @if($linha->fl_checkin_feito)
+                                        @if($linha->checkin_status === 'correspondente')
                                             <span class="label label-success"><i class="fa fa-map-marker"></i> Feito</span>
+                                        @elseif($linha->checkin_status === 'escritorio')
+                                            <span class="label label-info"><i class="fa fa-building"></i> Feito pelo Escritório</span>
                                         @else
                                             <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @endif
