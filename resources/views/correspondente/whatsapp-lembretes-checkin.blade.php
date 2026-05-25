@@ -103,7 +103,9 @@
                                     </td>
                                     <td class="center">
                                         @if($linha->checkin_status === 'correspondente')
-                                            <span class="label label-success"><i class="fa fa-map-marker"></i> Feito</span>
+                                            <a href="{{ $linha->checkin_url }}" target="_blank" class="label label-success" style="text-decoration:none;">
+                                                <i class="fa fa-map-marker"></i> Feito
+                                            </a>
                                         @elseif($linha->checkin_status === 'escritorio')
                                             <span class="label label-info"><i class="fa fa-building"></i> Feito pelo Escritório</span>
                                         @else
