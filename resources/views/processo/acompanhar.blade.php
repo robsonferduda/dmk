@@ -542,6 +542,32 @@
                                             </span> 
                                         </div>
                                     </section>
+
+                                    <section>
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Audiência Confirmada?</span>
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ $processo->fl_audiencia_confirmada_pro ? 'checked' : '' }} name="fl_audiencia_confirmada_pro" class="onoffswitch-checkbox" id="fl_audiencia_confirmada_pro">
+                                                <label class="onoffswitch-label" for="fl_audiencia_confirmada_pro">
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </section>
+
+                                    <section>
+                                        <div class="onoffswitch-container">
+                                            <span class="onoffswitch-title">Check-in realizado?</span>
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" {{ $processo->fl_checkin_pro ? 'checked' : '' }} name="fl_checkin_pro" class="onoffswitch-checkbox" id="fl_checkin_pro">
+                                                <label class="onoffswitch-label" for="fl_checkin_pro">
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </section>
                                     @endrole
                                
                                                                                     
@@ -1499,6 +1525,66 @@
                     $("#fl_envio_anexos_pro").prop('checked', false);
                     $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
 
+                }
+            });
+
+        });
+
+        $("#fl_audiencia_confirmada_pro").change(function(){
+
+            var processo = $("#processo").val();
+            var valor = $(this).is(':checked') ? 'S' : 'N';
+
+            $.ajax({
+                url: "{{ url('processo/atualizar-audiencia') }}",
+                type: 'POST',
+                dataType: "JSON",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "cd_processo_pro": processo,
+                    "fl_audiencia_confirmada_pro": valor
+                },
+                beforeSend: function() {
+                    $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
+                },
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(response) {
+                    $('.box-loader').loader('hide');
+                    $("#fl_audiencia_confirmada_pro").prop('checked', valor !== 'S');
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
+                }
+            });
+
+        });
+
+        $("#fl_checkin_pro").change(function(){
+
+            var processo = $("#processo").val();
+            var valor = $(this).is(':checked') ? 'S' : 'N';
+
+            $.ajax({
+                url: "{{ url('processo/atualizar-checkin') }}",
+                type: 'POST',
+                dataType: "JSON",
+                data: {
+                    "_token": $('meta[name="token"]').attr('content'),
+                    "cd_processo_pro": processo,
+                    "fl_checkin_pro": valor
+                },
+                beforeSend: function() {
+                    $('.box-loader').loader('show');
+                    $('.erro_atualiza_status').html('');
+                },
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(response) {
+                    $('.box-loader').loader('hide');
+                    $("#fl_checkin_pro").prop('checked', valor !== 'S');
+                    $('.erro_atualiza_status').html('<span>'+response.responseJSON.message+'</span>');
                 }
             });
 

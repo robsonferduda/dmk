@@ -2446,8 +2446,6 @@ class ProcessoController extends Controller
         $processo->fl_checkin_pro = $request->fl_checkin_pro === 'S' ? true : false;
         $processo->save();
 
-        dd($processo);
-
         return response()->json(['success' => true]);
     }
 
