@@ -51,6 +51,7 @@
                                     </th>
                                     <th class="center" style="width: 120px;">Situação</th>
                                     <th class="center" style="width: 110px;">Entrega</th>
+                                    <th class="center" style="width: 100px;">Check-in</th>
                                     <th class="center" style="width: 90px;">Ação</th>
                                 </tr>
                             </thead>
@@ -98,6 +99,13 @@
                                             <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @else
                                             <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="center">
+                                        @if($linha->fl_checkin_feito)
+                                            <span class="label label-success"><i class="fa fa-map-marker"></i> Feito</span>
+                                        @else
+                                            <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @endif
                                     </td>
                                     <td class="center">
