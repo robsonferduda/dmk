@@ -119,7 +119,14 @@ class CorrespondenteController extends Controller
             ->get()
             ->keyBy('cd_processo_pro');
 
-        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
+        // Check-ins reais: somente registros em processo_checkin_pck
+        // indicam que o próprio correspondente fez o check-in.
+        // fl_checkin_pro pode ter sido setada pelo escritório via painel.
+        $idsComCheckin = \App\ProcessoCheckin::whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
+            ->pluck('cd_processo_pro')
+            ->flip();
+
+        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados, $idsComCheckin) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
             $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
             $wmm      = $jaEnviados->get($proc->cd_processo_pro);
@@ -146,7 +153,7 @@ class CorrespondenteController extends Controller
                 'situacao'          => $situacao,
                 'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
                 'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
-                'fl_checkin_feito'  => (bool) $proc->fl_checkin_pro,
+                'fl_checkin_feito'  => $idsComCheckin->has($proc->cd_processo_pro),
             ];
         });
 
