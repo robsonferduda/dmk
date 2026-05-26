@@ -20,8 +20,61 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="col-xs-12">
-            <div class="jarviswidget" data-widget-editbutton="false">
+    </div>
+
+    {{-- Barra de ações --}}
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="col-xs-12 col-sm-6">
+            <form method="GET" action="{{ url('correspondente/whatsapp/checkin') }}" class="form-inline" style="margin:0;">
+                <div class="input-group input-group-sm">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar nº processo…" value="{{ $busca }}" style="width:220px;">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                        @if($busca)
+                            <a href="{{ url('correspondente/whatsapp/checkin') }}" class="btn btn-default" title="Limpar busca"><i class="fa fa-times"></i></a>
+                        @endif
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right" style="margin-top:4px;">
+            <button type="button" id="btn-filtro-falhas" class="btn btn-danger btn-sm">
+                <i class="fa fa-times-circle"></i> Apenas Falhas
+            </button>
+        </div>
+    </div>
+
+    {{-- Cards de resumo por status de entrega --}}
+    @php
+        $totalLida     = $linhas->where('ds_status_entrega', 'read')->count();
+        $totalEntregue = $linhas->whereIn('ds_status_entrega', ['delivered', 'played'])->count();
+        $totalEnviada  = $linhas->where('ds_status_entrega', 'sent')->count();
+        $totalFalha    = $linhas->where('ds_status_entrega', 'failed')->count();
+        $totalPendente = $linhas->where('ds_status_entrega', 'pending')->count();
+        $totalSemEnvio = $linhas->filter(fn($l) => empty($l->ds_status_entrega))->count();
+    @endphp
+    <div class="row" style="margin-bottom: 20px;">
+        @foreach([
+            ['label' => 'Lida',     'icon' => 'fa-eye',          'cor' => '#5cb85c', 'total' => $totalLida],
+            ['label' => 'Entregue', 'icon' => 'fa-check-circle',  'cor' => '#5bc0de', 'total' => $totalEntregue],
+            ['label' => 'Enviada',  'icon' => 'fa-paper-plane',   'cor' => '#337ab7', 'total' => $totalEnviada],
+            ['label' => 'Falha',    'icon' => 'fa-times-circle',  'cor' => '#d9534f', 'total' => $totalFalha],
+            ['label' => 'Pendente', 'icon' => 'fa-clock-o',       'cor' => '#aaa',    'total' => $totalPendente],
+            ['label' => 'Sem envio','icon' => 'fa-minus-circle',  'cor' => '#e0e0e0', 'total' => $totalSemEnvio],
+        ] as $card)
+        <div class="col-xs-6 col-sm-4 col-md-2" style="margin-bottom: 10px;">
+            <div style="background:#fff;border-left:4px solid {{ $card['cor'] }};padding:12px 15px;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.12);">
+                <div style="font-size:26px;font-weight:700;color:{{ $card['cor'] }};">{{ $card['total'] }}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px;">
+                    <i class="fa {{ $card['icon'] }}"></i> {{ $card['label'] }}
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+    <article class="col-xs-12" style="padding:0;padding-bottom:40px;">
+        <div class="jarviswidget" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"><i class="fa fa-map-marker"></i></span>
                     <h2>
@@ -29,19 +82,6 @@
                         <strong>{{ $hoje }}</strong>
                         <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
                     </h2>
-                    <div class="widget-toolbar">
-                        <form method="GET" action="{{ url('correspondente/whatsapp/checkin') }}" class="form-inline" style="margin:0;">
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="q" class="form-control" placeholder="Buscar nº processo…" value="{{ $busca }}" style="width:200px;">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                    @if($busca)
-                                        <a href="{{ url('correspondente/whatsapp/checkin') }}" class="btn btn-default" title="Limpar busca"><i class="fa fa-times"></i></a>
-                                    @endif
-                                </span>
-                            </div>
-                        </form>
-                    </div>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
@@ -70,7 +110,7 @@
                             </thead>
                             <tbody>
                                 @foreach($linhas as $linha)
-                                <tr>
+                                <tr data-entrega="{{ $linha->ds_status_entrega ?? '' }}">
                                     <td><a href="{{ $linha->processo_url }}">{{ $linha->nu_processo_pro }}</a></td>
                                     <td>{{ $linha->nm_reu_pro }}</td>
                                     <td>{{ $linha->nm_status }}</td>
@@ -146,7 +186,6 @@
                 </div>
             </div>
         </article>
-    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -168,6 +207,37 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmButtonText: 'OK'
     });
     @endif
+
+    var FILTRO_KEY = 'dmk_checkin_filtro_falhas';
+    var btnFiltroFalhas = document.getElementById('btn-filtro-falhas');
+
+    function aplicarFiltro(ativo) {
+        var linhas = document.querySelectorAll('tbody tr[data-entrega]');
+        linhas.forEach(function (tr) {
+            tr.style.display = (ativo && tr.getAttribute('data-entrega') !== 'failed') ? 'none' : '';
+        });
+        if (ativo) {
+            btnFiltroFalhas.classList.remove('btn-danger');
+            btnFiltroFalhas.classList.add('btn-default');
+            btnFiltroFalhas.innerHTML = '<i class="fa fa-list"></i> Mostrar todos';
+        } else {
+            btnFiltroFalhas.classList.remove('btn-default');
+            btnFiltroFalhas.classList.add('btn-danger');
+            btnFiltroFalhas.innerHTML = '<i class="fa fa-times-circle"></i> Apenas Falhas';
+        }
+        sessionStorage.setItem(FILTRO_KEY, ativo ? '1' : '0');
+    }
+
+    if (btnFiltroFalhas) {
+        var estadoSalvo = sessionStorage.getItem(FILTRO_KEY) === '1';
+        if (estadoSalvo) {
+            aplicarFiltro(true);
+        }
+        btnFiltroFalhas.addEventListener('click', function () {
+            var ativo = sessionStorage.getItem(FILTRO_KEY) !== '1';
+            aplicarFiltro(ativo);
+        });
+    }
 
     document.querySelectorAll('.btn-reenviar').forEach(function (btn) {
         btn.addEventListener('click', function () {
