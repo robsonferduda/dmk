@@ -157,17 +157,26 @@ class ChatProClient
             $ok = ($code >= 200 && $code < 300);
 
             // Detecta erro transitório de sessão SQLite do ChatPro e faz retry.
-            if (!$ok && $tentativa < $maxTentativas) {
-                $rawError = is_string($body) ? $body : json_encode($body);
-                if (stripos($rawError, 'database is locked') !== false
-                    || stripos($rawError, 'prefetch sessions') !== false) {
-                    $wait = 5 * $tentativa; // 5s, depois 10s
-                    Log::warning('[CHATPRO] "database is locked" na tentativa ' . $tentativa . '/' . $maxTentativas . ', aguardando ' . $wait . 's: ' . $rawError, [
-                        'endpoint' => $endpoint,
-                    ]);
-                    sleep($wait);
-                    return $this->request($method, $endpoint, $options, $tentativa + 1);
-                }
+            // ChatPro pode retornar esse erro tanto em respostas HTTP 5xx quanto
+            // em respostas HTTP 2xx com corpo de erro — por isso checamos o corpo
+            // independentemente do status code.
+            $rawBody = is_string($body) ? $body : json_encode($body);
+            $isDbLocked = stripos($rawBody, 'database is locked') !== false
+                       || stripos($rawBody, 'prefetch sessions') !== false;
+
+            if ($isDbLocked && $tentativa < $maxTentativas) {
+                $wait = 5 * $tentativa; // 5s, depois 10s
+                Log::warning('[CHATPRO] "database is locked" na tentativa ' . $tentativa . '/' . $maxTentativas . ', aguardando ' . $wait . 's.', [
+                    'endpoint' => $endpoint,
+                    'body'     => $rawBody,
+                ]);
+                sleep($wait);
+                return $this->request($method, $endpoint, $options, $tentativa + 1);
+            }
+
+            // Se a API retornou 2xx mas o corpo indica falha (ex: success=false), trata como erro.
+            if ($ok && $isDbLocked) {
+                $ok = false;
             }
 
             if (!$ok) {
@@ -178,7 +187,7 @@ class ChatProClient
                 'success' => $ok,
                 'status'  => $code,
                 'body'    => $body,
-                'message' => $ok ? null : ('ChatPro respondeu HTTP ' . $code),
+                'message' => $ok ? null : ($isDbLocked ? 'ChatPro: database is locked (sem retries disponíveis)' : 'ChatPro respondeu HTTP ' . $code),
             ];
         } catch (GuzzleException $e) {
             if ($tentativa < $maxTentativas) {
