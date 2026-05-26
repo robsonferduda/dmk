@@ -30,7 +30,10 @@
                         <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
                     </h2>
                     <div class="widget-toolbar">
-                        <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/disparar') }}" id="form-disparar" style="margin:0;">
+                        <button type="button" id="btn-filtro-falhas" class="btn btn-danger btn-sm" style="margin-right:6px;">
+                            <i class="fa fa-times-circle"></i> Apenas Falhas
+                        </button>
+                        <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/disparar') }}" id="form-disparar" style="margin:0;display:inline-block;">
                             @csrf
                             <button type="button" id="btn-disparar" class="btn btn-success btn-sm">
                                 <i class="fa fa-whatsapp"></i> Disparar agora
@@ -64,7 +67,7 @@
                             </thead>
                             <tbody>
                                 @foreach($linhas as $linha)
-                                <tr>
+                                <tr data-entrega="{{ $linha->ds_status_entrega ?? '' }}">
                                     <td>{{ $linha->nu_processo_pro }}</td>
                                     <td>{{ $linha->nm_reu_pro }}</td>
                                     <td>{{ $linha->nm_status }}</td>
@@ -171,6 +174,31 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    var btnFiltroFalhas = document.getElementById('btn-filtro-falhas');
+    var filtroFalhasAtivo = false;
+    if (btnFiltroFalhas) {
+        btnFiltroFalhas.addEventListener('click', function () {
+            filtroFalhasAtivo = !filtroFalhasAtivo;
+            var linhas = document.querySelectorAll('tbody tr[data-entrega]');
+            linhas.forEach(function (tr) {
+                if (filtroFalhasAtivo) {
+                    tr.style.display = tr.getAttribute('data-entrega') === 'failed' ? '' : 'none';
+                } else {
+                    tr.style.display = '';
+                }
+            });
+            if (filtroFalhasAtivo) {
+                btnFiltroFalhas.classList.remove('btn-danger');
+                btnFiltroFalhas.classList.add('btn-default');
+                btnFiltroFalhas.innerHTML = '<i class="fa fa-list"></i> Mostrar todos';
+            } else {
+                btnFiltroFalhas.classList.remove('btn-default');
+                btnFiltroFalhas.classList.add('btn-danger');
+                btnFiltroFalhas.innerHTML = '<i class="fa fa-times-circle"></i> Apenas Falhas';
+            }
+        });
+    }
 
     var btnDisparar = document.getElementById('btn-disparar');
     if (btnDisparar) {
