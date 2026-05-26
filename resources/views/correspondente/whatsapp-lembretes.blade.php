@@ -175,28 +175,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    var FILTRO_KEY = 'dmk_lembretes_filtro_falhas';
     var btnFiltroFalhas = document.getElementById('btn-filtro-falhas');
-    var filtroFalhasAtivo = false;
+
+    function aplicarFiltro(ativo) {
+        var linhas = document.querySelectorAll('tbody tr[data-entrega]');
+        linhas.forEach(function (tr) {
+            tr.style.display = (ativo && tr.getAttribute('data-entrega') !== 'failed') ? 'none' : '';
+        });
+        if (ativo) {
+            btnFiltroFalhas.classList.remove('btn-danger');
+            btnFiltroFalhas.classList.add('btn-default');
+            btnFiltroFalhas.innerHTML = '<i class="fa fa-list"></i> Mostrar todos';
+        } else {
+            btnFiltroFalhas.classList.remove('btn-default');
+            btnFiltroFalhas.classList.add('btn-danger');
+            btnFiltroFalhas.innerHTML = '<i class="fa fa-times-circle"></i> Apenas Falhas';
+        }
+        sessionStorage.setItem(FILTRO_KEY, ativo ? '1' : '0');
+    }
+
     if (btnFiltroFalhas) {
+        // Restaura o estado ao recarregar a página.
+        var estadoSalvo = sessionStorage.getItem(FILTRO_KEY) === '1';
+        if (estadoSalvo) {
+            aplicarFiltro(true);
+        }
+
         btnFiltroFalhas.addEventListener('click', function () {
-            filtroFalhasAtivo = !filtroFalhasAtivo;
-            var linhas = document.querySelectorAll('tbody tr[data-entrega]');
-            linhas.forEach(function (tr) {
-                if (filtroFalhasAtivo) {
-                    tr.style.display = tr.getAttribute('data-entrega') === 'failed' ? '' : 'none';
-                } else {
-                    tr.style.display = '';
-                }
-            });
-            if (filtroFalhasAtivo) {
-                btnFiltroFalhas.classList.remove('btn-danger');
-                btnFiltroFalhas.classList.add('btn-default');
-                btnFiltroFalhas.innerHTML = '<i class="fa fa-list"></i> Mostrar todos';
-            } else {
-                btnFiltroFalhas.classList.remove('btn-default');
-                btnFiltroFalhas.classList.add('btn-danger');
-                btnFiltroFalhas.innerHTML = '<i class="fa fa-times-circle"></i> Apenas Falhas';
-            }
+            var ativo = sessionStorage.getItem(FILTRO_KEY) !== '1';
+            aplicarFiltro(ativo);
         });
     }
 
