@@ -66,7 +66,7 @@
         @endforeach
     </div>
 
-    <article class="col-xs-12" style="padding:0;">
+    <article class="col-xs-12" style="padding:0;padding-bottom:40px;">
         <div class="jarviswidget" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"><i class="fa fa-bell"></i></span>
