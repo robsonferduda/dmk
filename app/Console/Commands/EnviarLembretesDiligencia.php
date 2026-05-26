@@ -169,6 +169,11 @@ class EnviarLembretesDiligencia extends Command
                 }
 
                 if ($res['success']) { $enviados++; } else { $falhas++; }
+
+                // Pausa entre envios para evitar sobrecarga na sessão ChatPro ("database is locked").
+                if (!$dryRun) {
+                    usleep(1_500_000); // 1,5 s
+                }
             } catch (\Throwable $e) {
                 $falhas++;
                 Log::error('[WHATSAPP-LEMBRETE] processo ' . $proc->cd_processo_pro . ': ' . $e->getMessage());

@@ -155,6 +155,21 @@ class ChatProClient
             }
 
             $ok = ($code >= 200 && $code < 300);
+
+            // Detecta erro transitório de sessão SQLite do ChatPro e faz retry.
+            if (!$ok && $tentativa < $maxTentativas) {
+                $rawError = is_string($body) ? $body : json_encode($body);
+                if (stripos($rawError, 'database is locked') !== false
+                    || stripos($rawError, 'prefetch sessions') !== false) {
+                    $wait = 5 * $tentativa; // 5s, depois 10s
+                    Log::warning('[CHATPRO] "database is locked" na tentativa ' . $tentativa . '/' . $maxTentativas . ', aguardando ' . $wait . 's: ' . $rawError, [
+                        'endpoint' => $endpoint,
+                    ]);
+                    sleep($wait);
+                    return $this->request($method, $endpoint, $options, $tentativa + 1);
+                }
+            }
+
             if (!$ok) {
                 Log::warning('[CHATPRO] HTTP ' . $code . ' em ' . $endpoint, ['body' => $body]);
             }
