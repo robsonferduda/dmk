@@ -20,8 +20,54 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="col-xs-12">
-            <div class="jarviswidget" data-widget-editbutton="false">
+    </div>
+
+    {{-- Barra de ações --}}
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="col-xs-12 text-right">
+            <button type="button" id="btn-filtro-falhas" class="btn btn-danger btn-sm" style="margin-right:6px;">
+                <i class="fa fa-times-circle"></i> Apenas Falhas
+            </button>
+            <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/disparar') }}" id="form-disparar" style="margin:0;display:inline-block;">
+                @csrf
+                <button type="button" id="btn-disparar" class="btn btn-success btn-sm">
+                    <i class="fa fa-whatsapp"></i> Disparar agora
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {{-- Cards de resumo por status de entrega --}}
+    @php
+        $totalLida     = $linhas->where('ds_status_entrega', 'read')->count();
+        $totalEntregue = $linhas->whereIn('ds_status_entrega', ['delivered', 'played'])->count();
+        $totalEnviada  = $linhas->where('ds_status_entrega', 'sent')->count();
+        $totalFalha    = $linhas->where('ds_status_entrega', 'failed')->count();
+        $totalPendente = $linhas->where('ds_status_entrega', 'pending')->count();
+        $totalSemEnvio = $linhas->filter(fn($l) => empty($l->ds_status_entrega))->count();
+    @endphp
+    <div class="row" style="margin-bottom: 20px;">
+        @foreach([
+            ['label' => 'Lida',     'icon' => 'fa-eye',          'cor' => '#5cb85c', 'total' => $totalLida],
+            ['label' => 'Entregue', 'icon' => 'fa-check-circle',  'cor' => '#5bc0de', 'total' => $totalEntregue],
+            ['label' => 'Enviada',  'icon' => 'fa-paper-plane',   'cor' => '#337ab7', 'total' => $totalEnviada],
+            ['label' => 'Falha',    'icon' => 'fa-times-circle',  'cor' => '#d9534f', 'total' => $totalFalha],
+            ['label' => 'Pendente', 'icon' => 'fa-clock-o',       'cor' => '#aaa',    'total' => $totalPendente],
+            ['label' => 'Sem envio','icon' => 'fa-minus-circle',  'cor' => '#e0e0e0', 'total' => $totalSemEnvio],
+        ] as $card)
+        <div class="col-xs-6 col-sm-4 col-md-2" style="margin-bottom: 10px;">
+            <div style="background:#fff;border-left:4px solid {{ $card['cor'] }};padding:12px 15px;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.12);">
+                <div style="font-size:26px;font-weight:700;color:{{ $card['cor'] }};">{{ $card['total'] }}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px;">
+                    <i class="fa {{ $card['icon'] }}"></i> {{ $card['label'] }}
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+    <article class="col-xs-12" style="padding:0;">
+        <div class="jarviswidget" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"><i class="fa fa-bell"></i></span>
                     <h2>
@@ -29,17 +75,6 @@
                         <strong>{{ $amanha }}</strong>
                         <span class="badge" style="margin-left: 6px;">{{ $linhas->count() }}</span>
                     </h2>
-                    <div class="widget-toolbar">
-                        <button type="button" id="btn-filtro-falhas" class="btn btn-danger btn-sm" style="margin-right:6px;">
-                            <i class="fa fa-times-circle"></i> Apenas Falhas
-                        </button>
-                        <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/disparar') }}" id="form-disparar" style="margin:0;display:inline-block;">
-                            @csrf
-                            <button type="button" id="btn-disparar" class="btn btn-success btn-sm">
-                                <i class="fa fa-whatsapp"></i> Disparar agora
-                            </button>
-                        </form>
-                    </div>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
@@ -132,7 +167,6 @@
                 </div>
             </div>
         </article>
-    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
