@@ -453,7 +453,6 @@ class CorrespondentePagamentoController extends Controller
         $msg  = "Olá" . ($nmCorresp ? ", *{$nmCorresp}*" : "") . "!\n\n";
         $msg .= "O escritório *{$nmEscritorio}* encaminhou o demonstrativo de honorários referente a *{$mesAno}*.\n\n";
         $msg .= "💰 *Valor total: {$valorFmt}*\n\n";
-        $msg .= "📄 O comprovante detalhado está no arquivo em anexo.\n\n";
         $msg .= "✅ *Revisar e confirmar o demonstrativo:*\n{$link}\n";
 
         if ($banco && $banco->nm_titular_dba) {
