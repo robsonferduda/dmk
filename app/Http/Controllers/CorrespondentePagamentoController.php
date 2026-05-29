@@ -171,7 +171,13 @@ class CorrespondentePagamentoController extends Controller
             return view('correspondente/pagamento-confirmado', ['status' => 'ja_recusado', 'pagamento' => $pagamento]);
         }
 
-        if ($pagamento->cd_status_pag != StatusPagamentoCorrespondente::ENVIADO_APROVACAO) {
+        // Aceita ENVIADO_APROVACAO (fluxo normal) ou GERADO (link de teste sem alterar status)
+        $statusPermitidos = [
+            StatusPagamentoCorrespondente::ENVIADO_APROVACAO,
+            StatusPagamentoCorrespondente::GERADO,
+        ];
+
+        if (! in_array($pagamento->cd_status_pag, $statusPermitidos)) {
             return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
         }
 
@@ -190,7 +196,12 @@ class CorrespondentePagamentoController extends Controller
             return view('correspondente/pagamento-confirmado', ['status' => 'nao_encontrado']);
         }
 
-        if ($pagamento->cd_status_pag != StatusPagamentoCorrespondente::ENVIADO_APROVACAO) {
+        $statusPermitidos = [
+            StatusPagamentoCorrespondente::ENVIADO_APROVACAO,
+            StatusPagamentoCorrespondente::GERADO,
+        ];
+
+        if (! in_array($pagamento->cd_status_pag, $statusPermitidos)) {
             return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
         }
 
