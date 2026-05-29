@@ -61,7 +61,10 @@ class PagamentoCorrespondente extends Model
 
     public function podeEnviarAprovacao(): bool
     {
-        return $this->cd_status_pag === StatusPagamentoCorrespondente::GERADO;
+        return in_array($this->cd_status_pag, [
+            StatusPagamentoCorrespondente::GERADO,
+            StatusPagamentoCorrespondente::RECUSADO,
+        ]);
     }
 
     public function podeAprovar(): bool
@@ -72,5 +75,10 @@ class PagamentoCorrespondente extends Model
     public function podePagar(): bool
     {
         return $this->cd_status_pag === StatusPagamentoCorrespondente::APROVADO;
+    }
+
+    public function podeRecusar(): bool
+    {
+        return $this->cd_status_pag === StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
     }
 }

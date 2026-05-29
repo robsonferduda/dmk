@@ -147,6 +147,80 @@ class CorrespondentePagamentoController extends Controller
         return view('correspondente/pagamento-confirmado', ['status' => 'ok', 'pagamento' => $pagamento->fresh('correspondente')]);
     }
 
+    // ─── Revisar por Token (página pública com listagem de itens) ─────────────
+
+    public function revisarPorToken($token)
+    {
+        $pagamento = PagamentoCorrespondente::with(['correspondente', 'itens'])
+            ->where('tk_confirmacao_pag', $token)
+            ->first();
+
+        if (! $pagamento) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'nao_encontrado']);
+        }
+
+        if ($pagamento->cd_status_pag == StatusPagamentoCorrespondente::PAGO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'ja_pago', 'pagamento' => $pagamento]);
+        }
+
+        if ($pagamento->cd_status_pag == StatusPagamentoCorrespondente::APROVADO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'ja_aprovado', 'pagamento' => $pagamento]);
+        }
+
+        if ($pagamento->cd_status_pag == StatusPagamentoCorrespondente::RECUSADO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'ja_recusado', 'pagamento' => $pagamento]);
+        }
+
+        if ($pagamento->cd_status_pag != StatusPagamentoCorrespondente::ENVIADO_APROVACAO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
+        }
+
+        return view('correspondente/pagamento-revisao', compact('pagamento', 'token'));
+    }
+
+    // ─── Processar Revisão (aprovar ou recusar via token público) ─────────────
+
+    public function processarRevisao(Request $request, $token)
+    {
+        $pagamento = PagamentoCorrespondente::with('correspondente')
+            ->where('tk_confirmacao_pag', $token)
+            ->first();
+
+        if (! $pagamento) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'nao_encontrado']);
+        }
+
+        if ($pagamento->cd_status_pag != StatusPagamentoCorrespondente::ENVIADO_APROVACAO) {
+            return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
+        }
+
+        $acao = $request->input('acao');
+
+        if ($acao === 'aprovar') {
+            DB::transaction(function () use ($pagamento) {
+                $pagamento->cd_status_pag    = StatusPagamentoCorrespondente::APROVADO;
+                $pagamento->dt_aprovacao_pag = Carbon::now();
+                $pagamento->save();
+            });
+
+            return view('correspondente/pagamento-confirmado', ['status' => 'ok', 'pagamento' => $pagamento->fresh('correspondente')]);
+        }
+
+        if ($acao === 'recusar') {
+            $motivo = trim($request->input('motivo', ''));
+
+            DB::transaction(function () use ($pagamento, $motivo) {
+                $pagamento->cd_status_pag     = StatusPagamentoCorrespondente::RECUSADO;
+                $pagamento->ds_observacao_pag = $motivo;
+                $pagamento->save();
+            });
+
+            return view('correspondente/pagamento-confirmado', ['status' => 'recusado', 'pagamento' => $pagamento->fresh('correspondente')]);
+        }
+
+        return view('correspondente/pagamento-confirmado', ['status' => 'invalido']);
+    }
+
     // ─── Aprovar (pelo escritório em nome do correspondente) ──────────────────
 
     public function aprovar($id)
@@ -231,7 +305,7 @@ class CorrespondentePagamentoController extends Controller
             $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
 
             \Mail::raw(
-                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de pagamento referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nAtenciosamente,\n{$nmEscritorio}",
+                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAcesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:\n" . url("pagamentos/revisar/{$token}") . "\n\nAtenciosamente,\n{$nmEscritorio}",
                 function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath) {
                     $msg->to($emailTeste)
                         ->subject("[TESTE] Aprovação de Pagamento - {$mesAno} -{$nmEscritorio}");
@@ -312,7 +386,7 @@ class CorrespondentePagamentoController extends Controller
         foreach ($emails as $email) {
             try {
                 \Mail::raw(
-                    "Olá!\n\nO escritório {$nmEscritorio} encaminhou para sua aprovação o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nLink de aprovação: " . url("pagamentos/confirmar/{$token}") . "\n\nO comprovante detalhado está em anexo.\n\nAtenciosamente,\n{$nmEscritorio}",
+                    "Olá!\n\nO escritório {$nmEscritorio} encaminhou o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAcesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:\n" . url("pagamentos/revisar/{$token}") . "\n\nO comprovante detalhado está em anexo.\n\nAtenciosamente,\n{$nmEscritorio}",
                     function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath) {
                         $msg->to($email)
                             ->subject("Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}");
@@ -363,13 +437,13 @@ class CorrespondentePagamentoController extends Controller
                      ?? '';
         $mesAno   = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
         $valorFmt = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
-        $link     = url("pagamentos/confirmar/{$token}");
+        $link     = url("pagamentos/revisar/{$token}");
 
         $msg  = "Olá" . ($nmCorresp ? ", *{$nmCorresp}*" : "") . "!\n\n";
         $msg .= "O escritório *{$nmEscritorio}* encaminhou o demonstrativo de honorários referente a *{$mesAno}*.\n\n";
         $msg .= "💰 *Valor total: {$valorFmt}*\n\n";
         $msg .= "📄 O comprovante detalhado está no arquivo em anexo.\n\n";
-        $msg .= "✅ *Confirmar aprovação (1 clique):*\n{$link}\n";
+        $msg .= "✅ *Revisar e confirmar o demonstrativo:*\n{$link}\n";
 
         if ($banco && $banco->nm_titular_dba) {
             $msg .= "\n🏦 *Dados bancários para pagamento:*\n";

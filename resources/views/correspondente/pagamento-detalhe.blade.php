@@ -65,7 +65,15 @@
                     <dt>Pago em</dt>
                     <dd>{{ $pagamento->dt_pagamento_pag->format('d/m/Y H:i') }}</dd>
                     @endif
-                    @if($pagamento->ds_observacao_pag)
+                    @if($pagamento->cd_status_pag == 5 && $pagamento->ds_observacao_pag)
+                    <dt style="color:#e74c3c;">Motivo Recusa</dt>
+                    <dd>
+                        <span style="color:#e74c3c; font-weight:600;">
+                            <i class="fa fa-times-circle"></i>
+                            {{ $pagamento->ds_observacao_pag }}
+                        </span>
+                    </dd>
+                    @elseif($pagamento->ds_observacao_pag)
                     <dt>Obs.</dt>
                     <dd>{{ $pagamento->ds_observacao_pag }}</dd>
                     @endif

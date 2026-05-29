@@ -8,6 +8,7 @@ class StatusPagamentoCorrespondente
     const ENVIADO_APROVACAO  = 2;
     const APROVADO           = 3;
     const PAGO               = 4;
+    const RECUSADO           = 5;
 
     public static function labels(): array
     {
@@ -16,6 +17,7 @@ class StatusPagamentoCorrespondente
             self::ENVIADO_APROVACAO => 'Enviado para Aprovação',
             self::APROVADO          => 'Aprovado',
             self::PAGO              => 'Pago',
+            self::RECUSADO          => 'Recusado',
         ];
     }
 
@@ -31,6 +33,7 @@ class StatusPagamentoCorrespondente
             self::ENVIADO_APROVACAO => 'label-warning',
             self::APROVADO          => 'label-info',
             self::PAGO              => 'label-success',
+            self::RECUSADO          => 'label-danger',
         ][$status] ?? 'label-default';
     }
 }

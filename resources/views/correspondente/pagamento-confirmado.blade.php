@@ -57,8 +57,21 @@
         .invalido h1  { color: #e74c3c; }
         .invalido .icon::before { content: '❌'; }
         .nao-encontrado h1 { color: #e74c3c; }
-        .nao-encontrado .icon::before { content: '🔍'; }
-        .footer-note { font-size: 11px; color: #aaa; margin-top: 24px; }
+        .nao-encontrado .icon::before { content: '🔍'; }        .recusado h1 { color: #e74c3c; }
+        .recusado .icon::before { content: '❌'; }
+        .ja-recusado h1 { color: #e74c3c; }
+        .ja-recusado .icon::before { content: '❌'; }
+        .motivo-box {
+            background: #fdf2f2;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            text-align: left;
+            font-size: 13px;
+            color: #721c24;
+        }
+        .motivo-box strong { display: block; margin-bottom: 4px; }        .footer-note { font-size: 11px; color: #aaa; margin-top: 24px; }
     </style>
 </head>
 <body>
@@ -125,6 +138,59 @@
     <p>Este link de confirmação não está disponível no momento.</p>
     <p>O pagamento pode já ter sido processado ou o link pode ter sido alterado.</p>
     <p class="footer-note">Em caso de dúvidas, entre em contato com o escritório.</p>
+</div>
+
+@elseif($status === 'recusado')
+<div class="card recusado">
+    <div class="icon"></div>
+    <h1>Pagamento Recusado</h1>
+    <p>O demonstrativo foi recusado. O escritório será notificado.</p>
+    @if(isset($pagamento))
+    <div class="info-box">
+        <dl>
+            <dt>Correspondente</dt>
+            <dd>{{ $pagamento->correspondente->nm_razao_social_con ?? $pagamento->correspondente->nm_fantasia_con ?? '—' }}</dd>
+            <dt>Competência</dt>
+            <dd>{{ $pagamento->nm_mes_ano }}</dd>
+            <dt>Valor</dt>
+            <dd><strong>R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}</strong></dd>
+        </dl>
+    </div>
+    @if($pagamento->ds_observacao_pag)
+    <div class="motivo-box">
+        <strong>Motivo informado:</strong>
+        {{ $pagamento->ds_observacao_pag }}
+    </div>
+    @endif
+    @endif
+    <p class="footer-note">Você pode fechar esta página.</p>
+</div>
+
+@elseif($status === 'ja_recusado')
+<div class="card ja-recusado">
+    <div class="icon"></div>
+    <h1>Demonstrativo Já Recusado</h1>
+    <p>Este demonstrativo já foi recusado anteriormente.</p>
+    @if(isset($pagamento))
+    <div class="info-box">
+        <dl>
+            <dt>Correspondente</dt>
+            <dd>{{ $pagamento->correspondente->nm_razao_social_con ?? $pagamento->correspondente->nm_fantasia_con ?? '—' }}</dd>
+            <dt>Competência</dt>
+            <dd>{{ $pagamento->nm_mes_ano }}</dd>
+            <dt>Valor</dt>
+            <dd><strong>R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}</strong></dd>
+        </dl>
+    </div>
+    @if($pagamento->ds_observacao_pag)
+    <div class="motivo-box">
+        <strong>Motivo informado:</strong>
+        {{ $pagamento->ds_observacao_pag }}
+    </div>
+    @endif
+    @endif
+    <p>O escritório entrará em contato para resolver as pendências.</p>
+    <p class="footer-note">Você pode fechar esta página.</p>
 </div>
 
 @else {{-- nao_encontrado --}}

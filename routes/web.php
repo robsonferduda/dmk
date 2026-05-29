@@ -87,9 +87,13 @@ Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico
 // [ATUALIZAÇÃO CADASTRAL] Link enviado por email ao correspondente para rastrear acesso.
 Route::get('atualizar-cadastro/{token}', 'CorrespondenteController@registrarAcessoAtualizacao')->name('correspondente.registro-acesso');
 
-// [CONFIRMAÇÃO DE PAGAMENTO] Link com token enviado por WhatsApp/e-mail ao correspondente.
-// Permite aprovar o demonstrativo de honorários sem acesso ao sistema.
-Route::get('pagamentos/confirmar/{token}', 'CorrespondentePagamentoController@confirmarPorToken')->name('pagamento.confirmar');
+// [REVISÃO/APROVAÇÃO DE PAGAMENTO] Link com token enviado por WhatsApp/e-mail ao correspondente.
+// Permite revisar a listagem de processos, confirmar ou recusar sem acesso ao sistema.
+Route::get('pagamentos/revisar/{token}',  'CorrespondentePagamentoController@revisarPorToken')->name('pagamento.revisar');
+Route::post('pagamentos/revisar/{token}', 'CorrespondentePagamentoController@processarRevisao')->name('pagamento.processar-revisao');
+
+// [LEGADO] Rota antiga de confirmação direta – redireciona para a nova página de revisão.
+Route::get('pagamentos/confirmar/{token}', 'CorrespondentePagamentoController@revisarPorToken')->name('pagamento.confirmar');
 
 Auth::routes();
 
