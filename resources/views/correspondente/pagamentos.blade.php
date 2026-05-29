@@ -99,7 +99,7 @@
             $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
             $cfg      = $statusConfig[$cd] ?? ['cor'=>'#aaa','bg'=>'#f5f5f5','icone'=>'circle'];
         @endphp
-        <div class="col-xs-6 col-sm-3" style="margin-bottom:10px;">
+        <div class="col-xs-6 col-sm-2" style="margin-bottom:10px;">
             <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:14px 16px;border-left:4px solid {{ $cfg['cor'] }};display:flex;align-items:center;gap:14px;">
                 <div style="color:{{ $cfg['cor'] }};font-size:2em;line-height:1;flex-shrink:0;">
                     <i class="fa fa-{{ $cfg['icone'] }}"></i>
