@@ -345,17 +345,11 @@ class CorrespondentePagamentoController extends Controller
             $msgs[] = 'Falha no e-mail: ' . $e->getMessage();
         }
 
-        // WhatsApp de teste: documento PDF + mensagem de texto
+        // WhatsApp de teste: mensagem de texto com link de revisão
         try {
             $conta   = Conta::find($this->conta);
             $chatpro = ChatProClient::forConta($conta);
             if ($chatpro) {
-                // Envia o PDF como documento
-                if ($pdfPath && file_exists($pdfPath)) {
-                    $pdfUrl = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
-                    $chatpro->sendDocument($whatsappTeste, $pdfUrl, '📄 Demonstrativo de Pagamento – ' . $mesAno);
-                }
-                // Envia a mensagem de texto enriquecida
                 $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
                 $mensagem = "[TESTE]\n" . $mensagem;
                 $chatpro->sendText($whatsappTeste, $mensagem);
@@ -443,12 +437,6 @@ class CorrespondentePagamentoController extends Controller
                 $conta   = Conta::find($this->conta);
                 $chatpro = ChatProClient::forConta($conta);
                 if ($chatpro) {
-                    // Envia o PDF como documento anexo
-                    if ($pdfPath && file_exists($pdfPath)) {
-                        $pdfUrl = url('storage/pagamentos/fatura_' . $pagamento->cd_pagamento_correspondente_pag . '.pdf');
-                        $chatpro->sendDocument($whatsapp, $pdfUrl, '📄 Demonstrativo de Pagamento - ' . $mesAno);
-                    }
-                    // Envia mensagem de texto enriquecida
                     $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
                     $chatpro->sendText($whatsapp, $mensagem);
                 }
