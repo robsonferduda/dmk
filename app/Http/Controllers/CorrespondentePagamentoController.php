@@ -315,19 +315,30 @@ class CorrespondentePagamentoController extends Controller
             $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
             $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
 
-            \Mail::raw(
-                "[TESTE] Olá!\n\nO escritório {$nmEscritorio} encaminhou o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAcesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:\n" . url("pagamentos/revisar/{$token}") . "\n\nAtenciosamente,\n{$nmEscritorio}",
-                function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath) {
-                    $msg->to($emailTeste)
-                        ->subject("[TESTE] Aprovação de Pagamento - {$mesAno} -{$nmEscritorio}");
-                    if ($pdfPath && file_exists($pdfPath)) {
-                        $msg->attach($pdfPath, [
-                            'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
-                            'mime' => 'application/pdf',
-                        ]);
-                    }
+            $linkRevisaoTeste  = url("pagamentos/revisar/{$token}");
+            $htmlEmailTeste = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#333;max-width:600px;margin:0 auto;">'
+                . '<p><strong>[TESTE]</strong> Olá!</p>'
+                . '<p>O escritório <strong>' . $nmEscritorio . '</strong> encaminhou o demonstrativo de honorários referente ao mês <strong>' . $mesAno . '</strong>.</p>'
+                . '<p><strong>Valor total: ' . $valorFmt . '</strong></p>'
+                . '<p>Acesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:</p>'
+                . '<p><a href="' . $linkRevisaoTeste . '" style="color:#1a7bb9;">' . $linkRevisaoTeste . '</a></p>'
+                . '<p style="color:#c0392b;font-weight:bold;border:2px solid #e74c3c;padding:12px;border-radius:4px;margin:20px 0;background:#fdf2f2;">'
+                . 'PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.'
+                . '</p>'
+                . '<p style="color:#888;font-size:12px;">Atenciosamente,<br>' . $nmEscritorio . '</p>'
+                . '</div>';
+
+            \Mail::send([], [], function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath, $htmlEmailTeste) {
+                $msg->to($emailTeste)
+                    ->subject("[TESTE] Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}")
+                    ->setBody($htmlEmailTeste, 'text/html');
+                if ($pdfPath && file_exists($pdfPath)) {
+                    $msg->attach($pdfPath, [
+                        'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
+                        'mime' => 'application/pdf',
+                    ]);
                 }
-            );
+            });
             $msgs[] = 'E-mail enviado para ' . $emailTeste . ($pdfPath ? ' (com PDF)' : '');
         } catch (\Throwable $e) {
             \Log::warning('[pagamento-teste] Falha ao enviar e-mail: ' . $e->getMessage());
@@ -394,21 +405,32 @@ class CorrespondentePagamentoController extends Controller
             ->unique()
             ->values();
 
+        $linkRevisao  = url("pagamentos/revisar/{$token}");
+        $htmlEmailReal = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#333;max-width:600px;margin:0 auto;">'
+            . '<p>Olá!</p>'
+            . '<p>O escritório <strong>' . $nmEscritorio . '</strong> encaminhou o demonstrativo de honorários referente ao mês <strong>' . $mesAno . '</strong>.</p>'
+            . '<p><strong>Valor total: ' . $valorFmt . '</strong></p>'
+            . '<p>Acesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:</p>'
+            . '<p><a href="' . $linkRevisao . '" style="color:#1a7bb9;">' . $linkRevisao . '</a></p>'
+            . '<p style="color:#c0392b;font-weight:bold;border:2px solid #e74c3c;padding:12px;border-radius:4px;margin:20px 0;background:#fdf2f2;">'
+            . 'PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.'
+            . '</p>'
+            . '<p style="color:#888;font-size:12px;">Atenciosamente,<br>' . $nmEscritorio . '</p>'
+            . '</div>';
+
         foreach ($emails as $email) {
             try {
-                \Mail::raw(
-                    "Olá!\n\nO escritório {$nmEscritorio} encaminhou o demonstrativo de honorários referente ao mês {$mesAno}.\n\nValor total: {$valorFmt}\n\nAcesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:\n" . url("pagamentos/revisar/{$token}") . "\n\nO comprovante detalhado está em anexo.\n\nAtenciosamente,\n{$nmEscritorio}",
-                    function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath) {
-                        $msg->to($email)
-                            ->subject("Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}");
-                        if ($pdfPath && file_exists($pdfPath)) {
-                            $msg->attach($pdfPath, [
-                                'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
-                                'mime' => 'application/pdf',
-                            ]);
-                        }
+                \Mail::send([], [], function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath, $htmlEmailReal) {
+                    $msg->to($email)
+                        ->subject("Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}")
+                        ->setBody($htmlEmailReal, 'text/html');
+                    if ($pdfPath && file_exists($pdfPath)) {
+                        $msg->attach($pdfPath, [
+                            'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
+                            'mime' => 'application/pdf',
+                        ]);
                     }
-                );
+                });
             } catch (\Throwable $e) {
                 \Log::warning('[pagamento] Falha ao enviar e-mail para ' . $email . ': ' . $e->getMessage());
             }
@@ -454,6 +476,7 @@ class CorrespondentePagamentoController extends Controller
         $msg .= "O escritório *{$nmEscritorio}* encaminhou o demonstrativo de honorários referente a *{$mesAno}*.\n\n";
         $msg .= "💰 *Valor total: {$valorFmt}*\n\n";
         $msg .= "✅ *Revisar e confirmar o demonstrativo:*\n{$link}\n";
+        $msg .= "\n⚠️ *PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.*\n";
 
         if ($banco && $banco->nm_titular_dba) {
             $msg .= "\n🏦 *Dados bancários para pagamento:*\n";
