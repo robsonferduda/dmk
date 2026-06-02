@@ -10,6 +10,7 @@ use Laracasts\Flash\Flash;
 use App\Conta;
 use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteItem;
+use App\ProcessoTaxaHonorario;
 use App\Enums\StatusPagamentoCorrespondente;
 use App\Services\ChatPro\ChatProClient;
 
@@ -284,6 +285,12 @@ class CorrespondentePagamentoController extends Controller
                     $item->vl_honorario_pai = $honorario;
                     $item->vl_despesa_pai   = $despesa;
                     $item->save();
+
+                    // Sincroniza o honorário de volta à tabela de origem
+                    if ($item->cd_processo_taxa_honorario_pth) {
+                        ProcessoTaxaHonorario::where('cd_processo_taxa_honorario_pth', $item->cd_processo_taxa_honorario_pth)
+                            ->update(['vl_taxa_honorario_correspondente_pth' => $honorario]);
+                    }
 
                     $total += $honorario + $despesa;
                 }
