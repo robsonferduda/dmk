@@ -263,7 +263,7 @@
                                     <tr>
                                         <td>
                                             @if($item->cd_processo_pro)
-                                            <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
+                                            <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
                                                 {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
                                             </a>
                                             @else —
@@ -327,7 +327,7 @@
                                 <tr>
                                     <td>
                                         @if($item->cd_processo_pro)
-                                        <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
+                                        <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
                                             {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
                                         </a>
                                         @else —
