@@ -606,20 +606,33 @@ class CorrespondentePagamentoController extends Controller
     {
         $rows = DB::select("
             SELECT
-                dba.cd_dados_bancarios_dba,
-                dba.nm_titular_dba,
-                dba.nu_cpf_cnpj_dba,
-                dba.cd_banco_ban,
+                COALESCE(main.cd_dados_bancarios_dba, pix.cd_dados_bancarios_dba)  AS cd_dados_bancarios_dba,
+                COALESCE(main.nm_titular_dba,          pix.nm_titular_dba)          AS nm_titular_dba,
+                COALESCE(main.nu_cpf_cnpj_dba,         pix.nu_cpf_cnpj_dba)         AS nu_cpf_cnpj_dba,
+                main.cd_banco_ban,
                 ban.nm_banco_ban,
-                dba.nu_agencia_dba,
-                dba.nu_conta_dba,
-                dba.dc_pix_dba,
-                dba.cd_tipo_conta_tcb,
+                main.nu_agencia_dba,
+                main.nu_conta_dba,
+                COALESCE(main.dc_pix_dba,              pix.dc_pix_dba)              AS dc_pix_dba,
+                COALESCE(main.cd_tipo_conta_tcb,       pix.cd_tipo_conta_tcb)       AS cd_tipo_conta_tcb,
                 tcb.nm_tipo_conta_tcb
             FROM conta_correspondente_ccr ccr
-            LEFT JOIN dados_bancarios_dba dba ON (ccr.cd_entidade_ete = dba.cd_entidade_ete AND dba.deleted_at IS NULL)
-            LEFT JOIN banco_ban ban ON (dba.cd_banco_ban = ban.cd_banco_ban)
-            LEFT JOIN tipo_conta_banco_tcb tcb ON (dba.cd_tipo_conta_tcb = tcb.cd_tipo_conta_tcb)
+            -- registro de conta corrente/poupança (tipo != 3)
+            LEFT JOIN dados_bancarios_dba main ON (
+                ccr.cd_entidade_ete = main.cd_entidade_ete
+                AND main.deleted_at IS NULL
+                AND main.cd_tipo_conta_tcb != 3
+            )
+            -- registro PIX (tipo = 3)
+            LEFT JOIN dados_bancarios_dba pix ON (
+                ccr.cd_entidade_ete = pix.cd_entidade_ete
+                AND pix.deleted_at IS NULL
+                AND pix.cd_tipo_conta_tcb = 3
+            )
+            LEFT JOIN banco_ban ban ON (main.cd_banco_ban = ban.cd_banco_ban)
+            LEFT JOIN tipo_conta_banco_tcb tcb ON (
+                COALESCE(main.cd_tipo_conta_tcb, pix.cd_tipo_conta_tcb) = tcb.cd_tipo_conta_tcb
+            )
             WHERE ccr.cd_correspondente_cor = ?
             LIMIT 1
         ", [$cdCorrespondente]);
