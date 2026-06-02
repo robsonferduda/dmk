@@ -253,6 +253,107 @@ class CorrespondentePagamentoController extends Controller
         return redirect()->back();
     }
 
+    // ─── Atualizar Itens (quando Recusado) ────────────────────────────────────
+
+    public function atualizarItens(Request $request, $id)
+    {
+        $pagamento = PagamentoCorrespondente::with('itens')
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        if ($pagamento->cd_status_pag !== StatusPagamentoCorrespondente::RECUSADO) {
+            Flash::error('Edição de itens só é permitida para pagamentos recusados.');
+            return redirect()->back();
+        }
+
+        $request->validate([
+            'itens'                  => 'required|array',
+            'itens.*.vl_honorario'   => 'required|numeric|min:0',
+            'itens.*.vl_despesa'     => 'required|numeric|min:0',
+        ]);
+
+        DB::transaction(function () use ($pagamento, $request) {
+            $total = 0;
+
+            foreach ($pagamento->itens as $item) {
+                $key = $item->cd_pagamento_correspondente_item_pai;
+                if (isset($request->itens[$key])) {
+                    $honorario = (float) $request->itens[$key]['vl_honorario'];
+                    $despesa   = (float) $request->itens[$key]['vl_despesa'];
+
+                    $item->vl_honorario_pai = $honorario;
+                    $item->vl_despesa_pai   = $despesa;
+                    $item->save();
+
+                    $total += $honorario + $despesa;
+                }
+            }
+
+            $pagamento->vl_total_pag = $total;
+            $pagamento->save();
+        });
+
+        Flash::success('Itens atualizados com sucesso. Valor total recalculado.');
+        return redirect()->back();
+    }
+
+    // ─── Atualizar Dados Bancários (quando Recusado) ──────────────────────────
+
+    public function atualizarDadosBancarios(Request $request, $id)
+    {
+        $pagamento = PagamentoCorrespondente::where('cd_conta_con', $this->conta)->findOrFail($id);
+
+        if ($pagamento->cd_status_pag !== StatusPagamentoCorrespondente::RECUSADO) {
+            Flash::error('Edição de dados bancários só é permitida para pagamentos recusados.');
+            return redirect()->back();
+        }
+
+        $request->validate([
+            'nm_titular_dba' => 'required|string|max:255',
+            'nu_cpf_cnpj_dba'=> 'nullable|string|max:20',
+            'cd_banco_ban'   => 'nullable|string|max:10',
+            'nu_agencia_dba' => 'nullable|string|max:20',
+            'nu_conta_dba'   => 'nullable|string|max:30',
+            'cd_tipo_conta_tcb' => 'nullable|string|max:5',
+            'dc_pix_dba'     => 'nullable|string|max:255',
+        ]);
+
+        $banco = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
+
+        if ($banco && $banco->cd_dados_bancarios_dba) {
+            \App\RegistroBancario::where('cd_dados_bancarios_dba', $banco->cd_dados_bancarios_dba)
+                ->update([
+                    'nm_titular_dba'    => $request->nm_titular_dba,
+                    'nu_cpf_cnpj_dba'   => \Helper::limparCnpjCpf($request->nu_cpf_cnpj_dba ?? ''),
+                    'cd_banco_ban'      => $request->cd_banco_ban,
+                    'nu_agencia_dba'    => $request->nu_agencia_dba,
+                    'nu_conta_dba'      => $request->nu_conta_dba,
+                    'cd_tipo_conta_tcb' => $request->cd_tipo_conta_tcb ?: null,
+                    'dc_pix_dba'        => $request->dc_pix_dba,
+                ]);
+        } else {
+            // Busca a entidade do correspondente para criar um novo registro bancário
+            $entidade = DB::table('conta_correspondente_ccr')
+                ->where('cd_correspondente_cor', $pagamento->cd_correspondente_cor)
+                ->value('cd_entidade_ete');
+
+            \App\RegistroBancario::create([
+                'cd_entidade_ete'   => $entidade,
+                'cd_conta_con'      => $this->conta,
+                'nm_titular_dba'    => $request->nm_titular_dba,
+                'nu_cpf_cnpj_dba'   => \Helper::limparCnpjCpf($request->nu_cpf_cnpj_dba ?? ''),
+                'cd_banco_ban'      => $request->cd_banco_ban,
+                'nu_agencia_dba'    => $request->nu_agencia_dba,
+                'nu_conta_dba'      => $request->nu_conta_dba,
+                'cd_tipo_conta_tcb' => $request->cd_tipo_conta_tcb ?: null,
+                'dc_pix_dba'        => $request->dc_pix_dba,
+            ]);
+        }
+
+        Flash::success('Dados bancários atualizados com sucesso.');
+        return redirect()->back();
+    }
+
     // ─── Marcar como Pago ─────────────────────────────────────────────────────
 
     public function pagar(Request $request, $id)
@@ -498,6 +599,7 @@ class CorrespondentePagamentoController extends Controller
     {
         $rows = DB::select("
             SELECT
+                dba.cd_dados_bancarios_dba,
                 dba.nm_titular_dba,
                 dba.nu_cpf_cnpj_dba,
                 dba.cd_banco_ban,

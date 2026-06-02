@@ -84,7 +84,67 @@
             <div class="well" style="margin-bottom:15px;">
                 <h5 style="margin-top:0; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:6px;">
                     <i class="fa fa-bank"></i> Dados Bancários
+                    @if($pagamento->cd_status_pag == 5)
+                    <small class="text-danger"> <i class="fa fa-pencil"></i> editável</small>
+                    @endif
                 </h5>
+                @if($pagamento->cd_status_pag == 5)
+                {{-- Formulário de edição de dados bancários (só quando recusado) --}}
+                <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/atualizar-dados-bancarios') }}">
+                    @csrf
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label style="font-size:11px;margin-bottom:2px;">Titular</label>
+                        <input type="text" name="nm_titular_dba" class="form-control input-sm"
+                               value="{{ $banco->nm_titular_dba ?? '' }}" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label style="font-size:11px;margin-bottom:2px;">CPF/CNPJ</label>
+                        <input type="text" name="nu_cpf_cnpj_dba" class="form-control input-sm"
+                               value="{{ $banco->nu_cpf_cnpj_dba ?? '' }}">
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label style="font-size:11px;margin-bottom:2px;">Banco (código)</label>
+                        <input type="text" name="cd_banco_ban" class="form-control input-sm"
+                               value="{{ $banco->cd_banco_ban ?? '' }}" placeholder="Ex: 001">
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group" style="margin-bottom:8px;">
+                                <label style="font-size:11px;margin-bottom:2px;">Agência</label>
+                                <input type="text" name="nu_agencia_dba" class="form-control input-sm"
+                                       value="{{ $banco->nu_agencia_dba ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group" style="margin-bottom:8px;">
+                                <label style="font-size:11px;margin-bottom:2px;">Conta</label>
+                                <input type="text" name="nu_conta_dba" class="form-control input-sm"
+                                       value="{{ $banco->nu_conta_dba ?? '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label style="font-size:11px;margin-bottom:2px;">Tipo de Conta</label>
+                        <select name="cd_tipo_conta_tcb" class="form-control input-sm">
+                            <option value="">— Selecione —</option>
+                            @foreach(\DB::table('tipo_conta_banco_tcb')->orderBy('nm_tipo_conta_tcb')->get() as $tipo)
+                            <option value="{{ $tipo->cd_tipo_conta_tcb }}"
+                                {{ ($banco->cd_tipo_conta_tcb ?? '') == $tipo->cd_tipo_conta_tcb ? 'selected' : '' }}>
+                                {{ $tipo->nm_tipo_conta_tcb }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label style="font-size:11px;margin-bottom:2px;">Chave PIX</label>
+                        <input type="text" name="dc_pix_dba" class="form-control input-sm"
+                               value="{{ $banco->dc_pix_dba ?? '' }}" placeholder="CPF, e-mail, telefone ou chave aleatória">
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-sm btn-block">
+                        <i class="fa fa-save"></i> Salvar Dados Bancários
+                    </button>
+                </form>
+                @else
                 @if($banco && $banco->nm_titular_dba)
                 <dl class="dl-horizontal" style="margin-bottom:0;">
                     <dt>Titular</dt>
@@ -117,6 +177,7 @@
                 </dl>
                 @else
                 <p class="text-muted" style="margin:0;"><i class="fa fa-exclamation-triangle"></i> Dados bancários não cadastrados.</p>
+                @endif
                 @endif
             </div>
 
@@ -173,10 +234,84 @@
             <div class="jarviswidget jarviswidget-color-blueDark">
                 <header>
                     <span class="widget-icon"><i class="fa fa-list"></i></span>
-                    <h2>Processos ({{ $pagamento->itens->count() }})</h2>
+                    <h2>Processos ({{ $pagamento->itens->count() }})
+                        @if($pagamento->cd_status_pag == 5)
+                        <small style="color:#f39c12;"> <i class="fa fa-pencil"></i> editável</small>
+                        @endif
+                    </h2>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
+                        @if($pagamento->cd_status_pag == 5)
+                        {{-- Tabela editável (só quando recusado) --}}
+                        <form id="formItens" method="POST"
+                              action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/atualizar-itens') }}">
+                            @csrf
+                            <table class="table table-striped table-hover" style="margin:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Processo</th>
+                                        <th>Descrição</th>
+                                        <th class="text-right" style="width:130px;">Honorário (R$)</th>
+                                        <th class="text-right" style="width:130px;">Despesa (R$)</th>
+                                        <th class="text-right" style="width:110px;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($pagamento->itens as $item)
+                                    @php $itemId = $item->cd_pagamento_correspondente_item_pai; @endphp
+                                    <tr>
+                                        <td>
+                                            @if($item->cd_processo_pro)
+                                            <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
+                                                {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
+                                            </a>
+                                            @else —
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->ds_descricao_pai }}</td>
+                                        <td>
+                                            <input type="number" step="0.01" min="0"
+                                                   name="itens[{{ $itemId }}][vl_honorario]"
+                                                   class="form-control input-sm item-honorario text-right"
+                                                   value="{{ number_format($item->vl_honorario_pai, 2, '.', '') }}"
+                                                   style="width:110px; margin-left:auto;">
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" min="0"
+                                                   name="itens[{{ $itemId }}][vl_despesa]"
+                                                   class="form-control input-sm item-despesa text-right"
+                                                   value="{{ number_format($item->vl_despesa_pai, 2, '.', '') }}"
+                                                   style="width:110px; margin-left:auto;">
+                                        </td>
+                                        <td class="text-right item-total" style="vertical-align:middle;">
+                                            <strong>R$ {{ number_format($item->vl_total, 2, ',', '.') }}</strong>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="5" class="text-center text-muted">Nenhum item.</td></tr>
+                                    @endforelse
+                                </tbody>
+                                <tfoot>
+                                    <tr class="active">
+                                        <th colspan="4" class="text-right">Total Geral</th>
+                                        <th class="text-right" id="totalGeral">
+                                            R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right" style="padding:10px;">
+                                            <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Salvar alterações nos honorários e despesas?')">
+                                                <i class="fa fa-save"></i> Salvar Alterações
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </form>
+                        @else
+                        {{-- Tabela somente leitura --}}
                         <table class="table table-striped table-hover" style="margin:0;">
                             <thead>
                                 <tr>
@@ -192,7 +327,7 @@
                                 <tr>
                                     <td>
                                         @if($item->cd_processo_pro)
-                                        <a href="{{ url('processos/detalhes/'.$item->cd_processo_pro) }}" target="_blank">
+                                        <a href="{{ url('processos/detalhes/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
                                             {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
                                         </a>
                                         @else —
@@ -214,6 +349,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -259,6 +395,21 @@
             $('#modalPagarValor').text(btn.data('valor'));
             $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + btn.data('id') + '/pagar');
         });
+
+        // Recalculo dinâmico do total ao editar honorários/despesas
+        function recalcularTotal() {
+            var total = 0;
+            $('#formItens tbody tr').each(function () {
+                var hon  = parseFloat($(this).find('.item-honorario').val()) || 0;
+                var des  = parseFloat($(this).find('.item-despesa').val())   || 0;
+                var sub  = hon + des;
+                total   += sub;
+                $(this).find('.item-total strong').text('R$ ' + sub.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+            });
+            $('#totalGeral').text('R$ ' + total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+        }
+
+        $(document).on('input', '.item-honorario, .item-despesa', recalcularTotal);
     });
 </script>
 @endsection
