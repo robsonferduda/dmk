@@ -30,6 +30,18 @@
                     <i class="fa fa-refresh"></i> Consolidar Mês
                 </button>
             </form>
+            @if($pagamentos->filter(fn($p) => $p->podeEnviarAprovacao())->isNotEmpty())
+            <form method="POST" action="{{ url('correspondente/pagamentos/enviar-aprovacao-todos') }}" style="display:inline;">
+                @csrf
+                <input type="hidden" name="mes" value="{{ $mes }}">
+                <input type="hidden" name="ano" value="{{ $ano }}">
+                <button type="submit" class="btn btn-warning pull-right header-btn"
+                        style="margin-right:6px;"
+                        onclick="return confirm('Enviar notificação para TODOS os correspondentes elegíveis de {{ $mesAnoFmt }}?')">
+                    <i class="fa fa-paper-plane"></i> Enviar Todos
+                </button>
+            </form>
+            @endif
         </div>
     </div>
 
