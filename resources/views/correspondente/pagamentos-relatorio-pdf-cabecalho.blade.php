@@ -98,4 +98,3 @@
     </tfoot>
 </table>
 
-<div class="section-title" style="margin-top:24px;">Detalhe por Correspondente</div>

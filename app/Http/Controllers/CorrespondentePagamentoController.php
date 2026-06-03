@@ -778,14 +778,7 @@ class CorrespondentePagamentoController extends Controller
         ))->render();
         $mpdf->WriteHTML($cabecalho, 2);
 
-        // 3. Um bloco por correspondente (mode=2) — cada chunk é pequeno
-        foreach ($pagamentos as $pag) {
-            $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
-            $bloco = view('correspondente/pagamentos-relatorio-pdf-bloco', compact('pag', 'banco'))->render();
-            $mpdf->WriteHTML($bloco, 2);
-        }
-
-        // 4. Rodapé (mode=2)
+        // 3. Rodapé (mode=2)
         $nmEscritorio = e($escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? '');
         $mpdf->WriteHTML(
             '<div class="footer">Documento gerado automaticamente em ' . now()->format('d/m/Y \à\s H:i')
