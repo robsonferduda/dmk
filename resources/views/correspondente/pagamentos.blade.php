@@ -42,6 +42,13 @@
                 </button>
             </form>
             @endif
+            @if($pagamentos->isNotEmpty())
+            <a href="{{ url('correspondente/pagamentos/relatorio-pdf?mes='.$mes.'&ano='.$ano) }}"
+               class="btn btn-default pull-right header-btn" style="margin-right:6px;" target="_blank"
+               title="Baixar relatório completo em PDF">
+                <i class="fa fa-file-pdf-o"></i> Relatório PDF
+            </a>
+            @endif
         </div>
     </div>
 

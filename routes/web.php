@@ -489,6 +489,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
 
     // ── Pagamentos de Correspondentes ──────────────────────────────────────────
     Route::get('correspondente/pagamentos',                           'CorrespondentePagamentoController@pagamentos');
+    Route::get('correspondente/pagamentos/relatorio-pdf',             'CorrespondentePagamentoController@relatorioPdf');
     Route::get('correspondente/pagamentos/{id}/detalhe',              'CorrespondentePagamentoController@detalhe');
     Route::post('correspondente/pagamentos/consolidar',               'CorrespondentePagamentoController@consolidar');
     Route::post('correspondente/pagamentos/enviar-aprovacao-todos',   'CorrespondentePagamentoController@enviarAprovacaoTodos');

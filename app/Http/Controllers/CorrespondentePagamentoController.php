@@ -715,6 +715,68 @@ class CorrespondentePagamentoController extends Controller
         return $path;
     }
 
+    // ─── Relatório Mensal em PDF ───────────────────────────────────────────────
+
+    public function relatorioPdf(Request $request)
+    {
+        $mes = (int) ($request->mes ?: Carbon::now()->month);
+        $ano = (int) ($request->ano ?: Carbon::now()->year);
+
+        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
+            ->where('cd_conta_con', $this->conta)
+            ->where('nu_mes_pag', $mes)
+            ->where('nu_ano_pag', $ano)
+            ->get()
+            ->sortBy(function ($pag) {
+                return $pag->correspondente->nm_razao_social_con
+                    ?? $pag->correspondente->nm_fantasia_con
+                    ?? 'zzz';
+            })
+            ->values();
+
+        // Busca dados bancários de cada correspondente
+        $bancoPorPag = [];
+        foreach ($pagamentos as $pag) {
+            $bancoPorPag[$pag->cd_pagamento_correspondente_pag] =
+                $this->buscarDadosBancarios($pag->cd_correspondente_cor);
+        }
+
+        $escritorio = Conta::find($this->conta);
+        $statusLabels = StatusPagamentoCorrespondente::labels();
+
+        $mesPad  = str_pad($mes, 2, '0', STR_PAD_LEFT);
+        $mesAno  = $mesPad . '_' . $ano;
+        $mesAnoFmt = $mesPad . '/' . $ano;
+
+        $html = view('correspondente/pagamentos-relatorio-pdf', compact(
+            'pagamentos', 'bancoPorPag', 'escritorio', 'statusLabels', 'mes', 'ano', 'mesAnoFmt'
+        ))->render();
+
+        $tmpDir = storage_path('app/mpdf-tmp');
+        $outDir = storage_path('app/public/pagamentos');
+        foreach ([$tmpDir, $outDir] as $dir) {
+            if (! is_dir($dir)) {
+                mkdir($dir, 0775, true);
+            }
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode'          => 'utf-8',
+            'format'        => 'A4',
+            'margin_left'   => 12,
+            'margin_right'  => 12,
+            'margin_top'    => 15,
+            'margin_bottom' => 15,
+            'tempDir'       => $tmpDir,
+        ]);
+
+        $mpdf->SetTitle('Relatório de Pagamentos ' . $mesAnoFmt);
+        $mpdf->WriteHTML($html);
+
+        $filename = 'relatorio_pagamentos_' . $mesAno . '.pdf';
+        $mpdf->Output($filename, 'D'); // Download direto
+    }
+
     private function mesesDisponiveis(): array
     {
         $meses = PagamentoCorrespondente::where('cd_conta_con', $this->conta)
