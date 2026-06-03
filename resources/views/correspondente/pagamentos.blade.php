@@ -243,7 +243,7 @@
 <div class="modal fade" id="modalPagar" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
-            <form id="formPagar" method="POST" action="">
+            <form id="formPagar" method="POST" action="" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -253,9 +253,13 @@
                     <p>Correspondente: <strong id="modalPagarNome"></strong></p>
                     <p>Valor: <strong id="modalPagarValor"></strong></p>
                     <div class="form-group">
-                        <label>Observação (opcional)</label>
-                        <textarea name="observacao" class="form-control" rows="3"
-                                  placeholder="Comprovante, banco, data, etc."></textarea>
+                        <label>Comprovante <small class="text-muted">(PDF ou imagem)</small></label>
+                        <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
+                    </div>
+                    <div class="form-group">
+                        <label>Observação <small class="text-muted">(opcional)</small></label>
+                        <textarea name="observacao" class="form-control" rows="2"
+                                  placeholder="Banco, data, número do comprovante, etc."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

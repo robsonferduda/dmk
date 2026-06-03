@@ -24,6 +24,7 @@ class PagamentoCorrespondente extends Model
         'dt_aprovacao_pag',
         'dt_pagamento_pag',
         'ds_observacao_pag',
+        'dc_comprovante_pag',
     ];
 
     protected $dates = ['deleted_at', 'dt_envio_aprovacao_pag', 'dt_aprovacao_pag', 'dt_pagamento_pag'];

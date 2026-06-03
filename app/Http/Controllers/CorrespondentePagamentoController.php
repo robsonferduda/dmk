@@ -415,9 +415,16 @@ class CorrespondentePagamentoController extends Controller
         }
 
         DB::transaction(function () use ($pagamento, $request) {
-            $pagamento->cd_status_pag      = StatusPagamentoCorrespondente::PAGO;
-            $pagamento->dt_pagamento_pag   = Carbon::now();
-            $pagamento->ds_observacao_pag  = $request->observacao;
+            $pagamento->cd_status_pag     = StatusPagamentoCorrespondente::PAGO;
+            $pagamento->dt_pagamento_pag  = Carbon::now();
+            $pagamento->ds_observacao_pag = $request->observacao;
+
+            if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
+                $dir  = 'comprovantes-pagamento';
+                $path = $request->file('comprovante')->store($dir, 'public');
+                $pagamento->dc_comprovante_pag = $path;
+            }
+
             $pagamento->save();
         });
 
