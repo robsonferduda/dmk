@@ -722,7 +722,7 @@ class CorrespondentePagamentoController extends Controller
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);
 
-        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
+        $pagamentos = PagamentoCorrespondente::with(['correspondente'])
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)

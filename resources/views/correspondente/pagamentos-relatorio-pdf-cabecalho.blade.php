@@ -48,21 +48,17 @@
 <table class="resumo-table">
     <thead>
         <tr>
-            <th style="width:30%">Correspondente</th>
-            <th style="width:10%; text-align:center;">Status</th>
-            <th style="width:22%">Dado de Pagamento</th>
-            <th style="width:10%; text-align:center;">Processos</th>
-            <th style="width:14%; text-align:right;">Honorários</th>
-            <th style="width:14%; text-align:right;">Total</th>
+            <th style="width:35%">Correspondente</th>
+            <th style="width:15%; text-align:center;">Status</th>
+            <th style="width:35%">Dado de Pagamento</th>
+            <th style="width:15%; text-align:right;">Valor Total</th>
         </tr>
     </thead>
     <tbody>
-        @php $somaHon = 0; $somaTotal = 0; @endphp
+        @php $somaTotal = 0; @endphp
         @forelse($pagamentos as $pag)
         @php
             $banco      = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
-            $hon        = $pag->itens->sum('vl_honorario_pai');
-            $somaHon   += $hon;
             $somaTotal += $pag->vl_total_pag;
             $badgeMap   = [1=>'gerado',2=>'enviado',3=>'aprovado',4=>'pago',5=>'recusado'];
             $badgeCls   = $badgeMap[$pag->cd_status_pag] ?? 'gerado';
@@ -81,18 +77,15 @@
             <td><strong>{{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}</strong></td>
             <td style="text-align:center;"><span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span></td>
             <td style="color:#555; font-size:9px;">{{ $dadoPgto ?: '—' }}</td>
-            <td style="text-align:center;">{{ $pag->itens->count() }}</td>
-            <td style="text-align:right;">R$ {{ number_format($hon, 2, ',', '.') }}</td>
             <td style="text-align:right;"><strong>R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}</strong></td>
         </tr>
         @empty
-        <tr><td colspan="6" style="text-align:center; color:#aaa; padding:14px;">Nenhum pagamento no período.</td></tr>
+        <tr><td colspan="4" style="text-align:center; color:#aaa; padding:14px;">Nenhum pagamento no período.</td></tr>
         @endforelse
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="4">Total Geral</td>
-            <td style="text-align:right;">R$ {{ number_format($somaHon, 2, ',', '.') }}</td>
+            <td colspan="3">Total Geral</td>
             <td style="text-align:right; color:#1a7bb9;">R$ {{ number_format($somaTotal, 2, ',', '.') }}</td>
         </tr>
     </tfoot>
