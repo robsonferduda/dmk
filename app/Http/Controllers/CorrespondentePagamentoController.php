@@ -744,13 +744,9 @@ class CorrespondentePagamentoController extends Controller
         $escritorio = Conta::find($this->conta);
         $statusLabels = StatusPagamentoCorrespondente::labels();
 
-        $mesPad  = str_pad($mes, 2, '0', STR_PAD_LEFT);
-        $mesAno  = $mesPad . '_' . $ano;
+        $mesPad    = str_pad($mes, 2, '0', STR_PAD_LEFT);
+        $mesAno    = $mesPad . '_' . $ano;
         $mesAnoFmt = $mesPad . '/' . $ano;
-
-        $html = view('correspondente/pagamentos-relatorio-pdf', compact(
-            'pagamentos', 'bancoPorPag', 'escritorio', 'statusLabels', 'mes', 'ano', 'mesAnoFmt'
-        ))->render();
 
         $tmpDir = storage_path('app/mpdf-tmp');
         $outDir = storage_path('app/public/pagamentos');
@@ -771,10 +767,35 @@ class CorrespondentePagamentoController extends Controller
         ]);
 
         $mpdf->SetTitle('Relatório de Pagamentos ' . $mesAnoFmt);
-        $mpdf->WriteHTML($html);
+
+        // 1. CSS separado (mode=1) — evita o limite de pcre.backtrack_limit
+        $css = view('correspondente/pagamentos-relatorio-pdf-css')->render();
+        $mpdf->WriteHTML($css, 1);
+
+        // 2. Cabeçalho + tabela de resumo (mode=2)
+        $cabecalho = view('correspondente/pagamentos-relatorio-pdf-cabecalho', compact(
+            'pagamentos', 'bancoPorPag', 'escritorio', 'mesAnoFmt'
+        ))->render();
+        $mpdf->WriteHTML($cabecalho, 2);
+
+        // 3. Um bloco por correspondente (mode=2) — cada chunk é pequeno
+        foreach ($pagamentos as $pag) {
+            $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
+            $bloco = view('correspondente/pagamentos-relatorio-pdf-bloco', compact('pag', 'banco'))->render();
+            $mpdf->WriteHTML($bloco, 2);
+        }
+
+        // 4. Rodapé (mode=2)
+        $nmEscritorio = e($escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? '');
+        $mpdf->WriteHTML(
+            '<div class="footer">Documento gerado automaticamente em ' . now()->format('d/m/Y \à\s H:i')
+            . ' &mdash; ' . $nmEscritorio
+            . ' &mdash; Uso interno. N&atilde;o possui validade como comprovante.</div>',
+            2
+        );
 
         $filename = 'relatorio_pagamentos_' . $mesAno . '.pdf';
-        $mpdf->Output($filename, 'D'); // Download direto
+        $mpdf->Output($filename, 'D');
     }
 
     private function mesesDisponiveis(): array
