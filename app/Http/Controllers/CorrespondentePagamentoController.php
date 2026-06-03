@@ -43,12 +43,18 @@ class CorrespondentePagamentoController extends Controller
             })
             ->values();
 
-        $statusLabels  = StatusPagamentoCorrespondente::labels();
-        $mesAnoAtual   = Carbon::now()->format('m/Y');
+        $statusLabels   = StatusPagamentoCorrespondente::labels();
+        $mesAnoAtual    = Carbon::now()->format('m/Y');
         $mesesNavegacao = $this->mesesDisponiveis();
 
+        $bancoPorPag = [];
+        foreach ($pagamentos as $pag) {
+            $bancoPorPag[$pag->cd_pagamento_correspondente_pag] =
+                $this->buscarDadosBancarios($pag->cd_correspondente_cor);
+        }
+
         return view('correspondente/pagamentos', compact(
-            'pagamentos', 'mes', 'ano', 'statusLabels', 'mesAnoAtual', 'mesesNavegacao'
+            'pagamentos', 'mes', 'ano', 'statusLabels', 'mesAnoAtual', 'mesesNavegacao', 'bancoPorPag'
         ));
     }
 

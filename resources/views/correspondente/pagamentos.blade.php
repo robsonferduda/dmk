@@ -155,6 +155,7 @@
                             <thead>
                                 <tr>
                                     <th>Correspondente</th>
+                                    <th>PIX</th>
                                     <th class="text-right">Valor Total</th>
                                     <th class="text-center">Processos</th>
                                     <th class="text-center">Status</th>
@@ -164,10 +165,21 @@
                             </thead>
                             <tbody>
                                 @foreach($pagamentos as $pag)
-                                @php $cor = $cores[$pag->cd_status_pag] ?? 'default'; @endphp
+                                @php
+                                    $cor   = $cores[$pag->cd_status_pag] ?? 'default';
+                                    $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
+                                    $pix   = $banco->dc_pix_dba ?? null;
+                                @endphp
                                 <tr>
                                     <td>
                                         {{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}
+                                    </td>
+                                    <td>
+                                        @if($pix)
+                                            <span title="{{ $pix }}">{{ $pix }}</span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
                                     </td>
                                     <td class="text-right">
                                         <strong>R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}</strong>
