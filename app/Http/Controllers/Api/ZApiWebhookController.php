@@ -199,31 +199,47 @@ class ZApiWebhookController extends Controller
      */
     private function tratarStatusCallback(array $p, $conta)
     {
-        $msgId     = $p['messageId'] ?? null;
-        $statusRaw = strtoupper((string) ($p['status'] ?? ''));
+        $msgId      = $p['messageId'] ?? null;
+        $statusRaw  = strtoupper((string) ($p['status'] ?? ''));
         $statusNome = self::$STATUS_MAP[$statusRaw] ?? strtolower($statusRaw);
         $ts    = isset($p['momment']) ? (int) ($p['momment'] / 1000) : null;
         $dtEvt = $ts ? Carbon::createFromTimestamp($ts) : null;
+
+        Log::debug('[ZAPI-WEBHOOK] StatusCallback recebido.', [
+            'messageId'  => $msgId,
+            'statusRaw'  => $statusRaw,
+            'statusNome' => $statusNome,
+        ]);
 
         if ($msgId) {
             $row = WhatsappMensagem::where('ds_message_id_wmm', $msgId)->first();
             if ($row) {
                 // Não regride um status mais avançado para um menos avançado.
-                $ordem = ['pending' => 0, 'sent' => 1, 'delivered' => 2, 'read' => 3, 'played' => 4];
+                // 'queued' e 'sent' são tratados no mesmo nível (1).
+                $ordem = ['pending' => 0, 'queued' => 1, 'sent' => 1, 'delivered' => 2, 'read' => 3, 'played' => 4];
                 $ordemAtual = $ordem[$row->ds_status_wmm] ?? -1;
                 $ordemNovo  = $ordem[$statusNome]         ?? -1;
+
+                Log::debug('[ZAPI-WEBHOOK] StatusCallback correlacionado.', [
+                    'messageId'   => $msgId,
+                    'statusAtual' => $row->ds_status_wmm,
+                    'statusNovo'  => $statusNome,
+                    'ordemAtual'  => $ordemAtual,
+                    'ordemNovo'   => $ordemNovo,
+                ]);
+
                 if ($ordemNovo > $ordemAtual) {
                     $row->ds_status_wmm = $statusNome;
+                    $row->save();
                 }
                 if ($dtEvt && !$row->dt_evento_wmm) {
                     $row->dt_evento_wmm = $dtEvt;
+                    $row->save();
                 }
-                $row->save();
                 return;
             }
         }
 
-        // Sem correlação: ignora silenciosamente.
         Log::debug('[ZAPI-WEBHOOK] StatusCallback sem outbound correlacionada.', ['messageId' => $msgId]);
     }
 
