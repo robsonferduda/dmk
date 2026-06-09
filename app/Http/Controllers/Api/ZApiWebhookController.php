@@ -91,13 +91,8 @@ class ZApiWebhookController extends Controller
                     $this->tratarMensagemRecebida($payload, $conta);
                 }
             } else {
-                // Evento desconhecido: guarda como rastro.
-                WhatsappMensagem::create([
-                    'cd_conta_con'       => $conta->cd_conta_con,
-                    'tp_direcao_wmm'     => 'A',
-                    'ds_tipo_wmm'        => $tipo ?: 'unknown',
-                    'ds_payload_raw_wmm' => $payload,
-                ]);
+                // Evento desconhecido: ignora silenciosamente.
+                Log::debug('[ZAPI-WEBHOOK] Evento ignorado.', ['type' => $tipo]);
             }
 
         } catch (\Throwable $e) {
@@ -169,17 +164,8 @@ class ZApiWebhookController extends Controller
             }
         }
 
-        // Sem outbound correlacionada: grava rastro.
-        WhatsappMensagem::create([
-            'cd_conta_con'            => $conta->cd_conta_con,
-            'tp_direcao_wmm'          => 'A',
-            'ds_tipo_wmm'             => 'delivery_callback',
-            'ds_message_id_wmm'       => $msgId,
-            'nu_telefone_destino_wmm' => $p['phone'] ?? null,
-            'ds_status_wmm'           => $status,
-            'ds_payload_raw_wmm'      => $p,
-            'dt_evento_wmm'           => $dtEvt,
-        ]);
+        // Sem outbound correlacionada: ignora silenciosamente.
+        Log::debug('[ZAPI-WEBHOOK] DeliveryCallback sem outbound correlacionada.', ['messageId' => $msgId]);
     }
 
     /**
@@ -211,16 +197,8 @@ class ZApiWebhookController extends Controller
             }
         }
 
-        // Sem correlação: rastro.
-        WhatsappMensagem::create([
-            'cd_conta_con'       => $conta->cd_conta_con,
-            'tp_direcao_wmm'     => 'A',
-            'ds_tipo_wmm'        => 'status_callback',
-            'ds_message_id_wmm'  => $msgId,
-            'ds_status_wmm'      => $statusNome,
-            'ds_payload_raw_wmm' => $p,
-            'dt_evento_wmm'      => $dtEvt,
-        ]);
+        // Sem correlação: ignora silenciosamente.
+        Log::debug('[ZAPI-WEBHOOK] StatusCallback sem outbound correlacionada.', ['messageId' => $msgId]);
     }
 
     /**
@@ -297,14 +275,8 @@ class ZApiWebhookController extends Controller
         $ts     = isset($p['momment']) ? (int) ($p['momment'] / 1000) : null;
         $dtEvt  = $ts ? Carbon::createFromTimestamp($ts) : null;
 
-        // Sem nenhuma informação útil: rastro 'A'.
+        // Sem nenhuma informação útil: ignora.
         if (empty($texto) && empty($origem) && empty($msgId)) {
-            WhatsappMensagem::create([
-                'cd_conta_con'       => $conta->cd_conta_con,
-                'tp_direcao_wmm'     => 'A',
-                'ds_tipo_wmm'        => 'unknown_inbound',
-                'ds_payload_raw_wmm' => $p,
-            ]);
             return;
         }
 

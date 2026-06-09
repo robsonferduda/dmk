@@ -176,14 +176,8 @@ class ChatProWebhookController extends Controller
             }
         }
 
-        WhatsappMensagem::create([
-            'cd_conta_con'       => $conta->cd_conta_con,
-            'tp_direcao_wmm'     => 'A',
-            'ds_tipo_wmm'        => 'ack',
-            'ds_status_wmm'      => $statusNome,
-            'ds_payload_raw_wmm' => $p,
-            'dt_evento_wmm'      => $dtEvt,
-        ]);
+        // ACK sem outbound correlacionada: ignora silenciosamente.
+        Log::debug('[CHATPRO-WEBHOOK] ACK sem outbound correlacionada.', ['msgId' => $msgId]);
     }
 
     /**
@@ -192,16 +186,8 @@ class ChatProWebhookController extends Controller
      */
     private function tratarEventoSistema(array $p, $conta)
     {
-        $tipo   = (string) ($p['type'] ?? 'system');
-        $status = isset($p['status']) ? (string) $p['status'] : null;
-
-        WhatsappMensagem::create([
-            'cd_conta_con'       => $conta->cd_conta_con,
-            'tp_direcao_wmm'     => 'A',
-            'ds_tipo_wmm'        => $tipo,
-            'ds_status_wmm'      => $status,
-            'ds_payload_raw_wmm' => $p,
-        ]);
+        // Evento de sistema (charge_status, instance_status etc.): ignora silenciosamente.
+        Log::debug('[CHATPRO-WEBHOOK] Evento de sistema ignorado.', ['type' => $p['type'] ?? 'system']);
     }
 
     /**
@@ -288,15 +274,8 @@ class ChatProWebhookController extends Controller
         $ts    = $info['Timestamp'] ?? null;
         $dtEvt = $ts ? Carbon::createFromTimestamp((int) $ts) : null;
 
-        // Sem texto nem origem nem id: payload desconhecido — guarda como
-        // rastro 'A' para não poluir o histórico de conversas.
+        // Sem texto nem origem nem id: payload desconhecido — ignora.
         if (empty($texto) && empty($origem) && empty($msgId)) {
-            WhatsappMensagem::create([
-                'cd_conta_con'       => $conta->cd_conta_con,
-                'tp_direcao_wmm'     => 'A',
-                'ds_tipo_wmm'        => 'unknown',
-                'ds_payload_raw_wmm' => $p,
-            ]);
             return;
         }
 
