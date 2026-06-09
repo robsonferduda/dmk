@@ -48,7 +48,7 @@
     @php
         $totalLida     = $linhas->where('ds_status_entrega', 'read')->count();
         $totalEntregue = $linhas->whereIn('ds_status_entrega', ['delivered', 'played'])->count();
-        $totalEnviada  = $linhas->where('ds_status_entrega', 'sent')->count();
+        $totalEnviada  = $linhas->whereIn('ds_status_entrega', ['sent', 'queued'])->count();
         $totalFalha    = $linhas->where('ds_status_entrega', 'failed')->count();
         $totalPendente = $linhas->where('ds_status_entrega', 'pending')->count();
         $totalSemEnvio = $linhas->filter(fn($l) => empty($l->ds_status_entrega))->count();
@@ -145,6 +145,8 @@
                                         @elseif(in_array($linha->ds_status_entrega, ['delivered','played']))
                                             <span class="label label-info"><i class="fa fa-check-circle"></i> Entregue</span>
                                         @elseif($linha->ds_status_entrega === 'sent')
+                                            <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
+                                        @elseif($linha->ds_status_entrega === 'queued')
                                             <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
                                         @elseif($linha->ds_status_entrega === 'failed')
                                             <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
