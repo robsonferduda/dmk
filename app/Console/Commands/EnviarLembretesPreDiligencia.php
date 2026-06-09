@@ -174,7 +174,10 @@ class EnviarLembretesPreDiligencia extends Command
 
                 $msgId = null;
                 if (!empty($res['body']) && is_array($res['body'])) {
-                    $msgId = $res['body']['resposeMessage']['id']
+                    // Z-API retorna messageId/id; ChatPro usava resposeMessage.id
+                    $msgId = $res['body']['messageId']
+                          ?? $res['body']['id']
+                          ?? $res['body']['resposeMessage']['id']
                           ?? $res['body']['responseMessage']['id']
                           ?? $res['body']['message_id']
                           ?? null;

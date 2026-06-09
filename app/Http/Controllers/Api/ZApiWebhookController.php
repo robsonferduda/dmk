@@ -125,8 +125,11 @@ class ZApiWebhookController extends Controller
     private function tratarDeliveryCallback(array $p, $conta)
     {
         $msgId  = $p['messageId'] ?? null;
+        $zaapId = $p['zaapId']    ?? null;
         $erro   = $p['error']     ?? null;
-        $status = $erro ? 'failed' : 'sent';
+        // Sem error = WhatsApp aceitou na fila (queued).
+        // Com error  = envio falhou definitivamente.
+        $status = $erro ? 'failed' : 'queued';
         $ts     = isset($p['momment']) ? (int) ($p['momment'] / 1000) : null;
         $dtEvt  = $ts ? Carbon::createFromTimestamp($ts) : null;
 
@@ -137,10 +140,25 @@ class ZApiWebhookController extends Controller
 
             if (!$row) {
                 // Tenta correlacionar pelo zaapId (id interno da Z-API).
-                $zaapId = $p['zaapId'] ?? null;
                 if ($zaapId) {
                     $row = WhatsappMensagem::where('ds_message_id_wmm', $zaapId)
                         ->where('tp_direcao_wmm', 'O')
+                        ->first();
+                }
+            }
+
+            // Último recurso: outbound recente sem messageId para o mesmo telefone.
+            if (!$row && $erro) {
+                $destino = $this->normalizarTelefone($p['phone'] ?? null);
+                if ($destino) {
+                    $sufixo = substr($destino, -10);
+                    $row = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
+                        ->where('tp_direcao_wmm', 'O')
+                        ->where('ds_status_wmm', 'sent')
+                        ->whereNull('ds_message_id_wmm')
+                        ->whereRaw("regexp_replace(nu_telefone_destino_wmm, '\\D', '', 'g') LIKE ?", ['%' . $sufixo])
+                        ->where('created_at', '>=', Carbon::now()->subMinutes(5))
+                        ->orderBy('created_at', 'desc')
                         ->first();
                 }
             }
@@ -164,8 +182,16 @@ class ZApiWebhookController extends Controller
             }
         }
 
-        // Sem outbound correlacionada: ignora silenciosamente.
-        Log::debug('[ZAPI-WEBHOOK] DeliveryCallback sem outbound correlacionada.', ['messageId' => $msgId]);
+        // Sem outbound correlacionada: ignora silenciosamente (exceto em erros).
+        if ($erro) {
+            Log::warning('[ZAPI-WEBHOOK] DeliveryCallback de falha sem outbound correlacionada.', [
+                'messageId' => $msgId,
+                'phone'     => $p['phone'] ?? '?',
+                'error'     => $erro,
+            ]);
+        } else {
+            Log::debug('[ZAPI-WEBHOOK] DeliveryCallback sem outbound correlacionada.', ['messageId' => $msgId]);
+        }
     }
 
     /**

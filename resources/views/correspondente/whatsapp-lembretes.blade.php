@@ -147,7 +147,7 @@
                                         @endif
                                     </td>
                                     <td class="center">
-                                        @if($linha->situacao === 'ENVIARA' || $linha->ds_status_entrega === 'failed')
+                                        @if($linha->situacao === 'ENVIARA' || in_array($linha->ds_status_entrega, ['failed', 'sent', 'queued']))
                                             <form method="POST" action="{{ url('correspondente/whatsapp/lembretes/reenviar/' . $linha->cd_processo_pro) }}" class="form-reenviar" style="margin:0;">
                                                 @csrf
                                                 <button type="button" class="btn btn-xs btn-warning btn-reenviar">
