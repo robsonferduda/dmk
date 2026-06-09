@@ -6,7 +6,7 @@ use App\Conta;
 use App\Processo;
 use App\ContaCorrespondente;
 use App\WhatsappMensagem;
-use App\Services\ChatPro\ChatProClient;
+use App\Services\WhatsappDispatcher;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -82,7 +82,7 @@ class EnviarLembretesPreDiligencia extends Command
             foreach ($processos as $proc) {
                 $escritorio        = Conta::find($proc->cd_conta_con);
                 $correspondente    = Conta::find($proc->cd_correspondente_cor);
-                $chatproOk         = $escritorio && ChatProClient::forConta($escritorio);
+                $whatsappOk        = $escritorio && WhatsappDispatcher::forConta($escritorio);
                 $whatsapp          = $correspondente->nu_telefone_whatsapp_con ?? null;
                 $jaEnviado         = WhatsappMensagem::where('cd_conta_con', $proc->cd_conta_con)
                     ->where('cd_processo_pro', $proc->cd_processo_pro)
@@ -90,7 +90,7 @@ class EnviarLembretesPreDiligencia extends Command
                     ->whereDate('created_at', Carbon::today())
                     ->exists();
 
-                if (!$chatproOk)        { $situacao = 'SEM CHATPRO'; }
+                if (!$whatsappOk)       { $situacao = 'SEM WHATSAPP'; }
                 elseif (!$correspondente) { $situacao = 'SEM CORRESPONDENTE'; }
                 elseif (empty($whatsapp)) { $situacao = 'SEM WHATSAPP'; }
                 elseif ($jaEnviado)     { $situacao = 'JA ENVIADO'; }
@@ -122,9 +122,9 @@ class EnviarLembretesPreDiligencia extends Command
                 $conta = Conta::where('cd_conta_con', $proc->cd_conta_con)->first();
                 if (!$conta) { $ignorados++; continue; }
 
-                $client = ChatProClient::forConta($conta);
+                $client = WhatsappDispatcher::forConta($conta);
                 if (!$client) {
-                    $this->warn("  processo {$proc->cd_processo_pro}: conta {$conta->cd_conta_con} sem ChatPro ativo.");
+                    $this->warn("  processo {$proc->cd_processo_pro}: conta {$conta->cd_conta_con} sem integração WhatsApp ativa (Z-API ou ChatPro).");
                     $ignorados++; continue;
                 }
 

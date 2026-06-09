@@ -22,6 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('chatpro/webhook', 'Api\ChatProWebhookController@handle');
 Route::get ('chatpro/webhook', 'Api\ChatProWebhookController@handle'); // alguns gateways validam URL com GET
 
+// [Z-API] Webhook público — recebe eventos da Z-API (delivery, receive, status).
+// Sem auth (validação interna por token). URL a cadastrar no painel Z-API.
+Route::post('zapi/webhook', 'Api\ZApiWebhookController@handle');
+Route::get ('zapi/webhook', 'Api\ZApiWebhookController@handle'); // Z-API valida URL com GET
+
 Route::get('mensagem/processo/{id}', function(){});
 Route::get('mensagem/destinatario/nao-lidas/{id}', 'MensagemController@getMensagensByDestinatario');
 

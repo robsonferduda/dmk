@@ -4,7 +4,7 @@ namespace App\Services\Checkin;
 
 use App\Conta;
 use App\ProcessoCheckin;
-use App\Services\ChatPro\ChatProClient;
+use App\Services\WhatsappDispatcher;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -43,9 +43,9 @@ class CheckinNotifier
                 return;
             }
 
-            $client = ChatProClient::forConta($conta);
+            $client = WhatsappDispatcher::forConta($conta);
             if (!$client) {
-                // Integração não habilitada/configurada para a conta — silencioso.
+                // Nenhuma integração WhatsApp habilitada/configurada para a conta — silencioso.
                 return;
             }
 
@@ -72,10 +72,14 @@ class CheckinNotifier
             // outbound com o mesmo id, e nós aqui apenas enriquecemos
             // (preenchemos cd_processo_pro / cd_correspondente_cor / etc.).
             try {
-                // ID retornado pela API (chave "resposeMessage.id" — sic, sem 'n').
+                // ID retornado pela API.
+                // Z-API: body['messageId'] ou body['id']
+                // ChatPro: body['resposeMessage']['id'] (typo original da API) ou body['responseMessage']['id']
                 $msgId = null;
                 if (!empty($res['body']) && is_array($res['body'])) {
-                    $msgId = $res['body']['resposeMessage']['id']
+                    $msgId = $res['body']['messageId']
+                          ?? $res['body']['id']
+                          ?? $res['body']['resposeMessage']['id']
                           ?? $res['body']['responseMessage']['id']
                           ?? $res['body']['message_id']
                           ?? null;

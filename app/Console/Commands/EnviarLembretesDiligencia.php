@@ -6,7 +6,7 @@ use App\Conta;
 use App\Processo;
 use App\ContaCorrespondente;
 use App\WhatsappMensagem;
-use App\Services\ChatPro\ChatProClient;
+use App\Services\WhatsappDispatcher;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -79,9 +79,9 @@ class EnviarLembretesDiligencia extends Command
                 $conta = Conta::where('cd_conta_con', $proc->cd_conta_con)->first();
                 if (!$conta) { $ignorados++; continue; }
 
-                $client = ChatProClient::forConta($conta);
+                $client = WhatsappDispatcher::forConta($conta);
                 if (!$client) {
-                    $this->warn("  processo {$proc->cd_processo_pro}: conta {$conta->cd_conta_con} sem ChatPro ativo.");
+                    $this->warn("  processo {$proc->cd_processo_pro}: conta {$conta->cd_conta_con} sem integração WhatsApp ativa (Z-API ou ChatPro).");
                     $ignorados++; continue;
                 }
 
