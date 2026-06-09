@@ -199,7 +199,10 @@ class ZApiWebhookController extends Controller
      */
     private function tratarStatusCallback(array $p, $conta)
     {
-        $msgId      = $p['messageId'] ?? null;
+        // Log temporário para identificar os campos reais do payload.
+        Log::debug('[ZAPI-WEBHOOK] StatusCallback payload completo.', ['payload' => $p]);
+
+        $msgId      = $p['messageId'] ?? $p['id'] ?? $p['zaapId'] ?? null;
         $statusRaw  = strtoupper((string) ($p['status'] ?? ''));
         $statusNome = self::$STATUS_MAP[$statusRaw] ?? strtolower($statusRaw);
         $ts    = isset($p['momment']) ? (int) ($p['momment'] / 1000) : null;
@@ -339,23 +342,28 @@ class ZApiWebhookController extends Controller
             ? $this->resolverCorrespondentePorTelefone($origem, $conta->cd_conta_con)
             : null;
 
-        // Vínculo com processo: reply citado ou última outbound para o mesmo telefone.
+        // Vínculo com processo: apenas em conversas 1-a-1.
+        // Mensagens de grupos não são vinculadas a processos — o correspondente
+        // pode estar em grupos genéricos de correspondentes sem relação com o processo.
         $cdProcesso      = null;
         $cdProcessoCkPck = null;
-        $quotedMsgId     = $p['contextInfo']['quotedMessageId']
-                        ?? ($p['contextInfo']['stanzaId'] ?? null);
-        $janelaDias      = (int) config('zapi.inbound_link_window_days', 30);
 
-        if ($quotedMsgId || ($origem && $janelaDias > 0)) {
-            $vinculo = $this->resolverProcessoParaInbound(
-                $origem,
-                $conta->cd_conta_con,
-                $quotedMsgId,
-                $janelaDias
-            );
-            if ($vinculo) {
-                $cdProcesso      = $vinculo['cd_processo_pro']         ?? null;
-                $cdProcessoCkPck = $vinculo['cd_processo_checkin_pck'] ?? null;
+        if (!$isGroup) {
+            $quotedMsgId = $p['contextInfo']['quotedMessageId']
+                        ?? ($p['contextInfo']['stanzaId'] ?? null);
+            $janelaDias  = (int) config('zapi.inbound_link_window_days', 30);
+
+            if ($quotedMsgId || ($origem && $janelaDias > 0)) {
+                $vinculo = $this->resolverProcessoParaInbound(
+                    $origem,
+                    $conta->cd_conta_con,
+                    $quotedMsgId,
+                    $janelaDias
+                );
+                if ($vinculo) {
+                    $cdProcesso      = $vinculo['cd_processo_pro']         ?? null;
+                    $cdProcessoCkPck = $vinculo['cd_processo_checkin_pck'] ?? null;
+                }
             }
         }
 

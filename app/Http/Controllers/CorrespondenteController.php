@@ -224,12 +224,33 @@ class CorrespondenteController extends Controller
             '--force'    => true,
         ]);
 
-        // A Z-API aceita a mensagem com HTTP 200 e só notifica falha de entrega
-        // de forma assíncrona via DeliveryCallback (webhook). Não é possível
-        // saber aqui se o número existe ou não — o status será atualizado
-        // automaticamente na próxima vez que a página for carregada.
+        // Aguarda até 6s pelo DeliveryCallback da Z-API (erros chegam em ~1-2s).
+        // Verifica o banco a cada 1s; sai assim que o status sair de 'queued'/'sent'.
+        $wmm     = null;
+        $tentativas = 6;
+        for ($i = 0; $i < $tentativas; $i++) {
+            $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
+                ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+                ->whereDate('created_at', \Carbon\Carbon::today())
+                ->latest()
+                ->first();
+
+            if ($wmm && !in_array($wmm->ds_status_wmm, ['queued', 'sent', 'pending'], true)) {
+                break; // status já atualizado (failed, delivered, read...)
+            }
+            sleep(1);
+        }
+
+        $status = $wmm->ds_status_wmm ?? null;
+
+        if ($status === 'failed') {
+            $erro = $wmm->ds_payload_raw_wmm['delivery_error'] ?? 'Falha ao enviar. Verifique os logs.';
+            return redirect(url('correspondente/whatsapp/lembretes'))
+                ->with('error', "Falha no envio: {$erro}");
+        }
+
         return redirect(url('correspondente/whatsapp/lembretes'))
-            ->with('success', 'Mensagem enviada para processamento. Atualize a página em instantes para verificar o status de entrega.');
+            ->with('success', 'Lembrete reenviado com sucesso.');
     }
 
     public function whatsappLembretesDisparar()
