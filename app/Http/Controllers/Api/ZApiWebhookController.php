@@ -81,7 +81,7 @@ class ZApiWebhookController extends Controller
 
             if ($tipo === 'DeliveryCallback') {
                 $this->tratarDeliveryCallback($payload, $conta);
-            } elseif ($tipo === 'StatusCallback') {
+            } elseif ($tipo === 'StatusCallback' || $tipo === 'MessageStatusCallback') {
                 $this->tratarStatusCallback($payload, $conta);
             } elseif ($tipo === 'ReceivedCallback') {
                 $fromMe = $payload['fromMe'] ?? false;
