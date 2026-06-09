@@ -266,8 +266,16 @@ class ZApiWebhookController extends Controller
      */
     private function tratarMensagemRecebida(array $p, $conta)
     {
-        $msgId  = $p['messageId'] ?? null;
-        $origem = $this->normalizarTelefone($p['phone'] ?? null);
+        $msgId   = $p['messageId'] ?? null;
+        $isGroup = (bool) ($p['isGroup'] ?? false);
+
+        // Em grupos, phone = ID do grupo (ex: 5513991077083-1442944292).
+        // O remetente real é participantPhone.
+        // Em conversas 1-a-1, phone é o número do remetente.
+        $origem = $isGroup
+            ? $this->normalizarTelefone($p['participantPhone'] ?? null)
+            : $this->normalizarTelefone($p['phone'] ?? null);
+
         $texto  = $p['text']['message']
                ?? ($p['image']['caption']    ?? null)
                ?? ($p['document']['caption'] ?? null)
@@ -353,8 +361,14 @@ class ZApiWebhookController extends Controller
         if (!$numero) {
             return null;
         }
+        // Remove tudo que não for dígito e limita a 20 chars (tamanho da coluna).
+        // IDs de grupo (ex: 5513991077083-1442944292) ficam muito longos — são
+        // descartados aqui pois o remetente real já vem em participantPhone.
         $n = preg_replace('/\D+/', '', (string) $numero);
-        return strlen($n) >= 10 ? $n : null;
+        if (strlen($n) < 10 || strlen($n) > 20) {
+            return null;
+        }
+        return $n;
     }
 
     private function ehDuplicateKeyError(\Throwable $e): bool
