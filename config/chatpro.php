@@ -95,7 +95,7 @@ return [
             "* Confirmar o recebimento dos documentos e a realização do ato no sistema;\n" .
             "* Confirmar presença no link abaixo ainda hoje;\n" .
             "* Realizar o CHECK-IN amanhã, no local do ato, pelo link que será enviado antes da audiência/diligência.\n\n" .
-            "📲 Confirme sua audiência/diligência aqui:\n" .
+            "📲 CONFIRME SUA AUDIÊNCIA/DILIGÊNCIA AQUI AGORA:\n" .
             "{link_confirmacao_audiencia}\n\n" .
             "Em caso de dúvidas, utilize o WhatsApp. Para urgências, não aguarde mensagem: LIGUE imediatamente para (48) 99130-8024.\n\n" .
             "DMK Advogados",
