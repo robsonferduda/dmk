@@ -87,6 +87,16 @@ class ChatProWebhookController extends Controller
             }
 
         } catch (\Throwable $e) {
+            // Violação de unicidade em ds_message_id_wmm: duas entregas simultâneas
+            // do mesmo webhook (race condition). A mensagem já foi gravada pela
+            // requisição concorrente — não é um erro real, apenas ignoramos.
+            if ($this->ehDuplicateKeyError($e)) {
+                Log::debug('[CHATPRO-WEBHOOK] Entrega duplicada ignorada (race condition).', [
+                    'message_id' => $payload['Body']['Info']['Id'] ?? '?',
+                ]);
+                return response()->json(['ok' => true]);
+            }
+
             Log::error('[CHATPRO-WEBHOOK] Exceção ao processar payload: ' . $e->getMessage(), [
                 'trace'   => $e->getTraceAsString(),
                 'payload' => $payload,
@@ -351,6 +361,18 @@ class ChatProWebhookController extends Controller
         $num = preg_replace('/@.*$/', '', (string) $jid);
         $num = preg_replace('/\D+/', '', $num);
         return $num !== '' ? $num : null;
+    }
+
+    /**
+     * Retorna true se a exceção for uma violação de chave única no PostgreSQL
+     * (SQLSTATE 23505) — usado para tratar entregas duplicadas do webhook.
+     */
+    private function ehDuplicateKeyError(\Throwable $e): bool
+    {
+        $msg = $e->getMessage();
+        return str_contains($msg, '23505')
+            || str_contains($msg, 'Unique violation')
+            || str_contains($msg, 'duplicate key value');
     }
 
     /**

@@ -101,6 +101,15 @@ class ZApiWebhookController extends Controller
             }
 
         } catch (\Throwable $e) {
+            // Violação de unicidade: entrega duplicada simultânea do webhook.
+            // A mensagem já foi gravada pela requisição concorrente — ignoramos.
+            if ($this->ehDuplicateKeyError($e)) {
+                Log::debug('[ZAPI-WEBHOOK] Entrega duplicada ignorada (race condition).', [
+                    'message_id' => $payload['messageId'] ?? '?',
+                ]);
+                return response()->json(['ok' => true]);
+            }
+
             Log::error('[ZAPI-WEBHOOK] Exceção ao processar payload: ' . $e->getMessage(), [
                 'trace'   => $e->getTraceAsString(),
                 'payload' => $payload,
@@ -374,6 +383,14 @@ class ZApiWebhookController extends Controller
         }
         $n = preg_replace('/\D+/', '', (string) $numero);
         return strlen($n) >= 10 ? $n : null;
+    }
+
+    private function ehDuplicateKeyError(\Throwable $e): bool
+    {
+        $msg = $e->getMessage();
+        return str_contains($msg, '23505')
+            || str_contains($msg, 'Unique violation')
+            || str_contains($msg, 'duplicate key value');
     }
 
     /**
