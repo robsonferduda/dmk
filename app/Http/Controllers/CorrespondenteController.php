@@ -158,6 +158,9 @@ class CorrespondenteController extends Controller
                 'nu_whatsapp'       => $whatsapp ?: null,
                 'situacao'          => $situacao,
                 'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'erro_entrega'      => $wmm && $wmm->ds_status_wmm === 'failed'
+                                         ? ($wmm->ds_payload_raw_wmm['delivery_error'] ?? null)
+                                         : null,
                 'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
                 'checkin_status'    => $idsComCheckin->has($proc->cd_processo_pro)
                                          ? 'correspondente'
@@ -221,26 +224,12 @@ class CorrespondenteController extends Controller
             '--force'    => true,
         ]);
 
-        $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
-            ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-            ->latest()
-            ->first();
-
-        if ($wmm && $wmm->ds_status_wmm === 'failed') {
-            $erroApi = $wmm->ds_payload_raw_wmm['response']['body']['message']
-                    ?? $wmm->ds_payload_raw_wmm['response']['message']
-                    ?? null;
-
-            if ($erroApi) {
-                $erroApi = preg_replace('/^error:[A-Za-z]+:\s*[^-]+-\s*/u', '', $erroApi);
-            }
-
-            return redirect(url('correspondente/whatsapp/lembretes'))
-                ->with('error', $erroApi ? "Falha: {$erroApi}" : 'Falha ao enviar. Verifique os logs.');
-        }
-
+        // A Z-API aceita a mensagem com HTTP 200 e só notifica falha de entrega
+        // de forma assíncrona via DeliveryCallback (webhook). Não é possível
+        // saber aqui se o número existe ou não — o status será atualizado
+        // automaticamente na próxima vez que a página for carregada.
         return redirect(url('correspondente/whatsapp/lembretes'))
-            ->with('success', 'Lembrete reenviado com sucesso.');
+            ->with('success', 'Mensagem enviada para processamento. Atualize a página em instantes para verificar o status de entrega.');
     }
 
     public function whatsappLembretesDisparar()
@@ -325,6 +314,9 @@ class CorrespondenteController extends Controller
                 'nu_whatsapp'       => $whatsapp ?: null,
                 'situacao'          => $situacao,
                 'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'erro_entrega'      => $wmm && $wmm->ds_status_wmm === 'failed'
+                                         ? ($wmm->ds_payload_raw_wmm['delivery_error'] ?? null)
+                                         : null,
                 'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
             ];
         });

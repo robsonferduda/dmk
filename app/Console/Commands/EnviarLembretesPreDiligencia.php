@@ -196,28 +196,16 @@ class EnviarLembretesPreDiligencia extends Command
                     'dt_evento_wmm'           => now(),
                 ];
 
-                if ($msgId) {
-                    $row = WhatsappMensagem::firstOrNew(['ds_message_id_wmm' => $msgId]);
-                    foreach ($valores as $k => $v) {
-                        if ($k === 'ds_status_wmm') {
-                            $atual = $row->{$k};
-                            if (in_array($atual, [null, '', 'pending', 'sent'], true)) {
-                                $row->{$k} = $v;
-                            }
-                            continue;
-                        }
-                        if ($row->{$k} === null || $row->{$k} === '') {
-                            $row->{$k} = $v;
-                        }
-                    }
-                    if (empty($row->ds_payload_raw_wmm)) {
-                        $row->ds_payload_raw_wmm = ['response' => $res, 'context' => 'lembrete_prediligencia'];
-                    }
-                    $row->save();
-                } else {
-                    $valores['ds_payload_raw_wmm'] = ['response' => $res, 'context' => 'lembrete_prediligencia'];
-                    WhatsappMensagem::create($valores);
-                }
+                // Remove registros anteriores do mesmo processo/dia (reenvio gera novo messageId).
+                WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
+                    ->where('cd_processo_pro', $proc->cd_processo_pro)
+                    ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+                    ->whereDate('created_at', Carbon::today())
+                    ->delete();
+
+                $valores['ds_message_id_wmm']  = $msgId;
+                $valores['ds_payload_raw_wmm'] = ['response' => $res, 'context' => 'lembrete_prediligencia'];
+                WhatsappMensagem::create($valores);
 
                 if ($res['success']) { $enviados++; } else { $falhas++; }
 
