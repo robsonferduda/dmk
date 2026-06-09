@@ -49,7 +49,7 @@ use Illuminate\Support\Facades\Session;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
 use App\WhatsappMensagem;
-use App\Services\ChatPro\ChatProClient;
+use App\Services\WhatsappDispatcher;
 
 class CorrespondenteController extends Controller
 {
@@ -89,8 +89,8 @@ class CorrespondenteController extends Controller
 
     public function whatsappCheckin(Request $request)
     {
-        $conta     = Conta::find($this->conta);
-        $chatproOk = ChatProClient::forConta($conta) !== null;
+        $conta      = Conta::find($this->conta);
+        $whatsappOk = WhatsappDispatcher::forConta($conta) !== null;
         $hoje      = Carbon::today()->toDateString();
         $busca     = trim($request->input('q', ''));
 
@@ -132,12 +132,12 @@ class CorrespondenteController extends Controller
             ->pluck('cd_processo_pro')
             ->flip();
 
-        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados, $idsComCheckin) {
+        $linhas = $processos->map(function ($proc) use ($whatsappOk, $correspondentes, $jaEnviados, $idsComCheckin) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
             $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
             $wmm      = $jaEnviados->get($proc->cd_processo_pro);
 
-            if (!$chatproOk)          $situacao = 'SEM_CHATPRO';
+            if (!$whatsappOk)         $situacao = 'SEM_WHATSAPP_API';
             elseif (!$cor)            $situacao = 'SEM_CORRESPONDENTE';
             elseif (empty($whatsapp)) $situacao = 'SEM_WHATSAPP';
             elseif ($wmm)             $situacao = 'JA_ENVIADO';
@@ -269,7 +269,7 @@ class CorrespondenteController extends Controller
     public function whatsappLembretes()
     {
         $conta      = Conta::find($this->conta);
-        $chatproOk  = ChatProClient::forConta($conta) !== null;
+        $whatsappOk = WhatsappDispatcher::forConta($conta) !== null;
 
         // Próximo dia útil: se amanhã cair no fim de semana, avança até segunda.
         $proximoDiaUtil = Carbon::today()->addDay();
@@ -299,12 +299,12 @@ class CorrespondenteController extends Controller
             ->get()
             ->keyBy('cd_processo_pro');
 
-        $linhas = $processos->map(function ($proc) use ($chatproOk, $correspondentes, $jaEnviados) {
+        $linhas = $processos->map(function ($proc) use ($whatsappOk, $correspondentes, $jaEnviados) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
             $whatsapp = $cor->nu_telefone_whatsapp_con ?? null;
             $wmm      = $jaEnviados->get($proc->cd_processo_pro);
 
-            if (!$chatproOk)          $situacao = 'SEM_CHATPRO';
+            if (!$whatsappOk)         $situacao = 'SEM_WHATSAPP_API';
             elseif (!$cor)            $situacao = 'SEM_CORRESPONDENTE';
             elseif (empty($whatsapp)) $situacao = 'SEM_WHATSAPP';
             elseif ($wmm)             $situacao = 'JA_ENVIADO';

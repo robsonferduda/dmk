@@ -125,8 +125,8 @@
                                             <span class="label label-info"><i class="fa fa-check-circle"></i> Já enviado</span>
                                         @elseif($linha->situacao === 'SEM_WHATSAPP')
                                             <span class="label label-warning"><i class="fa fa-times-circle"></i> Sem WhatsApp</span>
-                                        @elseif($linha->situacao === 'SEM_CHATPRO')
-                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Sem ChatPro</span>
+                                        @elseif($linha->situacao === 'SEM_WHATSAPP_API')
+                                            <span class="label label-danger"><i class="fa fa-times-circle"></i> Sem integração WhatsApp</span>
                                         @else
                                             <span class="label label-default"><i class="fa fa-times-circle"></i> Sem correspondente</span>
                                         @endif
