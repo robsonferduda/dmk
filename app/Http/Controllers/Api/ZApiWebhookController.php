@@ -46,11 +46,12 @@ class ZApiWebhookController extends Controller
 {
     /** Mapeamento de status Z-API → nome legível persistido. */
     private static $STATUS_MAP = [
-        'RECEIVED' => 'delivered',
-        'READ'     => 'read',
-        'PLAYED'   => 'played',
-        'PENDING'  => 'pending',
-        'SENT'     => 'sent',
+        'RECEIVED'    => 'delivered',
+        'READ'        => 'read',
+        'READ_BY_ME'  => 'read',   // lida pelo próprio dispositivo (eco)
+        'PLAYED'      => 'played',
+        'PENDING'     => 'pending',
+        'SENT'        => 'sent',
     ];
 
     public function handle(Request $request)
@@ -196,54 +197,56 @@ class ZApiWebhookController extends Controller
 
     /**
      * StatusCallback: atualiza ds_status_wmm (entregue / lida / reproduzida).
+     *
+     * O payload do MessageStatusCallback usa o campo "ids" (array), não "messageId".
+     * Cada evento pode carregar múltiplos IDs de mensagens com o mesmo novo status.
      */
     private function tratarStatusCallback(array $p, $conta)
     {
-        // Log temporário para identificar os campos reais do payload.
-        Log::debug('[ZAPI-WEBHOOK] StatusCallback payload completo.', ['payload' => $p]);
+        $ids       = $p['ids'] ?? [];          // array de messageIds
+        $statusRaw = strtoupper((string) ($p['status'] ?? ''));
+        $statusNome = self::$STATUS_MAP[$statusRaw] ?? null;
 
-        $msgId      = $p['messageId'] ?? $p['id'] ?? $p['zaapId'] ?? null;
-        $statusRaw  = strtoupper((string) ($p['status'] ?? ''));
-        $statusNome = self::$STATUS_MAP[$statusRaw] ?? strtolower($statusRaw);
+        // Statuses sem mapeamento (ex.: READ_BY_ME já mapeado, outros desconhecidos) são ignorados.
+        if (!$statusNome || empty($ids)) {
+            return;
+        }
+
         $ts    = isset($p['momment']) ? (int) ($p['momment'] / 1000) : null;
         $dtEvt = $ts ? Carbon::createFromTimestamp($ts) : null;
 
-        Log::debug('[ZAPI-WEBHOOK] StatusCallback recebido.', [
-            'messageId'  => $msgId,
-            'statusRaw'  => $statusRaw,
-            'statusNome' => $statusNome,
-        ]);
+        $ordem = ['pending' => 0, 'queued' => 1, 'sent' => 1, 'delivered' => 2, 'read' => 3, 'played' => 4];
+        $ordemNovo = $ordem[$statusNome] ?? -1;
 
-        if ($msgId) {
-            $row = WhatsappMensagem::where('ds_message_id_wmm', $msgId)->first();
-            if ($row) {
-                // Não regride um status mais avançado para um menos avançado.
-                // 'queued' e 'sent' são tratados no mesmo nível (1).
-                $ordem = ['pending' => 0, 'queued' => 1, 'sent' => 1, 'delivered' => 2, 'read' => 3, 'played' => 4];
-                $ordemAtual = $ordem[$row->ds_status_wmm] ?? -1;
-                $ordemNovo  = $ordem[$statusNome]         ?? -1;
+        $atualizados = 0;
+        foreach ($ids as $msgId) {
+            $row = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
+                ->where('ds_message_id_wmm', $msgId)
+                ->first();
 
-                Log::debug('[ZAPI-WEBHOOK] StatusCallback correlacionado.', [
-                    'messageId'   => $msgId,
-                    'statusAtual' => $row->ds_status_wmm,
-                    'statusNovo'  => $statusNome,
-                    'ordemAtual'  => $ordemAtual,
-                    'ordemNovo'   => $ordemNovo,
-                ]);
+            if (!$row) {
+                continue;
+            }
 
-                if ($ordemNovo > $ordemAtual) {
-                    $row->ds_status_wmm = $statusNome;
-                    $row->save();
-                }
+            $ordemAtual = $ordem[$row->ds_status_wmm] ?? -1;
+
+            if ($ordemNovo > $ordemAtual) {
+                $row->ds_status_wmm = $statusNome;
                 if ($dtEvt && !$row->dt_evento_wmm) {
                     $row->dt_evento_wmm = $dtEvt;
-                    $row->save();
                 }
-                return;
+                $row->save();
+                $atualizados++;
             }
         }
 
-        Log::debug('[ZAPI-WEBHOOK] StatusCallback sem outbound correlacionada.', ['messageId' => $msgId]);
+        if ($atualizados > 0) {
+            Log::debug('[ZAPI-WEBHOOK] StatusCallback atualizado.', [
+                'ids'        => $ids,
+                'statusNome' => $statusNome,
+                'atualizados' => $atualizados,
+            ]);
+        }
     }
 
     /**
