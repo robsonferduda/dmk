@@ -189,28 +189,28 @@ class CorrespondenteController extends Controller
             '--force'     => true,
         ]);
 
-        // Lê o registro mais recente para extrair o resultado real do envio.
-        $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
-            ->where('ds_tipo_wmm', 'lembrete_diligencia')
-            ->latest()
-            ->first();
+        // Aguarda até 6s pelo DeliveryCallback da Z-API (erros chegam em ~1-2s).
+        $wmm        = null;
+        $tentativas = 6;
+        for ($i = 0; $i < $tentativas; $i++) {
+            $wmm = WhatsappMensagem::where('cd_processo_pro', $cdProcesso)
+                ->where('ds_tipo_wmm', 'lembrete_diligencia')
+                ->whereDate('created_at', \Carbon\Carbon::today())
+                ->latest()
+                ->first();
 
-        if ($wmm && $wmm->ds_status_wmm === 'failed') {
-            $erroApi = $wmm->ds_payload_raw_wmm['response']['body']['message']
-                    ?? $wmm->ds_payload_raw_wmm['response']['message']
-                    ?? null;
-
-            // Remove prefixos técnicos da mensagem da API (ex.: "error:NotFoundException: getUserJid - ")
-            if ($erroApi) {
-                $erroApi = preg_replace('/^error:[A-Za-z]+:\s*[^-]+-\s*/u', '', $erroApi);
+            if ($wmm && !in_array($wmm->ds_status_wmm, ['queued', 'sent', 'pending'], true)) {
+                break;
             }
+            sleep(1);
+        }
 
-            $msgErro = $erroApi
-                ? "Falha: {$erroApi}"
-                : 'Falha ao enviar. Verifique os logs.';
+        $status = $wmm->ds_status_wmm ?? null;
 
+        if ($status === 'failed') {
+            $erro = $wmm->ds_payload_raw_wmm['delivery_error'] ?? 'Falha ao enviar. Verifique os logs.';
             return redirect(url('correspondente/whatsapp/checkin'))
-                ->with('error', $msgErro);
+                ->with('error', "Falha no envio: {$erro}");
         }
 
         return redirect(url('correspondente/whatsapp/checkin'))

@@ -150,6 +150,9 @@
                                             <span class="label label-primary"><i class="fa fa-paper-plane"></i> Enviada</span>
                                         @elseif($linha->ds_status_entrega === 'failed')
                                             <span class="label label-danger"><i class="fa fa-times-circle"></i> Falha</span>
+                                            @if(!empty($linha->erro_entrega))
+                                                <br><small class="text-danger">{{ $linha->erro_entrega }}</small>
+                                            @endif
                                         @elseif($linha->ds_status_entrega === 'pending')
                                             <span class="label label-default"><i class="fa fa-clock-o"></i> Pendente</span>
                                         @else
