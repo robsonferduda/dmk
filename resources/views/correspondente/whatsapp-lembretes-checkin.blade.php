@@ -125,6 +125,17 @@
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif
+                                        @if($linha->cd_correspondente_cor)
+                                        <button type="button"
+                                            class="btn btn-xs btn-default btn-editar-whatsapp"
+                                            style="margin-left:4px;"
+                                            data-id="{{ $linha->cd_correspondente_cor }}"
+                                            data-numero="{{ $linha->nu_whatsapp }}"
+                                            data-nome="{{ $linha->nm_correspondente }}"
+                                            title="Editar número WhatsApp">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        @endif
                                     </td>
                                     <td class="center">
                                         @if($linha->situacao === 'JA_ENVIADO')
@@ -192,6 +203,38 @@
             </div>
         </article>
 </div>
+
+{{-- Modal: editar número WhatsApp --}}
+<div class="modal fade" id="modal-editar-whatsapp" tabindex="-1" role="dialog" aria-labelledby="modal-editar-whatsapp-label">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal-editar-whatsapp-label">
+                    <i class="fa fa-whatsapp" style="color:#25D366"></i> Editar WhatsApp
+                </h4>
+            </div>
+            <form id="form-editar-whatsapp">
+                @csrf
+                <div class="modal-body">
+                    <p id="modal-whatsapp-nome" class="text-muted" style="margin-bottom:10px;"></p>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="input-nu-whatsapp">Número <small class="text-muted">(somente dígitos, com DDI)</small></label>
+                        <input type="text" name="nu_whatsapp" id="input-nu-whatsapp" class="form-control"
+                               placeholder="5548999999999" maxlength="20">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-salvar-whatsapp">
+                        <i class="fa fa-save"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -243,6 +286,41 @@ document.addEventListener('DOMContentLoaded', function () {
             aplicarFiltro(ativo);
         });
     }
+
+    // Editar WhatsApp
+    document.querySelectorAll('.btn-editar-whatsapp').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('modal-whatsapp-nome').textContent = btn.getAttribute('data-nome');
+            document.getElementById('input-nu-whatsapp').value = btn.getAttribute('data-numero') || '';
+            document.getElementById('form-editar-whatsapp').setAttribute('data-id', btn.getAttribute('data-id'));
+            $('#modal-editar-whatsapp').modal('show');
+        });
+    });
+
+    document.getElementById('form-editar-whatsapp').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var id  = this.getAttribute('data-id');
+        var btn = document.getElementById('btn-salvar-whatsapp');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Salvando…';
+
+        var formData = new FormData(this);
+        fetch('{{ url("correspondente/whatsapp/lembretes/whatsapp") }}/' + id, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function (r) { return r.json(); })
+        .then(function () {
+            $('#modal-editar-whatsapp').modal('hide');
+            location.reload();
+        })
+        .catch(function () {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-save"></i> Salvar';
+            Swal.fire('Erro', 'Não foi possível salvar o número.', 'error');
+        });
+    });
 
     document.querySelectorAll('.btn-reenviar').forEach(function (btn) {
         btn.addEventListener('click', function () {

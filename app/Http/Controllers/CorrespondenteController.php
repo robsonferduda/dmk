@@ -152,16 +152,17 @@ class CorrespondenteController extends Controller
                 'hr_audiencia'      => $proc->hr_audiencia_pro
                                          ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
                 'nm_status'         => $proc->status->nm_status_processo_conta_stp ?? '-',
-                'nm_correspondente' => $cor
+                'nm_correspondente'    => $cor
                                          ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
                                          : '-',
-                'nu_whatsapp'       => $whatsapp ?: null,
-                'situacao'          => $situacao,
-                'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
-                'erro_entrega'      => $wmm && $wmm->ds_status_wmm === 'failed'
+                'cd_correspondente_cor' => $proc->cd_correspondente_cor,
+                'nu_whatsapp'          => $whatsapp ?: null,
+                'situacao'             => $situacao,
+                'ds_status_entrega'    => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'erro_entrega'         => $wmm && $wmm->ds_status_wmm === 'failed'
                                          ? ($wmm->ds_payload_raw_wmm['delivery_error'] ?? null)
                                          : null,
-                'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
+                'enviado_em'           => $wmm ? $wmm->created_at->format('H:i') : null,
                 'checkin_status'    => $idsComCheckin->has($proc->cd_processo_pro)
                                          ? 'correspondente'
                                          : ($proc->fl_checkin_pro ? 'escritorio' : 'pendente'),
