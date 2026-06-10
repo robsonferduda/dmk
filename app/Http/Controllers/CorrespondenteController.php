@@ -328,17 +328,18 @@ class CorrespondenteController extends Controller
                                          ? date('d/m/Y', strtotime($proc->dt_prazo_fatal_pro)) : '-',
                 'hr_audiencia'      => $proc->hr_audiencia_pro
                                          ? date('H:i', strtotime($proc->hr_audiencia_pro)) : '-',
-                'nm_status'         => $proc->status->nm_status_processo_conta_stp ?? '-',
-                'nm_correspondente' => $cor
+                'nm_status'            => $proc->status->nm_status_processo_conta_stp ?? '-',
+                'nm_correspondente'    => $cor
                                          ? ($cor->nm_razao_social_con ?? $cor->nm_conta_con ?? '-')
                                          : '-',
-                'nu_whatsapp'       => $whatsapp ?: null,
-                'situacao'          => $situacao,
-                'ds_status_entrega' => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
-                'erro_entrega'      => $wmm && $wmm->ds_status_wmm === 'failed'
+                'cd_correspondente_cor' => $proc->cd_correspondente_cor,
+                'nu_whatsapp'          => $whatsapp ?: null,
+                'situacao'             => $situacao,
+                'ds_status_entrega'    => $wmm ? ($wmm->ds_status_wmm ?? 'pending') : null,
+                'erro_entrega'         => $wmm && $wmm->ds_status_wmm === 'failed'
                                          ? ($wmm->ds_payload_raw_wmm['delivery_error'] ?? null)
                                          : null,
-                'enviado_em'        => $wmm ? $wmm->created_at->format('H:i') : null,
+                'enviado_em'           => $wmm ? $wmm->created_at->format('H:i') : null,
             ];
         });
 
@@ -348,6 +349,27 @@ class CorrespondenteController extends Controller
             'linhas' => $linhas,
             'amanha' => $proximoDiaUtil->format('d/m/Y'),
         ]);
+    }
+
+    public function whatsappLembretesAtualizarWhatsapp(Request $request, $id)
+    {
+        $correspondente = Conta::findOrFail($id);
+
+        // Garante que o correspondente pertence a esta conta
+        $vinculo = DB::table('conta_correspondente_ccr')
+            ->where('cd_conta_con', $this->conta)
+            ->where('cd_correspondente_cor', $id)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        if (!$vinculo) {
+            abort(403);
+        }
+
+        $correspondente->nu_telefone_whatsapp_con = preg_replace('/\D/', '', $request->input('nu_whatsapp', '')) ?: null;
+        $correspondente->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function whatsappData()
