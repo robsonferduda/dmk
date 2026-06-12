@@ -403,6 +403,38 @@
             });
         });
 
+        $(document).on('change', 'input[name="fl_checkin_pro"]', function () {
+            let confirmado = $(this).is(':checked');
+            let processoId = $(this).data('processo');
+
+            $.ajax({
+                url: host+'/processo/atualizar-checkin',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    cd_processo_pro: processoId,
+                    fl_checkin_pro: confirmado ? 'S' : 'N'
+                },
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Atualizado',
+                        text: 'Check-in do correspondente atualizado com sucesso!',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                    $(".btn-pesquisar").trigger('click');
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Falha ao atualizar o check-in do correspondente.'
+                    });
+                }
+            });
+        });
+
         $(document).on('change', 'input[name="fl_checkin_escritorio_pro"]', function () {
             let confirmado = $(this).is(':checked');
             let processoId = $(this).data('processo');
@@ -621,6 +653,22 @@
                                                        id="fl_audiencia_confirmada_pro_${processo.cd_processo_pro}"
                                                        data-processo="${processo.cd_processo_pro}">
                                                 <label class="onoffswitch-label" for="fl_audiencia_confirmada_pro_${processo.cd_processo_pro}"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+
+                                        <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
+                                            <span class="onoffswitch-title">Check-in Correspondente</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" 
+                                                       ${processo.fl_checkin_pro ? 'checked' : ''}
+                                                       name="fl_checkin_pro" 
+                                                       class="onoffswitch-checkbox" 
+                                                       id="fl_checkin_pro_${processo.cd_processo_pro}"
+                                                       data-processo="${processo.cd_processo_pro}">
+                                                <label class="onoffswitch-label" for="fl_checkin_pro_${processo.cd_processo_pro}"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
