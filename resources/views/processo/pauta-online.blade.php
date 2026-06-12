@@ -556,21 +556,23 @@
 
                         response.forEach(function(processo) {
 
-                            let checkinCorrespondente = flagAtivo(processo.fl_checkin_pro);
+                            let audienciaConfirmada = flagAtivo(processo.fl_audiencia_confirmada_pro);
                             let checkinEscritorio = flagAtivo(processo.fl_checkin_escritorio_pro);
+                            let checkinCorrespondente = flagAtivo(processo.fl_checkin_pro);
 
                             let cor_fundo = 'white';
                             let cor_borda = 'white';
 
-                            if (checkinEscritorio && checkinCorrespondente) {
+                            // Sequência: audiência → escritório → correspondente
+                            if (checkinCorrespondente) {
                                 cor_fundo = '#c9ffcb';
                                 cor_borda = '#95ff9a';
                             } else if (checkinEscritorio) {
-                                cor_fundo = '#fff3cd';
-                                cor_borda = '#ffc107';
-                            } else if (checkinCorrespondente) {
                                 cor_fundo = '#c8e7ff';
                                 cor_borda = '#a7d9ff';
+                            } else if (audienciaConfirmada) {
+                                cor_fundo = '#fff3cd';
+                                cor_borda = '#ffc107';
                             }
 
                             let html = `
