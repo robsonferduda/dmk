@@ -668,22 +668,6 @@
                                         </div>
 
                                         <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
-                                            <span class="onoffswitch-title">Check-in Correspondente</span> 
-                                            <span class="onoffswitch">
-                                                <input type="checkbox" 
-                                                       ${flagAtivo(processo.fl_checkin_pro) ? 'checked' : ''}
-                                                       name="fl_checkin_pro" 
-                                                       class="onoffswitch-checkbox" 
-                                                       id="fl_checkin_pro_${processo.cd_processo_pro}"
-                                                       data-processo="${processo.cd_processo_pro}">
-                                                <label class="onoffswitch-label" for="fl_checkin_pro_${processo.cd_processo_pro}"> 
-                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label> 
-                                            </span> 
-                                        </div>
-
-                                        <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
                                             <span class="onoffswitch-title">Check-in Escritório</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
@@ -693,6 +677,22 @@
                                                        id="fl_checkin_escritorio_pro_${processo.cd_processo_pro}"
                                                        data-processo="${processo.cd_processo_pro}">
                                                 <label class="onoffswitch-label" for="fl_checkin_escritorio_pro_${processo.cd_processo_pro}"> 
+                                                    <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label> 
+                                            </span> 
+                                        </div>
+
+                                        <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
+                                            <span class="onoffswitch-title">Check-in Correspondente</span> 
+                                            <span class="onoffswitch">
+                                                <input type="checkbox" 
+                                                       ${flagAtivo(processo.fl_checkin_pro) ? 'checked' : ''}
+                                                       name="fl_checkin_pro" 
+                                                       class="onoffswitch-checkbox" 
+                                                       id="fl_checkin_pro_${processo.cd_processo_pro}"
+                                                       data-processo="${processo.cd_processo_pro}">
+                                                <label class="onoffswitch-label" for="fl_checkin_pro_${processo.cd_processo_pro}"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 
