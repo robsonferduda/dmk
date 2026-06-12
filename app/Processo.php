@@ -292,10 +292,10 @@ class Processo extends Model implements AuditableContract
                        t1.created_at,
                        t12.name as user_cadastro,
                        t13.nm_tipo_processo_tpo,
-                       fl_audiencia_confirmada_pro,
-                       fl_documento_representacao_pro,
-                       fl_checkin_pro,
-                       fl_checkin_escritorio_pro,
+                       t1.fl_audiencia_confirmada_pro,
+                       t1.fl_documento_representacao_pro,
+                       t1.fl_checkin_pro,
+                       t1.fl_checkin_escritorio_pro,
                        t14.dc_area_direito_ado,
                        t1.nu_total_arquivos_pro,
                        t1.nu_tamanho_anexos_pro
@@ -392,7 +392,13 @@ class Processo extends Model implements AuditableContract
             return false;
         }
 
-        return in_array(strtolower((string) $value), ['1', 't', 'true', 's', 'yes', 'on'], true);
+        $normalized = strtolower((string) $value);
+
+        if (in_array($normalized, ['0', 'f', 'false', 'n', 'no', 'off'], true)) {
+            return false;
+        }
+
+        return in_array($normalized, ['1', 't', 'true', 's', 'yes', 'on'], true);
     }
 
     public function getStatusPrazo($nivel, $conta)

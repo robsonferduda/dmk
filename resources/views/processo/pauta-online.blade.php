@@ -262,6 +262,7 @@
         if (val === true || val === 1) return true;
         if (val === false || val === 0 || val == null) return false;
         var s = String(val).toLowerCase();
+        if (s === '0' || s === 'f' || s === 'false' || s === 'n' || s === 'no' || s === 'off') return false;
         return (s === '1' || s === 't' || s === 'true' || s === 's' || s === 'yes');
     }
 
@@ -557,7 +558,6 @@
 
                             let checkinCorrespondente = flagAtivo(processo.fl_checkin_pro);
                             let checkinEscritorio = flagAtivo(processo.fl_checkin_escritorio_pro);
-                            let audienciaConfirmada = flagAtivo(processo.fl_audiencia_confirmada_pro);
 
                             let cor_fundo = 'white';
                             let cor_borda = 'white';
@@ -565,13 +565,10 @@
                             if (checkinEscritorio && checkinCorrespondente) {
                                 cor_fundo = '#c9ffcb';
                                 cor_borda = '#95ff9a';
-                            } else if (checkinEscritorio && !checkinCorrespondente) {
+                            } else if (checkinEscritorio) {
                                 cor_fundo = '#fff3cd';
                                 cor_borda = '#ffc107';
-                            } else if (!checkinEscritorio && !checkinCorrespondente) {
-                                cor_fundo = audienciaConfirmada ? '#c9ffcb' : 'white';
-                                cor_borda = audienciaConfirmada ? '#95ff9a' : 'white';
-                            } else {
+                            } else if (checkinCorrespondente) {
                                 cor_fundo = '#c8e7ff';
                                 cor_borda = '#a7d9ff';
                             }
