@@ -258,6 +258,13 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
+    function flagAtivo(val) {
+        if (val === true || val === 1) return true;
+        if (val === false || val === 0 || val == null) return false;
+        var s = String(val).toLowerCase();
+        return (s === '1' || s === 't' || s === 'true' || s === 's' || s === 'yes');
+    }
+
     $(document).ready(function() {
 
         var host =  $('meta[name="base-url"]').attr('content');
@@ -548,18 +555,22 @@
 
                         response.forEach(function(processo) {
 
+                            let checkinCorrespondente = flagAtivo(processo.fl_checkin_pro);
+                            let checkinEscritorio = flagAtivo(processo.fl_checkin_escritorio_pro);
+                            let audienciaConfirmada = flagAtivo(processo.fl_audiencia_confirmada_pro);
+
                             let cor_fundo = 'white';
                             let cor_borda = 'white';
 
-                            if (processo.fl_checkin_escritorio_pro && processo.fl_checkin_pro) {
+                            if (checkinEscritorio && checkinCorrespondente) {
                                 cor_fundo = '#c9ffcb';
                                 cor_borda = '#95ff9a';
-                            } else if (processo.fl_checkin_escritorio_pro && !processo.fl_checkin_pro) {
+                            } else if (checkinEscritorio && !checkinCorrespondente) {
                                 cor_fundo = '#fff3cd';
                                 cor_borda = '#ffc107';
-                            } else if (!processo.fl_checkin_escritorio_pro && !processo.fl_checkin_pro) {
-                                cor_fundo = (processo.fl_audiencia_confirmada_pro) ? '#c9ffcb' : 'white';
-                                cor_borda = (processo.fl_audiencia_confirmada_pro) ? '#95ff9a' : 'white';
+                            } else if (!checkinEscritorio && !checkinCorrespondente) {
+                                cor_fundo = audienciaConfirmada ? '#c9ffcb' : 'white';
+                                cor_borda = audienciaConfirmada ? '#95ff9a' : 'white';
                             } else {
                                 cor_fundo = '#c8e7ff';
                                 cor_borda = '#a7d9ff';
@@ -647,7 +658,7 @@
                                             <span class="onoffswitch-title">Audiência Confirmada</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
-                                                       ${processo.fl_audiencia_confirmada_pro ? 'checked' : ''}
+                                                       ${flagAtivo(processo.fl_audiencia_confirmada_pro) ? 'checked' : ''}
                                                        name="fl_audiencia_confirmada_pro" 
                                                        class="onoffswitch-checkbox" 
                                                        id="fl_audiencia_confirmada_pro_${processo.cd_processo_pro}"
@@ -663,7 +674,7 @@
                                             <span class="onoffswitch-title">Check-in Correspondente</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
-                                                       ${processo.fl_checkin_pro ? 'checked' : ''}
+                                                       ${flagAtivo(processo.fl_checkin_pro) ? 'checked' : ''}
                                                        name="fl_checkin_pro" 
                                                        class="onoffswitch-checkbox" 
                                                        id="fl_checkin_pro_${processo.cd_processo_pro}"
@@ -679,7 +690,7 @@
                                             <span class="onoffswitch-title">Check-in Escritório</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
-                                                       ${processo.fl_checkin_escritorio_pro ? 'checked' : ''}
+                                                       ${flagAtivo(processo.fl_checkin_escritorio_pro) ? 'checked' : ''}
                                                        name="fl_checkin_escritorio_pro" 
                                                        class="onoffswitch-checkbox" 
                                                        id="fl_checkin_escritorio_pro_${processo.cd_processo_pro}"

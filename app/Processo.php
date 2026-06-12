@@ -368,6 +368,9 @@ class Processo extends Model implements AuditableContract
                 $background = "#ffc3c3";
             }
             
+            $processos[$key]->fl_audiencia_confirmada_pro = self::asBool($processo->fl_audiencia_confirmada_pro);
+            $processos[$key]->fl_checkin_pro = self::asBool($processo->fl_checkin_pro);
+            $processos[$key]->fl_checkin_escritorio_pro = self::asBool($processo->fl_checkin_escritorio_pro);
             $processos[$key]->hash = \Crypt::encrypt($processo->cd_processo_pro); 
             $processos[$key]->fonte = $cor;
             $processos[$key]->background = $background;
@@ -378,6 +381,18 @@ class Processo extends Model implements AuditableContract
         }
 
         return $processos;
+    }
+
+    private static function asBool($value)
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        return in_array(strtolower((string) $value), ['1', 't', 'true', 's', 'yes', 'on'], true);
     }
 
     public function getStatusPrazo($nivel, $conta)
