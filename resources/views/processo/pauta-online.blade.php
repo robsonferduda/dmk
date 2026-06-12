@@ -403,24 +403,23 @@
             });
         });
 
-        $(document).on('change', 'input[name="fl_checkin_pro"]', function () {
-            let confirmado = $(this).is(':checked'); // true ou false
-            let processoId = $(this).data('processo'); // vamos adicionar isso no HTML
+        $(document).on('change', 'input[name="fl_checkin_escritorio_pro"]', function () {
+            let confirmado = $(this).is(':checked');
+            let processoId = $(this).data('processo');
 
-            // Enviar via AJAX
             $.ajax({
-                url: host+'/processo/atualizar-checkin',
+                url: host+'/processo/atualizar-checkin-escritorio',
                 method: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     cd_processo_pro: processoId,
-                    fl_checkin_pro: confirmado ? 'S' : 'N'
+                    fl_checkin_escritorio_pro: confirmado ? 'S' : 'N'
                 },
                 success: function (res) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Atualizado',
-                        text: 'Check In atualizado com sucesso!',
+                        text: 'Check-in do escritório atualizado com sucesso!',
                         timer: 1000,
                         showConfirmButton: false
                     });
@@ -430,7 +429,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro',
-                        text: 'Falha ao atualizar a audiência.'
+                        text: 'Falha ao atualizar o check-in do escritório.'
                     });
                 }
             });
@@ -517,11 +516,22 @@
 
                         response.forEach(function(processo) {
 
-                            let cor_fundo = (processo.fl_audiencia_confirmada_pro) ? '#c9ffcb' : 'white';
-                            let cor_borda = (processo.fl_audiencia_confirmada_pro) ? '#95ff9a' : 'white';
+                            let cor_fundo = 'white';
+                            let cor_borda = 'white';
 
-                            cor_fundo = (processo.fl_checkin_pro) ? '#c8e7ff' : cor_fundo;
-                            cor_borda = (processo.fl_checkin_pro) ? '#a7d9ff' : cor_borda;
+                            if (processo.fl_checkin_escritorio_pro && processo.fl_checkin_pro) {
+                                cor_fundo = '#c9ffcb';
+                                cor_borda = '#95ff9a';
+                            } else if (processo.fl_checkin_escritorio_pro && !processo.fl_checkin_pro) {
+                                cor_fundo = '#fff3cd';
+                                cor_borda = '#ffc107';
+                            } else if (!processo.fl_checkin_escritorio_pro && !processo.fl_checkin_pro) {
+                                cor_fundo = (processo.fl_audiencia_confirmada_pro) ? '#c9ffcb' : 'white';
+                                cor_borda = (processo.fl_audiencia_confirmada_pro) ? '#95ff9a' : 'white';
+                            } else {
+                                cor_fundo = '#c8e7ff';
+                                cor_borda = '#a7d9ff';
+                            }
 
                             let html = `
                             <div class="well box-acompanhamento" style="position: relative; padding: 10px 15px; border: 1px solid ${cor_borda}; border-radius: 10px; background: ${cor_fundo}; display: block;">
@@ -618,15 +628,15 @@
                                         </div>
 
                                         <div class="onoffswitch-container" style="margin-left: 8px; font-size: 11px;">
-                                            <span class="onoffswitch-title">Check In</span> 
+                                            <span class="onoffswitch-title">Check-in Escritório</span> 
                                             <span class="onoffswitch">
                                                 <input type="checkbox" 
-                                                       ${processo.fl_checkin_pro ? 'checked' : ''}
-                                                       name="fl_checkin_pro" 
+                                                       ${processo.fl_checkin_escritorio_pro ? 'checked' : ''}
+                                                       name="fl_checkin_escritorio_pro" 
                                                        class="onoffswitch-checkbox" 
-                                                       id="fl_checkin_pro_${processo.cd_processo_pro}"
+                                                       id="fl_checkin_escritorio_pro_${processo.cd_processo_pro}"
                                                        data-processo="${processo.cd_processo_pro}">
-                                                <label class="onoffswitch-label" for="fl_checkin_pro_${processo.cd_processo_pro}"> 
+                                                <label class="onoffswitch-label" for="fl_checkin_escritorio_pro_${processo.cd_processo_pro}"> 
                                                     <span class="onoffswitch-inner" data-swchon-text="SIM" data-swchoff-text="NÃO"></span> 
                                                     <span class="onoffswitch-switch"></span>
                                                 </label> 

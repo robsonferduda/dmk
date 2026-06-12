@@ -272,6 +272,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('processo/informar-link-audiencia', 'ProcessoController@informarLinkAudiencia');
     Route::post('processo/atualizar-audiencia', 'ProcessoController@atualizarAudiencia');
     Route::post('processo/atualizar-checkin', 'ProcessoController@atualizarCheck');
+    Route::post('processo/atualizar-checkin-escritorio', 'ProcessoController@atualizarCheckinEscritorio');
     Route::post('processo/atualizar-documento-representacao', 'ProcessoController@atualizarDocumentoRepresentacao');
 
     Route::delete('processo/mensagem/excluir/{id}', 'MensagemController@excluir');

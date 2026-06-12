@@ -76,6 +76,7 @@ class Processo extends Model implements AuditableContract
                             'dt_notificacao_pro',
                             'fl_audiencia_confirmada_pro',
                             'fl_checkin_pro',
+                            'fl_checkin_escritorio_pro',
                             'cd_area_direito_ado',
                             'fl_importacao_pro',    
                             'ds_planilha_pro',
@@ -294,6 +295,7 @@ class Processo extends Model implements AuditableContract
                        fl_audiencia_confirmada_pro,
                        fl_documento_representacao_pro,
                        fl_checkin_pro,
+                       fl_checkin_escritorio_pro,
                        t14.dc_area_direito_ado,
                        t1.nu_total_arquivos_pro,
                        t1.nu_tamanho_anexos_pro

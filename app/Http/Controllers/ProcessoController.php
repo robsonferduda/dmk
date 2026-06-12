@@ -2449,6 +2449,15 @@ class ProcessoController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function atualizarCheckinEscritorio(Request $request)
+    {
+        $processo = Processo::findOrFail($request->cd_processo_pro);
+        $processo->fl_checkin_escritorio_pro = $request->fl_checkin_escritorio_pro === 'S' ? true : false;
+        $processo->save();
+
+        return response()->json(['success' => true]);
+    }
+
     public function atualizarDocumentoRepresentacao(Request $request)
     {
         $processo = Processo::findOrFail($request->cd_processo_pro);
