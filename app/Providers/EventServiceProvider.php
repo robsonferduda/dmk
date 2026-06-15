@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Listeners\LogNotificationListener;
-use App\Listeners\EmailMailLogListener;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Mail\Events\MessageSent;
@@ -26,13 +25,13 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\LogNotificationListener',
         ],
         MessageSending::class => [
-            [EmailMailLogListener::class, 'onSending'],
+            'App\Listeners\EmailMailLogListener@onSending',
         ],
         MessageSent::class => [
-            [EmailMailLogListener::class, 'onSent'],
+            'App\Listeners\EmailMailLogListener@onSent',
         ],
         NotificationFailed::class => [
-            [EmailMailLogListener::class, 'onNotificationFailed'],
+            'App\Listeners\EmailMailLogListener@onNotificationFailed',
         ],
     ];
 
