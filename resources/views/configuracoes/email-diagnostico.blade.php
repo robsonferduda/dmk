@@ -7,6 +7,7 @@
         'warning' => 'label-warning',
         'info'    => 'label-info',
         'config'  => 'label-primary',
+        'debug'   => 'label-default',
     ];
 @endphp
 <div id="ribbon">
@@ -51,6 +52,7 @@
                             <tr><th>Ambiente</th><td>{{ $config['app_env'] }}</td></tr>
                             <tr><th>APP_URL</th><td><code>{{ $config['app_url'] }}</code></td></tr>
                             <tr><th>Fila (QUEUE)</th><td><code>{{ $config['queue'] }}</code></td></tr>
+                            <tr><th>Config cacheada</th><td>{{ $config['config_cacheada'] ? 'Sim — rode config:clear' : 'Não' }}</td></tr>
                         </table>
                         <p class="text-muted" style="margin:10px 0 0;font-size:12px;">
                             <i class="fa fa-info-circle"></i>
@@ -83,10 +85,16 @@
                                 <label class="select">
                                     <select name="tipo_teste">
                                         <option value="simples" {{ old('tipo_teste', 'simples') === 'simples' ? 'selected' : '' }}>
-                                            Texto simples (SMTP direto)
+                                            SMTP com transcript completo (recomendado)
+                                        </option>
+                                        <option value="laravel_mail" {{ old('tipo_teste') === 'laravel_mail' ? 'selected' : '' }}>
+                                            Mail::raw (mesmo caminho das notificações)
                                         </option>
                                         <option value="recuperacao_senha" {{ old('tipo_teste') === 'recuperacao_senha' ? 'selected' : '' }}>
-                                            Simular recuperação de senha
+                                            Simular template recuperação de senha
+                                        </option>
+                                        <option value="recuperacao_senha_real" {{ old('tipo_teste') === 'recuperacao_senha_real' ? 'selected' : '' }}>
+                                            Recuperação de senha REAL (Password broker)
                                         </option>
                                     </select>
                                     <i></i>
@@ -130,8 +138,9 @@
                             <strong>Erro principal:</strong> {{ $resultado['erro'] }}
                         </div>
                         @elseif($resultado['sucesso'])
-                        <div class="alert alert-success" style="margin:15px;">
-                            E-mail de teste enviado. Verifique a caixa de entrada e o spam.
+                        <div class="alert alert-warning" style="margin:15px;">
+                            <strong>PHP não lançou exceção</strong> — o SMTP aceitou a mensagem. Isso <em>não garante</em> entrega na caixa de entrada.
+                            Verifique spam e o transcript SMTP abaixo. Compare também <code>storage/logs/mail.log</code>.
                         </div>
                         @endif
 

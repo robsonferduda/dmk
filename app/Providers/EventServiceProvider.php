@@ -5,7 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Listeners\LogNotificationListener;
+use App\Listeners\EmailMailLogListener;
 use Illuminate\Log\Events\MessageLogged;
+use Illuminate\Mail\Events\MessageSending;
+use Illuminate\Mail\Events\MessageSent;
+use Illuminate\Notifications\Events\NotificationFailed;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,6 +24,15 @@ class EventServiceProvider extends ServiceProvider
         ],
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\LogNotificationListener',
+        ],
+        MessageSending::class => [
+            [EmailMailLogListener::class, 'onSending'],
+        ],
+        MessageSent::class => [
+            [EmailMailLogListener::class, 'onSent'],
+        ],
+        NotificationFailed::class => [
+            [EmailMailLogListener::class, 'onNotificationFailed'],
         ],
     ];
 

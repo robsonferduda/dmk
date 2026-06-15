@@ -28,7 +28,7 @@ class EmailDiagnosticoController extends Controller
         if ($request->isMethod('post')) {
             $request->validate([
                 'email_teste' => 'nullable|email',
-                'tipo_teste'  => 'nullable|in:simples,recuperacao_senha',
+                'tipo_teste'  => 'nullable|in:simples,laravel_mail,recuperacao_senha,recuperacao_senha_real',
             ]);
 
             $resultado = $service->executar(
