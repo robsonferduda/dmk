@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Password;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_Plugins_Loggers_ArrayLogger;
-use Swift_Plugins_Loggers_LoggerPlugin;
+use Swift_Plugins_LoggerPlugin;
 use Swift_SmtpTransport;
 
 class EmailDiagnosticoService
@@ -140,9 +140,8 @@ class EmailDiagnosticoService
         $transport->setTimeout(30);
 
         $logger = new Swift_Plugins_Loggers_ArrayLogger();
-        $transport->registerPlugin(new Swift_Plugins_Loggers_LoggerPlugin($logger));
-
         $mailer = new Swift_Mailer($transport);
+        $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
 
         $message = (new Swift_Message($assunto))
             ->setFrom([config('mail.from.address') => config('mail.from.name')])
