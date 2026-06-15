@@ -25,6 +25,7 @@ use App\Enums\TipoMensagem;
 use App\Enums\Nivel;
 use App\TipoServico;
 use App\ProcessoTaxaHonorario;
+use App\Services\Pagamento\PagamentoCorrespondenteSyncService;
 use App\TaxaHonorario;
 use App\EnderecoEletronico;
 use App\ContaCorrespondente;
@@ -841,6 +842,8 @@ class ProcessoController extends Controller
                 return redirect('processos');
             }
         }
+
+        app(PagamentoCorrespondenteSyncService::class)->syncProcesso((int) $processo_id);
         
         return true;
     }
@@ -909,6 +912,8 @@ class ProcessoController extends Controller
         }
                    
     
+        app(PagamentoCorrespondenteSyncService::class)->syncProcesso((int) $processo_id);
+
         Flash::success('Dados atualizados com sucesso');
         DB::commit();
  

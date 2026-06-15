@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use App\ProcessoTaxaHonorario;
+use App\Services\Pagamento\PagamentoCorrespondenteSyncService;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\Imports\ProcessoImport;
@@ -875,6 +876,8 @@ class ClienteProcessoController extends Controller
                 return redirect('cliente/processos/acompanhamento');
             }
         }
+
+        app(PagamentoCorrespondenteSyncService::class)->syncProcesso((int) $id);
 
         return true;
     }

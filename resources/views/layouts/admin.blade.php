@@ -465,6 +465,11 @@
                             <li>
                                 <a href="{{ url('configuracoes/notificacoes') }}" title="Notificações"><span class="menu-item-parent">Notificações</span></a>
                             </li>
+                            @role('administrator')
+                            <li>
+                                <a href="{{ url('configuracoes/email-diagnostico') }}" title="Diagnóstico de E-mail"><span class="menu-item-parent">Diagnóstico de E-mail</span></a>
+                            </li>
+                            @endrole
                             <li>
                                 <a href="{{ url('configuracoes/tipos-de-contato') }}" title="Tipos de Serviço"><span class="menu-item-parent">Tipos de Contato</span></a>
                             </li>

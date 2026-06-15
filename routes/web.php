@@ -284,6 +284,7 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::get('configuracoes/areas', 'AreaController@index');
     Route::get('configuracoes/notificacoes', 'NotificacaoController@preferencias');
+    Route::match(['get', 'post'], 'configuracoes/email-diagnostico', 'EmailDiagnosticoController@index');
     Route::get('configuracoes/tipos-de-servico', 'TipoServicoController@index');
     Route::get('configuracoes/tipos-de-servico/consulta/{id}', 'TipoServicoController@consultar');
     Route::get('configuracoes/tipos-de-contato', 'TipoContatoController@index');
