@@ -94,6 +94,16 @@
         </article>
         <div class="col-md-12">
             <div class="row">
+                <div class="col-md-12" id="timeline-processos-wrapper" style="display: none; margin-bottom: 15px;">
+                    <div class="well" style="margin-left: 1px; margin-right: 1px; border-radius: 10px; background: #fff; padding: 15px 20px;">
+                        <h5 style="margin: 0 0 12px 0; font-size: 13px;">
+                            <i class="fa fa-clock-o"></i> <strong>Distribuição de Processos por Horário</strong>
+                            <span id="timeline-pico-horario" style="font-weight: normal; color: #666; font-size: 12px;"></span>
+                        </h5>
+                        <div id="timeline-processos" style="display: flex; align-items: flex-end; gap: 4px; min-height: 120px; padding: 10px 0 5px; overflow-x: auto;"></div>
+                        <div id="timeline-processos-legenda" style="margin-top: 8px; font-size: 11px; color: #888;"></div>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <h5 style="font-size: 12px;"><strong>Total de Processos</strong>: <span id="total-processos">0</span></h5>
                 </div>
@@ -264,6 +274,100 @@
         var s = String(val).toLowerCase();
         if (s === '0' || s === 'f' || s === 'false' || s === 'n' || s === 'no' || s === 'off') return false;
         return (s === '1' || s === 't' || s === 'true' || s === 's' || s === 'yes');
+    }
+
+    function extrairHoraAudiencia(hr) {
+        if (!hr) return null;
+        var texto = String(hr).trim();
+        if (!texto || texto.toLowerCase() === 'não informada') return null;
+        var match = texto.match(/(\d{1,2}):(\d{2})/);
+        if (!match) return null;
+        var hora = parseInt(match[1], 10);
+        return (hora >= 0 && hora <= 23) ? hora : null;
+    }
+
+    function formatarHoraLabel(hora) {
+        return String(hora).padStart(2, '0') + 'h';
+    }
+
+    function corBarraTimeline(qtd, maxQtd, ehPico) {
+        if (ehPico) return '#3276b1';
+        var intensidade = maxQtd > 0 ? qtd / maxQtd : 0;
+        if (intensidade >= 0.75) return '#5a9fd4';
+        if (intensidade >= 0.5) return '#7eb3de';
+        if (intensidade >= 0.25) return '#a8cce8';
+        return '#d4e6f5';
+    }
+
+    function renderTimelineProcessos(processos) {
+        var wrapper = $("#timeline-processos-wrapper");
+        var container = $("#timeline-processos");
+        var legenda = $("#timeline-processos-legenda");
+        var picoElement = $("#timeline-pico-horario");
+
+        container.empty();
+        legenda.empty();
+        picoElement.text('');
+
+        if (!processos || processos.length === 0) {
+            wrapper.hide();
+            return;
+        }
+
+        var porHora = {};
+        var semHorario = 0;
+
+        processos.forEach(function(processo) {
+            var hora = extrairHoraAudiencia(processo.hr_audiencia_pro);
+            if (hora === null) {
+                semHorario++;
+            } else {
+                porHora[hora] = (porHora[hora] || 0) + 1;
+            }
+        });
+
+        var horasComProcessos = Object.keys(porHora).map(Number).sort(function(a, b) { return a - b; });
+
+        if (horasComProcessos.length === 0) {
+            wrapper.hide();
+            return;
+        }
+
+        var maxQtd = Math.max.apply(null, Object.values(porHora));
+        var horasPico = horasComProcessos.filter(function(h) { return porHora[h] === maxQtd; });
+        var horaInicio = Math.max(0, horasComProcessos[0] - 1);
+        var horaFim = Math.min(23, horasComProcessos[horasComProcessos.length - 1] + 1);
+
+        var picoTexto = horasPico.map(formatarHoraLabel).join(', ');
+        picoElement.html(' — Pico: <strong style="color: #3276b1;">' + picoTexto + '</strong> (' + maxQtd + ' processo' + (maxQtd > 1 ? 's' : '') + ')');
+
+        for (var h = horaInicio; h <= horaFim; h++) {
+            var qtd = porHora[h] || 0;
+            var ehPico = qtd > 0 && qtd === maxQtd;
+            var alturaBarra = qtd > 0 ? Math.max(24, Math.round((qtd / maxQtd) * 80)) : 4;
+            var cor = qtd > 0 ? corBarraTimeline(qtd, maxQtd, ehPico) : '#eee';
+
+            var barraHtml = `
+                <div class="timeline-hora-item" style="flex: 1; min-width: 36px; display: flex; flex-direction: column; align-items: center; cursor: default;"
+                     title="${formatarHoraLabel(h)}: ${qtd} processo${qtd !== 1 ? 's' : ''}">
+                    <span style="font-size: 11px; font-weight: ${ehPico ? 'bold' : 'normal'}; color: ${ehPico ? '#3276b1' : '#666'}; margin-bottom: 4px; min-height: 14px;">
+                        ${qtd > 0 ? qtd : ''}
+                    </span>
+                    <div style="width: 100%; max-width: 40px; height: ${alturaBarra}px; background: ${cor}; border-radius: 4px 4px 0 0; border: 1px solid ${qtd > 0 ? (ehPico ? '#2c6999' : '#b8d4ea') : '#ddd'}; transition: height 0.3s;"></div>
+                    <span style="font-size: 10px; color: #888; margin-top: 5px; white-space: nowrap;">${formatarHoraLabel(h)}</span>
+                </div>`;
+
+            container.append(barraHtml);
+        }
+
+        var partesLegenda = [];
+        if (semHorario > 0) {
+            partesLegenda.push('<i class="fa fa-info-circle"></i> ' + semHorario + ' processo' + (semHorario > 1 ? 's' : '') + ' sem horário informado');
+        }
+        partesLegenda.push('Período exibido: ' + formatarHoraLabel(horaInicio) + ' às ' + formatarHoraLabel(horaFim));
+        legenda.html(partesLegenda.join(' &nbsp;|&nbsp; '));
+
+        wrapper.show();
     }
 
     $(document).ready(function() {
@@ -544,10 +648,9 @@
                     let container = $("#box-processos-container");
                     let totalElement = $("#total-processos");
 
-                    container.empty(); // limpa os dados atuais
-                    totalElement.text(response.length); // atualiza o total
-
-
+                    container.empty();
+                    totalElement.text(response.length);
+                    renderTimelineProcessos(response);
 
                     if (response.length === 0) {
                         container.append('<h5 class="center">Nenhum dado para ser exibido</h5>');
