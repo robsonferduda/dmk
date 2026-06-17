@@ -94,7 +94,10 @@
         </article>
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-12" id="timeline-processos-wrapper" style="display: none; margin-bottom: 15px;">
+            <div class="col-md-12">
+                    <h5 style="font-size: 12px;"><strong>Total de Processos</strong>: <span id="total-processos">0</span></h5>
+                </div>
+                <div class="col-md-12" id="timeline-processos-wrapper" style="display: none; margin-bottom: 2px;">
                     <div class="well" style="margin-left: 1px; margin-right: 1px; border-radius: 10px; background: #fff; padding: 15px 20px;">
                         <h5 style="margin: 0 0 12px 0; font-size: 13px;">
                             <i class="fa fa-clock-o"></i> <strong>Distribuição de Processos por Horário</strong>
@@ -104,9 +107,7 @@
                         <div id="timeline-processos-legenda" style="margin-top: 8px; font-size: 11px; color: #888;"></div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <h5 style="font-size: 12px;"><strong>Total de Processos</strong>: <span id="total-processos">0</span></h5>
-                </div>
+                
                 <div class="col-md-12" id="box-processos-container">
                     
                 </div>
