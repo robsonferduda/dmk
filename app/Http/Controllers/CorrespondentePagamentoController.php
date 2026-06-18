@@ -22,12 +22,16 @@ class CorrespondentePagamentoController extends Controller
     {
         $this->middleware('auth')->except(['confirmarPorToken']);
         $this->conta = \Session::get('SESSION_CD_CONTA');
+        Session::put('menu_pai','correspondente');
+        Session::forget('item_pai');
     }
 
     // ─── Listagem ─────────────────────────────────────────────────────────────
 
     public function pagamentos(Request $request)
     {
+        Session::put('item_pai','correspondente.pagamentos');
+        
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);
 
