@@ -182,12 +182,15 @@
             </div>
 
             {{-- Ações conforme status --}}
-            @if($pagamento->podeEnviarAprovacao())
+            @if($pagamento->podeNotificarAprovacao())
             <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
                 @csrf
                 <button type="submit" class="btn btn-warning btn-block"
-                        onclick="return confirm('Enviar para aprovação do correspondente via e-mail e WhatsApp?')">
-                    <i class="fa fa-paper-plane"></i> Enviar para Aprovação
+                        onclick="return confirm('{{ $pagamento->podeReenviarAprovacao()
+                            ? 'Reenviar a notificação de aprovação para o correspondente (e-mail e WhatsApp)? Um novo link será gerado.'
+                            : 'Enviar para aprovação do correspondente via e-mail e WhatsApp?' }}')">
+                    <i class="fa fa-{{ $pagamento->podeReenviarAprovacao() ? 'repeat' : 'paper-plane' }}"></i>
+                    {{ $pagamento->podeReenviarAprovacao() ? 'Reenviar para Aprovação' : 'Enviar para Aprovação' }}
                 </button>
             </form>
             @endif

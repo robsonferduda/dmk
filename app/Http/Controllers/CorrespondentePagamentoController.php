@@ -106,15 +106,19 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
-        if (! $pagamento->podeEnviarAprovacao()) {
+        if (! $pagamento->podeNotificarAprovacao()) {
             Flash::error('Este pagamento não pode ser enviado para aprovação no status atual.');
             return redirect()->back();
         }
 
-        DB::transaction(function () use ($pagamento) {
+        $isReenvio = $pagamento->podeReenviarAprovacao();
+
+        DB::transaction(function () use ($pagamento, $isReenvio) {
             // Gera (ou regenera) o token de confirmação por link
             $pagamento->tk_confirmacao_pag      = Str::random(64);
-            $pagamento->cd_status_pag           = StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
+            if (! $isReenvio) {
+                $pagamento->cd_status_pag       = StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
+            }
             $pagamento->dt_envio_aprovacao_pag  = Carbon::now();
             $pagamento->save();
         });
@@ -122,7 +126,9 @@ class CorrespondentePagamentoController extends Controller
         // Notifica via e-mail e WhatsApp (com PDF e link de confirmação)
         $this->notificarAprovacao($pagamento);
 
-        Flash::success('Pagamento enviado para aprovação do correspondente.');
+        Flash::success($isReenvio
+            ? 'Notificação reenviada para o correspondente (e-mail e WhatsApp).'
+            : 'Pagamento enviado para aprovação do correspondente.');
         return redirect()->back();
     }
 

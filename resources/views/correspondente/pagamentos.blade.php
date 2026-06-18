@@ -195,7 +195,16 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        @if($pag->podeEnviarAprovacao())
+                                        @if($pag->podeReenviarAprovacao())
+                                        <form method="POST" action="{{ url('correspondente/pagamentos/'.$pag->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs btn-warning"
+                                                    title="Reenviar para aprovação"
+                                                    onclick="return confirm('Reenviar notificação de aprovação para este correspondente?')">
+                                                <i class="fa fa-repeat"></i>
+                                            </button>
+                                        </form>
+                                        @elseif($pag->podeEnviarAprovacao())
                                         <form method="POST" action="{{ url('correspondente/pagamentos/'.$pag->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}" style="display:inline;">
                                             @csrf
                                             <button type="submit" class="btn btn-xs btn-warning"

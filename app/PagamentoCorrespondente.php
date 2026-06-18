@@ -68,6 +68,16 @@ class PagamentoCorrespondente extends Model
         ]);
     }
 
+    public function podeReenviarAprovacao(): bool
+    {
+        return $this->cd_status_pag === StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
+    }
+
+    public function podeNotificarAprovacao(): bool
+    {
+        return $this->podeEnviarAprovacao() || $this->podeReenviarAprovacao();
+    }
+
     public function podeAprovar(): bool
     {
         return $this->cd_status_pag === StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
