@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laracasts\Flash\Flash;
+use Illuminate\Support\Facades\Session;
 use App\Conta;
 use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteItem;
