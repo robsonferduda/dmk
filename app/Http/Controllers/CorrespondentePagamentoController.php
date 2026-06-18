@@ -329,11 +329,12 @@ class CorrespondentePagamentoController extends Controller
         }
 
         $mensagem = sprintf(
-            'Valores atualizados: %d adicionado(s), %d atualizado(s), %d removido(s), %d excluído(s) por cancelamento.',
+            'Valores atualizados: %d adicionado(s), %d atualizado(s), %d removido(s), %d excluído(s) por cancelamento, %d duplicado(s) removido(s).',
             $stats['adicionados'],
             $stats['atualizados'],
             $stats['removidos'],
-            $stats['excluidos']
+            $stats['excluidos'],
+            $stats['duplicados'] ?? 0
         );
 
         Flash::success($mensagem);

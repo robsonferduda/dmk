@@ -53,7 +53,13 @@ class ConsolidarPagamentosCorrespondente extends Command
         $query = DB::table('processo_pro as t3')
             ->join('processo_taxa_honorario_pth as t5', function ($j) {
                 $j->on('t3.cd_processo_pro', '=', 't5.cd_processo_pro')
-                  ->whereNull('t5.deleted_at');
+                  ->whereNull('t5.deleted_at')
+                  ->whereRaw('t5.cd_processo_taxa_honorario_pth = (
+                      SELECT MAX(t5b.cd_processo_taxa_honorario_pth)
+                      FROM processo_taxa_honorario_pth t5b
+                      WHERE t5b.cd_processo_pro = t3.cd_processo_pro
+                        AND t5b.deleted_at IS NULL
+                  )');
             })
             ->join('conta_correspondente_ccr as t8', 't3.cd_correspondente_cor', '=', 't8.cd_correspondente_cor')
             ->leftJoin(
@@ -104,6 +110,7 @@ class ConsolidarPagamentosCorrespondente extends Command
         $atualizados = 0;
 
         foreach ($agrupado as $chave => $itens) {
+            $itens           = $itens->unique('cd_processo_pro')->values();
             $primeiro        = $itens->first();
             $cdConta         = $primeiro->cd_conta_con;
             $cdCorrespondente = $primeiro->cd_correspondente_cor;

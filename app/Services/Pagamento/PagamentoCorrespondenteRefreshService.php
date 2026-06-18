@@ -37,9 +37,11 @@ class PagamentoCorrespondenteRefreshService
             return ['erro' => 'Pagamento já efetuado e não pode ser atualizado.'];
         }
 
-        $stats = ['adicionados' => 0, 'atualizados' => 0, 'removidos' => 0, 'excluidos' => 0];
+        $stats = ['adicionados' => 0, 'atualizados' => 0, 'removidos' => 0, 'excluidos' => 0, 'duplicados' => 0];
 
         DB::transaction(function () use ($pagamento, &$stats) {
+            $stats['duplicados'] = $this->deduplicarItensPagamento($pagamento);
+
             $elegiveis = $this->buscarProcessosElegiveis(
                 (int) $pagamento->cd_conta_con,
                 (int) $pagamento->cd_correspondente_cor,
@@ -78,8 +80,10 @@ class PagamentoCorrespondenteRefreshService
             }
 
             $idsComItem = PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)
+                ->whereNotNull('cd_processo_pro')
                 ->pluck('cd_processo_pro')
-                ->filter()
+                ->unique()
+                ->values()
                 ->all();
 
             foreach ($elegiveis as $dados) {
@@ -99,11 +103,14 @@ class PagamentoCorrespondenteRefreshService
                     'fl_excluido_pai'                  => $cancelado ? 'S' : 'N',
                 ]);
 
+                $idsComItem[] = $dados->cd_processo_pro;
                 $stats['adicionados']++;
                 if ($cancelado) {
                     $stats['excluidos']++;
                 }
             }
+
+            $stats['duplicados'] += $this->deduplicarItensPagamento($pagamento);
 
             $this->recalcularTotal($pagamento);
         });
@@ -161,6 +168,7 @@ class PagamentoCorrespondenteRefreshService
 
         $item = PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)
             ->where('cd_processo_pro', $cdProcessoPro)
+            ->orderBy('cd_pagamento_correspondente_item_pai')
             ->first();
 
         $valores = $this->getValoresProcesso($cdProcessoPro);
@@ -187,6 +195,7 @@ class PagamentoCorrespondenteRefreshService
             $item->save();
         }
 
+        $this->deduplicarItensPagamento($pagamento);
         $this->recalcularTotal($pagamento);
     }
 
@@ -201,7 +210,13 @@ class PagamentoCorrespondenteRefreshService
         return DB::table('processo_pro as t3')
             ->join('processo_taxa_honorario_pth as t5', function ($j) {
                 $j->on('t3.cd_processo_pro', '=', 't5.cd_processo_pro')
-                  ->whereNull('t5.deleted_at');
+                  ->whereNull('t5.deleted_at')
+                  ->whereRaw('t5.cd_processo_taxa_honorario_pth = (
+                      SELECT MAX(t5b.cd_processo_taxa_honorario_pth)
+                      FROM processo_taxa_honorario_pth t5b
+                      WHERE t5b.cd_processo_pro = t3.cd_processo_pro
+                        AND t5b.deleted_at IS NULL
+                  )');
             })
             ->join('conta_correspondente_ccr as t8', 't3.cd_correspondente_cor', '=', 't8.cd_correspondente_cor')
             ->leftJoin(
@@ -230,7 +245,44 @@ class PagamentoCorrespondenteRefreshService
                 't3.nm_reu_pro'
             )
             ->orderBy('t3.cd_processo_pro')
-            ->get();
+            ->get()
+            ->unique('cd_processo_pro')
+            ->values();
+    }
+
+    /**
+     * Remove itens duplicados do mesmo processo no pagamento (mantém um registro).
+     */
+    public function deduplicarItensPagamento(PagamentoCorrespondente $pagamento): int
+    {
+        $removidos = 0;
+
+        $itens = PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)
+            ->whereNotNull('cd_processo_pro')
+            ->orderBy('cd_pagamento_correspondente_item_pai')
+            ->get()
+            ->groupBy('cd_processo_pro');
+
+        foreach ($itens as $grupo) {
+            if ($grupo->count() <= 1) {
+                continue;
+            }
+
+            $manter = $grupo->first(function ($item) {
+                return ! $this->itemExcluido($item);
+            }) ?? $grupo->first();
+
+            foreach ($grupo as $item) {
+                if ((int) $item->cd_pagamento_correspondente_item_pai === (int) $manter->cd_pagamento_correspondente_item_pai) {
+                    continue;
+                }
+
+                $item->delete();
+                $removidos++;
+            }
+        }
+
+        return $removidos;
     }
 
     public function recalcularTotal(PagamentoCorrespondente $pagamento): void
