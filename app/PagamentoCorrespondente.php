@@ -92,4 +92,16 @@ class PagamentoCorrespondente extends Model
     {
         return $this->cd_status_pag === StatusPagamentoCorrespondente::ENVIADO_APROVACAO;
     }
+
+    public function podeAtualizarValores(): bool
+    {
+        return $this->cd_status_pag !== StatusPagamentoCorrespondente::PAGO;
+    }
+
+    public function getQtdItensAtivosAttribute(): int
+    {
+        return $this->itens->filter(function ($item) {
+            return ! $item->isExcluido();
+        })->count();
+    }
 }

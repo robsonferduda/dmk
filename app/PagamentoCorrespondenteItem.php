@@ -17,6 +17,7 @@ class PagamentoCorrespondenteItem extends Model
         'ds_descricao_pai',
         'vl_honorario_pai',
         'vl_despesa_pai',
+        'fl_excluido_pai',
     ];
 
     public function pagamento()
@@ -31,6 +32,15 @@ class PagamentoCorrespondenteItem extends Model
 
     public function getVlTotalAttribute(): float
     {
+        if (strtoupper((string) ($this->fl_excluido_pai ?? 'N')) === 'S') {
+            return 0.0;
+        }
+
         return (float) $this->vl_honorario_pai + (float) $this->vl_despesa_pai;
+    }
+
+    public function isExcluido(): bool
+    {
+        return strtoupper((string) ($this->fl_excluido_pai ?? 'N')) === 'S';
     }
 }

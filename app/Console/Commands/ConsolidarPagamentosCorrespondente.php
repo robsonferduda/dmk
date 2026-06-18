@@ -6,6 +6,7 @@ use App\Conta;
 use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteItem;
 use App\Enums\StatusPagamentoCorrespondente;
+use App\Enums\StatusProcesso;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +49,7 @@ class ConsolidarPagamentosCorrespondente extends Command
 
         $this->info("[consolidar] mes={$mes}/{$ano}  dtInicio={$dtInicio}  dtFim={$dtFim}" . ($dryRun ? '  DRY-RUN' : ''));
 
-        // Busca todos os processos com prazo fatal no mês/ano que tenham honorário de correspondente
+        // Busca processos elegíveis (prazo fatal no mês, exceto cancelados)
         $query = DB::table('processo_pro as t3')
             ->join('processo_taxa_honorario_pth as t5', function ($j) {
                 $j->on('t3.cd_processo_pro', '=', 't5.cd_processo_pro')
@@ -65,6 +66,10 @@ class ConsolidarPagamentosCorrespondente extends Command
             ->whereNull('t3.deleted_at')
             ->whereBetween('t3.dt_prazo_fatal_pro', [$dtInicio, $dtFim])
             ->whereNotNull('t3.cd_correspondente_cor')
+            ->whereNotIn('t3.cd_status_processo_stp', [
+                StatusProcesso::CANCELADO,
+                StatusProcesso::CANCELADO_PELO_ESCRITORIO,
+            ])
             ->select(
                 't3.cd_processo_pro',
                 't3.nu_processo_pro',

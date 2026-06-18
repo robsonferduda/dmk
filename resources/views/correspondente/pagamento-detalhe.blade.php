@@ -182,6 +182,16 @@
             </div>
 
             {{-- Ações conforme status --}}
+            @if($pagamento->podeAtualizarValores())
+            <form method="POST" style="margin-bottom:8px;" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/atualizar-valores') }}">
+                @csrf
+                <button type="submit" class="btn btn-primary btn-block"
+                        onclick="return confirm('Atualizar valores deste pagamento com base nos processos atuais?\n\nIsso adiciona processos novos, remove os que mudaram de correspondente e atualiza honorários/despesas.')">
+                    <i class="fa fa-refresh"></i> Atualizar Valores
+                </button>
+            </form>
+            @endif
+
             @if($pagamento->podeNotificarAprovacao())
             <form method="POST" style="margin-bottom:8px;" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
                 @csrf
@@ -221,7 +231,11 @@
             <div class="jarviswidget jarviswidget-color-blueDark">
                 <header>
                     <span class="widget-icon"><i class="fa fa-list"></i></span>
-                    <h2>Processos ({{ $pagamento->itens->count() }})
+                    <h2>Processos ({{ $pagamento->qtd_itens_ativos }} ativo{{ $pagamento->qtd_itens_ativos !== 1 ? 's' : '' }}
+                        @if($pagamento->itens->count() !== $pagamento->qtd_itens_ativos)
+                        / {{ $pagamento->itens->count() }} total
+                        @endif
+                        )
                         @if($pagamento->cd_status_pag == 5)
                         <small style="color:#f39c12;"> <i class="fa fa-pencil"></i> editável</small>
                         @endif
@@ -242,12 +256,16 @@
                                         <th class="text-right" style="width:130px;">Honorário (R$)</th>
                                         <th class="text-right" style="width:130px;">Despesa (R$)</th>
                                         <th class="text-right" style="width:110px;">Total</th>
+                                        <th class="text-center" style="width:90px;">Incluir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($pagamento->itens as $item)
-                                    @php $itemId = $item->cd_pagamento_correspondente_item_pai; @endphp
-                                    <tr>
+                                    @php
+                                        $itemId = $item->cd_pagamento_correspondente_item_pai;
+                                        $excluido = $item->isExcluido();
+                                    @endphp
+                                    <tr class="{{ $excluido ? 'item-excluido' : '' }}" data-excluido="{{ $excluido ? '1' : '0' }}">
                                         <td>
                                             @if($item->cd_processo_pro)
                                             <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
@@ -274,9 +292,14 @@
                                         <td class="text-right item-total" style="vertical-align:middle;">
                                             <strong>R$ {{ number_format($item->vl_total, 2, ',', '.') }}</strong>
                                         </td>
+                                        <td class="text-center" style="vertical-align:middle;">
+                                            <input type="checkbox" name="itens[{{ $itemId }}][incluir]" value="1"
+                                                   class="item-incluir" {{ $excluido ? '' : 'checked' }}
+                                                   title="Desmarque para excluir este processo do total do pagamento">
+                                        </td>
                                     </tr>
                                     @empty
-                                    <tr><td colspan="5" class="text-center text-muted">Nenhum item.</td></tr>
+                                    <tr><td colspan="6" class="text-center text-muted">Nenhum item.</td></tr>
                                     @endforelse
                                 </tbody>
                                 <tfoot>
@@ -287,7 +310,7 @@
                                         </th>
                                     </tr>
                                     <tr>
-                                        <td colspan="5" class="text-right" style="padding:10px;">
+                                        <td colspan="6" class="text-right" style="padding:10px;">
                                             <button type="submit" class="btn btn-danger"
                                                     onclick="return confirm('Salvar alterações nos honorários e despesas?')">
                                                 <i class="fa fa-save"></i> Salvar Alterações
@@ -311,13 +334,16 @@
                             </thead>
                             <tbody>
                                 @forelse($pagamento->itens as $item)
-                                <tr>
+                                <tr class="{{ $item->isExcluido() ? 'item-excluido' : '' }}">
                                     <td>
                                         @if($item->cd_processo_pro)
                                         <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
                                             {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
                                         </a>
                                         @else —
+                                        @endif
+                                        @if($item->isExcluido())
+                                        <span class="label label-default" style="font-size:10px; margin-left:4px;">Excluído</span>
                                         @endif
                                     </td>
                                     <td>{{ $item->ds_descricao_pai }}</td>
@@ -378,6 +404,10 @@
 @endsection
 
 @section('script')
+<style>
+    tr.item-excluido td { color: #999; text-decoration: line-through; }
+    tr.item-excluido input.form-control { text-decoration: none; color: #333; }
+</style>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#modalPagar').on('show.bs.modal', function (e) {
@@ -391,16 +421,21 @@
         function recalcularTotal() {
             var total = 0;
             $('#formItens tbody tr').each(function () {
+                var incluir = $(this).find('.item-incluir').is(':checked');
                 var hon  = parseFloat($(this).find('.item-honorario').val()) || 0;
                 var des  = parseFloat($(this).find('.item-despesa').val())   || 0;
-                var sub  = hon + des;
-                total   += sub;
+                var sub  = incluir ? (hon + des) : 0;
+
+                total += sub;
+                $(this).attr('data-excluido', incluir ? '0' : '1');
+                $(this).toggleClass('item-excluido', !incluir);
                 $(this).find('.item-total strong').text('R$ ' + sub.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
             });
             $('#totalGeral').text('R$ ' + total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         }
 
         $(document).on('input', '.item-honorario, .item-despesa', recalcularTotal);
+        $(document).on('change', '.item-incluir', recalcularTotal);
     });
 </script>
 @endsection

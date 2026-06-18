@@ -14,6 +14,7 @@ use App\PagamentoCorrespondenteItem;
 use App\ProcessoTaxaHonorario;
 use App\Enums\StatusPagamentoCorrespondente;
 use App\Services\ChatPro\ChatProClient;
+use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
 
 class CorrespondentePagamentoController extends Controller
 {
@@ -307,6 +308,38 @@ class CorrespondentePagamentoController extends Controller
         return redirect()->back();
     }
 
+    // ─── Atualizar Valores (reconciliar com processos) ────────────────────────
+
+    public function atualizarValores($id)
+    {
+        $pagamento = PagamentoCorrespondente::with('itens')
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        if (! $pagamento->podeAtualizarValores()) {
+            Flash::error('Pagamentos já efetuados não podem ser atualizados.');
+            return redirect()->back();
+        }
+
+        $stats = app(PagamentoCorrespondenteRefreshService::class)->refreshPagamento($pagamento);
+
+        if (isset($stats['erro'])) {
+            Flash::error($stats['erro']);
+            return redirect()->back();
+        }
+
+        $mensagem = sprintf(
+            'Valores atualizados: %d adicionado(s), %d atualizado(s), %d removido(s), %d excluído(s) por cancelamento.',
+            $stats['adicionados'],
+            $stats['atualizados'],
+            $stats['removidos'],
+            $stats['excluidos']
+        );
+
+        Flash::success($mensagem);
+        return redirect()->back();
+    }
+
     // ─── Atualizar Itens (quando Recusado) ────────────────────────────────────
 
     public function atualizarItens(Request $request, $id)
@@ -331,14 +364,21 @@ class CorrespondentePagamentoController extends Controller
 
             foreach ($pagamento->itens as $item) {
                 $key = $item->cd_pagamento_correspondente_item_pai;
-                if (isset($request->itens[$key])) {
-                    $honorario = (float) $request->itens[$key]['vl_honorario'];
-                    $despesa   = (float) $request->itens[$key]['vl_despesa'];
+                if (! isset($request->itens[$key])) {
+                    continue;
+                }
 
-                    $item->vl_honorario_pai = $honorario;
-                    $item->vl_despesa_pai   = $despesa;
-                    $item->save();
+                $dadosItem   = $request->itens[$key];
+                $honorario   = (float) $dadosItem['vl_honorario'];
+                $despesa     = (float) $dadosItem['vl_despesa'];
+                $incluir     = ! empty($dadosItem['incluir']);
 
+                $item->vl_honorario_pai = $honorario;
+                $item->vl_despesa_pai   = $despesa;
+                $item->fl_excluido_pai  = $incluir ? 'N' : 'S';
+                $item->save();
+
+                if ($incluir) {
                     // Sincroniza o honorário de volta à tabela de origem
                     if ($item->cd_processo_taxa_honorario_pth) {
                         ProcessoTaxaHonorario::where('cd_processo_taxa_honorario_pth', $item->cd_processo_taxa_honorario_pth)
