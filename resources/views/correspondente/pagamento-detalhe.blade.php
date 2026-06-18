@@ -183,7 +183,7 @@
 
             {{-- Ações conforme status --}}
             @if($pagamento->podeNotificarAprovacao())
-            <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
+            <form method="POST" style="margin-bottom:8px;" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/enviar-aprovacao') }}">
                 @csrf
                 <button type="submit" class="btn btn-warning btn-block"
                         onclick="return confirm('{{ $pagamento->podeReenviarAprovacao()
