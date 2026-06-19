@@ -13,8 +13,10 @@ use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteItem;
 use App\ProcessoTaxaHonorario;
 use App\Enums\StatusPagamentoCorrespondente;
-use App\Services\ChatPro\ChatProClient;
+use App\Enums\TipoEnderecoEletronico;
+use App\Services\WhatsappDispatcher;
 use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
+use Illuminate\Support\Facades\Mail;
 
 class CorrespondentePagamentoController extends Controller
 {
@@ -520,35 +522,18 @@ class CorrespondentePagamentoController extends Controller
 
         // E-mail de teste
         try {
-            $mesAno       = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
-            $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
-            $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
-
-            $linkRevisaoTeste  = url("pagamentos/revisar/{$token}");
-            $htmlEmailTeste = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#333;max-width:600px;margin:0 auto;">'
-                . '<p><strong>[TESTE]</strong> Olá!</p>'
-                . '<p>O escritório <strong>' . $nmEscritorio . '</strong> encaminhou o demonstrativo de honorários referente ao mês <strong>' . $mesAno . '</strong>.</p>'
-                . '<p><strong>Valor total: ' . $valorFmt . '</strong></p>'
-                . '<p>Acesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:</p>'
-                . '<p><a href="' . $linkRevisaoTeste . '" style="color:#1a7bb9;">' . $linkRevisaoTeste . '</a></p>'
-                . '<p style="color:#c0392b;font-weight:bold;border:2px solid #e74c3c;padding:12px;border-radius:4px;margin:20px 0;background:#fdf2f2;">'
-                . 'PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.'
-                . '</p>'
-                . '<p style="color:#888;font-size:12px;">Atenciosamente,<br>' . $nmEscritorio . '</p>'
-                . '</div>';
-
-            \Mail::send([], [], function ($msg) use ($emailTeste, $mesAno, $nmEscritorio, $pdfPath, $htmlEmailTeste) {
-                $msg->to($emailTeste)
-                    ->subject("[TESTE] Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}")
-                    ->setBody($htmlEmailTeste, 'text/html');
-                if ($pdfPath && file_exists($pdfPath)) {
-                    $msg->attach($pdfPath, [
-                        'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
-                        'mime' => 'application/pdf',
-                    ]);
-                }
-            });
-            $msgs[] = 'E-mail enviado para ' . $emailTeste . ($pdfPath ? ' (com PDF)' : '');
+            $enviadoEmail = $this->enviarEmailAprovacaoPagamento(
+                $pagamento,
+                $escritorio,
+                $banco,
+                $token,
+                $pdfPath ?? null,
+                collect([$emailTeste]),
+                true
+            );
+            $msgs[] = $enviadoEmail
+                ? 'E-mail enviado para ' . $emailTeste . ($pdfPath ? ' (com PDF em anexo)' : ' (sem PDF — verifique geração)')
+                : 'Falha ao enviar e-mail de teste';
         } catch (\Throwable $e) {
             \Log::warning('[pagamento-teste] Falha ao enviar e-mail: ' . $e->getMessage());
             $msgs[] = 'Falha no e-mail: ' . $e->getMessage();
@@ -556,15 +541,14 @@ class CorrespondentePagamentoController extends Controller
 
         // WhatsApp de teste: mensagem de texto com link de revisão
         try {
-            $conta   = Conta::find($this->conta);
-            $chatpro = ChatProClient::forConta($conta);
-            if ($chatpro) {
-                $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
-                $mensagem = "[TESTE]\n" . $mensagem;
-                $chatpro->sendText($whatsappTeste, $mensagem);
+            $conta    = Conta::find($this->conta);
+            $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
+            $mensagem = "[TESTE]\n" . $mensagem;
+
+            if ($this->enviarMensagemWhatsAppPagamento($conta, $whatsappTeste, $mensagem, 'pagamento-teste')) {
                 $msgs[] = 'WhatsApp enviado para ' . $whatsappTeste;
             } else {
-                $msgs[] = 'WhatsApp: ChatPro não configurado para esta conta';
+                $msgs[] = 'WhatsApp: integração não configurada para esta conta (Z-API ou ChatPro)';
             }
         } catch (\Throwable $e) {
             \Log::warning('[pagamento-teste] Falha ao enviar WhatsApp: ' . $e->getMessage());
@@ -584,75 +568,173 @@ class CorrespondentePagamentoController extends Controller
             return;
         }
 
-        $banco        = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
-        $escritorio   = Conta::find($this->conta);
-        $token        = $pagamento->tk_confirmacao_pag;
-        $mesAno       = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
-        $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
-        $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+        $pagamento->loadMissing(['itens.processo']);
 
-        // Gera PDF
+        $banco      = $this->buscarDadosBancarios($pagamento->cd_correspondente_cor);
+        $escritorio = Conta::find($this->conta);
+        $token      = $pagamento->tk_confirmacao_pag;
+
         $pdfPath = null;
         try {
             $pdfPath = $this->gerarPdfFatura($pagamento, $banco, $escritorio);
         } catch (\Throwable $e) {
-            \Log::warning('[pagamento] Falha ao gerar PDF: ' . $e->getMessage());
+            \Log::error('[pagamento] Falha ao gerar PDF da fatura: ' . $e->getMessage(), [
+                'pagamento' => $pagamento->cd_pagamento_correspondente_pag,
+            ]);
         }
 
-        // ── E-mail ──────────────────────────────────────────────────────────
-        $emails = DB::table('endereco_eletronico_ele as e')
-            ->join('conta_correspondente_ccr as ccr', 'ccr.cd_entidade_ete', '=', 'e.cd_entidade_ete')
-            ->where('ccr.cd_correspondente_cor', $pagamento->cd_correspondente_cor)
-            ->pluck('e.dc_endereco_eletronico_ede')
-            ->filter()
-            ->unique()
-            ->values();
-
-        $linkRevisao  = url("pagamentos/revisar/{$token}");
-        $htmlEmailReal = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#333;max-width:600px;margin:0 auto;">'
-            . '<p>Olá!</p>'
-            . '<p>O escritório <strong>' . $nmEscritorio . '</strong> encaminhou o demonstrativo de honorários referente ao mês <strong>' . $mesAno . '</strong>.</p>'
-            . '<p><strong>Valor total: ' . $valorFmt . '</strong></p>'
-            . '<p>Acesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:</p>'
-            . '<p><a href="' . $linkRevisao . '" style="color:#1a7bb9;">' . $linkRevisao . '</a></p>'
-            . '<p style="color:#c0392b;font-weight:bold;border:2px solid #e74c3c;padding:12px;border-radius:4px;margin:20px 0;background:#fdf2f2;">'
-            . 'PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.'
-            . '</p>'
-            . '<p style="color:#888;font-size:12px;">Atenciosamente,<br>' . $nmEscritorio . '</p>'
-            . '</div>';
-
-        foreach ($emails as $email) {
-            try {
-                \Mail::send([], [], function ($msg) use ($email, $mesAno, $nmEscritorio, $pdfPath, $htmlEmailReal) {
-                    $msg->to($email)
-                        ->subject("Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}")
-                        ->setBody($htmlEmailReal, 'text/html');
-                    if ($pdfPath && file_exists($pdfPath)) {
-                        $msg->attach($pdfPath, [
-                            'as'   => 'Fatura_' . str_replace('/', '_', $mesAno) . '.pdf',
-                            'mime' => 'application/pdf',
-                        ]);
-                    }
-                });
-            } catch (\Throwable $e) {
-                \Log::warning('[pagamento] Falha ao enviar e-mail para ' . $email . ': ' . $e->getMessage());
-            }
+        $emails = $this->buscarEmailsNotificacaoCorrespondente($pagamento->cd_correspondente_cor);
+        if ($emails->isEmpty()) {
+            \Log::warning('[pagamento] Nenhum e-mail de notificação encontrado para o correspondente ' . $pagamento->cd_correspondente_cor);
+        } else {
+            $this->enviarEmailAprovacaoPagamento($pagamento, $escritorio, $banco, $token, $pdfPath, $emails);
         }
 
         // ── WhatsApp ────────────────────────────────────────────────────────
         $whatsapp = $correspondente->nu_telefone_whatsapp_con ?? null;
         if ($whatsapp) {
             try {
-                $conta   = Conta::find($this->conta);
-                $chatpro = ChatProClient::forConta($conta);
-                if ($chatpro) {
-                    $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
-                    $chatpro->sendText($whatsapp, $mensagem);
-                }
+                $conta    = Conta::find($this->conta);
+                $mensagem = $this->montarMensagemWhatsApp($pagamento, $banco, $token);
+                $this->enviarMensagemWhatsAppPagamento($conta, $whatsapp, $mensagem, 'pagamento');
             } catch (\Throwable $e) {
                 \Log::warning('[pagamento] Falha ao enviar WhatsApp: ' . $e->getMessage());
             }
         }
+    }
+
+    /**
+     * E-mails de notificação do correspondente (tipo NOTIFICACAO), com fallback para demais cadastros.
+     */
+    private function buscarEmailsNotificacaoCorrespondente($cdCorrespondente)
+    {
+        $base = DB::table('endereco_eletronico_ele as e')
+            ->join('conta_correspondente_ccr as ccr', 'ccr.cd_entidade_ete', '=', 'e.cd_entidade_ete')
+            ->where('ccr.cd_correspondente_cor', $cdCorrespondente)
+            ->whereNotNull('e.dc_endereco_eletronico_ede')
+            ->where('e.dc_endereco_eletronico_ede', '!=', '');
+
+        $notificacao = (clone $base)
+            ->where('e.cd_tipo_endereco_eletronico_tee', TipoEnderecoEletronico::NOTIFICACAO)
+            ->pluck('e.dc_endereco_eletronico_ede');
+
+        if ($notificacao->isNotEmpty()) {
+            return $notificacao->unique()->values();
+        }
+
+        return $base->pluck('e.dc_endereco_eletronico_ede')->unique()->values();
+    }
+
+    /**
+     * Envia e-mail de aprovação com o demonstrativo PDF em anexo.
+     */
+    private function enviarEmailAprovacaoPagamento(
+        PagamentoCorrespondente $pagamento,
+        $escritorio,
+        $banco,
+        string $token,
+        ?string $pdfPath,
+        $destinos,
+        bool $teste = false
+    ): bool {
+        $destinos = collect($destinos)->filter()->unique()->values();
+        if ($destinos->isEmpty()) {
+            return false;
+        }
+
+        $mesAno       = str_pad($pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag;
+        $valorFmt     = 'R$ ' . number_format($pagamento->vl_total_pag, 2, ',', '.');
+        $nmEscritorio = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
+        $linkRevisao  = url("pagamentos/revisar/{$token}");
+        $nomeAnexo    = 'Demonstrativo_' . str_replace('/', '_', $mesAno) . '.pdf';
+        $temPdf       = $pdfPath && file_exists($pdfPath);
+
+        $html = $this->montarHtmlEmailAprovacao($nmEscritorio, $mesAno, $valorFmt, $linkRevisao, $temPdf, $teste);
+        $assunto = ($teste ? '[TESTE] ' : '') . "Aprovação de Pagamento - {$mesAno} - {$nmEscritorio}";
+
+        $enviados = 0;
+
+        foreach ($destinos as $email) {
+            try {
+                Mail::send([], [], function ($msg) use ($email, $assunto, $html, $pdfPath, $nomeAnexo, $temPdf) {
+                    $msg->to($email)
+                        ->subject($assunto)
+                        ->setBody($html, 'text/html');
+
+                    if ($temPdf) {
+                        $msg->attach($pdfPath, [
+                            'as'   => $nomeAnexo,
+                            'mime' => 'application/pdf',
+                        ]);
+                    }
+                });
+                $enviados++;
+            } catch (\Throwable $e) {
+                \Log::warning('[pagamento] Falha ao enviar e-mail para ' . $email . ': ' . $e->getMessage());
+            }
+        }
+
+        if ($enviados > 0 && ! $temPdf) {
+            \Log::warning('[pagamento] E-mail enviado sem PDF em anexo', [
+                'pagamento' => $pagamento->cd_pagamento_correspondente_pag,
+                'destinos'  => $destinos->all(),
+            ]);
+        }
+
+        return $enviados > 0;
+    }
+
+    private function montarHtmlEmailAprovacao(
+        string $nmEscritorio,
+        string $mesAno,
+        string $valorFmt,
+        string $linkRevisao,
+        bool $temPdf,
+        bool $teste = false
+    ): string {
+        $prefixoTeste = $teste ? '<p><strong>[TESTE]</strong></p>' : '';
+        $anexo = $temPdf
+            ? '<p>📎 <strong>Em anexo:</strong> demonstrativo de honorários em PDF com a relação de processos.</p>'
+            : '<p style="color:#e67e22;"><strong>Atenção:</strong> o demonstrativo em PDF não pôde ser gerado neste envio. Utilize o link abaixo para revisar os valores online.</p>';
+
+        return '<div style="font-family:Arial,sans-serif;font-size:14px;color:#333;max-width:600px;margin:0 auto;">'
+            . $prefixoTeste
+            . '<p>Olá!</p>'
+            . '<p>O escritório <strong>' . e($nmEscritorio) . '</strong> encaminhou o demonstrativo de honorários referente ao mês <strong>' . e($mesAno) . '</strong>.</p>'
+            . '<p><strong>Valor total: ' . e($valorFmt) . '</strong></p>'
+            . $anexo
+            . '<p>Acesse o link abaixo para revisar a listagem de processos e confirmar ou recusar o pagamento:</p>'
+            . '<p><a href="' . e($linkRevisao) . '" style="color:#1a7bb9;">' . e($linkRevisao) . '</a></p>'
+            . '<p style="color:#c0392b;font-weight:bold;border:2px solid #e74c3c;padding:12px;border-radius:4px;margin:20px 0;background:#fdf2f2;">'
+            . 'PRAZO PARA ACEITE OU RECUSA DO RELATÓRIO DIA 05. PEDIMOS QUE CUMPRAM O PRAZO SOLICITADO, PARA QUE O PAGAMENTO SEJA FEITO NA DATA ACORDADA VIA PIX. SE O PIX FOI ALTERADO RECUSAR E ALTERAR O PIX NO SISTEMA.'
+            . '</p>'
+            . '<p style="color:#888;font-size:12px;">Atenciosamente,<br>' . e($nmEscritorio) . '</p>'
+            . '</div>';
+    }
+
+    /**
+     * Envia mensagem WhatsApp via Z-API (prioritário) ou ChatPro (fallback).
+     */
+    private function enviarMensagemWhatsAppPagamento($conta, string $destino, string $mensagem, string $contexto = 'pagamento'): bool
+    {
+        $client = WhatsappDispatcher::forConta($conta);
+        if (! $client) {
+            \Log::warning("[{$contexto}] Integração WhatsApp não configurada para a conta " . ($conta->cd_conta_con ?? '?'));
+
+            return false;
+        }
+
+        $res = $client->sendText($destino, $mensagem);
+        if (! $res['success']) {
+            \Log::warning("[{$contexto}] Falha ao enviar WhatsApp: " . ($res['message'] ?? '?'), [
+                'destino' => $destino,
+                'status'  => $res['status'] ?? null,
+            ]);
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
