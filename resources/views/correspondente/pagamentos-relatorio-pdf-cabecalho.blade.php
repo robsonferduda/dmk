@@ -75,23 +75,28 @@
     <div class="resumo-card {{ $zebra ? 'resumo-card--zebra' : '' }}">
         <table class="resumo-card__tbl">
             <tr>
-                <td class="resumo-card__nome">
-                    {{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}
+                <td class="resumo-card__col-esq" rowspan="2">
+                    <div class="resumo-card__nome">
+                        {{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}
+                    </div>
+                    @if($dadoPgto)
+                    <div class="resumo-card__dado">
+                        <span class="resumo-card__dado-label">{{ $dadoLabel }}</span>
+                        {{ $dadoPgto }}
+                    </div>
+                    @else
+                    <div class="resumo-card__dado resumo-card__dado--vazio">Dado de pagamento não informado</div>
+                    @endif
                 </td>
-                <td class="resumo-card__valor">
-                    R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}
+                <td class="resumo-card__col-dir">
+                    <div class="resumo-card__valor">
+                        R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}
+                    </div>
                 </td>
             </tr>
-            <tr class="resumo-card__linha2">
-                <td colspan="2">
+            <tr>
+                <td class="resumo-card__col-dir resumo-card__status">
                     <span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span>
-                    @if($dadoPgto)
-                    <span class="resumo-card__dado">
-                        <span class="resumo-card__dado-label">{{ $dadoLabel }}</span> {{ $dadoPgto }}
-                    </span>
-                    @else
-                    <span class="resumo-card__dado" style="color:#aaa;">Dado de pagamento não informado</span>
-                    @endif
                 </td>
             </tr>
         </table>
