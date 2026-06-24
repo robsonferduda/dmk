@@ -62,7 +62,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #222; }
     font-weight: bold;
     color: #222;
     line-height: 1.35;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
 }
 .resumo-card__valor {
     font-size: 15px;
@@ -76,7 +76,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #222; }
     font-weight: bold;
     color: #222;
     line-height: 1.45;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 .resumo-card__dado-label {
     font-size: 11px;
@@ -99,7 +99,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #222; }
 }
 .resumo-card__status .badge {
     font-size: 9px;
-    padding: 4px 10px;
+    padding: 6px 12px;
 }
 
 .resumo-total {
