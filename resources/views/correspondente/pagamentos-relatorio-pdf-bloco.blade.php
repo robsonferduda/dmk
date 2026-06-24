@@ -87,9 +87,19 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($pag->itens as $item)
-            @php $excluido = strtoupper((string) ($item->fl_excluido_pai ?? 'N')) === 'S'; @endphp
-            <tr class="{{ $loop->even ? 'proc-zebra' : '' }}{{ $excluido ? ' proc-excluido' : '' }}">
+            @if($pag->itens->isEmpty())
+            <tr>
+                <td colspan="5" style="text-align:center; color:#aaa; padding:14px; font-style:italic; font-size:11px;">
+                    Nenhum processo registrado.
+                </td>
+            </tr>
+            @else
+            @foreach($pag->itens as $itemIndex => $item)
+            @php
+                $excluido = strtoupper((string) ($item->fl_excluido_pai ?? 'N')) === 'S';
+                $linhaZebra = $itemIndex % 2 === 1;
+            @endphp
+            <tr class="{{ $linhaZebra ? 'proc-zebra' : '' }}{{ $excluido ? ' proc-excluido' : '' }}">
                 <td class="proc-numero">
                     @if($item->cd_processo_pro && $item->processo)
                         {{ $item->processo->nu_processo_pro ?? '#'.$item->cd_processo_pro }}
@@ -104,13 +114,8 @@
                 <td style="text-align:right;">R$ {{ number_format($item->vl_despesa_pai, 2, ',', '.') }}</td>
                 <td style="text-align:right;"><strong>R$ {{ number_format($item->vl_total, 2, ',', '.') }}</strong></td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" style="text-align:center; color:#aaa; padding:14px; font-style:italic; font-size:11px;">
-                    Nenhum processo registrado.
-                </td>
-            </tr>
-            @endforelse
+            @endforeach
+            @endif
         </tbody>
         <tfoot>
             <tr>
