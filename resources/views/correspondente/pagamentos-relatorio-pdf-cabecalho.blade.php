@@ -43,51 +43,68 @@
     </tr>
 </table>
 
-{{-- Resumo geral --}}
+{{-- Resumo — cards por correspondente --}}
 <div class="section-title">Resumo — Todos os Correspondentes</div>
-<table class="resumo-table">
-    <thead>
-        <tr>
-            <th style="width:35%">Correspondente</th>
-            <th style="width:15%; text-align:center;">Status</th>
-            <th style="width:35%">Dado de Pagamento</th>
-            <th style="width:15%; text-align:right;">Valor Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php $somaTotal = 0; @endphp
-        @forelse($pagamentos as $pag)
-        @php
-            $banco      = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
-            $somaTotal += $pag->vl_total_pag;
-            $badgeMap   = [1=>'gerado',2=>'enviado',3=>'aprovado',4=>'pago',5=>'recusado'];
-            $badgeCls   = $badgeMap[$pag->cd_status_pag] ?? 'gerado';
-            $dadoPgto   = '';
-            if ($banco) {
-                if ($banco->dc_pix_dba) {
-                    $dadoPgto = 'PIX: ' . $banco->dc_pix_dba;
-                } elseif ($banco->nu_conta_dba) {
-                    $dadoPgto = ($banco->cd_banco_ban ? $banco->cd_banco_ban . ' · ' : '')
-                               . 'Ag ' . ($banco->nu_agencia_dba ?? '—')
-                               . ' · CC ' . $banco->nu_conta_dba;
-                }
-            }
-        @endphp
-        <tr>
-            <td><strong>{{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}</strong></td>
-            <td style="text-align:center;"><span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span></td>
-            <td style="color:#555; font-size:9px;">{{ $dadoPgto ?: '—' }}</td>
-            <td style="text-align:right;"><strong>R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}</strong></td>
-        </tr>
-        @empty
-        <tr><td colspan="4" style="text-align:center; color:#aaa; padding:14px;">Nenhum pagamento no período.</td></tr>
-        @endforelse
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="3">Total Geral</td>
-            <td style="text-align:right; color:#1a7bb9;">R$ {{ number_format($somaTotal, 2, ',', '.') }}</td>
-        </tr>
-    </tfoot>
-</table>
 
+@if($pagamentos->isEmpty())
+<div class="resumo-vazio">Nenhum pagamento no período.</div>
+@else
+<div class="resumo-lista">
+    @php $somaTotal = 0; @endphp
+    @foreach($pagamentos as $index => $pag)
+    @php
+        $banco    = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
+        $somaTotal += $pag->vl_total_pag;
+        $badgeMap = [1=>'gerado',2=>'enviado',3=>'aprovado',4=>'pago',5=>'recusado'];
+        $badgeCls = $badgeMap[$pag->cd_status_pag] ?? 'gerado';
+        $dadoPgto = '';
+        $dadoLabel = '';
+        if ($banco) {
+            if ($banco->dc_pix_dba) {
+                $dadoLabel = 'PIX:';
+                $dadoPgto  = $banco->dc_pix_dba;
+            } elseif ($banco->nu_conta_dba) {
+                $dadoLabel = 'Conta:';
+                $dadoPgto  = ($banco->cd_banco_ban ? $banco->cd_banco_ban . ' · ' : '')
+                           . 'Ag ' . ($banco->nu_agencia_dba ?? '—')
+                           . ' · CC ' . $banco->nu_conta_dba;
+            }
+        }
+        $zebra = $index % 2 === 1;
+    @endphp
+    <div class="resumo-card {{ $zebra ? 'resumo-card--zebra' : '' }}">
+        <table class="resumo-card__tbl">
+            <tr>
+                <td class="resumo-card__nome">
+                    {{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}
+                </td>
+                <td class="resumo-card__valor">
+                    R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}
+                </td>
+            </tr>
+            <tr class="resumo-card__linha2">
+                <td colspan="2">
+                    <span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span>
+                    @if($dadoPgto)
+                    <span class="resumo-card__dado">
+                        <span class="resumo-card__dado-label">{{ $dadoLabel }}</span> {{ $dadoPgto }}
+                    </span>
+                    @else
+                    <span class="resumo-card__dado" style="color:#aaa;">Dado de pagamento não informado</span>
+                    @endif
+                </td>
+            </tr>
+        </table>
+    </div>
+    @endforeach
+</div>
+
+<div class="resumo-total">
+    <table class="resumo-total__tbl">
+        <tr>
+            <td class="resumo-total__label">Total Geral</td>
+            <td class="resumo-total__valor">R$ {{ number_format($somaTotal, 2, ',', '.') }}</td>
+        </tr>
+    </table>
+</div>
+@endif

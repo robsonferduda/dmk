@@ -869,7 +869,7 @@ class CorrespondentePagamentoController extends Controller
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);
 
-        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
+        $pagamentos = PagamentoCorrespondente::with(['correspondente'])
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
@@ -925,22 +925,7 @@ class CorrespondentePagamentoController extends Controller
         ))->render();
         $mpdf->WriteHTML($cabecalho, 2);
 
-        // 3. Detalhe por correspondente (um bloco por pagamento)
-        if ($pagamentos->isNotEmpty()) {
-            $mpdf->WriteHTML(
-                '<div class="section-title section-title--detalhe">Detalhe por Correspondente</div>',
-                2
-            );
-
-            foreach ($pagamentos as $index => $pag) {
-                $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
-                $zebra = $index % 2 === 1;
-                $bloco = view('correspondente/pagamentos-relatorio-pdf-bloco', compact('pag', 'banco', 'zebra'))->render();
-                $mpdf->WriteHTML($bloco, 2);
-            }
-        }
-
-        // 4. Rodapé (mode=2)
+        // 3. Rodapé (mode=2)
         $nmEscritorio = e($escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? '');
         $mpdf->WriteHTML(
             '<div class="footer">Documento gerado automaticamente em ' . now()->format('d/m/Y \à\s H:i')
