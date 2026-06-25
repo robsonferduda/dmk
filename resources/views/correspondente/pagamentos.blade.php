@@ -48,6 +48,11 @@
                title="Baixar relatório completo em PDF">
                 <i class="fa fa-file-pdf-o"></i> Relatório PDF
             </a>
+            <a href="{{ url('correspondente/pagamentos/relatorio-excel?mes='.$mes.'&ano='.$ano) }}"
+               class="btn btn-default pull-right" style="margin-right: 4px; margin-top: 5px;"
+               title="Baixar relatório completo em Excel">
+                <i class="fa fa-file-excel-o"></i> Relatório Excel
+            </a>
             @endif
         </div>
     </div>

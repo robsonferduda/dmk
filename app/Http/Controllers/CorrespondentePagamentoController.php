@@ -17,6 +17,7 @@ use App\Enums\TipoEnderecoEletronico;
 use App\Services\WhatsappDispatcher;
 use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
 use Illuminate\Support\Facades\Mail;
+use App\Exports\Correspondente\PagamentosCorrespondenteRelatorioExport;
 
 class CorrespondentePagamentoController extends Controller
 {
@@ -864,11 +865,8 @@ class CorrespondentePagamentoController extends Controller
 
     // ─── Relatório Mensal em PDF ───────────────────────────────────────────────
 
-    public function relatorioPdf(Request $request)
+    private function buscarDadosRelatorioPagamentos(int $mes, int $ano): array
     {
-        $mes = (int) ($request->mes ?: Carbon::now()->month);
-        $ano = (int) ($request->ano ?: Carbon::now()->year);
-
         $pagamentos = PagamentoCorrespondente::with(['correspondente'])
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
@@ -881,7 +879,6 @@ class CorrespondentePagamentoController extends Controller
             })
             ->values();
 
-        // Busca dados bancários de cada correspondente
         $bancoPorPag = [];
         foreach ($pagamentos as $pag) {
             $bancoPorPag[$pag->cd_pagamento_correspondente_pag] =
@@ -889,11 +886,24 @@ class CorrespondentePagamentoController extends Controller
         }
 
         $escritorio = Conta::find($this->conta);
-        $statusLabels = StatusPagamentoCorrespondente::labels();
+        $mesPad     = str_pad($mes, 2, '0', STR_PAD_LEFT);
 
-        $mesPad    = str_pad($mes, 2, '0', STR_PAD_LEFT);
-        $mesAno    = $mesPad . '_' . $ano;
-        $mesAnoFmt = $mesPad . '/' . $ano;
+        return [
+            'pagamentos'  => $pagamentos,
+            'bancoPorPag' => $bancoPorPag,
+            'escritorio'  => $escritorio,
+            'mesAnoFmt'   => $mesPad . '/' . $ano,
+            'mesAno'      => $mesPad . '_' . $ano,
+        ];
+    }
+
+    public function relatorioPdf(Request $request)
+    {
+        $mes = (int) ($request->mes ?: Carbon::now()->month);
+        $ano = (int) ($request->ano ?: Carbon::now()->year);
+
+        $dados = $this->buscarDadosRelatorioPagamentos($mes, $ano);
+        extract($dados);
 
         $tmpDir = storage_path('app/mpdf-tmp');
         $outDir = storage_path('app/public/pagamentos');
@@ -936,6 +946,21 @@ class CorrespondentePagamentoController extends Controller
 
         $filename = 'relatorio_pagamentos_' . $mesAno . '.pdf';
         $mpdf->Output($filename, 'D');
+    }
+
+    public function relatorioExcel(Request $request)
+    {
+        $mes = (int) ($request->mes ?: Carbon::now()->month);
+        $ano = (int) ($request->ano ?: Carbon::now()->year);
+
+        $dados    = $this->buscarDadosRelatorioPagamentos($mes, $ano);
+        $filename = 'relatorio_pagamentos_' . $dados['mesAno'] . '.xlsx';
+
+        return \Excel::download(
+            new PagamentosCorrespondenteRelatorioExport($dados),
+            $filename,
+            \Maatwebsite\Excel\Excel::XLSX
+        );
     }
 
     private function mesesDisponiveis(): array
