@@ -766,6 +766,8 @@ class ProcessoController extends Controller
         $novoProcesso->dc_observacao_processo_pro = null;
         $novoProcesso->dc_observacao_pro = null;
         $novoProcesso->cd_user_cadastro_pro = Auth::user()->id;
+        $novoProcesso->ds_checkin_token_pro = null;
+        $novoProcesso->ds_confirmacao_audiencia_token_pro = null;
 
         $novoProcesso->save();
 
