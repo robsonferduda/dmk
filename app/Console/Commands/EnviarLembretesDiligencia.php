@@ -219,6 +219,7 @@ class EnviarLembretesDiligencia extends Command
         return strtr($template, [
             '{correspondente}'  => $nomeCorresp,
             '{processo}'        => $proc->nu_processo_pro ?: ('#' . $proc->cd_processo_pro),
+            '{autor}'           => $proc->nm_autor_pro ?: '—',
             '{cliente}'         => $cliente,
             '{reu}'             => $proc->nm_reu_pro ?: '—',
             '{vara}'            => $vara,

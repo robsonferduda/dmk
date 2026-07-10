@@ -246,6 +246,7 @@ class EnviarLembretesPreDiligencia extends Command
         return strtr($template, [
             '{correspondente}'  => $contaCorrespondente->nm_conta_con ?? $contaCorrespondente->nm_razao_social_con ?? 'Correspondente',
             '{processo}'        => $proc->nu_processo_pro ?: ('#' . $proc->cd_processo_pro),
+            '{autor}'           => $proc->nm_autor_pro ?: '—',
             '{reu}'             => $proc->nm_reu_pro ?: '—',
             '{vara}'            => ($proc->vara) ? ($proc->vara->nm_vara_var ?? '—') : '—',
             '{cidade}'          => ($proc->cidade) ? $proc->cidade->nm_cidade_cde . (isset($proc->cidade->estado) ? '/' . $proc->cidade->estado->sg_estado_est : '') : '—',

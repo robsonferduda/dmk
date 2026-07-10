@@ -53,14 +53,15 @@ return [
             "Cliente: {cliente}",
 
         // Lembrete diário enviado ao CORRESPONDENTE no dia do prazo fatal.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade}, {tipo_servico},
+        // Placeholders: {correspondente}, {processo}, {autor}, {reu}, {vara}, {cidade}, {tipo_servico},
         //               {data}, {hora_audiencia}, {responsaveis}, {link_checkin}.
         'lembrete_diligencia' =>
             "Olá, {correspondente}!\n" .
             "Você tem audiência/diligência do DMK marcada para hoje:\n" .
             "• Data e Horário: {data} às {hora_audiencia}\n" .
             "• Processo: {processo}\n" .
-            "• Cliente: {reu}\n" .
+            "• Autor: {autor}\n" .
+            "• Réu: {reu}\n" .
             "• Vara: {vara}\n" .
             "• Cidade: {cidade}\n" .
             "• Tipo de Serviço: {tipo_servico}\n" .
@@ -77,13 +78,14 @@ return [
 
 
         // Lembrete PRÉ-diligência enviado ao correspondente um dia antes da audiência.
-        // Placeholders: {correspondente}, {processo}, {reu}, {vara}, {cidade}, {tipo_servico},
+        // Placeholders: {correspondente}, {processo}, {autor}, {reu}, {vara}, {cidade}, {tipo_servico},
         //               {data}, {hora_audiencia}, {responsaveis}, {link_confirmacao_audiencia}
         'lembrete_prediligencia' =>
             "Olá, {correspondente}! Tudo bem?\n\n" .
             "Gostaríamos de confirmar se está tudo certo para a realização da(s) audiência(s)/diligência(s) de amanhã:\n\n" .
             "📋 Processo: {processo}\n" .
-            "👤 Parte: {reu}\n" .
+            "👤 Autor: {autor}\n" .
+            "👤 Réu: {reu}\n" .
             "🏛️ Vara: {vara}\n" .
             "📍 Cidade: {cidade}\n" .
             "🔧 Tipo de Serviço: {tipo_servico}\n" .
