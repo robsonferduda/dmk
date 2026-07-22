@@ -42,6 +42,18 @@
                 </button>
             </form>
             @endif
+            @if($pagamentos->filter(fn($p) => $p->podeReenviarAprovacao())->isNotEmpty())
+            <form method="POST" action="{{ url('correspondente/pagamentos/reenviar-aprovacao-todos') }}" style="display:inline;">
+                @csrf
+                <input type="hidden" name="mes" value="{{ $mes }}">
+                <input type="hidden" name="ano" value="{{ $ano }}">
+                <button type="submit" class="btn btn-warning pull-right header-btn"
+                        style="margin-right:6px;"
+                        onclick="return confirm('Reenviar notificação para TODOS os correspondentes com pagamento pendente de aprovação em {{ $mesAnoFmt }}?')">
+                    <i class="fa fa-repeat"></i> Reenviar Todos
+                </button>
+            </form>
+            @endif
             @if($pagamentos->isNotEmpty())
             <a href="{{ url('correspondente/pagamentos/relatorio-pdf?mes='.$mes.'&ano='.$ano) }}"
                class="btn btn-default pull-right" style="margin-right: 4px; margin-top: 5px;" target="_blank"

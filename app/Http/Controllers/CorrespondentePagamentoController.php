@@ -172,6 +172,41 @@ class CorrespondentePagamentoController extends Controller
         return redirect(url("correspondente/pagamentos?mes={$mes}&ano={$ano}"));
     }
 
+    // ─── Reenviar para Aprovação em Massa ─────────────────────────────────────
+
+    public function reenviarAprovacaoTodos(Request $request)
+    {
+        $mes = (int) ($request->mes ?: Carbon::now()->month);
+        $ano = (int) ($request->ano ?: Carbon::now()->year);
+
+        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'itens.processo'])
+            ->where('cd_conta_con', $this->conta)
+            ->where('nu_mes_pag', $mes)
+            ->where('nu_ano_pag', $ano)
+            ->get()
+            ->filter(fn($p) => $p->podeReenviarAprovacao());
+
+        if ($pagamentos->isEmpty()) {
+            Flash::warning('Nenhum pagamento pendente de aprovação para reenvio neste mês.');
+            return redirect()->back();
+        }
+
+        $reenviados = 0;
+        foreach ($pagamentos as $pagamento) {
+            DB::transaction(function () use ($pagamento) {
+                $pagamento->tk_confirmacao_pag     = Str::random(64);
+                $pagamento->dt_envio_aprovacao_pag = Carbon::now();
+                $pagamento->save();
+            });
+
+            $this->notificarAprovacao($pagamento);
+            $reenviados++;
+        }
+
+        Flash::success("Notificação reenviada para {$reenviados} correspondente(s).");
+        return redirect(url("correspondente/pagamentos?mes={$mes}&ano={$ano}"));
+    }
+
     // ─── Confirmação por Token (pública, sem login) ───────────────────────────
 
     public function confirmarPorToken($token)
