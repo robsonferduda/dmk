@@ -430,12 +430,34 @@
                 </header>
                 <div>
                     <div class="widget-body no-padding">
+                        @php
+                            $qtdComDespesa = $pagamento->itens->filter(fn($i) => (float) $i->vl_despesa_pai > 0)->count();
+                            $qtdSoHonorario = $pagamento->itens->filter(fn($i) => (float) $i->vl_despesa_pai <= 0 && (float) $i->vl_honorario_pai > 0)->count();
+                        @endphp
+                        <div style="padding:10px 12px; border-bottom:1px solid #eee; background:#fafafa;">
+                            <span class="text-muted" style="margin-right:8px;">Filtrar:</span>
+                            <div class="btn-group btn-group-sm" id="filtroProcessosPagamento" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="filtroProcesso" value="todos" checked> Todos
+                                    <span class="badge">{{ $pagamento->itens->count() }}</span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="filtroProcesso" value="com_despesa"> Com despesa
+                                    <span class="badge">{{ $qtdComDespesa }}</span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="filtroProcesso" value="somente_honorario"> Somente honorário
+                                    <span class="badge">{{ $qtdSoHonorario }}</span>
+                                </label>
+                            </div>
+                        </div>
+
                         @if($pagamento->cd_status_pag == 5)
                         {{-- Tabela editável (só quando recusado) --}}
                         <form id="formItens" method="POST"
                               action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/atualizar-itens') }}">
                             @csrf
-                            <table class="table table-striped table-hover" style="margin:0;">
+                            <table class="table table-striped table-hover" id="tabelaProcessosPagamento" style="margin:0;">
                                 <thead>
                                     <tr>
                                         <th>Processo</th>
@@ -452,7 +474,10 @@
                                         $itemId = $item->cd_pagamento_correspondente_item_pai;
                                         $excluido = $item->isExcluido();
                                     @endphp
-                                    <tr class="{{ $excluido ? 'item-excluido' : '' }}" data-excluido="{{ $excluido ? '1' : '0' }}">
+                                    <tr class="{{ $excluido ? 'item-excluido' : '' }} linha-processo-pag"
+                                        data-excluido="{{ $excluido ? '1' : '0' }}"
+                                        data-honorario="{{ number_format((float) $item->vl_honorario_pai, 2, '.', '') }}"
+                                        data-despesa="{{ number_format((float) $item->vl_despesa_pai, 2, '.', '') }}">
                                         <td>
                                             @if($item->cd_processo_pro)
                                             <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
@@ -486,8 +511,11 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr><td colspan="6" class="text-center text-muted">Nenhum item.</td></tr>
+                                    <tr class="linha-vazia-processos"><td colspan="6" class="text-center text-muted">Nenhum item.</td></tr>
                                     @endforelse
+                                    <tr class="linha-filtro-vazio" style="display:none;">
+                                        <td colspan="6" class="text-center text-muted">Nenhum processo neste filtro.</td>
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr class="active">
@@ -509,7 +537,7 @@
                         </form>
                         @else
                         {{-- Tabela somente leitura --}}
-                        <table class="table table-striped table-hover" style="margin:0;">
+                        <table class="table table-striped table-hover" id="tabelaProcessosPagamento" style="margin:0;">
                             <thead>
                                 <tr>
                                     <th>Processo</th>
@@ -521,7 +549,9 @@
                             </thead>
                             <tbody>
                                 @forelse($pagamento->itens as $item)
-                                <tr class="{{ $item->isExcluido() ? 'item-excluido' : '' }}">
+                                <tr class="{{ $item->isExcluido() ? 'item-excluido' : '' }} linha-processo-pag"
+                                    data-honorario="{{ number_format((float) $item->vl_honorario_pai, 2, '.', '') }}"
+                                    data-despesa="{{ number_format((float) $item->vl_despesa_pai, 2, '.', '') }}">
                                     <td>
                                         @if($item->cd_processo_pro)
                                         <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
@@ -539,8 +569,11 @@
                                     <td class="text-right"><strong>R$ {{ number_format($item->vl_total, 2, ',', '.') }}</strong></td>
                                 </tr>
                                 @empty
-                                <tr><td colspan="5" class="text-center text-muted">Nenhum item.</td></tr>
+                                <tr class="linha-vazia-processos"><td colspan="5" class="text-center text-muted">Nenhum item.</td></tr>
                                 @endforelse
+                                <tr class="linha-filtro-vazio" style="display:none;">
+                                    <td colspan="5" class="text-center text-muted">Nenhum processo neste filtro.</td>
+                                </tr>
                             </tbody>
                             <tfoot>
                                 <tr class="active">
@@ -626,7 +659,7 @@
         // Recalculo dinâmico do total ao editar honorários/despesas
         function recalcularTotal() {
             var total = 0;
-            $('#formItens tbody tr').each(function () {
+            $('#formItens tbody tr.linha-processo-pag').each(function () {
                 var incluir = $(this).find('.item-incluir').is(':checked');
                 var hon  = parseFloat($(this).find('.item-honorario').val()) || 0;
                 var des  = parseFloat($(this).find('.item-despesa').val())   || 0;
@@ -640,8 +673,40 @@
             $('#totalGeral').text('R$ ' + total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         }
 
-        $(document).on('input', '.item-honorario, .item-despesa', recalcularTotal);
+        $(document).on('input', '.item-honorario, .item-despesa', function () {
+            var $tr = $(this).closest('tr');
+            $tr.attr('data-honorario', parseFloat($tr.find('.item-honorario').val()) || 0);
+            $tr.attr('data-despesa', parseFloat($tr.find('.item-despesa').val()) || 0);
+            recalcularTotal();
+            aplicarFiltroProcessos();
+        });
         $(document).on('change', '.item-incluir', recalcularTotal);
+
+        function aplicarFiltroProcessos() {
+            var filtro = $('#filtroProcessosPagamento input[name="filtroProcesso"]:checked').val() || 'todos';
+            var visiveis = 0;
+
+            $('#tabelaProcessosPagamento tbody tr.linha-processo-pag').each(function () {
+                var hon = parseFloat($(this).attr('data-honorario')) || 0;
+                var des = parseFloat($(this).attr('data-despesa')) || 0;
+                var mostrar = true;
+
+                if (filtro === 'com_despesa') {
+                    mostrar = des > 0;
+                } else if (filtro === 'somente_honorario') {
+                    mostrar = des <= 0 && hon > 0;
+                }
+
+                $(this).toggle(mostrar);
+                if (mostrar) {
+                    visiveis++;
+                }
+            });
+
+            $('#tabelaProcessosPagamento tbody tr.linha-filtro-vazio').toggle(visiveis === 0 && $('#tabelaProcessosPagamento tbody tr.linha-processo-pag').length > 0);
+        }
+
+        $('#filtroProcessosPagamento').on('change', 'input[name="filtroProcesso"]', aplicarFiltroProcessos);
     });
 </script>
 @endsection
