@@ -51,8 +51,21 @@
                     <dd>{{ $pagamento->nm_mes_ano }}</dd>
                     <dt>Valor Total</dt>
                     <dd><strong>R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}</strong></dd>
+                    <dt>Honorários</dt>
+                    <dd>R$ {{ number_format($pagamento->vl_honorario_total, 2, ',', '.') }}</dd>
+                    <dt>Despesas</dt>
+                    <dd>R$ {{ number_format($pagamento->vl_despesa_total, 2, ',', '.') }}</dd>
+                    @if($pagamento->vl_pago_total > 0)
+                    <dt>Já pago</dt>
+                    <dd style="color:#27ae60;"><strong>R$ {{ number_format($pagamento->vl_pago_total, 2, ',', '.') }}</strong></dd>
+                    <dt>Saldo</dt>
+                    <dd style="color:#d68910;"><strong>R$ {{ number_format($pagamento->vl_saldo_total, 2, ',', '.') }}</strong></dd>
+                    @endif
                     <dt>Status</dt>
-                    <dd><span class="label label-{{ $cor }}">{{ $pagamento->nm_status }}</span></dd>
+                    <dd>
+                        @php $corStatus = $pagamento->isParcialmentePago() ? 'warning' : $cor; @endphp
+                        <span class="label label-{{ $corStatus }}">{{ $pagamento->nm_status }}</span>
+                    </dd>
                     @if($pagamento->dt_envio_aprovacao_pag)
                     <dt>Enviado em</dt>
                     <dd>{{ $pagamento->dt_envio_aprovacao_pag->format('d/m/Y H:i') }}</dd>
@@ -220,14 +233,188 @@
                     data-toggle="modal" data-target="#modalPagar"
                     data-id="{{ $pagamento->cd_pagamento_correspondente_pag }}"
                     data-nome="{{ $pagamento->correspondente->nm_razao_social_con ?? '' }}"
-                    data-valor="R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}">
-                <i class="fa fa-dollar"></i> Registrar Pagamento
+                    data-saldo="R$ {{ number_format($pagamento->vl_saldo_total, 2, ',', '.') }}"
+                    data-saldo-honorario="R$ {{ number_format($pagamento->vl_saldo_honorario, 2, ',', '.') }}"
+                    data-saldo-despesa="R$ {{ number_format($pagamento->vl_saldo_despesa, 2, ',', '.') }}">
+                <i class="fa fa-dollar"></i>
+                {{ $pagamento->isParcialmentePago() ? 'Quitar Saldo Restante' : 'Registrar Pagamento' }}
             </button>
             @endif
         </div>
 
         {{-- Lista de itens --}}
         <div class="col-md-8">
+            @if($pagamento->podeGerenciarBaixas())
+            <div class="jarviswidget jarviswidget-color-blueDark" id="lancamentos">
+                <header>
+                    <span class="widget-icon"><i class="fa fa-credit-card"></i></span>
+                    <h2>Lançamentos de Pagamento</h2>
+                </header>
+                <div>
+                    <div class="widget-body">
+                        <div class="row" style="margin-bottom:15px;">
+                            <div class="col-sm-3">
+                                <div class="well well-sm text-center" style="margin:0;">
+                                    <div class="text-muted" style="font-size:11px;text-transform:uppercase;">Saldo Honorários</div>
+                                    <strong>R$ {{ number_format($pagamento->vl_saldo_honorario, 2, ',', '.') }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="well well-sm text-center" style="margin:0;">
+                                    <div class="text-muted" style="font-size:11px;text-transform:uppercase;">Saldo Despesas</div>
+                                    <strong>R$ {{ number_format($pagamento->vl_saldo_despesa, 2, ',', '.') }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="well well-sm text-center" style="margin:0;">
+                                    <div class="text-muted" style="font-size:11px;text-transform:uppercase;">Já Pago</div>
+                                    <strong style="color:#27ae60;">R$ {{ number_format($pagamento->vl_pago_total, 2, ',', '.') }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="well well-sm text-center" style="margin:0;">
+                                    <div class="text-muted" style="font-size:11px;text-transform:uppercase;">Saldo Total</div>
+                                    <strong style="color:#d68910;">R$ {{ number_format($pagamento->vl_saldo_total, 2, ',', '.') }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($pagamento->podePagar())
+                        @php
+                            $saldoHon = $pagamento->vl_saldo_honorario;
+                            $saldoDes = $pagamento->vl_saldo_despesa;
+                            $tipoPadrao = $saldoHon > 0 ? 1 : 2;
+                            $valorPadrao = $tipoPadrao === 1 ? $saldoHon : $saldoDes;
+                        @endphp
+                        <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas') }}"
+                              enctype="multipart/form-data" class="well well-sm" style="margin-bottom:15px;">
+                            @csrf
+                            <h5 style="margin-top:0;"><i class="fa fa-plus-circle"></i> Novo lançamento parcial</h5>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Tipo</label>
+                                        <select name="cd_tipo_baixa_pcb" id="tipoBaixaParcial" class="form-control" required>
+                                            <option value="1" data-saldo="{{ number_format($saldoHon, 2, '.', '') }}"
+                                                    {{ $tipoPadrao === 1 ? 'selected' : '' }}
+                                                    {{ $saldoHon <= 0 ? 'disabled' : '' }}>
+                                                Honorário (saldo R$ {{ number_format($saldoHon, 2, ',', '.') }})
+                                            </option>
+                                            <option value="2" data-saldo="{{ number_format($saldoDes, 2, '.', '') }}"
+                                                    {{ $tipoPadrao === 2 ? 'selected' : '' }}
+                                                    {{ $saldoDes <= 0 ? 'disabled' : '' }}>
+                                                Despesa (saldo R$ {{ number_format($saldoDes, 2, ',', '.') }})
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Valor (R$)</label>
+                                        <input type="number" step="0.01" min="0.01" name="vl_baixa_pcb" id="valorBaixaParcial"
+                                               class="form-control" required
+                                               value="{{ number_format($valorPadrao, 2, '.', '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Data</label>
+                                        <input type="date" name="dt_baixa_pcb" class="form-control" required
+                                               value="{{ now()->format('Y-m-d') }}">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Comprovante</label>
+                                        <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-success btn-block">
+                                            <i class="fa fa-check"></i> Lançar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Observação</label>
+                                <input type="text" name="ds_observacao_pcb" class="form-control"
+                                       placeholder="Opcional — banco, NF, referência...">
+                            </div>
+                        </form>
+                        @endif
+
+                        @if($pagamento->baixas->isEmpty())
+                            <div class="alert alert-info" style="margin:0;">
+                                Nenhum lançamento registrado ainda.
+                                @if($pagamento->podePagar())
+                                Use o formulário acima para pagamento parcial (honorário ou despesa)
+                                ou o botão <strong>Quitar</strong> para pagar o saldo restante.
+                                @endif
+                            </div>
+                        @else
+                        <table class="table table-striped table-hover" style="margin:0;">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th class="text-right">Valor</th>
+                                    <th>Observação</th>
+                                    <th class="text-center">Comprovante</th>
+                                    <th class="text-center" style="width:70px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($pagamento->baixas as $baixa)
+                                <tr>
+                                    <td>{{ $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—' }}</td>
+                                    <td>
+                                        <span class="label label-{{ $baixa->isDespesa() ? 'warning' : 'primary' }}">
+                                            {{ $baixa->nm_tipo }}
+                                        </span>
+                                    </td>
+                                    <td class="text-right"><strong>R$ {{ number_format($baixa->vl_baixa_pcb, 2, ',', '.') }}</strong></td>
+                                    <td>{{ $baixa->ds_observacao_pcb ?: '—' }}</td>
+                                    <td class="text-center">
+                                        @if($baixa->dc_comprovante_pcb)
+                                        <a href="{{ asset('storage/'.$baixa->dc_comprovante_pcb) }}" target="_blank" class="btn btn-xs btn-default">
+                                            <i class="fa fa-paperclip"></i>
+                                        </a>
+                                        @else —
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <form method="POST"
+                                              action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas/'.$baixa->cd_pagamento_correspondente_baixa_pcb) }}"
+                                              style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-xs btn-danger"
+                                                    title="Excluir lançamento"
+                                                    onclick="return confirm('Excluir este lançamento? O status do pagamento será recalculado.')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="text-right">Total lançado</th>
+                                    <th class="text-right">R$ {{ number_format($pagamento->vl_pago_total, 2, ',', '.') }}</th>
+                                    <th colspan="3"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="jarviswidget jarviswidget-color-blueDark">
                 <header>
                     <span class="widget-icon"><i class="fa fa-list"></i></span>
@@ -370,19 +557,31 @@
     </div>
 </div>
 
-{{-- Modal Registrar Pagamento --}}
+{{-- Modal Quitar Saldo --}}
 <div class="modal fade" id="modalPagar" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form id="formPagar" method="POST" action="" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><i class="fa fa-dollar"></i> Registrar Pagamento</h4>
+                    <h4 class="modal-title"><i class="fa fa-dollar"></i> Quitar Pagamento</h4>
                 </div>
                 <div class="modal-body">
                     <p>Correspondente: <strong id="modalPagarNome"></strong></p>
-                    <p>Valor: <strong id="modalPagarValor"></strong></p>
+                    <p>Saldo total: <strong id="modalPagarValor"></strong></p>
+                    <div class="form-group">
+                        <label>O que quitar</label>
+                        <select name="escopo" class="form-control" id="modalPagarEscopo">
+                            <option value="total">Saldo total (honorários + despesas)</option>
+                            <option value="honorario">Somente honorários restantes</option>
+                            <option value="despesa">Somente despesas restantes</option>
+                        </select>
+                        <p class="help-block" style="margin-bottom:0;">
+                            Honorários: <span id="modalSaldoHonorario"></span> ·
+                            Despesas: <span id="modalSaldoDespesa"></span>
+                        </p>
+                    </div>
                     <div class="form-group">
                         <label>Comprovante <small class="text-muted">(PDF ou imagem)</small></label>
                         <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
@@ -411,10 +610,17 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#modalPagar').on('show.bs.modal', function (e) {
-            var btn   = $(e.relatedTarget);
+            var btn = $(e.relatedTarget);
             $('#modalPagarNome').text(btn.data('nome'));
-            $('#modalPagarValor').text(btn.data('valor'));
+            $('#modalPagarValor').text(btn.data('saldo'));
+            $('#modalSaldoHonorario').text(btn.data('saldo-honorario'));
+            $('#modalSaldoDespesa').text(btn.data('saldo-despesa'));
             $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + btn.data('id') + '/pagar');
+        });
+
+        $('#tipoBaixaParcial').on('change', function () {
+            var saldo = $(this).find(':selected').data('saldo');
+            $('#valorBaixaParcial').val(saldo);
         });
 
         // Recalculo dinâmico do total ao editar honorários/despesas

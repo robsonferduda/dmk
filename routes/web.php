@@ -501,6 +501,8 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::post('correspondente/pagamentos/{id}/enviar-aprovacao',    'CorrespondentePagamentoController@enviarAprovacao');
     Route::post('correspondente/pagamentos/{id}/aprovar',             'CorrespondentePagamentoController@aprovar');
     Route::post('correspondente/pagamentos/{id}/pagar',               'CorrespondentePagamentoController@pagar');
+    Route::post('correspondente/pagamentos/{id}/baixas',              'CorrespondentePagamentoController@registrarBaixa');
+    Route::delete('correspondente/pagamentos/{id}/baixas/{baixaId}',  'CorrespondentePagamentoController@excluirBaixa');
     Route::post('correspondente/pagamentos/{id}/testar-notificacao',  'CorrespondentePagamentoController@testarNotificacao');
     Route::post('correspondente/pagamentos/{id}/atualizar-itens',     'CorrespondentePagamentoController@atualizarItens');
     Route::post('correspondente/pagamentos/{id}/atualizar-valores',   'CorrespondentePagamentoController@atualizarValores');

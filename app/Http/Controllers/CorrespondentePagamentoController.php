@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Session;
 use App\Conta;
 use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteItem;
+use App\PagamentoCorrespondenteBaixa;
 use App\ProcessoTaxaHonorario;
 use App\Enums\StatusPagamentoCorrespondente;
+use App\Enums\TipoBaixaHonorario;
 use App\Enums\TipoEnderecoEletronico;
 use App\Services\WhatsappDispatcher;
 use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
@@ -49,7 +51,7 @@ class CorrespondentePagamentoController extends Controller
             $ano = Carbon::now()->year;
         }
 
-        $pagamentos = PagamentoCorrespondente::with('correspondente')
+        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'itens', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
@@ -81,7 +83,7 @@ class CorrespondentePagamentoController extends Controller
 
     public function detalhe($id)
     {
-        $pagamento = PagamentoCorrespondente::with(['itens.processo', 'correspondente'])
+        $pagamento = PagamentoCorrespondente::with(['itens.processo', 'correspondente', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -528,29 +530,158 @@ class CorrespondentePagamentoController extends Controller
         return redirect()->back();
     }
 
-    // ─── Marcar como Pago ─────────────────────────────────────────────────────
+    // ─── Lançamentos de Pagamento (parciais) ─────────────────────────────────
 
-    public function pagar(Request $request, $id)
+    public function registrarBaixa(Request $request, $id)
     {
-        $pagamento = PagamentoCorrespondente::where('cd_conta_con', $this->conta)->findOrFail($id);
+        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
 
-        if (! $pagamento->podePagar()) {
-            Flash::error('Este pagamento não pode ser marcado como pago no status atual.');
+        if (! $pagamento->podeGerenciarBaixas() || ! $pagamento->podePagar()) {
+            Flash::error('Não é possível registrar pagamento neste status ou o saldo já está quitado.');
             return redirect()->back();
         }
 
-        DB::transaction(function () use ($pagamento, $request) {
-            $pagamento->cd_status_pag     = StatusPagamentoCorrespondente::PAGO;
-            $pagamento->dt_pagamento_pag  = Carbon::now();
-            $pagamento->ds_observacao_pag = $request->observacao;
+        $request->validate([
+            'cd_tipo_baixa_pcb' => 'required|in:1,2',
+            'vl_baixa_pcb'      => 'required|numeric|min:0.01',
+            'dt_baixa_pcb'      => 'required|date',
+            'ds_observacao_pcb' => 'nullable|string|max:1000',
+            'comprovante'       => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+        ]);
 
+        $tipo  = (int) $request->cd_tipo_baixa_pcb;
+        $valor = round((float) str_replace(',', '.', $request->vl_baixa_pcb), 2);
+        $saldo = $tipo === TipoBaixaHonorario::DESPESA
+            ? $pagamento->vl_saldo_despesa
+            : $pagamento->vl_saldo_honorario;
+
+        if ($valor > $saldo + 0.009) {
+            Flash::error('O valor informado excede o saldo restante de '
+                . ($tipo === TipoBaixaHonorario::DESPESA ? 'despesas' : 'honorários')
+                . ' (R$ ' . number_format($saldo, 2, ',', '.') . ').');
+            return redirect()->back()->withInput();
+        }
+
+        DB::transaction(function () use ($pagamento, $request, $tipo, $valor) {
+            $path = null;
             if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
-                $dir  = 'comprovantes-pagamento';
-                $path = $request->file('comprovante')->store($dir, 'public');
+                $path = $request->file('comprovante')->store('comprovantes-pagamento', 'public');
+            }
+
+            PagamentoCorrespondenteBaixa::create([
+                'cd_pagamento_correspondente_pag' => $pagamento->cd_pagamento_correspondente_pag,
+                'cd_tipo_baixa_pcb'               => $tipo,
+                'vl_baixa_pcb'                    => $valor,
+                'dt_baixa_pcb'                    => $request->dt_baixa_pcb,
+                'ds_observacao_pcb'               => $request->ds_observacao_pcb,
+                'dc_comprovante_pcb'              => $path,
+            ]);
+
+            $pagamento->sincronizarStatusPagamento();
+        });
+
+        Flash::success('Lançamento de pagamento registrado com sucesso.');
+        return redirect()->back();
+    }
+
+    public function excluirBaixa($id, $baixaId)
+    {
+        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        if (! $pagamento->podeGerenciarBaixas()) {
+            Flash::error('Não é possível excluir lançamentos neste status.');
+            return redirect()->back();
+        }
+
+        $baixa = PagamentoCorrespondenteBaixa::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)
+            ->where('cd_pagamento_correspondente_baixa_pcb', $baixaId)
+            ->firstOrFail();
+
+        DB::transaction(function () use ($pagamento, $baixa) {
+            if ($baixa->dc_comprovante_pcb) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($baixa->dc_comprovante_pcb);
+            }
+
+            $baixa->delete();
+            $pagamento->sincronizarStatusPagamento();
+        });
+
+        Flash::success('Lançamento excluído com sucesso.');
+        return redirect()->back();
+    }
+
+    /**
+     * Quita o saldo restante (honorário e/ou despesa) em um ou dois lançamentos.
+     */
+    public function pagar(Request $request, $id)
+    {
+        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+            ->where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        if (! $pagamento->podePagar()) {
+            Flash::error('Este pagamento não pode ser quitado no status atual.');
+            return redirect()->back();
+        }
+
+        $request->validate([
+            'observacao'  => 'nullable|string|max:1000',
+            'comprovante' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'escopo'      => 'nullable|in:total,honorario,despesa',
+        ]);
+
+        $escopo = $request->input('escopo', 'total');
+
+        DB::transaction(function () use ($pagamento, $request, $escopo) {
+            $path = null;
+            if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
+                $path = $request->file('comprovante')->store('comprovantes-pagamento', 'public');
+            }
+
+            $obs   = $request->observacao;
+            $hoje  = Carbon::now()->toDateString();
+            $lotes = [];
+
+            if (in_array($escopo, ['total', 'honorario'], true) && $pagamento->vl_saldo_honorario > 0) {
+                $lotes[] = [
+                    'tipo'  => TipoBaixaHonorario::HONORARIO,
+                    'valor' => $pagamento->vl_saldo_honorario,
+                ];
+            }
+
+            if (in_array($escopo, ['total', 'despesa'], true) && $pagamento->vl_saldo_despesa > 0) {
+                $lotes[] = [
+                    'tipo'  => TipoBaixaHonorario::DESPESA,
+                    'valor' => $pagamento->vl_saldo_despesa,
+                ];
+            }
+
+            foreach ($lotes as $i => $lote) {
+                PagamentoCorrespondenteBaixa::create([
+                    'cd_pagamento_correspondente_pag' => $pagamento->cd_pagamento_correspondente_pag,
+                    'cd_tipo_baixa_pcb'               => $lote['tipo'],
+                    'vl_baixa_pcb'                    => $lote['valor'],
+                    'dt_baixa_pcb'                    => $hoje,
+                    'ds_observacao_pcb'               => $obs,
+                    // Anexa o comprovante só no primeiro lançamento do quitamento
+                    'dc_comprovante_pcb'              => $i === 0 ? $path : null,
+                ]);
+            }
+
+            if ($obs && ! $pagamento->ds_observacao_pag) {
+                $pagamento->ds_observacao_pag = $obs;
+            }
+
+            if ($path && ! $pagamento->dc_comprovante_pag) {
                 $pagamento->dc_comprovante_pag = $path;
             }
 
             $pagamento->save();
+            $pagamento->sincronizarStatusPagamento();
         });
 
         Flash::success('Pagamento registrado com sucesso.');

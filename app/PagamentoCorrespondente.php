@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\StatusPagamentoCorrespondente;
+use App\Enums\TipoBaixaHonorario;
 
 class PagamentoCorrespondente extends Model
 {
@@ -36,6 +37,13 @@ class PagamentoCorrespondente extends Model
         return $this->hasMany(PagamentoCorrespondenteItem::class, 'cd_pagamento_correspondente_pag');
     }
 
+    public function baixas()
+    {
+        return $this->hasMany(PagamentoCorrespondenteBaixa::class, 'cd_pagamento_correspondente_pag')
+            ->orderBy('dt_baixa_pcb')
+            ->orderBy('cd_pagamento_correspondente_baixa_pcb');
+    }
+
     public function correspondente()
     {
         return $this->belongsTo(Correspondente::class, 'cd_correspondente_cor', 'cd_conta_con');
@@ -50,6 +58,10 @@ class PagamentoCorrespondente extends Model
 
     public function getNmStatusAttribute(): string
     {
+        if ($this->isParcialmentePago() && $this->cd_status_pag === StatusPagamentoCorrespondente::APROVADO) {
+            return 'Parcialmente Pago';
+        }
+
         return StatusPagamentoCorrespondente::label($this->cd_status_pag);
     }
 
@@ -58,7 +70,74 @@ class PagamentoCorrespondente extends Model
         return str_pad($this->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $this->nu_ano_pag;
     }
 
+    public function getVlHonorarioTotalAttribute(): float
+    {
+        return (float) $this->itensAtivos()->sum(function ($item) {
+            return (float) $item->vl_honorario_pai;
+        });
+    }
+
+    public function getVlDespesaTotalAttribute(): float
+    {
+        return (float) $this->itensAtivos()->sum(function ($item) {
+            return (float) $item->vl_despesa_pai;
+        });
+    }
+
+    public function getVlPagoHonorarioAttribute(): float
+    {
+        return (float) $this->baixas
+            ->where('cd_tipo_baixa_pcb', TipoBaixaHonorario::HONORARIO)
+            ->sum('vl_baixa_pcb');
+    }
+
+    public function getVlPagoDespesaAttribute(): float
+    {
+        return (float) $this->baixas
+            ->where('cd_tipo_baixa_pcb', TipoBaixaHonorario::DESPESA)
+            ->sum('vl_baixa_pcb');
+    }
+
+    public function getVlPagoTotalAttribute(): float
+    {
+        return round($this->vl_pago_honorario + $this->vl_pago_despesa, 2);
+    }
+
+    public function getVlSaldoHonorarioAttribute(): float
+    {
+        return max(0, round($this->vl_honorario_total - $this->vl_pago_honorario, 2));
+    }
+
+    public function getVlSaldoDespesaAttribute(): float
+    {
+        return max(0, round($this->vl_despesa_total - $this->vl_pago_despesa, 2));
+    }
+
+    public function getVlSaldoTotalAttribute(): float
+    {
+        return round($this->vl_saldo_honorario + $this->vl_saldo_despesa, 2);
+    }
+
+    public function getQtdItensAtivosAttribute(): int
+    {
+        return $this->itensAtivos()->count();
+    }
+
     // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    public function itensAtivos()
+    {
+        return $this->itens->filter(function ($item) {
+            return ! $item->isExcluido();
+        });
+    }
+
+    public function isParcialmentePago(): bool
+    {
+        $pago = $this->vl_pago_total;
+
+        return $pago > 0 && $this->vl_saldo_total > 0;
+    }
 
     public function podeEnviarAprovacao(): bool
     {
@@ -85,7 +164,8 @@ class PagamentoCorrespondente extends Model
 
     public function podePagar(): bool
     {
-        return $this->cd_status_pag === StatusPagamentoCorrespondente::APROVADO;
+        return $this->cd_status_pag === StatusPagamentoCorrespondente::APROVADO
+            && $this->vl_saldo_total > 0;
     }
 
     public function podeRecusar(): bool
@@ -95,13 +175,41 @@ class PagamentoCorrespondente extends Model
 
     public function podeAtualizarValores(): bool
     {
-        return $this->cd_status_pag !== StatusPagamentoCorrespondente::PAGO;
+        return $this->cd_status_pag !== StatusPagamentoCorrespondente::PAGO
+            && $this->vl_pago_total <= 0;
     }
 
-    public function getQtdItensAtivosAttribute(): int
+    public function podeGerenciarBaixas(): bool
     {
-        return $this->itens->filter(function ($item) {
-            return ! $item->isExcluido();
-        })->count();
+        return in_array($this->cd_status_pag, [
+            StatusPagamentoCorrespondente::APROVADO,
+            StatusPagamentoCorrespondente::PAGO,
+        ], true);
+    }
+
+    /**
+     * Atualiza o status conforme o saldo das baixas.
+     */
+    public function sincronizarStatusPagamento(): void
+    {
+        if (! in_array($this->cd_status_pag, [
+            StatusPagamentoCorrespondente::APROVADO,
+            StatusPagamentoCorrespondente::PAGO,
+        ], true)) {
+            return;
+        }
+
+        $this->unsetRelation('baixas');
+        $this->load('baixas');
+
+        if ($this->vl_saldo_total <= 0 && $this->vl_pago_total > 0) {
+            $this->cd_status_pag    = StatusPagamentoCorrespondente::PAGO;
+            $this->dt_pagamento_pag = $this->dt_pagamento_pag ?: now();
+        } else {
+            $this->cd_status_pag    = StatusPagamentoCorrespondente::APROVADO;
+            $this->dt_pagamento_pag = null;
+        }
+
+        $this->save();
     }
 }

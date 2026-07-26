@@ -190,6 +190,9 @@
                                 @foreach($pagamentos as $pag)
                                 @php
                                     $cor   = $cores[$pag->cd_status_pag] ?? 'default';
+                                    if ($pag->isParcialmentePago()) {
+                                        $cor = 'warning';
+                                    }
                                     $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
                                     $pix   = $banco->dc_pix_dba ?? null;
                                 @endphp
@@ -206,6 +209,12 @@
                                     </td>
                                     <td class="text-right">
                                         <strong>R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}</strong>
+                                        @if($pag->vl_pago_total > 0 && $pag->vl_saldo_total > 0)
+                                        <div class="text-muted" style="font-size:11px;">
+                                            pago R$ {{ number_format($pag->vl_pago_total, 2, ',', '.') }} ·
+                                            saldo R$ {{ number_format($pag->vl_saldo_total, 2, ',', '.') }}
+                                        </div>
+                                        @endif
                                     </td>
                                     <td class="text-center">{{ $pag->itens->count() }}</td>
                                     <td class="text-center">
@@ -250,13 +259,11 @@
                                         @endif
 
                                         @if($pag->podePagar())
-                                        <button type="button" class="btn btn-xs btn-success" title="Registrar pagamento"
-                                                data-toggle="modal" data-target="#modalPagar"
-                                                data-id="{{ $pag->cd_pagamento_correspondente_pag }}"
-                                                data-nome="{{ $pag->correspondente->nm_razao_social_con ?? '' }}"
-                                                data-valor="R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}">
+                                        <a href="{{ url('correspondente/pagamentos/'.$pag->cd_pagamento_correspondente_pag.'/detalhe') }}#lancamentos"
+                                           class="btn btn-xs btn-success"
+                                           title="Registrar pagamento (parcial ou total)">
                                             <i class="fa fa-dollar"></i>
-                                        </button>
+                                        </a>
                                         @endif
                                     </td>
                                 </tr>
@@ -270,38 +277,6 @@
         </article>
     </div>
 </div>
-
-{{-- Modal Registrar Pagamento --}}
-<div class="modal fade" id="modalPagar" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <form id="formPagar" method="POST" action="" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><i class="fa fa-dollar"></i> Registrar Pagamento</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Correspondente: <strong id="modalPagarNome"></strong></p>
-                    <p>Valor: <strong id="modalPagarValor"></strong></p>
-                    <div class="form-group">
-                        <label>Comprovante <small class="text-muted">(PDF ou imagem)</small></label>
-                        <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
-                    </div>
-                    <div class="form-group">
-                        <label>Observação <small class="text-muted">(opcional)</small></label>
-                        <textarea name="observacao" class="form-control" rows="2"
-                                  placeholder="Banco, data, número do comprovante, etc."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Confirmar Pagamento</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('script')
@@ -313,16 +288,6 @@
                 return;
             }
             window.location.href = '{{ url('correspondente/pagamentos') }}?mes=' + partes[0] + '&ano=' + partes[1];
-        });
-
-        $('#modalPagar').on('show.bs.modal', function (e) {
-            var btn   = $(e.relatedTarget);
-            var id    = btn.data('id');
-            var nome  = btn.data('nome');
-            var valor = btn.data('valor');
-            $('#modalPagarNome').text(nome);
-            $('#modalPagarValor').text(valor);
-            $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + id + '/pagar');
         });
     });
 </script>
