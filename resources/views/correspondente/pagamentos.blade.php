@@ -131,25 +131,29 @@
         ];
     @endphp
     <div class="row" style="margin-bottom:20px;">
-        @foreach($statusLabels as $cd => $nm)
-        @php
-            $qtd      = $pagamentos->where('cd_status_pag', $cd)->count();
-            $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
-            $cfg      = $statusConfig[$cd] ?? ['cor'=>'#aaa','bg'=>'#f5f5f5','icone'=>'circle'];
-        @endphp
-        <div class="col-xs-6 col-sm-2" style="margin-bottom:10px;">
-            <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:14px 16px;border-left:4px solid {{ $cfg['cor'] }};display:flex;align-items:center;gap:14px;">
-                <div style="color:{{ $cfg['cor'] }};font-size:2em;line-height:1;flex-shrink:0;">
-                    <i class="fa fa-{{ $cfg['icone'] }}"></i>
+        <div class="col-md-12">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                @foreach($statusLabels as $cd => $nm)
+                @php
+                    $qtd      = $pagamentos->where('cd_status_pag', $cd)->count();
+                    $vlStatus = $pagamentos->where('cd_status_pag', $cd)->sum('vl_total_pag');
+                    $cfg      = $statusConfig[$cd] ?? ['cor'=>'#aaa','bg'=>'#f5f5f5','icone'=>'circle'];
+                @endphp
+                <div style="flex:1 1 0;min-width:160px;">
+                    <div style="background:{{ $cfg['bg'] }};border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.07);padding:14px 16px;border-left:4px solid {{ $cfg['cor'] }};display:flex;align-items:center;gap:14px;height:100%;">
+                        <div style="color:{{ $cfg['cor'] }};font-size:2em;line-height:1;flex-shrink:0;">
+                            <i class="fa fa-{{ $cfg['icone'] }}"></i>
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:0.68em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $nm }}</div>
+                            <div style="font-size:1.7em;font-weight:700;color:#333;line-height:1.1;">{{ $qtd }}</div>
+                            <div style="font-size:0.78em;color:#aaa;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
+                        </div>
+                    </div>
                 </div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-size:0.68em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $nm }}</div>
-                    <div style="font-size:1.7em;font-weight:700;color:#333;line-height:1.1;">{{ $qtd }}</div>
-                    <div style="font-size:0.78em;color:#aaa;">R$ {{ number_format($vlStatus, 2, ',', '.') }}</div>
-                </div>
+                @endforeach
             </div>
         </div>
-        @endforeach
     </div>
 
    
