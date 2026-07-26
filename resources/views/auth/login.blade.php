@@ -30,9 +30,11 @@
             </section>
             <section>
                 <label class="label">Senha</label>
-                <label class="input"> <i class="icon-append fa fa-lock"></i>
-                    <input type="password" name="password">
-                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b> </label>
+                <label class="input">
+                    <i class="icon-append fa fa-eye" id="toggle-password" style="cursor:pointer; pointer-events:auto;" title="Mostrar senha"></i>
+                    <input type="password" name="password" id="password">
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Digite sua senha</b>
+                </label>
 
                     @if ($errors->has('password'))
                         <span class="help-block text-danger"><strong>{{ $errors->first('password') }}</strong></span>
@@ -57,4 +59,22 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Entrar</button>
         </footer>
     </form>
+@endsection
+
+@section('scripts')
+<script>
+    (function () {
+        var toggle = document.getElementById('toggle-password');
+        var input  = document.getElementById('password');
+        if (!toggle || !input) return;
+
+        toggle.addEventListener('click', function () {
+            var showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            toggle.classList.toggle('fa-eye', showing);
+            toggle.classList.toggle('fa-eye-slash', !showing);
+            toggle.title = showing ? 'Mostrar senha' : 'Ocultar senha';
+        });
+    })();
+</script>
 @endsection

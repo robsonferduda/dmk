@@ -67,5 +67,6 @@
 		<script src="js/app.config.js"></script>
 		<script src="js/bootstrap/bootstrap.min.js"></script>
 		<script src="js/app.min.js"></script>
+		@yield('scripts')
 	</body>
 </html>
