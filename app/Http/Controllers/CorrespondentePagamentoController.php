@@ -1025,14 +1025,22 @@ class CorrespondentePagamentoController extends Controller
 
         // Garante que o mês atual esteja sempre na lista
         $atual = ['mes' => Carbon::now()->month, 'ano' => Carbon::now()->year];
-        $lista = [['mes' => $atual['mes'], 'ano' => $atual['ano']]];
+        $lista = [$atual];
 
         foreach ($meses as $m) {
-            $entry = ['mes' => $m->nu_mes_pag, 'ano' => $m->nu_ano_pag];
-            if ($entry !== $lista[0]) {
+            $entry = ['mes' => (int) $m->nu_mes_pag, 'ano' => (int) $m->nu_ano_pag];
+            if ($entry !== $atual) {
                 $lista[] = $entry;
             }
         }
+
+        usort($lista, function ($a, $b) {
+            if ($a['ano'] === $b['ano']) {
+                return $b['mes'] <=> $a['mes'];
+            }
+
+            return $b['ano'] <=> $a['ano'];
+        });
 
         return $lista;
     }

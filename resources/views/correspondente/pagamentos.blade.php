@@ -75,21 +75,23 @@
         </div>
     </div>
 
-    {{-- Navegação por mês --}}
+    {{-- Navegação por competência --}}
     <div class="row" style="margin-bottom:15px;">
         <div class="col-md-12">
-            <div class="btn-group">
+            <label for="competenciaPagamentos" class="control-label" style="margin-right:8px;">Competência</label>
+            <select id="competenciaPagamentos" class="form-control input-sm"
+                    style="min-width:120px; display:inline-block; width:auto;">
                 @foreach($mesesNavegacao as $m)
-                    @php $label = str_pad($m['mes'],2,'0',STR_PAD_LEFT).'/'.$m['ano']; @endphp
-                    <a href="{{ url('correspondente/pagamentos?mes='.$m['mes'].'&ano='.$m['ano']) }}"
-                       class="btn btn-sm {{ ($m['mes'] == $mes && $m['ano'] == $ano) ? 'btn-primary' : 'btn-default' }}">
+                    @php
+                        $label = str_pad($m['mes'], 2, '0', STR_PAD_LEFT) . '/' . $m['ano'];
+                        $valor = $m['mes'] . '-' . $m['ano'];
+                        $atual = $mes . '-' . $ano;
+                    @endphp
+                    <option value="{{ $valor }}" {{ $valor === $atual ? 'selected' : '' }}>
                         {{ $label }}
-                    </a>
+                    </option>
                 @endforeach
-            </div>
-            <span class="text-muted" style="margin-left:10px;">
-                Exibindo: <strong>{{ $mesAnoFmt }}</strong>
-            </span>
+            </select>
         </div>
     </div>
 
@@ -301,6 +303,14 @@
 @section('script')
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#competenciaPagamentos').on('change', function () {
+            var partes = String($(this).val() || '').split('-');
+            if (partes.length !== 2) {
+                return;
+            }
+            window.location.href = '{{ url('correspondente/pagamentos') }}?mes=' + partes[0] + '&ano=' + partes[1];
+        });
+
         $('#modalPagar').on('show.bs.modal', function (e) {
             var btn   = $(e.relatedTarget);
             var id    = btn.data('id');
