@@ -174,7 +174,39 @@
                                 Clique em <strong>Consolidar Mês</strong> para gerar os registros.
                             </div>
                         @else
-                        <table class="table table-striped table-hover">
+                        @php
+                            $qtdComDespesa = $pagamentos->filter(function ($pag) {
+                                return $pag->itens->contains(function ($item) {
+                                    return ! $item->isExcluido() && (float) $item->vl_despesa_pai > 0;
+                                });
+                            })->count();
+                            $qtdSoHonorario = $pagamentos->filter(function ($pag) {
+                                $ativos = $pag->itens->filter(fn($i) => ! $i->isExcluido());
+                                if ($ativos->isEmpty()) {
+                                    return false;
+                                }
+                                return $ativos->every(fn($i) => (float) $i->vl_despesa_pai <= 0)
+                                    && $ativos->contains(fn($i) => (float) $i->vl_honorario_pai > 0);
+                            })->count();
+                        @endphp
+                        <div style="margin-bottom:12px;">
+                            <span class="text-muted" style="margin-right:8px;">Filtrar:</span>
+                            <div class="btn-group btn-group-sm" id="filtroPagamentosLista" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="filtroPagamentoLista" value="todos" checked> Todos
+                                    <span class="badge">{{ $pagamentos->count() }}</span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="filtroPagamentoLista" value="com_despesa"> Com despesa
+                                    <span class="badge">{{ $qtdComDespesa }}</span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="filtroPagamentoLista" value="somente_honorario"> Somente honorário
+                                    <span class="badge">{{ $qtdSoHonorario }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover" id="tabelaPagamentosLista">
                             <thead>
                                 <tr>
                                     <th>Correspondente</th>
@@ -195,10 +227,22 @@
                                     }
                                     $banco = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
                                     $pix   = $banco->dc_pix_dba ?? null;
+                                    $temDespesa = $pag->itens->contains(function ($item) {
+                                        return ! $item->isExcluido() && (float) $item->vl_despesa_pai > 0;
+                                    });
+                                    $ativos = $pag->itens->filter(fn($i) => ! $i->isExcluido());
+                                    $somenteHonorario = $ativos->isNotEmpty()
+                                        && $ativos->every(fn($i) => (float) $i->vl_despesa_pai <= 0)
+                                        && $ativos->contains(fn($i) => (float) $i->vl_honorario_pai > 0);
                                 @endphp
-                                <tr>
+                                <tr class="linha-pagamento-lista"
+                                    data-com-despesa="{{ $temDespesa ? '1' : '0' }}"
+                                    data-somente-honorario="{{ $somenteHonorario ? '1' : '0' }}">
                                     <td>
                                         {{ $pag->correspondente->nm_razao_social_con ?? $pag->correspondente->nm_fantasia_con ?? '—' }}
+                                        @if($temDespesa)
+                                        <span class="label label-warning" style="font-size:10px;margin-left:4px;" title="Possui processos com despesa">Despesa</span>
+                                        @endif
                                     </td>
                                     <td>
                                         @if($pix)
@@ -213,6 +257,12 @@
                                         <div class="text-muted" style="font-size:11px;">
                                             pago R$ {{ number_format($pag->vl_pago_total, 2, ',', '.') }} ·
                                             saldo R$ {{ number_format($pag->vl_saldo_total, 2, ',', '.') }}
+                                        </div>
+                                        @endif
+                                        @if($temDespesa)
+                                        <div class="text-muted" style="font-size:11px;">
+                                            hon. R$ {{ number_format($pag->vl_honorario_total, 2, ',', '.') }} ·
+                                            desp. R$ {{ number_format($pag->vl_despesa_total, 2, ',', '.') }}
                                         </div>
                                         @endif
                                     </td>
@@ -268,6 +318,9 @@
                                     </td>
                                 </tr>
                                 @endforeach
+                                <tr id="linhaFiltroPagamentosVazio" style="display:none;">
+                                    <td colspan="7" class="text-center text-muted">Nenhum pagamento neste filtro.</td>
+                                </tr>
                             </tbody>
                         </table>
                         @endif
@@ -289,6 +342,32 @@
             }
             window.location.href = '{{ url('correspondente/pagamentos') }}?mes=' + partes[0] + '&ano=' + partes[1];
         });
+
+        function aplicarFiltroPagamentosLista() {
+            var filtro = $('#filtroPagamentosLista input[name="filtroPagamentoLista"]:checked').val() || 'todos';
+            var visiveis = 0;
+
+            $('#tabelaPagamentosLista tbody tr.linha-pagamento-lista').each(function () {
+                var comDespesa = $(this).attr('data-com-despesa') === '1';
+                var somenteHon = $(this).attr('data-somente-honorario') === '1';
+                var mostrar = true;
+
+                if (filtro === 'com_despesa') {
+                    mostrar = comDespesa;
+                } else if (filtro === 'somente_honorario') {
+                    mostrar = somenteHon;
+                }
+
+                $(this).toggle(mostrar);
+                if (mostrar) {
+                    visiveis++;
+                }
+            });
+
+            $('#linhaFiltroPagamentosVazio').toggle(visiveis === 0);
+        }
+
+        $('#filtroPagamentosLista').on('change', 'input[name="filtroPagamentoLista"]', aplicarFiltroPagamentosLista);
     });
 </script>
 @endsection
