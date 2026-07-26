@@ -40,6 +40,15 @@ class CorrespondentePagamentoController extends Controller
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);
 
+        $competencia = ($mes >= 1 && $mes <= 12 && $ano >= 2000)
+            ? Carbon::createFromDate($ano, $mes, 1)->startOfMonth()
+            : null;
+
+        if (! $competencia || $competencia->gt(Carbon::now()->startOfMonth())) {
+            $mes = Carbon::now()->month;
+            $ano = Carbon::now()->year;
+        }
+
         $pagamentos = PagamentoCorrespondente::with('correspondente')
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
@@ -89,6 +98,16 @@ class CorrespondentePagamentoController extends Controller
     {
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);
+
+        $competencia = ($mes >= 1 && $mes <= 12 && $ano >= 2000)
+            ? Carbon::createFromDate($ano, $mes, 1)->startOfMonth()
+            : null;
+
+        if (! $competencia || $competencia->gt(Carbon::now()->startOfMonth())) {
+            Flash::error('Não é permitido consolidar pagamentos de competências inválidas ou futuras.');
+
+            return redirect(url('correspondente/pagamentos'));
+        }
 
         \Artisan::call('pagamentos:consolidar', [
             '--mes'   => $mes,
@@ -1017,19 +1036,30 @@ class CorrespondentePagamentoController extends Controller
 
     private function mesesDisponiveis(): array
     {
+        $atual = Carbon::now()->startOfMonth();
+
         $meses = PagamentoCorrespondente::where('cd_conta_con', $this->conta)
+            ->whereBetween('nu_mes_pag', [1, 12])
+            ->where('nu_ano_pag', '>=', 2000)
+            ->where(function ($query) use ($atual) {
+                $query->where('nu_ano_pag', '<', $atual->year)
+                    ->orWhere(function ($query) use ($atual) {
+                        $query->where('nu_ano_pag', $atual->year)
+                            ->where('nu_mes_pag', '<=', $atual->month);
+                    });
+            })
             ->selectRaw('nu_mes_pag, nu_ano_pag')
             ->distinct()
             ->orderByRaw('nu_ano_pag DESC, nu_mes_pag DESC')
             ->get();
 
         // Garante que o mês atual esteja sempre na lista
-        $atual = ['mes' => Carbon::now()->month, 'ano' => Carbon::now()->year];
-        $lista = [$atual];
+        $competenciaAtual = ['mes' => $atual->month, 'ano' => $atual->year];
+        $lista = [$competenciaAtual];
 
         foreach ($meses as $m) {
             $entry = ['mes' => (int) $m->nu_mes_pag, 'ano' => (int) $m->nu_ano_pag];
-            if ($entry !== $atual) {
+            if ($entry !== $competenciaAtual) {
                 $lista[] = $entry;
             }
         }

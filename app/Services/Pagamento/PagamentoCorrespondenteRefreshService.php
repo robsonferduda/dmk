@@ -217,6 +217,10 @@ class PagamentoCorrespondenteRefreshService
      */
     public function buscarProcessosElegiveis(int $cdConta, int $cdCorrespondente, int $mes, int $ano): Collection
     {
+        if (! $this->competenciaPermitida($mes, $ano)) {
+            return collect();
+        }
+
         $dtInicio = Carbon::createFromDate($ano, $mes, 1)->startOfMonth()->toDateString();
         $dtFim    = Carbon::createFromDate($ano, $mes, 1)->endOfMonth()->toDateString();
 
@@ -387,6 +391,10 @@ class PagamentoCorrespondenteRefreshService
     {
         $dt = Carbon::parse($processo->dt_prazo_fatal_pro);
 
+        if (! $this->competenciaPermitida((int) $dt->month, (int) $dt->year)) {
+            return null;
+        }
+
         $competencia = [
             'cd_conta_con'          => $processo->cd_conta_con,
             'cd_correspondente_cor' => $processo->cd_correspondente_cor,
@@ -415,6 +423,17 @@ class PagamentoCorrespondenteRefreshService
         }
 
         return $pagamento;
+    }
+
+    private function competenciaPermitida(int $mes, int $ano): bool
+    {
+        if ($mes < 1 || $mes > 12 || $ano < 2000) {
+            return false;
+        }
+
+        $competencia = Carbon::createFromDate($ano, $mes, 1)->startOfMonth();
+
+        return $competencia->lte(Carbon::now()->startOfMonth());
     }
 
     private function getValoresProcesso(int $cdProcessoPro): array

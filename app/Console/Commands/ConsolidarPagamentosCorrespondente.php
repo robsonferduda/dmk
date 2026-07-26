@@ -44,6 +44,18 @@ class ConsolidarPagamentosCorrespondente extends Command
         $conta  = $this->option('conta');
         $dryRun = (bool) $this->option('dry-run');
 
+        if ($mes < 1 || $mes > 12 || $ano < 2000) {
+            $this->error('[consolidar] Competência inválida. Informe mês entre 1 e 12 e ano a partir de 2000.');
+            return 1;
+        }
+
+        $competencia = Carbon::createFromDate($ano, $mes, 1)->startOfMonth();
+
+        if ($competencia->gt($hoje->copy()->startOfMonth())) {
+            $this->error('[consolidar] Não é permitido criar pagamentos para competências futuras.');
+            return 1;
+        }
+
         $dtInicio = Carbon::createFromDate($ano, $mes, 1)->startOfMonth()->toDateString();
         $dtFim    = Carbon::createFromDate($ano, $mes, 1)->endOfMonth()->toDateString();
 
