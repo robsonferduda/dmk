@@ -74,7 +74,17 @@
                             <br />                                        
                             <label class="label label-black">Nenhum Pagamento</label>  
                             <input type="checkbox" name="nenhum" id="nenhum"  {{ (!empty(\Session::get('nenhum')) ? 'checked' : '') }} > 
-                        </section> 
+                        </section>
+                        <section style="width:18%" class="col col-md-3">
+                            <br />
+                            <label class="label label-black">Com Despesa</label>
+                            <input type="checkbox" name="com_despesa" id="com_despesa" {{ (!empty(\Session::get('com_despesa')) ? 'checked' : '') }}>
+                        </section>
+                        <section style="width:18%" class="col col-md-3">
+                            <br />
+                            <label class="label label-black">Somente Honorário</label>
+                            <input type="checkbox" name="somente_honorario" id="somente_honorario" {{ (!empty(\Session::get('somente_honorario')) ? 'checked' : '') }}>
+                        </section>
                         <section class="col col-md-1">
                             <br />
                             <button class="btn btn-primary" type="submit"><i class="fa fa fa-search"></i> Buscar </button>

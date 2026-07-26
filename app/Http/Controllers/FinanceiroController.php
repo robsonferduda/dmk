@@ -180,6 +180,8 @@ class FinanceiroController extends Controller
             \Session::put('parcialmente', null);
             \Session::put('pago', null);
             \Session::put('nenhum', null);
+            \Session::put('com_despesa', null);
+            \Session::put('somente_honorario', null);
 
             $dtInicio = date('d/m/Y', strtotime(date("Y-m-01")));
             $dtFim = date('d/m/Y', strtotime(date("Y-m-t")));
@@ -192,6 +194,8 @@ class FinanceiroController extends Controller
             $parcialmente = '';
             $pago = '';
             $nenhum = '';
+            $comDespesa = '';
+            $somenteHonorario = '';
         } else {
             $dtInicio = session('dtInicio');
             $dtFim = session('dtFim');
@@ -204,6 +208,8 @@ class FinanceiroController extends Controller
             $parcialmente = session('parcialmente');
             $pago = session('pago');
             $nenhum = session('nenhum');
+            $comDespesa = session('com_despesa');
+            $somenteHonorario = session('somente_honorario');
         }
 
         $saidas = ProcessoTaxaHonorario::with(array('tipoServicoCorrespondente' => function ($query) {
@@ -276,6 +282,18 @@ class FinanceiroController extends Controller
             $saidas = $saidas->whereIn('fl_pago_correspondente_pth', $opcoes);
         }
 
+        // Filtro por existência de despesa reembolsável do correspondente
+        if (!empty($comDespesa) && empty($somenteHonorario)) {
+            $saidas = $saidas->whereHas('processo.processoDespesa', function ($query) {
+                $query->where('fl_despesa_reembolsavel_pde', 'S')
+                      ->where('cd_tipo_entidade_tpe', \TipoEntidade::CORRESPONDENTE);
+            });
+        } elseif (!empty($somenteHonorario) && empty($comDespesa)) {
+            $saidas = $saidas->whereDoesntHave('processo.processoDespesa', function ($query) {
+                $query->where('fl_despesa_reembolsavel_pde', 'S')
+                      ->where('cd_tipo_entidade_tpe', \TipoEntidade::CORRESPONDENTE);
+            });
+        }
 
         $saidas = $saidas->where('cd_conta_con', $this->conta)->select('cd_processo_taxa_honorario_pth', 'vl_taxa_honorario_cliente_pth', 'vl_taxa_honorario_correspondente_pth', 'cd_processo_pro', 'cd_tipo_servico_correspondente_tse', 'fl_pago_correspondente_pth')->get()->sortBy('processo.dt_prazo_fatal_pro');
         //dd($saidas);
@@ -666,6 +684,18 @@ class FinanceiroController extends Controller
             \Session::put('nenhum', 'S');
         } else {
             \Session::put('nenhum', null);
+        }
+
+        if (!empty($request->com_despesa)) {
+            \Session::put('com_despesa', 'S');
+        } else {
+            \Session::put('com_despesa', null);
+        }
+
+        if (!empty($request->somente_honorario)) {
+            \Session::put('somente_honorario', 'S');
+        } else {
+            \Session::put('somente_honorario', null);
         }
         
         
