@@ -108,6 +108,8 @@ class ConsolidarPagamentosCorrespondente extends Command
 
         $criados     = 0;
         $atualizados = 0;
+        $ignorados   = 0;
+        $descartados = 0;
 
         foreach ($agrupado as $chave => $itens) {
             $itens           = $itens->unique('cd_processo_pro')->values();
@@ -120,16 +122,17 @@ class ConsolidarPagamentosCorrespondente extends Command
             });
 
             if ($dryRun) {
-                $this->line("  DRY-RUN  conta={$cdConta}  cor={$cdCorrespondente}  processos={$itens->count()}  total=R$ " . number_format($valorTotal, 2, ',', '.'));
+                $rotulo = $valorTotal > 0 ? 'DRY-RUN' : 'DRY-RUN (ignorado: total zero)';
+                $this->line("  {$rotulo}  conta={$cdConta}  cor={$cdCorrespondente}  processos={$itens->count()}  total=R$ " . number_format($valorTotal, 2, ',', '.'));
                 continue;
             }
 
             DB::transaction(function () use (
                 $cdConta, $cdCorrespondente, $mes, $ano, $valorTotal, $itens,
-                &$criados, &$atualizados
+                &$criados, &$atualizados, &$ignorados, &$descartados
             ) {
-                // Cria ou recupera o registro de pagamento (nunca sobrescreve status > GERADO)
-                $pagamento = PagamentoCorrespondente::firstOrNew([
+                // withTrashed: o índice único da competência não considera deleted_at
+                $pagamento = PagamentoCorrespondente::withTrashed()->firstOrNew([
                     'cd_conta_con'          => $cdConta,
                     'cd_correspondente_cor' => $cdCorrespondente,
                     'nu_mes_pag'            => $mes,
@@ -138,8 +141,30 @@ class ConsolidarPagamentosCorrespondente extends Command
 
                 $isNovo = ! $pagamento->exists;
 
+                // Sem valor a pagar: não cria cabeçalho e limpa o que estiver zerado em Gerado
+                if ($valorTotal <= 0) {
+                    if ($isNovo) {
+                        $ignorados++;
+                        return;
+                    }
+
+                    if ((int) $pagamento->cd_status_pag === StatusPagamentoCorrespondente::GERADO) {
+                        PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)->delete();
+                        $pagamento->forceDelete();
+                        $descartados++;
+                        return;
+                    }
+
+                    $ignorados++;
+                    return;
+                }
+
                 // Só atualiza valor e itens se ainda estiver no status GERADO
                 if ($isNovo || $pagamento->cd_status_pag === StatusPagamentoCorrespondente::GERADO) {
+                    if (! $isNovo && $pagamento->trashed()) {
+                        $pagamento->restore();
+                    }
+
                     $pagamento->vl_total_pag   = $valorTotal;
                     $pagamento->cd_status_pag  = $pagamento->cd_status_pag ?? StatusPagamentoCorrespondente::GERADO;
                     $pagamento->save();
@@ -163,8 +188,10 @@ class ConsolidarPagamentosCorrespondente extends Command
             });
         }
 
-        $this->info("[consolidar] Concluído.  Criados={$criados}  Atualizados={$atualizados}");
-        Log::info("[pagamentos:consolidar] mes={$mes}/{$ano}  Criados={$criados}  Atualizados={$atualizados}");
+        $resumo = "Criados={$criados}  Atualizados={$atualizados}  Ignorados(total zero)={$ignorados}  Descartados={$descartados}";
+
+        $this->info("[consolidar] Concluído.  {$resumo}");
+        Log::info("[pagamentos:consolidar] mes={$mes}/{$ano}  {$resumo}");
 
         return 0;
     }

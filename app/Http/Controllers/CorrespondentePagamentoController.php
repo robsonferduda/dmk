@@ -44,6 +44,7 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
+            ->where('vl_total_pag', '>', 0)
             ->get()
             ->sortBy(function ($pag) {
                 return $pag->correspondente->nm_razao_social_con
@@ -115,6 +116,11 @@ class CorrespondentePagamentoController extends Controller
             return redirect()->back();
         }
 
+        if ((float) $pagamento->vl_total_pag <= 0) {
+            Flash::error('Este pagamento está sem valor a pagar e não pode ser enviado para aprovação.');
+            return redirect()->back();
+        }
+
         $isReenvio = $pagamento->podeReenviarAprovacao();
 
         DB::transaction(function () use ($pagamento, $isReenvio) {
@@ -147,6 +153,7 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
+            ->where('vl_total_pag', '>', 0)
             ->get()
             ->filter(fn($p) => $p->podeEnviarAprovacao());
 
@@ -183,6 +190,7 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
+            ->where('vl_total_pag', '>', 0)
             ->get()
             ->filter(fn($p) => $p->podeReenviarAprovacao());
 
@@ -364,6 +372,14 @@ class CorrespondentePagamentoController extends Controller
         if (isset($stats['erro'])) {
             Flash::error($stats['erro']);
             return redirect()->back();
+        }
+
+        if (! empty($stats['descartado'])) {
+            Flash::warning('Este pagamento ficou sem valor a pagar após a atualização e foi removido da competência.');
+
+            return redirect(url(
+                'correspondente/pagamentos?mes=' . $pagamento->nu_mes_pag . '&ano=' . $pagamento->nu_ano_pag
+            ));
         }
 
         $mensagem = sprintf(
@@ -906,6 +922,7 @@ class CorrespondentePagamentoController extends Controller
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)
+            ->where('vl_total_pag', '>', 0)
             ->get()
             ->sortBy(function ($pag) {
                 return $pag->correspondente->nm_razao_social_con

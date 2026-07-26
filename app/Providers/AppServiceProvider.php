@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app->environment('local')) {
+            ini_set('memory_limit', '512M');
+        }
+
         TaxaHonorario::observe(TaxaHonorarioObserver::class);
     }
 

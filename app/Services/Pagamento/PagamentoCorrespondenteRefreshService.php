@@ -37,7 +37,14 @@ class PagamentoCorrespondenteRefreshService
             return ['erro' => 'Pagamento já efetuado e não pode ser atualizado.'];
         }
 
-        $stats = ['adicionados' => 0, 'atualizados' => 0, 'removidos' => 0, 'excluidos' => 0, 'duplicados' => 0];
+        $stats = [
+            'adicionados' => 0,
+            'atualizados' => 0,
+            'removidos'   => 0,
+            'excluidos'   => 0,
+            'duplicados'  => 0,
+            'descartado'  => false,
+        ];
 
         DB::transaction(function () use ($pagamento, &$stats) {
             $stats['duplicados'] = $this->deduplicarItensPagamento($pagamento);
@@ -113,6 +120,8 @@ class PagamentoCorrespondenteRefreshService
             $stats['duplicados'] += $this->deduplicarItensPagamento($pagamento);
 
             $this->recalcularTotal($pagamento);
+
+            $stats['descartado'] = $this->descartarPagamentoVazio($pagamento);
         });
 
         return $stats;
@@ -142,6 +151,7 @@ class PagamentoCorrespondenteRefreshService
             if (! $this->itemPertenceAoPagamento($processo, $pagamento)) {
                 $item->delete();
                 $this->recalcularTotal($pagamento);
+                $this->descartarPagamentoVazio($pagamento);
             }
         }
 
@@ -160,7 +170,11 @@ class PagamentoCorrespondenteRefreshService
             return;
         }
 
-        $pagamento = $this->resolverPagamento($processo);
+        $valores = $this->getValoresProcesso($cdProcessoPro);
+        $temValor = ($valores['honorario'] + $valores['despesa']) > 0;
+
+        // Sem valor a pagar não cria cabeçalho de pagamento — evita registros zerados
+        $pagamento = $this->resolverPagamento($processo, $temValor);
 
         if (! $pagamento) {
             return;
@@ -170,8 +184,6 @@ class PagamentoCorrespondenteRefreshService
             ->where('cd_processo_pro', $cdProcessoPro)
             ->orderBy('cd_pagamento_correspondente_item_pai')
             ->first();
-
-        $valores = $this->getValoresProcesso($cdProcessoPro);
 
         if (! $item) {
             PagamentoCorrespondenteItem::create([
@@ -197,6 +209,7 @@ class PagamentoCorrespondenteRefreshService
 
         $this->deduplicarItensPagamento($pagamento);
         $this->recalcularTotal($pagamento);
+        $this->descartarPagamentoVazio($pagamento);
     }
 
     /**
@@ -301,6 +314,33 @@ class PagamentoCorrespondenteRefreshService
         $pagamento->save();
     }
 
+    /**
+     * Remove o cabeçalho de pagamento que ficou sem valor a pagar.
+     *
+     * Só atua em pagamentos ainda no status Gerado: os já notificados/aprovados
+     * são preservados como histórico. A remoção é definitiva porque o índice
+     * único de competência não considera deleted_at.
+     */
+    public function descartarPagamentoVazio(PagamentoCorrespondente $pagamento): bool
+    {
+        if (! $pagamento->exists) {
+            return false;
+        }
+
+        if ((int) $pagamento->cd_status_pag !== StatusPagamentoCorrespondente::GERADO) {
+            return false;
+        }
+
+        if ((float) $pagamento->vl_total_pag > 0) {
+            return false;
+        }
+
+        PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)->delete();
+        $pagamento->forceDelete();
+
+        return true;
+    }
+
     public function itemExcluido(PagamentoCorrespondenteItem $item): bool
     {
         return strtoupper((string) ($item->fl_excluido_pai ?? 'N')) === 'S';
@@ -343,22 +383,32 @@ class PagamentoCorrespondenteRefreshService
             && (int) $dt->year === (int) $pagamento->nu_ano_pag;
     }
 
-    private function resolverPagamento(Processo $processo): ?PagamentoCorrespondente
+    private function resolverPagamento(Processo $processo, bool $criarSeNecessario = true): ?PagamentoCorrespondente
     {
         $dt = Carbon::parse($processo->dt_prazo_fatal_pro);
 
-        $pagamento = PagamentoCorrespondente::firstOrCreate(
-            [
-                'cd_conta_con'          => $processo->cd_conta_con,
-                'cd_correspondente_cor' => $processo->cd_correspondente_cor,
-                'nu_mes_pag'            => $dt->month,
-                'nu_ano_pag'            => $dt->year,
-            ],
-            [
+        $competencia = [
+            'cd_conta_con'          => $processo->cd_conta_con,
+            'cd_correspondente_cor' => $processo->cd_correspondente_cor,
+            'nu_mes_pag'            => $dt->month,
+            'nu_ano_pag'            => $dt->year,
+        ];
+
+        // withTrashed: o índice único da competência não considera deleted_at
+        $pagamento = PagamentoCorrespondente::withTrashed()->where($competencia)->first();
+
+        if (! $pagamento) {
+            if (! $criarSeNecessario) {
+                return null;
+            }
+
+            $pagamento = PagamentoCorrespondente::create($competencia + [
                 'vl_total_pag'  => 0,
                 'cd_status_pag' => StatusPagamentoCorrespondente::GERADO,
-            ]
-        );
+            ]);
+        } elseif ($pagamento->trashed()) {
+            $pagamento->restore();
+        }
 
         if ($pagamento->cd_status_pag === StatusPagamentoCorrespondente::PAGO) {
             return null;
@@ -437,6 +487,7 @@ class PagamentoCorrespondenteRefreshService
             if ($pagamento && $this->pagamentoEditavel($pagamento)) {
                 $item->delete();
                 $this->recalcularTotal($pagamento);
+                $this->descartarPagamentoVazio($pagamento);
             }
         }
     }
@@ -456,6 +507,7 @@ class PagamentoCorrespondenteRefreshService
             if (! $this->itemPertenceAoPagamento($processo, $pagamento)) {
                 $item->delete();
                 $this->recalcularTotal($pagamento);
+                $this->descartarPagamentoVazio($pagamento);
                 continue;
             }
 
@@ -466,6 +518,7 @@ class PagamentoCorrespondenteRefreshService
             $item->save();
 
             $this->recalcularTotal($pagamento);
+            $this->descartarPagamentoVazio($pagamento);
         }
     }
 }
