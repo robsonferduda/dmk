@@ -279,86 +279,22 @@
                             </div>
                         </div>
 
-                        @if($pagamento->podePagar())
-                        @php
-                            $saldoHon = $pagamento->vl_saldo_honorario;
-                            $saldoDes = $pagamento->vl_saldo_despesa;
-                            $tipoPadrao = $saldoHon > 0 ? 1 : 2;
-                            $valorPadrao = $tipoPadrao === 1 ? $saldoHon : $saldoDes;
-                        @endphp
-                        <form method="POST" action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas') }}"
-                              enctype="multipart/form-data" class="well well-sm" style="margin-bottom:15px;">
-                            @csrf
-                            <h5 style="margin-top:0;"><i class="fa fa-plus-circle"></i> Novo lançamento parcial</h5>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Tipo</label>
-                                        <select name="cd_tipo_baixa_pcb" id="tipoBaixaParcial" class="form-control" required>
-                                            <option value="1" data-saldo="{{ number_format($saldoHon, 2, '.', '') }}"
-                                                    {{ $tipoPadrao === 1 ? 'selected' : '' }}
-                                                    {{ $saldoHon <= 0 ? 'disabled' : '' }}>
-                                                Honorário (saldo R$ {{ number_format($saldoHon, 2, ',', '.') }})
-                                            </option>
-                                            <option value="2" data-saldo="{{ number_format($saldoDes, 2, '.', '') }}"
-                                                    {{ $tipoPadrao === 2 ? 'selected' : '' }}
-                                                    {{ $saldoDes <= 0 ? 'disabled' : '' }}>
-                                                Despesa (saldo R$ {{ number_format($saldoDes, 2, ',', '.') }})
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label>Valor (R$)</label>
-                                        <input type="number" step="0.01" min="0.01" name="vl_baixa_pcb" id="valorBaixaParcial"
-                                               class="form-control" required
-                                               value="{{ number_format($valorPadrao, 2, '.', '') }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label>Data</label>
-                                        <input type="date" name="dt_baixa_pcb" class="form-control" required
-                                               value="{{ now()->format('Y-m-d') }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Comprovante</label>
-                                        <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label>&nbsp;</label>
-                                        <button type="submit" class="btn btn-success btn-block">
-                                            <i class="fa fa-check"></i> Lançar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label>Observação</label>
-                                <input type="text" name="ds_observacao_pcb" class="form-control"
-                                       placeholder="Opcional — banco, NF, referência...">
-                            </div>
-                        </form>
-                        @endif
+                        <div class="alert alert-info" style="margin-bottom:15px;">
+                            Pague <strong>honorário</strong> e <strong>despesa</strong> individualmente em cada processo na tabela abaixo.
+                            O total do agrupamento continua sendo o saldo do correspondente nesta competência.
+                            Use <strong>Quitar Saldo Restante</strong> para baixar todos os processos de uma vez.
+                        </div>
 
                         @if($pagamento->baixas->isEmpty())
-                            <div class="alert alert-info" style="margin:0;">
+                            <div class="alert alert-warning" style="margin:0;">
                                 Nenhum lançamento registrado ainda.
-                                @if($pagamento->podePagar())
-                                Use o formulário acima para pagamento parcial (honorário ou despesa)
-                                ou o botão <strong>Quitar</strong> para pagar o saldo restante.
-                                @endif
                             </div>
                         @else
                         <table class="table table-striped table-hover" style="margin:0;">
                             <thead>
                                 <tr>
                                     <th>Data</th>
+                                    <th>Processo</th>
                                     <th>Tipo</th>
                                     <th class="text-right">Valor</th>
                                     <th>Observação</th>
@@ -370,6 +306,15 @@
                                 @foreach($pagamento->baixas as $baixa)
                                 <tr>
                                     <td>{{ $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—' }}</td>
+                                    <td>
+                                        @if($baixa->item && $baixa->item->cd_processo_pro)
+                                            {{ $baixa->item->processo->nu_processo_pro ?? '#'.$baixa->item->cd_processo_pro }}
+                                        @elseif($baixa->item)
+                                            Item #{{ $baixa->cd_pagamento_correspondente_item_pai }}
+                                        @else
+                                            <span class="text-muted">Sem processo</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <span class="label label-{{ $baixa->isDespesa() ? 'warning' : 'primary' }}">
                                             {{ $baixa->nm_tipo }}
@@ -393,7 +338,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-xs btn-danger"
                                                     title="Excluir lançamento"
-                                                    onclick="return confirm('Excluir este lançamento? O status do pagamento será recalculado.')">
+                                                    onclick="return confirm('Excluir este lançamento? O status do pagamento e do processo serão recalculados.')">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -403,7 +348,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="2" class="text-right">Total lançado</th>
+                                    <th colspan="3" class="text-right">Total lançado</th>
                                     <th class="text-right">R$ {{ number_format($pagamento->vl_pago_total, 2, ',', '.') }}</th>
                                     <th colspan="3"></th>
                                 </tr>
@@ -536,7 +481,7 @@
                             </table>
                         </form>
                         @else
-                        {{-- Tabela somente leitura --}}
+                        {{-- Tabela somente leitura / pagamento por processo --}}
                         <table class="table table-striped table-hover" id="tabelaProcessosPagamento" style="margin:0;">
                             <thead>
                                 <tr>
@@ -545,10 +490,20 @@
                                     <th class="text-right">Honorário</th>
                                     <th class="text-right">Despesa</th>
                                     <th class="text-right">Total</th>
+                                    @if($pagamento->podeGerenciarBaixas())
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center" style="min-width:160px;">Pagar</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($pagamento->itens as $item)
+                                @php
+                                    $saldoHonItem = $item->vl_saldo_honorario;
+                                    $saldoDesItem = $item->vl_saldo_despesa;
+                                    $statusItem = $item->nm_status_pagamento;
+                                    $statusClass = $item->isPago() ? 'success' : ($item->isParcialmentePago() ? 'warning' : 'default');
+                                @endphp
                                 <tr class="{{ $item->isExcluido() ? 'item-excluido' : '' }} linha-processo-pag"
                                     data-honorario="{{ number_format((float) $item->vl_honorario_pai, 2, '.', '') }}"
                                     data-despesa="{{ number_format((float) $item->vl_despesa_pai, 2, '.', '') }}">
@@ -564,21 +519,78 @@
                                         @endif
                                     </td>
                                     <td>{{ $item->ds_descricao_pai }}</td>
-                                    <td class="text-right">R$ {{ number_format($item->vl_honorario_pai, 2, ',', '.') }}</td>
-                                    <td class="text-right">R$ {{ number_format($item->vl_despesa_pai, 2, ',', '.') }}</td>
+                                    <td class="text-right">
+                                        R$ {{ number_format($item->vl_honorario_pai, 2, ',', '.') }}
+                                        @if($pagamento->podeGerenciarBaixas() && $item->vl_pago_honorario > 0)
+                                        <div style="font-size:11px;color:#27ae60;">pago R$ {{ number_format($item->vl_pago_honorario, 2, ',', '.') }}</div>
+                                        @endif
+                                        @if($pagamento->podeGerenciarBaixas() && $saldoHonItem > 0 && $item->vl_pago_honorario > 0)
+                                        <div style="font-size:11px;color:#d68910;">saldo R$ {{ number_format($saldoHonItem, 2, ',', '.') }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="text-right">
+                                        R$ {{ number_format($item->vl_despesa_pai, 2, ',', '.') }}
+                                        @if($pagamento->podeGerenciarBaixas() && $item->vl_pago_despesa > 0)
+                                        <div style="font-size:11px;color:#27ae60;">pago R$ {{ number_format($item->vl_pago_despesa, 2, ',', '.') }}</div>
+                                        @endif
+                                        @if($pagamento->podeGerenciarBaixas() && $saldoDesItem > 0 && $item->vl_pago_despesa > 0)
+                                        <div style="font-size:11px;color:#d68910;">saldo R$ {{ number_format($saldoDesItem, 2, ',', '.') }}</div>
+                                        @endif
+                                    </td>
                                     <td class="text-right"><strong>R$ {{ number_format($item->vl_total, 2, ',', '.') }}</strong></td>
+                                    @if($pagamento->podeGerenciarBaixas())
+                                    <td class="text-center">
+                                        <span class="label label-{{ $statusClass }}">{{ $statusItem }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if(! $item->isExcluido() && $pagamento->podePagar())
+                                            @if($saldoHonItem > 0)
+                                            <button type="button" class="btn btn-xs btn-primary"
+                                                    data-toggle="modal" data-target="#modalBaixaProcesso"
+                                                    data-item="{{ $item->cd_pagamento_correspondente_item_pai }}"
+                                                    data-processo="{{ $item->processo->nu_processo_pro ?? ('#'.$item->cd_processo_pro) }}"
+                                                    data-tipo="1"
+                                                    data-tipo-label="Honorário"
+                                                    data-saldo="{{ number_format($saldoHonItem, 2, '.', '') }}"
+                                                    data-saldo-label="R$ {{ number_format($saldoHonItem, 2, ',', '.') }}">
+                                                Hon.
+                                            </button>
+                                            @endif
+                                            @if($saldoDesItem > 0)
+                                            <button type="button" class="btn btn-xs btn-warning"
+                                                    data-toggle="modal" data-target="#modalBaixaProcesso"
+                                                    data-item="{{ $item->cd_pagamento_correspondente_item_pai }}"
+                                                    data-processo="{{ $item->processo->nu_processo_pro ?? ('#'.$item->cd_processo_pro) }}"
+                                                    data-tipo="2"
+                                                    data-tipo-label="Despesa"
+                                                    data-saldo="{{ number_format($saldoDesItem, 2, '.', '') }}"
+                                                    data-saldo-label="R$ {{ number_format($saldoDesItem, 2, ',', '.') }}">
+                                                Desp.
+                                            </button>
+                                            @endif
+                                            @if($saldoHonItem <= 0 && $saldoDesItem <= 0)
+                                            <span class="text-muted">—</span>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                    @endif
                                 </tr>
                                 @empty
-                                <tr class="linha-vazia-processos"><td colspan="5" class="text-center text-muted">Nenhum item.</td></tr>
+                                <tr class="linha-vazia-processos"><td colspan="{{ $pagamento->podeGerenciarBaixas() ? 7 : 5 }}" class="text-center text-muted">Nenhum item.</td></tr>
                                 @endforelse
                                 <tr class="linha-filtro-vazio" style="display:none;">
-                                    <td colspan="5" class="text-center text-muted">Nenhum processo neste filtro.</td>
+                                    <td colspan="{{ $pagamento->podeGerenciarBaixas() ? 7 : 5 }}" class="text-center text-muted">Nenhum processo neste filtro.</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr class="active">
                                     <th colspan="4" class="text-right">Total Geral</th>
                                     <th class="text-right">R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}</th>
+                                    @if($pagamento->podeGerenciarBaixas())
+                                    <th colspan="2"></th>
+                                    @endif
                                 </tr>
                             </tfoot>
                         </table>
@@ -603,10 +615,13 @@
                 <div class="modal-body">
                     <p>Correspondente: <strong id="modalPagarNome"></strong></p>
                     <p>Saldo total: <strong id="modalPagarValor"></strong></p>
+                    <div class="alert alert-warning" style="margin-bottom:10px;">
+                        Será gerado um lançamento por processo (honorário e/ou despesa), dando baixa individualmente em cada um.
+                    </div>
                     <div class="form-group">
                         <label>O que quitar</label>
                         <select name="escopo" class="form-control" id="modalPagarEscopo">
-                            <option value="total">Saldo total (honorários + despesas)</option>
+                            <option value="total">Saldo total (honorários + despesas de todos os processos)</option>
                             <option value="honorario">Somente honorários restantes</option>
                             <option value="despesa">Somente despesas restantes</option>
                         </select>
@@ -633,6 +648,59 @@
         </div>
     </div>
 </div>
+
+{{-- Modal pagar honorário/despesa de um processo --}}
+<div class="modal fade" id="modalBaixaProcesso" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST"
+                  action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas') }}"
+                  enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="cd_pagamento_correspondente_item_pai" id="baixaItemId" value="">
+                <input type="hidden" name="cd_tipo_baixa_pcb" id="baixaTipoId" value="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-check-circle"></i> Pagar por processo</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Processo: <strong id="baixaProcessoLabel"></strong></p>
+                    <p>Tipo: <strong id="baixaTipoLabel"></strong> · Saldo:
+                        <strong id="baixaSaldoLabel"></strong></p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Valor (R$)</label>
+                                <input type="number" step="0.01" min="0.01" name="vl_baixa_pcb" id="baixaValor"
+                                       class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" name="dt_baixa_pcb" class="form-control" required
+                                       value="{{ now()->format('Y-m-d') }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Comprovante <small class="text-muted">(PDF ou imagem)</small></label>
+                        <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Observação</label>
+                        <input type="text" name="ds_observacao_pcb" class="form-control"
+                               placeholder="Opcional — banco, NF, referência...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Confirmar pagamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -651,12 +719,16 @@
             $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + btn.data('id') + '/pagar');
         });
 
-        $('#tipoBaixaParcial').on('change', function () {
-            var saldo = $(this).find(':selected').data('saldo');
-            $('#valorBaixaParcial').val(saldo);
+        $('#modalBaixaProcesso').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            $('#baixaItemId').val(btn.data('item'));
+            $('#baixaTipoId').val(btn.data('tipo'));
+            $('#baixaProcessoLabel').text(btn.data('processo'));
+            $('#baixaTipoLabel').text(btn.data('tipo-label'));
+            $('#baixaSaldoLabel').text(btn.data('saldo-label'));
+            $('#baixaValor').attr('max', btn.data('saldo')).val(btn.data('saldo'));
         });
 
-        // Recalculo dinâmico do total ao editar honorários/despesas
         function recalcularTotal() {
             var total = 0;
             $('#formItens tbody tr.linha-processo-pag').each(function () {
@@ -707,6 +779,7 @@
         }
 
         $('#filtroProcessosPagamento').on('change', 'input[name="filtroProcesso"]', aplicarFiltroProcessos);
+        aplicarFiltroProcessos();
     });
 </script>
 @endsection

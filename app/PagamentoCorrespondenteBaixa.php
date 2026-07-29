@@ -12,6 +12,7 @@ class PagamentoCorrespondenteBaixa extends Model
 
     protected $fillable = [
         'cd_pagamento_correspondente_pag',
+        'cd_pagamento_correspondente_item_pai',
         'cd_tipo_baixa_pcb',
         'vl_baixa_pcb',
         'dt_baixa_pcb',
@@ -24,6 +25,11 @@ class PagamentoCorrespondenteBaixa extends Model
     public function pagamento()
     {
         return $this->belongsTo(PagamentoCorrespondente::class, 'cd_pagamento_correspondente_pag');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(PagamentoCorrespondenteItem::class, 'cd_pagamento_correspondente_item_pai');
     }
 
     public function getNmTipoAttribute(): string

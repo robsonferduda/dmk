@@ -83,7 +83,12 @@ class CorrespondentePagamentoController extends Controller
 
     public function detalhe($id)
     {
-        $pagamento = PagamentoCorrespondente::with(['itens.processo', 'correspondente', 'baixas'])
+        $pagamento = PagamentoCorrespondente::with([
+                'itens.processo',
+                'itens.baixas',
+                'correspondente',
+                'baixas.item.processo',
+            ])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -530,11 +535,11 @@ class CorrespondentePagamentoController extends Controller
         return redirect()->back();
     }
 
-    // ─── Lançamentos de Pagamento (parciais) ─────────────────────────────────
+    // ─── Lançamentos de Pagamento (parciais por processo) ────────────────────
 
     public function registrarBaixa(Request $request, $id)
     {
-        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+        $pagamento = PagamentoCorrespondente::with(['itens.baixas', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -544,51 +549,69 @@ class CorrespondentePagamentoController extends Controller
         }
 
         $request->validate([
-            'cd_tipo_baixa_pcb' => 'required|in:1,2',
-            'vl_baixa_pcb'      => 'required|numeric|min:0.01',
-            'dt_baixa_pcb'      => 'required|date',
-            'ds_observacao_pcb' => 'nullable|string|max:1000',
-            'comprovante'       => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'cd_pagamento_correspondente_item_pai' => 'required|integer',
+            'cd_tipo_baixa_pcb'                    => 'required|in:1,2',
+            'vl_baixa_pcb'                         => 'required|numeric|min:0.01',
+            'dt_baixa_pcb'                         => 'required|date',
+            'ds_observacao_pcb'                    => 'nullable|string|max:1000',
+            'comprovante'                          => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
         ]);
+
+        $item = $pagamento->itens->firstWhere(
+            'cd_pagamento_correspondente_item_pai',
+            (int) $request->cd_pagamento_correspondente_item_pai
+        );
+
+        if (! $item || $item->isExcluido()) {
+            Flash::error('Processo inválido ou excluído deste pagamento.');
+            return redirect()->back()->withInput();
+        }
 
         $tipo  = (int) $request->cd_tipo_baixa_pcb;
         $valor = round((float) str_replace(',', '.', $request->vl_baixa_pcb), 2);
         $saldo = $tipo === TipoBaixaHonorario::DESPESA
-            ? $pagamento->vl_saldo_despesa
-            : $pagamento->vl_saldo_honorario;
+            ? $item->vl_saldo_despesa
+            : $item->vl_saldo_honorario;
 
-        if ($valor > $saldo + 0.009) {
-            Flash::error('O valor informado excede o saldo restante de '
-                . ($tipo === TipoBaixaHonorario::DESPESA ? 'despesas' : 'honorários')
-                . ' (R$ ' . number_format($saldo, 2, ',', '.') . ').');
+        if ($saldo <= 0) {
+            Flash::error('Este processo já não possui saldo de '
+                . ($tipo === TipoBaixaHonorario::DESPESA ? 'despesa' : 'honorário') . '.');
             return redirect()->back()->withInput();
         }
 
-        DB::transaction(function () use ($pagamento, $request, $tipo, $valor) {
+        if ($valor > $saldo + 0.009) {
+            Flash::error('O valor informado excede o saldo restante deste processo '
+                . '(' . ($tipo === TipoBaixaHonorario::DESPESA ? 'despesa' : 'honorário')
+                . ': R$ ' . number_format($saldo, 2, ',', '.') . ').');
+            return redirect()->back()->withInput();
+        }
+
+        DB::transaction(function () use ($pagamento, $item, $request, $tipo, $valor) {
             $path = null;
             if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
                 $path = $request->file('comprovante')->store('comprovantes-pagamento', 'public');
             }
 
             PagamentoCorrespondenteBaixa::create([
-                'cd_pagamento_correspondente_pag' => $pagamento->cd_pagamento_correspondente_pag,
-                'cd_tipo_baixa_pcb'               => $tipo,
-                'vl_baixa_pcb'                    => $valor,
-                'dt_baixa_pcb'                    => $request->dt_baixa_pcb,
-                'ds_observacao_pcb'               => $request->ds_observacao_pcb,
-                'dc_comprovante_pcb'              => $path,
+                'cd_pagamento_correspondente_pag'      => $pagamento->cd_pagamento_correspondente_pag,
+                'cd_pagamento_correspondente_item_pai' => $item->cd_pagamento_correspondente_item_pai,
+                'cd_tipo_baixa_pcb'                    => $tipo,
+                'vl_baixa_pcb'                         => $valor,
+                'dt_baixa_pcb'                         => $request->dt_baixa_pcb,
+                'ds_observacao_pcb'                    => $request->ds_observacao_pcb,
+                'dc_comprovante_pcb'                   => $path,
             ]);
 
             $pagamento->sincronizarStatusPagamento();
         });
 
-        Flash::success('Lançamento de pagamento registrado com sucesso.');
+        Flash::success('Pagamento do processo registrado com sucesso.');
         return redirect()->back();
     }
 
     public function excluirBaixa($id, $baixaId)
     {
-        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+        $pagamento = PagamentoCorrespondente::with(['itens.baixas', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -615,11 +638,11 @@ class CorrespondentePagamentoController extends Controller
     }
 
     /**
-     * Quita o saldo restante (honorário e/ou despesa) em um ou dois lançamentos.
+     * Quita o saldo restante por processo (um lançamento por processo × tipo).
      */
     public function pagar(Request $request, $id)
     {
-        $pagamento = PagamentoCorrespondente::with(['itens', 'baixas'])
+        $pagamento = PagamentoCorrespondente::with(['itens.baixas', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->findOrFail($id);
 
@@ -644,32 +667,37 @@ class CorrespondentePagamentoController extends Controller
 
             $obs   = $request->observacao;
             $hoje  = Carbon::now()->toDateString();
-            $lotes = [];
+            $primeiro = true;
 
-            if (in_array($escopo, ['total', 'honorario'], true) && $pagamento->vl_saldo_honorario > 0) {
-                $lotes[] = [
-                    'tipo'  => TipoBaixaHonorario::HONORARIO,
-                    'valor' => $pagamento->vl_saldo_honorario,
-                ];
-            }
+            foreach ($pagamento->itensAtivos() as $item) {
+                $lotes = [];
 
-            if (in_array($escopo, ['total', 'despesa'], true) && $pagamento->vl_saldo_despesa > 0) {
-                $lotes[] = [
-                    'tipo'  => TipoBaixaHonorario::DESPESA,
-                    'valor' => $pagamento->vl_saldo_despesa,
-                ];
-            }
+                if (in_array($escopo, ['total', 'honorario'], true) && $item->vl_saldo_honorario > 0) {
+                    $lotes[] = [
+                        'tipo'  => TipoBaixaHonorario::HONORARIO,
+                        'valor' => $item->vl_saldo_honorario,
+                    ];
+                }
 
-            foreach ($lotes as $i => $lote) {
-                PagamentoCorrespondenteBaixa::create([
-                    'cd_pagamento_correspondente_pag' => $pagamento->cd_pagamento_correspondente_pag,
-                    'cd_tipo_baixa_pcb'               => $lote['tipo'],
-                    'vl_baixa_pcb'                    => $lote['valor'],
-                    'dt_baixa_pcb'                    => $hoje,
-                    'ds_observacao_pcb'               => $obs,
-                    // Anexa o comprovante só no primeiro lançamento do quitamento
-                    'dc_comprovante_pcb'              => $i === 0 ? $path : null,
-                ]);
+                if (in_array($escopo, ['total', 'despesa'], true) && $item->vl_saldo_despesa > 0) {
+                    $lotes[] = [
+                        'tipo'  => TipoBaixaHonorario::DESPESA,
+                        'valor' => $item->vl_saldo_despesa,
+                    ];
+                }
+
+                foreach ($lotes as $lote) {
+                    PagamentoCorrespondenteBaixa::create([
+                        'cd_pagamento_correspondente_pag'      => $pagamento->cd_pagamento_correspondente_pag,
+                        'cd_pagamento_correspondente_item_pai' => $item->cd_pagamento_correspondente_item_pai,
+                        'cd_tipo_baixa_pcb'                    => $lote['tipo'],
+                        'vl_baixa_pcb'                         => $lote['valor'],
+                        'dt_baixa_pcb'                         => $hoje,
+                        'ds_observacao_pcb'                    => $obs,
+                        'dc_comprovante_pcb'                   => $primeiro ? $path : null,
+                    ]);
+                    $primeiro = false;
+                }
             }
 
             if ($obs && ! $pagamento->ds_observacao_pag) {

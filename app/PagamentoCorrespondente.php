@@ -200,7 +200,8 @@ class PagamentoCorrespondente extends Model
         }
 
         $this->unsetRelation('baixas');
-        $this->load('baixas');
+        $this->unsetRelation('itens');
+        $this->load(['baixas', 'itens.baixas']);
 
         if ($this->vl_saldo_total <= 0 && $this->vl_pago_total > 0) {
             $this->cd_status_pag    = StatusPagamentoCorrespondente::PAGO;
@@ -211,5 +212,28 @@ class PagamentoCorrespondente extends Model
         }
 
         $this->save();
+        $this->sincronizarStatusProcessos();
+    }
+
+    /**
+     * Propaga a baixa por processo para fl_pago_correspondente_pth (N/P/S).
+     */
+    public function sincronizarStatusProcessos(): void
+    {
+        if (! $this->relationLoaded('itens')) {
+            $this->load('itens.baixas');
+        }
+
+        foreach ($this->itens as $item) {
+            if (! $item->cd_processo_taxa_honorario_pth) {
+                continue;
+            }
+
+            ProcessoTaxaHonorario::where('cd_processo_taxa_honorario_pth', $item->cd_processo_taxa_honorario_pth)
+                ->where('cd_conta_con', $this->cd_conta_con)
+                ->update([
+                    'fl_pago_correspondente_pth' => $item->flagPagoCorrespondente(),
+                ]);
+        }
     }
 }
