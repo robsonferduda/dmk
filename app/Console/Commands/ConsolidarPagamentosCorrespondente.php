@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Conta;
 use App\PagamentoCorrespondente;
-use App\PagamentoCorrespondenteItem;
 use App\Enums\StatusPagamentoCorrespondente;
 use App\Enums\StatusProcesso;
+use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +14,9 @@ use Illuminate\Support\Facades\Log;
 /**
  * ConsolidarPagamentosCorrespondente
  *
- * Consolida diariamente os pagamentos devidos aos correspondentes
- * no mês corrente (honorários + despesas reembolsáveis).
+ * Consolida os pagamentos devidos aos correspondentes na competência
+ * (honorários + despesas reembolsáveis) e reconcilia os já existentes
+ * (remove cancelados, atualiza valores — equivalente ao Atualizar Valores em lote).
  *
  * Agendamento: todo dia à meia-noite via Kernel.php
  *
@@ -34,7 +34,7 @@ class ConsolidarPagamentosCorrespondente extends Command
                             {--conta= : Restringe a um cd_conta_con específico.}
                             {--dry-run : Não persiste, apenas lista o que consolidaria.}';
 
-    protected $description = 'Consolida diariamente os pagamentos devidos aos correspondentes no mês corrente.';
+    protected $description = 'Consolida e reconcilia os pagamentos de correspondentes na competência.';
 
     public function handle(): int
     {
@@ -61,7 +61,129 @@ class ConsolidarPagamentosCorrespondente extends Command
 
         $this->info("[consolidar] mes={$mes}/{$ano}  dtInicio={$dtInicio}  dtFim={$dtFim}" . ($dryRun ? '  DRY-RUN' : ''));
 
-        // Busca processos elegíveis (prazo fatal no mês, exceto cancelados)
+        $processos = $this->buscarProcessosElegiveis($dtInicio, $dtFim, $conta);
+
+        $criados       = 0;
+        $cabecalhos    = 0;
+        $reconciliados = 0;
+        $ignorados     = 0;
+        $pulados       = 0;
+        $descartados   = 0;
+        $removidos     = 0;
+        $excluidos     = 0;
+
+        // 1) Garante cabeçalhos para grupos com processos elegíveis
+        $agrupado = $processos->groupBy(function ($row) {
+            return $row->cd_conta_con . '_' . $row->cd_correspondente_cor;
+        });
+
+        if ($processos->isEmpty()) {
+            $this->info('[consolidar] Nenhum processo elegível no período — seguirá reconciliando pagamentos existentes.');
+        }
+
+        foreach ($agrupado as $itens) {
+            $itens            = $itens->unique('cd_processo_pro')->values();
+            $primeiro         = $itens->first();
+            $cdConta          = $primeiro->cd_conta_con;
+            $cdCorrespondente = $primeiro->cd_correspondente_cor;
+
+            $valorTotal = $itens->sum(function ($i) {
+                return (float) $i->vl_taxa_honorario_correspondente_pth + (float) $i->vl_despesa;
+            });
+
+            if ($valorTotal <= 0) {
+                $ignorados++;
+                if ($dryRun) {
+                    $this->line("  DRY-RUN (ignorado: total zero)  conta={$cdConta}  cor={$cdCorrespondente}");
+                }
+                continue;
+            }
+
+            if ($dryRun) {
+                $this->line("  DRY-RUN  conta={$cdConta}  cor={$cdCorrespondente}  processos={$itens->count()}  total=R$ " . number_format($valorTotal, 2, ',', '.'));
+                continue;
+            }
+
+            DB::transaction(function () use (
+                $cdConta, $cdCorrespondente, $mes, $ano, &$criados, &$cabecalhos
+            ) {
+                $pagamento = PagamentoCorrespondente::withTrashed()->firstOrNew([
+                    'cd_conta_con'          => $cdConta,
+                    'cd_correspondente_cor' => $cdCorrespondente,
+                    'nu_mes_pag'            => $mes,
+                    'nu_ano_pag'            => $ano,
+                ]);
+
+                $isNovo = ! $pagamento->exists;
+
+                // Cabeçalhos já avançados (enviado/aprovado/etc.) não são recriados aqui;
+                // a reconciliação abaixo cuida dos itens quando permitido.
+                if (! $isNovo && (int) $pagamento->cd_status_pag !== StatusPagamentoCorrespondente::GERADO) {
+                    return;
+                }
+
+                if (! $isNovo && $pagamento->trashed()) {
+                    $pagamento->restore();
+                }
+
+                if ($isNovo) {
+                    $pagamento->cd_status_pag = StatusPagamentoCorrespondente::GERADO;
+                    $pagamento->vl_total_pag  = 0;
+                    $pagamento->save();
+                    $criados++;
+                } else {
+                    $cabecalhos++;
+                }
+            });
+        }
+
+        // 2) Reconcilia todos os pagamentos da competência (remove cancelados, atualiza valores)
+        if (! $dryRun) {
+            $refresh = app(PagamentoCorrespondenteRefreshService::class);
+
+            $pagamentosQuery = PagamentoCorrespondente::with('baixas')
+                ->where('nu_mes_pag', $mes)
+                ->where('nu_ano_pag', $ano);
+
+            if ($conta) {
+                $pagamentosQuery->where('cd_conta_con', $conta);
+            }
+
+            foreach ($pagamentosQuery->get() as $pagamento) {
+                if (! $pagamento->podeAtualizarValores()) {
+                    $pulados++;
+                    continue;
+                }
+
+                $stats = $refresh->refreshPagamento($pagamento);
+
+                if (isset($stats['erro'])) {
+                    $pulados++;
+                    continue;
+                }
+
+                $reconciliados++;
+                $removidos   += (int) ($stats['removidos'] ?? 0);
+                $excluidos   += (int) ($stats['excluidos'] ?? 0);
+
+                if (! empty($stats['descartado'])) {
+                    $descartados++;
+                }
+            }
+        }
+
+        $resumo = "Criados={$criados}  Cabeçalhos={$cabecalhos}  Reconciliados={$reconciliados}"
+            . "  Removidos(itens)={$removidos}  Excluidos={$excluidos}"
+            . "  Descartados={$descartados}  Pulados={$pulados}  Ignorados(total zero)={$ignorados}";
+
+        $this->info("[consolidar] Concluído.  {$resumo}");
+        Log::info("[pagamentos:consolidar] mes={$mes}/{$ano}  {$resumo}");
+
+        return 0;
+    }
+
+    private function buscarProcessosElegiveis(string $dtInicio, string $dtFim, $conta)
+    {
         $query = DB::table('processo_pro as t3')
             ->join('processo_taxa_honorario_pth as t5', function ($j) {
                 $j->on('t3.cd_processo_pro', '=', 't5.cd_processo_pro')
@@ -106,105 +228,6 @@ class ConsolidarPagamentosCorrespondente extends Command
             $query->where('t3.cd_conta_con', $conta);
         }
 
-        $processos = $query->get();
-
-        if ($processos->isEmpty()) {
-            $this->info('[consolidar] Nenhum processo encontrado para o período.');
-            return 0;
-        }
-
-        // Agrupa por conta + correspondente
-        $agrupado = $processos->groupBy(function ($row) {
-            return $row->cd_conta_con . '_' . $row->cd_correspondente_cor;
-        });
-
-        $criados     = 0;
-        $atualizados = 0;
-        $ignorados   = 0;
-        $descartados = 0;
-
-        foreach ($agrupado as $chave => $itens) {
-            $itens           = $itens->unique('cd_processo_pro')->values();
-            $primeiro        = $itens->first();
-            $cdConta         = $primeiro->cd_conta_con;
-            $cdCorrespondente = $primeiro->cd_correspondente_cor;
-
-            $valorTotal = $itens->sum(function ($i) {
-                return (float) $i->vl_taxa_honorario_correspondente_pth + (float) $i->vl_despesa;
-            });
-
-            if ($dryRun) {
-                $rotulo = $valorTotal > 0 ? 'DRY-RUN' : 'DRY-RUN (ignorado: total zero)';
-                $this->line("  {$rotulo}  conta={$cdConta}  cor={$cdCorrespondente}  processos={$itens->count()}  total=R$ " . number_format($valorTotal, 2, ',', '.'));
-                continue;
-            }
-
-            DB::transaction(function () use (
-                $cdConta, $cdCorrespondente, $mes, $ano, $valorTotal, $itens,
-                &$criados, &$atualizados, &$ignorados, &$descartados
-            ) {
-                // withTrashed: o índice único da competência não considera deleted_at
-                $pagamento = PagamentoCorrespondente::withTrashed()->firstOrNew([
-                    'cd_conta_con'          => $cdConta,
-                    'cd_correspondente_cor' => $cdCorrespondente,
-                    'nu_mes_pag'            => $mes,
-                    'nu_ano_pag'            => $ano,
-                ]);
-
-                $isNovo = ! $pagamento->exists;
-
-                // Sem valor a pagar: não cria cabeçalho e limpa o que estiver zerado em Gerado
-                if ($valorTotal <= 0) {
-                    if ($isNovo) {
-                        $ignorados++;
-                        return;
-                    }
-
-                    if ((int) $pagamento->cd_status_pag === StatusPagamentoCorrespondente::GERADO) {
-                        PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)->delete();
-                        $pagamento->forceDelete();
-                        $descartados++;
-                        return;
-                    }
-
-                    $ignorados++;
-                    return;
-                }
-
-                // Só atualiza valor e itens se ainda estiver no status GERADO
-                if ($isNovo || $pagamento->cd_status_pag === StatusPagamentoCorrespondente::GERADO) {
-                    if (! $isNovo && $pagamento->trashed()) {
-                        $pagamento->restore();
-                    }
-
-                    $pagamento->vl_total_pag   = $valorTotal;
-                    $pagamento->cd_status_pag  = $pagamento->cd_status_pag ?? StatusPagamentoCorrespondente::GERADO;
-                    $pagamento->save();
-
-                    // Remove e recria os itens para refletir o estado atual do mês
-                    PagamentoCorrespondenteItem::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)->delete();
-
-                    foreach ($itens as $item) {
-                        PagamentoCorrespondenteItem::create([
-                            'cd_pagamento_correspondente_pag'  => $pagamento->cd_pagamento_correspondente_pag,
-                            'cd_processo_pro'                  => $item->cd_processo_pro,
-                            'cd_processo_taxa_honorario_pth'   => $item->cd_processo_taxa_honorario_pth,
-                            'ds_descricao_pai'                 => $item->nu_processo_pro . ($item->nm_reu_pro ? ' - ' . $item->nm_reu_pro : ''),
-                            'vl_honorario_pai'                 => (float) $item->vl_taxa_honorario_correspondente_pth,
-                            'vl_despesa_pai'                   => (float) $item->vl_despesa,
-                        ]);
-                    }
-
-                    $isNovo ? $criados++ : $atualizados++;
-                }
-            });
-        }
-
-        $resumo = "Criados={$criados}  Atualizados={$atualizados}  Ignorados(total zero)={$ignorados}  Descartados={$descartados}";
-
-        $this->info("[consolidar] Concluído.  {$resumo}");
-        Log::info("[pagamentos:consolidar] mes={$mes}/{$ano}  {$resumo}");
-
-        return 0;
+        return $query->get();
     }
 }

@@ -26,7 +26,7 @@
                 <input type="hidden" name="mes" value="{{ $mes }}">
                 <input type="hidden" name="ano" value="{{ $ano }}">
                 <button type="submit" class="btn btn-primary pull-right header-btn"
-                        onclick="return confirm('Consolidar pagamentos para {{ $mesAnoFmt }}?')">
+                        onclick="return confirm('Consolidar e atualizar pagamentos de {{ $mesAnoFmt }}?\n\nIsso cria novos registros e também atualiza os existentes (remove processos cancelados e recalcula valores), equivalente ao Atualizar Valores em lote.')">
                     <i class="fa fa-refresh"></i> Consolidar Mês
                 </button>
             </form>
