@@ -3,7 +3,10 @@
     <link href="{{ asset('css/relatorios-pdf.css') }}" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    @include('relatorios.partes.cabecalho-horizontal')
+    <div id="texto_cabecalho" style="width: 100%; text-align: center; margin-top: 10px;">
+        <span style="font-size: 20px; font-weight: bold; display: block; color: #275b89;">{{ $conta }}</span>
+    </div>
+    <div class="clear"></div>
     @php $zebra = true; @endphp
     <div id="corpo">
         <h4 style="text-align: center; margin-bottom: 0px; font-weight: 700; text-transform: uppercase; margin-top: 10px;"><strong>Pauta Diária</strong></h4>

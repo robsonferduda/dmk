@@ -340,7 +340,7 @@
         var horaFim = Math.min(23, horasComProcessos[horasComProcessos.length - 1] + 1);
 
         var picoTexto = horasPico.map(formatarHoraLabel).join(', ');
-        picoElement.html(' — Pico: <strong style="color: #3276b1;">' + picoTexto + '</strong> (' + maxQtd + ' processo' + (maxQtd > 1 ? 's' : '') + ')');
+        picoElement.html(' - Pico: <strong style="color: #3276b1;">' + picoTexto + '</strong> (' + maxQtd + ' processo' + (maxQtd > 1 ? 's' : '') + ')');
 
         for (var h = horaInicio; h <= horaFim; h++) {
             var qtd = porHora[h] || 0;
