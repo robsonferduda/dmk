@@ -44,7 +44,7 @@
     <body class="{{ (Session::get('menu_minify') == 'on') ? 'minified' : '' }}" id='body-principal'>
         <header id="header">
             <div id="logo-group">
-                <span id="logo"> <img src="" alt=""> </span>
+                <span id="logo"> <img src="{{ asset('img/legal.png') }}" alt="Logo"> </span>
 
                 @php
                     $mensagens_pendentes = (new \App\ProcessoMensagem)->getMensagensPendentesRemetente(Session::get('SESSION_CD_CONTA'));
