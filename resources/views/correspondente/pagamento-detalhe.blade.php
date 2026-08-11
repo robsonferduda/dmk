@@ -324,7 +324,8 @@
                                     <td>{{ $baixa->ds_observacao_pcb ?: '—' }}</td>
                                     <td class="text-center">
                                         @if($baixa->dc_comprovante_pcb)
-                                        <a href="{{ asset('storage/'.$baixa->dc_comprovante_pcb) }}" target="_blank" class="btn btn-xs btn-default">
+                                        <a href="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas/'.$baixa->cd_pagamento_correspondente_baixa_pcb.'/comprovante') }}"
+                                           target="_blank" class="btn btn-xs btn-default" title="Abrir comprovante">
                                             <i class="fa fa-paperclip"></i>
                                         </a>
                                         @else —

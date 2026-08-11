@@ -19,6 +19,7 @@ use App\Enums\TipoEnderecoEletronico;
 use App\Services\WhatsappDispatcher;
 use App\Services\Pagamento\PagamentoCorrespondenteRefreshService;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Exports\Correspondente\PagamentosCorrespondenteRelatorioExport;
 
 class CorrespondentePagamentoController extends Controller
@@ -587,10 +588,7 @@ class CorrespondentePagamentoController extends Controller
         }
 
         DB::transaction(function () use ($pagamento, $item, $request, $tipo, $valor) {
-            $path = null;
-            if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
-                $path = $request->file('comprovante')->store('comprovantes-pagamento', 'public');
-            }
+            $path = $this->salvarComprovante($request->file('comprovante'));
 
             PagamentoCorrespondenteBaixa::create([
                 'cd_pagamento_correspondente_pag'      => $pagamento->cd_pagamento_correspondente_pag,
@@ -607,6 +605,28 @@ class CorrespondentePagamentoController extends Controller
 
         Flash::success('Pagamento do processo registrado com sucesso.');
         return redirect()->back();
+    }
+
+    public function baixarComprovante($id, $baixaId)
+    {
+        $pagamento = PagamentoCorrespondente::where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        $baixa = PagamentoCorrespondenteBaixa::where('cd_pagamento_correspondente_pag', $pagamento->cd_pagamento_correspondente_pag)
+            ->where('cd_pagamento_correspondente_baixa_pcb', $baixaId)
+            ->firstOrFail();
+
+        if (! $baixa->dc_comprovante_pcb) {
+            Flash::error('Este lançamento não possui comprovante.');
+            return redirect()->back();
+        }
+
+        if (! Storage::disk('public')->exists($baixa->dc_comprovante_pcb)) {
+            Flash::error('Arquivo do comprovante não encontrado no servidor. Pode ter sido salvo em outro ambiente ou removido.');
+            return redirect()->back();
+        }
+
+        return Storage::disk('public')->response($baixa->dc_comprovante_pcb);
     }
 
     public function excluirBaixa($id, $baixaId)
@@ -626,7 +646,7 @@ class CorrespondentePagamentoController extends Controller
 
         DB::transaction(function () use ($pagamento, $baixa) {
             if ($baixa->dc_comprovante_pcb) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($baixa->dc_comprovante_pcb);
+                Storage::disk('public')->delete($baixa->dc_comprovante_pcb);
             }
 
             $baixa->delete();
@@ -660,10 +680,7 @@ class CorrespondentePagamentoController extends Controller
         $escopo = $request->input('escopo', 'total');
 
         DB::transaction(function () use ($pagamento, $request, $escopo) {
-            $path = null;
-            if ($request->hasFile('comprovante') && $request->file('comprovante')->isValid()) {
-                $path = $request->file('comprovante')->store('comprovantes-pagamento', 'public');
-            }
+            $path = $this->salvarComprovante($request->file('comprovante'));
 
             $obs   = $request->observacao;
             $hoje  = Carbon::now()->toDateString();
@@ -714,6 +731,29 @@ class CorrespondentePagamentoController extends Controller
 
         Flash::success('Pagamento registrado com sucesso.');
         return redirect()->back();
+    }
+
+    /**
+     * Salva comprovante no disco public e confirma que o arquivo existe.
+     */
+    private function salvarComprovante($file): ?string
+    {
+        if (! $file || ! $file->isValid()) {
+            return null;
+        }
+
+        $dir = storage_path('app/public/comprovantes-pagamento');
+        if (! is_dir($dir) && ! @mkdir($dir, 0775, true) && ! is_dir($dir)) {
+            throw new \RuntimeException('Não foi possível criar o diretório de comprovantes.');
+        }
+
+        $path = $file->store('comprovantes-pagamento', 'public');
+
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            throw new \RuntimeException('Falha ao gravar o comprovante no servidor.');
+        }
+
+        return $path;
     }
 
     // ─── Teste de Notificação ────────────────────────────────────────────────
