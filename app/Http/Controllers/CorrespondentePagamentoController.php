@@ -600,7 +600,7 @@ class CorrespondentePagamentoController extends Controller
                 'dc_comprovante_pcb'                   => $path,
             ]);
 
-            $pagamento->sincronizarStatusPagamento();
+            $pagamento->sincronizarStatusPagamento($request->dt_baixa_pcb);
         });
 
         Flash::success('Pagamento do processo registrado com sucesso.');
@@ -672,18 +672,19 @@ class CorrespondentePagamentoController extends Controller
         }
 
         $request->validate([
-            'observacao'  => 'nullable|string|max:1000',
-            'comprovante' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
-            'escopo'      => 'nullable|in:total,honorario,despesa',
+            'observacao'   => 'nullable|string|max:1000',
+            'comprovante'  => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'escopo'       => 'nullable|in:total,honorario,despesa',
+            'dt_baixa_pcb' => 'required|date',
         ]);
 
         $escopo = $request->input('escopo', 'total');
+        $dtBaixa = Carbon::parse($request->dt_baixa_pcb)->toDateString();
 
-        DB::transaction(function () use ($pagamento, $request, $escopo) {
+        DB::transaction(function () use ($pagamento, $request, $escopo, $dtBaixa) {
             $path = $this->salvarComprovante($request->file('comprovante'));
 
-            $obs   = $request->observacao;
-            $hoje  = Carbon::now()->toDateString();
+            $obs      = $request->observacao;
             $primeiro = true;
 
             foreach ($pagamento->itensAtivos() as $item) {
@@ -709,7 +710,7 @@ class CorrespondentePagamentoController extends Controller
                         'cd_pagamento_correspondente_item_pai' => $item->cd_pagamento_correspondente_item_pai,
                         'cd_tipo_baixa_pcb'                    => $lote['tipo'],
                         'vl_baixa_pcb'                         => $lote['valor'],
-                        'dt_baixa_pcb'                         => $hoje,
+                        'dt_baixa_pcb'                         => $dtBaixa,
                         'ds_observacao_pcb'                    => $obs,
                         'dc_comprovante_pcb'                   => $primeiro ? $path : null,
                     ]);
@@ -726,9 +727,8 @@ class CorrespondentePagamentoController extends Controller
             }
 
             $pagamento->save();
-            $pagamento->sincronizarStatusPagamento();
+            $pagamento->sincronizarStatusPagamento($dtBaixa);
         });
-
         Flash::success('Pagamento registrado com sucesso.');
         return redirect()->back();
     }

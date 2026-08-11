@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\StatusPagamentoCorrespondente;
 use App\Enums\TipoBaixaHonorario;
+use Carbon\Carbon;
 
 class PagamentoCorrespondente extends Model
 {
@@ -189,8 +190,10 @@ class PagamentoCorrespondente extends Model
 
     /**
      * Atualiza o status conforme o saldo das baixas.
+     *
+     * @param  string|\DateTimeInterface|null  $dtPagamento  Data a usar ao marcar como Pago (ex.: baixa retroativa).
      */
-    public function sincronizarStatusPagamento(): void
+    public function sincronizarStatusPagamento($dtPagamento = null): void
     {
         if (! in_array($this->cd_status_pag, [
             StatusPagamentoCorrespondente::APROVADO,
@@ -204,8 +207,22 @@ class PagamentoCorrespondente extends Model
         $this->load(['baixas', 'itens.baixas']);
 
         if ($this->vl_saldo_total <= 0 && $this->vl_pago_total > 0) {
-            $this->cd_status_pag    = StatusPagamentoCorrespondente::PAGO;
-            $this->dt_pagamento_pag = $this->dt_pagamento_pag ?: now();
+            $this->cd_status_pag = StatusPagamentoCorrespondente::PAGO;
+
+            if (! $this->dt_pagamento_pag) {
+                if ($dtPagamento) {
+                    $this->dt_pagamento_pag = Carbon::parse($dtPagamento);
+                } else {
+                    $ultimaBaixa = $this->baixas->sortByDesc(function ($baixa) {
+                        return ($baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('Y-m-d') : '0000-00-00')
+                            . '-' . $baixa->cd_pagamento_correspondente_baixa_pcb;
+                    })->first();
+
+                    $this->dt_pagamento_pag = $ultimaBaixa && $ultimaBaixa->dt_baixa_pcb
+                        ? $ultimaBaixa->dt_baixa_pcb
+                        : now();
+                }
+            }
         } else {
             $this->cd_status_pag    = StatusPagamentoCorrespondente::APROVADO;
             $this->dt_pagamento_pag = null;

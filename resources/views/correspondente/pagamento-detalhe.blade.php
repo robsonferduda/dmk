@@ -632,6 +632,14 @@
                         </p>
                     </div>
                     <div class="form-group">
+                        <label>Data do pagamento</label>
+                        <input type="date" name="dt_baixa_pcb" id="modalPagarData" class="form-control" required
+                               value="{{ now()->format('Y-m-d') }}">
+                        <p class="help-block" style="margin-bottom:0;">
+                            Pode ser retroativa — usada em todos os lançamentos gerados neste quitamento.
+                        </p>
+                    </div>
+                    <div class="form-group">
                         <label>Comprovante <small class="text-muted">(PDF ou imagem)</small></label>
                         <input type="file" name="comprovante" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.webp">
                     </div>
@@ -717,6 +725,7 @@
             $('#modalPagarValor').text(btn.data('saldo'));
             $('#modalSaldoHonorario').text(btn.data('saldo-honorario'));
             $('#modalSaldoDespesa').text(btn.data('saldo-despesa'));
+            $('#modalPagarData').val('{{ now()->format('Y-m-d') }}');
             $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + btn.data('id') + '/pagar');
         });
 
