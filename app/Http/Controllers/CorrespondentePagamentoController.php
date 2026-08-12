@@ -676,18 +676,52 @@ class CorrespondentePagamentoController extends Controller
             'comprovante'  => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'escopo'       => 'nullable|in:total,honorario,despesa',
             'dt_baixa_pcb' => 'required|date',
+            'itens'        => 'nullable|array',
+            'itens.*'      => 'integer',
         ]);
 
         $escopo = $request->input('escopo', 'total');
         $dtBaixa = Carbon::parse($request->dt_baixa_pcb)->toDateString();
+        $itensIds = collect($request->input('itens', []))
+            ->map(function ($id) {
+                return (int) $id;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
-        DB::transaction(function () use ($pagamento, $request, $escopo, $dtBaixa) {
+        $itensAlvo = $pagamento->itensAtivos();
+        if (! empty($itensIds)) {
+            $itensAlvo = $itensAlvo->filter(function ($item) use ($itensIds) {
+                return in_array((int) $item->cd_pagamento_correspondente_item_pai, $itensIds, true);
+            })->values();
+
+            if ($itensAlvo->isEmpty()) {
+                Flash::error('Nenhum processo válido foi selecionado para quitamento.');
+                return redirect()->back()->withInput();
+            }
+        }
+
+        $temSaldo = $itensAlvo->contains(function ($item) use ($escopo) {
+            $hon = in_array($escopo, ['total', 'honorario'], true) && $item->vl_saldo_honorario > 0;
+            $des = in_array($escopo, ['total', 'despesa'], true) && $item->vl_saldo_despesa > 0;
+
+            return $hon || $des;
+        });
+
+        if (! $temSaldo) {
+            Flash::error('Não há saldo a quitar nos processos selecionados para o escopo informado.');
+            return redirect()->back()->withInput();
+        }
+
+        DB::transaction(function () use ($pagamento, $request, $escopo, $dtBaixa, $itensAlvo) {
             $path = $this->salvarComprovante($request->file('comprovante'));
 
             $obs      = $request->observacao;
             $primeiro = true;
 
-            foreach ($pagamento->itensAtivos() as $item) {
+            foreach ($itensAlvo as $item) {
                 $lotes = [];
 
                 if (in_array($escopo, ['total', 'honorario'], true) && $item->vl_saldo_honorario > 0) {
@@ -729,7 +763,10 @@ class CorrespondentePagamentoController extends Controller
             $pagamento->save();
             $pagamento->sincronizarStatusPagamento($dtBaixa);
         });
-        Flash::success('Pagamento registrado com sucesso.');
+
+        Flash::success(empty($itensIds)
+            ? 'Pagamento registrado com sucesso.'
+            : 'Pagamento dos processos selecionados registrado com sucesso.');
         return redirect()->back();
     }
 

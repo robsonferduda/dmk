@@ -233,6 +233,7 @@
                     data-toggle="modal" data-target="#modalPagar"
                     data-id="{{ $pagamento->cd_pagamento_correspondente_pag }}"
                     data-nome="{{ $pagamento->correspondente->nm_razao_social_con ?? '' }}"
+                    data-modo="todos"
                     data-saldo="R$ {{ number_format($pagamento->vl_saldo_total, 2, ',', '.') }}"
                     data-saldo-honorario="R$ {{ number_format($pagamento->vl_saldo_honorario, 2, ',', '.') }}"
                     data-saldo-despesa="R$ {{ number_format($pagamento->vl_saldo_despesa, 2, ',', '.') }}">
@@ -483,9 +484,38 @@
                         </form>
                         @else
                         {{-- Tabela somente leitura / pagamento por processo --}}
+                        @php
+                            $podeSelecionarProcessos = $pagamento->podeGerenciarBaixas() && $pagamento->podePagar();
+                            $colspanProcessos = $pagamento->podeGerenciarBaixas()
+                                ? ($podeSelecionarProcessos ? 8 : 7)
+                                : 5;
+                        @endphp
+                        @if($podeSelecionarProcessos)
+                        <div id="barraSelecaoProcessos" style="padding:10px 12px; border-bottom:1px solid #eee; background:#f7fbf8; display:none;">
+                            <span class="text-muted" style="margin-right:10px;">
+                                <strong id="qtdSelecionadosProcessos">0</strong> processo(s) selecionado(s)
+                                · saldo R$ <strong id="saldoSelecionadosProcessos">0,00</strong>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-success" id="btnQuitarSelecionados"
+                                    data-toggle="modal" data-target="#modalPagar"
+                                    data-id="{{ $pagamento->cd_pagamento_correspondente_pag }}"
+                                    data-nome="{{ $pagamento->correspondente->nm_razao_social_con ?? '' }}"
+                                    data-modo="selecionados">
+                                <i class="fa fa-check-square-o"></i> Quitar Selecionados
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" id="btnLimparSelecaoProcessos">
+                                Limpar seleção
+                            </button>
+                        </div>
+                        @endif
                         <table class="table table-striped table-hover" id="tabelaProcessosPagamento" style="margin:0;">
                             <thead>
                                 <tr>
+                                    @if($podeSelecionarProcessos)
+                                    <th class="text-center" style="width:40px;">
+                                        <input type="checkbox" id="checkTodosProcessosPagamento" title="Selecionar todos com saldo">
+                                    </th>
+                                    @endif
                                     <th>Processo</th>
                                     <th>Descrição</th>
                                     <th class="text-right">Honorário</th>
@@ -502,12 +532,30 @@
                                 @php
                                     $saldoHonItem = $item->vl_saldo_honorario;
                                     $saldoDesItem = $item->vl_saldo_despesa;
+                                    $saldoTotalItem = $item->vl_saldo_total;
                                     $statusItem = $item->nm_status_pagamento;
                                     $statusClass = $item->isPago() ? 'success' : ($item->isParcialmentePago() ? 'warning' : 'default');
+                                    $podeSelecionarItem = $podeSelecionarProcessos
+                                        && ! $item->isExcluido()
+                                        && $saldoTotalItem > 0;
                                 @endphp
                                 <tr class="{{ $item->isExcluido() ? 'item-excluido' : '' }} linha-processo-pag"
                                     data-honorario="{{ number_format((float) $item->vl_honorario_pai, 2, '.', '') }}"
-                                    data-despesa="{{ number_format((float) $item->vl_despesa_pai, 2, '.', '') }}">
+                                    data-despesa="{{ number_format((float) $item->vl_despesa_pai, 2, '.', '') }}"
+                                    data-saldo-honorario="{{ number_format($saldoHonItem, 2, '.', '') }}"
+                                    data-saldo-despesa="{{ number_format($saldoDesItem, 2, '.', '') }}"
+                                    data-saldo-total="{{ number_format($saldoTotalItem, 2, '.', '') }}">
+                                    @if($podeSelecionarProcessos)
+                                    <td class="text-center">
+                                        @if($podeSelecionarItem)
+                                        <input type="checkbox" class="check-processo-pag"
+                                               value="{{ $item->cd_pagamento_correspondente_item_pai }}"
+                                               data-saldo-honorario="{{ number_format($saldoHonItem, 2, '.', '') }}"
+                                               data-saldo-despesa="{{ number_format($saldoDesItem, 2, '.', '') }}"
+                                               data-saldo-total="{{ number_format($saldoTotalItem, 2, '.', '') }}">
+                                        @endif
+                                    </td>
+                                    @endif
                                     <td>
                                         @if($item->cd_processo_pro)
                                         <a href="{{ url('processos/editar/'.\Crypt::encrypt($item->cd_processo_pro)) }}" target="_blank">
@@ -579,15 +627,15 @@
                                     @endif
                                 </tr>
                                 @empty
-                                <tr class="linha-vazia-processos"><td colspan="{{ $pagamento->podeGerenciarBaixas() ? 7 : 5 }}" class="text-center text-muted">Nenhum item.</td></tr>
+                                <tr class="linha-vazia-processos"><td colspan="{{ $colspanProcessos }}" class="text-center text-muted">Nenhum item.</td></tr>
                                 @endforelse
                                 <tr class="linha-filtro-vazio" style="display:none;">
-                                    <td colspan="{{ $pagamento->podeGerenciarBaixas() ? 7 : 5 }}" class="text-center text-muted">Nenhum processo neste filtro.</td>
+                                    <td colspan="{{ $colspanProcessos }}" class="text-center text-muted">Nenhum processo neste filtro.</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr class="active">
-                                    <th colspan="4" class="text-right">Total Geral</th>
+                                    <th colspan="{{ $podeSelecionarProcessos ? 5 : 4 }}" class="text-right">Total Geral</th>
                                     <th class="text-right">R$ {{ number_format($pagamento->vl_total_pag, 2, ',', '.') }}</th>
                                     @if($pagamento->podeGerenciarBaixas())
                                     <th colspan="2"></th>
@@ -615,14 +663,15 @@
                 </div>
                 <div class="modal-body">
                     <p>Correspondente: <strong id="modalPagarNome"></strong></p>
-                    <p>Saldo total: <strong id="modalPagarValor"></strong></p>
-                    <div class="alert alert-warning" style="margin-bottom:10px;">
+                    <p id="modalPagarEscopoTexto">Saldo total: <strong id="modalPagarValor"></strong></p>
+                    <div class="alert alert-warning" style="margin-bottom:10px;" id="modalPagarAviso">
                         Será gerado um lançamento por processo (honorário e/ou despesa), dando baixa individualmente em cada um.
                     </div>
+                    <div id="modalPagarItensSelecionados"></div>
                     <div class="form-group">
                         <label>O que quitar</label>
                         <select name="escopo" class="form-control" id="modalPagarEscopo">
-                            <option value="total">Saldo total (honorários + despesas de todos os processos)</option>
+                            <option value="total">Saldo total (honorários + despesas)</option>
                             <option value="honorario">Somente honorários restantes</option>
                             <option value="despesa">Somente despesas restantes</option>
                         </select>
@@ -719,14 +768,87 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
+        function formatMoneyBr(valor) {
+            return valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function checksVisiveisProcessos() {
+            return $('#tabelaProcessosPagamento tbody tr.linha-processo-pag:visible .check-processo-pag');
+        }
+
+        function atualizarSelecaoProcessos() {
+            var qtd = 0;
+            var saldoTotal = 0;
+            var saldoHon = 0;
+            var saldoDes = 0;
+
+            $('.check-processo-pag:checked').each(function () {
+                qtd++;
+                saldoTotal += parseFloat($(this).data('saldo-total')) || 0;
+                saldoHon += parseFloat($(this).data('saldo-honorario')) || 0;
+                saldoDes += parseFloat($(this).data('saldo-despesa')) || 0;
+            });
+
+            $('#qtdSelecionadosProcessos').text(qtd);
+            $('#saldoSelecionadosProcessos').text(formatMoneyBr(saldoTotal));
+            $('#barraSelecaoProcessos').toggle(qtd > 0);
+
+            $('#btnQuitarSelecionados')
+                .data('saldo', 'R$ ' + formatMoneyBr(saldoTotal))
+                .data('saldo-honorario', 'R$ ' + formatMoneyBr(saldoHon))
+                .data('saldo-despesa', 'R$ ' + formatMoneyBr(saldoDes))
+                .data('qtd', qtd);
+
+            var $visiveis = checksVisiveisProcessos();
+            var todosMarcados = $visiveis.length > 0 && $visiveis.filter(':checked').length === $visiveis.length;
+            $('#checkTodosProcessosPagamento').prop('checked', todosMarcados);
+        }
+
+        function montarInputsItensSelecionados($container) {
+            $container.empty();
+            $('.check-processo-pag:checked').each(function () {
+                $('<input>', {
+                    type: 'hidden',
+                    name: 'itens[]',
+                    value: $(this).val()
+                }).appendTo($container);
+            });
+        }
+
         $('#modalPagar').on('show.bs.modal', function (e) {
             var btn = $(e.relatedTarget);
+            var modo = btn.data('modo') || 'todos';
+            var $itens = $('#modalPagarItensSelecionados');
+            $itens.empty();
+
             $('#modalPagarNome').text(btn.data('nome'));
-            $('#modalPagarValor').text(btn.data('saldo'));
-            $('#modalSaldoHonorario').text(btn.data('saldo-honorario'));
-            $('#modalSaldoDespesa').text(btn.data('saldo-despesa'));
             $('#modalPagarData').val('{{ now()->format('Y-m-d') }}');
             $('#formPagar').attr('action', '{{ url("correspondente/pagamentos") }}/' + btn.data('id') + '/pagar');
+
+            if (modo === 'selecionados') {
+                var qtd = parseInt(btn.data('qtd'), 10) || $('.check-processo-pag:checked').length;
+                if (qtd < 1) {
+                    e.preventDefault();
+                    alert('Selecione ao menos um processo com saldo.');
+                    return false;
+                }
+
+                montarInputsItensSelecionados($itens);
+                $('#modalPagarEscopoTexto').html(
+                    'Processos selecionados: <strong>' + qtd + '</strong> · Saldo: <strong>' + (btn.data('saldo') || '') + '</strong>'
+                );
+                $('#modalPagarAviso').text(
+                    'Será gerado um lançamento por processo selecionado (honorário e/ou despesa), conforme o escopo abaixo.'
+                );
+            } else {
+                $('#modalPagarEscopoTexto').html('Saldo total: <strong id="modalPagarValor">' + (btn.data('saldo') || '') + '</strong>');
+                $('#modalPagarAviso').text(
+                    'Será gerado um lançamento por processo (honorário e/ou despesa), dando baixa individualmente em cada um.'
+                );
+            }
+
+            $('#modalSaldoHonorario').text(btn.data('saldo-honorario') || 'R$ 0,00');
+            $('#modalSaldoDespesa').text(btn.data('saldo-despesa') || 'R$ 0,00');
         });
 
         $('#modalBaixaProcesso').on('show.bs.modal', function (e) {
@@ -737,6 +859,19 @@
             $('#baixaTipoLabel').text(btn.data('tipo-label'));
             $('#baixaSaldoLabel').text(btn.data('saldo-label'));
             $('#baixaValor').attr('max', btn.data('saldo')).val(btn.data('saldo'));
+        });
+
+        $(document).on('change', '.check-processo-pag', atualizarSelecaoProcessos);
+
+        $('#checkTodosProcessosPagamento').on('change', function () {
+            var marcar = $(this).is(':checked');
+            checksVisiveisProcessos().prop('checked', marcar);
+            atualizarSelecaoProcessos();
+        });
+
+        $('#btnLimparSelecaoProcessos').on('click', function () {
+            $('.check-processo-pag').prop('checked', false);
+            atualizarSelecaoProcessos();
         });
 
         function recalcularTotal() {
@@ -786,10 +921,12 @@
             });
 
             $('#tabelaProcessosPagamento tbody tr.linha-filtro-vazio').toggle(visiveis === 0 && $('#tabelaProcessosPagamento tbody tr.linha-processo-pag').length > 0);
+            atualizarSelecaoProcessos();
         }
 
         $('#filtroProcessosPagamento').on('change', 'input[name="filtroProcesso"]', aplicarFiltroProcessos);
         aplicarFiltroProcessos();
+        atualizarSelecaoProcessos();
     });
 </script>
 @endsection
