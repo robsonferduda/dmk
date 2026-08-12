@@ -30,7 +30,7 @@ class CorrespondentePagamentoController extends Controller
     {
         $this->middleware('auth')->except(['confirmarPorToken']);
         $this->conta = \Session::get('SESSION_CD_CONTA');
-        Session::put('menu_pai','correspondente');
+        Session::put('menu_pai','financeiro');
         Session::forget('item_pai');
     }
 
@@ -38,7 +38,7 @@ class CorrespondentePagamentoController extends Controller
 
     public function pagamentos(Request $request)
     {
-        Session::put('item_pai','correspondente.pagamentos');
+        Session::put('item_pai','financeiro.correspondentes');
         
         $mes = (int) ($request->mes ?: Carbon::now()->month);
         $ano = (int) ($request->ano ?: Carbon::now()->year);

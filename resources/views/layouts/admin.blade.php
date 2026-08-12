@@ -397,7 +397,7 @@
                                 </li>
                             @endcan
                             @can('correspondente.relatorios')
-                                <li class="{{ (Session::get('item_pai') == 'correspondente.pagamentos') ? 'active' : '' }}">
+                                <li class="{{ (Session::get('item_pai') == 'financeiro.correspondentes') ? 'active' : '' }}">
                                     <a href="{{ url('correspondente/pagamentos') }}" title="Pagamentos de Correspondentes"><span class="menu-item-parent">Correspondentes</span></a>
                                 </li>
                             @endcan
