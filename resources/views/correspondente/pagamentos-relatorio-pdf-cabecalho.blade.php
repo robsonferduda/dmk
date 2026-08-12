@@ -55,8 +55,8 @@
     @php
         $banco    = $bancoPorPag[$pag->cd_pagamento_correspondente_pag] ?? null;
         $somaTotal += $pag->vl_total_pag;
-        $badgeMap = [1=>'gerado',2=>'enviado',3=>'aprovado',4=>'pago',5=>'recusado'];
-        $badgeCls = $badgeMap[$pag->cd_status_pag] ?? 'gerado';
+        $badgeCls = $pag->badgeRelatorio();
+        $badgeStyle = $pag->badgeRelatorioEstilo();
         $dadoPgto = '';
         $dadoLabel = '';
         if ($banco) {
@@ -96,7 +96,7 @@
             </tr>
             <tr>
                 <td class="resumo-card__col-dir resumo-card__status">
-                    <span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span>
+                    <span class="badge badge-{{ $badgeCls }}" style="{{ $badgeStyle }}">{{ $pag->nm_status }}</span>
                 </td>
             </tr>
         </table>

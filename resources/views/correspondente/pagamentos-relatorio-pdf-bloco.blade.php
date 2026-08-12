@@ -1,6 +1,6 @@
 @php
-    $badgeMap = [1=>'gerado',2=>'enviado',3=>'aprovado',4=>'pago',5=>'recusado'];
-    $badgeCls = $badgeMap[$pag->cd_status_pag] ?? 'gerado';
+    $badgeCls = $pag->badgeRelatorio();
+    $badgeStyle = $pag->badgeRelatorioEstilo();
     $itensAtivos = $pag->itens->filter(function ($item) {
         return strtoupper((string) ($item->fl_excluido_pai ?? 'N')) !== 'S';
     });
@@ -26,7 +26,7 @@
                     @endif
                 </td>
                 <td class="pagamento-bloco__header-right">
-                    <span class="badge badge-{{ $badgeCls }}">{{ $pag->nm_status }}</span>
+                    <span class="badge badge-{{ $badgeCls }}" style="{{ $badgeStyle }}">{{ $pag->nm_status }}</span>
                     <span class="pagamento-bloco__valor">R$ {{ number_format($pag->vl_total_pag, 2, ',', '.') }}</span>
                 </td>
             </tr>

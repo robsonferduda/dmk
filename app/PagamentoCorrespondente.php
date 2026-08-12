@@ -66,6 +66,22 @@ class PagamentoCorrespondente extends Model
         return StatusPagamentoCorrespondente::label($this->cd_status_pag);
     }
 
+    public function badgeRelatorio(): string
+    {
+        return StatusPagamentoCorrespondente::badgeRelatorio(
+            (int) $this->cd_status_pag,
+            $this->isParcialmentePago()
+        );
+    }
+
+    public function badgeRelatorioEstilo(): string
+    {
+        return StatusPagamentoCorrespondente::badgeRelatorioEstilo(
+            (int) $this->cd_status_pag,
+            $this->isParcialmentePago()
+        );
+    }
+
     public function getNmMesAnoAttribute(): string
     {
         return str_pad($this->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $this->nu_ano_pag;

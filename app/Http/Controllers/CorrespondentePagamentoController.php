@@ -1136,7 +1136,7 @@ class CorrespondentePagamentoController extends Controller
 
     private function buscarDadosRelatorioPagamentos(int $mes, int $ano): array
     {
-        $pagamentos = PagamentoCorrespondente::with(['correspondente'])
+        $pagamentos = PagamentoCorrespondente::with(['correspondente', 'baixas'])
             ->where('cd_conta_con', $this->conta)
             ->where('nu_mes_pag', $mes)
             ->where('nu_ano_pag', $ano)

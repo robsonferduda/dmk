@@ -31,11 +31,12 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #222; }
     color: #fff;
     border-radius: 2px;
 }
-.badge-gerado   { background: #95a5a6; }
-.badge-enviado  { background: #e67e22; }
-.badge-aprovado { background: #2980b9; }
-.badge-pago     { background: #27ae60; }
-.badge-recusado { background: #e74c3c; }
+.badge-gerado   { background: #95a5a6; color: #fff; }
+.badge-enviado  { background: #e67e22; color: #fff; }
+.badge-aprovado { background: #2980b9; color: #fff; }
+.badge-parcial  { background: #f0ad4e; color: #333; }
+.badge-pago     { background: #27ae60; color: #fff; }
+.badge-recusado { background: #e74c3c; color: #fff; }
 
 /* ── Resumo em cards ── */
 .resumo-lista { width: 100%; margin-bottom: 12px; }
