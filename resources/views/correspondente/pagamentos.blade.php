@@ -98,8 +98,8 @@
      {{-- Card total geral --}}
     @php
         $totalGeral    = $pagamentos->sum('vl_total_pag');
-        $totalPendente = $pagamentos->whereIn('cd_status_pag', [1,2,3,5])->sum('vl_total_pag');
-        $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
+        $totalPago     = $pagamentos->sum('vl_pago_total');
+        $totalPendente = $pagamentos->sum('vl_saldo_total');
     @endphp
     <div class="row" style="margin-bottom:20px;">
         <div class="col-md-12">

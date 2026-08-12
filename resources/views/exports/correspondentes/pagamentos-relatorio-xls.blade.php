@@ -1,7 +1,7 @@
 @php
     $totalGeral    = $pagamentos->sum('vl_total_pag');
-    $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
-    $totalPendente = $pagamentos->whereNotIn('cd_status_pag', [4])->sum('vl_total_pag');
+    $totalPago     = $pagamentos->sum('vl_pago_total');
+    $totalPendente = $pagamentos->sum('vl_saldo_total');
     $qtdTotal      = $pagamentos->count();
     $nmEscritorio  = $escritorio->nm_razao_social_con ?? $escritorio->nm_fantasia_con ?? 'Escritório';
     $thStyle = 'background-color:#1a7bb9;color:#ffffff;font-weight:bold;border:1px solid #000000;text-align:center;vertical-align:center;';

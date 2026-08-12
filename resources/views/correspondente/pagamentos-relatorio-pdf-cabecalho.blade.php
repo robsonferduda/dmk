@@ -18,8 +18,8 @@
 {{-- Totalizador --}}
 @php
     $totalGeral    = $pagamentos->sum('vl_total_pag');
-    $totalPago     = $pagamentos->where('cd_status_pag', 4)->sum('vl_total_pag');
-    $totalPendente = $pagamentos->whereNotIn('cd_status_pag', [4])->sum('vl_total_pag');
+    $totalPago     = $pagamentos->sum('vl_pago_total');
+    $totalPendente = $pagamentos->sum('vl_saldo_total');
     $qtdTotal      = $pagamentos->count();
 @endphp
 <table style="width:100%; border-collapse:collapse; margin-bottom:16px; background:#f0f4f9; border:1px solid #d0dce8;">
