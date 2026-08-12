@@ -251,11 +251,6 @@
                                 </li>
                             @endcan
                             @can('correspondente.relatorios')
-                                <li class="{{ (Session::get('item_pai') == 'correspondente.pagamentos') ? 'active' : '' }}">
-                                    <a href="{{ url('correspondente/pagamentos') }}" title="Pagamentos de Correspondentes"><span class="menu-item-parent">Pagamentos</span></a>
-                                </li>
-                            @endcan
-                            @can('correspondente.relatorios')
                                 <li>
                                     <a href="{{ url('correspondente/relatorios') }}" title="Relatórios de Correspondentes"><span class="menu-item-parent">Relatórios</span></a>
                                 </li>
@@ -399,6 +394,11 @@
                             @can('financeiro.saidas') 
                                 <li>
                                     <a href="{{ url('financeiro/saidas') }}" title="Saídas"><span class="menu-item-parent">Saídas</span></a>
+                                </li>
+                            @endcan
+                            @can('correspondente.relatorios')
+                                <li class="{{ (Session::get('item_pai') == 'correspondente.pagamentos') ? 'active' : '' }}">
+                                    <a href="{{ url('correspondente/pagamentos') }}" title="Pagamentos de Correspondentes"><span class="menu-item-parent">Correspondentes</span></a>
                                 </li>
                             @endcan
                             @can('financeiro.relatorios') 
