@@ -80,9 +80,7 @@ class CorrespondenteFinanceiroController extends Controller
 
         foreach ($baixas as $baixa) {
             $path = $baixa->dc_comprovante_pcb;
-            if (! Storage::disk('public')->exists($path)) {
-                continue;
-            }
+            $arquivoExiste = Storage::disk('public')->exists($path);
 
             $pagamento = $baixa->pagamento;
             $processo  = optional(optional($baixa->item)->processo);
@@ -92,16 +90,17 @@ class CorrespondenteFinanceiroController extends Controller
                 : '—';
 
             $comprovantes[] = [
-                'cliente'      => optional($pagamento->conta)->nm_razao_social_con
+                'cliente'         => optional($pagamento->conta)->nm_razao_social_con
                     ?? optional($pagamento->conta)->nm_fantasia_con
                     ?? '—',
-                'processo'     => $processo->nu_processo_pro ?? '—',
-                'tipo'         => $baixa->nm_tipo,
-                'valor'        => (float) $baixa->vl_baixa_pcb,
-                'data'         => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
-                'competencia'  => $competencia,
-                'nome'         => $nomeArquivo,
-                'baixa_id'     => $baixa->cd_pagamento_correspondente_baixa_pcb,
+                'processo'        => $processo->nu_processo_pro ?? '—',
+                'tipo'            => $baixa->nm_tipo,
+                'valor'           => (float) $baixa->vl_baixa_pcb,
+                'data'            => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
+                'competencia'     => $competencia,
+                'nome'            => $nomeArquivo,
+                'baixa_id'        => $baixa->cd_pagamento_correspondente_baixa_pcb,
+                'arquivo_existe'  => $arquivoExiste,
             ];
         }
 

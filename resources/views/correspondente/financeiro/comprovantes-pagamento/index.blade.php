@@ -86,10 +86,16 @@
                                         <td class="text-center">{{ $comprovante['data'] }}</td>
                                         <td class="text-right">R$ {{ number_format($comprovante['valor'], 2, ',', '.') }}</td>
                                         <td class="text-center">
+                                            @if(!empty($comprovante['arquivo_existe']))
                                             <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/baixas/'.$comprovante['baixa_id']) }}"
                                                target="_blank" class="btn btn-xs btn-default">
                                                 <i class="fa fa-paperclip"></i> {{ $comprovante['nome'] }}
                                             </a>
+                                            @else
+                                            <span class="text-danger" title="Registro existe, mas o arquivo não foi encontrado no servidor">
+                                                <i class="fa fa-exclamation-triangle"></i> Arquivo indisponível
+                                            </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
