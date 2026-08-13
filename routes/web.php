@@ -359,6 +359,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::delete('correspondente/{entidade}/honorarios/{tipo}/excluir/{id}', 'HonorariosCorrespondenteController@excluirHonorarios');
     Route::get('correspondente/financeiro/comprovantes-de-pagamento', "CorrespondenteFinanceiroController@comprovantes");
     Route::post('correspondente/financeiro/comprovantes-de-pagamento/buscar', 'CorrespondenteFinanceiroController@buscar');
+    Route::get('correspondente/financeiro/comprovantes-de-pagamento/baixas/{baixaId}', 'CorrespondenteFinanceiroController@baixarComprovante');
 
     Route::resource('correspondentes', 'CorrespondenteController');
 

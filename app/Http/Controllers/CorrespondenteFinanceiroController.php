@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
-use App\Conta;
-use App\Processo;
-use App\AnexoFinanceiro;
+use Illuminate\Support\Facades\Storage;
+use Laracasts\Flash\Flash;
+use App\PagamentoCorrespondenteBaixa;
 
 class CorrespondenteFinanceiroController extends Controller
 {
@@ -22,69 +19,125 @@ class CorrespondenteFinanceiroController extends Controller
 
     private function meses()
     {
-        $meses = [];
-        
-        $meses["1"]= 'Janeiro';
-        $meses["2"]= 'Fevereiro';
-        $meses["3"]= 'Março';
-        $meses["4"]= 'Abril';
-        $meses["5"]= 'Maio';
-        $meses["6"]= 'Junho';
-        $meses["7"]= 'Julho';
-        $meses["8"]= 'Agosto';
-        $meses["9"]= 'Setembro';
-        $meses["10"]= 'Outubro';
-        $meses["11"]= 'Novembro';
-        $meses["12"]= 'Dezembro';
-
-        return $meses;
+        return [
+            '1'  => 'Janeiro',
+            '2'  => 'Fevereiro',
+            '3'  => 'Março',
+            '4'  => 'Abril',
+            '5'  => 'Maio',
+            '6'  => 'Junho',
+            '7'  => 'Julho',
+            '8'  => 'Agosto',
+            '9'  => 'Setembro',
+            '10' => 'Outubro',
+            '11' => 'Novembro',
+            '12' => 'Dezembro',
+        ];
     }
 
     public function comprovantes()
     {
-        return view('correspondente/financeiro/comprovantes-pagamento/index', ['comprovantes' => [], 'meses' => $this->meses()]);
+        return view('correspondente/financeiro/comprovantes-pagamento/index', [
+            'comprovantes' => [],
+            'meses'        => $this->meses(),
+        ]);
     }
 
     public function buscar(Request $request)
     {
         $cliente = $request->cd_conta_con;
-        $mes = $request->mes;
-        $pro = $request->processo;
+        $mes     = $request->mes ? (int) $request->mes : null;
+        $pro     = trim((string) $request->processo);
 
-        $processos = Processo::when($cliente, function ($query) use ($cliente) {
-            $query->where('cd_conta_con', $cliente);
-        })
-        ->when($mes, function ($query) use ($mes) {
-            $query->whereMonth('dt_prazo_fatal_pro', $mes);
-        })
-        ->when($pro, function ($query) use ($pro) {
-            $query->where('nu_processo_pro', 'ilike', "%$pro%");
-        })
-        ->where('cd_correspondente_cor', $this->conta)
-        ->get();
+        $baixas = PagamentoCorrespondenteBaixa::query()
+            ->with([
+                'pagamento.conta',
+                'item.processo',
+            ])
+            ->whereNotNull('dc_comprovante_pcb')
+            ->where('dc_comprovante_pcb', '!=', '')
+            ->whereHas('pagamento', function ($query) use ($cliente, $mes) {
+                $query->where('cd_correspondente_cor', $this->conta);
 
-        $arquivos = [];
-        foreach ($processos as $processo) {
-            if (!$processo->honorario->anexoFinanceiro->isEmpty()) {
-                foreach ($processo->honorario->anexoFinanceiro as $anexo) {
-                    if ($anexo->cd_tipo_financeiro_tfn == \TipoFinanceiro::SAIDA) {
-                        
-                        //dd(md5_file(storage_path().'/arquivos/'.$processo->cd_conta_con.'/saidas/anexos/'.$processo->honorario->cd_processo_taxa_honorario_pth.'/'.$anexo->nm_anexo_financeiro_afn));
-                        if (file_exists(storage_path().'/arquivos/'.$processo->cd_conta_con.'/saidas/anexos/'.$processo->honorario->cd_processo_taxa_honorario_pth.'/'.$anexo->nm_anexo_financeiro_afn)) {
-                            $time = $anexo->updated_at->getTimestamp();
-                            $hash = md5_file(storage_path().'/arquivos/'.$processo->cd_conta_con.'/saidas/anexos/'.$processo->honorario->cd_processo_taxa_honorario_pth.'/'.$anexo->nm_anexo_financeiro_afn);
-                            $arquivos[$hash] = ['cliente' => $processo->conta->nm_razao_social_con,
-                                           'nome' => $anexo->nm_anexo_financeiro_afn,
-                                           'path' => $anexo->nm_local_anexo_financeiro_afn,
-                                           'id'   => $anexo->cd_processo_taxa_honorario_pth,
-                                           'conta' => $processo->cd_conta_con
-                                          ];
-                        }
-                    }
+                if ($cliente) {
+                    $query->where('cd_conta_con', $cliente);
                 }
+
+                if ($mes >= 1 && $mes <= 12) {
+                    $query->where('nu_mes_pag', $mes);
+                }
+            })
+            ->when($pro !== '', function ($query) use ($pro) {
+                $query->whereHas('item.processo', function ($q) use ($pro) {
+                    $q->where('nu_processo_pro', 'ilike', '%' . $pro . '%');
+                });
+            })
+            ->orderByDesc('dt_baixa_pcb')
+            ->orderByDesc('cd_pagamento_correspondente_baixa_pcb')
+            ->get();
+
+        $comprovantes = [];
+
+        foreach ($baixas as $baixa) {
+            $path = $baixa->dc_comprovante_pcb;
+            if (! Storage::disk('public')->exists($path)) {
+                continue;
             }
+
+            $pagamento = $baixa->pagamento;
+            $processo  = optional(optional($baixa->item)->processo);
+            $nomeArquivo = basename($path);
+            $competencia = $pagamento
+                ? str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag
+                : '—';
+
+            $comprovantes[] = [
+                'cliente'      => optional($pagamento->conta)->nm_razao_social_con
+                    ?? optional($pagamento->conta)->nm_fantasia_con
+                    ?? '—',
+                'processo'     => $processo->nu_processo_pro ?? '—',
+                'tipo'         => $baixa->nm_tipo,
+                'valor'        => (float) $baixa->vl_baixa_pcb,
+                'data'         => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
+                'competencia'  => $competencia,
+                'nome'         => $nomeArquivo,
+                'baixa_id'     => $baixa->cd_pagamento_correspondente_baixa_pcb,
+            ];
         }
-       
-        return view('correspondente/financeiro/comprovantes-pagamento/index', ['comprovantes' => $arquivos, 'meses' => $this->meses(), 'mesParam' => $mes, 'processo' => $pro]);
+
+        return view('correspondente/financeiro/comprovantes-pagamento/index', [
+            'comprovantes' => $comprovantes,
+            'meses'        => $this->meses(),
+            'mesParam'     => $mes,
+            'processo'     => $pro,
+        ]);
+    }
+
+    /**
+     * Download do comprovante (nova estrutura) restrito ao correspondente logado.
+     */
+    public function baixarComprovante($baixaId)
+    {
+        $baixa = PagamentoCorrespondenteBaixa::with('pagamento')
+            ->where('cd_pagamento_correspondente_baixa_pcb', $baixaId)
+            ->firstOrFail();
+
+        $pagamento = $baixa->pagamento;
+
+        if (! $pagamento || (int) $pagamento->cd_correspondente_cor !== (int) $this->conta) {
+            abort(403, 'Comprovante não disponível para este correspondente.');
+        }
+
+        if (! $baixa->dc_comprovante_pcb) {
+            Flash::error('Este lançamento não possui comprovante.');
+            return redirect()->back();
+        }
+
+        if (! Storage::disk('public')->exists($baixa->dc_comprovante_pcb)) {
+            Flash::error('Arquivo do comprovante não encontrado no servidor.');
+            return redirect()->back();
+        }
+
+        return Storage::disk('public')->response($baixa->dc_comprovante_pcb);
     }
 }

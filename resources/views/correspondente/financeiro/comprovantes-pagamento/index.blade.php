@@ -20,47 +20,44 @@
         <div class="col-md-12">
             @include('layouts/messages')
         </div>
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">            
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="well">
                 <form action="{{ url('correspondente/financeiro/comprovantes-de-pagamento/buscar') }}" class="form-inline" method="POST" role="search">
-                    {{ csrf_field() }}                
+                    {{ csrf_field() }}
                     <div class="row">
                         <section class="col col-md-4 col-lg-3">
                             <label class="label label-black">Número do Processo</label><br />
-                            <input style="width: 100%" class="form-control" type="text" name="processo" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($processo) ? $processo : '' }}" >         
-                        </section>   
+                            <input style="width: 100%" class="form-control" type="text" name="processo" id="nu_processo_pro" placeholder="Nº Processo" value="{{ !empty($processo) ? $processo : '' }}" >
+                        </section>
                         <section class="col col-md-4 col-lg-2">
                             <label class="label label-black">Mês</label><br />
                             <select name="mes" class="form-control" style="width: 100%">
-                                <option  selected value="">Selecione</option>
+                                <option selected value="">Selecione</option>
                                 @foreach($meses as $key => $mes)
-                                    <option {!! !empty($mesParam) && $key == $mesParam ? 'selected' : '' !!} value="{{ $key}} ">{{ $mes }}</option>
+                                    <option {!! !empty($mesParam) && (int) $key === (int) $mesParam ? 'selected' : '' !!} value="{{ $key }}">{{ $mes }}</option>
                                 @endforeach
-                            </select>    
-                        </section>   
-                        <section class="col col-md-4 col-lg-4">                           
-                            <label class="label label-black">Cliente</label><br />
+                            </select>
+                        </section>
+                        <section class="col col-md-4 col-lg-4">
+                            <label class="label label-black">Escritório</label><br />
                             <div class="input-group" style="width: 100%">
                             <input type="hidden" name="cd_conta_con" value="{{(old('cd_conta_con') ? old('cd_conta_con') : (\Session::get('conta') ? \Session::get('conta') : '')) }}">
-                            <input style="width: 100%" class="form-control" name="nm_conta_con" placeholder="Digite 3 caracteres para busca" type="text" id="conta_auto_complete" value="{{(old('nm_conta_con') ? old('nm_conta_con') : (\Session::get('nmConta') ? \Session::get('nmConta') : '')) }}"> 
+                            <input style="width: 100%" class="form-control" name="nm_conta_con" placeholder="Digite 3 caracteres para busca" type="text" id="conta_auto_complete" value="{{(old('nm_conta_con') ? old('nm_conta_con') : (\Session::get('nmConta') ? \Session::get('nmConta') : '')) }}">
                              <div style="clear: all;"></div>
                             <span id="limpar-conta" title="Limpar campo" class="input-group-addon btn btn-warning"><i class="fa fa-eraser"></i></span>
-                            </div>                        
-                        </section>  
-                     
+                            </div>
+                        </section>
+
                         <section class="col col-md-3">
                             <br />
-                            <button class="btn btn-default" type="submit"><i class="fa fa-file-pdf-o"></i> Buscar </button>
-                        </section>                                   
-                    </div>
-                    <div class="row">
-
+                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i> Buscar </button>
+                        </section>
                     </div>
                 </form>
-            </div>           
-             <label class="text-primary"><i class="fa fa-info-circle"></i> Efetue uma busca para mostrar os comprovantes.</label> 
+            </div>
+             <label class="text-primary"><i class="fa fa-info-circle"></i> Efetue uma busca para mostrar os comprovantes.</label>
             <div style="clear: both;"></div>
-             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">    
+             <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
                     <h2>Comprovantes de Pagamento</h2>
@@ -68,23 +65,38 @@
                  <div>
                     <div class="widget-body no-padding">
                         <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead>                         
-                                <tr style="font-size: 12px">                   
-                                    <th style="text-align: center;">Cliente</th>
-                                    <th style="text-align: center;">Comprovante</th>                        
+                            <thead>
+                                <tr style="font-size: 12px">
+                                    <th style="text-align: center;">Escritório</th>
+                                    <th style="text-align: center;">Competência</th>
+                                    <th style="text-align: center;">Processo</th>
+                                    <th style="text-align: center;">Tipo</th>
+                                    <th style="text-align: center;">Data</th>
+                                    <th style="text-align: center;">Valor</th>
+                                    <th style="text-align: center;">Comprovante</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 12px">
-                                @foreach($comprovantes as $comprovante)    
-                                    @php
-                                        $url = 'saida/'.$comprovante['conta'].'/'.$comprovante['id'].'/anexo/'.$comprovante['nome'];
-                                    @endphp                            
+                                @forelse($comprovantes as $comprovante)
                                     <tr>
-                                        <td>{{$comprovante['cliente']}}</td>
-                                        <td><a href="{{ url($url)}}">{{$comprovante['nome']}}</a></td>
-                                        
+                                        <td>{{ $comprovante['cliente'] }}</td>
+                                        <td class="text-center">{{ $comprovante['competencia'] }}</td>
+                                        <td>{{ $comprovante['processo'] }}</td>
+                                        <td class="text-center">{{ $comprovante['tipo'] }}</td>
+                                        <td class="text-center">{{ $comprovante['data'] }}</td>
+                                        <td class="text-right">R$ {{ number_format($comprovante['valor'], 2, ',', '.') }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/baixas/'.$comprovante['baixa_id']) }}"
+                                               target="_blank" class="btn btn-xs btn-default">
+                                                <i class="fa fa-paperclip"></i> {{ $comprovante['nome'] }}
+                                            </a>
+                                        </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">Nenhum comprovante encontrado.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -116,7 +128,7 @@
 
           },
           open: function(event, ui){
-            
+
           }
         });
 
@@ -125,7 +137,7 @@
             $("input[name='nm_conta_con']").val('');
 
         });
-    
+
     });
 </script>
 
