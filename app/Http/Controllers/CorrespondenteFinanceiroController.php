@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Laracasts\Flash\Flash;
+use App\PagamentoCorrespondente;
 use App\PagamentoCorrespondenteBaixa;
 
 class CorrespondenteFinanceiroController extends Controller
@@ -85,6 +86,8 @@ class CorrespondenteFinanceiroController extends Controller
     }
 
     /**
+     * Um comprovante por pagamento (não por processo).
+     *
      * @param  array{cliente?:mixed,mes?:?int,processo?:string}  $filtros
      */
     private function listarComprovantes(array $filtros = [], ?int $limit = 10): array
@@ -93,31 +96,24 @@ class CorrespondenteFinanceiroController extends Controller
         $mes      = isset($filtros['mes']) ? (int) $filtros['mes'] : null;
         $processo = trim((string) ($filtros['processo'] ?? ''));
 
-        $query = PagamentoCorrespondenteBaixa::query()
-            ->with([
-                'pagamento.conta',
-                'item.processo',
-            ])
-            ->whereNotNull('dc_comprovante_pcb')
-            ->where('dc_comprovante_pcb', '!=', '')
-            ->whereHas('pagamento', function ($q) use ($cliente, $mes) {
-                $q->where('cd_correspondente_cor', $this->conta);
-
-                if ($cliente) {
-                    $q->where('cd_conta_con', $cliente);
-                }
-
-                if ($mes >= 1 && $mes <= 12) {
-                    $q->where('nu_mes_pag', $mes);
-                }
+        $query = PagamentoCorrespondente::query()
+            ->with(['conta', 'itens.processo', 'baixas'])
+            ->where('cd_correspondente_cor', $this->conta)
+            ->whereNotNull('dc_comprovante_pag')
+            ->where('dc_comprovante_pag', '!=', '')
+            ->when($cliente, function ($q) use ($cliente) {
+                $q->where('cd_conta_con', $cliente);
+            })
+            ->when($mes >= 1 && $mes <= 12, function ($q) use ($mes) {
+                $q->where('nu_mes_pag', $mes);
             })
             ->when($processo !== '', function ($q) use ($processo) {
-                $q->whereHas('item.processo', function ($qp) use ($processo) {
+                $q->whereHas('itens.processo', function ($qp) use ($processo) {
                     $qp->where('nu_processo_pro', 'ilike', '%' . $processo . '%');
                 });
             })
-            ->orderByDesc('dt_baixa_pcb')
-            ->orderByDesc('cd_pagamento_correspondente_baixa_pcb');
+            ->orderByDesc('dt_pagamento_pag')
+            ->orderByDesc('cd_pagamento_correspondente_pag');
 
         if ($limit) {
             $query->limit($limit);
@@ -125,25 +121,59 @@ class CorrespondenteFinanceiroController extends Controller
 
         $comprovantes = [];
 
-        foreach ($query->get() as $baixa) {
-            $path = $baixa->dc_comprovante_pcb;
-            $pagamento = $baixa->pagamento;
-            $processoModel = optional(optional($baixa->item)->processo);
+        foreach ($query->get() as $pagamento) {
+            $path = $pagamento->dc_comprovante_pag;
+            $qtdProcessos = $pagamento->itens
+                ->filter(function ($item) {
+                    return strtoupper((string) ($item->fl_excluido_pai ?? 'N')) !== 'S';
+                })
+                ->count();
+
+            // Se buscou por processo, destaca o(s) número(s) que batem.
+            $processoLabel = '—';
+            if ($processo !== '') {
+                $matches = $pagamento->itens
+                    ->filter(function ($item) use ($processo) {
+                        $nu = optional($item->processo)->nu_processo_pro ?? '';
+                        return $nu !== '' && stripos($nu, $processo) !== false;
+                    })
+                    ->map(function ($item) {
+                        return $item->processo->nu_processo_pro;
+                    })
+                    ->unique()
+                    ->values();
+
+                $processoLabel = $matches->count()
+                    ? $matches->take(3)->implode(', ') . ($matches->count() > 3 ? '…' : '')
+                    : '—';
+            } elseif ($qtdProcessos === 1) {
+                $processoLabel = optional(optional($pagamento->itens->first())->processo)->nu_processo_pro ?? '—';
+            } else {
+                $processoLabel = $qtdProcessos . ' processos';
+            }
+
+            $dataPag = $pagamento->dt_pagamento_pag
+                ? $pagamento->dt_pagamento_pag->format('d/m/Y')
+                : optional($pagamento->baixas->sortByDesc('dt_baixa_pcb')->first())->dt_baixa_pcb;
+
+            if ($dataPag && ! is_string($dataPag)) {
+                $dataPag = $dataPag->format('d/m/Y');
+            }
 
             $comprovantes[] = [
+                'origem'         => 'pagamento',
+                'pagamento_id'   => $pagamento->cd_pagamento_correspondente_pag,
                 'cliente'        => optional($pagamento->conta)->nm_razao_social_con
                     ?? optional($pagamento->conta)->nm_fantasia_con
                     ?? '—',
-                'processo'       => $processoModel->nu_processo_pro ?? '—',
-                'tipo'           => $baixa->nm_tipo,
-                'valor'          => (float) $baixa->vl_baixa_pcb,
-                'data'           => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
-                'competencia'    => $pagamento
-                    ? str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag
-                    : '—',
+                'processo'       => $processoLabel,
+                'tipo'           => 'Pagamento',
+                'valor'          => (float) ($pagamento->vl_pago_total ?: $pagamento->vl_total_pag),
+                'data'           => $dataPag ?: '—',
+                'competencia'    => str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag,
                 'nome'           => basename($path),
-                'baixa_id'       => $baixa->cd_pagamento_correspondente_baixa_pcb,
                 'arquivo_existe' => Storage::disk('public')->exists($path),
+                'qtd_processos'  => $qtdProcessos,
             ];
         }
 
@@ -151,7 +181,29 @@ class CorrespondenteFinanceiroController extends Controller
     }
 
     /**
-     * Download do comprovante (nova estrutura) restrito ao correspondente logado.
+     * Download do comprovante do pagamento (nível agrupamento).
+     */
+    public function baixarComprovantePagamento($id)
+    {
+        $pagamento = PagamentoCorrespondente::where('cd_correspondente_cor', $this->conta)
+            ->where('cd_pagamento_correspondente_pag', $id)
+            ->firstOrFail();
+
+        if (! $pagamento->dc_comprovante_pag) {
+            Flash::error('Este pagamento não possui comprovante.');
+            return redirect()->back();
+        }
+
+        if (! Storage::disk('public')->exists($pagamento->dc_comprovante_pag)) {
+            Flash::error('Arquivo do comprovante não encontrado no servidor.');
+            return redirect()->back();
+        }
+
+        return Storage::disk('public')->response($pagamento->dc_comprovante_pag);
+    }
+
+    /**
+     * Download legado de comprovante vinculado a uma baixa individual.
      */
     public function baixarComprovante($baixaId)
     {

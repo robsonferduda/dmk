@@ -597,8 +597,14 @@ class CorrespondentePagamentoController extends Controller
                 'vl_baixa_pcb'                         => $valor,
                 'dt_baixa_pcb'                         => $request->dt_baixa_pcb,
                 'ds_observacao_pcb'                    => $request->ds_observacao_pcb,
-                'dc_comprovante_pcb'                   => $path,
+                // Baixa individual: comprovante principal no pagamento; baixa só guarda se já houver outro no pag.
+                'dc_comprovante_pcb'                   => ($path && $pagamento->dc_comprovante_pag) ? $path : null,
             ]);
+
+            if ($path && ! $pagamento->dc_comprovante_pag) {
+                $pagamento->dc_comprovante_pag = $path;
+                $pagamento->save();
+            }
 
             $pagamento->sincronizarStatusPagamento($request->dt_baixa_pcb);
         });
@@ -617,7 +623,7 @@ class CorrespondentePagamentoController extends Controller
             ->firstOrFail();
 
         if (! $baixa->dc_comprovante_pcb) {
-            Flash::error('Este lançamento não possui comprovante.');
+            Flash::error('Este lançamento não possui comprovante próprio. Use o comprovante do pagamento.');
             return redirect()->back();
         }
 
@@ -627,6 +633,24 @@ class CorrespondentePagamentoController extends Controller
         }
 
         return Storage::disk('public')->response($baixa->dc_comprovante_pcb);
+    }
+
+    public function baixarComprovantePagamento($id)
+    {
+        $pagamento = PagamentoCorrespondente::where('cd_conta_con', $this->conta)
+            ->findOrFail($id);
+
+        if (! $pagamento->dc_comprovante_pag) {
+            Flash::error('Este pagamento não possui comprovante.');
+            return redirect()->back();
+        }
+
+        if (! Storage::disk('public')->exists($pagamento->dc_comprovante_pag)) {
+            Flash::error('Arquivo do comprovante não encontrado no servidor. Pode ter sido salvo em outro ambiente ou removido.');
+            return redirect()->back();
+        }
+
+        return Storage::disk('public')->response($pagamento->dc_comprovante_pag);
     }
 
     public function excluirBaixa($id, $baixaId)
@@ -645,11 +669,19 @@ class CorrespondentePagamentoController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($pagamento, $baixa) {
-            if ($baixa->dc_comprovante_pcb) {
-                Storage::disk('public')->delete($baixa->dc_comprovante_pcb);
+            $path = $baixa->dc_comprovante_pcb;
+            $baixa->delete();
+
+            // Não apaga se ainda estiver no pagamento ou em outra baixa.
+            if ($path) {
+                $aindaUsado = PagamentoCorrespondenteBaixa::where('dc_comprovante_pcb', $path)->exists()
+                    || PagamentoCorrespondente::where('dc_comprovante_pag', $path)->exists();
+
+                if (! $aindaUsado) {
+                    Storage::disk('public')->delete($path);
+                }
             }
 
-            $baixa->delete();
             $pagamento->sincronizarStatusPagamento();
         });
 
@@ -717,9 +749,7 @@ class CorrespondentePagamentoController extends Controller
 
         DB::transaction(function () use ($pagamento, $request, $escopo, $dtBaixa, $itensAlvo) {
             $path = $this->salvarComprovante($request->file('comprovante'));
-
-            $obs      = $request->observacao;
-            $primeiro = true;
+            $obs  = $request->observacao;
 
             foreach ($itensAlvo as $item) {
                 $lotes = [];
@@ -739,6 +769,7 @@ class CorrespondentePagamentoController extends Controller
                 }
 
                 foreach ($lotes as $lote) {
+                    // Comprovante do quitamento fica no pagamento (não repetido por processo).
                     PagamentoCorrespondenteBaixa::create([
                         'cd_pagamento_correspondente_pag'      => $pagamento->cd_pagamento_correspondente_pag,
                         'cd_pagamento_correspondente_item_pai' => $item->cd_pagamento_correspondente_item_pai,
@@ -746,9 +777,8 @@ class CorrespondentePagamentoController extends Controller
                         'vl_baixa_pcb'                         => $lote['valor'],
                         'dt_baixa_pcb'                         => $dtBaixa,
                         'ds_observacao_pcb'                    => $obs,
-                        'dc_comprovante_pcb'                   => $primeiro ? $path : null,
+                        'dc_comprovante_pcb'                   => null,
                     ]);
-                    $primeiro = false;
                 }
             }
 
@@ -756,7 +786,7 @@ class CorrespondentePagamentoController extends Controller
                 $pagamento->ds_observacao_pag = $obs;
             }
 
-            if ($path && ! $pagamento->dc_comprovante_pag) {
+            if ($path) {
                 $pagamento->dc_comprovante_pag = $path;
             }
 

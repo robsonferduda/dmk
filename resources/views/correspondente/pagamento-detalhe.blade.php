@@ -78,6 +78,17 @@
                     <dt>Pago em</dt>
                     <dd>{{ $pagamento->dt_pagamento_pag->format('d/m/Y H:i') }}</dd>
                     @endif
+                    <dt>Comprovante</dt>
+                    <dd>
+                        @if($pagamento->dc_comprovante_pag)
+                            <a href="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/comprovante') }}"
+                               target="_blank" class="btn btn-xs btn-default">
+                                <i class="fa fa-paperclip"></i> Baixar comprovante
+                            </a>
+                        @else
+                            <span class="text-muted">Não anexado</span>
+                        @endif
+                    </dd>
                     @if($pagamento->cd_status_pag == 5 && $pagamento->ds_observacao_pag)
                     <dt style="color:#e74c3c;">Motivo Recusa</dt>
                     <dd>
@@ -299,7 +310,6 @@
                                     <th>Tipo</th>
                                     <th class="text-right">Valor</th>
                                     <th>Observação</th>
-                                    <th class="text-center">Comprovante</th>
                                     <th class="text-center" style="width:70px;">Ações</th>
                                 </tr>
                             </thead>
@@ -324,15 +334,6 @@
                                     <td class="text-right"><strong>R$ {{ number_format($baixa->vl_baixa_pcb, 2, ',', '.') }}</strong></td>
                                     <td>{{ $baixa->ds_observacao_pcb ?: '—' }}</td>
                                     <td class="text-center">
-                                        @if($baixa->dc_comprovante_pcb)
-                                        <a href="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas/'.$baixa->cd_pagamento_correspondente_baixa_pcb.'/comprovante') }}"
-                                           target="_blank" class="btn btn-xs btn-default" title="Abrir comprovante">
-                                            <i class="fa fa-paperclip"></i>
-                                        </a>
-                                        @else —
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
                                         <form method="POST"
                                               action="{{ url('correspondente/pagamentos/'.$pagamento->cd_pagamento_correspondente_pag.'/baixas/'.$baixa->cd_pagamento_correspondente_baixa_pcb) }}"
                                               style="display:inline;">
@@ -352,10 +353,14 @@
                                 <tr>
                                     <th colspan="3" class="text-right">Total lançado</th>
                                     <th class="text-right">R$ {{ number_format($pagamento->vl_pago_total, 2, ',', '.') }}</th>
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                 </tr>
                             </tfoot>
                         </table>
+                        <p class="text-muted" style="margin:10px 0 0;font-size:12px;">
+                            <i class="fa fa-info-circle"></i>
+                            O comprovante fica vinculado ao pagamento (resumo ao lado), não a cada processo.
+                        </p>
                         @endif
                     </div>
                 </div>

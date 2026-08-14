@@ -359,6 +359,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::delete('correspondente/{entidade}/honorarios/{tipo}/excluir/{id}', 'HonorariosCorrespondenteController@excluirHonorarios');
     Route::get('correspondente/financeiro/comprovantes-de-pagamento', "CorrespondenteFinanceiroController@comprovantes");
     Route::post('correspondente/financeiro/comprovantes-de-pagamento/buscar', 'CorrespondenteFinanceiroController@buscar');
+    Route::get('correspondente/financeiro/comprovantes-de-pagamento/pagamentos/{id}', 'CorrespondenteFinanceiroController@baixarComprovantePagamento');
     Route::get('correspondente/financeiro/comprovantes-de-pagamento/baixas/{baixaId}', 'CorrespondenteFinanceiroController@baixarComprovante');
 
     Route::resource('correspondentes', 'CorrespondenteController');
@@ -503,6 +504,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::post('correspondente/pagamentos/{id}/aprovar',             'CorrespondentePagamentoController@aprovar');
     Route::post('correspondente/pagamentos/{id}/pagar',               'CorrespondentePagamentoController@pagar');
     Route::post('correspondente/pagamentos/{id}/baixas',              'CorrespondentePagamentoController@registrarBaixa');
+    Route::get('correspondente/pagamentos/{id}/comprovante', 'CorrespondentePagamentoController@baixarComprovantePagamento');
     Route::get('correspondente/pagamentos/{id}/baixas/{baixaId}/comprovante', 'CorrespondentePagamentoController@baixarComprovante');
     Route::delete('correspondente/pagamentos/{id}/baixas/{baixaId}',  'CorrespondentePagamentoController@excluirBaixa');
     Route::post('correspondente/pagamentos/{id}/testar-notificacao',  'CorrespondentePagamentoController@testarNotificacao');

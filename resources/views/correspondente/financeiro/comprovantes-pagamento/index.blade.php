@@ -229,18 +229,22 @@
                                 <i class="fa {{ empty($comprovante['arquivo_existe']) ? 'fa-exclamation-triangle' : 'fa-file-pdf-o' }}"></i>
                             </div>
                             <div class="cp-main">
-                                <p class="cp-processo">{{ $comprovante['processo'] }}</p>
+                                <p class="cp-processo">
+                                    {{ $comprovante['cliente'] }}
+                                    <span class="cp-badge" style="margin-left:6px;vertical-align:middle;">{{ $comprovante['competencia'] }}</span>
+                                </p>
                                 <p class="cp-meta">
-                                    <span><strong>Escritório:</strong> {{ $comprovante['cliente'] }}</span>
-                                    <span><strong>Competência:</strong> {{ $comprovante['competencia'] }}</span>
-                                    <span><strong>Pagamento:</strong> {{ $comprovante['data'] }}</span>
-                                    <span class="cp-badge">{{ $comprovante['tipo'] }}</span>
+                                    <span><strong>Processos:</strong> {{ $comprovante['processo'] }}</span>
+                                    <span><strong>Pago em:</strong> {{ $comprovante['data'] }}</span>
+                                    @if(!empty($comprovante['qtd_processos']))
+                                        <span class="cp-badge">{{ $comprovante['qtd_processos'] }} item(ns)</span>
+                                    @endif
                                 </p>
                             </div>
                             <div class="cp-side">
                                 <div class="cp-valor">R$ {{ number_format($comprovante['valor'], 2, ',', '.') }}</div>
                                 @if(!empty($comprovante['arquivo_existe']))
-                                    <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/baixas/'.$comprovante['baixa_id']) }}"
+                                    <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/pagamentos/'.$comprovante['pagamento_id']) }}"
                                        target="_blank" class="btn btn-sm btn-default cp-btn" title="{{ $comprovante['nome'] }}">
                                         <i class="fa fa-download"></i> Baixar
                                     </a>
