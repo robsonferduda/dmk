@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
 <style>
-    .cp-page { max-width: 980px; }
+    .cp-page { width: 100%; }
     .cp-filters {
         background: linear-gradient(135deg, #f7f9fc 0%, #eef3f8 100%);
         border: 1px solid #dce5ef;
