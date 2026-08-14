@@ -44,10 +44,7 @@
         gap: 12px;
     }
     .cp-item {
-        display: grid;
-        grid-template-columns: 48px 1fr auto;
-        gap: 14px;
-        align-items: center;
+        display: block;
         background: #fff;
         border: 1px solid #e3ebf3;
         border-radius: 12px;
@@ -58,6 +55,12 @@
         border-color: #b8c9da;
         box-shadow: 0 6px 18px rgba(31, 45, 61, .06);
         transform: translateY(-1px);
+    }
+    .cp-item-top {
+        display: grid;
+        grid-template-columns: 48px 1fr auto;
+        gap: 14px;
+        align-items: center;
     }
     .cp-icon {
         width: 48px;
@@ -81,7 +84,7 @@
         font-weight: 600;
         color: #1f2d3d;
         margin: 0 0 4px;
-        word-break: break-all;
+        word-break: break-word;
     }
     .cp-meta {
         display: flex;
@@ -123,6 +126,67 @@
         padding: 6px 12px !important;
         font-weight: 600;
     }
+    .cp-itens {
+        margin: 12px 0 0;
+        border-top: 1px solid #eef2f6;
+        padding-top: 10px;
+    }
+    .cp-itens-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        color: #7a8a9a;
+    }
+    .cp-itens-list {
+        display: grid;
+        gap: 6px;
+        max-height: 280px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+    .cp-iten {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: start;
+        background: #f7fafc;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    .cp-iten.is-hit {
+        background: #eaf5ff;
+        box-shadow: inset 3px 0 0 #2f6f9f;
+    }
+    .cp-iten-pro {
+        margin: 0;
+        font-weight: 600;
+        color: #1f2d3d;
+        word-break: break-all;
+    }
+    .cp-iten-desc {
+        margin: 2px 0 0;
+        color: #7a8a9a;
+        font-size: 11px;
+    }
+    .cp-iten-vals {
+        text-align: right;
+        white-space: nowrap;
+        color: #445566;
+    }
+    .cp-iten-vals strong {
+        display: block;
+        color: #1a7a4c;
+        font-size: 13px;
+    }
+    .cp-iten-vals small {
+        color: #8899aa;
+    }
     .cp-empty {
         text-align: center;
         padding: 42px 20px;
@@ -133,7 +197,7 @@
     }
     .cp-empty i { font-size: 28px; display: block; margin-bottom: 10px; color: #a0b0c0; }
     @media (max-width: 767px) {
-        .cp-item {
+        .cp-item-top {
             grid-template-columns: 40px 1fr;
         }
         .cp-side {
@@ -146,6 +210,10 @@
             border-top: 1px solid #eef2f6;
             margin-top: 2px;
         }
+        .cp-iten {
+            grid-template-columns: 1fr;
+        }
+        .cp-iten-vals { text-align: left; }
     }
 </style>
 
@@ -225,35 +293,64 @@
                 <div class="cp-grid">
                     @foreach($comprovantes as $comprovante)
                         <div class="cp-item">
-                            <div class="cp-icon {{ empty($comprovante['arquivo_existe']) ? 'is-missing' : '' }}">
-                                <i class="fa {{ empty($comprovante['arquivo_existe']) ? 'fa-exclamation-triangle' : 'fa-file-pdf-o' }}"></i>
-                            </div>
-                            <div class="cp-main">
-                                <p class="cp-processo">
-                                    {{ $comprovante['cliente'] }}
-                                    <span class="cp-badge" style="margin-left:6px;vertical-align:middle;">{{ $comprovante['competencia'] }}</span>
-                                </p>
-                                <p class="cp-meta">
-                                    <span><strong>Processos:</strong> {{ $comprovante['processo'] }}</span>
-                                    <span><strong>Pago em:</strong> {{ $comprovante['data'] }}</span>
-                                    @if(!empty($comprovante['qtd_processos']))
-                                        <span class="cp-badge">{{ $comprovante['qtd_processos'] }} item(ns)</span>
+                            <div class="cp-item-top">
+                                <div class="cp-icon {{ empty($comprovante['arquivo_existe']) ? 'is-missing' : '' }}">
+                                    <i class="fa {{ empty($comprovante['arquivo_existe']) ? 'fa-exclamation-triangle' : 'fa-file-pdf-o' }}"></i>
+                                </div>
+                                <div class="cp-main">
+                                    <p class="cp-processo">
+                                        {{ $comprovante['cliente'] }}
+                                        <span class="cp-badge" style="margin-left:6px;vertical-align:middle;">{{ $comprovante['competencia'] }}</span>
+                                    </p>
+                                    <p class="cp-meta">
+                                        <span><strong>Pago em:</strong> {{ $comprovante['data'] }}</span>
+                                        <span class="cp-badge">{{ $comprovante['qtd_processos'] }} processo(s)</span>
+                                    </p>
+                                </div>
+                                <div class="cp-side">
+                                    <div class="cp-valor">R$ {{ number_format($comprovante['valor'], 2, ',', '.') }}</div>
+                                    @if(!empty($comprovante['arquivo_existe']))
+                                        <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/pagamentos/'.$comprovante['pagamento_id']) }}"
+                                           target="_blank" class="btn btn-sm btn-default cp-btn" title="{{ $comprovante['nome'] }}">
+                                            <i class="fa fa-download"></i> Baixar
+                                        </a>
+                                    @else
+                                        <span class="text-danger" style="font-size:12px">
+                                            <i class="fa fa-exclamation-triangle"></i> Indisponível
+                                        </span>
                                     @endif
-                                </p>
+                                </div>
                             </div>
-                            <div class="cp-side">
-                                <div class="cp-valor">R$ {{ number_format($comprovante['valor'], 2, ',', '.') }}</div>
-                                @if(!empty($comprovante['arquivo_existe']))
-                                    <a href="{{ url('correspondente/financeiro/comprovantes-de-pagamento/pagamentos/'.$comprovante['pagamento_id']) }}"
-                                       target="_blank" class="btn btn-sm btn-default cp-btn" title="{{ $comprovante['nome'] }}">
-                                        <i class="fa fa-download"></i> Baixar
-                                    </a>
-                                @else
-                                    <span class="text-danger" style="font-size:12px">
-                                        <i class="fa fa-exclamation-triangle"></i> Indisponível
-                                    </span>
-                                @endif
-                            </div>
+
+                            @if(!empty($comprovante['itens']))
+                                <div class="cp-itens">
+                                    <div class="cp-itens-head">
+                                        <span>Itens do pagamento</span>
+                                        <span>{{ count($comprovante['itens']) }}</span>
+                                    </div>
+                                    <div class="cp-itens-list">
+                                        @foreach($comprovante['itens'] as $item)
+                                            <div class="cp-iten {{ !empty($item['destaque']) ? 'is-hit' : '' }}">
+                                                <div>
+                                                    <p class="cp-iten-pro">{{ $item['processo'] }}</p>
+                                                    @if(!empty($item['descricao']))
+                                                        <p class="cp-iten-desc">{{ $item['descricao'] }}</p>
+                                                    @endif
+                                                </div>
+                                                <div class="cp-iten-vals">
+                                                    <strong>R$ {{ number_format($item['total'], 2, ',', '.') }}</strong>
+                                                    <small>
+                                                        Hon. {{ number_format($item['honorario'], 2, ',', '.') }}
+                                                        @if($item['despesa'] > 0)
+                                                            · Desp. {{ number_format($item['despesa'], 2, ',', '.') }}
+                                                        @endif
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>

@@ -123,33 +123,27 @@ class CorrespondenteFinanceiroController extends Controller
 
         foreach ($query->get() as $pagamento) {
             $path = $pagamento->dc_comprovante_pag;
-            $qtdProcessos = $pagamento->itens
+
+            $itensAtivos = $pagamento->itens
                 ->filter(function ($item) {
                     return strtoupper((string) ($item->fl_excluido_pai ?? 'N')) !== 'S';
                 })
-                ->count();
+                ->values();
 
-            // Se buscou por processo, destaca o(s) número(s) que batem.
-            $processoLabel = '—';
-            if ($processo !== '') {
-                $matches = $pagamento->itens
-                    ->filter(function ($item) use ($processo) {
-                        $nu = optional($item->processo)->nu_processo_pro ?? '';
-                        return $nu !== '' && stripos($nu, $processo) !== false;
-                    })
-                    ->map(function ($item) {
-                        return $item->processo->nu_processo_pro;
-                    })
-                    ->unique()
-                    ->values();
+            $itensDetalhe = [];
+            foreach ($itensAtivos as $item) {
+                $nuProcesso = optional($item->processo)->nu_processo_pro ?? '—';
+                $destaque = $processo !== '' && $nuProcesso !== '—'
+                    && stripos($nuProcesso, $processo) !== false;
 
-                $processoLabel = $matches->count()
-                    ? $matches->take(3)->implode(', ') . ($matches->count() > 3 ? '…' : '')
-                    : '—';
-            } elseif ($qtdProcessos === 1) {
-                $processoLabel = optional(optional($pagamento->itens->first())->processo)->nu_processo_pro ?? '—';
-            } else {
-                $processoLabel = $qtdProcessos . ' processos';
+                $itensDetalhe[] = [
+                    'processo'  => $nuProcesso,
+                    'descricao' => $item->ds_descricao_pai ?: null,
+                    'honorario' => (float) $item->vl_honorario_pai,
+                    'despesa'   => (float) $item->vl_despesa_pai,
+                    'total'     => (float) $item->vl_honorario_pai + (float) $item->vl_despesa_pai,
+                    'destaque'  => $destaque,
+                ];
             }
 
             $dataPag = $pagamento->dt_pagamento_pag
@@ -166,14 +160,13 @@ class CorrespondenteFinanceiroController extends Controller
                 'cliente'        => optional($pagamento->conta)->nm_razao_social_con
                     ?? optional($pagamento->conta)->nm_fantasia_con
                     ?? '—',
-                'processo'       => $processoLabel,
-                'tipo'           => 'Pagamento',
                 'valor'          => (float) ($pagamento->vl_pago_total ?: $pagamento->vl_total_pag),
                 'data'           => $dataPag ?: '—',
                 'competencia'    => str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag,
                 'nome'           => basename($path),
                 'arquivo_existe' => Storage::disk('public')->exists($path),
-                'qtd_processos'  => $qtdProcessos,
+                'qtd_processos'  => count($itensDetalhe),
+                'itens'          => $itensDetalhe,
             ];
         }
 
