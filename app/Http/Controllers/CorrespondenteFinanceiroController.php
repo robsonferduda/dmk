@@ -37,79 +37,117 @@ class CorrespondenteFinanceiroController extends Controller
 
     public function comprovantes()
     {
-        return view('correspondente/financeiro/comprovantes-pagamento/index', [
-            'comprovantes' => [],
-            'meses'        => $this->meses(),
-        ]);
+        return view('correspondente/financeiro/comprovantes-pagamento/index', array_merge(
+            $this->montarViewData(),
+            [
+                'comprovantes' => $this->listarComprovantes([], 10),
+                'tituloLista'  => 'Últimos comprovantes',
+                'listaLimitada'=> true,
+            ]
+        ));
     }
 
     public function buscar(Request $request)
     {
-        $cliente = $request->cd_conta_con;
-        $mes     = $request->mes ? (int) $request->mes : null;
-        $pro     = trim((string) $request->processo);
+        $filtros = [
+            'cliente'  => $request->cd_conta_con,
+            'mes'      => $request->mes ? (int) $request->mes : null,
+            'processo' => trim((string) $request->processo),
+        ];
 
-        $baixas = PagamentoCorrespondenteBaixa::query()
+        $temFiltro = ! empty($filtros['cliente'])
+            || ($filtros['mes'] >= 1 && $filtros['mes'] <= 12)
+            || $filtros['processo'] !== '';
+
+        return view('correspondente/financeiro/comprovantes-pagamento/index', array_merge(
+            $this->montarViewData($request),
+            [
+                'comprovantes' => $this->listarComprovantes($filtros, $temFiltro ? null : 10),
+                'tituloLista'  => $temFiltro ? 'Resultados da busca' : 'Últimos comprovantes',
+                'listaLimitada'=> ! $temFiltro,
+                'mesParam'     => $filtros['mes'],
+                'processo'     => $filtros['processo'],
+                'cdContaCon'   => $filtros['cliente'],
+                'nmContaCon'   => $request->nm_conta_con,
+            ]
+        ));
+    }
+
+    private function montarViewData(Request $request = null): array
+    {
+        return [
+            'meses'      => $this->meses(),
+            'mesParam'   => $request ? ($request->mes ? (int) $request->mes : null) : null,
+            'processo'   => $request ? trim((string) $request->processo) : '',
+            'cdContaCon' => $request ? $request->cd_conta_con : '',
+            'nmContaCon' => $request ? $request->nm_conta_con : '',
+        ];
+    }
+
+    /**
+     * @param  array{cliente?:mixed,mes?:?int,processo?:string}  $filtros
+     */
+    private function listarComprovantes(array $filtros = [], ?int $limit = 10): array
+    {
+        $cliente  = $filtros['cliente'] ?? null;
+        $mes      = isset($filtros['mes']) ? (int) $filtros['mes'] : null;
+        $processo = trim((string) ($filtros['processo'] ?? ''));
+
+        $query = PagamentoCorrespondenteBaixa::query()
             ->with([
                 'pagamento.conta',
                 'item.processo',
             ])
             ->whereNotNull('dc_comprovante_pcb')
             ->where('dc_comprovante_pcb', '!=', '')
-            ->whereHas('pagamento', function ($query) use ($cliente, $mes) {
-                $query->where('cd_correspondente_cor', $this->conta);
+            ->whereHas('pagamento', function ($q) use ($cliente, $mes) {
+                $q->where('cd_correspondente_cor', $this->conta);
 
                 if ($cliente) {
-                    $query->where('cd_conta_con', $cliente);
+                    $q->where('cd_conta_con', $cliente);
                 }
 
                 if ($mes >= 1 && $mes <= 12) {
-                    $query->where('nu_mes_pag', $mes);
+                    $q->where('nu_mes_pag', $mes);
                 }
             })
-            ->when($pro !== '', function ($query) use ($pro) {
-                $query->whereHas('item.processo', function ($q) use ($pro) {
-                    $q->where('nu_processo_pro', 'ilike', '%' . $pro . '%');
+            ->when($processo !== '', function ($q) use ($processo) {
+                $q->whereHas('item.processo', function ($qp) use ($processo) {
+                    $qp->where('nu_processo_pro', 'ilike', '%' . $processo . '%');
                 });
             })
             ->orderByDesc('dt_baixa_pcb')
-            ->orderByDesc('cd_pagamento_correspondente_baixa_pcb')
-            ->get();
+            ->orderByDesc('cd_pagamento_correspondente_baixa_pcb');
+
+        if ($limit) {
+            $query->limit($limit);
+        }
 
         $comprovantes = [];
 
-        foreach ($baixas as $baixa) {
+        foreach ($query->get() as $baixa) {
             $path = $baixa->dc_comprovante_pcb;
-            $arquivoExiste = Storage::disk('public')->exists($path);
-
             $pagamento = $baixa->pagamento;
-            $processo  = optional(optional($baixa->item)->processo);
-            $nomeArquivo = basename($path);
-            $competencia = $pagamento
-                ? str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag
-                : '—';
+            $processoModel = optional(optional($baixa->item)->processo);
 
             $comprovantes[] = [
-                'cliente'         => optional($pagamento->conta)->nm_razao_social_con
+                'cliente'        => optional($pagamento->conta)->nm_razao_social_con
                     ?? optional($pagamento->conta)->nm_fantasia_con
                     ?? '—',
-                'processo'        => $processo->nu_processo_pro ?? '—',
-                'tipo'            => $baixa->nm_tipo,
-                'valor'           => (float) $baixa->vl_baixa_pcb,
-                'data'            => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
-                'competencia'     => $competencia,
-                'nome'            => $nomeArquivo,
-                'baixa_id'        => $baixa->cd_pagamento_correspondente_baixa_pcb,
-                'arquivo_existe'  => $arquivoExiste,
+                'processo'       => $processoModel->nu_processo_pro ?? '—',
+                'tipo'           => $baixa->nm_tipo,
+                'valor'          => (float) $baixa->vl_baixa_pcb,
+                'data'           => $baixa->dt_baixa_pcb ? $baixa->dt_baixa_pcb->format('d/m/Y') : '—',
+                'competencia'    => $pagamento
+                    ? str_pad((string) $pagamento->nu_mes_pag, 2, '0', STR_PAD_LEFT) . '/' . $pagamento->nu_ano_pag
+                    : '—',
+                'nome'           => basename($path),
+                'baixa_id'       => $baixa->cd_pagamento_correspondente_baixa_pcb,
+                'arquivo_existe' => Storage::disk('public')->exists($path),
             ];
         }
 
-        return view('correspondente/financeiro/comprovantes-pagamento/index', [
-            'comprovantes' => $comprovantes,
-            'meses'        => $this->meses(),
-            'mesParam'     => $mes,
-            'processo'     => $pro,
-        ]);
+        return $comprovantes;
     }
 
     /**
