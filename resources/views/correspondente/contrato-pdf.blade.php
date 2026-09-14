@@ -12,10 +12,46 @@
     .item { margin: 0 0 6px 18px; text-align: justify; }
     .resolve { font-weight: 600; }
     .parties { margin: 0 0 14px; text-align: justify; }
-    .assinaturas { margin-top: 28px; }
-    .assinaturas table { width: 100%; border-collapse: collapse; }
-    .assinaturas td { width: 50%; vertical-align: top; padding: 8px 12px; font-size: 10pt; }
-    .muted { color: #444; font-size: 9.5pt; }
+    .fecho { margin: 18px 0 8px; text-align: justify; }
+    .local-data { margin: 18px 0 22px; text-align: center; font-weight: 600; }
+    .assinaturas { width: 100%; margin-top: 8px; }
+    .assinaturas-table { width: 100%; border-collapse: separate; border-spacing: 10px 12px; }
+    .assinaturas-table td { width: 50%; vertical-align: top; padding: 0; }
+    .quadro-assinatura {
+        border: 1px solid #9aa8b5;
+        border-radius: 4px;
+        padding: 10px 12px 12px;
+        min-height: 128px;
+        background: #fbfcfd;
+    }
+    .quadro-assinatura .papel {
+        font-size: 9pt;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: #2f3f4f;
+        margin: 0 0 6px;
+        border-bottom: 1px solid #d5dee6;
+        padding-bottom: 4px;
+    }
+    .quadro-assinatura .area-assinatura {
+        border: 1px dashed #b8c4d0;
+        background: #fff;
+        height: 58px;
+        margin: 8px 0 10px;
+        text-align: center;
+        color: #9aa8b5;
+        font-size: 8.5pt;
+        line-height: 58px;
+    }
+    .quadro-assinatura .campo {
+        font-size: 9pt;
+        color: #445566;
+        margin: 0 0 4px;
+        line-height: 1.35;
+    }
+    .quadro-assinatura .campo strong { color: #1f2d3d; }
+    .muted { color: #667788; font-size: 8.5pt; }
 </style>
 </head>
 <body>
@@ -149,19 +185,52 @@
 <p class="body">Os direitos e obrigações decorrentes deste contrato não poderão ser cedidos a terceiros nem terceirizados sem a anuência da parte CONTRATANTE, permitindo-se ao (à) CONTRATADO (A) substabelecer, com reservas de poderes, as atividades indicadas no item 7 do presente instrumento;</p>
 <p class="body">Qualquer ato realizado pelo (a) CONTRATADO (A), fora das orientações enviadas pelo CONTRATANTE, ou ainda em caso de revelia aplicada ao cliente devido ao não comparecimento ao ato designado, os valores a título de condenação ou indenização deverão ser arcados pelo (a) advogado (a) correspondente, ou seja, pelo (a) CONTRATADO (A).</p>
 <p class="body">Cabe ao (à) CONTRATADO (A), apenas os honorários indicados na clausula terceira, sendo certo que os honorários de sucumbência são devidos apenas aos patronos titulares do processo.</p>
-<p class="body">E, por estarem em pleno acordo quanto aos termos do presente contrato, as partes firmam o presente em 03 (três) vias de igual teor na presença de duas testemunhas para que este contrato surta os seus jurídicos e legais efeitos.</p>
-<p class="body">Florianópolis, 01 de junho de 2026.</p>
-<p class="body">__________________________________</p>
-<p class="body">DEBORAH MEKACHESKI PEREIRA SOCIEDADE INDIVIDUAL DE ADVOCACIA</p>
-<p class="body">CNPJ: 19.439.096/0001-17</p>
-<p class="body">CONTRATANTE</p>
-<p class="body">CONTRATADO (A)</p>
-<p class="body">ADVOGADO (A)</p>
-<p class="body">OAB/</p>
-<p class="body">CPF:</p>
-<p class="body">TESTEMUNHAS:</p>
-<p class="numbered">1.        CPF</p>
-<p class="numbered">2.        CPF</p>
+<p class="fecho">E, por estarem em pleno acordo quanto aos termos do presente contrato, as partes firmam o presente em 03 (três) vias de igual teor na presença de duas testemunhas para que este contrato surta os seus jurídicos e legais efeitos.</p>
+
+<p class="local-data">Florianópolis, 01 de junho de 2026.</p>
+
+<div class="assinaturas">
+    <table class="assinaturas-table">
+        <tr>
+            <td>
+                <div class="quadro-assinatura">
+                    <p class="papel">Contratante</p>
+                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <p class="campo"><strong>DEBORAH MEKACHESKI PEREIRA SOCIEDADE INDIVIDUAL DE ADVOCACIA</strong></p>
+                    <p class="campo">CNPJ: 19.439.096/0001-17</p>
+                    <p class="campo muted">Representante: Deborah Mekacheski Pereira — OAB/SC 33.565B</p>
+                </div>
+            </td>
+            <td>
+                <div class="quadro-assinatura">
+                    <p class="papel">Contratado (A)</p>
+                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <p class="campo">Nome: ________________________________</p>
+                    <p class="campo">OAB: _________________________________</p>
+                    <p class="campo">CPF: _________________________________</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="quadro-assinatura">
+                    <p class="papel">Testemunha 1</p>
+                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <p class="campo">Nome: ________________________________</p>
+                    <p class="campo">CPF: _________________________________</p>
+                </div>
+            </td>
+            <td>
+                <div class="quadro-assinatura">
+                    <p class="papel">Testemunha 2</p>
+                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <p class="campo">Nome: ________________________________</p>
+                    <p class="campo">CPF: _________________________________</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>
