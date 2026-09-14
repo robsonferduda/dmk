@@ -469,7 +469,16 @@ class CorrespondenteController extends Controller
         $id = \Crypt::decrypt($id);
 
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->first();
-        return view('correspondente/detalhes', ['correspondente' => $correspondente]);
+
+        $contratoPendencias = [];
+        if ($correspondente) {
+            $contratoPendencias = app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($correspondente);
+        }
+
+        return view('correspondente/detalhes', [
+            'correspondente'      => $correspondente,
+            'contratoPendencias'  => $contratoPendencias,
+        ]);
     }
 
     /**
@@ -482,6 +491,16 @@ class CorrespondenteController extends Controller
         $vinculo = ContaCorrespondente::where('cd_conta_con', $this->conta)
             ->where('cd_correspondente_cor', $id)
             ->firstOrFail();
+
+        $pendencias = app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($vinculo);
+        if (! empty($pendencias)) {
+            Flash::warning(
+                'Contrato não gerado. Complete o cadastro antes de continuar: '
+                . implode('; ', $pendencias) . '.'
+            );
+
+            return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+        }
 
         try {
             app(ContratoCorrespondenteGenerator::class)->gerar($vinculo);
