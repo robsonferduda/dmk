@@ -254,6 +254,48 @@
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <fieldset style="margin-bottom: 15px;">
+                                    <legend><i class="fa fa-file-text-o"></i> <strong>Contrato de Correspondência</strong></legend>
+                                    <div class="row" style="margin-left: 5px;">
+                                        <ul class="list-unstyled" style="margin-bottom: 12px;">
+                                            <li>
+                                                <strong>Status: </strong>
+                                                @if($correspondente->contratoFoiGerado())
+                                                    <span class="label label-success"><i class="fa fa-check"></i> Gerado</span>
+                                                @else
+                                                    <span class="label label-warning"><i class="fa fa-clock-o"></i> Não gerado</span>
+                                                @endif
+                                            </li>
+                                            <li style="margin-top: 8px;">
+                                                <strong>Data de geração: </strong>
+                                                {{ $correspondente->dt_contrato_gerado_ccr ? $correspondente->dt_contrato_gerado_ccr->format('d/m/Y H:i') : '—' }}
+                                            </li>
+                                        </ul>
+
+                                        <form method="POST"
+                                              action="{{ url('correspondente/contrato/gerar/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"
+                                              style="display:inline-block; margin-right:8px;">
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="btn btn-primary btn-sm"
+                                                    onclick="return confirm('{{ $correspondente->contratoFoiGerado() ? 'Já existe um contrato gerado. Deseja gerar novamente?' : 'Confirma a geração do contrato deste correspondente?' }}')">
+                                                <i class="fa fa-file-pdf-o"></i>
+                                                {{ $correspondente->contratoFoiGerado() ? 'Gerar novamente' : 'Gerar contrato' }}
+                                            </button>
+                                        </form>
+
+                                        @if($correspondente->contratoFoiGerado())
+                                            <a href="{{ url('correspondente/contrato/baixar/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}"
+                                               class="btn btn-default btn-sm" target="_blank">
+                                                <i class="fa fa-download"></i> Baixar PDF
+                                            </a>
+                                        @endif
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-pencil"></i> <strong>Observações</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
                                         {!! $correspondente->obs_ccr !!}

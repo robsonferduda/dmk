@@ -23,10 +23,21 @@ class ContaCorrespondente extends Model implements AuditableContract
                             'cd_categoria_correspondente_cac',
                             'obs_ccr',
                             'fl_correspondente_escritorio_ccr',
-                            'fl_atualizacao_cadastro_ccr'
+                            'fl_atualizacao_cadastro_ccr',
+                            'fl_contrato_gerado_ccr',
+                            'fl_contrato_assinado_ccr',
+                            'dt_contrato_gerado_ccr',
+                            'dc_caminho_contrato_ccr',
                           ];
     public $timestamps = true;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'dt_contrato_gerado_ccr'];
+
+    public function contratoFoiGerado(): bool
+    {
+        return (bool) $this->fl_contrato_gerado_ccr
+            || ! empty($this->dc_caminho_contrato_ccr)
+            || ! empty($this->dt_contrato_gerado_ccr);
+    }
 
     public function tipoPessoa()
     {

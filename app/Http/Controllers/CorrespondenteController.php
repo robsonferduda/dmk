@@ -32,6 +32,7 @@ use App\TipoServico;
 use App\ProcessoMensagem;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
+use App\Services\Contrato\ContratoCorrespondenteGenerator;
 use App\EnderecoEletronico;
 use App\Enums\TipoConta;
 use App\ReembolsoTipoDespesa;
@@ -469,6 +470,51 @@ class CorrespondenteController extends Controller
 
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->first();
         return view('correspondente/detalhes', ['correspondente' => $correspondente]);
+    }
+
+    /**
+     * Gera o PDF do contrato (modelo DOCX → PDF) e marca flag/data de geração.
+     */
+    public function gerarContrato($id)
+    {
+        $id = \Crypt::decrypt($id);
+
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->conta)
+            ->where('cd_correspondente_cor', $id)
+            ->firstOrFail();
+
+        try {
+            app(ContratoCorrespondenteGenerator::class)->gerar($vinculo);
+            Flash::success('Contrato gerado com sucesso.');
+        } catch (\Throwable $e) {
+            \Log::error('[contrato] Falha ao gerar para CCR ' . $vinculo->cd_conta_correspondente_ccr . ': ' . $e->getMessage());
+            Flash::error('Não foi possível gerar o contrato: ' . $e->getMessage());
+        }
+
+        return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+    }
+
+    /**
+     * Download do PDF do contrato já gerado.
+     */
+    public function baixarContrato($id)
+    {
+        $id = \Crypt::decrypt($id);
+
+        $vinculo = ContaCorrespondente::where('cd_conta_con', $this->conta)
+            ->where('cd_correspondente_cor', $id)
+            ->firstOrFail();
+
+        $path = app(ContratoCorrespondenteGenerator::class)->caminhoAbsoluto($vinculo);
+
+        if (! $path) {
+            Flash::error('Contrato ainda não foi gerado ou o arquivo não está disponível.');
+            return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+        }
+
+        $nome = 'contrato-' . Str::slug($vinculo->nm_conta_correspondente_ccr ?: 'correspondente') . '.pdf';
+
+        return response()->download($path, $nome);
     }
 
     public function dados($id)
