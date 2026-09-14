@@ -19,10 +19,9 @@
     .assinaturas-table td { width: 50%; vertical-align: top; padding: 0; }
     .assinaturas-espaco td { height: 2cm; font-size: 1pt; line-height: 2cm; }
     .quadro-assinatura {
-        border: 1px solid #9aa8b5;
-        border-radius: 4px;
+        border: none;
         padding: 10px 12px 14px;
-        background: #fbfcfd;
+        background: transparent;
     }
     .quadro-assinatura .papel {
         font-size: 9pt;
