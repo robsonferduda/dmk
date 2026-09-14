@@ -15,7 +15,13 @@ class ContratoCorrespondenteGenerator
      */
     public function gerar(ContaCorrespondente $vinculo): string
     {
-        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
+        $vinculo->loadMissing([
+            'entidade.atuacao.cidade.estado',
+            'entidade.cpf',
+            'entidade.oab',
+            'entidade.cnpj',
+            'correspondente',
+        ]);
 
         $pendencias = $this->pendenciasGeracao($vinculo);
         if (! empty($pendencias)) {
@@ -25,10 +31,15 @@ class ContratoCorrespondenteGenerator
             );
         }
 
+        $dadosContratado = $this->dadosContratado($vinculo);
+
         $html = view('correspondente.contrato-pdf', [
             'textoPartes'     => $this->textoPartesPadrao(),
             'trechoComarcas'  => $this->montarTrechoComarcas($vinculo),
             'trechoBancario'  => $this->montarTrechoBancario($vinculo),
+            'contratadaNome'  => $this->campo($dadosContratado['nome'], 28),
+            'contratadaOab'   => $this->campo($dadosContratado['oab'], 18),
+            'contratadaCpf'   => $this->campo($dadosContratado['cpf'], 18),
             'vinculo'         => $vinculo,
         ])->render();
 
@@ -100,11 +111,31 @@ class ContratoCorrespondenteGenerator
      */
     public function pendenciasGeracao(ContaCorrespondente $vinculo): array
     {
-        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
+        $vinculo->loadMissing([
+            'entidade.atuacao.cidade.estado',
+            'entidade.cpf',
+            'entidade.oab',
+            'entidade.cnpj',
+            'correspondente',
+        ]);
         $faltando = [];
 
         if (! $this->temComarcasValidas($vinculo)) {
             $faltando[] = 'comarca(s) de atuação com cidade e estado';
+        }
+
+        $dadosContratado = $this->dadosContratado($vinculo);
+
+        if ($this->vazio($dadosContratado['nome'])) {
+            $faltando[] = 'nome do correspondente';
+        }
+
+        if ($this->vazio($dadosContratado['oab'])) {
+            $faltando[] = 'OAB do correspondente';
+        }
+
+        if ($this->vazio($dadosContratado['cpf'])) {
+            $faltando[] = 'CPF/CNPJ do correspondente';
         }
 
         $banco = $this->buscarDadosBancarios($vinculo);
@@ -130,6 +161,33 @@ class ContratoCorrespondenteGenerator
         }
 
         return $faltando;
+    }
+
+    /**
+     * Nome, OAB e CPF/CNPJ do correspondente para o quadro do CONTRATADO.
+     */
+    public function dadosContratado(ContaCorrespondente $vinculo): array
+    {
+        $vinculo->loadMissing(['entidade.cpf', 'entidade.oab', 'entidade.cnpj', 'correspondente']);
+
+        $nome = trim((string) ($vinculo->nm_conta_correspondente_ccr
+            ?: optional($vinculo->correspondente)->nm_razao_social_con
+            ?: optional($vinculo->correspondente)->nm_fantasia_con
+            ?: ''));
+
+        $oab = trim((string) optional(optional($vinculo->entidade)->oab)->nu_identificacao_ide);
+        $cpf = trim((string) optional(optional($vinculo->entidade)->cpf)->nu_identificacao_ide);
+
+        // Pessoa jurídica: usa CNPJ no campo de documento se não houver CPF.
+        if ($cpf === '') {
+            $cpf = trim((string) optional(optional($vinculo->entidade)->cnpj)->nu_identificacao_ide);
+        }
+
+        return [
+            'nome' => $nome !== '' ? $nome : null,
+            'oab'  => $oab !== '' ? $oab : null,
+            'cpf'  => $cpf !== '' ? $cpf : null,
+        ];
     }
 
     private function temComarcasValidas(ContaCorrespondente $vinculo): bool

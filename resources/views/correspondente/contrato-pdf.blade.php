@@ -20,8 +20,7 @@
     .quadro-assinatura {
         border: 1px solid #9aa8b5;
         border-radius: 4px;
-        padding: 10px 12px 12px;
-        min-height: 128px;
+        padding: 10px 12px 14px;
         background: #fbfcfd;
     }
     .quadro-assinatura .papel {
@@ -30,19 +29,13 @@
         text-transform: uppercase;
         letter-spacing: .04em;
         color: #2f3f4f;
-        margin: 0 0 6px;
-        border-bottom: 1px solid #d5dee6;
-        padding-bottom: 4px;
+        margin: 0 0 28px;
     }
-    .quadro-assinatura .area-assinatura {
-        border: 1px dashed #b8c4d0;
-        background: #fff;
-        height: 58px;
-        margin: 8px 0 10px;
-        text-align: center;
-        color: #9aa8b5;
-        font-size: 8.5pt;
-        line-height: 58px;
+    .quadro-assinatura .linha-assinatura {
+        border: 0;
+        border-top: 1.5px solid #111;
+        margin: 0 8px 10px;
+        height: 0;
     }
     .quadro-assinatura .campo {
         font-size: 9pt;
@@ -195,7 +188,7 @@
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Contratante</p>
-                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <div class="linha-assinatura"></div>
                     <p class="campo"><strong>DEBORAH MEKACHESKI PEREIRA SOCIEDADE INDIVIDUAL DE ADVOCACIA</strong></p>
                     <p class="campo">CNPJ: 19.439.096/0001-17</p>
                     <p class="campo muted">Representante: Deborah Mekacheski Pereira — OAB/SC 33.565B</p>
@@ -204,10 +197,10 @@
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Contratado (A)</p>
-                    <div class="area-assinatura">Espaço para assinatura digital</div>
-                    <p class="campo">Nome: ________________________________</p>
-                    <p class="campo">OAB: _________________________________</p>
-                    <p class="campo">CPF: _________________________________</p>
+                    <div class="linha-assinatura"></div>
+                    <p class="campo">Nome: {!! $contratadaNome !!}</p>
+                    <p class="campo">OAB: {!! $contratadaOab !!}</p>
+                    <p class="campo">CPF/CNPJ: {!! $contratadaCpf !!}</p>
                 </div>
             </td>
         </tr>
@@ -215,7 +208,7 @@
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Testemunha 1</p>
-                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <div class="linha-assinatura"></div>
                     <p class="campo">Nome: ________________________________</p>
                     <p class="campo">CPF: _________________________________</p>
                 </div>
@@ -223,7 +216,7 @@
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Testemunha 2</p>
-                    <div class="area-assinatura">Espaço para assinatura digital</div>
+                    <div class="linha-assinatura"></div>
                     <p class="campo">Nome: ________________________________</p>
                     <p class="campo">CPF: _________________________________</p>
                 </div>
