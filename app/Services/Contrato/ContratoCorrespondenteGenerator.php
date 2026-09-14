@@ -3,6 +3,9 @@
 namespace App\Services\Contrato;
 
 use App\ContaCorrespondente;
+use App\EnderecoEletronico;
+use App\Enums\TipoEnderecoEletronico;
+use App\Fone;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -18,8 +21,12 @@ class ContratoCorrespondenteGenerator
         $vinculo->loadMissing([
             'entidade.atuacao.cidade.estado',
             'entidade.cpf',
-            'entidade.oab',
             'entidade.cnpj',
+            'entidade.oab',
+            'entidade.rg',
+            'entidade.endereco.cidade.estado',
+            'entidade.fone',
+            'entidade.origem.cidade.estado',
             'correspondente',
         ]);
 
@@ -34,12 +41,13 @@ class ContratoCorrespondenteGenerator
         $dadosContratado = $this->dadosContratado($vinculo);
 
         $html = view('correspondente.contrato-pdf', [
-            'textoPartes'     => $this->textoPartesPadrao(),
+            'textoPartes'     => $this->montarTextoPartes($vinculo),
             'trechoComarcas'  => $this->montarTrechoComarcas($vinculo),
             'trechoBancario'  => $this->montarTrechoBancario($vinculo),
             'contratadaNome'  => $this->campo($dadosContratado['nome'], 28),
             'contratadaOab'   => $this->campo($dadosContratado['oab'], 18),
             'contratadaCpf'   => $this->campo($dadosContratado['cpf'], 18),
+            'localData'       => $this->montarLocalData(),
             'vinculo'         => $vinculo,
         ])->render();
 
@@ -114,28 +122,41 @@ class ContratoCorrespondenteGenerator
         $vinculo->loadMissing([
             'entidade.atuacao.cidade.estado',
             'entidade.cpf',
-            'entidade.oab',
             'entidade.cnpj',
+            'entidade.oab',
+            'entidade.rg',
+            'entidade.endereco.cidade.estado',
+            'entidade.fone',
+            'entidade.origem.cidade.estado',
             'correspondente',
         ]);
+
         $faltando = [];
+        $dados = $this->dadosPartesContratado($vinculo);
 
         if (! $this->temComarcasValidas($vinculo)) {
             $faltando[] = 'comarca(s) de atuação com cidade e estado';
         }
 
-        $dadosContratado = $this->dadosContratado($vinculo);
+        $obrigatorios = [
+            'nome'       => 'nome do correspondente',
+            'rg'         => 'RG do correspondente',
+            'cpf'        => 'CPF/CNPJ do correspondente',
+            'oab_uf'     => 'UF da OAB do correspondente',
+            'oab_numero' => 'número da OAB do correspondente',
+            'rua'        => 'logradouro (endereço)',
+            'numero'     => 'número do endereço',
+            'bairro'     => 'bairro',
+            'cidade'     => 'cidade do endereço',
+            'cep'        => 'CEP',
+            'telefone'   => 'telefone de contato',
+            'email'      => 'e-mail',
+        ];
 
-        if ($this->vazio($dadosContratado['nome'])) {
-            $faltando[] = 'nome do correspondente';
-        }
-
-        if ($this->vazio($dadosContratado['oab'])) {
-            $faltando[] = 'OAB do correspondente';
-        }
-
-        if ($this->vazio($dadosContratado['cpf'])) {
-            $faltando[] = 'CPF/CNPJ do correspondente';
+        foreach ($obrigatorios as $chave => $rotulo) {
+            if ($this->vazio($dados[$chave] ?? null)) {
+                $faltando[] = $rotulo;
+            }
         }
 
         $banco = $this->buscarDadosBancarios($vinculo);
@@ -168,26 +189,167 @@ class ContratoCorrespondenteGenerator
      */
     public function dadosContratado(ContaCorrespondente $vinculo): array
     {
-        $vinculo->loadMissing(['entidade.cpf', 'entidade.oab', 'entidade.cnpj', 'correspondente']);
+        $dados = $this->dadosPartesContratado($vinculo);
+
+        $oab = null;
+        if (! $this->vazio($dados['oab_uf']) || ! $this->vazio($dados['oab_numero'])) {
+            $oab = trim(($dados['oab_uf'] ?? '') . ' ' . ($dados['oab_numero'] ?? ''));
+        }
+
+        return [
+            'nome' => $dados['nome'],
+            'oab'  => $oab !== '' ? $oab : null,
+            'cpf'  => $dados['cpf'],
+        ];
+    }
+
+    /**
+     * Dados variáveis do CONTRATADO no preâmbulo do contrato.
+     */
+    public function dadosPartesContratado(ContaCorrespondente $vinculo): array
+    {
+        $vinculo->loadMissing([
+            'entidade.cpf',
+            'entidade.cnpj',
+            'entidade.oab',
+            'entidade.rg',
+            'entidade.endereco.cidade.estado',
+            'entidade.fone',
+            'entidade.origem.cidade.estado',
+            'correspondente',
+        ]);
+
+        $entidade = $vinculo->entidade;
+        $endereco = optional($entidade)->endereco;
 
         $nome = trim((string) ($vinculo->nm_conta_correspondente_ccr
             ?: optional($vinculo->correspondente)->nm_razao_social_con
             ?: optional($vinculo->correspondente)->nm_fantasia_con
             ?: ''));
 
-        $oab = trim((string) optional(optional($vinculo->entidade)->oab)->nu_identificacao_ide);
-        $cpf = trim((string) optional(optional($vinculo->entidade)->cpf)->nu_identificacao_ide);
-
-        // Pessoa jurídica: usa CNPJ no campo de documento se não houver CPF.
+        $cpf = trim((string) optional(optional($entidade)->cpf)->nu_identificacao_ide);
         if ($cpf === '') {
-            $cpf = trim((string) optional(optional($vinculo->entidade)->cnpj)->nu_identificacao_ide);
+            $cpf = trim((string) optional(optional($entidade)->cnpj)->nu_identificacao_ide);
+        }
+
+        $rg = trim((string) optional(optional($entidade)->rg)->nu_identificacao_ide);
+        $oabBruta = trim((string) optional(optional($entidade)->oab)->nu_identificacao_ide);
+
+        $ufFallback = trim((string) (
+            optional(optional(optional($endereco)->cidade)->estado)->sg_estado_est
+            ?? optional(optional(optional(optional($entidade)->origem)->cidade)->estado)->sg_estado_est
+            ?? ''
+        ));
+
+        [$oabUf, $oabNumero] = $this->parseOab($oabBruta, $ufFallback !== '' ? $ufFallback : null);
+
+        $cep = $this->formatarCep(optional($endereco)->nu_cep_ede);
+
+        return [
+            'nome'       => $nome !== '' ? $nome : null,
+            'rg'         => $rg !== '' ? $rg : null,
+            'cpf'        => $cpf !== '' ? $cpf : null,
+            'oab_uf'     => $oabUf,
+            'oab_numero' => $oabNumero,
+            'rua'        => $this->limpo(optional($endereco)->dc_logradouro_ede),
+            'numero'     => $this->limpo(optional($endereco)->nu_numero_ede),
+            'bairro'     => $this->limpo(optional($endereco)->nm_bairro_ede),
+            'cidade'     => $this->limpo(optional(optional($endereco)->cidade)->nm_cidade_cde),
+            'cep'        => $cep,
+            'telefone'   => $this->telefoneContratado($vinculo),
+            'email'      => $this->emailContratado($vinculo),
+        ];
+    }
+
+    private function telefoneContratado(ContaCorrespondente $vinculo): ?string
+    {
+        $fone = trim((string) optional(optional($vinculo->entidade)->fone)->nu_fone_fon);
+        if ($fone !== '') {
+            return $fone;
+        }
+
+        if ($vinculo->cd_entidade_ete) {
+            $outro = Fone::where('cd_entidade_ete', $vinculo->cd_entidade_ete)
+                ->whereNull('deleted_at')
+                ->orderBy('cd_fone_fon')
+                ->value('nu_fone_fon');
+            $outro = trim((string) $outro);
+            if ($outro !== '') {
+                return $outro;
+            }
+        }
+
+        $whats = trim((string) optional($vinculo->correspondente)->nu_telefone_whatsapp_con);
+
+        return $whats !== '' ? $whats : null;
+    }
+
+    private function emailContratado(ContaCorrespondente $vinculo): ?string
+    {
+        if (! $vinculo->cd_entidade_ete) {
+            return null;
+        }
+
+        $emails = EnderecoEletronico::where('cd_entidade_ete', $vinculo->cd_entidade_ete)
+            ->whereNull('deleted_at')
+            ->whereNotNull('dc_endereco_eletronico_ede')
+            ->where('dc_endereco_eletronico_ede', '!=', '')
+            ->orderBy('cd_endereco_eletronico_ele')
+            ->get();
+
+        if ($emails->isEmpty()) {
+            return null;
+        }
+
+        $notif = $emails->firstWhere('cd_tipo_endereco_eletronico_tee', TipoEnderecoEletronico::NOTIFICACAO);
+        $contato = $emails->firstWhere('cd_tipo_endereco_eletronico_tee', TipoEnderecoEletronico::CONTATO);
+        $escolhido = $notif ?: ($contato ?: $emails->first());
+
+        $email = trim((string) optional($escolhido)->dc_endereco_eletronico_ede);
+
+        return $email !== '' ? $email : null;
+    }
+
+    /**
+     * @return array{0:?string,1:?string} [UF, número]
+     */
+    private function parseOab(?string $oab, ?string $ufFallback): array
+    {
+        $oab = trim((string) $oab);
+        if ($oab === '') {
+            return [null, null];
+        }
+
+        if (preg_match('/(?:OAB\s*[\/\-]?\s*)?([A-Za-z]{2})\s*[\/\-]?\s*(.+)$/u', $oab, $m)) {
+            return [strtoupper($m[1]), trim($m[2])];
         }
 
         return [
-            'nome' => $nome !== '' ? $nome : null,
-            'oab'  => $oab !== '' ? $oab : null,
-            'cpf'  => $cpf !== '' ? $cpf : null,
+            $ufFallback ? strtoupper($ufFallback) : null,
+            $oab,
         ];
+    }
+
+    private function formatarCep($cep): ?string
+    {
+        $digitos = preg_replace('/\D+/', '', (string) $cep);
+        if ($digitos === null || $digitos === '') {
+            return null;
+        }
+
+        $digitos = str_pad($digitos, 8, '0', STR_PAD_LEFT);
+        if (strlen($digitos) !== 8) {
+            return $digitos;
+        }
+
+        return substr($digitos, 0, 5) . '-' . substr($digitos, 5);
+    }
+
+    private function limpo($valor): ?string
+    {
+        $valor = trim((string) $valor);
+
+        return $valor !== '' ? $valor : null;
     }
 
     private function temComarcasValidas(ContaCorrespondente $vinculo): bool
@@ -388,10 +550,33 @@ class ContratoCorrespondenteGenerator
     }
 
     /**
-     * Texto do preâmbulo das partes — lacunas do CONTRATADO até haver variáveis.
+     * Local e data do contrato em português (ex.: Florianópolis, 14 de setembro de 2026).
      */
-    private function textoPartesPadrao(): string
+    private function montarLocalData(?Carbon $data = null): string
     {
+        $data = $data ? $data->copy() : Carbon::now();
+
+        return 'Florianópolis, ' . $this->formatarDataPortugues($data) . '.';
+    }
+
+    private function formatarDataPortugues(Carbon $data): string
+    {
+        $meses = [
+            1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril',
+            5 => 'maio', 6 => 'junho', 7 => 'julho', 8 => 'agosto',
+            9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro',
+        ];
+
+        return (int) $data->format('d') . ' de ' . $meses[(int) $data->format('n')] . ' de ' . $data->format('Y');
+    }
+
+    /**
+     * Preâmbulo das partes com dados do CONTRATADO preenchidos do cadastro.
+     */
+    private function montarTextoPartes(ContaCorrespondente $vinculo): string
+    {
+        $d = $this->dadosPartesContratado($vinculo);
+
         return 'De um lado, DEBORAH MEKACHESKI PEREIRA SOCIEDADE INDIVIDUAL DE ADVOCACIA, '
             . 'sociedade de advogados inscrita no CNPJ/MF sob o nº 19.439.096/0001-17, '
             . 'e na Ordem dos Advogados do Brasil – Seção de Florianópolis/SC sob nº 2178/2013, '
@@ -399,11 +584,16 @@ class ContratoCorrespondenteGenerator
             . 'na Rua Saldanha Marinho, 374 sala 806, Centro, CEP 88053-300, '
             . 'neste ato representada por sua sócia DEBORAH MEKACHESKI PEREIRA, '
             . 'advogada inscrita na OAB/SC sob o número 33.565B, doravante denominada CONTRATANTE '
-            . 'e, de outro, __________________________, brasileiro (a), portador do RG ___________, '
-            . 'inscrito (a) no CPF sob o nº ___________________, e na OAB/ ___________- sob nº ____________, '
-            . 'com endereço profissional na Rua ______________________, n __________ '
-            . 'Bairro: ____________, Cidade ____________ - CEP ____________ '
-            . 'contato: (   ) ___________________ e-mail _______________________ '
-            . 'doravante denominada CONTRATADO (A).';
+            . 'e, de outro, ' . $this->campo($d['nome'], 26) . ', brasileiro (a), portador do RG '
+            . $this->campo($d['rg'], 12) . ', inscrito (a) no CPF sob o nº ' . $this->campo($d['cpf'], 18)
+            . ', e na OAB/ ' . $this->campo($d['oab_uf'], 4) . '- sob nº ' . $this->campo($d['oab_numero'], 12)
+            . ', com endereço profissional na Rua ' . $this->campo($d['rua'], 22)
+            . ', n ' . $this->campo($d['numero'], 8)
+            . ' Bairro: ' . $this->campo($d['bairro'], 12)
+            . ', Cidade ' . $this->campo($d['cidade'], 14)
+            . ' - CEP ' . $this->campo($d['cep'], 10)
+            . ' contato: ' . $this->campo($d['telefone'], 16)
+            . ' e-mail ' . $this->campo($d['email'], 24)
+            . ' doravante denominada CONTRATADO (A).';
     }
 }

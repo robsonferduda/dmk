@@ -180,7 +180,7 @@
 <p class="body">Cabe ao (à) CONTRATADO (A), apenas os honorários indicados na clausula terceira, sendo certo que os honorários de sucumbência são devidos apenas aos patronos titulares do processo.</p>
 <p class="fecho">E, por estarem em pleno acordo quanto aos termos do presente contrato, as partes firmam o presente em 03 (três) vias de igual teor na presença de duas testemunhas para que este contrato surta os seus jurídicos e legais efeitos.</p>
 
-<p class="local-data">Florianópolis, 01 de junho de 2026.</p>
+<p class="local-data">{{ $localData }}</p>
 
 <div class="assinaturas">
     <table class="assinaturas-table">
