@@ -11,13 +11,15 @@ class ContratoCorrespondenteGenerator
 {
     /**
      * Gera o PDF do contrato a partir do HTML (Blade) e atualiza flag/data/caminho.
-     * Variáveis do CONTRATADO entrarão depois; por enquanto usa o texto-base com lacunas.
      */
     public function gerar(ContaCorrespondente $vinculo): string
     {
+        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
+
         $html = view('correspondente.contrato-pdf', [
-            'textoPartes' => $this->textoPartesPadrao(),
-            'vinculo'     => $vinculo,
+            'textoPartes'    => $this->textoPartesPadrao(),
+            'trechoComarcas' => $this->montarTrechoComarcas($vinculo),
+            'vinculo'        => $vinculo,
         ])->render();
 
         $relativeDir = 'contratos-correspondente/' . $vinculo->cd_conta_correspondente_ccr;
@@ -37,14 +39,14 @@ class ContratoCorrespondenteGenerator
         $absolute = storage_path('app/public/' . $relative);
 
         $mpdf = new \Mpdf\Mpdf([
-            'mode'              => 'utf-8',
-            'format'            => 'A4',
-            'margin_left'       => 18,
-            'margin_right'      => 18,
-            'margin_top'        => 18,
-            'margin_bottom'     => 18,
-            'tempDir'           => $tmpDir,
-            'default_font'      => 'dejavusans',
+            'mode'          => 'utf-8',
+            'format'        => 'A4',
+            'margin_left'   => 18,
+            'margin_right'  => 18,
+            'margin_top'    => 18,
+            'margin_bottom' => 18,
+            'tempDir'       => $tmpDir,
+            'default_font'  => 'dejavusans',
         ]);
 
         $mpdf->SetTitle('Contrato de Correspondência');
@@ -79,6 +81,82 @@ class ContratoCorrespondenteGenerator
         $path = storage_path('app/public/' . $vinculo->dc_caminho_contrato_ccr);
 
         return is_file($path) ? $path : null;
+    }
+
+    /**
+     * Monta o trecho "nas comarcas de X, Estado de Y" a partir de cidade_atuacao_cat.
+     */
+    public function montarTrechoComarcas(ContaCorrespondente $vinculo): string
+    {
+        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
+
+        $porEstado = [];
+
+        $atuacoes = optional($vinculo->entidade)->atuacao ?? collect();
+
+        foreach ($atuacoes as $atuacao) {
+            $cidade = optional($atuacao->cidade)->nm_cidade_cde;
+            $estado = optional(optional($atuacao->cidade)->estado)->nm_estado_est;
+
+            if (! $cidade || ! $estado) {
+                continue;
+            }
+
+            $cidade = trim($cidade);
+            $estado = trim($estado);
+
+            if (! isset($porEstado[$estado])) {
+                $porEstado[$estado] = [];
+            }
+
+            $porEstado[$estado][$cidade] = $cidade;
+        }
+
+        if (empty($porEstado)) {
+            return 'nas comarcas de _____________________, Estado de ____________________';
+        }
+
+        ksort($porEstado);
+
+        $partes = [];
+
+        foreach ($porEstado as $estado => $cidades) {
+            $nomes = array_values($cidades);
+            sort($nomes, SORT_NATURAL | SORT_FLAG_CASE);
+            $partes[] = $this->juntarNomes($nomes) . ', Estado de ' . $estado;
+        }
+
+        if (count($partes) === 1) {
+            return 'nas comarcas de ' . $partes[0];
+        }
+
+        return 'nas comarcas de ' . $this->juntarNomes($partes, ', e ');
+    }
+
+    /**
+     * Junta nomes em português: "A e B" / "A, B e C".
+     * Com $separadorFinal customizado, usa-o entre o penúltimo e o último (ex.: "; e ").
+     */
+    private function juntarNomes(array $nomes, string $separadorFinal = ' e '): string
+    {
+        $nomes = array_values(array_filter($nomes));
+        $qtd = count($nomes);
+
+        if ($qtd === 0) {
+            return '';
+        }
+
+        if ($qtd === 1) {
+            return $nomes[0];
+        }
+
+        if ($qtd === 2) {
+            return $nomes[0] . $separadorFinal . $nomes[1];
+        }
+
+        $ultimo = array_pop($nomes);
+
+        return implode(', ', $nomes) . $separadorFinal . $ultimo;
     }
 
     /**
