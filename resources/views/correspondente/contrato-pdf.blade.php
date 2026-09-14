@@ -13,10 +13,11 @@
     .resolve { font-weight: 600; }
     .parties { margin: 0 0 14px; text-align: justify; }
     .fecho { margin: 18px 0 8px; text-align: justify; }
-    .local-data { margin: 18px 0 22px; text-align: center; font-weight: 600; }
-    .assinaturas { width: 100%; margin-top: 8px; }
-    .assinaturas-table { width: 100%; border-collapse: separate; border-spacing: 10px 12px; }
+    .local-data { margin: 18px 0 2cm; text-align: center; font-weight: 600; }
+    .assinaturas { width: 100%; margin-top: 0; }
+    .assinaturas-table { width: 100%; border-collapse: separate; border-spacing: 10px 0; }
     .assinaturas-table td { width: 50%; vertical-align: top; padding: 0; }
+    .assinaturas-espaco td { height: 2cm; font-size: 1pt; line-height: 2cm; }
     .quadro-assinatura {
         border: 1px solid #9aa8b5;
         border-radius: 4px;
@@ -184,7 +185,7 @@
 
 <div class="assinaturas">
     <table class="assinaturas-table">
-        <tr>
+        <tr class="assinaturas-partes">
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Contratante</p>
@@ -204,7 +205,10 @@
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="assinaturas-espaco">
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr class="assinaturas-testemunhas">
             <td>
                 <div class="quadro-assinatura">
                     <p class="papel">Testemunha 1</p>
