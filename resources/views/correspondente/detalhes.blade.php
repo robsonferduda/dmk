@@ -274,8 +274,8 @@
                                         @if(!empty($contratoPendencias))
                                             <div class="alert alert-warning" style="margin-bottom:12px; padding:10px 12px;">
                                                 <i class="fa fa-exclamation-triangle"></i>
-                                                <strong>Cadastro incompleto para gerar o contrato.</strong>
-                                                Complete:
+                                                <strong>Cadastro incompleto.</strong>
+                                                O contrato pode ser gerado para teste, mas estes dados ficarão em branco:
                                                 <ul style="margin:6px 0 0 18px;">
                                                     @foreach($contratoPendencias as $item)
                                                         <li>{{ $item }}</li>
@@ -290,8 +290,7 @@
                                             {{ csrf_field() }}
                                             <button type="submit"
                                                     class="btn btn-primary btn-sm"
-                                                    @if(!empty($contratoPendencias)) disabled title="Complete os dados pendentes para gerar o contrato" @endif
-                                                    onclick="return confirm('{{ $correspondente->contratoFoiGerado() ? 'Já existe um contrato gerado. Deseja gerar novamente?' : 'Confirma a geração do contrato deste correspondente?' }}')">
+                                                    onclick="return confirm('{{ !empty($contratoPendencias) ? 'Há dados incompletos no cadastro. Deseja gerar o contrato mesmo assim?' : ($correspondente->contratoFoiGerado() ? 'Já existe um contrato gerado. Deseja gerar novamente?' : 'Confirma a geração do contrato deste correspondente?') }}')">
                                                 <i class="fa fa-file-pdf-o"></i>
                                                 {{ $correspondente->contratoFoiGerado() ? 'Gerar novamente' : 'Gerar contrato' }}
                                             </button>

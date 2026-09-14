@@ -30,13 +30,7 @@ class ContratoCorrespondenteGenerator
             'correspondente',
         ]);
 
-        $pendencias = $this->pendenciasGeracao($vinculo);
-        if (! empty($pendencias)) {
-            throw new RuntimeException(
-                'Não é possível gerar o contrato. Complete os dados abaixo e tente novamente: '
-                . implode('; ', $pendencias) . '.'
-            );
-        }
+        // Geração liberada mesmo com pendências (lacunas no PDF); aviso permanece na tela.
 
         $dadosContratado = $this->dadosContratado($vinculo);
 

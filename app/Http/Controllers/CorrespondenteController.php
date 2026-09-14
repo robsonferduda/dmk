@@ -493,18 +493,18 @@ class CorrespondenteController extends Controller
             ->firstOrFail();
 
         $pendencias = app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($vinculo);
-        if (! empty($pendencias)) {
-            Flash::warning(
-                'Contrato não gerado. Complete o cadastro antes de continuar: '
-                . implode('; ', $pendencias) . '.'
-            );
-
-            return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
-        }
 
         try {
             app(ContratoCorrespondenteGenerator::class)->gerar($vinculo);
-            Flash::success('Contrato gerado com sucesso.');
+
+            if (! empty($pendencias)) {
+                Flash::warning(
+                    'Contrato gerado com dados incompletos. Complete o cadastro e gere novamente se necessário: '
+                    . implode('; ', $pendencias) . '.'
+                );
+            } else {
+                Flash::success('Contrato gerado com sucesso.');
+            }
         } catch (\Throwable $e) {
             \Log::error('[contrato] Falha ao gerar para CCR ' . $vinculo->cd_conta_correspondente_ccr . ': ' . $e->getMessage());
             Flash::error('Não foi possível gerar o contrato: ' . $e->getMessage());
