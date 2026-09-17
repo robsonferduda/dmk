@@ -16,7 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
             <a data-toggle="modal" href="{{ url('correspondentes') }}" class="btn btn-default pull-right header-btn"><i class="fa fa-group fa-lg"></i> Correspondentes</a>
-            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_conta_con)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-legal fa-lg"></i> Dados do Correspondente</a>
+            <a data-toggle="modal" href="{{ url('correspondente/detalhes/'.\Crypt::encrypt($correspondente->cd_correspondente_cor)) }}" class="btn btn-info pull-right header-btn"><i class="fa fa-legal fa-lg"></i> Dados do Correspondente</a>
         </div>
     </div>
     <div class="row">
@@ -34,7 +34,7 @@
                     <div class="widget-body no-padding">
                         {!! Form::open(['id' => 'frm-add-despesa', 'url' => 'correspondente/despesas', 'class' => 'smart-form']) !!}
                         <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">    
-                        <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_conta_con }}">                       
+                        <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_correspondente_cor }}">                       
                             <header>
                                 <i class="fa fa-dollar"></i> Despesas Reembolsáveis
                                 <a href="{{ url('configuracoes/tipos-de-despesa') }}" style="padding: 1px 8px;" ><i class="fa fa-plus-circle"></i> Novo </a>

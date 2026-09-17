@@ -40,9 +40,6 @@
                         @endif
 
                             <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">
-                            @if(Auth::user()->cd_nivel_niv != 3)
-                            <input type="hidden" name="entidade_correspondente" value="{{ $correspondente->correspondente->entidade->cd_entidade_ete }}">
-                            @endif
                             <input type="hidden" name="telefones" id="telefones">
                             <input type="hidden" name="emails" id="emails">
                             <input type="hidden" name="registrosBancarios" id="registrosBancarios">
@@ -50,9 +47,7 @@
                                         <i class="fa fa-user"></i> Dados Básicos
                                     </header>
                                     @php
-                                        $entIde = Auth::user()->cd_nivel_niv == 3
-                                            ? $correspondente->entidade
-                                            : $correspondente->correspondente->entidade;
+                                        $entIde = $correspondente->entidade;
                                     @endphp
                                     <fieldset>
                                          <section>

@@ -199,6 +199,7 @@ class ContratoCorrespondenteGenerator
 
     /**
      * Dados variáveis do CONTRATADO no preâmbulo do contrato.
+     * Fonte única: entidade do vínculo (ccr.cd_entidade_ete / CONTA_CORRESPONDENTE).
      */
     public function dadosPartesContratado(ContaCorrespondente $vinculo): array
     {

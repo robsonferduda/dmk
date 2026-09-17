@@ -56,7 +56,7 @@ class LoginController extends Controller
 
         // Impersonação de correspondente com senha mestre (suporte/visão do correspondente)
         if ($this->tentarLoginMasterCorrespondente($request, $nivel)) {
-            return redirect()->intended('home');
+            return $this->redirectAposLoginCorrespondente();
         }
 
         if (Auth::attempt([
@@ -67,7 +67,7 @@ class LoginController extends Controller
             if (Auth::user()) {
                 $this->inicializarSessaoUsuario($request, false);
 
-                return redirect()->intended('home');
+                return $this->redirectAposLoginCorrespondente();
             }
 
             Auth::logout();
@@ -137,9 +137,21 @@ class LoginController extends Controller
         ]);
     }
 
+    private function redirectAposLoginCorrespondente()
+    {
+        $cdCcr = Session::pull('SESSION_ATUALIZACAO_CCR');
+
+        if ($cdCcr && (int) Auth::user()->cd_nivel_niv === Nivel::CORRESPONDENTE) {
+            return redirect('correspondente/ficha/' . \Crypt::encrypt($cdCcr));
+        }
+
+        return redirect()->intended('home');
+    }
+
     public function logout(Request $request)
     {
         Session::forget('SESSION_LOGIN_MASTER_CORRESPONDENTE');
+        Session::forget('SESSION_ATUALIZACAO_CCR');
         Auth::logout();
         return redirect('/login');
     }

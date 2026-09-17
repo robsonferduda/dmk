@@ -16,7 +16,8 @@
         </div>
         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 box-button-xs">
             <div class='boxBtnTopo sub-box-button-xs'>
-                <a data-toggle="modal" href="{{ url('correspondente/clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Clientes</a>  
+                <a data-toggle="modal" href="{{ url('correspondente/clientes') }}" class="btn btn-default pull-right header-btn btnMargin"><i class="fa fa-group fa-lg"></i> Clientes</a>
+                <a href="{{ url('correspondente/ficha/'.\Crypt::encrypt($correspondente->cd_conta_correspondente_ccr)) }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-edit fa-lg"></i> Editar Dados</a>
             </div>
         </div>
     </div>
@@ -78,8 +79,8 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-dollar fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($correspondente->correspondente->entidade->reembolso()->get()) > 0)
-                                            @foreach($correspondente->correspondente->entidade->reembolso()->get() as $despesa)
+                                        @if($correspondente->entidade && count($correspondente->entidade->reembolso()->get()) > 0)
+                                            @foreach($correspondente->entidade->reembolso()->get() as $despesa)
                                                 <div><span>{{ $despesa->tipoDespesa->nm_tipo_despesa_tds }}</span></div>
                                             @endforeach   
                                         @else

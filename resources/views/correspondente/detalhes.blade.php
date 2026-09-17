@@ -39,7 +39,7 @@
 
                         <div class="col-md-4">
                             <div class="col-md-12">
-                                @php $entIde = $correspondente->correspondente->entidade; @endphp
+                                @php $entIde = $correspondente->entidade; @endphp
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-group fa-fw"></i> <strong>Dados Básicos</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
@@ -51,27 +51,27 @@
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}
                                                 </li>
-                                                @if($entIde->cpf()->first())
+                                                @if($entIde && $entIde->cpf()->first())
                                                     <li>
                                                         <strong>CPF: </strong> {{ $entIde->cpf()->first()->nu_identificacao_ide }}
                                                     </li>
-                                                @elseif($entIde->cnpj()->first())
+                                                @elseif($entIde && $entIde->cnpj()->first())
                                                     <li>
                                                         <strong>CNPJ: </strong> {{ $entIde->cnpj()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif  
-                                                @if($entIde->oab()->first())
+                                                @if($entIde && $entIde->oab()->first())
                                                      <li>
                                                         <strong>OAB: </strong> {{ $entIde->oab()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif
-                                                @if($entIde->rg()->first())
+                                                @if($entIde && $entIde->rg()->first())
                                                     <li>
                                                         <strong>RG: </strong> {{ $entIde->rg()->first()->nu_identificacao_ide }}
                                                     </li>
                                                 @endif
                                                 <li>
-                                                    <strong>Comarca de Origem</strong>: {{ ($correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}
+                                                    <strong>Comarca de Origem</strong>: {{ ($correspondente->entidade && $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()) ?  $correspondente->entidade->atuacao()->where('fl_origem_cat','S')->first()->cidade()->first()->nm_cidade_cde : 'Não informado' }}
                                                 </li>  
                                                 <li>
                                                     <strong>Categoria: </strong> 
@@ -108,8 +108,8 @@
                                 <fieldset style="margin-bottom: 15px;">
                                     <legend><i class="fa fa-dollar fa-fw"></i> <strong>Despesas Reembolsáveis</strong></legend>
                                     <div class="row" style="margin-left: 5px;">
-                                        @if(count($correspondente->correspondente->entidade->reembolso()->get()) > 0)
-                                            @foreach($correspondente->correspondente->entidade->reembolso()->get() as $despesa)
+                                        @if($correspondente->entidade && count($correspondente->entidade->reembolso()->get()) > 0)
+                                            @foreach($correspondente->entidade->reembolso()->get() as $despesa)
                                                 <div><span>{{ $despesa->tipoDespesa->nm_tipo_despesa_tds }}</span></div>
                                             @endforeach   
                                         @else

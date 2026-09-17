@@ -32,13 +32,16 @@
                 
                         {!! Form::open(['id' => 'frm-edit-usuario', 'url' => ['correspondente/editar',$correspondente->cd_entidade_ete], 'class' => 'smart-form','method' => 'PUT']) !!}
                             
-                            <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_conta_con }}">
+                            <input type="hidden" name="conta" id="conta" value="{{ $correspondente->cd_correspondente_cor }}">
                             <input type="hidden" name="entidade" id="entidade" value="{{ $correspondente->entidade->cd_entidade_ete }}">
                             <input type="hidden" name="telefones" id="telefones">
                             <input type="hidden" name="emails" id="emails">
                             <input type="hidden" name="registrosBancarios" id="registrosBancarios">
                                     <header>
                                         <i class="fa fa-user"></i> Dados Básicos
+                                        @if($correspondente->conta)
+                                            <small class="text-muted"> — {{ $correspondente->conta->nm_razao_social_con }}</small>
+                                        @endif
                                     </header>
                                     <fieldset>
                                          <section>
@@ -70,7 +73,7 @@
                                             <section class="col col-6">
                                                 <label class="label">Razão Social/Nome<span class="text-danger"> Campo Obrigatório</span></label>
                                                 <label class="input">
-                                                    <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_razao_social_con }}">
+                                                    <input required type="text" name="nm_conta_correspondente_ccr" placeholder="Nome" value="{{ old('nm_conta_correspondente_ccr') ? old('nm_conta_correspondente_ccr') : $correspondente->nm_conta_correspondente_ccr }}">
                                                 </label>
                                             </section>
 
@@ -485,12 +488,12 @@
                                             <i class="icon-append fa fa-whatsapp" style="color: #25D366;"></i>
                                             <input type="text" name="nu_telefone_whatsapp_con" id="nu_telefone_whatsapp_con"
                                                 placeholder="48999999999"
-                                                value="{{ old('nu_telefone_whatsapp_con', $correspondente->nu_telefone_whatsapp_con ?? '') }}">
+                                                value="{{ old('nu_telefone_whatsapp_con', optional($correspondente->correspondente)->nu_telefone_whatsapp_con ?? '') }}">
                                         </label>
                                         <small class="text-muted">Este número receberá lembretes e comunicados automáticos via WhatsApp.</small>
                                     </section>
                                     @php
-                                        $chatproAtivo = $correspondente->fl_chatpro_ativo_con ?? false;
+                                        $chatproAtivo = optional($correspondente->correspondente)->fl_chatpro_ativo_con ?? false;
                                         if (is_string($chatproAtivo)) {
                                             $chatproAtivo = in_array(strtolower($chatproAtivo), ['t', 'true', '1', 's', 'y', 'yes'], true);
                                         }
@@ -511,7 +514,7 @@
 
                             <footer>
                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Atualizar Dados </button>
-                                <a href="{{ url('correspondente/dashboard/'.$correspondente->entidade->cd_entidade_ete) }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>
+                                <a href="{{ url('correspondente/cliente/'.\Crypt::encrypt($correspondente->cd_conta_con).'/dados') }}" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar </a>
                             </footer>
                         {!! Form::close() !!}                      
                     </div>
