@@ -8,13 +8,11 @@
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">COMARCA DE ORIGEM</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">CPF/CNPJ</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">NOME</th>
+        <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">OAB</th>
         <th style="background-color:#d2d2d2;height:20px;border: 1px hair #000000;text-align: center;vertical-align: center">EMAIL</th>
     </tr>
     </thead>
     <tbody>
-        @php
-            $total = 0;
-        @endphp
         @foreach($dados['correspondentes'] as $correspondente)
         <tr>       
             <td style="border: 1px hair #000000;vertical-align: center" >
@@ -28,6 +26,9 @@
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ $correspondente->nm_conta_correspondente_ccr }}
+            </td>
+            <td style="border: 1px hair #000000;vertical-align: center" >
+                {{ (!empty($correspondente->nu_oab_ide)) ? $correspondente->nu_oab_ide : '' }}
             </td>
             <td style="border: 1px hair #000000;vertical-align: center" >
                 {{ ($correspondente->email) ? $correspondente->email : 'Não informado' }}
