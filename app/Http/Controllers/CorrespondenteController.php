@@ -555,15 +555,61 @@ class CorrespondenteController extends Controller
         $categoria = $request->get('cd_categoria_correspondente_cac');
         $condicao_cidade = null;
 
-        $sql = "SELECT t1.cd_conta_correspondente_ccr, t1.cd_conta_con, t1.cd_correspondente_cor, t1.cd_entidade_ete, t3.nu_identificacao_ide, t_oab.nu_identificacao_ide AS nu_oab_ide, t1.nm_conta_correspondente_ccr, t4.dc_categoria_correspondente_cac, t5.cd_cidade_cde, t6.nm_cidade_cde, t10.email, t4.color_cac
+        $sql = "SELECT t1.cd_conta_correspondente_ccr,
+                       t1.cd_conta_con,
+                       t1.cd_correspondente_cor,
+                       t1.cd_entidade_ete,
+                       (
+                           SELECT ide.nu_identificacao_ide
+                           FROM identificacao_ide ide
+                           WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
+                             AND ide.cd_tipo_identificacao_tpi IN (1, 7)
+                             AND ide.deleted_at IS NULL
+                           ORDER BY ide.cd_identificacao_ide
+                           LIMIT 1
+                       ) AS nu_identificacao_ide,
+                       (
+                           SELECT ide.nu_identificacao_ide
+                           FROM identificacao_ide ide
+                           WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
+                             AND ide.cd_tipo_identificacao_tpi = 3
+                             AND ide.deleted_at IS NULL
+                           ORDER BY ide.cd_identificacao_ide
+                           LIMIT 1
+                       ) AS nu_oab_ide,
+                       t1.nm_conta_correspondente_ccr,
+                       t4.dc_categoria_correspondente_cac,
+                       (
+                           SELECT cat.cd_cidade_cde
+                           FROM cidade_atuacao_cat cat
+                           WHERE cat.cd_entidade_ete = t1.cd_entidade_ete
+                             AND cat.fl_origem_cat = 'S'
+                             AND cat.deleted_at IS NULL
+                           ORDER BY cat.cd_cidade_atuacao_cat
+                           LIMIT 1
+                       ) AS cd_cidade_cde,
+                       (
+                           SELECT cde.nm_cidade_cde
+                           FROM cidade_atuacao_cat cat
+                           JOIN cidade_cde cde ON cat.cd_cidade_cde = cde.cd_cidade_cde
+                           WHERE cat.cd_entidade_ete = t1.cd_entidade_ete
+                             AND cat.fl_origem_cat = 'S'
+                             AND cat.deleted_at IS NULL
+                           ORDER BY cat.cd_cidade_atuacao_cat
+                           LIMIT 1
+                       ) AS nm_cidade_cde,
+                       (
+                           SELECT u.email
+                           FROM users u
+                           WHERE u.cd_conta_con = t1.cd_correspondente_cor
+                             AND u.cd_nivel_niv = 3
+                           ORDER BY u.id
+                           LIMIT 1
+                       ) AS email,
+                       t4.color_cac
                 FROM conta_correspondente_ccr t1
                 LEFT JOIN categoria_correspondente_cac t4 ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
                 JOIN conta_con t2 ON t1.cd_conta_con = t2.cd_conta_con AND t1.cd_conta_con = $this->conta
-                LEFT JOIN identificacao_ide t3 ON t1.cd_entidade_ete = t3.cd_entidade_ete AND t3.cd_tipo_identificacao_tpi IN(1,7) AND t3.deleted_at is null
-                LEFT JOIN identificacao_ide t_oab ON t1.cd_entidade_ete = t_oab.cd_entidade_ete AND t_oab.cd_tipo_identificacao_tpi = 3 AND t_oab.deleted_at is null
-                LEFT JOIN cidade_atuacao_cat t5 ON t1.cd_entidade_ete = t5.cd_entidade_ete AND t5.fl_origem_cat = 'S' AND t5.deleted_at is null
-                LEFT JOIN cidade_cde t6 ON t5.cd_cidade_cde = t6.cd_cidade_cde
-                JOIN users t10 ON t1.cd_correspondente_cor = t10.cd_conta_con
                 WHERE t1.deleted_at is null ";
 
         if (!empty($nome)) {
@@ -575,7 +621,14 @@ class CorrespondenteController extends Controller
         }
 
         if (!empty($identificacao)) {
-            $sql .= " AND t3.nu_identificacao_ide = '$identificacao' ";
+            $sql .= " AND EXISTS (
+                        SELECT 1
+                        FROM identificacao_ide ide
+                        WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
+                          AND ide.cd_tipo_identificacao_tpi IN (1, 7)
+                          AND ide.deleted_at IS NULL
+                          AND ide.nu_identificacao_ide = '$identificacao'
+                      ) ";
         }
 
         if (!empty($cidade)) {
