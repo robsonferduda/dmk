@@ -559,61 +559,75 @@ class CorrespondenteController extends Controller
                        t1.cd_conta_con,
                        t1.cd_correspondente_cor,
                        t1.cd_entidade_ete,
-                       (
-                           SELECT ide.nu_identificacao_ide
-                           FROM identificacao_ide ide
-                           WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
-                             AND ide.cd_tipo_identificacao_tpi IN (1, 7)
-                             AND ide.deleted_at IS NULL
-                           ORDER BY ide.cd_identificacao_ide
-                           LIMIT 1
-                       ) AS nu_identificacao_ide,
-                       (
-                           SELECT ide.nu_identificacao_ide
-                           FROM identificacao_ide ide
-                           WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
-                             AND ide.cd_tipo_identificacao_tpi = 3
-                             AND ide.deleted_at IS NULL
-                           ORDER BY ide.cd_identificacao_ide
-                           LIMIT 1
-                       ) AS nu_oab_ide,
+                       t3.nu_identificacao_ide,
+                       t_oab.nu_identificacao_ide AS nu_oab_ide,
                        t1.nm_conta_correspondente_ccr,
                        t4.dc_categoria_correspondente_cac,
-                       (
-                           SELECT cat.cd_cidade_cde
-                           FROM cidade_atuacao_cat cat
-                           WHERE cat.cd_entidade_ete = t1.cd_entidade_ete
-                             AND cat.fl_origem_cat = 'S'
-                             AND cat.deleted_at IS NULL
-                           ORDER BY cat.cd_cidade_atuacao_cat
-                           LIMIT 1
-                       ) AS cd_cidade_cde,
-                       (
-                           SELECT cde.nm_cidade_cde
-                           FROM cidade_atuacao_cat cat
-                           JOIN cidade_cde cde ON cat.cd_cidade_cde = cde.cd_cidade_cde
-                           WHERE cat.cd_entidade_ete = t1.cd_entidade_ete
-                             AND cat.fl_origem_cat = 'S'
-                             AND cat.deleted_at IS NULL
-                           ORDER BY cat.cd_cidade_atuacao_cat
-                           LIMIT 1
-                       ) AS nm_cidade_cde,
-                       (
-                           SELECT u.email
-                           FROM users u
-                           WHERE u.cd_conta_con = t1.cd_correspondente_cor
-                             AND u.cd_nivel_niv = 3
-                           ORDER BY u.id
-                           LIMIT 1
-                       ) AS email,
+                       t5.cd_cidade_cde,
+                       t5.nm_cidade_cde,
+                       t10.email,
                        t4.color_cac
                 FROM conta_correspondente_ccr t1
-                LEFT JOIN categoria_correspondente_cac t4 ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
-                JOIN conta_con t2 ON t1.cd_conta_con = t2.cd_conta_con AND t1.cd_conta_con = $this->conta
-                WHERE t1.deleted_at is null ";
+                LEFT JOIN categoria_correspondente_cac t4
+                    ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
+                LEFT JOIN (
+                    SELECT DISTINCT ON (ide.cd_entidade_ete)
+                           ide.cd_entidade_ete,
+                           ide.nu_identificacao_ide
+                    FROM identificacao_ide ide
+                    INNER JOIN conta_correspondente_ccr ccr
+                        ON ccr.cd_entidade_ete = ide.cd_entidade_ete
+                       AND ccr.cd_conta_con = {$this->conta}
+                       AND ccr.deleted_at IS NULL
+                    WHERE ide.cd_tipo_identificacao_tpi IN (1, 7)
+                      AND ide.deleted_at IS NULL
+                    ORDER BY ide.cd_entidade_ete, ide.cd_identificacao_ide
+                ) t3 ON t3.cd_entidade_ete = t1.cd_entidade_ete
+                LEFT JOIN (
+                    SELECT DISTINCT ON (ide.cd_entidade_ete)
+                           ide.cd_entidade_ete,
+                           ide.nu_identificacao_ide
+                    FROM identificacao_ide ide
+                    INNER JOIN conta_correspondente_ccr ccr
+                        ON ccr.cd_entidade_ete = ide.cd_entidade_ete
+                       AND ccr.cd_conta_con = {$this->conta}
+                       AND ccr.deleted_at IS NULL
+                    WHERE ide.cd_tipo_identificacao_tpi = 3
+                      AND ide.deleted_at IS NULL
+                    ORDER BY ide.cd_entidade_ete, ide.cd_identificacao_ide
+                ) t_oab ON t_oab.cd_entidade_ete = t1.cd_entidade_ete
+                LEFT JOIN (
+                    SELECT DISTINCT ON (cat.cd_entidade_ete)
+                           cat.cd_entidade_ete,
+                           cat.cd_cidade_cde,
+                           cde.nm_cidade_cde
+                    FROM cidade_atuacao_cat cat
+                    INNER JOIN conta_correspondente_ccr ccr
+                        ON ccr.cd_entidade_ete = cat.cd_entidade_ete
+                       AND ccr.cd_conta_con = {$this->conta}
+                       AND ccr.deleted_at IS NULL
+                    INNER JOIN cidade_cde cde ON cat.cd_cidade_cde = cde.cd_cidade_cde
+                    WHERE cat.fl_origem_cat = 'S'
+                      AND cat.deleted_at IS NULL
+                    ORDER BY cat.cd_entidade_ete, cat.cd_cidade_atuacao_cat
+                ) t5 ON t5.cd_entidade_ete = t1.cd_entidade_ete
+                LEFT JOIN (
+                    SELECT DISTINCT ON (u.cd_conta_con)
+                           u.cd_conta_con,
+                           u.email
+                    FROM users u
+                    INNER JOIN conta_correspondente_ccr ccr
+                        ON ccr.cd_correspondente_cor = u.cd_conta_con
+                       AND ccr.cd_conta_con = {$this->conta}
+                       AND ccr.deleted_at IS NULL
+                    WHERE u.cd_nivel_niv = 3
+                    ORDER BY u.cd_conta_con, u.id
+                ) t10 ON t10.cd_conta_con = t1.cd_correspondente_cor
+                WHERE t1.deleted_at IS NULL
+                  AND t1.cd_conta_con = {$this->conta} ";
 
         if (!empty($nome)) {
-            $sql .= " AND nm_conta_correspondente_ccr ilike '%$nome%' ";
+            $sql .= " AND t1.nm_conta_correspondente_ccr ilike '%$nome%' ";
         }
 
         if (!empty($categoria)) {
@@ -621,14 +635,7 @@ class CorrespondenteController extends Controller
         }
 
         if (!empty($identificacao)) {
-            $sql .= " AND EXISTS (
-                        SELECT 1
-                        FROM identificacao_ide ide
-                        WHERE ide.cd_entidade_ete = t1.cd_entidade_ete
-                          AND ide.cd_tipo_identificacao_tpi IN (1, 7)
-                          AND ide.deleted_at IS NULL
-                          AND ide.nu_identificacao_ide = '$identificacao'
-                      ) ";
+            $sql .= " AND t3.nu_identificacao_ide = '$identificacao' ";
         }
 
         if (!empty($cidade)) {
@@ -646,7 +653,7 @@ class CorrespondenteController extends Controller
                                        AND t7.deleted_at is null)";
         }
 
-        $sql .= " ORDER BY nm_conta_correspondente_ccr";
+        $sql .= " ORDER BY t1.nm_conta_correspondente_ccr";
 
         $correspondentes = DB::select($sql);
 
