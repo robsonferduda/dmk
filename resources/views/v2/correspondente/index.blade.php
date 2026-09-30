@@ -145,7 +145,7 @@
                             </td>
                             <td class="users-meta">{{ $correspondente->nm_cidade_cde ?: '—' }}</td>
                             <td class="dmk-docs">
-                                <span class="dmk-mono d-block">{{ $correspondente->nu_identificacao_ide ?: 'CPF/CNPJ não informado' }}</span>
+                                <span class="dmk-num d-block">{{ $correspondente->nu_identificacao_ide ?: 'CPF/CNPJ não informado' }}</span>
                                 @if($correspondente->nu_oab_ide)
                                     <span class="users-user-email text-truncate" title="{{ $correspondente->nu_oab_ide }}">OAB {{ $correspondente->nu_oab_ide }}</span>
                                 @endif

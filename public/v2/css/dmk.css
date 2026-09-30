@@ -73,9 +73,9 @@
   padding: 1rem;
 }
 
-.dmk-mono {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.74rem;
+.dmk-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
 }
 
 .uv-hero-actions {
@@ -87,6 +87,12 @@
 
 .dmk-docs {
   max-width: 190px;
+}
+
+.dmk-docs .dmk-num {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--heading-color);
 }
 
 .dmk-docs .users-user-email {
@@ -139,6 +145,10 @@
 
 .dmk-bank:last-child {
   margin-bottom: 0;
+}
+
+.dmk-bank .text-muted.dmk-num {
+  font-size: 0.72rem;
 }
 
 .dmk-bank-title {

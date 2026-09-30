@@ -96,19 +96,19 @@
 
                             <div class="col-md-4 campo-pf">
                                 <label class="form-label" for="cpf">CPF</label>
-                                <input type="text" class="form-control dmk-mono" id="cpf" name="cpf" placeholder="000.000.000-00" value="{{ old('cpf', optional(optional($entidade)->cpf)->nu_identificacao_ide) }}">
+                                <input type="text" class="form-control dmk-num" id="cpf" name="cpf" placeholder="000.000.000-00" value="{{ old('cpf', optional(optional($entidade)->cpf)->nu_identificacao_ide) }}">
                             </div>
                             <div class="col-md-4 campo-pj">
                                 <label class="form-label" for="cnpj">CNPJ</label>
-                                <input type="text" class="form-control dmk-mono" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" value="{{ old('cnpj', optional(optional($entidade)->cnpj)->nu_identificacao_ide) }}">
+                                <input type="text" class="form-control dmk-num" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" value="{{ old('cnpj', optional(optional($entidade)->cnpj)->nu_identificacao_ide) }}">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="oab">Nº OAB</label>
-                                <input type="text" class="form-control dmk-mono" id="oab" name="oab" placeholder="Ex.: SC12345" value="{{ old('oab', optional(optional($entidade)->oab)->nu_identificacao_ide) }}">
+                                <input type="text" class="form-control dmk-num" id="oab" name="oab" placeholder="Ex.: SC12345" value="{{ old('oab', optional(optional($entidade)->oab)->nu_identificacao_ide) }}">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="rg">RG</label>
-                                <input type="text" class="form-control dmk-mono" id="rg" name="rg" value="{{ old('rg', optional(optional($entidade)->rg)->nu_identificacao_ide) }}">
+                                <input type="text" class="form-control dmk-num" id="rg" name="rg" value="{{ old('rg', optional(optional($entidade)->rg)->nu_identificacao_ide) }}">
                             </div>
                         </div>
                     </div>
@@ -122,7 +122,7 @@
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label class="form-label" for="nu_cep_ede">CEP</label>
-                                <input type="text" class="form-control dmk-mono" id="nu_cep_ede" name="nu_cep_ede" placeholder="00000-000" value="{{ old('nu_cep_ede', optional($endereco)->nu_cep_ede) }}">
+                                <input type="text" class="form-control dmk-num" id="nu_cep_ede" name="nu_cep_ede" placeholder="00000-000" value="{{ old('nu_cep_ede', optional($endereco)->nu_cep_ede) }}">
                             </div>
                             <div class="col-md-7">
                                 <label class="form-label" for="dc_logradouro_ede">Logradouro</label>
@@ -180,7 +180,7 @@
                                     <tbody>
                                         @foreach($fones as $fone)
                                             <tr>
-                                                <td class="dmk-mono">{{ $fone->nu_fone_fon }}</td>
+                                                <td class="dmk-num">{{ $fone->nu_fone_fon }}</td>
                                                 <td class="text-muted">{{ optional($fone->tipo)->dc_tipo_fone_tfo }}</td>
                                                 <td class="text-end"><button type="button" class="dmk-remove" data-excluir="{{ url('fones/excluir/'.$fone->cd_fone_fon) }}" title="Excluir"><i class="bi bi-trash"></i></button></td>
                                             </tr>
@@ -235,7 +235,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="banco-cpf">CPF/CNPJ do titular</label>
-                                <input type="text" class="form-control form-control-sm dmk-mono" id="banco-cpf" placeholder="Somente números">
+                                <input type="text" class="form-control form-control-sm dmk-num" id="banco-cpf" placeholder="Somente números">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="banco-tipo">Tipo de conta</label>
@@ -257,15 +257,15 @@
                             </div>
                             <div class="col-md-3 banco-conta">
                                 <label class="form-label" for="banco-agencia">Agência</label>
-                                <input type="text" class="form-control form-control-sm dmk-mono" id="banco-agencia">
+                                <input type="text" class="form-control form-control-sm dmk-num" id="banco-agencia">
                             </div>
                             <div class="col-md-3 banco-conta">
                                 <label class="form-label" for="banco-numero">Conta</label>
-                                <input type="text" class="form-control form-control-sm dmk-mono" id="banco-numero">
+                                <input type="text" class="form-control form-control-sm dmk-num" id="banco-numero">
                             </div>
                             <div class="col-md-8 banco-pix d-none">
                                 <label class="form-label" for="banco-pix">Chave PIX</label>
-                                <input type="text" class="form-control form-control-sm dmk-mono" id="banco-pix">
+                                <input type="text" class="form-control form-control-sm dmk-num" id="banco-pix">
                             </div>
                             <div class="col-md-2 ms-auto">
                                 <button type="button" class="btn btn-success btn-sm w-100" id="add-banco"><i class="bi bi-plus-lg me-1"></i> Adicionar</button>
@@ -288,11 +288,11 @@
                                     @foreach($bancos as $banco)
                                         <tr>
                                             <td>{{ $banco->nm_titular_dba }}</td>
-                                            <td class="dmk-mono">{{ $banco->nu_cpf_cnpj_dba }}</td>
+                                            <td class="dmk-num">{{ $banco->nu_cpf_cnpj_dba }}</td>
                                             <td>{{ optional($banco->tipoConta)->nm_tipo_conta_tcb }}</td>
                                             <td>
                                                 @if($banco->cd_tipo_conta_tcb == \App\Enums\TipoConta::PIX)
-                                                    PIX: <span class="dmk-mono">{{ $banco->dc_pix_dba }}</span>
+                                                    PIX: <span class="dmk-num">{{ $banco->dc_pix_dba }}</span>
                                                 @else
                                                     {{ optional($banco->banco)->nm_banco_ban }} · Ag. {{ $banco->nu_agencia_dba }} · Conta {{ $banco->nu_conta_dba }}
                                                 @endif
@@ -314,7 +314,7 @@
                     </div>
                     <div class="card-body">
                         <label class="form-label" for="nu_telefone_whatsapp_con">Número com DDD</label>
-                        <input type="text" class="form-control dmk-mono" id="nu_telefone_whatsapp_con" name="nu_telefone_whatsapp_con" placeholder="48999999999" value="{{ old('nu_telefone_whatsapp_con', optional($vinculo->correspondente)->nu_telefone_whatsapp_con) }}">
+                        <input type="text" class="form-control dmk-num" id="nu_telefone_whatsapp_con" name="nu_telefone_whatsapp_con" placeholder="48999999999" value="{{ old('nu_telefone_whatsapp_con', optional($vinculo->correspondente)->nu_telefone_whatsapp_con) }}">
                         <div class="form-text">Usado para lembretes e comunicados automáticos.</div>
                     </div>
                 </div>
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const item = { tipo: tipo.value, numero: numero.value.trim(), descricao: textoSelecionado(tipo) };
         novos.telefones.push(item);
         sincronizar('telefones');
-        adicionarLinha('#tabela-fones', [textoCelula(item.numero, 'dmk-mono'), textoCelula(item.descricao, 'text-muted')], 'telefones', item);
+        adicionarLinha('#tabela-fones', [textoCelula(item.numero, 'dmk-num'), textoCelula(item.descricao, 'text-muted')], 'telefones', item);
 
         numero.value = '';
         tipo.selectedIndex = 0;
@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
         sincronizar('registrosBancarios');
         adicionarLinha('#tabela-bancos', [
             textoCelula(item.titular),
-            textoCelula(item.cpf, 'dmk-mono'),
+            textoCelula(item.cpf, 'dmk-num'),
             textoCelula(textoSelecionado(bancoTipo)),
             textoCelula(dados)
         ], 'registrosBancarios', item);

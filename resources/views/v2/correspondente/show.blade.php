@@ -89,12 +89,12 @@
                         </div>
                         <div class="col-md-6">
                             @if($cnpj && $vinculo->cd_tipo_pessoa_tpp == 2)
-                                <div class="uv-meta-item"><span>CNPJ</span><strong class="dmk-mono">{{ $cnpj->nu_identificacao_ide ?: 'Não informado' }}</strong></div>
+                                <div class="uv-meta-item"><span>CNPJ</span><strong class="dmk-num">{{ $cnpj->nu_identificacao_ide ?: 'Não informado' }}</strong></div>
                             @else
-                                <div class="uv-meta-item"><span>CPF</span><strong class="dmk-mono">{{ ($cpf && $cpf->nu_identificacao_ide) ? $cpf->nu_identificacao_ide : (($cnpj && $cnpj->nu_identificacao_ide) ? $cnpj->nu_identificacao_ide : 'Não informado') }}</strong></div>
+                                <div class="uv-meta-item"><span>CPF</span><strong class="dmk-num">{{ ($cpf && $cpf->nu_identificacao_ide) ? $cpf->nu_identificacao_ide : (($cnpj && $cnpj->nu_identificacao_ide) ? $cnpj->nu_identificacao_ide : 'Não informado') }}</strong></div>
                             @endif
-                            <div class="uv-meta-item"><span>OAB</span><strong class="dmk-mono">{{ $oab ? $oab->nu_identificacao_ide : 'Não informado' }}</strong></div>
-                            <div class="uv-meta-item"><span>RG</span><strong class="dmk-mono">{{ $rg ? $rg->nu_identificacao_ide : 'Não informado' }}</strong></div>
+                            <div class="uv-meta-item"><span>OAB</span><strong class="dmk-num">{{ $oab ? $oab->nu_identificacao_ide : 'Não informado' }}</strong></div>
+                            <div class="uv-meta-item"><span>RG</span><strong class="dmk-num">{{ $rg ? $rg->nu_identificacao_ide : 'Não informado' }}</strong></div>
                             <div class="uv-meta-item">
                                 <span>WhatsApp</span>
                                 <strong>
@@ -121,7 +121,7 @@
                         <div class="card-body">
                             @forelse($fones as $fone)
                                 <div class="dmk-list-item">
-                                    <span class="dmk-mono">{{ $fone->nu_fone_fon }}</span>
+                                    <span class="dmk-num">{{ $fone->nu_fone_fon }}</span>
                                     <small>{{ optional($fone->tipo)->dc_tipo_fone_tfo }}</small>
                                 </div>
                             @empty
@@ -160,7 +160,7 @@
                                 <div class="uv-meta-item"><span>Logradouro</span><strong>{{ $endereco->dc_logradouro_ede }}{{ $endereco->nu_numero_ede ? ', '.$endereco->nu_numero_ede : '' }}</strong></div>
                                 <div class="uv-meta-item"><span>Complemento</span><strong>{{ $endereco->dc_complemento_ede ?: '—' }}</strong></div>
                                 <div class="uv-meta-item"><span>Bairro</span><strong>{{ $endereco->nm_bairro_ede ?: '—' }}</strong></div>
-                                <div class="uv-meta-item"><span>CEP</span><strong class="dmk-mono">{{ $endereco->nu_cep_ede ?: '—' }}</strong></div>
+                                <div class="uv-meta-item"><span>CEP</span><strong class="dmk-num">{{ $endereco->nu_cep_ede ?: '—' }}</strong></div>
                                 <div class="uv-meta-item"><span>Cidade / UF</span><strong>{{ $endereco->cidade ? $endereco->cidade->nm_cidade_cde.' / '.optional($endereco->cidade->estado)->sg_estado_est : '—' }}</strong></div>
                             @else
                                 <p class="text-muted small mb-0">Endereço não informado.</p>
@@ -180,14 +180,14 @@
                                         <span class="dmk-bank-title">{{ $banco->nm_titular_dba ?: 'Titular não informado' }}</span>
                                         <small class="text-muted">{{ optional($banco->tipoConta)->nm_tipo_conta_tcb }}</small>
                                     </div>
-                                    <div class="text-muted small dmk-mono">{{ $banco->nu_cpf_cnpj_dba }}</div>
+                                    <div class="text-muted small dmk-num">{{ $banco->nu_cpf_cnpj_dba }}</div>
                                     @if($banco->cd_tipo_conta_tcb == \App\Enums\TipoConta::PIX)
-                                        <div class="mt-1"><i class="bi bi-qr-code me-1"></i> PIX: <span class="dmk-mono">{{ $banco->dc_pix_dba }}</span></div>
+                                        <div class="mt-1"><i class="bi bi-qr-code me-1"></i> PIX: <span class="dmk-num">{{ $banco->dc_pix_dba }}</span></div>
                                     @else
                                         <div class="mt-1">
                                             {{ optional($banco->banco)->nm_banco_ban ?: 'Banco não informado' }}
-                                            · Ag. <span class="dmk-mono">{{ $banco->nu_agencia_dba ?: '—' }}</span>
-                                            · Conta <span class="dmk-mono">{{ $banco->nu_conta_dba ?: '—' }}</span>
+                                            · Ag. <span class="dmk-num">{{ $banco->nu_agencia_dba ?: '—' }}</span>
+                                            · Conta <span class="dmk-num">{{ $banco->nu_conta_dba ?: '—' }}</span>
                                         </div>
                                     @endif
                                 </div>
