@@ -15,6 +15,7 @@
             </h1>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 boxBtnTopo">
+            <a href="{{ url('v2/correspondentes') }}" class="btn btn-primary pull-right header-btn"><i class="fa fa-magic"></i> Experimentar nova versão</a>
             <button class="btn btn-success pull-right header-btn" data-toggle="modal" data-target="#modalNovoCorrespondente"><i class="fa fa-plus"></i> Novo</button>   
             <button class="btn btn-default pull-right header-btn" data-toggle="modal" data-target="#modalConviteCorrespondente"><i class="fa fa-send"></i> Enviar Convite</button>
             <a href="{{ url('correspondente/disparar-emails-atualizacao') }}"

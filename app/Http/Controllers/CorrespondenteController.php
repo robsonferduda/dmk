@@ -33,6 +33,7 @@ use App\ProcessoMensagem;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\Services\Contrato\ContratoCorrespondenteGenerator;
+use App\Services\Correspondente\CorrespondenteBusca;
 use App\EnderecoEletronico;
 use App\Enums\TipoConta;
 use App\ReembolsoTipoDespesa;
@@ -510,7 +511,15 @@ class CorrespondenteController extends Controller
             Flash::error('Não foi possível gerar o contrato: ' . $e->getMessage());
         }
 
-        return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+        return redirect()->to($this->urlDetalhesV2($id) ?: url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+    }
+
+    /**
+     * Quando a ação parte das telas /v2, devolve a URL de detalhes da v2 para o redirecionamento.
+     */
+    private function urlDetalhesV2($cdCorrespondente)
+    {
+        return request()->filled('v2') ? url('v2/correspondentes/' . safe_encrypt($cdCorrespondente)) : null;
     }
 
     /**
@@ -528,7 +537,7 @@ class CorrespondenteController extends Controller
 
         if (! $path) {
             Flash::error('Contrato ainda não foi gerado ou o arquivo não está disponível.');
-            return redirect()->to(url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+            return redirect()->to($this->urlDetalhesV2($id) ?: url('correspondente/detalhes/' . \Crypt::encrypt($id)));
         }
 
         $nome = 'contrato-' . Str::slug($vinculo->nm_conta_correspondente_ccr ?: 'correspondente') . '.pdf';
@@ -548,123 +557,12 @@ class CorrespondenteController extends Controller
 
     public function buscar(Request $request)
     {
-        $estado = $request->get('cd_estado_est');
-        $cidade = $request->get('cd_cidade_cde');
-        $nome = $request->get('nome');
-        $identificacao = $request->get('identificacao');
-        $categoria = $request->get('cd_categoria_correspondente_cac');
-        $condicao_cidade = null;
-
-        $sql = "SELECT t1.cd_conta_correspondente_ccr,
-                       t1.cd_conta_con,
-                       t1.cd_correspondente_cor,
-                       t1.cd_entidade_ete,
-                       t3.nu_identificacao_ide,
-                       t_oab.nu_identificacao_ide AS nu_oab_ide,
-                       t1.nm_conta_correspondente_ccr,
-                       t4.dc_categoria_correspondente_cac,
-                       t5.cd_cidade_cde,
-                       t5.nm_cidade_cde,
-                       t10.email,
-                       t4.color_cac,
-                       cor.fl_advogado_con
-                FROM conta_correspondente_ccr t1
-                LEFT JOIN conta_con cor
-                    ON cor.cd_conta_con = t1.cd_correspondente_cor
-                LEFT JOIN categoria_correspondente_cac t4
-                    ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
-                LEFT JOIN (
-                    SELECT DISTINCT ON (ide.cd_entidade_ete)
-                           ide.cd_entidade_ete,
-                           ide.nu_identificacao_ide
-                    FROM identificacao_ide ide
-                    INNER JOIN conta_correspondente_ccr ccr
-                        ON ccr.cd_entidade_ete = ide.cd_entidade_ete
-                       AND ccr.cd_conta_con = {$this->conta}
-                       AND ccr.deleted_at IS NULL
-                    WHERE ide.cd_tipo_identificacao_tpi IN (1, 7)
-                      AND ide.deleted_at IS NULL
-                    ORDER BY ide.cd_entidade_ete, ide.cd_identificacao_ide
-                ) t3 ON t3.cd_entidade_ete = t1.cd_entidade_ete
-                LEFT JOIN (
-                    SELECT DISTINCT ON (ide.cd_entidade_ete)
-                           ide.cd_entidade_ete,
-                           ide.nu_identificacao_ide
-                    FROM identificacao_ide ide
-                    INNER JOIN conta_correspondente_ccr ccr
-                        ON ccr.cd_entidade_ete = ide.cd_entidade_ete
-                       AND ccr.cd_conta_con = {$this->conta}
-                       AND ccr.deleted_at IS NULL
-                    WHERE ide.cd_tipo_identificacao_tpi = 3
-                      AND ide.deleted_at IS NULL
-                    ORDER BY ide.cd_entidade_ete, ide.cd_identificacao_ide
-                ) t_oab ON t_oab.cd_entidade_ete = t1.cd_entidade_ete
-                LEFT JOIN (
-                    SELECT DISTINCT ON (cat.cd_entidade_ete)
-                           cat.cd_entidade_ete,
-                           cat.cd_cidade_cde,
-                           cde.nm_cidade_cde
-                    FROM cidade_atuacao_cat cat
-                    INNER JOIN conta_correspondente_ccr ccr
-                        ON ccr.cd_entidade_ete = cat.cd_entidade_ete
-                       AND ccr.cd_conta_con = {$this->conta}
-                       AND ccr.deleted_at IS NULL
-                    INNER JOIN cidade_cde cde ON cat.cd_cidade_cde = cde.cd_cidade_cde
-                    WHERE cat.fl_origem_cat = 'S'
-                      AND cat.deleted_at IS NULL
-                    ORDER BY cat.cd_entidade_ete, cat.cd_cidade_atuacao_cat
-                ) t5 ON t5.cd_entidade_ete = t1.cd_entidade_ete
-                LEFT JOIN (
-                    SELECT DISTINCT ON (u.cd_conta_con)
-                           u.cd_conta_con,
-                           u.email
-                    FROM users u
-                    INNER JOIN conta_correspondente_ccr ccr
-                        ON ccr.cd_correspondente_cor = u.cd_conta_con
-                       AND ccr.cd_conta_con = {$this->conta}
-                       AND ccr.deleted_at IS NULL
-                    WHERE u.cd_nivel_niv = 3
-                    ORDER BY u.cd_conta_con, u.id
-                ) t10 ON t10.cd_conta_con = t1.cd_correspondente_cor
-                WHERE t1.deleted_at IS NULL
-                  AND t1.cd_conta_con = {$this->conta} ";
-
-        if (!empty($nome)) {
-            $sql .= " AND t1.nm_conta_correspondente_ccr ilike '%$nome%' ";
-        }
-
-        if (!empty($categoria)) {
-            $sql .= " AND t4.cd_categoria_correspondente_cac = $categoria ";
-        }
-
-        if (!empty($identificacao)) {
-            $sql .= " AND t3.nu_identificacao_ide = '$identificacao' ";
-        }
-
-        if (!empty($cidade)) {
-            $condicao_cidade .= " AND t7.cd_cidade_cde = $cidade  ";
-        }
-
-        if (!empty($estado)) {
-            $sql .= "AND t1.cd_entidade_ete IN (SELECT t8.cd_entidade_ete 
-                                       FROM cidade_atuacao_cat t7, conta_correspondente_ccr t8, cidade_cde t9 
-                                       WHERE t7.cd_entidade_ete = t8.cd_entidade_ete 
-                                       AND t7.cd_cidade_cde = t9.cd_cidade_cde
-                                       $condicao_cidade
-                                       AND t9.cd_estado_est = $estado
-                                       AND t8.cd_conta_con = $this->conta 
-                                       AND t7.deleted_at is null)";
-        }
-
-        $sql .= " ORDER BY t1.nm_conta_correspondente_ccr";
-
-        $correspondentes = DB::select($sql);
+        $busca = app(CorrespondenteBusca::class);
+        $correspondentes = $busca->buscar($this->conta, $request->only([
+            'nome', 'cd_categoria_correspondente_cac', 'identificacao', 'cd_estado_est', 'cd_cidade_cde',
+        ]));
 
         session()->flashInput($request->input());
-        
-        if (is_null($correspondentes)) {
-            Flash::warning('Não existem correspondentes que correspondam aos valores pesquisados');
-        }
 
         switch (Utils::get_post_action('pesquisar', 'exportar')) {
             case 'pesquisar':
@@ -672,11 +570,7 @@ class CorrespondenteController extends Controller
                 break;
 
             case 'exportar':
-                $correspondentes = array_values(array_filter($correspondentes, function ($correspondente) {
-                    $categoria = trim((string) ($correspondente->dc_categoria_correspondente_cac ?? ''));
-                    return strcasecmp($categoria, 'INATIVO') !== 0;
-                }));
-                $dados = array('correspondentes' => $correspondentes);
+                $dados = array('correspondentes' => $busca->semInativos($correspondentes));
                 return \Excel::download(new RelacaoCorrespondentesEscritorioExport($dados), 'correspondentes.xls', \Maatwebsite\Excel\Excel::XLSX);
                 break;
         }
@@ -1475,7 +1369,7 @@ class CorrespondenteController extends Controller
         if (Auth::user()->cd_nivel_niv == Nivel::CORRESPONDENTE) {
             return redirect('correspondente/cliente/'.\Crypt::encrypt($conta_correspondente->cd_conta_con).'/dados');
         } else {
-            return redirect('correspondente/detalhes/'.safe_encrypt($conta_correspondente->correspondente->cd_conta_con));
+            return redirect($this->urlDetalhesV2($conta_correspondente->cd_correspondente_cor) ?: 'correspondente/detalhes/'.safe_encrypt($conta_correspondente->correspondente->cd_conta_con));
         }
     }
 

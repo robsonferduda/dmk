@@ -381,6 +381,12 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
     Route::get('correspondente/atuacao/excluir/{id}', 'CorrespondenteController@excluirAtuacao');
     Route::post('correspondente/atuacao/adicionar', 'CorrespondenteController@adicionarAtuacao');
     Route::put('correspondente/editar', 'CorrespondenteController@editar');
+
+    Route::prefix('v2')->namespace('V2')->group(function () {
+        Route::get('correspondentes', 'CorrespondenteController@index');
+        Route::get('correspondentes/{id}', 'CorrespondenteController@show');
+        Route::get('correspondentes/{id}/editar', 'CorrespondenteController@edit');
+    });
     Route::get('correspondente/tipo-processo-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoProcesso');
     Route::get('correspondente/tipo-servico-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoServico');
 

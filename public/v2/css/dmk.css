@@ -1,0 +1,224 @@
+/* Ajustes do DMK sobre o NiceAdmin (v2) */
+
+.dmk-v2-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  vertical-align: middle;
+  background: var(--accent-color);
+  color: var(--contrast-color);
+}
+
+.header-brand .header-logo img {
+  object-fit: contain;
+}
+
+.dmk-classic-link {
+  width: auto !important;
+  padding: 0 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dmk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dmk-pill i {
+  font-size: 0.68rem;
+}
+
+.dmk-pill-advogado {
+  background: var(--success-color-light);
+  color: var(--success-color);
+}
+
+.dmk-pill-preposto {
+  background: var(--warning-color-light);
+  color: var(--warning-color);
+}
+
+.dmk-pill-indefinido {
+  background: var(--surface-color);
+  color: var(--muted-color);
+  border: 1px solid var(--border-color);
+}
+
+.dmk-cat {
+  --cat-color: var(--muted-color);
+  background: color-mix(in srgb, var(--cat-color), transparent 88%);
+  color: var(--cat-color);
+  border: 1px solid color-mix(in srgb, var(--cat-color), transparent 60%);
+}
+
+.dmk-filters .form-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted-color);
+  margin-bottom: 4px;
+}
+
+.dmk-filters .card-body {
+  padding: 1rem;
+}
+
+.dmk-mono {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.74rem;
+}
+
+.uv-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dmk-docs {
+  max-width: 190px;
+}
+
+.dmk-docs .users-user-email {
+  max-width: 190px;
+}
+
+.dmk-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--muted-color);
+}
+
+.dmk-empty i {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.6;
+}
+
+.page-users-view .uv-meta-item strong {
+  text-align: right;
+  word-break: break-word;
+}
+
+.dmk-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color-light);
+  font-size: 0.78rem;
+}
+
+.dmk-list-item:last-child {
+  border-bottom: 0;
+}
+
+.dmk-list-item small {
+  color: var(--muted-color);
+}
+
+.dmk-bank {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color-light);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+}
+
+.dmk-bank:last-child {
+  margin-bottom: 0;
+}
+
+.dmk-bank-title {
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.dmk-obs {
+  font-size: 0.8rem;
+  white-space: pre-line;
+}
+
+.dmk-avatar-letter {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Poppins, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--accent-color), transparent 85%);
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.dmk-avatar-letter.sm {
+  width: 34px;
+  height: 34px;
+  font-size: 0.85rem;
+}
+
+.dmk-inline-add .btn {
+  white-space: nowrap;
+}
+
+.dmk-table-sm td,
+.dmk-table-sm th {
+  font-size: 0.78rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.dmk-remove {
+  border: 0;
+  background: transparent;
+  color: var(--danger-color);
+  padding: 0 4px;
+}
+
+.dmk-new-row td {
+  background: color-mix(in srgb, var(--success-color), transparent 93%) !important;
+}
+
+.choices__inner {
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  min-height: 38px;
+  padding: 4px 8px 2px;
+  border-radius: var(--bs-border-radius);
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--default-color);
+  z-index: 20;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+  background: var(--surface-color);
+}
+
+.choices__input {
+  background: transparent;
+  color: var(--default-color);
+}
+
+.choices {
+  margin-bottom: 0;
+}
