@@ -13,6 +13,8 @@ use RuntimeException;
 
 class ContratoCorrespondenteGenerator
 {
+    const LIMITE_COMARCAS_NO_TEXTO = 30;
+
     /**
      * Gera o PDF do contrato a partir do HTML (Blade) e atualiza flag/data/caminho.
      */
@@ -32,19 +34,6 @@ class ContratoCorrespondenteGenerator
 
         // Geração liberada mesmo com pendências (lacunas no PDF); aviso permanece na tela.
 
-        $dadosContratado = $this->dadosContratado($vinculo);
-
-        $html = view('correspondente.contrato-pdf', [
-            'textoPartes'     => $this->montarTextoPartes($vinculo),
-            'trechoComarcas'  => $this->montarTrechoComarcas($vinculo),
-            'trechoBancario'  => $this->montarTrechoBancario($vinculo),
-            'contratadaNome'  => $this->campo($dadosContratado['nome'], 28),
-            'contratadaOab'   => $this->campo($dadosContratado['oab'], 18),
-            'contratadaCpf'   => $this->campo($dadosContratado['cpf'], 18),
-            'localData'       => $this->montarLocalData(),
-            'vinculo'         => $vinculo,
-        ])->render();
-
         $relativeDir = 'contratos-correspondente/' . $vinculo->cd_conta_correspondente_ccr;
         $absoluteDir = storage_path('app/public/' . $relativeDir);
 
@@ -52,30 +41,11 @@ class ContratoCorrespondenteGenerator
             throw new RuntimeException('Não foi possível criar o diretório de contratos.');
         }
 
-        $tmpDir = storage_path('app/mpdf-tmp');
-        if (! File::isDirectory($tmpDir) && ! File::makeDirectory($tmpDir, 0775, true) && ! File::isDirectory($tmpDir)) {
-            throw new RuntimeException('Não foi possível criar o diretório temporário do PDF.');
-        }
-
         $fileName = 'contrato-' . Carbon::now()->format('Ymd-His') . '.pdf';
         $relative = $relativeDir . '/' . $fileName;
         $absolute = storage_path('app/public/' . $relative);
 
-        $mpdf = new \Mpdf\Mpdf([
-            'mode'          => 'utf-8',
-            'format'        => 'A4',
-            'margin_left'   => 18,
-            'margin_right'  => 18,
-            'margin_top'    => 18,
-            'margin_bottom' => 18,
-            'tempDir'       => $tmpDir,
-            'default_font'  => 'dejavusans',
-        ]);
-
-        $mpdf->SetTitle('Contrato de Correspondência');
-        $mpdf->SetAuthor('DMK');
-        $mpdf->WriteHTML($html);
-        $mpdf->Output($absolute, \Mpdf\Output\Destination::FILE);
+        $this->renderizarPdf($vinculo, $absolute);
 
         if (! is_file($absolute)) {
             throw new RuntimeException('Falha ao gravar o PDF do contrato.');
@@ -93,6 +63,73 @@ class ContratoCorrespondenteGenerator
         $vinculo->save();
 
         return $relative;
+    }
+
+    /**
+     * Monta o HTML do contrato e grava o PDF em $destino, sem alterar o vínculo.
+     */
+    public function renderizarPdf(ContaCorrespondente $vinculo, string $destino): void
+    {
+        $dadosContratado = $this->dadosContratado($vinculo);
+        $comarcas = $this->comarcasPorEstado($vinculo);
+
+        $html = view('correspondente.contrato-pdf', [
+            'textoPartes'     => $this->montarTextoPartes($vinculo),
+            'trechoComarcas'  => $this->montarTrechoComarcas($vinculo),
+            'anexoComarcas'   => $this->comarcasVaoParaAnexo($comarcas) ? $comarcas : [],
+            'trechoBancario'  => $this->montarTrechoBancario($vinculo),
+            'dadosBancarios'  => $this->dadosBancariosContrato($vinculo),
+            'contratadaNome'  => $this->campo($dadosContratado['nome'], 28),
+            'contratadaOab'   => $this->campo($dadosContratado['oab'], 18),
+            'contratadaCpf'   => $this->campo($dadosContratado['cpf'], 18),
+            'nomeContratado'  => $dadosContratado['nome'],
+            'localData'       => $this->montarLocalData(),
+            'dataEmissao'     => Carbon::now()->format('d/m/Y'),
+            'vinculo'         => $vinculo,
+        ])->render();
+
+        $tmpDir = storage_path('app/mpdf-tmp');
+        if (! File::isDirectory($tmpDir) && ! File::makeDirectory($tmpDir, 0775, true) && ! File::isDirectory($tmpDir)) {
+            throw new RuntimeException('Não foi possível criar o diretório temporário do PDF.');
+        }
+
+        $fontDirs = (new \Mpdf\Config\ConfigVariables())->getDefaults()['fontDir'];
+        $fontData = (new \Mpdf\Config\FontVariables())->getDefaults()['fontdata'];
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode'              => 'utf-8',
+            'format'            => 'A4',
+            'margin_left'       => 22,
+            'margin_right'      => 22,
+            'margin_top'        => 26,
+            'margin_bottom'     => 24,
+            'margin_header'     => 10,
+            'margin_footer'     => 10,
+            'tempDir'           => $tmpDir,
+            'fontDir'           => array_merge($fontDirs, [resource_path('fonts/contrato')]),
+            'fontdata'          => $fontData + [
+                'sourceserif' => [
+                    'R' => 'SourceSerif4-Regular.ttf',
+                    'B' => 'SourceSerif4-Semibold.ttf',
+                    'I' => 'SourceSerif4-Italic.ttf',
+                ],
+                'nunitosans' => [
+                    'R' => 'NunitoSans-Regular.ttf',
+                    'B' => 'NunitoSans-Bold.ttf',
+                ],
+                'nunitosansxb' => [
+                    'R' => 'NunitoSans-ExtraBold.ttf',
+                ],
+            ],
+            'default_font'      => 'sourceserif',
+            'useSubstitutions'  => true,
+            'jSmaxChar'         => 0,
+        ]);
+
+        $mpdf->SetTitle('Contrato de Correspondência');
+        $mpdf->SetAuthor('DMK');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($destino, \Mpdf\Output\Destination::FILE);
     }
 
     public function caminhoAbsoluto(ContaCorrespondente $vinculo): ?string
@@ -374,40 +411,19 @@ class ContratoCorrespondenteGenerator
      */
     public function montarTrechoComarcas(ContaCorrespondente $vinculo): string
     {
-        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
-
-        $porEstado = [];
-        $atuacoes = optional($vinculo->entidade)->atuacao ?? collect();
-
-        foreach ($atuacoes as $atuacao) {
-            $cidade = optional($atuacao->cidade)->nm_cidade_cde;
-            $estado = optional(optional($atuacao->cidade)->estado)->nm_estado_est;
-
-            if (! $cidade || ! $estado) {
-                continue;
-            }
-
-            $cidade = trim($cidade);
-            $estado = trim($estado);
-
-            if (! isset($porEstado[$estado])) {
-                $porEstado[$estado] = [];
-            }
-
-            $porEstado[$estado][$cidade] = $cidade;
-        }
+        $porEstado = $this->comarcasPorEstado($vinculo);
 
         if (empty($porEstado)) {
             return 'nas comarcas de _____________________, Estado de ____________________';
         }
 
-        ksort($porEstado);
+        if ($this->comarcasVaoParaAnexo($porEstado)) {
+            return 'nas comarcas relacionadas no <strong>Anexo I – Comarcas de Atuação</strong>, parte integrante deste instrumento';
+        }
 
         $partes = [];
 
-        foreach ($porEstado as $estado => $cidades) {
-            $nomes = array_values($cidades);
-            sort($nomes, SORT_NATURAL | SORT_FLAG_CASE);
+        foreach ($porEstado as $estado => $nomes) {
             $nomesBold = array_map(function ($nome) {
                 return $this->negrito($nome);
             }, $nomes);
@@ -420,6 +436,43 @@ class ContratoCorrespondenteGenerator
         }
 
         return 'nas comarcas de ' . $this->juntarNomes($partes, ', e ');
+    }
+
+    /**
+     * Comarcas de atuação agrupadas por estado, ambos em ordem alfabética: [estado => [cidade, ...]].
+     */
+    public function comarcasPorEstado(ContaCorrespondente $vinculo): array
+    {
+        $vinculo->loadMissing(['entidade.atuacao.cidade.estado']);
+
+        $porEstado = [];
+        $atuacoes = optional($vinculo->entidade)->atuacao ?? collect();
+
+        foreach ($atuacoes as $atuacao) {
+            $cidade = trim((string) optional($atuacao->cidade)->nm_cidade_cde);
+            $estado = trim((string) optional(optional($atuacao->cidade)->estado)->nm_estado_est);
+
+            if ($cidade === '' || $estado === '') {
+                continue;
+            }
+
+            $porEstado[$estado][$cidade] = $cidade;
+        }
+
+        ksort($porEstado);
+
+        foreach ($porEstado as $estado => $cidades) {
+            $nomes = array_values($cidades);
+            sort($nomes, SORT_NATURAL | SORT_FLAG_CASE);
+            $porEstado[$estado] = $nomes;
+        }
+
+        return $porEstado;
+    }
+
+    private function comarcasVaoParaAnexo(array $porEstado): bool
+    {
+        return array_sum(array_map('count', $porEstado)) > self::LIMITE_COMARCAS_NO_TEXTO;
     }
 
     /**
@@ -440,6 +493,22 @@ class ContratoCorrespondenteGenerator
             . 'AGÊNCIA: ' . $this->campo($agencia, 12) . ' '
             . 'CONTA: ' . $this->campo($conta, 18) . ' '
             . 'PIX: ' . $this->campo($pix, 28) . '.';
+    }
+
+    /**
+     * Dados bancários em pares rótulo => valor (HTML seguro, com lacuna quando vazio) para o quadro do contrato.
+     */
+    public function dadosBancariosContrato(ContaCorrespondente $vinculo): array
+    {
+        $banco = $this->buscarDadosBancarios($vinculo);
+
+        return [
+            'Favorecido' => $this->campo($banco->nm_titular_dba ?? null, 28),
+            'Banco'      => $this->campo($this->formatarBanco($banco), 18),
+            'Agência'    => $this->campo($banco->nu_agencia_dba ?? null, 10),
+            'Conta'      => $this->campo($banco->nu_conta_dba ?? null, 14),
+            'PIX'        => $this->campo($banco->dc_pix_dba ?? null, 24),
+        ];
     }
 
     private function buscarDadosBancarios(ContaCorrespondente $vinculo)
