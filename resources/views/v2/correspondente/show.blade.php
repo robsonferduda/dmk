@@ -49,6 +49,7 @@
             </div>
         </div>
         <div class="uv-hero-actions">
+            <a href="{{ url('v2/correspondentes/'.$idSafe.'/processos') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up me-1"></i> Processos e desempenho</a>
             <a href="{{ url('v2/correspondentes/'.$idSafe.'/editar') }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil me-1"></i> Editar dados</a>
             <div class="dropdown">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button">

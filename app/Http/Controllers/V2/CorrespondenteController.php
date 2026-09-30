@@ -12,9 +12,11 @@ use App\Estado;
 use App\Exports\Correspondente\RelacaoCorrespondentesEscritorioExport;
 use App\Fone;
 use App\Http\Controllers\Controller;
+use App\Processo;
 use App\RegistroBancario;
 use App\ReembolsoTipoDespesa;
 use App\Services\Contrato\ContratoCorrespondenteGenerator;
+use App\Services\Correspondente\AnaliseProcessos;
 use App\Services\Correspondente\CorrespondenteBusca;
 use App\Services\Correspondente\FotoCorrespondente;
 use App\TipoConta;
@@ -29,6 +31,7 @@ class CorrespondenteController extends Controller
     const FILTROS = ['nome', 'cd_categoria_correspondente_cac', 'identificacao', 'cd_estado_est', 'cd_cidade_cde', 'foto'];
     const POR_PAGINA = 50;
     const LIMITE_COMARCAS_LISTADAS = 60;
+    const PERIODOS_ANALISE = [12, 24, 36, 60];
 
     public function __construct()
     {
@@ -175,6 +178,72 @@ class CorrespondenteController extends Controller
             'listaBancos'=> Banco::orderBy('nm_banco_ban')->get(),
             'idSafe'     => safe_encrypt($vinculo->cd_correspondente_cor),
             'foto'       => $fotos->urlPorConta($vinculo->cd_correspondente_cor),
+        ]);
+    }
+
+    public function processos(Request $request, $id, FotoCorrespondente $fotos)
+    {
+        $vinculo = $this->vinculo($id);
+        $meses = in_array((int) $request->get('meses'), self::PERIODOS_ANALISE, true) ? (int) $request->get('meses') : 24;
+
+        $analise = new AnaliseProcessos($this->conta(), $vinculo->cd_correspondente_cor);
+        $serie = $analise->serieMensal($meses);
+        $tendencia = $analise->tendencia($serie);
+
+        $filtros = array_filter($request->only(['situacao', 'de', 'ate', 'busca']), function ($valor) {
+            return $valor !== null && $valor !== '';
+        });
+
+        $processos = Processo::with(['status', 'cidade.estado', 'cliente', 'honorario.tipoServicoCorrespondente'])
+            ->where('cd_conta_con', $this->conta())
+            ->where('cd_correspondente_cor', $vinculo->cd_correspondente_cor);
+
+        $situacao = $filtros['situacao'] ?? null;
+        if ($situacao === 'finalizado') {
+            $processos->whereIn('cd_status_processo_stp', AnaliseProcessos::FINALIZADOS);
+        } elseif ($situacao === 'cancelado') {
+            $processos->whereIn('cd_status_processo_stp', AnaliseProcessos::CANCELADOS);
+        } elseif ($situacao === 'andamento') {
+            $processos->whereNotIn('cd_status_processo_stp', array_merge(AnaliseProcessos::FINALIZADOS, AnaliseProcessos::CANCELADOS));
+        }
+
+        foreach (['de' => '>=', 'ate' => '<='] as $campo => $operador) {
+            if (!empty($filtros[$campo]) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $filtros[$campo])) {
+                $processos->where('dt_prazo_fatal_pro', $operador, $filtros[$campo]);
+            }
+        }
+
+        if (!empty($filtros['busca'])) {
+            $termo = '%' . $filtros['busca'] . '%';
+            $processos->where(function ($q) use ($termo) {
+                $q->where('nu_processo_pro', 'ilike', $termo)
+                    ->orWhere('nu_acompanhamento_pro', 'ilike', $termo)
+                    ->orWhere('nm_autor_pro', 'ilike', $termo)
+                    ->orWhere('nm_reu_pro', 'ilike', $termo);
+            });
+        }
+
+        $processos = $processos->orderBy('dt_prazo_fatal_pro', 'desc')
+            ->orderBy('cd_processo_pro', 'desc')
+            ->paginate(25)
+            ->appends(array_merge($filtros, ['meses' => $meses]));
+
+        return view('v2.correspondente.processos', [
+            'vinculo'    => $vinculo,
+            'idSafe'     => safe_encrypt($vinculo->cd_correspondente_cor),
+            'idCrypt'    => \Crypt::encrypt($vinculo->cd_correspondente_cor),
+            'foto'       => $fotos->urlPorConta($vinculo->cd_correspondente_cor),
+            'meses'      => $meses,
+            'periodos'   => self::PERIODOS_ANALISE,
+            'serie'      => $serie,
+            'tendencia'  => $tendencia,
+            'leitura'    => $analise->leitura($tendencia, $serie),
+            'resumo'     => $analise->resumo(),
+            'servicos'   => $analise->ranking('servico', $meses),
+            'comarcas'   => $analise->ranking('comarca', $meses),
+            'clientes'   => $analise->ranking('cliente', $meses, 5),
+            'processos'  => $processos,
+            'filtros'    => $filtros,
         ]);
     }
 

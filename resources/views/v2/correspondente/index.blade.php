@@ -157,6 +157,7 @@
                                     <div class="dropdown">
                                         <button class="users-action-btn dropdown-toggle" data-bs-toggle="dropdown" type="button" title="Mais opções"><i class="bi bi-three-dots"></i></button>
                                         <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="{{ url('v2/correspondentes/'.$correspondente->id_safe.'/processos') }}"><i class="bi bi-graph-up me-2"></i> Processos e desempenho</a></li>
                                             <li><a class="dropdown-item" href="{{ url('correspondente/comarcas/'.$correspondente->id_crypt) }}"><i class="bi bi-geo-alt me-2"></i> Comarcas</a></li>
                                             <li><a class="dropdown-item" href="{{ url('correspondente/despesas/'.$correspondente->cd_correspondente_cor) }}"><i class="bi bi-cash-coin me-2"></i> Despesas</a></li>
                                             <li><a class="dropdown-item" href="{{ url('correspondente/honorarios/'.$correspondente->id_crypt) }}"><i class="bi bi-currency-dollar me-2"></i> Honorários</a></li>

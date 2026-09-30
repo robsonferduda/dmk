@@ -386,6 +386,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
         Route::get('correspondentes', 'CorrespondenteController@index');
         Route::get('correspondentes/{id}', 'CorrespondenteController@show');
         Route::get('correspondentes/{id}/editar', 'CorrespondenteController@edit');
+        Route::get('correspondentes/{id}/processos', 'CorrespondenteController@processos');
     });
     Route::get('correspondente/tipo-processo-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoProcesso');
     Route::get('correspondente/tipo-servico-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoServico');
