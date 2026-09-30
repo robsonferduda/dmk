@@ -32,6 +32,7 @@ class Conta extends Model implements AuditableContract
                           
     public $timestamps = true;
     protected $dates = ['deleted_at'];
+    protected $casts = ['fl_advogado_con' => 'boolean'];
 
     public function tipoPessoa()
     {

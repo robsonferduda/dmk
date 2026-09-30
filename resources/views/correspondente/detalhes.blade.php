@@ -51,6 +51,10 @@
                                                 <li>
                                                     <strong>Tipo: </strong> {{ ($correspondente->tipoPessoa()->first()) ? $correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp : 'Não informado' }}
                                                 </li>
+                                                <li>
+                                                    <strong>Atuação: </strong>
+                                                    @include('correspondente.partes.atuacao', ['flAdvogado' => optional($correspondente->correspondente)->fl_advogado_con])
+                                                </li>
                                                 @if($entIde && $entIde->cpf()->first())
                                                     <li>
                                                         <strong>CPF: </strong> {{ $entIde->cpf()->first()->nu_identificacao_ide }}

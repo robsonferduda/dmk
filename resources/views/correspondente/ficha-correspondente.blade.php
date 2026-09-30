@@ -54,6 +54,21 @@
                                                     <i></i>Pessoa Física</label>
                                             </div>
                                         </section>
+                                        @php
+                                            $flAdvogado = old('fl_advogado_con', optional($correspondente->correspondente)->fl_advogado_con);
+                                            $flAdvogado = ($flAdvogado === null || $flAdvogado === '') ? null : (bool) $flAdvogado;
+                                        @endphp
+                                        <section>
+                                            <label class="label">Atuação</label>
+                                            <div class="inline-group">
+                                                <label class="radio">
+                                                    <input type="radio" name="fl_advogado_con" value="1" {{ $flAdvogado === true ? 'checked="checked"' : '' }}>
+                                                    <i></i>Advogado</label>
+                                                <label class="radio">
+                                                    <input type="radio" name="fl_advogado_con" value="0" {{ $flAdvogado === false ? 'checked="checked"' : '' }}>
+                                                    <i></i>Preposto</label>
+                                            </div>
+                                        </section>
                                         <div class="row">
 
                                             <section class="col col-2 box-pessoa-juridica">

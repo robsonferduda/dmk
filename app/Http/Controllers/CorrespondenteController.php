@@ -566,8 +566,11 @@ class CorrespondenteController extends Controller
                        t5.cd_cidade_cde,
                        t5.nm_cidade_cde,
                        t10.email,
-                       t4.color_cac
+                       t4.color_cac,
+                       cor.fl_advogado_con
                 FROM conta_correspondente_ccr t1
+                LEFT JOIN conta_con cor
+                    ON cor.cd_conta_con = t1.cd_correspondente_cor
                 LEFT JOIN categoria_correspondente_cac t4
                     ON t1.cd_categoria_correspondente_cac = t4.cd_categoria_correspondente_cac
                 LEFT JOIN (
@@ -1004,6 +1007,9 @@ class CorrespondenteController extends Controller
                 $conta = new Correspondente();
                 $conta->fill($request->all());
                 $conta->fl_correspondente_con = "S";
+                if ($request->filled('fl_advogado_con')) {
+                    $conta->fl_advogado_con = (bool) $request->fl_advogado_con;
+                }
                 $conta->saveOrFail();
 
                 if ($conta->cd_conta_con) {
@@ -1316,6 +1322,9 @@ class CorrespondenteController extends Controller
             $correspondente->nm_razao_social_con = $request->nm_conta_correspondente_ccr;
             $correspondente->cd_tipo_pessoa_tpp = $request->cd_tipo_pessoa_tpp;
             $correspondente->nu_telefone_whatsapp_con = preg_replace('/\D/', '', $request->nu_telefone_whatsapp_con ?? '');
+            if ($request->filled('fl_advogado_con')) {
+                $correspondente->fl_advogado_con = (bool) $request->fl_advogado_con;
+            }
             $correspondente->save();
         } else {
             $conta_correspondente = ContaCorrespondente::where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $request->conta)->first();
@@ -1328,6 +1337,9 @@ class CorrespondenteController extends Controller
             $vinculo = $conta_correspondente->saveOrFail();
 
             $correspondente->nu_telefone_whatsapp_con = preg_replace('/\D/', '', $request->nu_telefone_whatsapp_con ?? '');
+            if ($request->filled('fl_advogado_con')) {
+                $correspondente->fl_advogado_con = (bool) $request->fl_advogado_con;
+            }
             $correspondente->save();
         }
 

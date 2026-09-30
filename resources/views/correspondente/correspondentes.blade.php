@@ -97,6 +97,7 @@
                                     <th style="">Comarca de Origem</th> 
                                     <th style="">CPF/CNPJ</th>
                                     <th style="">Nome</th>
+                                    <th style="" class="center">Atuação</th>
                                     <th style="" class="center">Email</th>                                  
                                     <th style="width:100px;" class="center"><i class="fa fa-fw fa-cog"></i> Ações</th>
                                 </tr>
@@ -116,6 +117,7 @@
                                         <td>
                                             {{ $correspondente->nm_conta_correspondente_ccr }}
                                         </td>
+                                        <td class="center">@include('correspondente.partes.atuacao', ['flAdvogado' => $correspondente->fl_advogado_con])</td>
                                         <td>{!! ($correspondente->email) ? $correspondente->email : '<span class="text-danger">Não informado</span>' !!}</td>
                                         <td class="center">
                                             <div>

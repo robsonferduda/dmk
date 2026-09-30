@@ -43,6 +43,7 @@
                                
                                 <li style="margin-bottom: 8px;">
                                     {!! ($correspondente->tipoPessoa()->first()) ? '<span class="label label-primary">Pessoa '.$correspondente->tipoPessoa()->first()->nm_tipo_pessoa_tpp.'</span>' : '' !!}
+                                    @include('correspondente.partes.atuacao', ['flAdvogado' => $correspondente->fl_advogado_con])
                                 </li>
                                 <li>
                                     <p class="text-muted">

@@ -56,6 +56,17 @@
                                         <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}">
                                         <b class="tooltip tooltip-bottom-right">Email do Correspondente</b> </label>
                                     </section>
+                                    <section>
+                                        <label class="label">Atuação</label>
+                                        <div class="inline-group">
+                                            <label class="radio">
+                                                <input type="radio" name="fl_advogado_con" value="1" {{ old('fl_advogado_con') === '1' ? 'checked' : '' }}>
+                                                <i></i>Advogado</label>
+                                            <label class="radio">
+                                                <input type="radio" name="fl_advogado_con" value="0" {{ old('fl_advogado_con') === '0' ? 'checked' : '' }}>
+                                                <i></i>Preposto</label>
+                                        </div>
+                                    </section>
                                 </fieldset>
                                 <footer>
                                     <button type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i> Adicionar</button>                                 
