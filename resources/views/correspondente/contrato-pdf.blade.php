@@ -27,7 +27,6 @@
     .cab-marca span { color: #a8834a; }
     .cab-titulo { font-size: 7pt; color: #7a8594; text-align: right; }
     .rod-tabela td { padding-top: 2mm; border-top: 0.5pt solid #d9dee5; font-size: 7pt; color: #7a8594; vertical-align: top; }
-    .rod-rubricas { text-align: center; }
     .rod-pagina { text-align: right; font-family: nunitosans; font-weight: bold; color: #1b2f4b; }
 
     .timbre { width: 100%; border-collapse: collapse; margin-bottom: 7mm; }
@@ -105,9 +104,8 @@
 <htmlpagefooter name="rodape">
     <table class="rod-tabela">
         <tr>
-            <td style="width: 38%;">{{ $nomeContratado ?: 'Contratado (a)' }}</td>
-            <td class="rod-rubricas" style="width: 38%;">Rubricas: ______________ ______________</td>
-            <td class="rod-pagina" style="width: 24%;">Página {PAGENO} de {nbpg}</td>
+            <td style="width: 70%;">{{ $nomeContratado ?: 'Contratado (a)' }}</td>
+            <td class="rod-pagina" style="width: 30%;">Página {PAGENO} de {nbpg}</td>
         </tr>
     </table>
 </htmlpagefooter>
