@@ -166,6 +166,26 @@
   flex-shrink: 0;
 }
 
+.dmk-avatar-foto {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--card-bg);
+  box-shadow: 0 0 0 1px var(--border-color);
+  background: var(--surface-color);
+}
+
+.dmk-avatar-foto.sm {
+  width: 34px;
+  height: 34px;
+}
+
+a:hover > .dmk-avatar-foto {
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
 .dmk-avatar-letter.sm {
   width: 34px;
   height: 34px;

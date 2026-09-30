@@ -29,6 +29,7 @@ class CorrespondenteBusca
                        t5.cd_cidade_cde,
                        t5.nm_cidade_cde,
                        t10.email,
+                       t10.entidades_usuario,
                        t4.color_cac,
                        cor.fl_advogado_con
                 FROM conta_correspondente_ccr t1
@@ -78,16 +79,16 @@ class CorrespondenteBusca
                     ORDER BY cat.cd_entidade_ete, cat.cd_cidade_atuacao_cat
                 ) t5 ON t5.cd_entidade_ete = t1.cd_entidade_ete
                 LEFT JOIN (
-                    SELECT DISTINCT ON (u.cd_conta_con)
-                           u.cd_conta_con,
-                           u.email
+                    SELECT u.cd_conta_con,
+                           (ARRAY_AGG(u.email ORDER BY u.id))[1] AS email,
+                           STRING_AGG(u.cd_entidade_ete::text, ',' ORDER BY u.id) AS entidades_usuario
                     FROM users u
                     INNER JOIN conta_correspondente_ccr ccr
                         ON ccr.cd_correspondente_cor = u.cd_conta_con
                        AND ccr.cd_conta_con = {$conta}
                        AND ccr.deleted_at IS NULL
                     WHERE u.cd_nivel_niv = 3
-                    ORDER BY u.cd_conta_con, u.id
+                    GROUP BY u.cd_conta_con
                 ) t10 ON t10.cd_conta_con = t1.cd_correspondente_cor
                 WHERE t1.deleted_at IS NULL
                   AND t1.cd_conta_con = {$conta} ";

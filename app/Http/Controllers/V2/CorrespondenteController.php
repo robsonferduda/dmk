@@ -16,6 +16,7 @@ use App\RegistroBancario;
 use App\ReembolsoTipoDespesa;
 use App\Services\Contrato\ContratoCorrespondenteGenerator;
 use App\Services\Correspondente\CorrespondenteBusca;
+use App\Services\Correspondente\FotoCorrespondente;
 use App\TipoConta;
 use App\TipoEnderecoEletronico;
 use App\TipoFone;
@@ -25,7 +26,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class CorrespondenteController extends Controller
 {
-    const FILTROS = ['nome', 'cd_categoria_correspondente_cac', 'identificacao', 'cd_estado_est', 'cd_cidade_cde'];
+    const FILTROS = ['nome', 'cd_categoria_correspondente_cac', 'identificacao', 'cd_estado_est', 'cd_cidade_cde', 'foto'];
     const POR_PAGINA = 50;
     const LIMITE_COMARCAS_LISTADAS = 60;
 
@@ -35,13 +36,29 @@ class CorrespondenteController extends Controller
         $this->middleware('can:correspondente.meus-correspondentes');
     }
 
-    public function index(Request $request, CorrespondenteBusca $busca)
+    public function index(Request $request, CorrespondenteBusca $busca, FotoCorrespondente $fotos)
     {
         $filtros = array_filter($request->only(self::FILTROS), function ($valor) {
             return $valor !== null && $valor !== '';
         });
+        if (isset($filtros['foto']) && !in_array($filtros['foto'], ['com', 'sem'], true)) {
+            unset($filtros['foto']);
+        }
 
         $correspondentes = $busca->buscar($this->conta(), $filtros);
+
+        $totalComFoto = 0;
+        foreach ($correspondentes as $correspondente) {
+            $correspondente->foto = $fotos->urlPrimeira((string) $correspondente->entidades_usuario);
+            $totalComFoto += $correspondente->foto ? 1 : 0;
+        }
+
+        if (isset($filtros['foto'])) {
+            $comFoto = $filtros['foto'] === 'com';
+            $correspondentes = array_values(array_filter($correspondentes, function ($correspondente) use ($comFoto) {
+                return (bool) $correspondente->foto === $comFoto;
+            }));
+        }
 
         if ($request->filled('exportar')) {
             $dados = ['correspondentes' => $busca->semInativos($correspondentes)];
@@ -81,12 +98,13 @@ class CorrespondenteController extends Controller
             'filtros'         => $filtros,
             'grupo'           => $grupo,
             'totais'          => $totais,
+            'totalComFoto'    => $totalComFoto,
             'categorias'      => $this->categorias(),
             'estados'         => Estado::orderBy('nm_estado_est')->get(),
         ]);
     }
 
-    public function show($id)
+    public function show($id, FotoCorrespondente $fotos)
     {
         $vinculo = $this->vinculo($id);
         $entidade = $vinculo->entidade;
@@ -132,10 +150,11 @@ class CorrespondenteController extends Controller
             'contratoPendencias' => app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($vinculo),
             'idCrypt'            => \Crypt::encrypt($vinculo->cd_correspondente_cor),
             'idSafe'             => safe_encrypt($vinculo->cd_correspondente_cor),
+            'foto'               => $fotos->urlPorConta($vinculo->cd_correspondente_cor),
         ]);
     }
 
-    public function edit($id)
+    public function edit($id, FotoCorrespondente $fotos)
     {
         $vinculo = $this->vinculo($id);
         $cdEntidade = $vinculo->cd_entidade_ete;
@@ -155,6 +174,7 @@ class CorrespondenteController extends Controller
             'tiposConta' => TipoConta::all(),
             'listaBancos'=> Banco::orderBy('nm_banco_ban')->get(),
             'idSafe'     => safe_encrypt($vinculo->cd_correspondente_cor),
+            'foto'       => $fotos->urlPorConta($vinculo->cd_correspondente_cor),
         ]);
     }
 

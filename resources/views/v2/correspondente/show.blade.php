@@ -26,7 +26,13 @@
 
     <div class="uv-hero mb-3">
         <div class="uv-hero-user">
-            <span class="dmk-avatar-letter">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+            @if($foto)
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-foto" title="Ampliar foto">
+                    <img src="{{ $foto }}" alt="Foto de {{ $nome }}" class="dmk-avatar-foto">
+                </a>
+            @else
+                <span class="dmk-avatar-letter" title="Sem foto de perfil">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+            @endif
             <div>
                 <h1 class="uv-hero-name">{{ $nome }}</h1>
                 <p class="uv-hero-email mb-0">{{ $emailAcesso ?: 'Sem email de acesso' }}</p>
@@ -330,4 +336,23 @@
         </div>
     </div>
 </div>
+
+@if($foto)
+    <div class="modal fade" id="modal-foto" tabindex="-1" aria-label="Foto de {{ $nome }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $nome }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ $foto }}" alt="Foto de {{ $nome }}" class="img-fluid rounded">
+                </div>
+                <div class="modal-footer small text-muted justify-content-start">
+                    Foto enviada pelo próprio correspondente no perfil dele.
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 @endsection

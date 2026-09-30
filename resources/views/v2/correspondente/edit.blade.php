@@ -23,9 +23,16 @@
     </nav>
 
     <div class="ue-shell-head mb-3">
-        <div>
-            <h1 class="page-title mb-1">Editar correspondente</h1>
-            <p class="ue-shell-subtitle">Os dados ficam no vínculo com o escritório e também são vistos pelo correspondente.</p>
+        <div class="d-flex align-items-center gap-3">
+            @if($foto)
+                <img src="{{ $foto }}" alt="Foto de {{ $nome }}" class="dmk-avatar-foto" title="A foto é enviada pelo próprio correspondente no perfil dele">
+            @else
+                <span class="dmk-avatar-letter" title="Sem foto de perfil">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+            @endif
+            <div>
+                <h1 class="page-title mb-1">Editar correspondente</h1>
+                <p class="ue-shell-subtitle mb-0">Os dados ficam no vínculo com o escritório e também são vistos pelo correspondente.</p>
+            </div>
         </div>
         <div class="page-header-actions">
             <a href="{{ url('v2/correspondentes/'.$idSafe) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg me-1"></i> Cancelar</a>

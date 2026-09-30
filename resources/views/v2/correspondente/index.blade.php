@@ -34,7 +34,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-3">
                     <label class="form-label" for="filtro-cidade" title="Considera todas as cidades de atuação, não só a comarca de origem">
                         Cidade de atuação <i class="bi bi-info-circle"></i>
                     </label>
@@ -52,6 +52,14 @@
                 <div class="col-md-4 col-xl-3">
                     <label class="form-label" for="filtro-identificacao">CPF/CNPJ</label>
                     <input type="text" id="filtro-identificacao" name="identificacao" class="form-control" placeholder="Exato, como cadastrado" value="{{ $filtros['identificacao'] ?? '' }}">
+                </div>
+                <div class="col-md-4 col-xl-2">
+                    <label class="form-label" for="filtro-foto">Foto de perfil</label>
+                    <select id="filtro-foto" name="foto" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="com" {{ ($filtros['foto'] ?? '') === 'com' ? 'selected' : '' }}>Com foto ({{ $totalComFoto }})</option>
+                        <option value="sem" {{ ($filtros['foto'] ?? '') === 'sem' ? 'selected' : '' }}>Sem foto</option>
+                    </select>
                 </div>
                 @if(!empty($filtros['nome']))
                     <input type="hidden" name="nome" value="{{ $filtros['nome'] }}">
@@ -116,7 +124,11 @@
                         <tr>
                             <td>
                                 <div class="users-user">
-                                    <span class="dmk-avatar-letter sm">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+                                    @if($correspondente->foto)
+                                        <img src="{{ $correspondente->foto }}" alt="Foto de {{ $nome }}" class="dmk-avatar-foto sm" loading="lazy">
+                                    @else
+                                        <span class="dmk-avatar-letter sm">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+                                    @endif
                                     <div class="users-user-info">
                                         <a href="{{ $urlDetalhes }}" class="users-user-name">{{ $nome }}</a>
                                         <span class="users-user-email">{{ $correspondente->email ?: 'Sem email de acesso' }}</span>
