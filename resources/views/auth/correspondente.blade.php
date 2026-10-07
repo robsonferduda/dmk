@@ -2,15 +2,19 @@
 @section('content')
     <form class="smart-form client-form" method="POST" action="{{ route('autenticacao') }}">
     {{ csrf_field() }}
+    <input type="hidden" name="nivel" value="{{ \App\Enums\Nivel::CORRESPONDENTE }}">
         <header><i class="fa fa-lock"></i> Acesso Correspondentes</header>
         <fieldset style="padding-top: 8px;">  
             <div style="text-align: center; margin-bottom: 10px;">
                 <h3>Easyjuris</h3>
             <div>      
+            @if (session('status'))
+                <div class="alert alert-info" style="margin-bottom: 10px;">{{ session('status') }}</div>
+            @endif
             <section>
                 <label class="label">E-mail</label>
                 <label class="input"> <i class="icon-append fa fa-user"></i>
-                    <input type="email" name="email">
+                    <input type="email" name="email" value="{{ old('email') }}">
                     <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Digite seu usuário (email)</b></label>
 
                     @if ($errors->has('email'))

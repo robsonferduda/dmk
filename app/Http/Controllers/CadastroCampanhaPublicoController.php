@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Nivel;
 use App\Services\Cadastro\CampanhaAtualizacaoService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -45,6 +48,12 @@ class CadastroCampanhaPublicoController extends Controller
         }
 
         if ($envio) {
+            $usuario = Auth::user();
+            if ($usuario && (int) $usuario->cd_nivel_niv === Nivel::CORRESPONDENTE
+                && $envio->vinculo && (int) $envio->vinculo->cd_correspondente_cor === (int) $usuario->cd_conta_con) {
+                return redirect('correspondente/ficha/' . Crypt::encrypt($envio->cd_conta_correspondente_ccr));
+            }
+
             Session::put('SESSION_ATUALIZACAO_CCR', $envio->cd_conta_correspondente_ccr);
         }
 

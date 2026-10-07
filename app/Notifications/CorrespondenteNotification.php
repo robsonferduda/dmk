@@ -32,7 +32,7 @@ class CorrespondenteNotification extends Notification
             ->subject(Lang::getFromJson('Confirmação de Cadastro'))
             ->markdown('email.convite')
             ->line(Lang::getFromJson('Agradecemos seu cadastro em nosso sistema. Utilize o endereço abaixo para acessar:'))
-            ->action(Lang::getFromJson('Acesse Aqui'), url(route('autenticacao')))
+            ->action(Lang::getFromJson('Acesse Aqui'), route('autenticacao.correspondente'))
             ->line(Lang::getFromJson('Após acessar o seu cadastro, terá ao seu alcance o acesso a uma plataforma completa para o gerenciamento de diligências e audiências solicitadas ao vosso escritório.'))
             ->line(Lang::getFromJson('Aguardamos você para darmos início a parceria.'));
     }
