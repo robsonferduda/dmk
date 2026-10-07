@@ -1,0 +1,3 @@
+# Agendador do Laravel (app/Console/Kernel.php). Instalação: sudo cp deploy/cron/dmk-scheduler /etc/cron.d/dmk-scheduler
+# Ajuste o caminho do projeto se não for /var/www/html/dmk.
+* * * * * www-data cd /var/www/html/dmk && php artisan schedule:run >> /dev/null 2>&1

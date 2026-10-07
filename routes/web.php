@@ -18,6 +18,8 @@ Route::get('broadcast', function () {
 
 Route::get('teste', 'TesteController@index');
 
+Route::post('webhooks/autentique', 'AutentiqueWebhookController@receber');
+
 // Rota pública para download do zip de anexos via token (link enviado por e-mail)
 Route::get('processos/anexos/download/token/{token}', 'AnexoProcessoController@downloadPorToken')->name('processo.anexos.download.token');
 // Rota pública para confirmar recebimento dos documentos via link no e-mail
@@ -86,6 +88,8 @@ Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico
 
 // [ATUALIZAÇÃO CADASTRAL] Link enviado por email ao correspondente para rastrear acesso.
 Route::get('atualizar-cadastro/{token}', 'CorrespondenteController@registrarAcessoAtualizacao')->name('correspondente.registro-acesso');
+Route::get('cadastro/atualizar/{token}', 'CadastroCampanhaPublicoController@atualizar')->where('token', '[A-Za-z0-9]{40}');
+Route::get('cadastro/aberto/{token}.gif', 'CadastroCampanhaPublicoController@abertura')->where('token', '[A-Za-z0-9]{40}');
 
 // [REVISÃO/APROVAÇÃO DE PAGAMENTO] Link com token enviado por WhatsApp/e-mail ao correspondente.
 // Permite revisar a listagem de processos, confirmar ou recusar sem acesso ao sistema.
@@ -181,9 +185,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('cliente/honorarios/salvar', 'ClienteController@salvarHonorarios');
     Route::delete('cliente/honorarios/{entidade}/{tipo}/excluir/{id}', 'ClienteController@excluirHonorarios');
     Route::resource('clientes', 'ClienteController');
-
-    Route::get('documento/log', 'WebhookController@log');
-    Route::post('documento/criacao', 'WebhookController@handleAutentiqueWebhook');
 
     Route::get('autocompleteConta', 'CorrespondenteController@searchConta');
     Route::get('autocompleteCliente', 'ClienteController@search');
@@ -330,6 +331,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('correspondente/detalhes/{id}', 'CorrespondenteController@detalhes');
     Route::post('correspondente/contrato/gerar/{id}', 'CorrespondenteController@gerarContrato');
     Route::get('correspondente/contrato/baixar/{id}', 'CorrespondenteController@baixarContrato');
+    Route::post('correspondente/contrato/assinatura/enviar/{id}', 'ContratoAssinaturaController@enviar');
+    Route::post('correspondente/contrato/assinatura/reenviar/{id}', 'ContratoAssinaturaController@reenviar');
+    Route::post('correspondente/contrato/assinatura/cancelar/{id}', 'ContratoAssinaturaController@cancelar');
+    Route::post('correspondente/contrato/assinatura/sincronizar/{id}', 'ContratoAssinaturaController@sincronizar');
+    Route::get('correspondente/contrato/assinatura/baixar/{id}', 'ContratoAssinaturaController@baixarAssinado');
     Route::get('correspondente/categorias', 'CategoriaCorrespondenteController@index');
     Route::get('correspondente/todos/buscar', 'CorrespondenteController@buscarTodos');
     Route::get('correspondente/todos', function () {
@@ -387,6 +393,13 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
         Route::get('correspondentes/{id}', 'CorrespondenteController@show');
         Route::get('correspondentes/{id}/editar', 'CorrespondenteController@edit');
         Route::get('correspondentes/{id}/processos', 'CorrespondenteController@processos');
+
+        Route::get('atualizacao-cadastral', 'AtualizacaoCadastralController@index');
+        Route::post('atualizacao-cadastral/preparar', 'AtualizacaoCadastralController@preparar');
+        Route::post('atualizacao-cadastral/iniciar', 'AtualizacaoCadastralController@iniciar');
+        Route::post('atualizacao-cadastral/pausar', 'AtualizacaoCadastralController@pausar');
+        Route::post('atualizacao-cadastral/reenviar-vencidos', 'AtualizacaoCadastralController@reenviarVencidos');
+        Route::post('atualizacao-cadastral/envios/{id}/reenviar', 'AtualizacaoCadastralController@reenviar');
     });
     Route::get('correspondente/tipo-processo-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoProcesso');
     Route::get('correspondente/tipo-servico-por-cliente/{cliente}', 'CorrespondenteController@buscaTipoServico');

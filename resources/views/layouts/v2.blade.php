@@ -153,6 +153,16 @@
           </li>
           @endcan
 
+          @can('correspondente.meus-correspondentes')
+          <li class="nav-item">
+            <a class="nav-link {{ $menuAtivoV2 === 'atualizacao-cadastral' ? 'active' : '' }}" href="{{ url('v2/atualizacao-cadastral') }}">
+              <span class="nav-icon"><i class="bi bi-envelope-check"></i></span>
+              <span class="nav-text">Atualização cadastral</span>
+              <span class="nav-meta">v2</span>
+            </a>
+          </li>
+          @endcan
+
           @can('correspondente.categorias')
           <li class="nav-item">
             <a class="nav-link" href="{{ url('correspondente/categorias') }}">

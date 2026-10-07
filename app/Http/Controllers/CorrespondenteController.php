@@ -33,6 +33,8 @@ use App\ProcessoMensagem;
 use App\TaxaHonorario;
 use App\ContaCorrespondente;
 use App\Services\Contrato\ContratoCorrespondenteGenerator;
+use App\Services\Autentique\ContratoAssinaturaService;
+use App\Services\Cadastro\CampanhaAtualizacaoService;
 use App\Services\Correspondente\CorrespondenteBusca;
 use App\EnderecoEletronico;
 use App\Enums\TipoConta;
@@ -472,13 +474,16 @@ class CorrespondenteController extends Controller
         $correspondente = ContaCorrespondente::with('entidade')->with('correspondente')->where('cd_conta_con', $this->conta)->where('cd_correspondente_cor', $id)->first();
 
         $contratoPendencias = [];
+        $assinaturaPainel = null;
         if ($correspondente) {
             $contratoPendencias = app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($correspondente);
+            $assinaturaPainel = app(ContratoAssinaturaService::class)->painel($correspondente);
         }
 
         return view('correspondente/detalhes', [
             'correspondente'      => $correspondente,
             'contratoPendencias'  => $contratoPendencias,
+            'assinaturaPainel'    => $assinaturaPainel,
         ]);
     }
 
@@ -492,6 +497,11 @@ class CorrespondenteController extends Controller
         $vinculo = ContaCorrespondente::where('cd_conta_con', $this->conta)
             ->where('cd_correspondente_cor', $id)
             ->firstOrFail();
+
+        if (app(ContratoAssinaturaService::class)->assinaturaEmAndamento($vinculo)) {
+            Flash::warning('Este contrato está aguardando assinaturas na Autentique. Cancele o envio antes de gerar um novo contrato.');
+            return redirect()->to($this->urlDetalhesV2($id) ?: url('correspondente/detalhes/' . \Crypt::encrypt($id)));
+        }
 
         $pendencias = app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($vinculo);
 
@@ -1367,6 +1377,12 @@ class CorrespondenteController extends Controller
         }
 
         if (Auth::user()->cd_nivel_niv == Nivel::CORRESPONDENTE) {
+            try {
+                app(CampanhaAtualizacaoService::class)->registrarConfirmacao($conta_correspondente);
+            } catch (\Throwable $e) {
+                \Log::warning('[cadastro] Falha ao registrar confirmação do CCR ' . $conta_correspondente->cd_conta_correspondente_ccr . ': ' . $e->getMessage());
+            }
+
             return redirect('correspondente/cliente/'.\Crypt::encrypt($conta_correspondente->cd_conta_con).'/dados');
         } else {
             return redirect($this->urlDetalhesV2($conta_correspondente->cd_correspondente_cor) ?: 'correspondente/detalhes/'.safe_encrypt($conta_correspondente->correspondente->cd_conta_con));

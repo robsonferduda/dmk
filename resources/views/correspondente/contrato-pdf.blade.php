@@ -372,15 +372,18 @@
         <td class="ass-papel ass-papel-testemunha">Testemunha 2</td>
     </tr>
     <tr>
-        <td class="ass-dados">
-            <div class="ass-campo">Nome: ________________________________</div>
-            <div class="ass-campo">CPF: _________________________________</div>
-        </td>
-        <td class="ass-vao"></td>
-        <td class="ass-dados">
-            <div class="ass-campo">Nome: ________________________________</div>
-            <div class="ass-campo">CPF: _________________________________</div>
-        </td>
+        @foreach([0, 1] as $i)
+            @if($i === 1)<td class="ass-vao"></td>@endif
+            <td class="ass-dados">
+                @if(!empty($testemunhas[$i]['nome']))
+                    <div class="ass-nome">{{ $testemunhas[$i]['nome'] }}</div>
+                    <div class="ass-campo">CPF: {{ $testemunhas[$i]['cpf'] ?: '____________________' }}</div>
+                @else
+                    <div class="ass-campo">Nome: ________________________________</div>
+                    <div class="ass-campo">CPF: _________________________________</div>
+                @endif
+            </td>
+        @endforeach
     </tr>
 </table>
 

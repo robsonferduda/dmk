@@ -8,6 +8,7 @@
     $rg = optional($entidade)->rg;
     $emailAcesso = \App\User::where('cd_conta_con', $vinculo->cd_correspondente_cor)->where('cd_nivel_niv', \App\Enums\Nivel::CORRESPONDENTE)->orderBy('id')->value('email');
     $contratoGerado = $vinculo->contratoFoiGerado();
+    $aguardandoAssinatura = $assinaturaPainel && $assinaturaPainel['emAndamento'];
 @endphp
 
 @section('title', $nome)
@@ -273,7 +274,7 @@
                               onsubmit="return confirm('{{ !empty($contratoPendencias) ? 'Há dados incompletos no cadastro. Deseja gerar o contrato mesmo assim?' : ($contratoGerado ? 'Já existe um contrato gerado. Deseja gerar novamente?' : 'Confirma a geração do contrato deste correspondente?') }}')">
                             {{ csrf_field() }}
                             <input type="hidden" name="v2" value="1">
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <button type="submit" class="btn btn-primary btn-sm w-100" @if($aguardandoAssinatura) disabled title="Cancele o envio para assinatura antes de gerar um novo contrato" @endif>
                                 <i class="bi bi-file-earmark-plus me-1"></i> {{ $contratoGerado ? 'Gerar novamente' : 'Gerar contrato' }}
                             </button>
                         </form>
@@ -285,6 +286,10 @@
                     </div>
                 </div>
             </div>
+
+            @if($assinaturaPainel)
+                @include('v2.correspondente.partes.assinatura-card')
+            @endif
 
             <div class="card uv-panel mb-3">
                 <div class="card-header">
@@ -355,5 +360,9 @@
             </div>
         </div>
     </div>
+@endif
+
+@if($assinaturaPainel && !$assinaturaPainel['emAndamento'] && empty($assinaturaPainel['impedimentos']))
+    @include('v2.correspondente.partes.assinatura-modal')
 @endif
 @endsection

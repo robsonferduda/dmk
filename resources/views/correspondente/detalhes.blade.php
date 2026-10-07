@@ -294,6 +294,7 @@
                                             {{ csrf_field() }}
                                             <button type="submit"
                                                     class="btn btn-primary btn-sm"
+                                                    @if($assinaturaPainel && $assinaturaPainel['emAndamento']) disabled title="Cancele o envio para assinatura antes de gerar um novo contrato" @endif
                                                     onclick="return confirm('{{ !empty($contratoPendencias) ? 'Há dados incompletos no cadastro. Deseja gerar o contrato mesmo assim?' : ($correspondente->contratoFoiGerado() ? 'Já existe um contrato gerado. Deseja gerar novamente?' : 'Confirma a geração do contrato deste correspondente?') }}')">
                                                 <i class="fa fa-file-pdf-o"></i>
                                                 {{ $correspondente->contratoFoiGerado() ? 'Gerar novamente' : 'Gerar contrato' }}
@@ -308,6 +309,10 @@
                                         @endif
                                     </div>
                                 </fieldset>
+
+                                @if($assinaturaPainel)
+                                    @include('correspondente.partes-contrato.assinatura-classico')
+                                @endif
                             </div>
                         </div>
 

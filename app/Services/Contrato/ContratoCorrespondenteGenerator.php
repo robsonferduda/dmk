@@ -35,7 +35,7 @@ class ContratoCorrespondenteGenerator
         // Geração liberada mesmo com pendências (lacunas no PDF); aviso permanece na tela.
 
         $relativeDir = 'contratos-correspondente/' . $vinculo->cd_conta_correspondente_ccr;
-        $absoluteDir = storage_path('app/public/' . $relativeDir);
+        $absoluteDir = self::caminhoPrivado($relativeDir);
 
         if (! File::isDirectory($absoluteDir) && ! File::makeDirectory($absoluteDir, 0775, true) && ! File::isDirectory($absoluteDir)) {
             throw new RuntimeException('Não foi possível criar o diretório de contratos.');
@@ -43,7 +43,7 @@ class ContratoCorrespondenteGenerator
 
         $fileName = 'contrato-' . Carbon::now()->format('Ymd-His') . '.pdf';
         $relative = $relativeDir . '/' . $fileName;
-        $absolute = storage_path('app/public/' . $relative);
+        $absolute = self::caminhoPrivado($relative);
 
         $this->renderizarPdf($vinculo, $absolute);
 
@@ -51,10 +51,11 @@ class ContratoCorrespondenteGenerator
             throw new RuntimeException('Falha ao gravar o PDF do contrato.');
         }
 
-        if ($vinculo->dc_caminho_contrato_ccr
-            && $vinculo->dc_caminho_contrato_ccr !== $relative
-            && is_file(storage_path('app/public/' . $vinculo->dc_caminho_contrato_ccr))) {
-            @unlink(storage_path('app/public/' . $vinculo->dc_caminho_contrato_ccr));
+        if ($vinculo->dc_caminho_contrato_ccr && $vinculo->dc_caminho_contrato_ccr !== $relative) {
+            $anterior = self::localizarArquivo($vinculo->dc_caminho_contrato_ccr);
+            if ($anterior) {
+                @unlink($anterior);
+            }
         }
 
         $vinculo->fl_contrato_gerado_ccr  = true;
@@ -85,6 +86,7 @@ class ContratoCorrespondenteGenerator
             'nomeContratado'  => $dadosContratado['nome'],
             'localData'       => $this->montarLocalData(),
             'dataEmissao'     => Carbon::now()->format('d/m/Y'),
+            'testemunhas'     => array_values(config('autentique.testemunhas', [])),
             'vinculo'         => $vinculo,
         ])->render();
 
@@ -134,13 +136,29 @@ class ContratoCorrespondenteGenerator
 
     public function caminhoAbsoluto(ContaCorrespondente $vinculo): ?string
     {
-        if (! $vinculo->dc_caminho_contrato_ccr) {
-            return null;
+        return $vinculo->dc_caminho_contrato_ccr ? self::localizarArquivo($vinculo->dc_caminho_contrato_ccr) : null;
+    }
+
+    /**
+     * Caminho absoluto, fora da pasta pública, de um arquivo de contrato (caminho relativo como gravado no vínculo).
+     */
+    public static function caminhoPrivado(string $relativo): string
+    {
+        return storage_path('app/' . ltrim($relativo, '/'));
+    }
+
+    /**
+     * Arquivos gerados antes da mudança ainda podem estar em storage/app/public até rodar `contratos:mover-privado`.
+     */
+    public static function localizarArquivo(string $relativo): ?string
+    {
+        foreach ([self::caminhoPrivado($relativo), storage_path('app/public/' . ltrim($relativo, '/'))] as $caminho) {
+            if (is_file($caminho)) {
+                return $caminho;
+            }
         }
 
-        $path = storage_path('app/public/' . $vinculo->dc_caminho_contrato_ccr);
-
-        return is_file($path) ? $path : null;
+        return null;
     }
 
     /**

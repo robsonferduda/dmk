@@ -16,6 +16,7 @@ use App\Processo;
 use App\RegistroBancario;
 use App\ReembolsoTipoDespesa;
 use App\Services\Contrato\ContratoCorrespondenteGenerator;
+use App\Services\Autentique\ContratoAssinaturaService;
 use App\Services\Correspondente\AnaliseProcessos;
 use App\Services\Correspondente\CorrespondenteBusca;
 use App\Services\Correspondente\FotoCorrespondente;
@@ -151,6 +152,7 @@ class CorrespondenteController extends Controller
             'origem'             => $origem,
             'flAdvogado'         => $this->flagAdvogado(optional($vinculo->correspondente)->fl_advogado_con),
             'contratoPendencias' => app(ContratoCorrespondenteGenerator::class)->pendenciasGeracao($vinculo),
+            'assinaturaPainel'   => app(ContratoAssinaturaService::class)->painel($vinculo),
             'idCrypt'            => \Crypt::encrypt($vinculo->cd_correspondente_cor),
             'idSafe'             => safe_encrypt($vinculo->cd_correspondente_cor),
             'foto'               => $fotos->urlPorConta($vinculo->cd_correspondente_cor),

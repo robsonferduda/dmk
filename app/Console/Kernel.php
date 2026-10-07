@@ -51,6 +51,20 @@ class Kernel extends ConsoleKernel
                  ->dailyAt('00:30')
                  ->appendOutputTo(storage_path('logs/pagamentos-consolidar.log'));
                  */
+
+        // [CADASTRO] Atualização cadastral em lotes pequenos ao longo do dia útil; o teto diário fica em config/cadastro.php.
+        $schedule->command('cadastro:enviar-lote')
+                 ->everyTenMinutes()
+                 ->weekdays()
+                 ->between('8:00', '18:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/cadastro-envio.log'));
+
+        // [AUTENTIQUE] Rede de segurança dos webhooks: atualiza os contratos aguardando assinatura.
+        $schedule->command('autentique:sincronizar')
+                 ->hourlyAt(15)
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/autentique-sincronizar.log'));
     }
 
     /**
