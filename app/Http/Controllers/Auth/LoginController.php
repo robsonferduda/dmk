@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\User;
 use App\Entidade;
+use App\ContaCorrespondente;
 use App\LogAcesso;
 use App\Enums\Nivel;
 use Laracasts\Flash\Flash;
@@ -140,12 +141,26 @@ class LoginController extends Controller
     private function redirectAposLoginCorrespondente()
     {
         $cdCcr = Session::pull('SESSION_ATUALIZACAO_CCR');
+        $usuario = Auth::user();
 
-        if ($cdCcr && (int) Auth::user()->cd_nivel_niv === Nivel::CORRESPONDENTE) {
-            return redirect('correspondente/ficha/' . \Crypt::encrypt($cdCcr));
+        if (! $cdCcr || (int) $usuario->cd_nivel_niv !== Nivel::CORRESPONDENTE) {
+            return redirect()->intended('home');
         }
 
-        return redirect()->intended('home');
+        // O link pode ser de outro correspondente (e-mail encaminhado, computador compartilhado):
+        // nesse caso abre a ficha do próprio usuário no mesmo escritório.
+        $vinculo = ContaCorrespondente::find($cdCcr);
+        if ($vinculo && (int) $vinculo->cd_correspondente_cor !== (int) $usuario->cd_conta_con) {
+            $vinculo = ContaCorrespondente::where('cd_conta_con', $vinculo->cd_conta_con)
+                ->where('cd_correspondente_cor', $usuario->cd_conta_con)
+                ->first();
+        }
+
+        if (! $vinculo) {
+            return redirect()->intended('home');
+        }
+
+        return redirect('correspondente/ficha/' . \Crypt::encrypt($vinculo->cd_conta_correspondente_ccr));
     }
 
     public function logout(Request $request)
