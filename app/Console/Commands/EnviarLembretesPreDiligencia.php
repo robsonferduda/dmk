@@ -7,7 +7,9 @@ use App\Processo;
 use App\ContaCorrespondente;
 use App\WhatsappMensagem;
 use App\Services\WhatsappDispatcher;
+use App\Support\DiasUteis;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -26,28 +28,25 @@ use Carbon\Carbon;
 class EnviarLembretesPreDiligencia extends Command
 {
     protected $signature = 'whatsapp:lembrete-prediligencias
-                            {--data= : Data alvo (Y-m-d). Default: amanhã.}
+                            {--data= : Data alvo (Y-m-d). Default: de amanhã até o próximo dia útil.}
                             {--processo= : Limita a um cd_processo_pro específico (ignora filtro de data).}
                             {--conta= : Limita a um cd_conta_con específico (útil em testes por escritório).}
                             {--force : Reenvia mesmo que já tenha sido enviado (útil em testes).}
                             {--dry-run : Não envia; apenas lista o que enviaria com o corpo da mensagem.}
                             {--list : Exibe tabela compacta dos processos que seriam notificados (sem enviar).}';
 
-    protected $description = 'Envia lembretes de PRÉ-diligência via WhatsApp aos correspondentes (prazo fatal = amanhã).';
+    protected $description = 'Envia lembretes de PRÉ-diligência via WhatsApp aos correspondentes (audiências até o próximo dia útil, um aviso por audiência).';
 
     public function handle()
     {
-        // Quando não há --data explícito, usa o próximo dia útil:
-        // se amanhã for fim de semana (sex → seg, sáb → seg), avança até segunda.
+        // Sem --data: de amanhã até o próximo dia útil (sex → sáb, dom e seg; véspera de feriado inclui o feriado).
+        // Quem já foi avisado para a mesma audiência não recebe de novo, então rodar todo dia não repete mensagem.
         if ($this->option('data')) {
-            $data = Carbon::parse($this->option('data'))->toDateString();
+            $inicio = $fim = Carbon::parse($this->option('data'))->toDateString();
         } else {
-            $proximoDiaUtil = Carbon::today()->addDay();
-            while ($proximoDiaUtil->isWeekend()) {
-                $proximoDiaUtil->addDay();
-            }
-            $data = $proximoDiaUtil->toDateString();
+            [$inicio, $fim] = array_map(function (Carbon $d) { return $d->toDateString(); }, self::periodoAlvo());
         }
+        $data = $inicio === $fim ? $inicio : "{$inicio}..{$fim}";
         $cdProcesso = $this->option('processo');
         $cdConta    = $this->option('conta');
         $dryRun     = (bool) $this->option('dry-run');
@@ -66,7 +65,7 @@ class EnviarLembretesPreDiligencia extends Command
         if ($cdProcesso) {
             $q->where('cd_processo_pro', $cdProcesso);
         } else {
-            $q->whereDate('dt_prazo_fatal_pro', $data);
+            $q->whereDate('dt_prazo_fatal_pro', '>=', $inicio)->whereDate('dt_prazo_fatal_pro', '<=', $fim);
         }
         if ($cdConta) {
             $q->where('cd_conta_con', $cdConta);
@@ -84,11 +83,7 @@ class EnviarLembretesPreDiligencia extends Command
                 $correspondente    = Conta::find($proc->cd_correspondente_cor);
                 $whatsappOk        = $escritorio && WhatsappDispatcher::forConta($escritorio);
                 $whatsapp          = $correspondente->nu_telefone_whatsapp_con ?? null;
-                $jaEnviado         = WhatsappMensagem::where('cd_conta_con', $proc->cd_conta_con)
-                    ->where('cd_processo_pro', $proc->cd_processo_pro)
-                    ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-                    ->whereDate('created_at', Carbon::today())
-                    ->exists();
+                $jaEnviado         = self::avisosDaAudiencia($proc->cd_conta_con, [$proc])->has($proc->cd_processo_pro);
 
                 if (!$whatsappOk)       { $situacao = 'SEM WHATSAPP'; }
                 elseif (!$correspondente) { $situacao = 'SEM CORRESPONDENTE'; }
@@ -138,12 +133,7 @@ class EnviarLembretesPreDiligencia extends Command
                 }
 
                 if (!$force) {
-                    // Verifica se já foi enviado HOJE (data de execução, não a data-alvo).
-                    $jaEnviado = WhatsappMensagem::where('cd_conta_con', $conta->cd_conta_con)
-                        ->where('cd_processo_pro', $proc->cd_processo_pro)
-                        ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-                        ->whereDate('created_at', Carbon::today())
-                        ->exists();
+                    $jaEnviado = self::avisosDaAudiencia($conta->cd_conta_con, [$proc])->has($proc->cd_processo_pro);
                     if ($jaEnviado) {
                         $this->line("  processo {$proc->cd_processo_pro}: lembrete pré já enviado, pulando (use --force para reenviar).");
                         $ignorados++; continue;
@@ -222,6 +212,50 @@ class EnviarLembretesPreDiligencia extends Command
 
         $this->info("[lembrete-pré] Concluído. Enviados={$enviados}  Ignorados={$ignorados}  Falhas={$falhas}");
         return 0;
+    }
+
+    /**
+     * Audiências cobertas por uma execução sem --data: de amanhã até o próximo dia útil.
+     *
+     * @return Carbon[] [início, fim]
+     */
+    public static function periodoAlvo(?Carbon $hoje = null): array
+    {
+        $hoje = ($hoje ?: Carbon::today())->copy()->startOfDay();
+
+        return [$hoje->copy()->addDay(), DiasUteis::proximo($hoje)];
+    }
+
+    /**
+     * Último lembrete pré de cada processo enviado para a audiência atual, por cd_processo_pro.
+     * Só contam envios a partir do dia útil anterior à audiência: se ela for remarcada, o aviso antigo não vale.
+     * Falhas não contam (por padrão), para serem tentadas de novo na próxima execução.
+     */
+    public static function avisosDaAudiencia($cdConta, iterable $processos, bool $incluirFalhas = false): Collection
+    {
+        $avisos = collect();
+        foreach ($processos as $proc) {
+            $desde = $proc->dt_prazo_fatal_pro
+                ? DiasUteis::anterior(Carbon::parse($proc->dt_prazo_fatal_pro))
+                : Carbon::today();
+
+            $consulta = WhatsappMensagem::where('cd_conta_con', $cdConta)
+                ->where('cd_processo_pro', $proc->cd_processo_pro)
+                ->where('ds_tipo_wmm', 'lembrete_prediligencia')
+                ->where('created_at', '>=', $desde);
+            if (!$incluirFalhas) {
+                $consulta->where(function ($q) {
+                    $q->whereNull('ds_status_wmm')->orWhere('ds_status_wmm', '<>', 'failed');
+                });
+            }
+
+            $aviso = $consulta->latest()->first();
+            if ($aviso) {
+                $avisos->put($proc->cd_processo_pro, $aviso);
+            }
+        }
+
+        return $avisos;
     }
 
     /**

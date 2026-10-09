@@ -54,6 +54,7 @@ use Laracasts\Flash\Flash;
 use Carbon\Carbon;
 use App\WhatsappMensagem;
 use App\Services\WhatsappDispatcher;
+use App\Console\Commands\EnviarLembretesPreDiligencia;
 
 class CorrespondenteController extends Controller
 {
@@ -286,17 +287,13 @@ class CorrespondenteController extends Controller
         $conta      = Conta::find($this->conta);
         $whatsappOk = WhatsappDispatcher::forConta($conta) !== null;
 
-        // Próximo dia útil: se amanhã cair no fim de semana, avança até segunda.
-        $proximoDiaUtil = Carbon::today()->addDay();
-        while ($proximoDiaUtil->isWeekend()) {
-            $proximoDiaUtil->addDay();
-        }
-        $amanha = $proximoDiaUtil->toDateString();
+        [$inicio, $fim] = EnviarLembretesPreDiligencia::periodoAlvo();
 
         $processos = Processo::with(['vara', 'cidade.estado', 'status'])
             ->where('cd_conta_con', $this->conta)
             ->whereNotNull('cd_correspondente_cor')
-            ->whereDate('dt_prazo_fatal_pro', $amanha)
+            ->whereDate('dt_prazo_fatal_pro', '>=', $inicio->toDateString())
+            ->whereDate('dt_prazo_fatal_pro', '<=', $fim->toDateString())
             ->orderBy('dt_prazo_fatal_pro')
             ->orderBy('hr_audiencia_pro')
             ->get();
@@ -306,13 +303,8 @@ class CorrespondenteController extends Controller
             ->get()
             ->keyBy('cd_conta_con');
 
-        // Busca envios já realizados hoje, guardando também o status de entrega
-        $jaEnviados = WhatsappMensagem::where('cd_conta_con', $this->conta)
-            ->whereIn('cd_processo_pro', $processos->pluck('cd_processo_pro'))
-            ->where('ds_tipo_wmm', 'lembrete_prediligencia')
-            ->whereDate('created_at', Carbon::today())
-            ->get()
-            ->keyBy('cd_processo_pro');
+        // Envios já feitos para a audiência atual (inclui falhas, para exibir o erro de entrega)
+        $jaEnviados = EnviarLembretesPreDiligencia::avisosDaAudiencia($this->conta, $processos, true);
 
         $linhas = $processos->map(function ($proc) use ($whatsappOk, $correspondentes, $jaEnviados) {
             $cor      = $correspondentes[$proc->cd_correspondente_cor] ?? null;
@@ -344,7 +336,7 @@ class CorrespondenteController extends Controller
                 'erro_entrega'         => $wmm && $wmm->ds_status_wmm === 'failed'
                                          ? ($wmm->ds_payload_raw_wmm['delivery_error'] ?? null)
                                          : null,
-                'enviado_em'           => $wmm ? $wmm->created_at->format('H:i') : null,
+                'enviado_em'           => $wmm ? $wmm->created_at->format($wmm->created_at->isToday() ? 'H:i' : 'd/m H:i') : null,
             ];
         });
 
@@ -352,7 +344,7 @@ class CorrespondenteController extends Controller
 
         return view('correspondente/whatsapp-lembretes', [
             'linhas' => $linhas,
-            'amanha' => $proximoDiaUtil->format('d/m/Y'),
+            'amanha' => $inicio->eq($fim) ? $fim->format('d/m/Y') : $inicio->format('d/m') . ' a ' . $fim->format('d/m/Y'),
         ]);
     }
 
