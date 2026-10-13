@@ -159,12 +159,12 @@
       });
   });
 
-  /* Advogado x preposto */
+  /* Advogado x preposto: para preposto a OAB é opcional */
   function alternarOab() {
-    const advogado = form.querySelector('input[name="atuacao"]:checked');
-    const mostrar = !advogado || advogado.value === 'advogado';
-    form.querySelectorAll('[data-so-advogado]').forEach(function (el) {
-      el.classList.toggle('d-none', !mostrar);
+    const atuacao = form.querySelector('input[name="atuacao"]:checked');
+    const preposto = atuacao && atuacao.value === 'preposto';
+    form.querySelectorAll('[data-oab-opcional]').forEach(function (el) {
+      el.classList.toggle('d-none', !preposto);
     });
   }
   form.querySelectorAll('input[name="atuacao"]').forEach(function (el) {

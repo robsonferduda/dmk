@@ -160,8 +160,8 @@ class FormularioCadastro
             'documento'         => 'required',
             'rg'                => ($pessoaJuridica ? 'nullable' : 'required') . '|string|max:30',
             'atuacao'           => 'required|in:advogado,preposto',
-            'oab_uf'            => 'required_if:atuacao,advogado|nullable|in:' . implode(',', self::UFS),
-            'oab_numero'        => 'required_if:atuacao,advogado|nullable|string|max:20',
+            'oab_uf'            => 'required_if:atuacao,advogado|required_with:oab_numero|nullable|in:' . implode(',', self::UFS),
+            'oab_numero'        => 'required_if:atuacao,advogado|required_with:oab_uf|nullable|string|max:20',
             'cep'               => 'required',
             'logradouro'        => 'required|string|max:200',
             'numero'            => 'required|string|max:20',
@@ -184,6 +184,7 @@ class FormularioCadastro
         ], [
             'required'            => 'Informe :attribute.',
             'required_if'         => 'Informe :attribute.',
+            'required_with'       => 'Informe :attribute.',
             'email'               => 'Informe um e-mail válido.',
             'max'                 => ':Attribute está muito longo.',
             'exists'              => 'Selecione :attribute na lista.',
@@ -232,7 +233,7 @@ class FormularioCadastro
             'documento'         => self::mascararDocumento($documento),
             'rg'                => trim((string) ($entrada['rg'] ?? '')),
             'advogado'          => $entrada['atuacao'] === 'advogado',
-            'oab'               => $entrada['atuacao'] === 'advogado' ? 'OAB/' . $entrada['oab_uf'] . ' ' . $oabNumero : null,
+            'oab'               => $oabNumero !== '' ? 'OAB/' . $entrada['oab_uf'] . ' ' . $oabNumero : null,
             'cep'               => $digitos($entrada['cep']),
             'logradouro'        => trim($entrada['logradouro']),
             'numero'            => trim($entrada['numero']),
@@ -288,6 +289,9 @@ class FormularioCadastro
             }
             if ($d['oab']) {
                 $this->identificacao($ent, $cdConta, [TipoIdentificacao::OAB], TipoIdentificacao::OAB, $d['oab']);
+            } else {
+                Identificacao::where('cd_entidade_ete', $ent)->where('cd_tipo_identificacao_tpi', TipoIdentificacao::OAB)->get()
+                    ->each(function ($oab) { $oab->delete(); });
             }
 
             $this->unicoRegistro(Endereco::where('cd_entidade_ete', $ent)->orderBy('cd_endereco_ede')->get(), Endereco::class, [

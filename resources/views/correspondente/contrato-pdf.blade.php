@@ -362,7 +362,9 @@
         <td class="ass-vao"></td>
         <td class="ass-dados">
             <div class="ass-nome">{!! $contratadaNome !!}</div>
-            <div class="ass-campo">OAB: {!! $contratadaOab !!}</div>
+            @if($contratadaOab)
+                <div class="ass-campo">OAB: {!! $contratadaOab !!}</div>
+            @endif
             <div class="ass-campo">CPF/CNPJ: {!! $contratadaCpf !!}</div>
         </td>
     </tr>

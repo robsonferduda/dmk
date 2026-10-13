@@ -81,7 +81,7 @@ class ContratoCorrespondenteGenerator
             'trechoBancario'  => $this->montarTrechoBancario($vinculo),
             'dadosBancarios'  => $this->dadosBancariosContrato($vinculo),
             'contratadaNome'  => $this->campo($dadosContratado['nome'], 28),
-            'contratadaOab'   => $this->campo($dadosContratado['oab'], 18),
+            'contratadaOab'   => $this->semOab($vinculo, $this->dadosPartesContratado($vinculo)) ? null : $this->campo($dadosContratado['oab'], 18),
             'contratadaCpf'   => $this->campo($dadosContratado['cpf'], 18),
             'nomeContratado'  => $dadosContratado['nome'],
             'localData'       => $this->montarLocalData(),
@@ -191,8 +191,12 @@ class ContratoCorrespondenteGenerator
             'nome'       => 'nome do correspondente',
             'rg'         => 'RG do correspondente',
             'cpf'        => 'CPF/CNPJ do correspondente',
-            'oab_uf'     => 'UF da OAB do correspondente',
-            'oab_numero' => 'número da OAB do correspondente',
+        ];
+        if (! $this->atuaComoPreposto($vinculo)) {
+            $obrigatorios['oab_uf'] = 'UF da OAB do correspondente';
+            $obrigatorios['oab_numero'] = 'número da OAB do correspondente';
+        }
+        $obrigatorios += [
             'rua'        => 'logradouro (endereço)',
             'numero'     => 'número do endereço',
             'bairro'     => 'bairro',
@@ -421,6 +425,35 @@ class ContratoCorrespondenteGenerator
     private function vazio($valor): bool
     {
         return trim((string) $valor) === '';
+    }
+
+    /** Preposto pode não ter OAB; sem a marcação na conta, vale como advogado. */
+    private function atuaComoPreposto(ContaCorrespondente $vinculo): bool
+    {
+        return optional($vinculo->correspondente)->fl_advogado_con === false;
+    }
+
+    /**
+     * "na Avenida X" / "no Largo Y" quando o cadastro já traz o tipo do logradouro; senão "na Rua Z".
+     */
+    private function logradouroComPreposicao(?string $rua): string
+    {
+        $rua = trim((string) $rua);
+        $tipo = mb_strtolower(preg_split('/[\s.:,]+/u', $rua)[0] ?? '');
+
+        if (in_array($tipo, ['largo', 'lgo', 'beco', 'parque', 'setor', 'conjunto', 'conj', 'loteamento', 'condomínio', 'condominio', 'sítio', 'sitio', 'núcleo', 'nucleo', 'residencial', 'caminho', 'km'], true)) {
+            return 'no ' . $this->campo($rua, 22);
+        }
+        if (in_array($tipo, ['rua', 'r', 'avenida', 'av', 'travessa', 'tv', 'trav', 'estrada', 'estr', 'alameda', 'al', 'praça', 'praca', 'pça', 'rodovia', 'rod', 'quadra', 'qd', 'qnd', 'via', 'vila', 'ladeira', 'servidão', 'servidao'], true)) {
+            return 'na ' . $this->campo($rua, 22);
+        }
+
+        return 'na Rua ' . $this->campo($rua, 22);
+    }
+
+    private function semOab(ContaCorrespondente $vinculo, array $dados): bool
+    {
+        return $this->atuaComoPreposto($vinculo) && $this->vazio($dados['oab_uf'] ?? null) && $this->vazio($dados['oab_numero'] ?? null);
     }
 
     /**
@@ -669,8 +702,8 @@ class ContratoCorrespondenteGenerator
             . 'advogada inscrita na OAB/SC sob o número 33.565B, doravante denominada CONTRATANTE '
             . 'e, de outro, ' . $this->campo($d['nome'], 26) . ', brasileiro (a), portador do RG '
             . $this->campo($d['rg'], 12) . ', inscrito (a) no CPF sob o nº ' . $this->campo($d['cpf'], 18)
-            . ', e na OAB/ ' . $this->campo($d['oab_uf'], 4) . '- sob nº ' . $this->campo($d['oab_numero'], 12)
-            . ', com endereço profissional na Rua ' . $this->campo($d['rua'], 22)
+            . ($this->semOab($vinculo, $d) ? '' : ', e na OAB/ ' . $this->campo($d['oab_uf'], 4) . '- sob nº ' . $this->campo($d['oab_numero'], 12))
+            . ', com endereço profissional ' . $this->logradouroComPreposicao($d['rua'])
             . ', n ' . $this->campo($d['numero'], 8)
             . ' Bairro: ' . $this->campo($d['bairro'], 12)
             . ', Cidade ' . $this->campo($d['cidade'], 14)

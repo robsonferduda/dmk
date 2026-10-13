@@ -61,8 +61,8 @@
                     </div>
                     @if($errors->has('atuacao'))<div class="invalid-feedback d-block">{{ $errors->first('atuacao') }}</div>@endif
                 </div>
-                <div class="col-md-4" data-so-advogado>
-                    <label for="oab_uf" class="form-label">Seccional da OAB</label>
+                <div class="col-md-4">
+                    <label for="oab_uf" class="form-label">Seccional da OAB <span class="text-muted small" data-oab-opcional>(opcional para preposto)</span></label>
                     <select id="oab_uf" name="oab_uf" class="form-select{{ $campo('oab_uf') }}">
                         <option value="">Selecione</option>
                         @foreach($ufs as $uf)
@@ -71,8 +71,8 @@
                     </select>
                     <div class="invalid-feedback">{{ $errors->first('oab_uf') }}</div>
                 </div>
-                <div class="col-md-8" data-so-advogado>
-                    <label for="oab_numero" class="form-label">Número da OAB</label>
+                <div class="col-md-8">
+                    <label for="oab_numero" class="form-label">Número da OAB <span class="text-muted small" data-oab-opcional>(opcional para preposto)</span></label>
                     <input type="text" id="oab_numero" name="oab_numero" value="{{ $dados['oab_numero'] }}" maxlength="20" placeholder="Ex.: 12.345" class="form-control{{ $campo('oab_numero') }}">
                     <div class="invalid-feedback">{{ $errors->first('oab_numero') }}</div>
                 </div>
