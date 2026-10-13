@@ -31,7 +31,8 @@
                             <li style="margin-bottom:4px;">Telefone com DDD e e-mail;</li>
                             <li style="margin-bottom:4px;">Número da OAB e seccional (ex.: OAB/ES 12.345);</li>
                             <li style="margin-bottom:4px;">Dados bancários e chave Pix;</li>
-                            <li style="margin-bottom:4px;">Comarca/Estado de origem e as demais comarcas em que poderá nos atender pelos valores já acordados na parceria.</li>
+                            <li style="margin-bottom:4px;">Comarca/Estado de origem e as demais comarcas em que poderá nos atender pelos valores já acordados na parceria;</li>
+                            <li style="margin-bottom:4px;">Se quiser, uma foto de perfil (opcional).</li>
                         </ul>
                     </td>
                 </tr>

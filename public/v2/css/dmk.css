@@ -494,6 +494,33 @@ a:hover > .dmk-avatar-foto {
   display: block;
 }
 
+.dmk-foto-perfil {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dmk-foto-perfil-imagem {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--surface-color);
+  font-size: 2.2rem;
+  color: var(--muted-color);
+}
+
+.dmk-foto-perfil-imagem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .dmk-comarcas-grupo {
   padding: 10px 0;
   border-top: 1px solid var(--border-color);

@@ -159,6 +159,65 @@
       });
   });
 
+  /* Foto de perfil: recortada em quadrado e reduzida no navegador, para não esbarrar no limite de upload */
+  const fotoArquivo = document.getElementById('foto-arquivo');
+  const fotoCampo = document.getElementById('foto');
+  const fotoPrevia = document.getElementById('foto-previa');
+  const fotoDesfazer = document.getElementById('foto-desfazer');
+  const fotoSituacao = document.getElementById('foto-situacao');
+  const LADO_FOTO = 400;
+
+  function mostrarFoto(src) {
+    fotoPrevia.innerHTML = '';
+    if (src) {
+      const img = elemento('img');
+      img.src = src;
+      img.alt = 'Foto de perfil';
+      fotoPrevia.appendChild(img);
+    } else {
+      fotoPrevia.appendChild(elemento('i', 'bi bi-person'));
+    }
+  }
+
+  fotoArquivo.addEventListener('change', function () {
+    const arquivo = fotoArquivo.files[0];
+    if (!arquivo) {
+      return;
+    }
+    if (!/^image\//.test(arquivo.type)) {
+      fotoSituacao.textContent = 'Escolha um arquivo de imagem (JPG ou PNG).';
+      return;
+    }
+
+    const url = URL.createObjectURL(arquivo);
+    const imagem = new Image();
+    imagem.onload = function () {
+      const lado = Math.min(imagem.naturalWidth, imagem.naturalHeight);
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = Math.min(LADO_FOTO, lado);
+      canvas.getContext('2d').drawImage(imagem, (imagem.naturalWidth - lado) / 2, (imagem.naturalHeight - lado) / 2, lado, lado, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+
+      fotoCampo.value = canvas.toDataURL('image/jpeg', 0.9);
+      mostrarFoto(fotoCampo.value);
+      fotoDesfazer.classList.remove('d-none');
+      fotoSituacao.textContent = 'Foto pronta. Ela será salva quando você enviar o formulário.';
+    };
+    imagem.onerror = function () {
+      URL.revokeObjectURL(url);
+      fotoSituacao.textContent = 'Não foi possível abrir esta imagem. Tente outra foto em JPG ou PNG.';
+    };
+    imagem.src = url;
+  });
+
+  fotoDesfazer.addEventListener('click', function () {
+    fotoCampo.value = '';
+    fotoArquivo.value = '';
+    mostrarFoto(fotoPrevia.dataset.atual);
+    fotoDesfazer.classList.add('d-none');
+    fotoSituacao.textContent = 'Uma foto de rosto, em JPG ou PNG. Aparece no seu cadastro no sistema do DMK.';
+  });
+
   /* Advogado x preposto: para preposto a OAB é opcional */
   function alternarOab() {
     const atuacao = form.querySelector('input[name="atuacao"]:checked');

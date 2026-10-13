@@ -8,7 +8,8 @@ Pedimos que atualize seu cadastro até {{ $prazo }}, informando no formulário:
 - Telefone com DDD e e-mail;
 - Número da OAB e seccional (ex.: OAB/ES 12.345);
 - Dados bancários e chave Pix;
-- Comarca/Estado de origem e as demais comarcas em que poderá nos atender pelos valores já acordados na parceria.
+- Comarca/Estado de origem e as demais comarcas em que poderá nos atender pelos valores já acordados na parceria;
+- Se quiser, uma foto de perfil (opcional).
 
 ATUALIZE SEU CADASTRO: {{ $link }}
 

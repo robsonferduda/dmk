@@ -11,12 +11,16 @@ use App\EnderecoEletronico;
 use App\Enums\TipoConta;
 use App\Enums\TipoEnderecoEletronico;
 use App\Enums\TipoFone;
+use App\Enums\Nivel;
 use App\Enums\TipoIdentificacao;
 use App\Fone;
 use App\Identificacao;
 use App\RegistroBancario;
+use App\Services\Correspondente\FotoCorrespondente;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -114,6 +118,7 @@ class FormularioCadastro
             'origem'             => (string) $origem,
             'comarcas'           => CidadeAtuacao::where('cd_entidade_ete', $ent)->where('fl_origem_cat', '<>', 'S')
                                         ->pluck('cd_cidade_cde')->map(function ($id) { return (int) $id; })->all(),
+            'foto_atual'         => app(FotoCorrespondente::class)->urlPorConta($vinculo->cd_correspondente_cor),
         ];
     }
 
@@ -180,6 +185,7 @@ class FormularioCadastro
             'pix'               => 'required|string|max:150',
             'origem'            => 'required|integer|exists:cidade_cde,cd_cidade_cde',
             'comarcas'          => 'array|max:6000',
+            'foto'              => 'nullable|string',
             'confirmacao'       => 'accepted',
         ], [
             'required'            => 'Informe :attribute.',
@@ -221,6 +227,9 @@ class FormularioCadastro
             if ($entrada['comarcas'] && DB::table('cidade_cde')->whereIn('cd_cidade_cde', $entrada['comarcas'])->count() !== count($entrada['comarcas'])) {
                 $v->errors()->add('comarcas', 'Uma das comarcas não foi encontrada. Remova e adicione de novo.');
             }
+            if (! empty($entrada['foto']) && self::imagemDaFoto($entrada['foto']) === null) {
+                $v->errors()->add('foto', 'Não foi possível usar esta imagem. Envie uma foto em JPG ou PNG.');
+            }
         });
 
         $validador->validate();
@@ -253,6 +262,7 @@ class FormularioCadastro
             'pix'               => trim($entrada['pix']),
             'origem'            => (int) $entrada['origem'],
             'comarcas'          => $entrada['comarcas'],
+            'foto'              => ! empty($entrada['foto']) ? self::imagemDaFoto($entrada['foto']) : null,
         ];
     }
 
@@ -336,6 +346,69 @@ class FormularioCadastro
 
             $this->comarcas($ent, $d['origem'], $d['comarcas']);
         });
+
+        if (! empty($d['foto'])) {
+            $this->salvarFoto($vinculo, $d['foto']);
+        }
+    }
+
+    /**
+     * Grava a foto onde o sistema já procura (img/users/ent{entidade do usuário}.png), a mesma usada quando o
+     * correspondente troca a foto logado. A falha não desfaz o cadastro: a foto é opcional.
+     */
+    private function salvarFoto(ContaCorrespondente $vinculo, string $png): void
+    {
+        try {
+            $usuario = User::withTrashed()->where('cd_conta_con', $vinculo->cd_correspondente_cor)
+                ->where('cd_nivel_niv', Nivel::CORRESPONDENTE)->orderBy('id')->first();
+            if (! $usuario || ! $usuario->cd_entidade_ete) {
+                Log::warning('[cadastro] Foto do CCR ' . $vinculo->cd_conta_correspondente_ccr . ' descartada: correspondente sem usuário.');
+                return;
+            }
+
+            $nome = 'ent' . $usuario->cd_entidade_ete . '.png';
+            $destino = public_path(FotoCorrespondente::PASTA . '/' . $nome);
+            $temporario = $destino . '.' . uniqid('', true) . '.tmp';
+            if (file_put_contents($temporario, $png) === false || ! rename($temporario, $destino)) {
+                @unlink($temporario);
+                throw new \RuntimeException('não foi possível gravar ' . $destino);
+            }
+
+            User::withTrashed()->where('id', $usuario->id)->update(['img_user_usu' => $nome]);
+        } catch (\Throwable $e) {
+            Log::error('[cadastro] Falha ao salvar a foto do CCR ' . $vinculo->cd_conta_correspondente_ccr . ': ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Foto enviada pelo formulário (data URI, já reduzida no navegador) convertida em PNG; null se não for imagem válida.
+     */
+    public static function imagemDaFoto(string $dataUri): ?string
+    {
+        if (! preg_match('#^data:image/(png|jpeg);base64,([A-Za-z0-9+/=]+)$#', trim($dataUri), $m)) {
+            return null;
+        }
+        $bytes = base64_decode($m[2], true);
+        if ($bytes === false || strlen($bytes) > 3 * 1024 * 1024) {
+            return null;
+        }
+        $info = @getimagesizefromstring($bytes);
+        if (! $info || ! in_array($info[2], [IMAGETYPE_PNG, IMAGETYPE_JPEG], true) || $info[0] > 2000 || $info[1] > 2000) {
+            return null;
+        }
+        if (! function_exists('imagecreatefromstring')) {
+            return $info[2] === IMAGETYPE_PNG ? $bytes : null;
+        }
+
+        $imagem = @imagecreatefromstring($bytes);
+        if (! $imagem) {
+            return null;
+        }
+        ob_start();
+        imagepng($imagem, null, 6);
+        imagedestroy($imagem);
+
+        return ob_get_clean();
     }
 
     private function identificacao(int $ent, int $cdConta, array $tiposExistentes, int $tipo, string $valor): void

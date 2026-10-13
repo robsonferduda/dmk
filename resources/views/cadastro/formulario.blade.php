@@ -33,6 +33,26 @@
     <div class="card dmk-auth-card mb-3">
         <div class="card-body">
             <h2 class="dmk-form-secao"><i class="bi bi-person-vcard"></i> Identificação</h2>
+            <div class="dmk-foto-perfil mb-3">
+                <div class="dmk-foto-perfil-imagem" id="foto-previa" data-atual="{{ $dados['foto_atual'] }}">
+                    @if(!empty($dados['foto']) || $dados['foto_atual'])
+                        <img src="{{ ($dados['foto'] ?? '') ?: $dados['foto_atual'] }}" alt="Foto de perfil">
+                    @else
+                        <i class="bi bi-person"></i>
+                    @endif
+                </div>
+                <div>
+                    <span class="form-label d-block mb-1">Foto de perfil <span class="text-muted small">(opcional)</span></span>
+                    <label class="btn btn-outline-primary btn-sm mb-0" for="foto-arquivo">
+                        <i class="bi bi-camera me-1"></i> {{ $dados['foto_atual'] ? 'Trocar foto' : 'Escolher foto' }}
+                    </label>
+                    <input type="file" id="foto-arquivo" accept="image/jpeg,image/png,image/webp" class="d-none">
+                    <button type="button" class="btn btn-link btn-sm text-danger {{ empty($dados['foto']) ? 'd-none' : '' }}" id="foto-desfazer">Desfazer</button>
+                    <input type="hidden" name="foto" id="foto" value="{{ $dados['foto'] ?? '' }}">
+                    <div class="form-text" id="foto-situacao">Uma foto de rosto, em JPG ou PNG. Aparece no seu cadastro no sistema do DMK.</div>
+                    @if($errors->has('foto'))<div class="invalid-feedback d-block">{{ $errors->first('foto') }}</div>@endif
+                </div>
+            </div>
             <div class="row g-3">
                 <div class="col-12">
                     <label for="nome" class="form-label">Nome completo ou razão social</label>
