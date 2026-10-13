@@ -258,15 +258,25 @@
                                     $vencido = !$envio->dt_confirmacao_cme && $envio->dt_prazo_cme && $envio->dt_prazo_cme->lt(\Carbon\Carbon::today());
                                     $pendencias = $envio->pendencias();
                                     $podeReenviar = !$envio->dt_confirmacao_cme && $envio->dc_status_cme !== \App\CampanhaCadastroEnvio::PENDENTE;
+                                    $nome = trim($envio->nm_destinatario_cme ?: 'Sem nome');
                                 @endphp
                                 <tr>
                                     <td>
-                                        @if($envio->vinculo)
-                                            <a href="{{ url('v2/correspondentes/'.safe_encrypt($envio->vinculo->cd_correspondente_cor)) }}" class="fw-semibold">{{ $envio->nm_destinatario_cme ?: 'Sem nome' }}</a>
-                                        @else
-                                            <span class="fw-semibold">{{ $envio->nm_destinatario_cme ?: 'Sem nome' }}</span>
-                                        @endif
-                                        <div class="text-muted">{{ $envio->dc_email_cme }}</div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if($envio->foto)
+                                                <img src="{{ $envio->foto }}" alt="Foto de {{ $nome }}" class="dmk-avatar-foto sm" loading="lazy">
+                                            @else
+                                                <span class="dmk-avatar-letter sm">{{ mb_strtoupper(mb_substr($nome, 0, 1)) }}</span>
+                                            @endif
+                                            <div>
+                                                @if($envio->vinculo)
+                                                    <a href="{{ url('v2/correspondentes/'.safe_encrypt($envio->vinculo->cd_correspondente_cor)) }}" class="fw-semibold">{{ $nome }}</a>
+                                                @else
+                                                    <span class="fw-semibold">{{ $nome }}</span>
+                                                @endif
+                                                <div class="text-muted">{{ $envio->dc_email_cme }}</div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>{{ $envio->dt_ultimo_processo_cme ? $envio->dt_ultimo_processo_cme->format('d/m/Y') : '—' }}</td>
                                     <td>

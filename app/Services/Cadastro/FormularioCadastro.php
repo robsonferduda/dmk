@@ -163,7 +163,7 @@ class FormularioCadastro
         $validador = Validator::make($entrada, [
             'nome'              => 'required|string|max:150',
             'documento'         => 'required',
-            'rg'                => ($pessoaJuridica ? 'nullable' : 'required') . '|string|max:30',
+            'rg'                => 'required|string|max:30',
             'atuacao'           => 'required|in:advogado,preposto',
             'oab_uf'            => 'required_if:atuacao,advogado|required_with:oab_numero|nullable|in:' . implode(',', self::UFS),
             'oab_numero'        => 'required_if:atuacao,advogado|required_with:oab_uf|nullable|string|max:20',

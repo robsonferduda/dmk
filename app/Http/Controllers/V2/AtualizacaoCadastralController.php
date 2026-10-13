@@ -4,8 +4,11 @@ namespace App\Http\Controllers\V2;
 
 use App\CampanhaCadastro;
 use App\CampanhaCadastroEnvio;
+use App\Enums\Nivel;
 use App\Http\Controllers\Controller;
 use App\Services\Cadastro\CampanhaAtualizacaoService;
+use App\Services\Correspondente\FotoCorrespondente;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -32,11 +35,15 @@ class AtualizacaoCadastralController extends Controller
     /** @var CampanhaAtualizacaoService */
     private $service;
 
-    public function __construct(CampanhaAtualizacaoService $service)
+    /** @var FotoCorrespondente */
+    private $fotos;
+
+    public function __construct(CampanhaAtualizacaoService $service, FotoCorrespondente $fotos)
     {
         $this->middleware('auth');
         $this->middleware('can:correspondente.meus-correspondentes');
         $this->service = $service;
+        $this->fotos = $fotos;
     }
 
     public function index(Request $request)
@@ -79,6 +86,8 @@ class AtualizacaoCadastralController extends Controller
             ->orderByRaw('dt_confirmacao_cme DESC NULLS LAST, dt_clique_cme DESC NULLS LAST, dt_envio_cme DESC NULLS LAST, nu_ordem_cme')
             ->paginate(self::POR_PAGINA)
             ->appends(array_filter(['situacao' => $situacao, 'busca' => $busca]));
+
+        $this->anexarFotos($envios->getCollection());
 
         return view('v2.atualizacao-cadastral.index', [
             'campanha'  => $campanha,
@@ -190,6 +199,25 @@ class AtualizacaoCadastralController extends Controller
             case 'falha':
                 $consulta->where('dc_status_cme', CampanhaCadastroEnvio::FALHA);
                 break;
+        }
+    }
+
+    private function anexarFotos($envios): void
+    {
+        $contas = $envios->pluck('vinculo.cd_correspondente_cor')->filter()->unique()->all();
+
+        $entidadesPorConta = User::withTrashed()
+            ->whereIn('cd_conta_con', $contas ?: [0])
+            ->where('cd_nivel_niv', Nivel::CORRESPONDENTE)
+            ->orderBy('id')
+            ->get(['cd_conta_con', 'cd_entidade_ete'])
+            ->groupBy('cd_conta_con');
+
+        foreach ($envios as $envio) {
+            $conta = optional($envio->vinculo)->cd_correspondente_cor;
+            $envio->foto = $conta && isset($entidadesPorConta[$conta])
+                ? $this->fotos->urlPrimeira($entidadesPorConta[$conta]->pluck('cd_entidade_ete')->all())
+                : null;
         }
     }
 

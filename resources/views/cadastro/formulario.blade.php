@@ -65,8 +65,8 @@
                     <div class="invalid-feedback">{{ $errors->first('documento') }}</div>
                 </div>
                 <div class="col-md-6">
-                    <label for="rg" class="form-label">RG <span class="text-muted small">(dispensado para CNPJ)</span></label>
-                    <input type="text" id="rg" name="rg" value="{{ $dados['rg'] }}" maxlength="30" class="form-control{{ $campo('rg') }}">
+                    <label for="rg" class="form-label">RG <span class="text-muted small">(se for CNPJ, do responsável)</span></label>
+                    <input type="text" id="rg" name="rg" value="{{ $dados['rg'] }}" maxlength="30" class="form-control{{ $campo('rg') }}" required>
                     <div class="invalid-feedback">{{ $errors->first('rg') }}</div>
                 </div>
                 <div class="col-12">
