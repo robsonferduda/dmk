@@ -223,16 +223,10 @@ class CampanhaAtualizacaoService
     {
         return new AtualizacaoCadastroMail(
             AtualizacaoCadastroMail::nomeFormatado($envio->nm_destinatario_cme),
-            $envio->dc_email_cme,
             $prazo,
-            self::urlClique($envio->dc_token_cme),
+            FormularioCadastro::url($envio->cd_conta_correspondente_ccr),
             self::urlAbertura($envio->dc_token_cme)
         );
-    }
-
-    public static function urlClique(string $token): string
-    {
-        return config('cadastro.url_publica') . '/cadastro/atualizar/' . $token;
     }
 
     public static function urlAbertura(string $token): string
@@ -247,36 +241,35 @@ class CampanhaAtualizacaoService
             ->update(['dt_abertura_cme' => Carbon::now(), 'updated_at' => Carbon::now()]);
     }
 
-    public function registrarClique(string $token): ?CampanhaCadastroEnvio
+    /**
+     * Link dos e-mails da primeira versão (que levava ao login): só identifica o vínculo para mandar ao formulário.
+     */
+    public function envioDoToken(string $token): ?CampanhaCadastroEnvio
     {
-        $envio = CampanhaCadastroEnvio::where('dc_token_cme', $token)->first();
-        if (! $envio) {
-            return null;
-        }
-
-        $agora = Carbon::now();
-        $envio->update([
-            'dt_clique_cme'   => $envio->dt_clique_cme ?: $agora,
-            'dt_abertura_cme' => $envio->dt_abertura_cme ?: $agora,
-        ]);
-
-        ContaCorrespondente::where('cd_conta_correspondente_ccr', $envio->cd_conta_correspondente_ccr)
-            ->update(['fl_atualizacao_cadastro_ccr' => true]);
-
-        return $envio;
+        return CampanhaCadastroEnvio::where('dc_token_cme', $token)->first();
     }
 
     /**
-     * Chamado quando o próprio correspondente salva a ficha de cadastro.
+     * O correspondente abriu o formulário ("clique" no painel).
+     */
+    public function registrarAcesso(ContaCorrespondente $vinculo): void
+    {
+        $agora = Carbon::now();
+        $this->enviosEmAndamento($vinculo)->whereNull('dt_clique_cme')
+            ->update(['dt_clique_cme' => $agora, 'updated_at' => $agora]);
+        $this->enviosEmAndamento($vinculo)->whereNull('dt_abertura_cme')
+            ->update(['dt_abertura_cme' => $agora, 'updated_at' => $agora]);
+    }
+
+    /**
+     * Chamado quando o correspondente envia o formulário (ou salva a ficha no sistema).
      */
     public function registrarConfirmacao(ContaCorrespondente $vinculo): void
     {
-        $envios = CampanhaCadastroEnvio::where('cd_conta_correspondente_ccr', $vinculo->cd_conta_correspondente_ccr)
-            ->whereNull('dt_confirmacao_cme')
-            ->get();
-
-        foreach ($envios as $envio) {
-            $envio->update(['dt_confirmacao_cme' => Carbon::now()]);
+        foreach ($this->enviosEmAndamento($vinculo)->get() as $envio) {
+            if (! $envio->dt_confirmacao_cme) {
+                $envio->update(['dt_confirmacao_cme' => Carbon::now()]);
+            }
             $this->avaliarPendencias($envio, $vinculo);
         }
     }
@@ -332,6 +325,22 @@ class CampanhaAtualizacaoService
             ->whereNull('dt_confirmacao_cme')
             ->where('dt_prazo_cme', '<', Carbon::today())
             ->update(['dc_status_cme' => CampanhaCadastroEnvio::PENDENTE, 'nu_ordem_cme' => 0, 'nu_tentativas_cme' => 0, 'updated_at' => Carbon::now()]);
+    }
+
+    /**
+     * Tira a campanha do painel para montar uma lista nova; os envios ficam como histórico.
+     */
+    public function encerrar(CampanhaCadastro $campanha): void
+    {
+        $campanha->update(['dc_status_cmc' => CampanhaCadastro::ENCERRADA, 'dt_conclusao_cmc' => Carbon::now()]);
+    }
+
+    private function enviosEmAndamento(ContaCorrespondente $vinculo)
+    {
+        return CampanhaCadastroEnvio::where('cd_conta_correspondente_ccr', $vinculo->cd_conta_correspondente_ccr)
+            ->whereHas('campanha', function ($q) {
+                $q->where('dc_status_cmc', '<>', CampanhaCadastro::ENCERRADA);
+            });
     }
 
     public function reenviar(CampanhaCadastroEnvio $envio): void

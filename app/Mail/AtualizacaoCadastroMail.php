@@ -11,9 +11,6 @@ class AtualizacaoCadastroMail extends Mailable
     public $nome;
 
     /** @var string */
-    public $login;
-
-    /** @var string */
     public $prazo;
 
     /** @var string */
@@ -22,10 +19,9 @@ class AtualizacaoCadastroMail extends Mailable
     /** @var string|null */
     public $pixel;
 
-    public function __construct(string $nome, string $login, Carbon $prazo, string $link, ?string $pixel = null)
+    public function __construct(string $nome, Carbon $prazo, string $link, ?string $pixel = null)
     {
         $this->nome = $nome;
-        $this->login = $login;
         $this->prazo = self::dataPorExtenso($prazo);
         $this->link = $link;
         $this->pixel = $pixel;

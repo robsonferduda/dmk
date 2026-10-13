@@ -9,6 +9,8 @@ class CampanhaCadastro extends Model
     const ATIVA = 'ativa';
     const PAUSADA = 'pausada';
     const CONCLUIDA = 'concluida';
+    /** Substituída por uma nova lista: fica só como histórico. */
+    const ENCERRADA = 'encerrada';
 
     protected $table = 'campanha_cadastro_cmc';
     protected $primaryKey = 'cd_campanha_cadastro_cmc';

@@ -46,8 +46,8 @@
                 <tr>
                     <td style="padding:0 32px 8px; font-size:15px; line-height:1.6;">
                         <p style="margin:0 0 16px;">
-                            Acesse o sistema com seu login e senha e atualize seus dados cadastrais dentro do sistema.
-                            Seu login é o e-mail <strong>{{ $login }}</strong>.
+                            O botão abre um formulário exclusivo para você, <strong>sem necessidade de login ou senha</strong>,
+                            já preenchido com os dados que temos. Basta conferir, completar o que faltar e enviar.
                         </p>
                         <p style="margin:0 0 16px;">
                             Mesmo que seus dados não tenham mudado, acesse o formulário e confirme as informações,

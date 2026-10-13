@@ -39,6 +39,12 @@
                 <p class="uv-hero-email mb-0">E-mail pedindo aos correspondentes que atualizem o cadastro, enviado em lotes de até {{ $limite }} por dia.</p>
             </div>
         </div>
+        @if($encerrada)
+            <div class="alert alert-secondary small" style="max-width: 720px;">
+                <i class="bi bi-archive me-1"></i> A campanha anterior ({{ $encerrada->nm_campanha_cmc }}) foi encerrada em {{ $encerrada->dt_conclusao_cmc ? $encerrada->dt_conclusao_cmc->format('d/m/Y H:i') : '—' }}.
+                A nova lista começa do zero e o e-mail leva cada correspondente direto ao seu formulário, sem login.
+            </div>
+        @endif
         <div class="card uv-panel" style="max-width: 720px;">
             <div class="card-header">
                 <h5 class="card-title mb-0"><i class="bi bi-list-check me-1"></i> Montar a lista de envio</h5>
@@ -75,8 +81,8 @@
                 ['Na lista', $resumo['total'], '#94a3b8'],
                 ['E-mail enviado', $resumo['enviados'], '#4154f1'],
                 ['Abriu o e-mail', $resumo['abertos'], '#0ea5e9'],
-                ['Clicou no link', $resumo['cliques'], '#8b5cf6'],
-                ['Salvou o cadastro', $resumo['confirmados'], '#f59e0b'],
+                ['Acessou o formulário', $resumo['cliques'], '#8b5cf6'],
+                ['Enviou o formulário', $resumo['confirmados'], '#f59e0b'],
                 ['Pronto para contrato', $resumo['prontos'], '#16a34a'],
             ];
         @endphp
@@ -116,6 +122,11 @@
                         <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-repeat me-1"></i> Reenviar para {{ $resumo['vencidos'] }} com prazo vencido</button>
                     </form>
                 @endif
+                <form method="POST" action="{{ url('v2/atualizacao-cadastral/encerrar') }}"
+                      onsubmit="return confirm('Encerrar esta campanha e começar uma nova lista do zero? Os e-mails pendentes desta lista não serão enviados e os números atuais ficam só como histórico.')">
+                    {{ csrf_field() }}
+                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-arrow-counterclockwise me-1"></i> Encerrar e começar de novo</button>
+                </form>
             </div>
         </div>
 
@@ -137,7 +148,7 @@
             <div class="col-xxl-3 col-md-6">
                 <article class="nd-kpi-card nd-kpi-cycle">
                     <span class="nd-kpi-icon"><i class="bi bi-cursor"></i></span>
-                    <span class="nd-kpi-label">Clicaram no link</span>
+                    <span class="nd-kpi-label">Acessaram o formulário</span>
                     <strong class="nd-kpi-value">{{ $numero($resumo['cliques']) }}</strong>
                     <span class="nd-kpi-trend flat">{{ $pct($resumo['cliques'], $resumo['enviados']) }}% dos enviados · {{ $numero($resumo['abertos']) }} abriram</span>
                 </article>
@@ -145,7 +156,7 @@
             <div class="col-xxl-3 col-md-6">
                 <article class="nd-kpi-card nd-kpi-revenue">
                     <span class="nd-kpi-icon"><i class="bi bi-person-check"></i></span>
-                    <span class="nd-kpi-label">Salvaram o cadastro</span>
+                    <span class="nd-kpi-label">Enviaram o formulário</span>
                     <strong class="nd-kpi-value">{{ $numero($resumo['confirmados']) }}</strong>
                     <span class="nd-kpi-trend {{ $resumo['vencidos'] ? 'down' : 'flat' }}">{{ $pct($resumo['confirmados'], $resumo['total']) }}% da lista · {{ $numero($resumo['vencidos']) }} com prazo vencido</span>
                 </article>
@@ -155,7 +166,7 @@
                     <span class="nd-kpi-icon"><i class="bi bi-file-earmark-check"></i></span>
                     <span class="nd-kpi-label">Prontos para contrato</span>
                     <strong class="nd-kpi-value">{{ $numero($resumo['prontos']) }}</strong>
-                    <span class="nd-kpi-trend flat">{{ $numero($resumo['com_pendencias']) }} salvaram mas ainda têm pendências</span>
+                    <span class="nd-kpi-trend flat">{{ $numero($resumo['com_pendencias']) }} enviaram mas ainda têm pendências</span>
                 </article>
             </div>
         </section>
@@ -165,7 +176,7 @@
                 <div class="card uv-panel h-100">
                     <div class="card-header nd-chart-header">
                         <h5 class="card-title mb-0"><i class="bi bi-bar-chart me-1"></i> Andamento diário</h5>
-                        <small class="text-muted">Envios, cliques e cadastros salvos por dia</small>
+                        <small class="text-muted">Envios, acessos e formulários enviados por dia</small>
                     </div>
                     <div class="card-body">
                         @if($resumo['enviados'] || $resumo['confirmados'])
@@ -195,7 +206,8 @@
                         @endforeach
                         <p class="text-muted small mt-3 mb-0">
                             Aberturas são aproximadas: só contam quando o leitor de e-mail carrega as imagens.
-                            "Salvou o cadastro" é quando o próprio correspondente grava a ficha no sistema.
+                            "Acessou" conta quando o correspondente abre o formulário pelo link exclusivo; "Enviou" quando ele envia o formulário
+                            (ou salva a própria ficha no sistema).
                         </p>
                     </div>
                 </div>
@@ -234,8 +246,8 @@
                                 <th>Enviado</th>
                                 <th>Prazo</th>
                                 <th>Abriu</th>
-                                <th>Clicou</th>
-                                <th>Salvou</th>
+                                <th>Acessou</th>
+                                <th>Enviou</th>
                                 <th>Contrato</th>
                                 <th></th>
                             </tr>
@@ -284,9 +296,11 @@
                                             <span class="badge bg-warning text-dark" title="Falta: {{ implode('; ', $pendencias) }}">{{ count($pendencias) }} pendência(s)</span>
                                         @endif
                                     </td>
-                                    <td class="text-end">
+                                    <td class="text-end text-nowrap">
+                                        <button type="button" class="btn btn-outline-primary btn-sm py-0" title="Copiar link do formulário"
+                                                data-copiar="{{ \App\Services\Cadastro\FormularioCadastro::url($envio->cd_conta_correspondente_ccr) }}"><i class="bi bi-link-45deg"></i></button>
                                         @if($podeReenviar)
-                                            <form method="POST" action="{{ url('v2/atualizacao-cadastral/envios/'.$envio->cd_campanha_cadastro_envio_cme.'/reenviar') }}"
+                                            <form method="POST" class="d-inline" action="{{ url('v2/atualizacao-cadastral/envios/'.$envio->cd_campanha_cadastro_envio_cme.'/reenviar') }}"
                                                   onsubmit="return confirm('Colocar {{ addslashes($envio->dc_email_cme) }} no início da fila para receber o e-mail de novo?')">
                                                 {{ csrf_field() }}
                                                 <button type="submit" class="btn btn-outline-secondary btn-sm py-0" title="Reenviar"><i class="bi bi-arrow-repeat"></i></button>
@@ -312,6 +326,24 @@
 @endsection
 
 @section('script')
+<script>
+document.addEventListener('click', function (evento) {
+    const botao = evento.target.closest('[data-copiar]');
+    if (!botao) {
+        return;
+    }
+    const icone = botao.querySelector('i');
+    const confirmar = function () {
+        icone.className = 'bi bi-check-lg';
+        setTimeout(function () { icone.className = 'bi bi-link-45deg'; }, 1500);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(botao.dataset.copiar).then(confirmar);
+    } else {
+        window.prompt('Copie o link do formulário:', botao.dataset.copiar);
+    }
+});
+</script>
 @if(!empty($campanha) && ($resumo['enviados'] || $resumo['confirmados']))
 <script src="{{ asset('v2/vendor/apexcharts/apexcharts.min.js') }}"></script>
 <script>
@@ -322,8 +354,8 @@ document.addEventListener('DOMContentLoaded', function () {
         chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: 'inherit', foreColor: escuro ? '#cbd5e1' : '#5d6877' },
         series: [
             { name: 'E-mails enviados', type: 'column', data: serie.map(function (d) { return d.enviados; }) },
-            { name: 'Cliques', type: 'line', data: serie.map(function (d) { return d.cliques; }) },
-            { name: 'Cadastros salvos', type: 'line', data: serie.map(function (d) { return d.confirmados; }) }
+            { name: 'Acessos ao formulário', type: 'line', data: serie.map(function (d) { return d.cliques; }) },
+            { name: 'Formulários enviados', type: 'line', data: serie.map(function (d) { return d.confirmados; }) }
         ],
         xaxis: { categories: serie.map(function (d) { return d.rotulo; }) },
         yaxis: { min: 0, forceNiceScale: true, labels: { formatter: function (v) { return Math.round(v); } } },

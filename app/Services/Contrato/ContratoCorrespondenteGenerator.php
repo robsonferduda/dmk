@@ -557,6 +557,7 @@ class ContratoCorrespondenteGenerator
                 AND pix.cd_tipo_conta_tcb = 3
             )
             LEFT JOIN banco_ban ban ON (main.cd_banco_ban = ban.cd_banco_ban)
+            ORDER BY main.cd_dados_bancarios_dba, pix.cd_dados_bancarios_dba
             LIMIT 1
         ", [$entidade, $entidade]);
 

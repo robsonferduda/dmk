@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Nivel;
 use App\Services\Cadastro\CampanhaAtualizacaoService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
+use App\Services\Cadastro\FormularioCadastro;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 /**
  * Links do e-mail de atualização cadastral (sem login): pixel de abertura e botão "atualizar cadastro".
@@ -38,26 +35,16 @@ class CadastroCampanhaPublicoController extends Controller
         ]);
     }
 
+    /**
+     * Botão dos e-mails da primeira versão: agora leva direto ao formulário, sem login.
+     */
     public function atualizar($token)
     {
-        $envio = null;
-        try {
-            $envio = $this->service->registrarClique($token);
-        } catch (\Throwable $e) {
-            Log::warning('[cadastro] Falha ao registrar clique: ' . $e->getMessage());
+        $envio = $this->service->envioDoToken($token);
+        if (! $envio) {
+            return redirect()->route('autenticacao.correspondente');
         }
 
-        if ($envio) {
-            $usuario = Auth::user();
-            if ($usuario && (int) $usuario->cd_nivel_niv === Nivel::CORRESPONDENTE
-                && $envio->vinculo && (int) $envio->vinculo->cd_correspondente_cor === (int) $usuario->cd_conta_con) {
-                return redirect('correspondente/ficha/' . Crypt::encrypt($envio->cd_conta_correspondente_ccr));
-            }
-
-            Session::put('SESSION_ATUALIZACAO_CCR', $envio->cd_conta_correspondente_ccr);
-        }
-
-        return redirect()->route('autenticacao.correspondente')
-            ->with('status', 'Faça login com seu e-mail e senha para atualizar seus dados cadastrais.');
+        return redirect(FormularioCadastro::url($envio->cd_conta_correspondente_ccr));
     }
 }

@@ -20,10 +20,10 @@ class AtualizacaoCadastralController extends Controller
     const SITUACOES = [
         'aguardando'     => 'Aguardando envio',
         'sem_reacao'     => 'Enviado, sem abertura',
-        'abriu'          => 'Abriu, não clicou',
-        'clicou'         => 'Clicou, não salvou',
-        'confirmou'      => 'Salvou o cadastro',
-        'com_pendencias' => 'Salvou, com pendências',
+        'abriu'          => 'Abriu o e-mail, não acessou o formulário',
+        'clicou'         => 'Acessou o formulário, não enviou',
+        'confirmou'      => 'Enviou o formulário',
+        'com_pendencias' => 'Enviou, com pendências',
         'prontos'        => 'Pronto para contrato',
         'vencidos'       => 'Prazo vencido',
         'falha'          => 'Falha no envio',
@@ -42,9 +42,7 @@ class AtualizacaoCadastralController extends Controller
     public function index(Request $request)
     {
         try {
-            $campanha = CampanhaCadastro::where('cd_conta_con', $this->conta())
-                ->orderByDesc('cd_campanha_cadastro_cmc')
-                ->first();
+            $campanha = $this->campanhaAtual();
         } catch (QueryException $e) {
             return view('v2.atualizacao-cadastral.index', ['tabelasAusentes' => true]);
         }
@@ -54,6 +52,8 @@ class AtualizacaoCadastralController extends Controller
 
             return view('v2.atualizacao-cadastral.index', [
                 'campanha'   => null,
+                'encerrada'  => CampanhaCadastro::where('cd_conta_con', $this->conta())->where('dc_status_cmc', CampanhaCadastro::ENCERRADA)
+                    ->orderByDesc('cd_campanha_cadastro_cmc')->first(),
                 'meses'      => $meses,
                 'periodos'   => self::PERIODOS,
                 'candidatos' => count($this->service->candidatos($this->conta(), $meses)),
@@ -122,9 +122,20 @@ class AtualizacaoCadastralController extends Controller
         return redirect('v2/atualizacao-cadastral');
     }
 
+    public function encerrar()
+    {
+        $campanha = $this->campanhaAtual();
+        abort_unless($campanha, 404);
+        $this->service->encerrar($campanha);
+        Flash::success('Campanha encerrada. Os números anteriores ficam guardados como histórico; monte a nova lista abaixo.');
+
+        return redirect('v2/atualizacao-cadastral');
+    }
+
     public function reenviarVencidos()
     {
-        $campanha = CampanhaCadastro::where('cd_conta_con', $this->conta())->orderByDesc('cd_campanha_cadastro_cmc')->firstOrFail();
+        $campanha = $this->campanhaAtual();
+        abort_unless($campanha, 404);
         $total = $this->service->reenviarVencidos($campanha);
         if ($total && $campanha->dc_status_cmc === CampanhaCadastro::CONCLUIDA) {
             $this->service->iniciar($campanha);
@@ -140,7 +151,7 @@ class AtualizacaoCadastralController extends Controller
     public function reenviar($id)
     {
         $envio = CampanhaCadastroEnvio::whereHas('campanha', function ($q) {
-            $q->where('cd_conta_con', $this->conta());
+            $q->where('cd_conta_con', $this->conta())->where('dc_status_cmc', '<>', CampanhaCadastro::ENCERRADA);
         })->findOrFail((int) $id);
 
         $this->service->reenviar($envio);
@@ -180,6 +191,15 @@ class AtualizacaoCadastralController extends Controller
                 $consulta->where('dc_status_cme', CampanhaCadastroEnvio::FALHA);
                 break;
         }
+    }
+
+    /** Última campanha que não foi encerrada (ativa, pausada ou concluída). */
+    private function campanhaAtual(): ?CampanhaCadastro
+    {
+        return CampanhaCadastro::where('cd_conta_con', $this->conta())
+            ->where('dc_status_cmc', '<>', CampanhaCadastro::ENCERRADA)
+            ->orderByDesc('cd_campanha_cadastro_cmc')
+            ->first();
     }
 
     private function campanhaAberta(): CampanhaCadastro

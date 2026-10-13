@@ -12,7 +12,7 @@ Pedimos que atualize seu cadastro até {{ $prazo }}, informando no formulário:
 
 ATUALIZE SEU CADASTRO: {{ $link }}
 
-Acesse o sistema com seu login e senha e atualize seus dados cadastrais dentro do sistema. Seu login é o e-mail {{ $login }}.
+O link abre um formulário exclusivo para você, sem necessidade de login ou senha, já preenchido com os dados que temos. Basta conferir, completar o que faltar e enviar.
 Mesmo que seus dados não tenham mudado, acesse o formulário e confirme as informações, para que possamos seguir com a formalização da parceria.
 Agradecemos pela parceria e pela colaboração nesta etapa tão importante para o DMK. Em caso de dúvidas, nossa equipe está à disposição pelo retorno deste e-mail.
 

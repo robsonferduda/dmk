@@ -90,6 +90,12 @@ Route::post('c/{token}', 'PublicCheckinController@store')->name('checkin.publico
 Route::get('atualizar-cadastro/{token}', 'CorrespondenteController@registrarAcessoAtualizacao')->name('correspondente.registro-acesso');
 Route::get('cadastro/atualizar/{token}', 'CadastroCampanhaPublicoController@atualizar')->where('token', '[A-Za-z0-9]{40}');
 Route::get('cadastro/aberto/{token}.gif', 'CadastroCampanhaPublicoController@abertura')->where('token', '[A-Za-z0-9]{40}');
+Route::group(['prefix' => 'atualizar-dados/{chave}', 'where' => ['chave' => '[0-9]+-[a-f0-9]{20}']], function () {
+    Route::get('/', 'FormularioCadastroController@exibir')->name('cadastro.formulario');
+    Route::post('/', 'FormularioCadastroController@salvar')->middleware('throttle:20,10');
+    Route::get('concluido', 'FormularioCadastroController@concluido');
+    Route::get('cidades/{estado}', 'FormularioCadastroController@cidades')->where('estado', '[0-9]+');
+});
 
 // [REVISÃO/APROVAÇÃO DE PAGAMENTO] Link com token enviado por WhatsApp/e-mail ao correspondente.
 // Permite revisar a listagem de processos, confirmar ou recusar sem acesso ao sistema.
@@ -398,6 +404,7 @@ Route::get('correspondente/acompanhamento/{id}', 'CorrespondenteController@acomp
         Route::post('atualizacao-cadastral/preparar', 'AtualizacaoCadastralController@preparar');
         Route::post('atualizacao-cadastral/iniciar', 'AtualizacaoCadastralController@iniciar');
         Route::post('atualizacao-cadastral/pausar', 'AtualizacaoCadastralController@pausar');
+        Route::post('atualizacao-cadastral/encerrar', 'AtualizacaoCadastralController@encerrar');
         Route::post('atualizacao-cadastral/reenviar-vencidos', 'AtualizacaoCadastralController@reenviarVencidos');
         Route::post('atualizacao-cadastral/envios/{id}/reenviar', 'AtualizacaoCadastralController@reenviar');
     });

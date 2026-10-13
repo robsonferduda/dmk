@@ -14,13 +14,14 @@
 
   <link href="{{ asset('v2/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('v2/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  @yield('stylesheet')
   <link href="{{ asset('v2/css/main.css') }}" rel="stylesheet">
   <link href="{{ asset('v2/css/dmk.css') }}?v={{ filemtime(public_path('v2/css/dmk.css')) }}" rel="stylesheet">
 </head>
 
 <body class="dmk-auth">
   <main class="dmk-auth-main">
-    <div class="dmk-auth-box">
+    <div class="dmk-auth-box @yield('box_class')">
       <div class="dmk-auth-brand">
         <span class="dmk-auth-logo"><img src="{{ asset('img/legal.png') }}" alt=""></span>
         <span>DMK Advogados</span>
@@ -35,5 +36,6 @@
 
   <script src="{{ asset('v2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('v2/js/theme.js') }}"></script>
+  @yield('script')
 </body>
 </html>

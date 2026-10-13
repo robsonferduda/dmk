@@ -47,7 +47,7 @@ class Entidade extends Model
 
     public function fone()
     {
-        return $this->hasOne('App\Fone','cd_entidade_ete', 'cd_entidade_ete');
+        return $this->hasOne('App\Fone','cd_entidade_ete', 'cd_entidade_ete')->orderBy('cd_fone_fon');
     }
 
     public function endereco()
