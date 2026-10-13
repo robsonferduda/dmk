@@ -6,10 +6,11 @@
 return [
 
     // Teto de e-mails da campanha por dia, somando todas as campanhas (o SMTP é compartilhado).
-    'limite_diario' => (int) env('CADASTRO_LIMITE_DIARIO', 200),
+    'limite_diario' => (int) env('CADASTRO_LIMITE_DIARIO', 500),
 
-    // E-mails por execução do agendador (roda a cada 10 minutos, das 8h às 18h, em dias úteis).
-    'lote' => (int) env('CADASTRO_LOTE', 5),
+    // E-mails por execução do agendador (roda a cada 10 minutos, das 8h às 18h, em dias úteis: 61 execuções).
+    // 61 x lote precisa passar do limite diário, senão o teto nunca é alcançado.
+    'lote' => (int) env('CADASTRO_LOTE', 9),
 
     // Pausa entre um e-mail e outro dentro do lote, em segundos.
     'intervalo_segundos' => (int) env('CADASTRO_INTERVALO', 3),
