@@ -16,7 +16,7 @@
 @endsection
 
 @section('content')
-<div class="page-users-view">
+<div class="page-users-view operia-cadastro">
     <nav aria-label="breadcrumb" class="mb-2">
         <ol class="breadcrumb small mb-0">
             <li class="breadcrumb-item"><a href="{{ url('v2/correspondentes') }}">Correspondentes</a></li>
@@ -76,14 +76,14 @@
         @php
             $ativa = $campanha->dc_status_cmc === \App\CampanhaCadastro::ATIVA;
             $concluida = $campanha->dc_status_cmc === \App\CampanhaCadastro::CONCLUIDA;
-            $statusCampanha = $ativa ? ['Enviando', 'text-success', 'bi-send'] : ($concluida ? ['Envios concluídos', 'text-primary', 'bi-check2-all'] : ['Pausada', 'text-warning', 'bi-pause-circle']);
+            $statusCampanha = $ativa ? ['Enviando', 'operia-status-ativa', 'bi-send'] : ($concluida ? ['Envios concluídos', 'operia-status-ok', 'bi-check2-all'] : ['Pausada', 'operia-status-pausa', 'bi-pause-circle']);
             $funil = [
-                ['Na lista', $resumo['total'], '#94a3b8'],
-                ['E-mail enviado', $resumo['enviados'], '#4154f1'],
-                ['Abriu o e-mail', $resumo['abertos'], '#0ea5e9'],
-                ['Acessou o formulário', $resumo['cliques'], '#8b5cf6'],
-                ['Enviou o formulário', $resumo['confirmados'], '#f59e0b'],
-                ['Pronto para contrato', $resumo['prontos'], '#16a34a'],
+                ['Na lista', $resumo['total'], '#D9CBB8'],
+                ['E-mail enviado', $resumo['enviados'], '#C4A35A'],
+                ['Abriu o e-mail', $resumo['abertos'], '#A6842E'],
+                ['Acessou o formulário', $resumo['cliques'], '#8A4E3A'],
+                ['Enviou o formulário', $resumo['confirmados'], '#6B2A2A'],
+                ['Pronto para contrato', $resumo['prontos'], '#4E1C1C'],
             ];
         @endphp
 
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const serie = @json($serie);
     const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
     new ApexCharts(document.getElementById('grafico-andamento'), {
-        chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: 'inherit', foreColor: escuro ? '#cbd5e1' : '#5d6877' },
+        chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: 'inherit', foreColor: escuro ? '#e7d7c4' : '#5c4038' },
         series: [
             { name: 'E-mails enviados', type: 'column', data: serie.map(function (d) { return d.enviados; }) },
             { name: 'Acessos ao formulário', type: 'line', data: serie.map(function (d) { return d.cliques; }) },
@@ -369,12 +369,12 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         xaxis: { categories: serie.map(function (d) { return d.rotulo; }) },
         yaxis: { min: 0, forceNiceScale: true, labels: { formatter: function (v) { return Math.round(v); } } },
-        colors: ['#4154f1', '#8b5cf6', '#16a34a'],
+        colors: ['#6B2A2A', '#A6842E', '#4E1C1C'],
         stroke: { width: [0, 3, 3], curve: 'smooth' },
         plotOptions: { bar: { columnWidth: '45%', borderRadius: 3 } },
         dataLabels: { enabled: false },
         legend: { position: 'top', horizontalAlign: 'left' },
-        grid: { borderColor: escuro ? '#334155' : '#eef0f4' },
+        grid: { borderColor: escuro ? '#3a2a2a' : '#eadfce' },
         theme: { mode: escuro ? 'dark' : 'light' }
     }).render();
 });

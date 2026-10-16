@@ -556,3 +556,146 @@ a:hover > .dmk-avatar-foto {
   height: 0.5em;
   padding: 0.25em;
 }
+
+/* Atualização cadastral: paleta Operia (vinho, ouro, papel) */
+.operia-cadastro {
+  --accent-color: #6B2A2A;
+  --operia-vinho: #6B2A2A;
+  --operia-vinho-escuro: #4E1C1C;
+  --operia-ouro: #A6842E;
+  --operia-ouro-claro: #C4A35A;
+  --operia-papel: #F7F4EF;
+}
+
+.operia-cadastro .uv-hero {
+  background: var(--operia-papel);
+  border-color: #e4d5c4;
+}
+
+.operia-cadastro .uv-hero-name {
+  display: inline-block;
+  color: var(--operia-vinho);
+  border-bottom: 2px solid var(--operia-ouro-claro);
+  padding-bottom: 2px;
+}
+
+.operia-cadastro .uv-hero-email {
+  color: #6e534c;
+}
+
+.operia-cadastro .card-title,
+.operia-cadastro .breadcrumb a {
+  color: var(--operia-vinho);
+}
+
+.operia-cadastro .uv-panel,
+.operia-cadastro .nd-kpi-card {
+  border-color: #eadfce;
+}
+
+.operia-cadastro .nd-kpi-leads,
+.operia-cadastro .nd-kpi-cycle,
+.operia-cadastro .nd-kpi-revenue,
+.operia-cadastro .nd-kpi-retention {
+  background: color-mix(in srgb, var(--operia-papel) 72%, white);
+}
+
+.operia-cadastro .nd-kpi-leads::after,
+.operia-cadastro .nd-kpi-revenue::after {
+  background: color-mix(in srgb, var(--operia-vinho), transparent 88%);
+}
+
+.operia-cadastro .nd-kpi-cycle::after,
+.operia-cadastro .nd-kpi-retention::after {
+  background: color-mix(in srgb, var(--operia-ouro), transparent 86%);
+}
+
+.operia-cadastro .nd-kpi-value {
+  color: var(--operia-vinho-escuro);
+}
+
+.operia-cadastro .nd-kpi-leads .nd-kpi-icon,
+.operia-cadastro .nd-kpi-revenue .nd-kpi-icon {
+  background: color-mix(in srgb, var(--operia-vinho), transparent 86%);
+  color: var(--operia-vinho);
+}
+
+.operia-cadastro .nd-kpi-cycle .nd-kpi-icon,
+.operia-cadastro .nd-kpi-retention .nd-kpi-icon {
+  background: color-mix(in srgb, var(--operia-ouro), transparent 82%);
+  color: #7a5e1e;
+}
+
+.operia-cadastro .operia-status-ativa {
+  color: var(--operia-vinho);
+  background: #f3e6c8;
+  border-color: var(--operia-ouro-claro);
+}
+
+.operia-cadastro .operia-status-ok {
+  color: var(--operia-papel);
+  background: var(--operia-vinho);
+  border-color: var(--operia-vinho);
+}
+
+.operia-cadastro .operia-status-pausa {
+  color: #6b4e16;
+  background: #f8f1de;
+  border-color: #e4d2a4;
+}
+
+.operia-cadastro .alert-info {
+  background: var(--operia-papel);
+  border-color: #e4d5c4;
+  color: var(--operia-vinho-escuro);
+}
+
+.operia-cadastro .table .text-info {
+  color: var(--operia-ouro) !important;
+}
+
+.operia-cadastro .table .text-primary {
+  color: var(--operia-vinho) !important;
+}
+
+.operia-cadastro .table .text-success {
+  color: var(--operia-vinho-escuro) !important;
+}
+
+.operia-cadastro .table a {
+  color: var(--operia-vinho);
+}
+
+.operia-cadastro .table a:hover {
+  color: var(--operia-vinho-escuro);
+}
+
+.operia-cadastro .page-link {
+  color: var(--operia-vinho);
+}
+
+.operia-cadastro .page-item.active .page-link {
+  background: var(--operia-vinho);
+  border-color: var(--operia-vinho);
+  color: var(--operia-papel);
+}
+
+.operia-cadastro .progress {
+  background: #efe6d8;
+}
+
+[data-theme=dark] .operia-cadastro {
+  --accent-color: #6B2A2A;
+}
+
+[data-theme=dark] .operia-cadastro .uv-hero-email,
+[data-theme=dark] .operia-cadastro .card-title {
+  color: var(--operia-ouro-claro);
+}
+
+[data-theme=dark] .operia-cadastro .nd-kpi-leads,
+[data-theme=dark] .operia-cadastro .nd-kpi-cycle,
+[data-theme=dark] .operia-cadastro .nd-kpi-revenue,
+[data-theme=dark] .operia-cadastro .nd-kpi-retention {
+  background: color-mix(in srgb, var(--operia-vinho) 22%, var(--surface-color));
+}

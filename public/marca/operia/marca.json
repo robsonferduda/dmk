@@ -1,0 +1,20 @@
+{
+  "conceito": "O redesenho mantém o clima aprovado (vinho, ouro e serifa clássica) e remove tudo o que dependia de efeito. O monograma passa a ser um anel O de traço grosso e um L de haste reta com serifas retangulares e terminal do pé levantado, desenhados só com formas planas e cantos retos. O entrelaçamento é construído com recortes reais de 2 unidades, não com sombra nem com a sobreposição de cores. No topo o L passa por cima do anel; na base o anel passa por cima do L. Por isso a leitura de O+L entrelaçados continua funcionando em uma cor só, em negativo e em 24px. Para tamanhos mínimos o favicon troca o entrelaçamento por um contorno de recorte sobre quadrado vinho. O símbolo alternativo é a versão geométrica: a haste do L atravessa o centro do O e o pé corre paralelo à base do anel. O wordmark usa Libre Baskerville Bold como texto vivo. OPERIA vem em vinho e LAW em ouro apenas no cabeçalho, com versão integral em vinho para texto menor, e-mail e documentos. A combinação comunica a precisão operacional da DMK (audiências, correspondentes, diligências) com a sobriedade de um escritório tradicional.",
+  "aplicacao": [
+    "Horizontal bicolor: cabeçalho do sistema web, topo do papel timbrado e capa de relatórios, sempre com altura de pelo menos 40px para que LAW em ouro mantenha leitura.",
+    "Horizontal mono em vinho: assinatura de e-mail, rodapé de PDF, documentos impressos em uma cor e qualquer uso abaixo de 40px de altura.",
+    "Empilhado: tela de login, capa de propostas e apresentações, com o filete ouro só em fundo papel #F7F4EF ou branco.",
+    "Símbolo e símbolo alternativo: avatar de redes, ícone de aplicativo, marca d'água do timbrado e selo em PDFs; o principal é o padrão e o alternativo serve a peças mais técnicas.",
+    "Favicon: aba do navegador, atalho mobile e notificações, em 32px ou menos, sempre com o quadrado vinho incluído.",
+    "Negativo: barra lateral escura do sistema, slides com fundo vinho e brindes; use ouro claro #C4A35A apenas porque ali o ouro ocupa área grande."
+  ],
+  "cores": {
+    "vinho": "#6B2A2A",
+    "vinho_escuro": "#4E1C1C",
+    "ouro": "#A6842E",
+    "ouro_claro": "#C4A35A",
+    "papel": "#F7F4EF"
+  },
+  "fonte": "Libre Baskerville Bold (texto convertido em curvas)",
+  "destaque": "No wordmark colorido, OPER e LAW ficam em vinho e IA em ouro. No empilhado, o filete de ouro fica só sob o IA. A versão de uma cor mantém o nome inteiro em vinho."
+}
