@@ -9,7 +9,8 @@
   <meta name="token" content="{{ csrf_token() }}">
   <meta name="base-url" content="{{ url('/') }}">
 
-  <link href="{{ asset('img/favicon/favicon-32x32.png') }}" rel="icon">
+  <link href="{{ asset('marca/operia/favicon-32.png') }}" rel="icon" sizes="32x32">
+  <link href="{{ asset('marca/operia/favicon-180.png') }}" rel="apple-touch-icon">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,13 +45,11 @@
         </span>
       </button>
 
-      <a href="{{ url('v2/correspondentes') }}" class="header-brand" aria-label="DMK">
+      <a href="{{ url('v2/correspondentes') }}" class="header-brand" aria-label="Operia Law">
         <span class="header-logo">
-          <img src="{{ asset('img/legal.png') }}" alt="DMK">
+          <img src="{{ asset('marca/operia/horizontal.svg') }}" alt="Operia Law">
         </span>
-        <span class="header-context">
-          <strong class="header-context-title">DMK <span class="dmk-v2-badge">v2</span></strong>
-        </span>
+        <span class="dmk-v2-badge">v2</span>
       </a>
     </div>
 
