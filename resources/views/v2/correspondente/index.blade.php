@@ -7,6 +7,11 @@
 
 @section('content')
 <div class="page-users users-lab">
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb small mb-0">
+            <li class="breadcrumb-item active" aria-current="page">Correspondentes</li>
+        </ol>
+    </nav>
     <div class="users-lab-hero mb-3">
         <div>
             <h1 class="page-title mb-1">Correspondentes</h1>
